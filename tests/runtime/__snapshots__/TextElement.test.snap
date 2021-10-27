@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextElement element produces output containing children 1`] = `
+<p>
+  Hello
+  where are you
+</p>
+`;

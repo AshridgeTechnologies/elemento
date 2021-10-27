@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generated AppMain has correct contentExpr 1`] = `
+<div>
+  <p>
+    Hi there!
+  </p>
+  <p>
+    4
+  </p>
+</div>
+`;

@@ -6,5 +6,5 @@ module.exports = {
     testMatch: [
       "**/tests/**/*.test.js"
     ],
-  //snapshotResolver: './src/snapshotResolver.cjs'
+  snapshotResolver: './tests/snapshotResolver.cjs'
 };
