@@ -2,8 +2,10 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run tsc",
-    "test": "NODE_OPTIONS=--experimental-vm-modules yarn run jest"
+    "compile": "yarn run tsc && cp src/runtime/app.html build/src/runtime/app.html",
+    "test": "NODE_OPTIONS=--experimental-vm-modules yarn run jest",
+    "build": "yarn run parcel build build/src/runtime/app.html",
+    "serve": "yarn run parcel build/src/runtime/app.html"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
@@ -11,6 +13,7 @@
     "@types/react-dom": "^17.0.10",
     "@types/react-test-renderer": "^17.0.1",
     "jest": "^27.3.1",
+    "parcel": "^2.0.0",
     "react-test-renderer": "^17.0.2",
     "typescript": "^4.4.4"
   },

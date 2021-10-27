@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer'
 import React, {FunctionComponent} from 'react'
-import {TextElement} from '../../src/runtime/TextElement.js'
+import TextElement from '../../src/runtime/TextElement.js'
 import Text from '../../src/model/Text.js'
 import App from '../../src/model/App.js'
 import Generator from '../../src/generator/Generator.js'
