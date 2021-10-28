@@ -18,10 +18,10 @@ export default class Generator {
     }
 
     private appMainContent(page: Page) {
-        const children = page.elements.map(p => `        ${Generator.generateElement(p)},`).join('\n');
+        const pageCode = Generator.generateElement(page)
         return `function AppMain(props) {
     return React.createElement('div', null,
-${children}
+    ${pageCode}
     )
 }
 `
@@ -29,7 +29,14 @@ ${children}
     }
 
     private static generateElement(element: Element): string {
+        if(Page.is(element)) {
+            const children = element.elements.map(p => `        ${Generator.generateElement(p)},`).join('\n');
+            return `React.createElement('div', null,
+${children}
+    )`
+        }
         if(Text.is(element)) return `React.createElement(TextElement, null, ${element.contentExpr})`
-        return `'???'`
+        /* c8 ignore next */
+        return `React.createElement(div, null, '???')`
     }
 }

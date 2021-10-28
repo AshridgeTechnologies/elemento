@@ -4,6 +4,7 @@
   "scripts": {
     "compile": "yarn run tsc && cp src/runtime/app.html build/src/runtime/app.html",
     "test": "NODE_OPTIONS=--experimental-vm-modules yarn run jest",
+    "testcoverage": "yarn test --coverage --coverageProvider=v8",
     "build": "yarn compile && yarn run parcel build build/src/runtime/app.html",
     "serve": "yarn compile && yarn run parcel build/src/runtime/app.html",
     "functest": "yarn compile && yarn run playwright test -c playwright.config.cjs"

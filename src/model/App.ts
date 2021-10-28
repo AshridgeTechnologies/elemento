@@ -1,7 +1,6 @@
 import Page from './Page.js';
-import Element from './Element.js'
 
-export default class App implements Element {
+export default class App  {
     constructor(
         public id: string,
         public name: string,

@@ -2,11 +2,13 @@
 
 exports[`generated AppMain has correct contentExpr 1`] = `
 <div>
-  <p>
-    Hi there!
-  </p>
-  <p>
-    4
-  </p>
+  <div>
+    <p>
+      Hi there!
+    </p>
+    <p>
+      4
+    </p>
+  </div>
 </div>
 `;
