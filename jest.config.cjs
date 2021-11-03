@@ -1,9 +1,9 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
+    preset: 'ts-jest',
     testEnvironment:        'node',
     verbose:                true,
-    roots:                  ['build'],
-    testMatch:              ["**/tests/**/*.test.js"],
-    testPathIgnorePatterns: ["<rootDir>/build/tests/functional"],
-    snapshotResolver:       './tests/snapshotResolver.cjs'
+    roots:                  ['tests'],
+    testMatch:              ["**/*.test.ts", "**/*.test.tsx"],
+    testPathIgnorePatterns: ["<rootDir>/tests/functional"],
 };

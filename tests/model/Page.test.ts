@@ -1,5 +1,5 @@
-import Text from '../../src/model/Text.js'
-import Page from '../../src/model/Page.js'
+import Text from '../../src/model/Text'
+import Page from '../../src/model/Page'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', '"Some text"')

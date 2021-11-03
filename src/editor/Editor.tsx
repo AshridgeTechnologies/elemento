@@ -1,8 +1,8 @@
 import React from 'react'
-import App from '../model/App.js'
-import Page from '../model/Page.js'
-import Element from '../model/Element.js'
-import AppStructureTree, {ModelTreeItem} from './AppStructureTree.js'
+import App from '../model/App'
+import Page from '../model/Page'
+import Element from '../model/Element'
+import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -23,7 +23,7 @@ export default function Editor({app }: {app: App}) {
                 <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>Running app</div>
             </div>
             <div style={{width: '20%',}}>
-                <div style={{backgroundColor: 'lightblue', width: '100%'}}>Properties</div>
+                <div style={{backgroundColor: 'lightblue', width: '100%'}}>Property area</div>
             </div>
         </div>
     </div>

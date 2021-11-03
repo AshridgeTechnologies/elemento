@@ -1,7 +1,7 @@
-import App from '../model/App.js'
-import Element from '../model/Element.js'
-import Page from '../model/Page.js'
-import Text from '../model/Text.js'
+import App from '../model/App'
+import Element from '../model/Element'
+import Page from '../model/Page'
+import Text from '../model/Text'
 
 export default class Generator {
     constructor(public app: App) {
@@ -17,6 +17,7 @@ export default class Generator {
         ]
     }
 
+    // noinspection JSMethodCanBeStatic
     private appMainContent(page: Page) {
         const pageCode = Generator.generateElement(page)
         return `function AppMain(props) {

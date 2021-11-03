@@ -1,10 +1,10 @@
 import renderer from 'react-test-renderer'
 import React, {FunctionComponent} from 'react'
-import TextElement from '../../src/runtime/TextElement.js'
-import Text from '../../src/model/Text.js'
-import App from '../../src/model/App.js'
-import Generator from '../../src/generator/Generator.js'
-import Page from '../../src/model/Page.js'
+import TextElement from '../../src/runtime/TextElement'
+import Text from '../../src/model/Text'
+import App from '../../src/model/App'
+import Generator from '../../src/generator/Generator'
+import Page from '../../src/model/Page'
 
 test('generated AppMain has correct contentExpr', ()=> {
 

@@ -1,5 +1,5 @@
-import Page from '../../src/model/Page.js'
-import App from '../../src/model/App.js'
+import Page from '../../src/model/Page'
+import App from '../../src/model/App'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', [])

@@ -3,10 +3,10 @@
   "license": "MIT",
   "scripts": {
     "compile": "yarn run tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/app.html build/src/runtime/app.html",
-    "test": "NODE_OPTIONS=--experimental-vm-modules yarn run jest",
+    "test": "yarn run jest",
     "testcoverage": "yarn test --coverage --coverageProvider=v8",
     "build": "yarn compile && yarn run parcel build build/src/runtime/app.html",
-    "serve": "yarn compile && yarn run parcel build/src/runtime/app.html",
+    "serve": "yarn compile && yarn run parcel build/src/runtime/app.html build/src/editor/index.html",
     "functest": "yarn compile && yarn run playwright test -c playwright.config.cjs"
   },
   "devDependencies": {
@@ -19,14 +19,12 @@
     "jest": "^27.3.1",
     "parcel": "^2.0.0",
     "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@types/react-sortable-tree": "^0.3.14",
-    "antd": "^4.16.13",
     "react": "^17.0.2",
     "react-complex-tree": "^1.1.2",
-    "react-dom": "^17.0.2",
-    "react-sortable-tree": "2.6.2"
+    "react-dom": "^17.0.2"
   }
 }

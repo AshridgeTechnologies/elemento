@@ -1,4 +1,4 @@
-import Element, {ElementType} from './Element.js'
+import Element, {ElementType} from './Element'
 
 export default class Page implements Element {
     constructor(

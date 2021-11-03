@@ -1,4 +1,4 @@
-import Element, {ElementType} from './Element.js'
+import Element, {ElementType} from './Element'
 
 export default class Text implements Element {
     constructor(

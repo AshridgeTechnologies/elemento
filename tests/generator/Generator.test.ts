@@ -1,8 +1,8 @@
-import Generator from '../../src/generator/Generator.js'
-import App from '../../src/model/App.js';
-import Text from '../../src/model/Text.js';
-import Page from '../../src/model/Page.js'
-import Element, {ElementType} from '../../src/model/Element.js'
+import Generator from '../../src/generator/Generator'
+import App from '../../src/model/App';
+import Text from '../../src/model/Text';
+import Page from '../../src/model/Page'
+import Element, {ElementType} from '../../src/model/Element'
 
 
 test('generates multiple text elements on a page', ()=> {
