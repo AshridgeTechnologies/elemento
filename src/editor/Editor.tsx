@@ -55,8 +55,10 @@ export default function Editor({app }: {app: App}) {
                 </UncontrolledTreeEnvironment>
             </div>
             <div style={{width: '59%', }}>
+                <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>Running app</div>
             </div>
             <div style={{width: '20%', }}>
+                <div style={{backgroundColor: 'lightblue', width: '100%'}}>Properties</div>
             </div>
         </div>
     </div>
