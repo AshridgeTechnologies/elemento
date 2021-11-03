@@ -8,24 +8,17 @@ import App from '../../src/model/App.js'
 import Page from '../../src/model/Page.js'
 import Text from '../../src/model/Text.js'
 import {treeItemSelector, treeExpandControlSelector} from './AppStructureTree.test.js'
-
-import {render, unmountComponentAtNode} from "react-dom";
-import {act} from "react-dom/test-utils";
-
+import {act, render, fireEvent} from '@testing-library/react'
 
 let container: any = null;
-beforeEach(() => {
-    container = document.createElement("div");
-    document.body.appendChild(container);
-});
-
-afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-})
 
 const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
+const actWait = async (testFn: () => void) => {
+    await act(async ()=> {
+        testFn()
+        await wait(20)
+    })
+}
 
 const itemLabels = () => {
     const treeNodesShown = container.querySelectorAll(treeItemSelector)
@@ -42,12 +35,8 @@ const app = new App('app1', 'App One', [
 ])
 
 test("renders tree with app elements",  async () => {
-    await act(async () => {
-        render(<Editor app={app}/>, container)
-        await wait(20)
-        container.querySelector(treeExpandControlSelector).click()
-        await wait(20)
-    })
+    await actWait(() =>  ({container} = render(<Editor app={app}/>)))
+    await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
 
     expect(container.querySelectorAll('div')[1].textContent).toBe("Elemento Studio")
     expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
