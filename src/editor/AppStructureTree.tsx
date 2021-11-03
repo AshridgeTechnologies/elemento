@@ -1,4 +1,11 @@
-import {StaticTreeDataProvider, Tree, TreeItem, TreeItemIndex, UncontrolledTreeEnvironment} from 'react-complex-tree'
+import {
+    InteractionMode,
+    StaticTreeDataProvider,
+    Tree,
+    TreeItem,
+    TreeItemIndex,
+    UncontrolledTreeEnvironment
+} from 'react-complex-tree'
 import React from 'react'
 
 export class ModelTreeItem {
@@ -10,7 +17,8 @@ export class ModelTreeItem {
     }
 }
 
-export default function AppStructureTree({treeData}: {treeData: ModelTreeItem}) {
+export default function AppStructureTree({treeData, onSelect}: {
+    treeData: ModelTreeItem, onSelect?: (id: string) => void}) {
     const items = rctTreeData(treeData)
     function rctTreeData(rootItem: ModelTreeItem): Record<TreeItemIndex, TreeItem<string>> {
         const items: [string, TreeItem][] = rootItem.allItems().map( item => [item.id, {
@@ -27,11 +35,19 @@ export default function AppStructureTree({treeData}: {treeData: ModelTreeItem}) 
         return Object.fromEntries(items)
     }
 
+    const handleSelect = (items: TreeItemIndex[]) => {
+        if (onSelect && items.length > 0) {
+            onSelect(items[0] as string)
+        }
+    }
+
     return <UncontrolledTreeEnvironment
         dataProvider={new StaticTreeDataProvider(items, (item, data) => ({...item, data}))}
         getItemTitle={item => item.data}
         viewState={{}}
+        onSelectItems={handleSelect}
+        defaultInteractionMode={InteractionMode.ClickArrowToExpand}
     >
-        <Tree treeId="tree-1" rootItem="root" treeLabel="App Structure"/>
+        <Tree treeId="tree-1" rootItem="root" treeLabel="App Structure" />
     </UncontrolledTreeEnvironment>
 }

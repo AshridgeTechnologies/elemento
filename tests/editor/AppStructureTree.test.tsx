@@ -3,12 +3,10 @@
  */
 
 import React from 'react'
-import {act, render, fireEvent} from '@testing-library/react'
+import {act, render, fireEvent, screen} from '@testing-library/react'
 
-import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree.js'
-
-export const treeItemSelector = 'button.rct-tree-item-button'
-export const treeExpandControlSelector = 'div.rct-tree-item-arrow-hasChildren'
+import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
+import {treeItemSelector, treeExpandControlSelector} from './Selectors'
 
 let container: any
 
@@ -26,10 +24,10 @@ const itemLabels = () => {
 const modelTree = new ModelTreeItem('app1', 'App One', [
     new ModelTreeItem('page1','Main Page', [
         new ModelTreeItem('text1_1', 'First Text'),
-        new ModelTreeItem("text1_2", 'Second Text'),
+        new ModelTreeItem('text1_2', 'Second Text'),
     ]),
     new ModelTreeItem('page2','Other Page', [
-        new ModelTreeItem("text2_1", 'Some Text'),
+        new ModelTreeItem('text2_1', 'Some Text'),
     ])
 ])
 
@@ -48,5 +46,17 @@ test("can expand and collapse branches",  async () => {
     expect(itemLabels()).toStrictEqual(['Main Page', 'Other Page'])
 })
 
+test('notifies selected item id', async () => {
+    let selectedId: string = ''
+    const storeSelectedId = (id: string) => selectedId = id
+
+    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} onSelect={storeSelectedId}/>)))
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+    expect(selectedId).toBe('page1')
+
+    await actWait(() => fireEvent.click(container.querySelector(treeExpandControlSelector)))
+    await actWait(() => fireEvent.click(screen.getByText('Second Text')))
+    expect(selectedId).toBe('text1_2')
+})
 
 

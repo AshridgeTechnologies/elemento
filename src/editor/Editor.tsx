@@ -17,7 +17,7 @@ export default function Editor({app }: {app: App}) {
         <div>Elemento Studio</div>
         <div style={{display: 'flex', flexDirection: 'row'}}>
             <div style={{width: '20%', height: 400}}>
-                <AppStructureTree treeData={treeData(app)}/>
+                <AppStructureTree treeData={treeData(app)} onSelect={(id) => console.log('Selected', id)}/>
             </div>
             <div style={{width: '59%',}}>
                 <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>Running app</div>

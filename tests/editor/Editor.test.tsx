@@ -3,11 +3,11 @@
  */
 
 import React from 'react'
-import Editor from '../../src/editor/Editor.js'
-import App from '../../src/model/App.js'
-import Page from '../../src/model/Page.js'
-import Text from '../../src/model/Text.js'
-import {treeItemSelector, treeExpandControlSelector} from './AppStructureTree.test.js'
+import Editor from '../../src/editor/Editor'
+import App from '../../src/model/App'
+import Page from '../../src/model/Page'
+import Text from '../../src/model/Text'
+import {treeItemSelector, treeExpandControlSelector} from './Selectors'
 import {act, render, fireEvent} from '@testing-library/react'
 
 let container: any = null;
