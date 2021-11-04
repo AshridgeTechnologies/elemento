@@ -1,10 +1,15 @@
 import Element, {ElementType} from './Element'
+import BaseElement from './BaseElement'
 
-export default class Text implements Element {
+export default class Text extends BaseElement implements Element {
     constructor(
-        public id: string,
-        public name: string,
-        public contentExpr: string) {}
+        id: string,
+        name: string,
+        private readonly props: {
+            readonly contentExpr: string
+        }) {
+        super(id, name)
+    }
 
     static is(element: Element): element is Text {
         return element.constructor.name === this.name
@@ -12,4 +17,18 @@ export default class Text implements Element {
 
     kind: ElementType = 'Text'
 
+    get contentExpr() {return this.props.contentExpr}
+
+    set(id: string, propertyName: keyof Text, value: any): Text {
+        if (id !== this.id) {
+            return this
+        }
+
+        if (propertyName === 'name') {
+            return new Text(this.id, value, this.props)
+        }
+
+        const updatedProps = {...this.props, [propertyName]:value}
+        return new Text(this.id, this.name, updatedProps)
+    }
 }

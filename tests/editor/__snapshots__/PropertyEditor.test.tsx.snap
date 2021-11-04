@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PropertyEditor has expected structure for Text 1`] = `
+<form
+  autoComplete="off"
+  className="MuiBox-root css-xn6ruc"
+  noValidate={true}
+>
+  <div
+    className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+  >
+    <label
+      className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary Mui-disabled MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink={true}
+      htmlFor="id"
+      id="id-label"
+    >
+      Id
+    </label>
+    <div
+      className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary Mui-disabled MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+      onClick={[Function]}
+    >
+      <input
+        aria-invalid={false}
+        autoFocus={false}
+        className="MuiOutlinedInput-input MuiInputBase-input Mui-disabled css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+        disabled={true}
+        id="id"
+        onAnimationStart={[Function]}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onFocus={[Function]}
+        required={false}
+        type="text"
+        value="id1"
+      />
+      <fieldset
+        aria-hidden={true}
+        className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          className="css-186xcr5"
+        >
+          <span>
+            Id
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>
+  <div
+    className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+  >
+    <label
+      className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink={true}
+      htmlFor="name"
+      id="name-label"
+    >
+      Name
+    </label>
+    <div
+      className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+      onClick={[Function]}
+    >
+      <input
+        aria-invalid={false}
+        autoFocus={false}
+        className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+        disabled={false}
+        id="name"
+        onAnimationStart={[Function]}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onFocus={[Function]}
+        required={false}
+        type="text"
+        value="Text 1"
+      />
+      <fieldset
+        aria-hidden={true}
+        className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          className="css-186xcr5"
+        >
+          <span>
+            Name
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>
+  <div
+    className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+  >
+    <label
+      className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink={true}
+      htmlFor="content"
+      id="content-label"
+    >
+      Content
+    </label>
+    <div
+      className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+      onClick={[Function]}
+    >
+      <input
+        aria-invalid={false}
+        autoFocus={false}
+        className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+        disabled={false}
+        id="content"
+        onAnimationStart={[Function]}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onFocus={[Function]}
+        required={false}
+        type="text"
+        value="\\"Hi there!\\""
+      />
+      <fieldset
+        aria-hidden={true}
+        className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          className="css-186xcr5"
+        >
+          <span>
+            Content
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>
+</form>
+`;

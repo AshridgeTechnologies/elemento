@@ -17,7 +17,9 @@ test('can update app on page', async ({ page }) => {
 
     await page.evaluate(()=> {
         // @ts-ignore
-        window.appModel.pages[0].elements[0].contentExpr = '"This is Elemento!"'
+        const elementId = window.appModel.pages[0].elements[0].id
+        // @ts-ignore
+        window.appModel = window.appModel.set(elementId, 'contentExpr', '"This is Elemento!"')
         // @ts-ignore
         window.runApp(window.appModel)
     })

@@ -8,10 +8,10 @@ import Page from '../../src/model/Page'
 
 test('generated AppMain has correct contentExpr', ()=> {
 
-    const app = new App('t1', 'test1', [
-        new Page('p1', 'Page 1', [
-            new Text('id1', 't1', '"Hi there!"'),
-            new Text('id1', 't2', '2 + 2'),
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new Text('id1', 't1', {contentExpr: '"Hi there!"'}),
+            new Text('id1', 't2', {contentExpr: '2 + 2'}),
         ])])
 
     const gen = new Generator(app)

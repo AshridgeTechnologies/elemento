@@ -1,8 +1,9 @@
-export type ElementType = "Page" | "Text"
+export type ElementType = 'App' | 'Page' | 'Text' | '__base'
 
 export default interface Element {
     kind: ElementType
     id: string
     name: string
-
+    findElement(id: string) : Element | null
+    set(id: string, propertyName: string, value: any): Element
 }
