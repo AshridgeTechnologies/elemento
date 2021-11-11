@@ -5,18 +5,17 @@ import Page from '../model/Page'
 import Text from '../model/Text'
 import Editor from './Editor'
 
-let theApp = new App('app1', 'App One', {}, [
+let theApp = new App('app1', 'New App', {}, [
     new Page('page1','Main Page', {}, [
-        new Text('text1_1', 'First Text', {contentExpr: '"The first bit of text"'}),
-        new Text("text1_2", 'Second Text', {contentExpr: '"The second bit of text"'}),
-    ]),
-    new Page('page2','Other Page', {}, [
-        new Text("text2_1", 'Some Text', {contentExpr: '"Some text here"'}),
-        new Text("text2_2", 'More Text', {contentExpr: '"...and more text"'}),
+        new Text('text1_1', 'Text 1', {contentExpr: '"Welcome to Elemento!"'}),
     ])
 ])
 
 export function app() { return theApp }
+export function setApp(app: App) {
+    theApp = app
+    doRender()
+}
 
 const onPropertyChange = (id: string, propertyName: string, value: any)=> {
     //console.log(id, propertyName, value)

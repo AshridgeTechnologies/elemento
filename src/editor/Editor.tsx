@@ -35,7 +35,9 @@ export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn
                 <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}/>
             </div>
             <div style={{width: '59%',}}>
-                <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>Running app</div>
+                <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>
+                    <iframe name='appFrame' src="/runtime/app.html"  style={{width: '100%', height: 600}}/>
+                </div>
             </div>
             <div style={{width: '20%',}}>
                 <div style={{backgroundColor: 'lightblue', width: '100%'}}>

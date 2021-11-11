@@ -46,12 +46,6 @@ test("renders tree with app elements",  async () => {
 })
 
 test('shows element selected in tree in property editor', async () => {
-    // const {container} = render(<Editor app={app}/>)
-    // await wait(20)
-    // const expandControl = await waitFor(() => container.querySelector(treeExpandControlSelector))
-    // expect(expandControl).not.toBeNull()
-    // fireEvent.click(expandControl as Element)
-
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange}/>)))
     await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
 
@@ -62,4 +56,11 @@ test('shows element selected in tree in property editor', async () => {
     const nameInput = screen.getByLabelText('Name') as HTMLInputElement
     expect(nameInput.value).toBe('Second Text')
 
+})
+
+test('has iframe for running app', async () => {
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange}/>)))
+
+    const appFrame = container.querySelector('iframe[name="appFrame"]')
+    expect(appFrame.src).toMatch(/.*\/runtime\/app.html$/)
 })
