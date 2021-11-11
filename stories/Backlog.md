@@ -1,7 +1,7 @@
 Elemento Backlog
 ================
 
-- AppStudio shows generated app
+- App Studio shows generated app
 - App Studio can add new Text
 
 Done
