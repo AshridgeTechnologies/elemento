@@ -12,7 +12,7 @@ declare var appModel: App
 appModel = new App('app1', 'Welcome to Elemento', {}, [
     new Page('page1','Main Page', {}, [
         new Text('text1_1', 'First Text', {contentExpr: '"Welcome to Elemento!"'}),
-        new Text("text1_2", 'Second Text', {contentExpr: '"The future of low code pogramming"'}),
+        new Text("text1_2", 'Second Text', {contentExpr: '"The future of low code programming"'}),
     ])
 ])
 

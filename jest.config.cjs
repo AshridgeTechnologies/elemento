@@ -6,4 +6,5 @@ module.exports = {
     roots:                  ['tests'],
     testMatch:              ["**/*.test.ts", "**/*.test.tsx"],
     testPathIgnorePatterns: ["<rootDir>/tests/functional"],
+    moduleNameMapper: {"^.+\\.(css|less)$": "<rootDir>/tests/cssStub.cjs"},
 };

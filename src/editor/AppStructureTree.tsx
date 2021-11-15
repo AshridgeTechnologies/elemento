@@ -1,6 +1,7 @@
 import Tree from 'rc-tree'
 import React from 'react'
 import {Key} from 'rc-tree/es/interface'
+import 'rc-tree/assets/index.less'
 
 export class ModelTreeItem {
     constructor(public id: string,
