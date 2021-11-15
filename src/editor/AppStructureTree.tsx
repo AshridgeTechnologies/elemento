@@ -1,12 +1,6 @@
-import {
-    InteractionMode,
-    StaticTreeDataProvider,
-    Tree,
-    TreeItem,
-    TreeItemIndex,
-    UncontrolledTreeEnvironment
-} from 'react-complex-tree'
+import Tree from 'rc-tree'
 import React from 'react'
+import {Key} from 'rc-tree/es/interface'
 
 export class ModelTreeItem {
     constructor(public id: string,
@@ -15,39 +9,20 @@ export class ModelTreeItem {
     allItems(): ModelTreeItem[] {
         return [this, ...(this.children ? this.children.map( item => item.allItems()).flat() : [])]
     }
+    get key() { return this.id }
 }
+
 
 export default function AppStructureTree({treeData, onSelect}: {
     treeData: ModelTreeItem, onSelect?: (id: string) => void}) {
-    const items = rctTreeData(treeData)
-    function rctTreeData(rootItem: ModelTreeItem): Record<TreeItemIndex, TreeItem<string>> {
-        const items: [string, TreeItem][] = rootItem.allItems().map( item => [item.id, {
-            index: item.id,
-            canMove: true,
-            hasChildren: !!item.children,
-            children: item.children ? item.children.map( item => item.id ) : [],
-            data: item.title,
-            canRename: true,
-        }])
 
-        items[0][0] = 'root'
-        items[0][1].index = 'root'
-        return Object.fromEntries(items)
+    function itemSelected(selectedKeys: Key[]) {
+        const key = selectedKeys[0].toString()
+        onSelect && onSelect(key)
     }
 
-    const handleSelect = (items: TreeItemIndex[]) => {
-        if (onSelect && items.length > 0) {
-            onSelect(items[0] as string)
-        }
-    }
-
-    return <UncontrolledTreeEnvironment
-        dataProvider={new StaticTreeDataProvider(items, (item, data) => ({...item, data}))}
-        getItemTitle={item => item.data}
-        viewState={{}}
-        onSelectItems={handleSelect}
-        defaultInteractionMode={InteractionMode.ClickArrowToExpand}
-    >
-        <Tree treeId="tree-1" rootItem="root" treeLabel="App Structure" />
-    </UncontrolledTreeEnvironment>
+    return <Tree treeData={treeData.children}
+                 draggable
+                 onSelect={itemSelected}>
+    </Tree>
 }

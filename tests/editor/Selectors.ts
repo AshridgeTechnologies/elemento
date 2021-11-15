@@ -1,2 +1,2 @@
-export const treeItemSelector = 'button.rct-tree-item-button'
-export const treeExpandControlSelector = 'div.rct-tree-item-arrow-hasChildren'
+export const treeItemSelector = '.rc-tree-title'
+export const treeExpandControlSelector = '.rc-tree-switcher'
