@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from '../model/App.js'
-import Page from '../model/Page.js'
-import Text from '../model/Text.js'
-import Generator from '../generator/Generator.js'
-import TextElement from './TextElement.js'
+import App from '../model/App'
+import Page from '../model/Page'
+import Text from '../model/Text'
+import Generator from '../generator/Generator'
+import TextElement from './TextElement'
 
 declare var AppMain: any
 declare var appModel: App
@@ -12,7 +12,7 @@ declare var appModel: App
 appModel = new App('app1', 'Welcome to Elemento', {}, [
     new Page('page1','Main Page', {}, [
         new Text('text1_1', 'First Text', {contentExpr: '"Welcome to Elemento!"'}),
-        new Text("text1_2", 'Second Text', {contentExpr: '"The future of low code programming"'}),
+        new Text("text1_2", 'Second Text', {contentExpr: '"The future of low code pogramming"'}),
     ])
 ])
 

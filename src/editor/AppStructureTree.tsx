@@ -17,8 +17,8 @@ export default function AppStructureTree({treeData, onSelect}: {
     treeData: ModelTreeItem, onSelect?: (id: string) => void}) {
 
     function itemSelected(selectedKeys: Key[]) {
-        const key = selectedKeys[0].toString()
-        onSelect && onSelect(key)
+        const key = selectedKeys[0]?.toString()
+        onSelect && key && onSelect(key)
     }
 
     return <Tree treeData={treeData.children}

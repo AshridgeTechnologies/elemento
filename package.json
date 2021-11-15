@@ -2,12 +2,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "compile": "yarn run tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/app.html build/src/runtime/app.html",
-    "test": "yarn run jest",
+    "compile": "tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/app.html build/src/runtime/app.html",
+    "tscheck": "tsc --noEmit",
+    "test": "jest",
     "testcoverage": "yarn test --coverage --coverageProvider=v8",
-    "build": "yarn compile && yarn run parcel build build/src/runtime/app.html",
-    "serve": "yarn compile && yarn run parcel build/src/runtime/app.html build/src/editor/index.html",
-    "functest": "yarn run playwright test"
+    "build": "parcel build src/runtime/app.html src/editor/index.html",
+    "serve": "parcel src/runtime/app.html src/editor/index.html",
+    "functest": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.16.1",
