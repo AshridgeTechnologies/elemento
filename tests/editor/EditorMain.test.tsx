@@ -7,8 +7,7 @@ import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {act} from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/model/App'
-import Page from '../../src/model/Page'
-import Text from '../../src/model/Text'
+import appFixture1 from '../util/appFixture1'
 
 let container: HTMLDivElement;
 
@@ -21,6 +20,8 @@ beforeEach(() => {
 afterEach(() => {
     if (container !== null) document.body.removeChild(container);
 })
+
+jest.setTimeout(10 * 1000)
 
 const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
 const actWait = async (testFn: () => any) => {
@@ -42,16 +43,7 @@ const itemElements = () => {
     return Array.from(treeNodesShown)
 }
 
-let theApp = new App('app1', 'App One', {}, [
-    new Page('page1','Main Page', {}, [
-        new Text('text1_1', 'First Text', {contentExpr: '"The first bit of text"'}),
-        new Text("text1_2", 'Second Text', {contentExpr: '"The second bit of text"'}),
-    ]),
-    new Page('page2','Other Page', {}, [
-        new Text("text2_1", 'Some Text', {contentExpr: '"Some text here"'}),
-        new Text("text2_2", 'More Text', {contentExpr: '"...and more text"'}),
-    ])
-])
+let theApp = appFixture1()
 
 test('renders editor and updates test app', async () => {
     let app

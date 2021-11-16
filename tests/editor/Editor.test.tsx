@@ -4,11 +4,9 @@
 
 import React from 'react'
 import Editor from '../../src/editor/Editor'
-import App from '../../src/model/App'
-import Page from '../../src/model/Page'
-import Text from '../../src/model/Text'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {act, fireEvent, render, screen} from '@testing-library/react'
+import appFixture1 from '../util/appFixture1'
 
 let container: any = null;
 
@@ -24,17 +22,10 @@ const itemLabels = () => {
     const treeNodesShown = container.querySelectorAll(treeItemSelector)
     return [...treeNodesShown.values()].map( (it: any) => it.textContent)
 }
-const app = new App('app1', 'App One', {}, [
-    new Page('page1','Main Page', {}, [
-        new Text('text1_1', 'First Text',  {contentExpr: '"The first bit of text"'}),
-        new Text("text1_2", 'Second Text', {contentExpr: '"The second bit of text"'}),
-    ]),
-    new Page('page2','Other Page', {}, [
-        new Text("text2_1", 'Some Text', {contentExpr: '"Some text here"'}),
-    ])
-])
+const app = appFixture1()
 
-const onPropertyChange = (id: string, propertyName: string, value: any)=> {}
+
+const onPropertyChange = ()=> {}
 
 
 test("renders tree with app elements",  async () => {
