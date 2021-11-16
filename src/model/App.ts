@@ -25,6 +25,8 @@ export default class App implements Element  {
 
     protected getElements() { return this.pages }
 
+    get properties() {return this.props}
+
     set(id: string, propertyName: string, value: any): App {
         if (id === this.id) {
             if (propertyName === 'name') {
@@ -44,5 +46,9 @@ export default class App implements Element  {
         }
 
         return this
+    }
+
+    static fromJSON({id, name, props, pages}: { id: string; name: string; props: any, pages: any[] }): App {
+        return new App(id, name, props, pages.map( p => Page.fromJSON(p)))
     }
 }

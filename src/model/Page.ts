@@ -1,5 +1,6 @@
 import Element, {ElementType} from './Element'
 import BaseElement,{equalArrays} from './BaseElement'
+import Text from './Text'
 
 export default class Page extends BaseElement implements Element {
 
@@ -20,6 +21,7 @@ export default class Page extends BaseElement implements Element {
 
     protected getElements(): ReadonlyArray<Element> { return this.elements }
 
+    get properties() {return this.props}
     get style() { return this.props.style }
 
     set(id: string, propertyName: string, value: any): Page {
@@ -41,5 +43,9 @@ export default class Page extends BaseElement implements Element {
         }
 
         return this
+    }
+
+    static fromJSON({id, name, props, elements}: { id: string; name: string; props: any, elements: any[] }): Page {
+        return new Page(id, name, props, elements.map(el => Text.fromJSON(el)))
     }
 }

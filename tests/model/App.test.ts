@@ -1,6 +1,7 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
+import {asJSON} from '../util/testHelpers'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -91,4 +92,36 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedApp.pages[1]).not.toBe(page2)
     expect(((updatedApp.pages[1].elements[1]) as Text).contentExpr).toBe('"Further text"')
     expect(updatedApp.pages[1].elements[0]).toBe(text3)
+})
+
+test('converts to JSON', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+    const text3 = new Text('t3', 'Text 3', {contentExpr: '"Some text 3"'})
+    const text4 = new Text('t4', 'Text 4', {contentExpr: '"Some text 4"'})
+    const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
+
+    const app = new App('a1', 'App 1', {author: 'Jo'}, [page1, page2])
+
+    expect(asJSON(app)).toStrictEqual({
+        kind: 'App',
+        id: 'a1',
+        name: 'App 1',
+        props: app.properties,
+        pages: [asJSON(page1), asJSON(page2)]
+    })
+
+})
+
+test('converts from plain object', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+    const text3 = new Text('t3', 'Text 3', {contentExpr: '"Some text 3"'})
+    const text4 = new Text('t4', 'Text 4', {contentExpr: '"Some text 4"'})
+    const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
+
+    const app = new App('a1', 'App 1', {author: 'Jo'}, [page1, page2])
+    const newApp = App.fromJSON(asJSON(app))
+    expect(newApp).toStrictEqual<App>(app)
+
 })

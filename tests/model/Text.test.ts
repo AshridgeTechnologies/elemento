@@ -37,3 +37,21 @@ test('ignores the set and returns itself if the id does not match', ()=> {
     const updatedText = text.set('x1', 'name', 'Text 1A')
     expect(updatedText).toBe(text)
 })
+
+test('converts to JSON', ()=> {
+    const text = new Text('t1', 'Text 1', {contentExpr: '"Some text"', style: 'red'})
+    const plainObj = JSON.parse(JSON.stringify(text))
+    expect(plainObj).toStrictEqual({
+        kind: 'Text',
+        id: 't1',
+        name: 'Text 1',
+        props: text.properties
+    })
+})
+
+test('converts from plain object', ()=> {
+    const text = new Text('t1', 'Text 1', {contentExpr: '"Some text"', style: 'red'})
+    const plainObj = JSON.parse(JSON.stringify(text))
+    const newText = Text.fromJSON(plainObj)
+    expect(newText).toStrictEqual<Text>(text)
+})

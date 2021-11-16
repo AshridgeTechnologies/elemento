@@ -1,4 +1,4 @@
-export type ElementType = 'App' | 'Page' | 'Text' | '__base'
+export type ElementType = 'App' | 'Page' | 'Text' | 'TextInput' | '__base'
 
 export default interface Element {
     kind: ElementType

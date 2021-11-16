@@ -6,7 +6,8 @@ export default class Text extends BaseElement implements Element {
         id: string,
         name: string,
         private readonly props: {
-            readonly contentExpr: string
+            readonly contentExpr: string,
+            readonly style?: string,
         }) {
         super(id, name)
     }
@@ -17,6 +18,7 @@ export default class Text extends BaseElement implements Element {
 
     kind: ElementType = 'Text'
 
+    get properties() {return this.props}
     get contentExpr() {return this.props.contentExpr}
 
     set(id: string, propertyName: keyof Text, value: any): Text {
@@ -30,5 +32,9 @@ export default class Text extends BaseElement implements Element {
 
         const updatedProps = {...this.props, [propertyName]:value}
         return new Text(this.id, this.name, updatedProps)
+    }
+
+    static fromJSON({id, name, props}: {id: string, name: string, props: any}): Text {
+        return new Text(id, name, props)
     }
 }
