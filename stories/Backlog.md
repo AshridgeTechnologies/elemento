@@ -1,6 +1,7 @@
 Elemento Backlog
 ================
 
+- Convert App object to and from JSON
 - App Studio shows generated app
 - App Studio can add new Text
 
