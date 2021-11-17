@@ -1,6 +1,7 @@
 import TextInput from '../../src/model/TextInput'
 import Page from '../../src/model/Page'
 import {asJSON} from '../util/testHelpers'
+import {loadJSON} from '../../src/model/loadJSON'
 
 test('TextInput has correct properties', ()=> {
     const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: 5})
@@ -46,13 +47,13 @@ test('converts to JSON', ()=> {
         kind: 'TextInput',
         id: 't1',
         name: 'Text Input 1',
-        props: text.properties
+        properties: text.properties
     })
 })
 
 test('converts from plain object', ()=> {
     const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: 10})
     const plainObj = asJSON(textInput)
-    const newObj = TextInput.fromJSON(plainObj)
+    const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<TextInput>(textInput)
 })

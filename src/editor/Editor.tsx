@@ -9,7 +9,7 @@ import {OnChangeFn} from './Types'
 
 const treeData = (app: App): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => new ModelTreeItem(el.id, el.name)
-    const treeFromPage = (page: Page): ModelTreeItem => new ModelTreeItem(page.id, page.name, page.elements.map(treeNodeFromElement))
+    const treeFromPage = (page: Page): ModelTreeItem => new ModelTreeItem(page.id, page.name, page.elementArray().map(treeNodeFromElement))
 
     return new ModelTreeItem(app.id, app.name, app.pages.map(treeFromPage))
 }

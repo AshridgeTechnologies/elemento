@@ -1,15 +1,19 @@
-import Element, {ElementType} from './Element'
+import Element from './Element'
 import BaseElement from './BaseElement'
+import {ElementType} from './Types'
 
-export default class Text extends BaseElement implements Element {
+type Properties = {
+    readonly contentExpr: string,
+    readonly style?: string,
+}
+
+export default class Text extends BaseElement<Properties> implements Element {
     constructor(
         id: string,
         name: string,
-        private readonly props: {
-            readonly contentExpr: string,
-            readonly style?: string,
-        }) {
-        super(id, name)
+        properties: Properties
+    ) {
+        super(id, name, properties)
     }
 
     static is(element: Element): element is Text {
@@ -18,23 +22,5 @@ export default class Text extends BaseElement implements Element {
 
     kind: ElementType = 'Text'
 
-    get properties() {return this.props}
-    get contentExpr() {return this.props.contentExpr}
-
-    set(id: string, propertyName: keyof Text, value: any): Text {
-        if (id !== this.id) {
-            return this
-        }
-
-        if (propertyName === 'name') {
-            return new Text(this.id, value, this.props)
-        }
-
-        const updatedProps = {...this.props, [propertyName]:value}
-        return new Text(this.id, this.name, updatedProps)
-    }
-
-    static fromJSON({id, name, props}: {id: string, name: string, props: any}): Text {
-        return new Text(id, name, props)
-    }
+    get contentExpr() {return this.properties.contentExpr}
 }

@@ -1,6 +1,8 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {asJSON} from '../util/testHelpers'
+import TextInput from '../../src/model/TextInput'
+import {loadJSON} from '../../src/model/loadJSON'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
@@ -10,7 +12,7 @@ test('Page has correct properties', ()=> {
     expect(page.id).toBe('p1')
     expect(page.name).toBe('Page 1')
     expect(page.style).toBe('color: blue')
-    expect(page.elements.map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -42,9 +44,9 @@ test('creates an updated object if a property in a contained object is changed a
     const page = new Page('p1', 'Page 1', {}, [text1, text2])
     const updatedPage1 = page.set('t2', 'contentExpr', '"Further text"')
     expect(updatedPage1.name).toBe('Page 1')
-    expect(updatedPage1.elements.length).toBe(2)
-    expect(updatedPage1.elements[0]).toBe(text1)
-    expect(updatedPage1.elements[1]).toStrictEqual(text2.set('t2', 'contentExpr', '"Further text"'))
+    expect(updatedPage1.elementArray().length).toBe(2)
+    expect(updatedPage1.elementArray()[0]).toBe(text1)
+    expect(updatedPage1.elementArray()[1]).toStrictEqual(text2.set('t2', 'contentExpr', '"Further text"'))
     expect(page.elements).toStrictEqual([text1, text2])
 })
 
@@ -57,16 +59,16 @@ test('converts to JSON', ()=> {
         kind: 'Page',
         id: 'p1',
         name: 'Page 1',
-        props: page.properties,
+        properties: page.properties,
         elements: [asJSON(text1), asJSON(text2)]
     })
 
 })
 
-test('converts from plain object', ()=> {
-    let text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
-    let text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})
-    const page = new Page('p1', 'Page 1', {style: "color: blue"}, [text1, text2])
-    const newPage = Page.fromJSON(asJSON(page))
+test('converts from plain object with correct types for elements', ()=> {
+    let text = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: '"Input text"', maxLength: 7})
+    const page = new Page('p1', 'Page 1', {style: "color: blue"}, [text, textInput])
+    const newPage = loadJSON(asJSON(page))
     expect(newPage).toStrictEqual<Page>(page)
 })

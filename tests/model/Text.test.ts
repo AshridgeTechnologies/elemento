@@ -1,5 +1,6 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
+import {loadJSON} from '../../src/model/loadJSON'
 
 test('Text has correct properties', ()=> {
     const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
@@ -45,13 +46,13 @@ test('converts to JSON', ()=> {
         kind: 'Text',
         id: 't1',
         name: 'Text 1',
-        props: text.properties
+        properties: text.properties
     })
 })
 
 test('converts from plain object', ()=> {
     const text = new Text('t1', 'Text 1', {contentExpr: '"Some text"', style: 'red'})
     const plainObj = JSON.parse(JSON.stringify(text))
-    const newText = Text.fromJSON(plainObj)
+    const newText = loadJSON(plainObj)
     expect(newText).toStrictEqual<Text>(text)
 })

@@ -1,16 +1,18 @@
 import BaseElement from './BaseElement'
-import Element, {ElementType} from './Element'
+import Element from './Element'
+import {ElementType} from './Types'
 
-export default class TextInput extends BaseElement implements Element {
+type Properties = {
+    readonly initialValue?: string,
+    readonly maxLength?: number,
+}
+export default class TextInput extends BaseElement<Properties> implements Element {
 
     constructor(
         id: string,
         name: string,
-        private readonly props: {
-            readonly initialValue?: string,
-            readonly maxLength?: number,
-        }) {
-        super(id, name)
+        properties: Properties) {
+        super(id, name, properties)
     }
 
     static is(element: Element): element is TextInput {
@@ -20,25 +22,6 @@ export default class TextInput extends BaseElement implements Element {
     kind: ElementType = 'TextInput'
 
 
-    get properties() {return this.props}
-    get initialValue() { return this.props.initialValue }
-    get maxLength() { return this.props.maxLength }
-
-    set(id: string, propertyName: keyof TextInput, value: any): TextInput {
-        if (id !== this.id) {
-            return this
-        }
-
-        if (propertyName === 'name') {
-            return new TextInput(this.id, value, this.props)
-        }
-
-        const updatedProps = {...this.props, [propertyName]:value}
-        return new TextInput(this.id, this.name, updatedProps)
-    }
-
-    static fromJSON({id, name, props}: {id: string, name: string, props: any}): TextInput {
-        return new TextInput(id, name, props)
-    }
-
+    get initialValue() { return this.properties.initialValue }
+    get maxLength() { return this.properties.maxLength }
 }
