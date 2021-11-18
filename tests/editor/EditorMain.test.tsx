@@ -45,7 +45,7 @@ const itemElements = () => {
 
 let theApp = appFixture1()
 
-test('renders editor and updates test app', async () => {
+test('renders editor and updates app', async () => {
     let app
     let setApp: (app:App) => void
     await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
@@ -75,4 +75,20 @@ test('renders editor and updates test app', async () => {
     // @ts-ignore
     expect(app().pages[0].elements[1].name).toBe('Further Text')
     expect((nameInput).value).toBe('Further Text')
+})
+
+test('loads app from JSON string', async () => {
+    let app
+    let setApp: (app:App) => void
+    await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
+    await actWait(async () => setAppFromJSONString(JSON.stringify(theApp)))
+
+    await actWait(() => userEvent.click(container.querySelector(treeExpandControlSelector) as Element))
+    await wait(500)
+    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
+
+    // @ts-ignore
+    const elementId = app().pages[0].elements[0].id
+    expect(elementId).toBe('text1_1')
+
 })

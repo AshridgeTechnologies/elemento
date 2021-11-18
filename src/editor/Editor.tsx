@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import App from '../model/App'
 import Page from '../model/Page'
 import Element from '../model/Element'
@@ -28,6 +28,31 @@ export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn
         return null
     }
 
+    const appFrameRef = useRef<HTMLIFrameElement>(null);
+
+    function setAppInAppFrame(): boolean {
+        const appWindow = appFrameRef.current?.contentWindow
+        if (appWindow) {
+            const setAppFn = appWindow['setAppFromJSONString' as keyof Window];
+            if (setAppFn) {
+                setAppFn(JSON.stringify(app))
+                return true
+            }
+        }
+
+        return false
+    }
+
+    useEffect(() => {
+        const interval = setInterval( () => {
+            if (setAppInAppFrame()) {
+                clearInterval(interval)
+            }
+        }, 200)
+    }, []);
+    setAppInAppFrame()
+
+
     return <div>
         <div>Elemento Studio</div>
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -36,7 +61,7 @@ export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn
             </div>
             <div style={{width: '59%',}}>
                 <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>
-                    <iframe name='appFrame' src="/runtime/app.html"  style={{width: '100%', height: 600}}/>
+                    <iframe name='appFrame' src="/runtime/app.html" ref={appFrameRef} style={{width: '100%', height: 600}}/>
                 </div>
             </div>
             <div style={{width: '20%',}}>

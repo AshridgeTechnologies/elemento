@@ -4,14 +4,35 @@ import App from '../model/App'
 import Generator from '../generator/Generator'
 import TextElement from './TextElement'
 import welcomeApp from '../util/welcomeApp'
+import {loadJSONFromString} from '../model/loadJSON'
 
-declare var AppMain: any
-declare var appModel: App
+let theApp = welcomeApp()
 
-appModel = welcomeApp()
+declare global {
+    var app: () => App
+    var setApp: (app: App) => void
+    var setAppFromJSONString: (appJson: string) => void
 
-function runApp(appModel: App) {
-    const appMainCode = new Generator(appModel).outputFiles()[0].content
+    var runApp: () => any
+    var AppMain: () => any
+}
+
+export function app() { return theApp }
+export function setApp(app: App) {
+    theApp = app
+    runApp()
+}
+export function setAppFromJSONString(appJson: string) {
+    setApp(loadJSONFromString(appJson) as App)
+}
+
+window.app = app
+window.setApp = setApp
+window.runApp = runApp
+window.setAppFromJSONString = setAppFromJSONString
+
+function runApp() {
+    const appMainCode = new Generator(theApp).outputFiles()[0].content
 
     const domContainer = document.querySelector('#main');
     const scriptElement = document.createElement('script')
@@ -26,7 +47,5 @@ function runApp(appModel: App) {
 
 // @ts-ignore
 window.TextElement = TextElement
-// @ts-ignore
-window.runApp = runApp
-// @ts-ignore
-runApp(appModel)
+
+runApp()
