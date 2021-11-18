@@ -1,6 +1,7 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
+import {asJSON} from '../util/testHelpers'
 
 test('Text has correct properties', ()=> {
     const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
@@ -41,8 +42,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 
 test('converts to JSON', ()=> {
     const text = new Text('t1', 'Text 1', {contentExpr: '"Some text"', style: 'red'})
-    const plainObj = JSON.parse(JSON.stringify(text))
-    expect(plainObj).toStrictEqual({
+    expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
         id: 't1',
         name: 'Text 1',
@@ -52,7 +52,8 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object', ()=> {
     const text = new Text('t1', 'Text 1', {contentExpr: '"Some text"', style: 'red'})
-    const plainObj = JSON.parse(JSON.stringify(text))
+    const plainObj = asJSON(text)
     const newText = loadJSON(plainObj)
     expect(newText).toStrictEqual<Text>(text)
 })
+

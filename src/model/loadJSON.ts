@@ -6,7 +6,7 @@ import TextInput from './TextInput'
 import {ElementType} from './Types'
 
 export function loadJSON({id, kind, name, properties, elements}:
-                             { id: string; kind: ElementType, name: string; properties: any, elements?: any[] }): Element {
+                             { id: string, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
 
     const loadElements = () => (elements || []).map(el => loadJSON(el))
 
