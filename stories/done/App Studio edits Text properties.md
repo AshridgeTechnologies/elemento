@@ -1,6 +1,6 @@
 App Studio edits Text properties
 ================================
-- 
+
   - Can select a page in structure tree
   - Page properties are shown in right hand column
   - Page properties can be edited
