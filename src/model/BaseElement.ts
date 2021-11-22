@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementType} from './Types'
+import {ElementId, ElementType} from './Types'
 
 export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
     if (a === b) return true
@@ -14,16 +14,18 @@ export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
 
 export default abstract class BaseElement<PropertiesType extends object> {
     constructor(
-        public readonly id: string,
+        public readonly id: ElementId,
         public readonly name: string,
         public readonly properties: PropertiesType,
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
     }
 
+    abstract kind: ElementType
+
     elementArray() : ReadonlyArray<Element> { return this.elements || [] }
 
-    findElement(id: string): Element | null {
+    findElement(id: ElementId): Element | null {
         if (id === this.id) {
             return this as unknown as Element
         }
@@ -35,7 +37,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return null
     }
 
-    set(id: string, propertyName: string, value: any): this {
+    set(id: ElementId, propertyName: string, value: any): this {
         if (id === this.id) {
             if (propertyName === 'name') {
                 return this.create(this.id, value, this.properties, this.elements)
@@ -56,7 +58,18 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return this
     }
 
-    protected create(id: string,
+    findMaxId(elementType: ElementType) : number {
+        const ownMax = () => {
+            if ((this as unknown as Element).kind === elementType && this.id.match(`${elementType.toLowerCase()}_\\d+`)) {
+                return parseInt(this.id.split('_')[1])
+            }
+
+            return -1
+        }
+        return Math.max(ownMax(), ...this.elementArray().map( el => el.findMaxId(elementType)))
+    }
+
+    protected create(id: ElementId,
                      name: string,
                      properties: PropertiesType,
                      elements: ReadonlyArray<Element> | undefined) {

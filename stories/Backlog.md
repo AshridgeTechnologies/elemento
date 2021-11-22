@@ -1,7 +1,6 @@
 Elemento Backlog
 ================
 
-- App Studio can add new Text element
 - Validate App Model loaded from JSON
 
 Done
@@ -11,3 +10,4 @@ Done
 - App Studio edits Text properties
 - Convert App object to and from JSON
 - App Studio shows generated app
+- App Studio can add new Text element

@@ -1,6 +1,6 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementType} from './Types'
+import {ElementId, ElementType} from './Types'
 
 type Properties = {
     readonly contentExpr: string,
@@ -9,7 +9,7 @@ type Properties = {
 
 export default class Text extends BaseElement<Properties> implements Element {
     constructor(
-        id: string,
+        id:  ElementId,
         name: string,
         properties: Properties
     ) {

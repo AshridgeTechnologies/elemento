@@ -3,10 +3,10 @@ import Text from './Text'
 import Page from './Page'
 import App from './App'
 import TextInput from './TextInput'
-import {ElementType} from './Types'
+import {ElementId, ElementType} from './Types'
 
 export function loadJSON({id, kind, name, properties, elements}:
-                             { id: string, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
+                             { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
 
     const loadElements = () => (elements || []).map(el => loadJSON(el))
 

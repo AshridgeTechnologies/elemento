@@ -7,15 +7,12 @@ export class ModelTreeItem {
     constructor(public id: string,
                 public title: string,
                 public children?: ModelTreeItem[]) {}
-    allItems(): ModelTreeItem[] {
-        return [this, ...(this.children ? this.children.map( item => item.allItems()).flat() : [])]
-    }
     get key() { return this.id }
 }
 
 
-export default function AppStructureTree({treeData, onSelect}: {
-    treeData: ModelTreeItem, onSelect?: (id: string) => void}) {
+export default function AppStructureTree({treeData, onSelect, selectedItemId}: {
+    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string}) {
 
     function itemSelected(selectedKeys: Key[]) {
         const key = selectedKeys[0]?.toString()
@@ -24,6 +21,7 @@ export default function AppStructureTree({treeData, onSelect}: {
 
     return <Tree treeData={treeData.children}
                  draggable
+                 selectedKeys={selectedItemId ? [selectedItemId] : []}
                  onSelect={itemSelected}>
     </Tree>
 }

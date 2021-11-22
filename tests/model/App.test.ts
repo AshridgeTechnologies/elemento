@@ -49,7 +49,6 @@ test('can find element on a page by id', ()=> {
 
 test('creates an updated object with a property set to a new value', ()=> {
     const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
-    const text2 = new Text('t2', 'Text 2', {contentExpr: '"Some text"'})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {contentExpr: '"Some text 3"'})
     const text4 = new Text('t4', 'Text 4', {contentExpr: '"Some text 4"'})
@@ -79,7 +78,6 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 
 test('creates an updated object if a property in a contained object is changed and keeps unchanged objects', ()=> {
     const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
-    const text2 = new Text('t2', 'Text 2', {contentExpr: '"Some text"'})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {contentExpr: '"Some text 3"'})
     const text4 = new Text('t4', 'Text 4', {contentExpr: '"Some text 4"'})
@@ -94,6 +92,37 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedApp.pages[1]).not.toBe(page2)
     expect(((updatedApp.pages[1].elementArray()[1]) as Text).contentExpr).toBe('"Further text"')
     expect(updatedApp.pages[1].elementArray()[0]).toBe(text3)
+})
+
+test('creates an updated object on insert element on a page and preserves unchanged objects', ()=> {
+    const text1 = new Text('text_1', 'Text 1', {contentExpr: '"Some text"'})
+    const text2 = new Text('text_2', 'Text 2', {contentExpr: '"Some text"'})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_3', 'Text 3', {contentExpr: '"Some text 3"'})
+    const text4 = new Text('text_7', 'Text 4', {contentExpr: '"Some text 4"'})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1, page2])
+
+    const [updatedApp, newElement] = app.insert(text1.id, 'Text')
+    expect(updatedApp.pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
+    expect(newElement).toBe(updatedApp.pages[0].elements![1])
+    expect(newElement.id).toBe('text_8')
+    expect(newElement.name).toBe('Text 8')
+    expect((newElement as Text).contentExpr).toBe('"Your text here"')
+    expect(updatedApp.pages[1]).toBe(app.pages[1])
+})
+
+test('finds max id for element type', ()=> {
+    const text1 = new Text('text_1', 'Text 1', {contentExpr: '"Some text"'})
+    const text2 = new Text('text_2', 'Text 2', {contentExpr: '"Some text"'})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_7', 'Text 3', {contentExpr: '"Some text 3"'})
+    const text4 = new Text('TEXT_8', 'Text 4', {contentExpr: '"Some text 4"'})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1, page2])
+    expect(app.findMaxId('Text')).toBe(7)
+    expect(app.findMaxId('Page')).toBe(2)
+
 })
 
 test('converts to JSON', ()=> {

@@ -1,11 +1,12 @@
-import {ElementType} from './Types'
+import {ElementId, ElementType} from './Types'
 
 export default interface Element {
     kind: ElementType
-    id: string
+    id: ElementId
     name: string
     properties: object
     elements: ReadonlyArray<Element> | undefined
-    findElement(id: string) : Element | null
-    set(id: string, propertyName: string, value: any): Element
+    findElement(id: ElementId) : Element | null
+    findMaxId(elementType: ElementType): number
+    set(id: ElementId, propertyName: string, value: any): Element
 }

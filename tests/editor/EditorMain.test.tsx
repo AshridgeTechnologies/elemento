@@ -39,7 +39,7 @@ const itemLabels = () => {
 }
 
 const itemElements = () => {
-    const treeNodesShown = (container as HTMLDivElement).querySelectorAll(treeItemSelector)
+    const treeNodesShown = (container as HTMLDivElement).querySelectorAll(`${treeItemSelector}`)
     return Array.from(treeNodesShown)
 }
 
@@ -57,7 +57,7 @@ test('renders editor and updates app', async () => {
 
     // @ts-ignore
     const elementId = app().pages[0].elements[0].id
-    expect(elementId).toBe('text1_1')
+    expect(elementId).toBe('text_1')
 
     userEvent.click(itemElements()[2])
 
@@ -89,6 +89,6 @@ test('loads app from JSON string', async () => {
 
     // @ts-ignore
     const elementId = app().pages[0].elements[0].id
-    expect(elementId).toBe('text1_1')
+    expect(elementId).toBe('text_1')
 
 })

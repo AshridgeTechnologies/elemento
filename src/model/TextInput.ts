@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ElementType} from './Types'
+import {ElementId, ElementType} from './Types'
 
 type Properties = {
     readonly initialValue?: string,
@@ -9,7 +9,7 @@ type Properties = {
 export default class TextInput extends BaseElement<Properties> implements Element {
 
     constructor(
-        id: string,
+        id: ElementId,
         name: string,
         properties: Properties) {
         super(id, name, properties)

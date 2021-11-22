@@ -4,7 +4,11 @@ import Page from '../model/Page'
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from './PropertyEditor'
-import {OnChangeFn} from './Types'
+import {OnChangeFn, OnInsertWithSelectedFn} from './Types'
+import AppBar from './AppBar'
+import MenuBar from './MenuBar'
+import InsertMenu from './InsertMenu'
+import {ElementType} from '../model/Types'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -14,7 +18,7 @@ const treeData = (app: App): ModelTreeItem => {
     return new ModelTreeItem(app.id, app.name, app.pages.map(treeFromPage))
 }
 
-export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn}) {
+export default function Editor({app, onChange, onInsert }: {app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn}) {
     const [selectedItemId, setSelectedItemId] = useState('');
 
     const propertyArea = () => {
@@ -26,6 +30,11 @@ export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn
         }
 
         return null
+    }
+
+    const onMenuInsert = (elementType: ElementType) => {
+        const newElementId = onInsert(selectedItemId, elementType)
+        setSelectedItemId((newElementId))
     }
 
     const appFrameRef = useRef<HTMLIFrameElement>(null);
@@ -54,10 +63,13 @@ export default function Editor({app, onChange }: {app: App, onChange: OnChangeFn
 
 
     return <div>
-        <div>Elemento Studio</div>
-        <div style={{display: 'flex', flexDirection: 'row'}}>
+        <AppBar/>
+        <MenuBar>
+            <InsertMenu onInsert={onMenuInsert}/>
+        </MenuBar>
+        <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
             <div style={{width: '20%', height: 400}}>
-                <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}/>
+                <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId} selectedItemId={selectedItemId}/>
             </div>
             <div style={{width: '59%',}}>
                 <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>

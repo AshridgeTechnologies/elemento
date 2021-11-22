@@ -1,7 +1,7 @@
 import { PlaywrightTestConfig } from '@playwright/test';
 const config: PlaywrightTestConfig = {
     testDir: 'tests/functional',
-    timeout: 5000,
+    timeout: 10000,
     use: {
         headless: false,
         viewport: { width: 1280, height: 720 },

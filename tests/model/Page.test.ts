@@ -50,6 +50,49 @@ test('creates an updated object if a property in a contained object is changed a
     expect(page.elements).toStrictEqual([text1, text2])
 })
 
+test('creates an updated object on insert between elements and keeps unchanged objects', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})
+    const page = new Page('p1', 'Page 1', {}, [text1, text2])
+    const [updatedPage] = page.insert('t1', 'Text', 5)
+    expect(updatedPage.name).toBe('Page 1')
+    expect(updatedPage.elementArray().length).toBe(3)
+    expect(updatedPage.elementArray()[0]).toBe(text1)
+    expect(updatedPage.elementArray()[1].name).toBe('Text 5')
+    expect(updatedPage.elementArray()[2]).toBe(text2)
+})
+
+test('creates an updated object on insert at end of elements and keeps unchanged objects', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})
+    const page = new Page('p1', 'Page 1', {}, [text1, text2])
+    const [updatedPage] = page.insert('t2', 'Text', 5)
+    expect(updatedPage.name).toBe('Page 1')
+    expect(updatedPage.elementArray().length).toBe(3)
+    expect(updatedPage.elementArray()[0]).toBe(text1)
+    expect(updatedPage.elementArray()[1]).toBe(text2)
+    expect(updatedPage.elementArray()[2].name).toBe('Text 5')
+})
+
+test('creates an updated object on insert before elements and keeps unchanged objects', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})
+    const page = new Page('p1', 'Page 1', {}, [text1, text2])
+    const [updatedPage] = page.insert('p1', 'Text', 2)
+    expect(updatedPage.name).toBe('Page 1')
+    expect(updatedPage.elementArray().length).toBe(3)
+    expect(updatedPage.elementArray()[0].name).toBe('Text 2')
+    expect(updatedPage.elementArray()[1]).toBe(text1)
+    expect(updatedPage.elementArray()[2]).toBe(text2)
+})
+
+test('ignores the insert and returns itself if the id is not matched', ()=> {
+    const text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+    const [updatedPage] = page1.insert('x1', 'Text', 5)
+    expect(updatedPage).toBe(page1)
+})
+
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
     let text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})

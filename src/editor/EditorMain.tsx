@@ -4,6 +4,7 @@ import App from '../model/App'
 import Editor from './Editor'
 import {editorInitialApp} from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
+import {ElementId, ElementType} from '../model/Types'
 
 let theApp = editorInitialApp()
 
@@ -25,15 +26,21 @@ window.app = app
 window.setApp = setApp
 window.setAppFromJSONString = setAppFromJSONString
 
-const onPropertyChange = (id: string, propertyName: string, value: any)=> {
-    //console.log(id, propertyName, value)
+const onPropertyChange = (id: ElementId, propertyName: string, value: any)=> {
     theApp = theApp.set(id, propertyName, value)
     doRender()
 }
 
+const onInsert = (idAfter: ElementId, elementType: ElementType)=> {
+    const [newApp, newElement] = theApp.insert(idAfter, elementType)
+    theApp = newApp
+    doRender()
+    return newElement.id
+}
+
 function doRender() {
     ReactDOM.render(
-        <Editor app={theApp} onChange={onPropertyChange}/>, document.getElementById('main')
+        <Editor app={theApp} onChange={onPropertyChange} onInsert={onInsert}/>, document.getElementById('main')
     )
 }
 
