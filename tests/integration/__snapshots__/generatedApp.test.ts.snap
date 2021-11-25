@@ -3,10 +3,30 @@
 exports[`generated AppMain has correct contentExpr 1`] = `
 <div>
   <div>
-    <p>
+    <style
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": ".css-d3wcwz-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;}",
+        }
+      }
+      data-emotion="css d3wcwz-MuiTypography-root"
+    />
+    <p
+      className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    >
       Hi there!
     </p>
-    <p>
+    <style
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": ".css-d3wcwz-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;}",
+        }
+      }
+      data-emotion="css d3wcwz-MuiTypography-root"
+    />
+    <p
+      className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    >
       4
     </p>
   </div>

@@ -1,13 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React, {createElement} from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
 import Text from '../../src/model/Text'
 
 import {render, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
+import TextInput from '../../src/model/TextInput'
+import {componentJSON} from '../util/testHelpers'
 
 const onChange = () => {}
 
@@ -16,42 +17,43 @@ const componentProps = (domElement: any) => {
     return propsKey !== undefined ? domElement[propsKey as string] : null
 }
 
+const inputValue = function (label: string) {
+    const input = screen.getByLabelText(label) as HTMLInputElement
+    return input.value
+}
+
 test('PropertyEditor has expected structure for Text', ()=> {
     const element = new Text('id1', 'Text 1', {contentExpr: '"Hi there!"'})
-    const component = renderer.create(React.createElement(PropertyEditor, {element, onChange}))
-    let tree = component.toJSON()
-    expect(tree).toMatchSnapshot()
+    expect(componentJSON(createElement(PropertyEditor, {element, onChange}))).toMatchSnapshot()
 })
 
 test('PropertyEditor has fields for Page', ()=> {
-
     const element = new Page('id1', 'Page 1', {style: 'funky'}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
-    const nameInput = screen.getByLabelText('Name') as HTMLInputElement
-    expect(nameInput.value).toBe('Page 1')
-    const styleInput = screen.getByLabelText('Style') as HTMLInputElement
-    expect(styleInput.value).toBe('funky')
+    expect(inputValue('Name')).toBe('Page 1')
+    expect(inputValue('Style')).toBe('funky')
 })
 
 test('PropertyEditor shows controlled component for optional fields for Page', ()=> {
-
-    let value = undefined
-    const saveValue = (id: string, propertyName: string, val: string) => {value = val}
     const element = new Page('id1', 'Page 1', {}, [])
-    const component = <PropertyEditor element={element} onChange={saveValue}/>
-    render(component)
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Style')).toBe('')
     const styleInput = screen.getByLabelText('Style') as HTMLInputElement
-    expect(styleInput.value).toBe('')
     expect(componentProps(styleInput).value).toBe('')
 })
 
 test('PropertyEditor has fields for Text', ()=> {
-
     const element = new Text('id1', 'Text 1', {contentExpr: '"Hi!"'})
-    const onChange = () => {}
     render(<PropertyEditor element={element} onChange={onChange}/>)
-    const nameInput = screen.getByLabelText('Name') as HTMLInputElement
-    expect(nameInput.value).toBe('Text 1')
-    const contentInput = screen.getByLabelText('Content') as HTMLInputElement
-    expect(contentInput.value).toBe('"Hi!"')
+    expect(inputValue('Name')).toBe('Text 1')
+    expect(inputValue('Content')).toBe('"Hi!"')
+})
+
+test('PropertyEditor has fields for TextInput', ()=> {
+    const element = new TextInput('id1', 'Text Input 1', {initialValue: '"Hi!"', maxLength: "10", label: '"Text One"'})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Text Input 1')
+    expect(inputValue('Label')).toBe('"Text One"')
+    expect(inputValue('Initial Value')).toBe('"Hi!"')
+    expect(inputValue('Max Length')).toBe('10')
 })

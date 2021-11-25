@@ -64,7 +64,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
                 return parseInt(this.id.split('_')[1])
             }
 
-            return -1
+            return 0
         }
         return Math.max(ownMax(), ...this.elementArray().map( el => el.findMaxId(elementType)))
     }

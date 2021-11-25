@@ -4,6 +4,7 @@ import Page from './Page'
 import App from './App'
 import TextInput from './TextInput'
 import {ElementId, ElementType} from './Types'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -20,8 +21,7 @@ export function loadJSON({id, kind, name, properties, elements}:
         case "TextInput":
             return new TextInput(id, name, properties)
         default:
-            const _exhaustiveCheck: never = kind
-            return _exhaustiveCheck
+            throw new UnsupportedValueError(kind)
     }
 
 }

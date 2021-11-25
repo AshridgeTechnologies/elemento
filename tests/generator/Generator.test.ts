@@ -5,6 +5,7 @@ import Page from '../../src/model/Page'
 import Element from '../../src/model/Element'
 import BaseElement from '../../src/model/BaseElement'
 import {ElementType} from '../../src/model/Types'
+import TextInput from '../../src/model/TextInput'
 
 test('generates multiple text elements on a page', ()=> {
     const app = new App('t1', 'test1', {}, [
@@ -28,6 +29,30 @@ test('generates multiple text elements on a page', ()=> {
 `
     )
 
+})
+
+test('generates TextInput elements', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TextInput('id1', 't1', {initialValue: '"Hi there!"', maxLength: '10', label: '"Text Input One"'}),
+            new TextInput('id2', 't2', {initialValue: '"Some" + " things"', maxLength: '5 + 5'}),
+            new TextInput('id2', 't2', {}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function AppMain(props) {
+
+    return React.createElement('div', null,
+    React.createElement('div', null,
+        React.createElement(TextInput, {initialValue: "Hi there!", maxLength: 10, label: "Text Input One"}),
+        React.createElement(TextInput, {initialValue: "Some" + " things", maxLength: 5 + 5}),
+        React.createElement(TextInput, {}),
+    )
+    )
+}
+`
+    )
 })
 
 test('generates error marker for syntax error in content expression', ()=> {

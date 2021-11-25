@@ -1,15 +1,9 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import Text from './Text'
 import {ElementId, ElementType} from './Types'
+import {createElement} from './createElement'
 
 type Properties = { style?: string }
-
-function createElement(elementType: ElementType, newIdSeq: number) {
-    const id = `${elementType.toLowerCase()}_${newIdSeq}`
-    const name = `${elementType} ${newIdSeq}`
-    return new Text(id, name, {contentExpr: '"Your text here"'})
-}
 
 export default class Page extends BaseElement<Properties> implements Element {
 

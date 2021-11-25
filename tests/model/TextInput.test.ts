@@ -4,12 +4,13 @@ import {asJSON} from '../util/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
 test('TextInput has correct properties', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: 5})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '5', label: 'Text One'})
 
     expect(textInput.id).toBe('t1')
     expect(textInput.name).toBe('Text Input 1')
     expect(textInput.initialValue).toBe('"Some text"')
-    expect(textInput.maxLength).toBe(5)
+    expect(textInput.maxLength).toBe('5')
+    expect(textInput.label).toBe('Text One')
 })
 
 test('tests if an object is this type', ()=> {
@@ -42,7 +43,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const text = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: 10})
+    const text = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '10'})
     expect(asJSON(text)).toStrictEqual({
         kind: 'TextInput',
         id: 't1',
@@ -52,7 +53,7 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: 10})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '10'})
     const plainObj = asJSON(textInput)
     const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<TextInput>(textInput)

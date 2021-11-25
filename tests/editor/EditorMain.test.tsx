@@ -7,7 +7,7 @@ import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {act} from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/model/App'
-import appFixture1 from '../util/appFixture1'
+import {appFixture1} from '../util/appFixtures'
 
 let container: HTMLDivElement;
 
@@ -21,7 +21,7 @@ afterEach(() => {
     if (container !== null) document.body.removeChild(container);
 })
 
-jest.setTimeout(10 * 1000)
+jest.setTimeout(20 * 1000)
 
 const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
 const actWait = async (testFn: () => any) => {

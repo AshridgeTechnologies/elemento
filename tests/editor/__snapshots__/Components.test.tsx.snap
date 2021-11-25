@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AppBar has expected structure 1`] = `
+exports[`Components AppBar has expected structure 1`] = `
 <div
   className="MuiBox-root css-i9gxme"
 >
@@ -51,7 +51,7 @@ exports[`AppBar has expected structure 1`] = `
 </div>
 `;
 
-exports[`InsertMenu has expected structure 1`] = `
+exports[`Components InsertMenu has expected structure 1`] = `
 <div>
   <button
     aria-controls="insertMenu"
@@ -95,7 +95,7 @@ exports[`InsertMenu has expected structure 1`] = `
 </div>
 `;
 
-exports[`MenuBar has expected structure 1`] = `
+exports[`Components MenuBar has expected structure 1`] = `
 <div
   className="MuiBox-root css-i9gxme"
 >

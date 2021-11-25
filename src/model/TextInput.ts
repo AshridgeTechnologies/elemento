@@ -2,9 +2,10 @@ import BaseElement from './BaseElement'
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
 
-type Properties = {
+export type Properties = {
     readonly initialValue?: string,
-    readonly maxLength?: number,
+    readonly maxLength?: string,  //expression
+    readonly label?: string
 }
 export default class TextInput extends BaseElement<Properties> implements Element {
 
@@ -24,4 +25,5 @@ export default class TextInput extends BaseElement<Properties> implements Elemen
 
     get initialValue() { return this.properties.initialValue }
     get maxLength() { return this.properties.maxLength }
+    get label() { return this.properties.label }
 }

@@ -4,16 +4,20 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import {OnInsertFn} from './Types'
+import {ElementType} from '../model/Types'
+import {startCase} from 'lodash'
 
 export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
-    const handleInsert = () => {
-        onInsert("Text")
+    const handleInsert = (elementType: ElementType) => () => {
+        onInsert(elementType)
         handleClose()
     }
+
+    const menuItem = (elementType: ElementType) => <MenuItem onClick={handleInsert(elementType)}>{startCase(elementType)}</MenuItem>
 
     return (
         <div>
@@ -39,7 +43,8 @@ export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
                     'aria-labelledby': 'insertButton',
                 }}
             >
-                <MenuItem onClick={handleInsert}>Text</MenuItem>
+                {menuItem("Text")}
+                {menuItem("TextInput")}
             </Menu>
         </div>
     );

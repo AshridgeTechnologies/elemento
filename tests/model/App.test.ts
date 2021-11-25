@@ -122,6 +122,7 @@ test('finds max id for element type', ()=> {
     const app = new App('app', 'App 1', {}, [page1, page2])
     expect(app.findMaxId('Text')).toBe(7)
     expect(app.findMaxId('Page')).toBe(2)
+    expect(app.findMaxId('TextInput')).toBe(0)
 
 })
 

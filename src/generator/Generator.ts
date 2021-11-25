@@ -7,8 +7,14 @@ import Text from '../model/Text'
 import Element from '../model/Element'
 import TextInput from '../model/TextInput'
 import {globalFunctions} from '../runtime/globalFunctions'
+import UnsupportedValueError from '../util/UnsupportedValueError'
+import {definedPropertiesOf} from '../util/helpers'
 
 type IdentifierCollector = {add(s: string): void}
+
+function objectLiteral(obj: object) {
+    return `{${Object.entries(obj).map(([name, val]) => `${name}: ${val}`).join(', ')}}`
+}
 
 export default class Generator {
     constructor(public app: App) {
@@ -51,17 +57,25 @@ ${children}
                 const text = element as Text
                 const content = Generator.getExprAndIdentifiers(text.contentExpr, identifiers)
                 return `React.createElement(TextElement, null, ${content})`
+
             case "TextInput":
                 const textInput = element as TextInput
-                return `React.createElement('div', null)`
+                const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers)
+                const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers)
+                const label = Generator.getExprAndIdentifiers(textInput.label, identifiers)
+                const reactProperties = definedPropertiesOf({initialValue, maxLength, label})
+                return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
+
             default:
-                const _exhaustiveCheck: never = element.kind
-                return _exhaustiveCheck
+                throw new UnsupportedValueError(element.kind)
 
         }
     }
 
-    private static getExprAndIdentifiers(expr: string, identifiers: IdentifierCollector) {
+    private static getExprAndIdentifiers(expr: string | undefined, identifiers: IdentifierCollector) {
+        if (expr === undefined) {
+            return undefined
+        }
         function isKnown(identifier: string) {
             return identifier in globalFunctions
         }

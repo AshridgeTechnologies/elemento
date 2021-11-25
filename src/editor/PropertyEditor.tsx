@@ -1,9 +1,12 @@
 import React from 'react'
+import {startCase} from 'lodash'
 import Element from '../model/Element'
 import Text from '../model/Text'
 import {Box, TextField} from '@mui/material'
 import {OnChangeFn} from './Types'
 import Page from '../model/Page'
+import TextInput from '../model/TextInput'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export default function PropertyEditor(props: {element: Element, onChange: OnChangeFn }) {
     const {element, onChange} = props
@@ -12,26 +15,44 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
         onChange(element.id, propertyName, newValue)
     }
 
-    let children = null
-
-    if (Page.is(element)) {
-        children = <>
-            <TextField id="name" label="Name" variant="outlined" value={element.name}
-                       onChange={handleChange('name')}/>
-            <TextField id="style" label="Style" variant="outlined" value={element.style || ''}
-                       onChange={handleChange('style')}/>
-        </>
+    function propertyField<T extends Element>(name: string) {
+        return <TextField id={name} label={startCase(name)} variant='outlined' size='small' value={(element as T)[name as keyof T] || ''}
+                          onChange={handleChange(name)}/>
     }
 
-    if (Text.is(element)) {
-        children = <>
-            <TextField id="name" label="Name" variant="outlined" value={element.name}
-                       onChange={handleChange('name')}/>
-            <TextField id="content" label="Content" variant="outlined" value={element.contentExpr}
-                       onChange={handleChange('contentExpr')}/>
-        </>
+    function propertyFields() {
+
+        switch(element.kind) {
+            case "App":
+                return null
+
+            case "Page":
+                return <>
+                    {propertyField<Page>('style')}
+                </>
+
+            case "Text":
+                const text = element as Text
+                return <>
+                    <TextField id="content" label="Content" variant='outlined' size='small' value={text.contentExpr}
+                               onChange={handleChange('contentExpr')}/>
+                </>
+
+            case "TextInput":
+                return <>
+                    {propertyField<TextInput>('initialValue')}
+                    {propertyField<TextInput>('maxLength')}
+                    {propertyField<TextInput>('label')}
+                </>
+            default:
+                throw new UnsupportedValueError(element.kind)
+        }
+
+
+
     }
 
+    const children = propertyFields()
     if (children) {
         return <Box
             component="form"
@@ -41,7 +62,9 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
             noValidate
             autoComplete="off"
         >
-            <TextField id="id" label="Id" variant="outlined" value={element.id} disabled/>
+            <TextField id="id" label="Id" variant='outlined' size='small' value={element.id} disabled/>
+            <TextField id="name" label="Name" variant='outlined' size='small' value={element.name}
+                       onChange={handleChange('name')}/>
             {children}
         </Box>
     }

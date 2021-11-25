@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from '../model/App'
 import Generator from '../generator/Generator'
 import TextElement from './TextElement'
+import TextInput from './TextInput'
 import ErrorFallback from './ErrorFallback'
 import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -56,5 +57,7 @@ function runApp() {
 
 // @ts-ignore
 window.TextElement = TextElement
+// @ts-ignore
+window.TextInput = TextInput
 
 runApp()
