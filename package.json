@@ -5,7 +5,7 @@
     "compile": "tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/app.html build/src/runtime/app.html",
     "tscheck": "tsc --noEmit",
     "test": "jest",
-    "testcoverage": "yarn test --coverage --coverageProvider=v8",
+    "testcoverage": "yarn test --coverage",
     "build": "parcel build src/runtime/app.html src/editor/index.html",
     "serve": "parcel src/runtime/app.html src/editor/index.html",
     "functest": "playwright test"

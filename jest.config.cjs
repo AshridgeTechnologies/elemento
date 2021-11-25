@@ -7,4 +7,8 @@ module.exports = {
     testMatch:              ["**/*.test.ts", "**/*.test.tsx"],
     testPathIgnorePatterns: ["<rootDir>/tests/functional"],
     moduleNameMapper: {"^.+\\.(css|less)$": "<rootDir>/tests/cssStub.cjs"},
+    coverageProvider: 'v8',
+    collectCoverageFrom: [
+        "src/**/*.{ts,tsx}",
+    ]
 };
