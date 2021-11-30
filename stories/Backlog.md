@@ -1,6 +1,12 @@
 Elemento Backlog
 ================
 
+Bugs
+----
+- Some formula errors and incomplete formulas
+
+Stories
+-------
 - Formulas using page elements
 - Save and load app
 - Run app from web
