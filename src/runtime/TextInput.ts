@@ -1,17 +1,24 @@
-import React from 'react'
+import React, {ChangeEvent, useEffect} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../util/helpers'
+import {selectState, updateState, useObjectState, useStore} from './appData'
 
-type Properties = {label?: string, initialValue?: string, maxLength?: number}
+type Properties = {path: string, label?: string, initialValue?: string, maxLength?: number}
 
-export default function TextInput({initialValue = '', maxLength, label}: Properties) {
+export default function TextInput({path, initialValue = '', maxLength, label}: Properties) {
+    const state = useObjectState(path)
     const maxLengthProps = maxLength !== undefined ? {inputProps: {maxLength: maxLength}} : {}
     const optionalProps = definedPropertiesOf({label})
+    const value = (state?.value !== undefined) ? state.value : initialValue
+    const onChange = (event: ChangeEvent) => updateState(path, {value: (event.target as any).value })
+
     return React.createElement(TextField, {
+        id: path,
         type: 'text',
         variant: 'outlined',
         size: 'small',
-        value: initialValue,
+        value,
+        onChange,
         ...maxLengthProps,
         ...optionalProps
     })

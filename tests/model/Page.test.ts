@@ -7,10 +7,11 @@ import {loadJSON} from '../../src/model/loadJSON'
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {contentExpr: '"Some text"'})
     let text2 = new Text('t2', 'Text 2', {contentExpr: '"More text"'})
-    const page = new Page('p1', 'Page 1', {style: "color: blue"}, [text1, text2])
+    const page = new Page('p1', 'Page the First', {style: "color: blue"}, [text1, text2])
 
     expect(page.id).toBe('p1')
-    expect(page.name).toBe('Page 1')
+    expect(page.name).toBe('Page the First')
+    expect(page.codeName).toBe('PagetheFirst')
     expect(page.style).toBe('color: blue')
     expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })

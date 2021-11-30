@@ -13,6 +13,7 @@ exports[`TextInput element produces output with default values where properties 
       autoFocus={false}
       className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
+      id="app.page1.height"
       onAnimationStart={[Function]}
       onBlur={[Function]}
       onChange={[Function]}
@@ -49,6 +50,8 @@ exports[`TextInput element produces output with properties supplied 1`] = `
   <label
     className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
+    htmlFor="app.page1.width"
+    id="app.page1.width-label"
   >
     Item Description
   </label>
@@ -61,6 +64,7 @@ exports[`TextInput element produces output with properties supplied 1`] = `
       autoFocus={false}
       className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
+      id="app.page1.width"
       maxLength={10}
       onAnimationStart={[Function]}
       onBlur={[Function]}

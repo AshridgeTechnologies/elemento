@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TextElement element produces output containing children 1`] = `
+exports[`TextElement element produces output containing ReactElement children 1`] = `
 Array [
   <style
     dangerouslySetInnerHTML={
@@ -12,8 +12,50 @@ Array [
   />,
   <p
     className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    id="page1.para1"
   >
     Hello
+    <p>
+      where are you
+    </p>
+  </p>,
+]
+`;
+
+exports[`TextElement element produces output containing string children 1`] = `
+Array [
+  <style
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": ".css-d3wcwz-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;}",
+      }
+    }
+    data-emotion="css d3wcwz-MuiTypography-root"
+  />,
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    id="page1.para1"
+  >
+    Hello
+    where are you
+  </p>,
+]
+`;
+
+exports[`TextElement element produces output containing value property of object 1`] = `
+Array [
+  <style
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": ".css-d3wcwz-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;}",
+      }
+    }
+    data-emotion="css d3wcwz-MuiTypography-root"
+  />,
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    id="page1.para1"
+  >
     where are you
   </p>,
 ]

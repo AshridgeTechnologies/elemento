@@ -9,6 +9,7 @@ import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
+import {useObjectState, updateState, getState, useObjectStateWithDefaults} from './appData'
 
 let theApp = welcomeApp()
 
@@ -38,7 +39,7 @@ window.setAppFromJSONString = setAppFromJSONString
 window.globalFunctions = importedGlobalFunctions
 
 function runApp() {
-    const appMainCode = new Generator(theApp).outputFiles()[0].content
+    const appMainCode = new Generator(theApp).outputFiles().map( f => f.content ).join('\n')
 
     const domContainer = document.querySelector('#main');
     const scriptElement = document.createElement('script')
@@ -59,5 +60,13 @@ function runApp() {
 window.TextElement = TextElement
 // @ts-ignore
 window.TextInput = TextInput
+// @ts-ignore
+window.useObjectState = useObjectState
+// @ts-ignore
+window.updateState = updateState
+// @ts-ignore
+window.getState = getState
+// @ts-ignore
+window.useObjectStateWithDefaults = useObjectStateWithDefaults
 
 runApp()

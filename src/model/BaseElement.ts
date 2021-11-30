@@ -1,5 +1,6 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
+import {camelCase} from 'lodash'
 
 export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
     if (a === b) return true
@@ -68,6 +69,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
         }
         return Math.max(ownMax(), ...this.elementArray().map( el => el.findMaxId(elementType)))
     }
+
+    get codeName() { return this.name.replace(/ /g, '')}
 
     protected create(id: ElementId,
                      name: string,
