@@ -1,6 +1,5 @@
 import {expect, test} from '@playwright/test'
-import {treeItemSelector, treeExpandControlSelector} from '../editor/Selectors'
-import App from '../../src/model/App'
+import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
 import {appFixture1} from '../util/appFixtures'
 
 // Expects test server such as Parcel dev server running on port 1234

@@ -9,7 +9,7 @@ import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
-import {useObjectState, updateState, getState, useObjectStateWithDefaults} from './appData'
+import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 
 let theApp = welcomeApp()
 

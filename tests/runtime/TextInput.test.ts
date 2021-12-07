@@ -5,7 +5,7 @@
 import {createElement} from 'react'
 import TextInput from '../../src/runtime/TextInput'
 import {snapshot, testContainer} from '../util/testHelpers'
-import {_dangerouslyResetState, updateState, useStore} from '../../src/runtime/appData'
+import {updateState, useStore} from '../../src/runtime/appData'
 import {act, render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 

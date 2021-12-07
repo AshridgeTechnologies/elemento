@@ -1,7 +1,7 @@
-import React, {ChangeEvent, useEffect} from 'react'
+import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../util/helpers'
-import {selectState, updateState, useObjectState, useStore} from './appData'
+import {updateState, useObjectState} from './appData'
 
 type Properties = {path: string, label?: string, initialValue?: string, maxLength?: number}
 

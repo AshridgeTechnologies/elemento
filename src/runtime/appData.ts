@@ -1,5 +1,5 @@
 import create from 'zustand'
-import {lensPath, mergeDeepRight, view, set, equals} from 'ramda'
+import {equals, lensPath, mergeDeepRight, set, view} from 'ramda'
 
 
 type baseStoreType = {app: {}}
@@ -28,8 +28,7 @@ export const _dangerouslyResetState = () => useStore.setState(baseStore(), true)
 
 export const useObjectStateWithDefaults = (path: string, defaults: object) => {
     const existingStateAtPath = useObjectState(path) || {}
-    const stateWithDefaults = mergeDeepRight(defaults, existingStateAtPath)
-    return stateWithDefaults
+    return mergeDeepRight(defaults, existingStateAtPath)
 }
 
 export const getState = useStore.getState

@@ -3,10 +3,10 @@
  */
 
 import React from 'react'
-import {act, render, fireEvent, screen} from '@testing-library/react'
+import {act, fireEvent, render, screen} from '@testing-library/react'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
-import {treeItemSelector, treeExpandControlSelector} from './Selectors'
+import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 
 let container: any
 

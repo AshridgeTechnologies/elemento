@@ -2,10 +2,11 @@ import React from 'react'
 import renderer, {act} from 'react-test-renderer'
 import {
     _dangerouslyResetState,
-    useObjectState,
+    getState,
     updateState,
-    useStore,
-    useObjectStateWithDefaults, getState
+    useObjectState,
+    useObjectStateWithDefaults,
+    useStore
 } from '../../src/runtime/appData'
 
 function StatefulComponent(props:{path?: string, exposeState: (state: any) => void}) {
@@ -32,12 +33,6 @@ function stateWithDefaultsFor(path: string, defaults: object) {
     let state: any = undefined
     act( () => {renderer.create(React.createElement(StatefulComponentWithDefaults, {path, defaults, exposeState: s => state = s}))} )
     return state
-}
-
-function actReturn<T>( callback: () => T ): T | undefined {
-    let result: T | undefined = undefined
-    act( () => { result = callback() } )
-    return result
 }
 
 beforeEach( () => {

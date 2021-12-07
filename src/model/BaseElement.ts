@@ -1,6 +1,5 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
-import {camelCase} from 'lodash'
 
 export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
     if (a === b) return true

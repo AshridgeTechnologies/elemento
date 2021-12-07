@@ -113,13 +113,10 @@ ${children}
     private static initialStateEntry(element: Element): string {
         switch(element.kind) {
             case "App":
-                const app = element as App
                 return ''
             case "Page":
-                const page = element as Page
                 return ''
             case "Text":
-                const text = element as Text
                 return ''
 
             case "TextInput":
