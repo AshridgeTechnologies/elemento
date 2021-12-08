@@ -93,6 +93,21 @@ const testInsert = (elementType: ElementType) => test(`notifies insert of ${elem
 testInsert('Text')
 testInsert('TextInput')
 
+test('notifies open request', async () => {
+    let opened: boolean = false
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onOpen={() => opened = true}/>)))
+    fireEvent.click(screen.getByText('Open'))
+    expect(opened).toBe(true)
+})
+
+test('notifies save request', async () => {
+    let saved: boolean = false
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onSave={() => saved = true}/>)))
+    fireEvent.click(screen.getByText('Save'))
+    expect(saved).toBe(true)
+})
+
+
 test('has iframe for running app', async () => {
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert}/>)))
 

@@ -7,7 +7,6 @@ Bugs
 
 Stories
 -------
-- Save and load app
 - Run app from web
 - Validate App Model loaded from JSON
 
@@ -22,3 +21,4 @@ Done
 - Formulas for content expression
 - Text Input element
 - Formulas using page elements
+- Save and load app

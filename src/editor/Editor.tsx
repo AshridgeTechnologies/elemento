@@ -4,7 +4,7 @@ import Page from '../model/Page'
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from './PropertyEditor'
-import {OnChangeFn, OnInsertWithSelectedFn} from './Types'
+import {OnChangeFn, OnInsertWithSelectedFn, OnOpenFn, OnSaveFn} from './Types'
 import AppBar from './AppBar'
 import MenuBar from './MenuBar'
 import InsertMenu from './InsertMenu'
@@ -19,7 +19,7 @@ const treeData = (app: App): ModelTreeItem => {
     return new ModelTreeItem(app.id, app.name, app.pages.map(treeFromPage))
 }
 
-export default function Editor({app, onChange, onInsert }: {app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn}) {
+export default function Editor({app, onChange, onInsert, onOpen, onSave }: {app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onOpen?: OnOpenFn, onSave?: OnSaveFn}) {
     const [selectedItemId, setSelectedItemId] = useState('');
 
     const propertyArea = () => {
@@ -66,8 +66,8 @@ export default function Editor({app, onChange, onInsert }: {app: App, onChange: 
     return <div>
         <AppBar/>
         <MenuBar>
-            <Button id='open' color={'primary'}>Open</Button>
-            <Button id='save' color={'primary'}>Save</Button>
+            <Button id='open' color={'primary'} onClick={onOpen}>Open</Button>
+            <Button id='save' color={'primary'} onClick={onSave}>Save</Button>
             <InsertMenu onInsert={onMenuInsert}/>
         </MenuBar>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
