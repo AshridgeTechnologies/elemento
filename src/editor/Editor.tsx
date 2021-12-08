@@ -9,6 +9,7 @@ import AppBar from './AppBar'
 import MenuBar from './MenuBar'
 import InsertMenu from './InsertMenu'
 import {ElementType} from '../model/Types'
+import {Button} from '@mui/material'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -65,6 +66,8 @@ export default function Editor({app, onChange, onInsert }: {app: App, onChange: 
     return <div>
         <AppBar/>
         <MenuBar>
+            <Button id='open' color={'primary'}>Open</Button>
+            <Button id='save' color={'primary'}>Save</Button>
             <InsertMenu onInsert={onMenuInsert}/>
         </MenuBar>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
