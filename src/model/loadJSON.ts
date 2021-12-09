@@ -26,6 +26,6 @@ export function loadJSON({id, kind, name, properties, elements}:
 
 }
 
-export function loadJSONFromString(json: string): Element {
-    return loadJSON(JSON.parse(json))
+export function loadJSONFromString(json: string): App {
+    return loadJSON(JSON.parse(json)) as App
 }

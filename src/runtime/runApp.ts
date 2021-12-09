@@ -10,8 +10,9 @@ import {loadJSONFromString} from '../model/loadJSON'
 import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
+import AppLoadError from './AppLoadError'
 
-let theApp = welcomeApp()
+let theApp: App
 
 declare global {
     var app: () => App
@@ -38,10 +39,30 @@ window.runApp = runApp
 window.setAppFromJSONString = setAppFromJSONString
 window.globalFunctions = importedGlobalFunctions
 
+const appContainer = () => document.querySelector('#main')
+
+async function loadApp() {
+    const path = location.pathname.substring(1)
+    if (path.startsWith('https://') || path.startsWith('http://') ) {
+        const appUrl = path.replace(/www.dropbox.com/, 'dl.dropboxusercontent.com')
+        try {
+            const appData = await fetch(appUrl).then(resp => resp.text())
+            theApp = loadJSONFromString(appData)
+        } catch (error: any) {
+            throw {appUrl, error}
+        }
+    } else {
+        theApp = welcomeApp()
+    }
+}
+
+function showError({appUrl, error}: {appUrl:string, error: Error}) {
+    ReactDOM.render(React.createElement(AppLoadError, {appUrl, error}), appContainer())
+}
+
 function runApp() {
     const appMainCode = new Generator(theApp).outputFiles().map( f => f.content ).join('\n')
 
-    const domContainer = document.querySelector('#main');
     const scriptElement = document.createElement('script')
     scriptElement.id = 'appMainCode'
     scriptElement.innerHTML = appMainCode
@@ -52,7 +73,7 @@ function runApp() {
     ReactDOM.render(
         React.createElement(ErrorBoundary, {FallbackComponent: ErrorFallback},
             React.createElement(AppMain, null)
-        ), domContainer
+        ), appContainer()
     )
 }
 
@@ -69,4 +90,5 @@ window.getState = getState
 // @ts-ignore
 window.useObjectStateWithDefaults = useObjectStateWithDefaults
 
-runApp()
+
+loadApp().then( runApp, showError )

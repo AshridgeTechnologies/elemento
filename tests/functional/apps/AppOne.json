@@ -1,0 +1,56 @@
+{
+  "id": "app1",
+  "name": "App One",
+  "properties": {},
+  "elements": [
+    {
+      "id": "page1",
+      "name": "Main Page",
+      "properties": {},
+      "elements": [
+        {
+          "id": "text_1",
+          "name": "First Text",
+          "properties": {
+            "contentExpr": "\"This is App One\""
+          },
+          "kind": "Text"
+        },
+        {
+          "id": "text_2",
+          "name": "Second Text",
+          "properties": {
+            "contentExpr": "\"The second bit of text\""
+          },
+          "kind": "Text"
+        }
+      ],
+      "kind": "Page"
+    },
+    {
+      "id": "page2",
+      "name": "Other Page",
+      "properties": {},
+      "elements": [
+        {
+          "id": "text_3",
+          "name": "Some Text",
+          "properties": {
+            "contentExpr": "\"Some text here\""
+          },
+          "kind": "Text"
+        },
+        {
+          "id": "text_4",
+          "name": "More Text",
+          "properties": {
+            "contentExpr": "\"...and more text\""
+          },
+          "kind": "Text"
+        }
+      ],
+      "kind": "Page"
+    }
+  ],
+  "kind": "App"
+}

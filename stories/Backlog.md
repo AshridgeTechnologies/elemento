@@ -7,8 +7,16 @@ Bugs
 
 Stories
 -------
-- Run app from web
+- Initial documentation
+- Initial interactive tutorial
 - Validate App Model loaded from JSON
+- Load time optimisation
+- Splash screens - editor and app
+
+Tech debt
+---------
+
+- Refactor runApp.ts and unit test
 
 Done
 ====
@@ -22,3 +30,4 @@ Done
 - Text Input element
 - Formulas using page elements
 - Save and load app
+- Run app from web
