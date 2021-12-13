@@ -7,11 +7,16 @@ Bugs
 
 Stories
 -------
+- Basic guided tour
 - Initial documentation
-- Initial interactive tutorial
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
+
+Epics
+-----
+
+- Interactive tutorial
 
 Tech debt
 ---------
