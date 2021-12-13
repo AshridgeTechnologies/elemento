@@ -8,6 +8,7 @@ import {act} from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/model/App'
 import {appFixture1} from '../util/appFixtures'
+import {treeItemLabels} from '../util/testHelpers'
 
 let container: HTMLDivElement;
 
@@ -33,10 +34,7 @@ const actWait = async (testFn: () => any) => {
     return result
 }
 
-const itemLabels = () => {
-    const treeNodesShown = (container as HTMLDivElement).querySelectorAll(treeItemSelector)
-    return Array.from(treeNodesShown).map( (it: any) => it.textContent)
-}
+const itemLabels = () => treeItemLabels(container)
 
 const itemElements = () => {
     const treeNodesShown = (container as HTMLDivElement).querySelectorAll(`${treeItemSelector}`)

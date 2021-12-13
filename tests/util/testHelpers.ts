@@ -1,6 +1,7 @@
-import renderer, {act} from 'react-test-renderer'
+import renderer from 'react-test-renderer'
 import React from 'react'
-import {render} from '@testing-library/react'
+import {act, render} from '@testing-library/react'
+import {treeItemSelector} from '../editor/Selectors'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -16,3 +17,15 @@ export const testContainer = function (element: React.ReactElement) {
     return container
 }
 
+export const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
+export const actWait = async (testFn: () => void) => {
+    await act(async ()=> {
+        testFn()
+        await wait(20)
+    })
+}
+
+export const treeItemLabels = (container: any) => {
+    const treeNodesShown = container.querySelectorAll(treeItemSelector)
+    return [...treeNodesShown.values()].map( (it: any) => it.textContent)
+}

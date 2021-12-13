@@ -71,7 +71,7 @@ export default function Editor({app, onChange, onInsert, onOpen, onSave }: {app:
             <InsertMenu onInsert={onMenuInsert}/>
         </MenuBar>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
-            <div style={{width: '20%', height: 400}}>
+            <div id='navigationPanel' style={{width: '20%', height: 400}}>
                 <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId} selectedItemId={selectedItemId}/>
             </div>
             <div style={{width: '59%',}}>
@@ -80,7 +80,7 @@ export default function Editor({app, onChange, onInsert, onOpen, onSave }: {app:
                 </div>
             </div>
             <div style={{width: '20%',}}>
-                <div style={{backgroundColor: 'lightblue', width: '100%'}}>
+                <div id='propertyPanel' style={{backgroundColor: 'lightblue', width: '100%'}}>
                     {propertyArea()}
                 </div>
             </div>
