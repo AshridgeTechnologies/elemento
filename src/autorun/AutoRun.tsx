@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import Step, {Script} from '../model/autorun/Step'
 import AppStructureTree, {ModelTreeItem} from '../editor/AppStructureTree'
-import {Typography} from '@mui/material'
+import {Box, Button, Typography} from '@mui/material'
 
 const treeData = (script: Script): ModelTreeItem => {
     const treeNodeFromStep = (step: Step, index: number) => new ModelTreeItem(index.toString(), step.title)
@@ -9,9 +9,13 @@ const treeData = (script: Script): ModelTreeItem => {
 }
 
 export default function AutoRun({script}: { script: Step[] }) {
-    const [selectedItemId, setSelectedItemId] = useState('');
+    const [selectedItemId, setSelectedItemId] = useState('')
+    const selectedItemIndex = +selectedItemId
 
-    const currentStep = script[+selectedItemId]
+    const moveToNext = () => setSelectedItemId((selectedItemIndex + 1).toString() )
+    const moveToPrevious = () => setSelectedItemId((selectedItemIndex - 1).toString() )
+
+    const currentStep = script[selectedItemIndex]
     return <div>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
             <div style={{backgroundColor: 'lightgreen', width: '20%', height: 400}}>
@@ -23,11 +27,13 @@ export default function AutoRun({script}: { script: Step[] }) {
                 </div>
             </div>
         </div>
-        <div>
-            <div style={{backgroundColor: 'lightgreen', width: '100%'}}>
-                <Typography id='title' style={{fontSize: 'large'}} gutterBottom>{currentStep.title}</Typography>
-                <Typography id='description' style={{}}>{currentStep.description}</Typography>
-            </div>
+        <div style={{backgroundColor: 'lightgreen', width: '100%'}}>
+            <Typography id='title' style={{fontSize: 'large'}} gutterBottom>{currentStep.title}</Typography>
+            <Typography id='description' style={{}}>{currentStep.description}</Typography>
+            <Box>
+                <Button disabled={selectedItemIndex < 1} onClick={moveToPrevious}>Previous</Button>
+                <Button disabled={selectedItemIndex === script.length - 1} onClick={moveToNext}>Next</Button>
+            </Box>
         </div>
     </div>
 }
