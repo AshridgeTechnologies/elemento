@@ -25,8 +25,8 @@ export default function AutoRun({script}: { script: Step[] }) {
         </div>
         <div>
             <div style={{backgroundColor: 'lightgreen', width: '100%'}}>
-                <Typography style={{fontSize: 'large'}} gutterBottom>{currentStep.title}</Typography>
-                <Typography style={{}}>{currentStep.description}</Typography>
+                <Typography id='title' style={{fontSize: 'large'}} gutterBottom>{currentStep.title}</Typography>
+                <Typography id='description' style={{}}>{currentStep.description}</Typography>
             </div>
         </div>
     </div>

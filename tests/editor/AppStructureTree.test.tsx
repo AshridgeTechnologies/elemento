@@ -7,20 +7,11 @@ import {act, fireEvent, render, screen} from '@testing-library/react'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
+import {actWait, treeItemLabels} from '../util/testHelpers'
 
 let container: any
 
-const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
-const actWait = async (testFn: () => void) => {
-    await act(async ()=> {
-        testFn()
-        await wait(20)
-    })
-}
-const itemLabels = () => {
-    const treeNodesShown = container.querySelectorAll(treeItemSelector)
-    return [...treeNodesShown.values()].map( (it: any) => it.textContent)
-}
+const itemLabels = () => treeItemLabels(container)
 
 const selectedItemLabel = () => {
     const treeNodesSelected = container.querySelectorAll('.rc-tree-list .rc-tree-treenode-selected')

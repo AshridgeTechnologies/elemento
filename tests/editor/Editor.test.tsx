@@ -4,28 +4,18 @@
 
 import React from 'react'
 import Editor from '../../src/editor/Editor'
-import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {act, fireEvent, render, screen, within} from '@testing-library/react'
+import {treeExpandControlSelector} from './Selectors'
+import {fireEvent, render, screen, within} from '@testing-library/react'
 import {appFixture1, appFixture2} from '../util/appFixtures'
 import {ElementType} from '../../src/model/Types'
 import {startCase} from 'lodash'
+import {actWait, treeItemLabels} from '../util/testHelpers'
 
-let container: any = null;
+let container: any = null
 
-const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
-const actWait = async (testFn: () => void) => {
-    await act(async ()=> {
-        testFn()
-        await wait(20)
-    })
-}
+const itemLabels = () => treeItemLabels(container)
 
-const itemLabels = () => {
-    const treeNodesShown = container.querySelectorAll(treeItemSelector)
-    return [...treeNodesShown.values()].map( (it: any) => it.textContent)
-}
 const app = appFixture1()
-
 
 const onPropertyChange = ()=> {}
 const onInsert = ()=> '123'

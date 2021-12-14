@@ -11,6 +11,7 @@ async function isHighlighted(selector: string) {
 }
 
 test('Shows autorun with steps and description and navigates', async ({ page }) => {
+    test.fail(true, "In progress")
     async function isHighlighted(selector: string) {
         return false
     }
