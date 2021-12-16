@@ -39,6 +39,15 @@ test('shows step selected in tree in details panel', async () => {
     expect(container.querySelector('#description').innerHTML).toBe('This shows the details')
 })
 
+test.skip('highlights element in target frame if any', async () => {
+    await renderComponent()
+
+    click(screen.getByText('Properties panel'))
+    const targetFrame = container.querySelector('iframe[name=targetFrame]')
+    const targetElement = targetFrame.contentDocument.querySelector('#propertyPanel')
+    expect(targetElement.style.border).toBe('dashed')
+})
+
 test('can move selection to next and prev with buttons when possible', async () => {
     await renderComponent()
     const nextButton = () => screen.getByText('Next') as HTMLButtonElement

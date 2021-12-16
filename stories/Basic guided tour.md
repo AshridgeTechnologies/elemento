@@ -9,6 +9,6 @@ _Part of Epic: Interactive tutorial_
   - Items can be selected
   - First item is selected initially
   - Bottom panel shows title and description of selected 
-- Next and previous buttons in bottom panel move the selection if possible
+  - Next and previous buttons in bottom panel move the selection if possible
   - Editor appears in upper/right frame
-- Elements identified by selector highlighted in editor frame
+  - Elements identified by selector highlighted in editor frame
