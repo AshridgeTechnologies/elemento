@@ -7,7 +7,6 @@ Bugs
 
 Stories
 -------
-- Basic guided tour
 - Initial documentation
 - Validate App Model loaded from JSON
 - Load time optimisation
@@ -36,3 +35,4 @@ Done
 - Formulas using page elements
 - Save and load app
 - Run app from web
+- Basic guided tour
