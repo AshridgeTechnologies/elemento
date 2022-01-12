@@ -4,7 +4,7 @@ import {treeItem} from '../editor/Selectors'
 // Expects test server such as Parcel dev server running on port 1234
 const autorunRootUrl = 'http://localhost:1234/autorun/index.html'
 
-test('Shows autorun with steps and description and navigates', async ({ page }) => {
+test.skip('Shows autorun with steps and description and navigates', async ({ page }) => {
 
     await page.goto(autorunRootUrl)
     //await page.evaluate( (app: string) => window.setTargetFromJSONString(app), JSON.stringify(editorAutorunFixture1()))
