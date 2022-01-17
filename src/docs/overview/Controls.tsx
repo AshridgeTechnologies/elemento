@@ -11,7 +11,7 @@ export default () =>
             They are called "controls" because they are bit like the knobs, switches, lights or labels on the control panel of a machine.
         </Para>
 
-        <SubHeading>Adding a control to your program</SubHeading>
+        <SubHeading helpId='adding-a-control'>Adding a control to your program</SubHeading>
         <NumberedList>
             <li>Indicate where you want the new control to be by clicking on the name of an existing control in the Navigator.
                 The new control will be placed after the one you click on.</li>

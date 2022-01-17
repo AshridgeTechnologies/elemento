@@ -9,7 +9,7 @@ import AppBar from './AppBar'
 import MenuBar from './MenuBar'
 import InsertMenu from './InsertMenu'
 import {ElementType} from '../model/Types'
-import {Button, Grid} from '@mui/material'
+import {Box, Button, Grid} from '@mui/material'
 import HelpPanel from './HelpPanel'
 
 
@@ -73,38 +73,42 @@ export default function Editor({
     setAppInAppFrame()
 
 
-    return <div>
-        <AppBar/>
-        <MenuBar>
-            <Button id='open' color={'primary'} onClick={onOpen}>Open</Button>
-            <Button id='save' color={'primary'} onClick={onSave}>Save</Button>
-            <InsertMenu onInsert={onMenuInsert}/>
-            <Button id='help' color={'primary'} onClick={onHelp}>Help</Button>
-        </MenuBar>
-        <Grid container mt={1} columnSpacing={1}  height={800}>
-            <Grid item xs={true}>
-                <Grid container columns={10} spacing={1}>
-                    <Grid item xs id='navigationPanel' height='100%' overflow='scroll'>
-                        <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
-                                          selectedItemId={selectedItemId}/>
-                    </Grid>
-                    <Grid item xs={6} height='100%'>
-                        <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>
-                            <iframe name='appFrame' src="/runtime/app.html" ref={appFrameRef}
-                                    style={{width: '100%', height: 600}}/>
-                        </div>
-                    </Grid>
-                    <Grid item xs height='100%' overflow='scroll'>
-                        <div id='propertyPanel' style={{backgroundColor: 'lightblue', width: '100%'}}>
-                            {propertyArea()}
-                        </div>
+    return <Grid container direction='column' height='100%' width='100%'>
+        <Grid item xs='auto'>
+            <AppBar/>
+            <MenuBar>
+                <Button id='open' color={'primary'} onClick={onOpen}>Open</Button>
+                <Button id='save' color={'primary'} onClick={onSave}>Save</Button>
+                <InsertMenu onInsert={onMenuInsert}/>
+                <Button id='help' color={'primary'} onClick={onHelp}>Help</Button>
+            </MenuBar>
+        </Grid>
+        <Grid item xs>
+            <Grid container mt={1} columnSpacing={1} height='100%'>
+                <Grid item xs={true} height='100%'>
+                    <Grid container columns={10} spacing={1} height='100%'>
+                        <Grid item xs id='navigationPanel' height='100%' overflow='scroll'>
+                            <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
+                                              selectedItemId={selectedItemId}/>
+                        </Grid>
+                        <Grid item xs={6} height='100%' overflow='scroll'>
+                            <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>
+                                <iframe name='appFrame' src="/runtime/app.html" ref={appFrameRef}
+                                        style={{width: '100%', height: 600}}/>
+                            </div>
+                        </Grid>
+                        <Grid item xs height='100%' overflow='scroll'>
+                            <div id='propertyPanel' style={{backgroundColor: 'lightblue', width: '100%'}}>
+                                {propertyArea()}
+                            </div>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid item xs={3} sx={{display: helpVisible ? 'block' : 'none'}}>
-                <HelpPanel onHelp={onHelp} />
+                <Grid item xs={3} height='100%' sx={{display: helpVisible ? 'block' : 'none'}} id='helpContainer'>
+                    <HelpPanel onHelp={onHelp} />
+                </Grid>
             </Grid>
         </Grid>
-    </div>
+    </Grid>
 
 }

@@ -6,7 +6,7 @@ import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
 
 export default function HelpPanel({onHelp}: { onHelp: () => void }) {
-    return <Grid direction={'column'} container id="helpPanel">
+    return <Grid direction={'column'} container id="helpPanel" height='100%'>
         <Grid item xs='auto'>
             <Stack
                 direction="row"
@@ -18,12 +18,10 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
                 <IconButton className='closeButton' onClick={onHelp}><Close/></IconButton>
             </Stack>
         </Grid>
-        <Grid item xs>
-            <Box height='100%' overflow='scroll'>
+        <Grid item xs  overflow='scroll'>
                 <WhatIsElemento/>
                 <ElementoStudio/>
                 <Controls/>
-            </Box>
         </Grid>
     </Grid>
 }
