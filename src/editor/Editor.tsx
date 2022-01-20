@@ -73,8 +73,8 @@ export default function Editor({
     setAppInAppFrame()
 
 
-    return <Grid container direction='column' height='100%' width='100%'>
-        <Grid item xs='auto'>
+    return <Box display='flex' flexDirection='column' height='100%' width='100%'>
+        <Box flex='0'>
             <AppBar/>
             <MenuBar>
                 <Button id='open' color={'primary'} onClick={onOpen}>Open</Button>
@@ -82,8 +82,8 @@ export default function Editor({
                 <InsertMenu onInsert={onMenuInsert}/>
                 <Button id='help' color={'primary'} onClick={onHelp}>Help</Button>
             </MenuBar>
-        </Grid>
-        <Grid item xs>
+        </Box>
+        <Box flex='1' minHeight={0}>
             <Grid container mt={1} columnSpacing={1} height='100%'>
                 <Grid item xs={true} height='100%'>
                     <Grid container columns={10} spacing={1} height='100%'>
@@ -108,7 +108,7 @@ export default function Editor({
                     <HelpPanel onHelp={onHelp} />
                 </Grid>
             </Grid>
-        </Grid>
-    </Grid>
+        </Box>
+    </Box>
 
 }

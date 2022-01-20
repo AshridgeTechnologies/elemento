@@ -1,7 +1,8 @@
 import React from 'react'
 import {Typography} from '@mui/material'
-export const SectionHeading = ({children}: {children: any }) => <Typography variant="h4">{children}</Typography>
-export const SubHeading = ({helpId, children}: {helpId: string, children: any }) => <Typography id={helpId} variant="h5">{children}</Typography>
+export const helpElementId = (helpId: string) => 'help-' + helpId
+export const SectionHeading = ({helpId, children}: {helpId: string, children: any }) => <Typography variant="h4" id={helpElementId(helpId)}>{children}</Typography>
+export const SubHeading = ({helpId, children}: {helpId: string, children: any }) => <Typography id={helpElementId(helpId)} variant="h5">{children}</Typography>
 export const Para = ({children}: {children: any }) => <Typography variant="body1" gutterBottom>{children}</Typography>
 export const BulletList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ul>{children}</ul></Typography>
 export const NumberedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ol>{children}</ol></Typography>

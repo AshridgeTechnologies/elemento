@@ -3,7 +3,7 @@ import {Para, SectionHeading} from '../HelpComponents'
 
 export default () =>
     <div>
-        <SectionHeading>What is Elemento?</SectionHeading>
+        <SectionHeading helpId='what-is-elemento'>What is Elemento?</SectionHeading>
         <Para>
             Elemento is a <b>Low Code programming tool</b>.  
             It lets you create computer programs by choosing the parts you need from menus and filling in forms.

@@ -4,7 +4,7 @@ import {NumberedList, Para, SectionHeading, SubHeading} from '../HelpComponents'
 
 export default () =>
     <div>
-        <SectionHeading>Controls</SectionHeading>
+        <SectionHeading helpId='controls'>Controls</SectionHeading>
         <Para>
             Controls are the things you see on the screen when your program runs,
             like boxes to input text, checkboxes to indicate yes or no, lists of items, buttons to make something happen - or just plain chunks of text.
@@ -24,7 +24,7 @@ export default () =>
         </Para>
         
 
-        <SubHeading>Properties</SubHeading>
+        <SubHeading helpId='control-properties'>Properties</SubHeading>
         <Para>
             Every control has properties that affect how it looks and what it does.
             When you select a control in the Navigator by clicking on it, its properties appear in the Properties Panel.
