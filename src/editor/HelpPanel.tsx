@@ -1,17 +1,45 @@
+import {equals} from 'ramda'
 import {Box, IconButton, Stack, Typography} from '@mui/material'
+import {TreeView, TreeItem} from '@mui/lab'
 import Close from '@mui/icons-material/Close'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, {useEffect, useRef, useState} from 'react'
 import WhatIsElemento from '../docs/overview/WhatIsElemento'
 import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
-import {helpElementId} from '../docs/HelpComponents'
+
+type ContentsItems = { id: string, title: string }[]
+
+function HelpContents({items, onSelected}: {items: ContentsItems, onSelected: (id: string) => void}) {
+    return <TreeView
+        aria-label="help contents"
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+        sx={{ height: '100%', overflowY: 'auto' }}
+    >
+        {items.map( ({id, title}) =>  <TreeItem nodeId={id} label={title} onClick={() => {onSelected(id)} }/>) }
+
+    </TreeView>
+}
 
 export default function HelpPanel({onHelp}: { onHelp: () => void }) {
+    const [helpItems, setHelpItems] = useState<ContentsItems>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
     useEffect(()=> {
         if (selectedId && helpTextPanel.current) {
-            helpTextPanel.current.querySelector(`#${helpElementId(selectedId)}`)?.scrollIntoView({behavior: 'smooth'})
+            helpTextPanel.current.querySelector(`#${selectedId}`)?.scrollIntoView({behavior: 'smooth'})
+        }
+    })
+
+    useEffect( ()=> {
+        console.log(helpTextPanel.current!.querySelectorAll('section, article'))
+        const sectionElements = Array.from(helpTextPanel.current!.querySelectorAll('section'))
+        const currentHelpItems = sectionElements.map( el => ({id: el.id, title: el.querySelector('h4')?.textContent || ''}) )
+        console.log(currentHelpItems)
+        if (!equals(currentHelpItems, helpItems)) {
+            setHelpItems(currentHelpItems)
         }
     })
     
@@ -28,9 +56,7 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
             </Stack>
         </Box>
         <Box flex='0' className='helpContent'>
-            <div onClick={() => {setSelectedId('what-is-elemento')} }>What Is Elemento</div>
-            <div onClick={() => {setSelectedId('elemento-studio')} }>Elemento Studio</div>
-            <div onClick={() => {setSelectedId('controls')} }>Controls</div>
+            <HelpContents items={helpItems} onSelected={(id) => {setSelectedId(id)} }/>
         </Box>
         <Box flex='1' minHeight={0} className='helpText'>
             <Box height='100%' overflow='scroll' ref={helpTextPanel}>
