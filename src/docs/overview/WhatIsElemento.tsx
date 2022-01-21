@@ -1,9 +1,9 @@
 import React from "react"
-import {Para, SectionHeading} from '../HelpComponents'
+import {Para, Heading, Section} from '../HelpComponents'
 
 export default () =>
-    <div>
-        <SectionHeading helpId='what-is-elemento'>What is Elemento?</SectionHeading>
+    <Section helpId='what-is-elemento'>
+        <Heading >What is Elemento?</Heading>
         <Para>
             Elemento is a <b>Low Code programming tool</b>.  
             It lets you create computer programs by choosing the parts you need from menus and filling in forms.
@@ -17,4 +17,4 @@ export default () =>
             For example, if you are calculating the final total of a sales invoice, you might write a formula like this:<br/>
             <code>sum(LineItemTotals) + Delivery + Tax</code>
         </Para>
-    </div>
+    </Section>

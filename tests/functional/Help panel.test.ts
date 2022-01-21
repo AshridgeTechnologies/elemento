@@ -12,14 +12,14 @@ const helpPanelClose = `${helpPanel} .closeButton`
 test('open help panel and hide it', async ({ page }) => {
     await page.goto(runtimeRootUrl)
 
-    expect(await(page.isHidden(helpPanel))).toBe(true)
+    await expect(page.locator(helpPanel)).toBeHidden()
     await page.click(helpButton)
 
-    expect(await(page.isVisible(helpPanel))).toBe(true)
-    expect(await page.textContent(helpPanelTitle)).toBe('Help')
+    await expect(page.locator(helpPanel)).toBeVisible()
+    await expect(page.locator(helpPanelTitle)).toHaveText('Help')
 
     await page.click(helpPanelClose)
-    expect(await(page.isHidden(helpPanel))).toBe(true)
+    await expect(page.locator(helpPanel)).toBeHidden()
 })
 
 test('help panel contents scrolls to help item', async ({ page }) => {
@@ -28,10 +28,10 @@ test('help panel contents scrolls to help item', async ({ page }) => {
 
     const testHelpItemTitle = 'Controls'
     const testHelpItemContentLink = `${helpPanel} .helpContent >> text=${testHelpItemTitle}`
-    const testHelpItem = `${helpPanelText} >> text=${testHelpItemTitle}`
+    const testHelpItem = `${helpPanelText} h4:text-is("${testHelpItemTitle}")`
 
     await page.click(testHelpItemContentLink)
-    expect(await page.isVisible(testHelpItem)).toBe(true)
+    await expect(page.locator(testHelpItem)).toBeVisible()
 
     const isScrolledToTopInPage = (idArg:string) => {
         const [container, el] = idArg.split('|')
