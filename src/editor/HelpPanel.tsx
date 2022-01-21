@@ -9,22 +9,27 @@ import WhatIsElemento from '../docs/overview/WhatIsElemento'
 import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
 
-type ContentsItems = { id: string, title: string }[]
+type ContentsItem = { id: string, title: string, children?: ContentsItem[] }
 
-function HelpContents({items, onSelected}: {items: ContentsItems, onSelected: (id: string) => void}) {
-    return <TreeView
+function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (id: string) => void}) {
+    const treeItem = ({id, title, children = []}: ContentsItem) =>
+        <TreeItem nodeId={id} label={title} onClick={() => onSelected(id)}>
+            {children.map(treeItem)}
+        </TreeItem>
+
+    return (<TreeView
         aria-label="help contents"
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         sx={{ height: '100%', overflowY: 'auto' }}
     >
-        {items.map( ({id, title}) =>  <TreeItem nodeId={id} label={title} onClick={() => {onSelected(id)} }/>) }
+        {items.map(treeItem) }
 
-    </TreeView>
+    </TreeView>)
 }
 
 export default function HelpPanel({onHelp}: { onHelp: () => void }) {
-    const [helpItems, setHelpItems] = useState<ContentsItems>([])
+    const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
     useEffect(()=> {
@@ -33,11 +38,24 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
         }
     })
 
+    const findHelpItems = function (element: HTMLElement) {
+        console.log(element.querySelectorAll('section, article'))
+        const sectionElements = Array.from(element.querySelectorAll('section'))
+        const subSectionsOf = (el: HTMLElement): ContentsItem[] => Array.from(el.querySelectorAll('article')).map(el => ({
+            id: el.id,
+            title: el.querySelector('h5')?.textContent || '',
+        }))
+        const helpItems = sectionElements.map(el => ({
+            id: el.id,
+            title: el.querySelector('h4')?.textContent || '',
+            children: subSectionsOf(el)
+        }))
+        console.log(helpItems)
+        return helpItems
+    }
+
     useEffect( ()=> {
-        console.log(helpTextPanel.current!.querySelectorAll('section, article'))
-        const sectionElements = Array.from(helpTextPanel.current!.querySelectorAll('section'))
-        const currentHelpItems = sectionElements.map( el => ({id: el.id, title: el.querySelector('h4')?.textContent || ''}) )
-        console.log(currentHelpItems)
+        const currentHelpItems = findHelpItems(helpTextPanel.current!)
         if (!equals(currentHelpItems, helpItems)) {
             setHelpItems(currentHelpItems)
         }
