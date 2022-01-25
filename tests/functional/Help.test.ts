@@ -26,12 +26,8 @@ test('help panel contents scrolls to help item', async ({ page }) => {
     await page.goto(runtimeRootUrl)
     await page.click(helpButton)
 
-    const testHelpItemTitle = 'Controls'
-    const testHelpItemContentLink = `${helpPanel} .helpContent >> text=${testHelpItemTitle}`
-    const testHelpItem = `${helpPanelText} h4:text-is("${testHelpItemTitle}")`
-
-    await page.click(testHelpItemContentLink)
-    await expect(page.locator(testHelpItem)).toBeVisible()
+    const itemContentLink = (itemTitle: string) => `${helpPanel} .helpContent >> text=${itemTitle}`
+    const helpItem = (itemTitle: string, headingTag: string) => `${helpPanelText} ${headingTag}:text-is("${itemTitle}")`
 
     const isScrolledToTopInPage = (idArg:string) => {
         const [container, el] = idArg.split('|')
@@ -40,10 +36,17 @@ test('help panel contents scrolls to help item', async ({ page }) => {
 
         const difference = elementPos - containerPos
         const result = difference > 0 && difference < 20
-        // console.log(containerPos, elementPos, difference, result)
         return result
     }
 
+    const topLevelItemTitle = 'Controls'
+    await page.click(itemContentLink(topLevelItemTitle))
+    await expect(page.locator(helpItem(topLevelItemTitle, 'h4'))).toBeVisible()
     await page.waitForFunction(isScrolledToTopInPage, `${helpPanelText}|#help-controls`, {timeout: 3000})
+
+    const secondLevelItemTitle = 'Properties'
+    await page.click(itemContentLink(secondLevelItemTitle))
+    await expect(page.locator(helpItem(secondLevelItemTitle, 'h5'))).toBeVisible()
+    await page.waitForFunction(isScrolledToTopInPage, `${helpPanelText}|#help-control-properties`, {timeout: 3000})
 
 })

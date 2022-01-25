@@ -11,6 +11,9 @@ import InsertMenu from './InsertMenu'
 import {ElementType} from '../model/Types'
 import {Box, Button, Grid} from '@mui/material'
 import HelpPanel from './HelpPanel'
+import WhatIsElemento from '../docs/overview/WhatIsElemento'
+import ElementoStudio from '../docs/overview/ElementoStudio'
+import Controls from '../docs/overview/Controls'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -105,7 +108,11 @@ export default function Editor({
                     </Grid>
                 </Grid>
                 <Grid item xs={3} height='100%' sx={{display: helpVisible ? 'block' : 'none'}} id='helpContainer'>
-                    <HelpPanel onHelp={onHelp} />
+                    <HelpPanel onClose={onHelp} >
+                        <WhatIsElemento/>
+                        <ElementoStudio/>
+                        <Controls/>
+                    </HelpPanel>
                 </Grid>
             </Grid>
         </Box>

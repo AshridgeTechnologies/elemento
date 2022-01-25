@@ -1,19 +1,16 @@
 import {equals} from 'ramda'
 import {Box, IconButton, Stack, Typography} from '@mui/material'
-import {TreeView, TreeItem} from '@mui/lab'
+import {TreeItem, TreeView} from '@mui/lab'
 import Close from '@mui/icons-material/Close'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, {useEffect, useRef, useState} from 'react'
-import WhatIsElemento from '../docs/overview/WhatIsElemento'
-import ElementoStudio from '../docs/overview/ElementoStudio'
-import Controls from '../docs/overview/Controls'
 
 type ContentsItem = { id: string, title: string, children?: ContentsItem[] }
 
 function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (id: string) => void}) {
     const treeItem = ({id, title, children = []}: ContentsItem) =>
-        <TreeItem nodeId={id} label={title} onClick={() => onSelected(id)}>
+        <TreeItem nodeId={id} label={title} key={id} onClick={() => onSelected(id)}>
             {children.map(treeItem)}
         </TreeItem>
 
@@ -24,11 +21,10 @@ function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (
         sx={{ height: '100%', overflowY: 'auto' }}
     >
         {items.map(treeItem) }
-
     </TreeView>)
 }
 
-export default function HelpPanel({onHelp}: { onHelp: () => void }) {
+export default function HelpPanel({children, onClose}: { children: React.ReactNode, onClose: () => void }) {
     const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
@@ -39,7 +35,7 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
     })
 
     const findHelpItems = function (element: HTMLElement) {
-        console.log(element.querySelectorAll('section, article'))
+        // console.log(element.querySelectorAll('section, article'))
         const sectionElements = Array.from(element.querySelectorAll('section'))
         const subSectionsOf = (el: HTMLElement): ContentsItem[] => Array.from(el.querySelectorAll('article')).map(el => ({
             id: el.id,
@@ -50,7 +46,7 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
             title: el.querySelector('h4')?.textContent || '',
             children: subSectionsOf(el)
         }))
-        console.log(helpItems)
+        // console.log(helpItems)
         return helpItems
     }
 
@@ -70,17 +66,17 @@ export default function HelpPanel({onHelp}: { onHelp: () => void }) {
                 spacing={2}
             >
                 <Typography variant="h5" component='h1'>Help</Typography>
-                <IconButton className='closeButton' onClick={onHelp}><Close/></IconButton>
+                <IconButton className='closeButton' onClick={onClose}><Close/></IconButton>
             </Stack>
         </Box>
         <Box flex='0' className='helpContent'>
-            <HelpContents items={helpItems} onSelected={(id) => {setSelectedId(id)} }/>
+            <Box height={200} overflow='scroll'>
+                <HelpContents items={helpItems} onSelected={(id) => {setSelectedId(id)} }/>
+            </Box>
         </Box>
         <Box flex='1' minHeight={0} className='helpText'>
             <Box height='100%' overflow='scroll' ref={helpTextPanel}>
-                <WhatIsElemento/>
-                <ElementoStudio/>
-                <Controls/>
+                {children}
             </Box>
         </Box>
     </Box>
