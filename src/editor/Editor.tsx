@@ -14,6 +14,7 @@ import HelpPanel from './HelpPanel'
 import WhatIsElemento from '../docs/overview/WhatIsElemento'
 import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
+import SplitPane from 'react-split-pane'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -30,8 +31,10 @@ export default function Editor({
                                    onOpen,
                                    onSave
                                }: { app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
+    const defaultHelpWidth = 400
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
+    const [helpSize, setHelpSize] = useState(defaultHelpWidth)
 
     const propertyArea = () => {
         if (selectedItemId) {
@@ -87,8 +90,9 @@ export default function Editor({
             </MenuBar>
         </Box>
         <Box flex='1' minHeight={0}>
-            <Grid container mt={1} columnSpacing={1} height='100%'>
-                <Grid item xs={true} height='100%'>
+            <Grid container mt={1} columnSpacing={1} height='100%' position='relative' width='100%' marginLeft={0}>
+                <SplitPane split="vertical" size={helpVisible ? helpSize : 0} minSize={150} onChange={setHelpSize} primary="second">
+                <Box height='100%'>
                     <Grid container columns={10} spacing={1} height='100%'>
                         <Grid item xs id='navigationPanel' height='100%' overflow='scroll'>
                             <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
@@ -106,14 +110,15 @@ export default function Editor({
                             </div>
                         </Grid>
                     </Grid>
-                </Grid>
-                <Grid item xs={3} height='100%' sx={{display: helpVisible ? 'block' : 'none'}} id='helpContainer'>
+                </Box>
+                <Box height='100%' sx={{margin: '0px 10px 10px'}} id='helpContainer'>
                     <HelpPanel onClose={onHelp} >
                         <WhatIsElemento/>
                         <ElementoStudio/>
                         <Controls/>
                     </HelpPanel>
-                </Grid>
+                </Box>
+                </SplitPane>
             </Grid>
         </Box>
     </Box>
