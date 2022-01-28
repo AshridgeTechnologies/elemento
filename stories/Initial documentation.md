@@ -11,7 +11,7 @@ UI
   - Can click in content tree to scroll help panel
 - Scroll help panel selects item in content tree
   - Content tree and help area each scroll independently
-- Help area and panels within it can be resized independently
+  - Help area and panels within it can be resized independently
 
 Content format
 --------------

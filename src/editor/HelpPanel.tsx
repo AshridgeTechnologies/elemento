@@ -5,6 +5,7 @@ import Close from '@mui/icons-material/Close'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, {useEffect, useRef, useState} from 'react'
+import SplitPane from 'react-split-pane'
 
 type ContentsItem = { id: string, title: string, children?: ContentsItem[] }
 
@@ -35,7 +36,6 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
     })
 
     const findHelpItems = function (element: HTMLElement) {
-        // console.log(element.querySelectorAll('section, article'))
         const sectionElements = Array.from(element.querySelectorAll('section'))
         const subSectionsOf = (el: HTMLElement): ContentsItem[] => Array.from(el.querySelectorAll('article')).map(el => ({
             id: el.id,
@@ -46,7 +46,6 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
             title: el.querySelector('h4')?.textContent || '',
             children: subSectionsOf(el)
         }))
-        // console.log(helpItems)
         return helpItems
     }
 
@@ -56,7 +55,7 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
             setHelpItems(currentHelpItems)
         }
     })
-    
+
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
         <Box flex='0'>
             <Stack
@@ -69,15 +68,17 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
                 <IconButton className='closeButton' onClick={onClose}><Close/></IconButton>
             </Stack>
         </Box>
-        <Box flex='0' className='helpContent'>
-            <Box height={200} overflow='scroll'>
-                <HelpContents items={helpItems} onSelected={(id) => {setSelectedId(id)} }/>
-            </Box>
-        </Box>
-        <Box flex='1' minHeight={0} className='helpText'>
-            <Box height='100%' overflow='scroll' ref={helpTextPanel}>
-                {children}
-            </Box>
+        <Box flex='1' minHeight={0} position='relative'>
+            <SplitPane split="horizontal" defaultSize={200} paneStyle={{margin: '10px 0'}} pane2Style={{overflowY: 'auto'}}>
+                <Box className='helpContent'>
+                    <HelpContents items={helpItems} onSelected={(id) => {
+                        setSelectedId(id)
+                    }}/>
+                </Box>
+                <Box className='helpText' ref={helpTextPanel}>
+                    {children}
+                </Box>
+            </SplitPane>
         </Box>
     </Box>
 }
