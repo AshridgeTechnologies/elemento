@@ -8,6 +8,18 @@ Bugs
 Stories
 -------
 - Initial documentation
+- Styling Part 1
+- Formula error clean-up
+- Control and functions for MVP
+- Tutorial Hello World
+- Tutorial Real World 1
+- Tutorial enhancements Part 1
+- File data storage
+- Info website update
+- Editor website
+- Runner website
+
+### Priority 2
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
