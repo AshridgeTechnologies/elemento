@@ -23,6 +23,10 @@ Stories
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
+- Back and forward in Help
+- Links in Help
+- Search in Help
+- Highlight in Help
 
 Epics
 -----

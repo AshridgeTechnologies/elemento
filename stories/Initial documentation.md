@@ -23,7 +23,7 @@ Content items
   - Overview of Elemento
   - The Elemento Studio
   - Controls
-- Formulas
+  - Formulas
 - Reference for controls
 - Reference for Formulas
 

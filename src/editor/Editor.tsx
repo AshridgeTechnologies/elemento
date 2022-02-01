@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
+import SplitPane from 'react-split-pane'
 import App from '../model/App'
 import Page from '../model/Page'
 import Element from '../model/Element'
@@ -14,7 +15,7 @@ import HelpPanel from './HelpPanel'
 import WhatIsElemento from '../docs/overview/WhatIsElemento'
 import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
-import SplitPane from 'react-split-pane'
+import Formulas from '../docs/overview/Formulas'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -116,6 +117,7 @@ export default function Editor({
                         <WhatIsElemento/>
                         <ElementoStudio/>
                         <Controls/>
+                        <Formulas/>
                     </HelpPanel>
                 </Box>
                 </SplitPane>

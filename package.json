@@ -8,6 +8,7 @@
     "testcoverage": "yarn test --coverage",
     "build": "parcel build src/runtime/app.html src/editor/index.html src/autorun/index.html",
     "serve": "parcel src/runtime/app.html src/editor/index.html src/autorun/index.html",
+    "serveruntime": "parcel -p 1235 serve src/runtime/app.html",
     "functest": "playwright test"
   },
   "devDependencies": {

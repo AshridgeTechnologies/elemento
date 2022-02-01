@@ -69,7 +69,7 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
             </Stack>
         </Box>
         <Box flex='1' minHeight={0} position='relative'>
-            <SplitPane split="horizontal" defaultSize={200} paneStyle={{margin: '10px 0'}} pane2Style={{overflowY: 'auto'}}>
+            <SplitPane split="horizontal" defaultSize={200} paneStyle={{margin: '10px 0'}} pane2Style={{overflowY: 'auto'}} >
                 <Box className='helpContent'>
                     <HelpContents items={helpItems} onSelected={(id) => {
                         setSelectedId(id)

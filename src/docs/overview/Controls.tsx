@@ -47,7 +47,7 @@ export default () =>
             </Para>
             <Para>The help section for each control type describes all the properties and what you can do with them.</Para>
             <Para>
-                As you change property formulas, you can see the effect immediately in the Running program.  If you don't like what you see, just change it back or try something else.
+                As you change property values, you can see the effect immediately in the Running program.  If you don't like what you see, just change it back or try something else.
             </Para>
         </SubSection>
     </Section>

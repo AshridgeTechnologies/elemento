@@ -7,6 +7,7 @@ const helpButton = 'button#help'
 const helpPanel = '#helpPanel'
 const helpPanelTitle = `${helpPanel} h1`
 const helpPanelText = `${helpPanel} .helpText`
+const helpTextPane = `${helpPanel} .Pane2`
 const helpPanelClose = `${helpPanel} .closeButton`
 
 test('open help panel and hide it', async ({ page }) => {
@@ -42,11 +43,11 @@ test('help panel contents scrolls to help item', async ({ page }) => {
     const topLevelItemTitle = 'Controls'
     await page.click(itemContentLink(topLevelItemTitle))
     await expect(page.locator(helpItem(topLevelItemTitle, 'h4'))).toBeVisible()
-    await page.waitForFunction(isScrolledToTopInPage, `${helpPanelText}|#help-controls`, {timeout: 3000})
+    await page.waitForFunction(isScrolledToTopInPage, `${helpTextPane}|#help-controls`, {timeout: 6000})
 
     const secondLevelItemTitle = 'Properties'
     await page.click(itemContentLink(secondLevelItemTitle))
     await expect(page.locator(helpItem(secondLevelItemTitle, 'h5'))).toBeVisible()
-    await page.waitForFunction(isScrolledToTopInPage, `${helpPanelText}|#help-control-properties`, {timeout: 3000})
+    await page.waitForFunction(isScrolledToTopInPage, `${helpTextPane}|#help-control-properties`, {timeout: 3000})
 
 })
