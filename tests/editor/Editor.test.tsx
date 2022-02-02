@@ -25,7 +25,7 @@ test("renders tree with app elements",  async () => {
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert}/>)))
     await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
 
-    expect(container.querySelectorAll('div')[1].textContent).toBe("Elemento Studio")
+    expect(container.querySelector('.MuiTypography-h6').textContent).toBe("Elemento Studio")
     expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
 })
 

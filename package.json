@@ -8,6 +8,7 @@
     "testcoverage": "yarn test --coverage",
     "build": "parcel build src/runtime/app.html src/editor/index.html src/autorun/index.html",
     "serve": "parcel src/runtime/app.html src/editor/index.html src/autorun/index.html",
+    "serveruntime": "parcel -p 1235 serve src/runtime/app.html",
     "functest": "playwright test"
   },
   "devDependencies": {
@@ -33,7 +34,8 @@
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.1.1",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/lab": "^5.0.0-alpha.65",
     "@mui/material": "^5.0.6",
     "lodash": "^4.17.21",
     "ramda": "^0.27.1",
@@ -41,6 +43,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-boundary": "^3.1.4",
+    "react-split-pane": "^0.1.92",
     "recast": "^0.20.5",
     "zustand": "^3.6.5"
   }
