@@ -1,6 +1,5 @@
 import React from "react"
-import {Typography} from '@mui/material'
-import {BulletList, Para, Heading, SubHeading, Section, SubSection} from '../HelpComponents'
+import {BulletList, Heading, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 
 export default () =>
     <Section helpId='elemento-studio'>

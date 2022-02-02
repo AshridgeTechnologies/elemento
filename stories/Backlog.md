@@ -7,10 +7,9 @@ Bugs
 
 Stories
 -------
-- Initial documentation
 - Styling Part 1
 - Formula error clean-up
-- Control and functions for MVP
+- Controls and functions for MVP
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -24,9 +23,11 @@ Stories
 - Load time optimisation
 - Splash screens - editor and app
 - Back and forward in Help
-- Links in Help
+- Links in Help (use to sync contents to position)
 - Search in Help
 - Highlight in Help
+- Persistent help position
+- Editor deep links - use in help examples
 
 Epics
 -----
@@ -52,3 +53,4 @@ Done
 - Save and load app
 - Run app from web
 - Basic guided tour
+- Initial documentation

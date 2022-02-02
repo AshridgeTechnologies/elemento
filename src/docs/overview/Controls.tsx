@@ -1,5 +1,4 @@
 import React from "react"
-import {Typography} from '@mui/material'
 import {NumberedList, Para, Heading, SubHeading, Section, SubSection} from '../HelpComponents'
 
 export default () =>

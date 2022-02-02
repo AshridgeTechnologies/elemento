@@ -1,6 +1,6 @@
 import React from "react"
-import {TextField, Typography} from '@mui/material'
-import {NumberedList, Para, Heading, SubHeading, Section, SubSection, BulletList, MinorHeading} from '../HelpComponents'
+import {TextField} from '@mui/material'
+import {BulletList, Heading, MinorHeading, NumberedList, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 
 export default () =>
     <Section helpId='formulas'>
@@ -51,13 +51,11 @@ export default () =>
 
 
         <MinorHeading>Kinds of formulas</MinorHeading>
-        <Para>
-            There are two kinds of formulas:
-            <BulletList>
-                <li>Calculations - these work out values, but don't change anything</li>
-                <li>Actions - these make something happen, but they don't produce a value</li>
-            </BulletList>
-        </Para>
+        <Para>There are two kinds of formulas:</Para>
+        <BulletList>
+            <li>Calculations - these work out values, but don't change anything</li>
+            <li>Actions - these make something happen, but they don't produce a value</li>
+        </BulletList>
 
         <SubSection helpId='calculation-formulas'>
             <SubHeading>Calculation Formulas</SubHeading>

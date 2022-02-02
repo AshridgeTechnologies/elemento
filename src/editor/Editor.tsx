@@ -16,6 +16,8 @@ import WhatIsElemento from '../docs/overview/WhatIsElemento'
 import ElementoStudio from '../docs/overview/ElementoStudio'
 import Controls from '../docs/overview/Controls'
 import Formulas from '../docs/overview/Formulas'
+import ControlReference from '../docs/reference/ControlReference'
+import FunctionReference from '../docs/reference/FunctionReference'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -118,6 +120,8 @@ export default function Editor({
                         <ElementoStudio/>
                         <Controls/>
                         <Formulas/>
+                        <ControlReference/>
+                        <FunctionReference/>
                     </HelpPanel>
                 </Box>
                 </SplitPane>
