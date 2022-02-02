@@ -14,7 +14,7 @@ test('formulas using inputs update as the input changes', async ({ page }) => {
         new Page('page1', 'Main Page', {}, [
             new TextInput('textInput_1', 'Name Input', {label:'"Name"', initialValue: '"Alice"'}),
             new TextInput('textInput_2', 'Greeting Input', {label:'"Greeting"', initialValue: '"How are you?"'}),
-            new Text('text_1', 'Hello Text', {contentExpr: `NameInput.value + " - " + GreetingInput.value`}),
+            new Text('text_1', 'Hello Text', {content: `NameInput.value + " - " + GreetingInput.value`}),
         ]),
     ])
 

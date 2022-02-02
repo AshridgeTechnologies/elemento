@@ -86,6 +86,7 @@ testInsert('TextInput')
 test('notifies open request', async () => {
     let opened: boolean = false
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onOpen={() => opened = true}/>)))
+    fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('Open'))
     expect(opened).toBe(true)
 })
@@ -93,6 +94,7 @@ test('notifies open request', async () => {
 test('notifies save request', async () => {
     let saved: boolean = false
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onSave={() => saved = true}/>)))
+    fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('Save'))
     expect(saved).toBe(true)
 })

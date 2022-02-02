@@ -3,7 +3,7 @@ import BaseElement from './BaseElement'
 import {ElementId, ElementType} from './Types'
 
 type Properties = {
-    readonly contentExpr: string,
+    readonly content: string,
     readonly style?: string,
 }
 
@@ -22,5 +22,5 @@ export default class Text extends BaseElement<Properties> implements Element {
 
     kind: ElementType = 'Text'
 
-    get contentExpr() {return this.properties.contentExpr}
+    get content() {return this.properties.content}
 }

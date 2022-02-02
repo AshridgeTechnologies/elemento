@@ -1,11 +1,13 @@
 import {equals} from 'ramda'
-import {Box, IconButton, Stack, Typography} from '@mui/material'
+import {Box, IconButton, Typography} from '@mui/material'
+import Mui_AppBar from '@mui/material/AppBar';
+
 import {TreeItem, TreeView} from '@mui/lab'
 import Close from '@mui/icons-material/Close'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, {useEffect, useRef, useState} from 'react'
-import SplitPane from 'react-split-pane'
+import Toolbar from '@mui/material/Toolbar'
 
 type ContentsItem = { id: string, title: string, children?: ContentsItem[] }
 
@@ -25,6 +27,19 @@ function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (
     </TreeView>)
 }
 
+function HelpBar({onClose}: {onClose: () => void}) {
+    return (
+        <Mui_AppBar position='relative'>
+            <Toolbar variant="dense" sx={{minHeight: 40}}>
+                <Typography variant="h6" component="div" sx={{fontSize: 16, flexGrow: 1}}>
+                    Help
+                </Typography>
+                <IconButton className='closeButton' onClick={onClose} color='inherit'><Close/></IconButton>
+            </Toolbar>
+        </Mui_AppBar>
+    )
+}
+
 export default function HelpPanel({children, onClose}: { children: React.ReactNode, onClose: () => void }) {
     const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -41,12 +56,11 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
             id: el.id,
             title: el.querySelector('h5')?.textContent || '',
         }))
-        const helpItems = sectionElements.map(el => ({
+        return sectionElements.map(el => ({
             id: el.id,
             title: el.querySelector('h4')?.textContent || '',
             children: subSectionsOf(el)
         }))
-        return helpItems
     }
 
     useEffect( ()=> {
@@ -58,27 +72,17 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
 
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
         <Box flex='0'>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                spacing={2}
-            >
-                <Typography variant="h5" component='h1'>Help</Typography>
-                <IconButton className='closeButton' onClick={onClose}><Close/></IconButton>
-            </Stack>
+            <HelpBar {...{onClose}}/>
         </Box>
-        <Box flex='1' minHeight={0} position='relative'>
-            <SplitPane split="horizontal" defaultSize={200} paneStyle={{margin: '10px 0'}} pane2Style={{overflowY: 'auto'}} >
-                <Box className='helpContent'>
-                    <HelpContents items={helpItems} onSelected={(id) => {
-                        setSelectedId(id)
-                    }}/>
+        <Box flex='1' minHeight={0}>
+            <Box display='flex' flexDirection='row' height='100%'>
+                <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)'  paddingTop='1rem' sx={{backgroundColor: '#eee'}}>
+                    <HelpContents items={helpItems} onSelected={(id) => setSelectedId(id)}/>
                 </Box>
-                <Box className='helpText' ref={helpTextPanel}>
+                <Box  flex='4' className='helpText' ref={helpTextPanel} height='100%'  padding='0 1rem' overflow='auto'>
                     {children}
                 </Box>
-            </SplitPane>
+            </Box>
         </Box>
     </Box>
 }

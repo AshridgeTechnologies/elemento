@@ -42,7 +42,7 @@ exports[`Components AppBar has expected structure 1`] = `
         </svg>
       </button>
       <div
-        className="MuiTypography-root MuiTypography-h6 css-1juivf6-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-h6 css-13ah4bd-MuiTypography-root"
       >
         Elemento Studio
       </div>
@@ -56,7 +56,7 @@ exports[`Components InsertMenu has expected structure 1`] = `
   <button
     aria-controls="insertMenu"
     aria-haspopup="true"
-    className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButtonBase-root css-zddlty-MuiButtonBase-root-MuiButton-root"
+    className="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root css-1e6y48t-MuiButtonBase-root-MuiButton-root"
     disabled={false}
     id="insertButton"
     onBlur={[Function]}
@@ -76,21 +76,6 @@ exports[`Components InsertMenu has expected structure 1`] = `
     type="button"
   >
     Insert
-    <span
-      className="MuiButton-endIcon MuiButton-iconSizeMedium css-9tj150-MuiButton-endIcon"
-    >
-      <svg
-        aria-hidden={true}
-        className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-        data-testid="KeyboardArrowDownIcon"
-        focusable="false"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
-        />
-      </svg>
-    </span>
   </button>
 </div>
 `;
@@ -100,7 +85,7 @@ exports[`Components MenuBar has expected structure 1`] = `
   className="MuiBox-root css-i9gxme"
 >
   <div
-    className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+    className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-9b53aa-MuiToolbar-root"
   />
 </div>
 `;

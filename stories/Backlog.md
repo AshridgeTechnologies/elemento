@@ -37,6 +37,7 @@ Epics
 Tech debt
 ---------
 
+- Refactor EditorMain into component and fix unit test
 - Refactor runApp.ts and unit test
 
 Done

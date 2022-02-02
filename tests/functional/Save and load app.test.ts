@@ -38,14 +38,18 @@ const installMockFilePickers = (app: any) => {
     window.showSaveFilePicker = async () => mockFileHandle
 }
 
-//
+const fileMenu = 'text=File'
+const fileMenu_Open = 'ul[role="menu"] :text("Open")'
+const fileMenu_Save = 'ul[role="menu"] :text("Save")'
+
 
 test('load app from file into editor', async ({page}) => {
     await page.goto(runtimeRootUrl)
 
     await page.evaluate( installMockFilePickers, appFixture1())
 
-    await page.click('button#open')
+    await page.click(fileMenu)
+    await page.click(fileMenu_Open)
 
     // would select the app file here
 
@@ -64,7 +68,8 @@ test('save previously loaded app to file', async ({page}) => {
 
     await page.evaluate( installMockFilePickers, appFixture1())
 
-    await page.click('button#open')
+    await page.click(fileMenu)
+    await page.click(fileMenu_Open)
 
     // would select the app file here
 
@@ -79,11 +84,12 @@ test('save previously loaded app to file', async ({page}) => {
     await page.fill('input#content', '"The updated second text"')
     expect(await page.locator('input#content').inputValue()).toBe('"The updated second text"')
 
-    await page.click('button#save')
+    await page.click(fileMenu)
+    await page.click(fileMenu_Save)
 
     const updatedAppText = (await page.textContent('#_testFile')) as string
     const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).contentExpr).toBe('"The updated second text"')
+    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toBe('"The updated second text"')
 })
 
 test('save new app to file', async ({page}) => {
@@ -103,17 +109,19 @@ test('save new app to file', async ({page}) => {
     await page.fill('input#content', '"The updated second text"')
     expect(await page.locator('input#content').inputValue()).toBe('"The updated second text"')
 
-    await page.click('button#save')
+    await page.click(fileMenu)
+    await page.click(fileMenu_Save)
 
     const updatedAppText = (await page.textContent('#_testFile')) as string
     const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).contentExpr).toBe('"The updated second text"')
+    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toBe('"The updated second text"')
 })
 
 test('error message if cannot read app from file', async ({page}) => {
     await page.goto(runtimeRootUrl)
     await page.evaluate(installMockFilePickers, {})
-    await page.click('button#open')
+    await page.click(fileMenu)
+    await page.click(fileMenu_Open)
 
     // would select the app file here
 

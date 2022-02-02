@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 export default function MenuBar({children = [] }: {children?: React.ReactNode}) {
     return (
         <Box sx={{flexGrow: 1}}>
-            <Toolbar variant="dense">
+            <Toolbar variant="dense" sx={{borderBottom: '1px solid #ddd'}}>
                 {children}
             </Toolbar>
         </Box>

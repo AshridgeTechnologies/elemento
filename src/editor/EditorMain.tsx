@@ -1,4 +1,5 @@
 import React, {ReactElement} from 'react'
+import {createTheme, ThemeProvider} from '@mui/material/styles'
 import ReactDOM from 'react-dom'
 import {Alert, AlertTitle} from '@mui/material'
 import App from '../model/App'
@@ -115,11 +116,31 @@ const onSaveAs = async () => {
 }
 
 function doRender() {
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#0098a0',
+            },
+            secondary: {
+                main: '#7e28ff',
+            },
+        },
+
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        fontSize: '0.85rem',
+                    },
+                },
+            },
+        }
+    })
     ReactDOM.render(
-        <>
+        <ThemeProvider theme={theme}>
             {errorMessage}
             <Editor app={theApp} onChange={onPropertyChange} onInsert={onInsert} onOpen={onOpen} onSave={onSave}/>
-        </>,
+        </ThemeProvider>,
         document.getElementById('main')
     )
 }

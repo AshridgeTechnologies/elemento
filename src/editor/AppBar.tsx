@@ -20,7 +20,7 @@ export default function AppBar() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ fontSize: 16 }}>
                         Elemento Studio
                     </Typography>
                 </Toolbar>

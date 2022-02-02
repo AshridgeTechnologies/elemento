@@ -92,7 +92,7 @@ ${children}
     )`
             case "Text":
                 const text = element as Text
-                const content = Generator.getExprAndIdentifiers(text.contentExpr, identifiers, isKnown)
+                const content = Generator.getExprAndIdentifiers(text.content, identifiers, isKnown)
                 return `React.createElement(TextElement, {path: pathWith('${text.codeName}')}, ${content})`
 
             case "TextInput":

@@ -7,8 +7,8 @@ import TextInput from '../../src/model/TextInput'
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 'Text Input 1', {contentExpr: '"Hi there!"'}),
-            new Text('id1', 't2', {contentExpr: '23 + 45'}),
+            new Text('id1', 'Text Input 1', {content: '"Hi there!"'}),
+            new Text('id1', 't2', {content: '23 + 45'}),
     ]
         )])
 
@@ -66,7 +66,7 @@ test('generates TextInput elements with initial value', ()=> {
 test('generates error marker for syntax error in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {contentExpr: '23 +'}),
+                new Text('id1', 't1', {content: '23 +'}),
             ]
         )])
 
@@ -86,7 +86,7 @@ test('generates error marker for syntax error in content expression', ()=> {
 test('global functions available in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {contentExpr: 'sum(2, 3, 4)'}),
+                new Text('id1', 't1', {content: 'sum(2, 3, 4)'}),
             ]
         )])
 
@@ -105,7 +105,7 @@ test('global functions available in content expression', ()=> {
 test('unknown global functions show error marker', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {contentExpr: 'sumxx(2, 3, 4)'}),
+                new Text('id1', 't1', {content: 'sumxx(2, 3, 4)'}),
             ]
         )])
 
@@ -125,7 +125,7 @@ test('unknown global functions show error marker', ()=> {
 test('page elements available in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {contentExpr: 'ForenameInput.value + " " + SurnameInput.value'}),
+                new Text('id1', 't1', {content: 'ForenameInput.value + " " + SurnameInput.value'}),
                 new TextInput('id2', 'Forename Input', {}),
                 new TextInput('id3', 'Surname Input', {}),
             ]

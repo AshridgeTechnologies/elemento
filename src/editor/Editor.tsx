@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react'
-import SplitPane from 'react-split-pane'
 import App from '../model/App'
 import Page from '../model/Page'
 import Element from '../model/Element'
@@ -18,13 +17,15 @@ import Controls from '../docs/overview/Controls'
 import Formulas from '../docs/overview/Formulas'
 import ControlReference from '../docs/reference/ControlReference'
 import FunctionReference from '../docs/reference/FunctionReference'
+import FileMenu from './FileMenu'
+import './splitPane.css'
 
 
 const treeData = (app: App): ModelTreeItem => {
-    const treeNodeFromElement = (el: Element): ModelTreeItem => new ModelTreeItem(el.id, el.name)
-    const treeFromPage = (page: Page): ModelTreeItem => new ModelTreeItem(page.id, page.name, page.elementArray().map(treeNodeFromElement))
+    const treeNodeFromElement = (el: Element): ModelTreeItem => new ModelTreeItem(el.id, el.name, el.kind)
+    const treeFromPage = (page: Page): ModelTreeItem => new ModelTreeItem(page.id, page.name, page.kind, page.elementArray().map(treeNodeFromElement))
 
-    return new ModelTreeItem(app.id, app.name, app.pages.map(treeFromPage))
+    return new ModelTreeItem(app.id, app.name, app.kind, app.pages.map(treeFromPage))
 }
 
 export default function Editor({
@@ -34,10 +35,8 @@ export default function Editor({
                                    onOpen,
                                    onSave
                                }: { app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
-    const defaultHelpWidth = 400
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
-    const [helpSize, setHelpSize] = useState(defaultHelpWidth)
 
     const propertyArea = () => {
         if (selectedItemId) {
@@ -81,50 +80,56 @@ export default function Editor({
     }, []);
     setAppInAppFrame()
 
+    const EditorMenuBar = () => <MenuBar>
+        <FileMenu onOpen={onOpen} onSave={onSave}/>
+        <InsertMenu onInsert={onMenuInsert}/>
+        <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
+    </MenuBar>
+
+    const EditorHelpPanel = () => <HelpPanel onClose={onHelp}>
+        <WhatIsElemento/>
+        <ElementoStudio/>
+        <Controls/>
+        <Formulas/>
+        <ControlReference/>
+        <FunctionReference/>
+    </HelpPanel>
 
     return <Box display='flex' flexDirection='column' height='100%' width='100%'>
         <Box flex='0'>
             <AppBar/>
-            <MenuBar>
-                <Button id='open' color={'primary'} onClick={onOpen}>Open</Button>
-                <Button id='save' color={'primary'} onClick={onSave}>Save</Button>
-                <InsertMenu onInsert={onMenuInsert}/>
-                <Button id='help' color={'primary'} onClick={onHelp}>Help</Button>
-            </MenuBar>
+            <EditorMenuBar/>
         </Box>
         <Box flex='1' minHeight={0}>
-            <Grid container mt={1} columnSpacing={1} height='100%' position='relative' width='100%' marginLeft={0}>
-                <SplitPane split="vertical" size={helpVisible ? helpSize : 0} minSize={150} onChange={setHelpSize} primary="second">
-                <Box height='100%'>
-                    <Grid container columns={10} spacing={1} height='100%'>
-                        <Grid item xs id='navigationPanel' height='100%' overflow='scroll'>
-                            <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
-                                              selectedItemId={selectedItemId}/>
-                        </Grid>
-                        <Grid item xs={6} height='100%' overflow='scroll'>
-                            <div style={{backgroundColor: 'lightblue', width: '98%', margin: 'auto'}}>
-                                <iframe name='appFrame' src="/runtime/app.html" ref={appFrameRef}
-                                        style={{width: '100%', height: 600}}/>
-                            </div>
-                        </Grid>
-                        <Grid item xs height='100%' overflow='scroll'>
-                            <div id='propertyPanel' style={{backgroundColor: 'lightblue', width: '100%'}}>
-                                {propertyArea()}
-                            </div>
-                        </Grid>
-                    </Grid>
-                </Box>
-                <Box height='100%' sx={{margin: '0px 10px 10px'}} id='helpContainer'>
-                    <HelpPanel onClose={onHelp} >
-                        <WhatIsElemento/>
-                        <ElementoStudio/>
-                        <Controls/>
-                        <Formulas/>
-                        <ControlReference/>
-                        <FunctionReference/>
-                    </HelpPanel>
-                </Box>
-                </SplitPane>
+            <Grid container columns={20} spacing={0} height='100%'>
+                <Grid item xs={10} height='100%'>
+                    <Box display='flex' flexDirection='column' height='100%' width='100%'>
+                        <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
+                            <Grid container columns={10} spacing={0} height='100%'>
+                                <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
+                                    <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
+                                                      selectedItemId={selectedItemId}/>
+                                </Grid>
+                                <Grid item xs={8} height='100%' overflow='scroll'>
+                                    <Box id='propertyPanel' width='100%'>
+                                        {propertyArea()}
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                        {helpVisible ?
+                            <Box flex='1' maxHeight='50%'>
+                                <EditorHelpPanel/>
+                            </Box> : null
+                        }
+                    </Box>
+                </Grid>
+                <Grid item xs={10} height='100%' overflow='scroll'>
+                    <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
+                        <iframe name='appFrame' src="/runtime/app.html" ref={appFrameRef}
+                                style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
+                    </Box>
+                </Grid>
             </Grid>
         </Box>
     </Box>

@@ -23,7 +23,7 @@ const inputValue = function (label: string) {
 }
 
 test('PropertyEditor has expected structure for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {contentExpr: '"Hi there!"'})
+    const element = new Text('id1', 'Text 1', {content: '"Hi there!"'})
     expect(componentJSON(createElement(PropertyEditor, {element, onChange}))).toMatchSnapshot()
 })
 
@@ -43,7 +43,7 @@ test('PropertyEditor shows controlled component for optional fields for Page', (
 })
 
 test('PropertyEditor has fields for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {contentExpr: '"Hi!"'})
+    const element = new Text('id1', 'Text 1', {content: '"Hi!"'})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text 1')
     expect(inputValue('Content')).toBe('"Hi!"')

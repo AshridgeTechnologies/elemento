@@ -16,7 +16,7 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
     }
 
     function propertyField<T extends Element>(name: string) {
-        return <TextField id={name} label={startCase(name)} variant='outlined' size='small' value={(element as T)[name as keyof T] || ''}
+        return <TextField id={name} label={startCase(name)} variant='filled' size='small' value={(element as T)[name as keyof T] || ''}
                           onChange={handleChange(name)}/>
     }
 
@@ -32,10 +32,8 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
                 </>
 
             case "Text":
-                const text = element as Text
                 return <>
-                    <TextField id="content" label="Content" variant='outlined' size='small' value={text.contentExpr}
-                               onChange={handleChange('contentExpr')}/>
+                    {propertyField<Text>('content')}
                 </>
 
             case "TextInput":
@@ -57,14 +55,13 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
         return <Box
             component="form"
             sx={{
-                '& > :not(style)': { m: 1, width: '25ch' },
+                '& > :not(style)': { m: 0.5, width: 'calc(100% - 20px)' },
             }}
             noValidate
             autoComplete="off"
         >
-            <TextField id="id" label="Id" variant='outlined' size='small' value={element.id} disabled/>
-            <TextField id="name" label="Name" variant='outlined' size='small' value={element.name}
-                       onChange={handleChange('name')}/>
+            <TextField id="id" label="Id" variant='filled' size='small' value={element.id} disabled/>
+            {propertyField<TextInput>('name')}
             {children}
         </Box>
     }

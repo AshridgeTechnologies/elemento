@@ -4,8 +4,8 @@ import AppStructureTree, {ModelTreeItem} from '../editor/AppStructureTree'
 import {Box, Button, Typography} from '@mui/material'
 
 const treeData = (script: Script): ModelTreeItem => {
-    const treeNodeFromStep = (step: Step, index: number) => new ModelTreeItem(index.toString(), step.title)
-    return new ModelTreeItem('theScript', 'Script', script.map(treeNodeFromStep))
+    const treeNodeFromStep = (step: Step, index: number) => new ModelTreeItem(index.toString(), step.title, 'Text')
+    return new ModelTreeItem('theScript', 'Script', 'Page', script.map(treeNodeFromStep))
 }
 
 export default function AutoRun({script}: { script: Step[] }) {

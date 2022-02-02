@@ -12,7 +12,7 @@
           "id": "text_1",
           "name": "First Text",
           "properties": {
-            "contentExpr": "\"This is App One\""
+            "content": "\"This is App One\""
           },
           "kind": "Text"
         },
@@ -20,7 +20,7 @@
           "id": "text_2",
           "name": "Second Text",
           "properties": {
-            "contentExpr": "\"The second bit of text\""
+            "content": "\"The second bit of text\""
           },
           "kind": "Text"
         }
@@ -36,7 +36,7 @@
           "id": "text_3",
           "name": "Some Text",
           "properties": {
-            "contentExpr": "\"Some text here\""
+            "content": "\"Some text here\""
           },
           "kind": "Text"
         },
@@ -44,7 +44,7 @@
           "id": "text_4",
           "name": "More Text",
           "properties": {
-            "contentExpr": "\"...and more text\""
+            "content": "\"...and more text\""
           },
           "kind": "Text"
         }

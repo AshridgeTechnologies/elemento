@@ -20,7 +20,7 @@ test('can update app on page', async ({ page }) => {
         // @ts-ignore
         const elementId = window.app().pages[0].elements[0].id
         // @ts-ignore
-        window.setApp(window.app().set(elementId, 'contentExpr', '"This is Elemento!"'))
+        window.setApp(window.app().set(elementId, 'content', '"This is Elemento!"'))
     })
 
     expect(await page.textContent('p >> nth=0')).toBe('This is Elemento!')

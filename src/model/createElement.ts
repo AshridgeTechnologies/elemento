@@ -15,7 +15,7 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         case 'Page':
             return new Page(id, name, {}, [])
         case 'Text':
-            return new Text(id, name, {contentExpr: '"Your text here"'})
+            return new Text(id, name, {content: '"Your text here"'})
         case 'TextInput':
             return new TextInput(id, name, {})
         default:

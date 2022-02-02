@@ -2,45 +2,39 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import {OnInsertFn} from './Types'
-import {ElementType} from '../model/Types'
-import {startCase} from 'lodash'
+import {OnOpenFn, OnSaveFn} from './Types'
 
-export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
+export default function FileMenu({onOpen, onSave}: {onOpen?: OnOpenFn, onSave?: OnSaveFn}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
-    const handleInsert = (elementType: ElementType) => () => {
-        onInsert(elementType)
-        handleClose()
-    }
 
-    const menuItem = (elementType: ElementType) => <MenuItem onClick={handleInsert(elementType)}>{startCase(elementType)}</MenuItem>
+    const menuItem = (label: string, action: () => void) => <MenuItem onClick={action}>{label}</MenuItem>
 
     return (
         <div>
             <Button
-                id="insertButton"
-                aria-controls="insertMenu"
+                id="fileButton"
+                aria-controls="fileMenu"
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                Insert
+                File
             </Button>
             <Menu
-                id="insertMenu"
-                data-testid="insertMenu"
+                id="fileMenu"
+                data-testid="fileMenu"
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
                 MenuListProps={{
-                    'aria-labelledby': 'insertButton',
+                    'aria-labelledby': 'fileButton',
                 }}
             >
-                {menuItem("Text")}
-                {menuItem("TextInput")}
+                {onOpen ? menuItem('Open', onOpen): null}
+                {onSave ? menuItem('Save', onSave): null}
             </Menu>
         </div>
     );
