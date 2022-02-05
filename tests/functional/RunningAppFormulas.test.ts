@@ -1,5 +1,6 @@
 import {expect, Page as PWPage, test} from '@playwright/test';
 import {App, Page, Text, TextInput} from '../../src/model/index'
+import {ex} from '../../src/util/helpers'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/runtime/app.html'
@@ -12,9 +13,9 @@ test('formulas using inputs update as the input changes', async ({ page }) => {
 
     const app = new App('app1', 'App One', {}, [
         new Page('page1', 'Main Page', {}, [
-            new TextInput('textInput_1', 'Name Input', {label:'"Name"', initialValue: '"Alice"'}),
-            new TextInput('textInput_2', 'Greeting Input', {label:'"Greeting"', initialValue: '"How are you?"'}),
-            new Text('text_1', 'Hello Text', {content: `NameInput.value + " - " + GreetingInput.value`}),
+            new TextInput('textInput_1', 'Name Input', {label:ex`"Name"`, initialValue: ex`"Alice"`}),
+            new TextInput('textInput_2', 'Greeting Input', {label:ex`"Greeting"`, initialValue: ex`"How are you?"`}),
+            new Text('text_1', 'Hello Text', {content: ex`NameInput.value + " - " + GreetingInput.value`}),
         ]),
     ])
 

@@ -1,10 +1,11 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType} from './Types'
+import {ElementId, PropertyValue} from './Types'
 
 type Properties = {
-    readonly content: string,
-    readonly style?: string,
+    readonly content: PropertyValue,
+    readonly style?: PropertyValue,
+    readonly display?: PropertyValue,
 }
 
 export default class Text extends BaseElement<Properties> implements Element {
@@ -20,7 +21,7 @@ export default class Text extends BaseElement<Properties> implements Element {
         return element.constructor.name === this.name
     }
 
-    kind: ElementType = 'Text'
-
     get content() {return this.properties.content}
+    get style() {return this.properties.style}
+    get display() {return this.properties.display ?? true}
 }

@@ -1,9 +1,9 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType} from './Types'
+import {ElementId, ElementType, PropertyValue} from './Types'
 import {createElement} from './createElement'
 
-type Properties = { style?: string }
+type Properties = { style?: PropertyValue }
 
 export default class Page extends BaseElement<Properties> implements Element {
 
@@ -15,8 +15,6 @@ export default class Page extends BaseElement<Properties> implements Element {
     ) {
         super(id, name, properties, elements)
     }
-
-    kind: ElementType = 'Page'
 
     static is(element: Element): element is Page {
         return element.constructor.name === this.name

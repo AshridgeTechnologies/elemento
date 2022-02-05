@@ -1,11 +1,11 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ElementId, ElementType} from './Types'
+import {ElementId, PropertyValue} from './Types'
 
 export type Properties = {
-    readonly initialValue?: string,
-    readonly maxLength?: string,  //expression
-    readonly label?: string
+    readonly initialValue?: PropertyValue,
+    readonly maxLength?: PropertyValue,
+    readonly label?: PropertyValue
 }
 export default class TextInput extends BaseElement<Properties> implements Element {
 
@@ -19,9 +19,6 @@ export default class TextInput extends BaseElement<Properties> implements Elemen
     static is(element: Element): element is TextInput {
         return element.constructor.name === this.name
     }
-
-    kind: ElementType = 'TextInput'
-
 
     get initialValue() { return this.properties.initialValue }
     get maxLength() { return this.properties.maxLength }

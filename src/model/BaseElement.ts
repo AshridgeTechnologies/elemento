@@ -21,7 +21,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
     ) {
     }
 
-    abstract kind: ElementType
+    kind = this.constructor.name as ElementType
 
     elementArray() : ReadonlyArray<Element> { return this.elements || [] }
 

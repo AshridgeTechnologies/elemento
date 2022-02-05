@@ -22,7 +22,7 @@ afterEach(() => {
     if (container !== null) document.body.removeChild(container);
 })
 
-jest.setTimeout(20 * 1000)
+jest.setTimeout(20 * 1000 * 1000)
 
 const wait = (time: number) => new Promise(resolve => setInterval(resolve, time) )
 const actWait = async (testFn: () => any) => {

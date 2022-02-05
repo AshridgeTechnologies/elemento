@@ -1,5 +1,4 @@
-import React from 'react'
-import {startCase} from 'lodash'
+import React, {ChangeEvent} from 'react'
 import Element from '../model/Element'
 import Text from '../model/Text'
 import {Box, TextField} from '@mui/material'
@@ -7,17 +6,14 @@ import {OnChangeFn} from './Types'
 import Page from '../model/Page'
 import TextInput from '../model/TextInput'
 import UnsupportedValueError from '../util/UnsupportedValueError'
+import PropertyInput from './PropertyInput'
+import {PropertyType, PropertyValue} from '../model/Types'
 
-export default function PropertyEditor(props: {element: Element, onChange: OnChangeFn }) {
-    const {element, onChange} = props
-    const handleChange = (propertyName: string) => (event: any) => {
-        const newValue = event.target.value
-        onChange(element.id, propertyName, newValue)
-    }
+export default function PropertyEditor({element, onChange}: {element: Element, onChange: OnChangeFn }) {
 
-    function propertyField<T extends Element>(name: string) {
-        return <TextField id={name} label={startCase(name)} variant='filled' size='small' value={(element as T)[name as keyof T] || ''}
-                          onChange={handleChange(name)}/>
+    function propertyField<T extends Element>(name: string, type: PropertyType = 'string') {
+        const propertyValue = (element as T)[name as keyof T] as unknown as PropertyValue
+        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange}/>
     }
 
     function propertyFields() {
@@ -34,12 +30,13 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
             case "Text":
                 return <>
                     {propertyField<Text>('content')}
+                    {propertyField<Text>('display', 'boolean')}
                 </>
 
             case "TextInput":
                 return <>
                     {propertyField<TextInput>('initialValue')}
-                    {propertyField<TextInput>('maxLength')}
+                    {propertyField<TextInput>('maxLength', 'number')}
                     {propertyField<TextInput>('label')}
                 </>
             default:
@@ -61,7 +58,8 @@ export default function PropertyEditor(props: {element: Element, onChange: OnCha
             autoComplete="off"
         >
             <TextField id="id" label="Id" variant='filled' size='small' value={element.id} disabled/>
-            {propertyField<TextInput>('name')}
+            <TextField id='name' label="Name" variant='filled' size='small' value={element.name}
+                       onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)}/>
             {children}
         </Box>
     }

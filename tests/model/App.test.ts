@@ -4,6 +4,7 @@ import App from '../../src/model/App'
 import {asJSON} from '../util/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
+import { ex } from '../../src/util/helpers'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -31,13 +32,13 @@ test('can find page by id', ()=> {
 })
 
 test('can find element on a page by id', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ''})
-    const text2 = new Text('t2', 'Text 3', {content: ''})
+    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const text2 = new Text('t2', 'Text 3', {content: ex``})
     let page1 = new Page('p1', 'Page 1', {}, [
         text1, text2,
     ])
-    const text3 = new Text('t3', 'Text 1', {content: ''})
-    const text4 = new Text('t4', 'Text 4', {content: ''})
+    const text3 = new Text('t3', 'Text 1', {content: ex``})
+    const text4 = new Text('t4', 'Text 4', {content: ex``})
     let page2 = new Page('p2', 'Page 2', {}, [
         text3, text4,
     ])
@@ -48,10 +49,10 @@ test('can find element on a page by id', ()=> {
 
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: '"Some text"'})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('t4', 'Text 4', {content: '"Some text 4"'})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
     const page3 = new Page('p3', 'Page 3', {}, [])
 
@@ -69,7 +70,7 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: '"Some text"'})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const app = new App('a1', 'App 1', {}, [page1])
     const updatedApp = app.set('x1', 'name', 'App 1A')
@@ -77,10 +78,10 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('creates an updated object if a property in a contained object is changed and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: '"Some text"'})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('t4', 'Text 4', {content: '"Some text 4"'})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const app = new App('a1', 'App 1', {}, [page1, page2])
@@ -95,11 +96,11 @@ test('creates an updated object if a property in a contained object is changed a
 })
 
 test('creates an updated object on insert element on a page and preserves unchanged objects', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
-    const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('text_7', 'Text 4', {content: '"Some text 4"'})
+    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1, page2])
 
@@ -108,7 +109,7 @@ test('creates an updated object on insert element on a page and preserves unchan
     expect(newElement).toBe(updatedApp.pages[0].elements![1])
     expect(newElement.id).toBe('text_8')
     expect(newElement.name).toBe('Text 8')
-    expect((newElement as Text).content).toBe('"Your text here"')
+    expect((newElement as Text).content).toStrictEqual(ex`"Your text here"`)
     expect(updatedApp.pages[1]).toBe(app.pages[1])
 })
 
@@ -127,11 +128,11 @@ test('creates an updated object on delete element on a page and preserves unchan
 })
 
 test('finds max id for element type', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
-    const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_7', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('TEXT_8', 'Text 4', {content: '"Some text 4"'})
+    const text3 = new Text('text_7', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('TEXT_8', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1, page2])
     expect(app.findMaxId('Text')).toBe(7)
@@ -141,13 +142,13 @@ test('finds max id for element type', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: '"Some text"'})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('t4', 'Text 4', {content: '"Some text 4"'})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
-    const app = new App('a1', 'App 1', {author: 'Jo'}, [page1, page2])
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2])
 
     expect(asJSON(app)).toStrictEqual({
         kind: 'App',
@@ -160,13 +161,13 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: '"Some text"'})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: '"Some text 3"'})
-    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: '"Some text"'})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
-    const app = new App('a1', 'App 1', {author: 'Jo'}, [page1, page2])
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2])
     const newApp = loadJSON(asJSON(app))
     expect(newApp).toStrictEqual<App>(app)
 })

@@ -6,6 +6,7 @@ import App from '../../src/model/App'
 import Generator from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
 import {useObjectStateWithDefaults} from '../../src/runtime/appData'
+import {ex} from '../../src/util/helpers'
 
 let makeComponentFunction = function (functionCode: string) {
     const functionBody = functionCode.replace(/^function \w+.*/m, '').replace(/^}$/m, '').trim()
@@ -16,8 +17,8 @@ test('generated Page creates React element with correct structure', ()=> {
 
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 't1', {content: '"Hi there!"'}),
-            new Text('id1', 't2', {content: '2 + 2'}),
+            new Text('id1', 't1', {content: ex`"Hi there!"`}),
+            new Text('id1', 't2', {content: ex`2 + 2`}),
         ])])
 
     const gen = new Generator(app)
@@ -39,8 +40,8 @@ test('generated AppMain creates React elements with correct structure', ()=> {
 
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 't1', {content: '"Hi there!"'}),
-            new Text('id1', 't2', {content: '2 + 2'}),
+            new Text('id1', 't1', {content: ex`"Hi there!"`}),
+            new Text('id1', 't2', {content: ex`2 + 2`}),
         ])])
 
     const gen = new Generator(app)

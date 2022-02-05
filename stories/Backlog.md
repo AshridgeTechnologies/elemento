@@ -40,6 +40,7 @@ Tech debt
 
 - Refactor EditorMain into component and fix unit test
 - Refactor runApp.ts and unit test
+- Review Generator.initialStateEntry vs generateElement
 
 Done
 ====

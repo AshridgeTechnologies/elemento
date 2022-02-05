@@ -29,3 +29,8 @@ export const treeItemLabels = (container: any) => {
     const treeNodesShown = container.querySelectorAll(treeItemSelector)
     return [...treeNodesShown.values()].map( (it: any) => it.textContent)
 }
+
+export const componentProps = (domElement: any) => {
+    const propsKey = Object.keys(domElement).find(k => k.startsWith("__reactProps$"))
+    return propsKey !== undefined ? domElement[propsKey as string] : null
+}

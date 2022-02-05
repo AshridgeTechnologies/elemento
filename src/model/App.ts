@@ -1,9 +1,9 @@
 import Page from './Page';
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType} from './Types'
+import {ElementId, ElementType, PropertyValue} from './Types'
 
-type Properties = { author?: string }
+type Properties = { author?: PropertyValue }
 
 export default class App extends BaseElement<Properties> implements Element {
     constructor(
@@ -14,8 +14,6 @@ export default class App extends BaseElement<Properties> implements Element {
     ) {
         super(id, name, properties, elements)
     }
-
-    kind: ElementType = 'App'
 
     get pages() {return this.elements as Page[]}
 

@@ -3,12 +3,13 @@ import App from '../../src/model/App';
 import Text from '../../src/model/Text';
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
+import {ex} from '../../src/util/helpers'
 
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 'Text Input 1', {content: '"Hi there!"'}),
-            new Text('id1', 't2', {content: '23 + 45'}),
+            new Text('id1', 'Text Input 1', {content: 'Hi there!'}),
+            new Text('id1', 't2', {content: ex`23 + 45`}),
     ]
         )])
 
@@ -20,7 +21,7 @@ test('generates app and page 0 output files', ()=> {
     const state = useObjectStateWithDefaults(props.path, {})
 
     return React.createElement('div', {id: props.path},
-        React.createElement(TextElement, {path: pathWith('TextInput1')}, "Hi there!"),
+        React.createElement(TextElement, {path: pathWith('TextInput1')}, 'Hi there!'),
         React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
     )
 }
@@ -39,8 +40,8 @@ test('generates app and page 0 output files', ()=> {
 test('generates TextInput elements with initial value', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: '"Hi there!"', maxLength: '10', label: '"Text Input One"'}),
-            new TextInput('id2', 't2', {initialValue: '"Some" + " things"', maxLength: '5 + 5'}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, label: "Text Input One"}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, maxLength: ex`5 + 5`}),
             new TextInput('id2', 't3', {}),
     ]
         )])
@@ -49,13 +50,13 @@ test('generates TextInput elements with initial value', ()=> {
     expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const state = useObjectStateWithDefaults(props.path, {
-        t1: {value: "Hi there!"},
+        t1: {value: 'Hi there!'},
         t2: {value: "Some" + " things"},
         t3: {value: ""},
     })
 
     return React.createElement('div', {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), initialValue: "Hi there!", maxLength: 10, label: "Text Input One"}),
+        React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, label: 'Text Input One'}),
         React.createElement(TextInput, {path: pathWith('t2'), initialValue: "Some" + " things", maxLength: 5 + 5}),
         React.createElement(TextInput, {path: pathWith('t3')}),
     )
@@ -66,7 +67,7 @@ test('generates TextInput elements with initial value', ()=> {
 test('generates error marker for syntax error in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: '23 +'}),
+                new Text('id1', 't1', {content: ex`23 +`}),
             ]
         )])
 
@@ -86,7 +87,7 @@ test('generates error marker for syntax error in content expression', ()=> {
 test('global functions available in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: 'sum(2, 3, 4)'}),
+                new Text('id1', 't1', {content: ex`sum(2, 3, 4)`}),
             ]
         )])
 
@@ -105,7 +106,7 @@ test('global functions available in content expression', ()=> {
 test('unknown global functions show error marker', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: 'sumxx(2, 3, 4)'}),
+                new Text('id1', 't1', {content: ex`sumxx(2, 3, 4)`}),
             ]
         )])
 
@@ -125,7 +126,7 @@ test('unknown global functions show error marker', ()=> {
 test('page elements available in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: 'ForenameInput.value + " " + SurnameInput.value'}),
+                new Text('id1', 't1', {content: ex`ForenameInput.value + " " + SurnameInput.value`}),
                 new TextInput('id2', 'Forename Input', {}),
                 new TextInput('id3', 'Surname Input', {}),
             ]

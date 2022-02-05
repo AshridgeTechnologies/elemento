@@ -3,6 +3,7 @@ import {App, Text} from '../../src/model/index'
 import {appFixture1} from '../util/appFixtures'
 import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
 import {loadJSONFromString} from '../../src/model/loadJSON'
+import {ex} from '../../src/util/helpers'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
@@ -89,7 +90,7 @@ test('save previously loaded app to file', async ({page}) => {
 
     const updatedAppText = (await page.textContent('#_testFile')) as string
     const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toBe('"The updated second text"')
+    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('save new app to file', async ({page}) => {
@@ -114,7 +115,7 @@ test('save new app to file', async ({page}) => {
 
     const updatedAppText = (await page.textContent('#_testFile')) as string
     const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toBe('"The updated second text"')
+    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('error message if cannot read app from file', async ({page}) => {

@@ -42,6 +42,23 @@ test('shows Text element selected in tree in property editor', async () => {
     expect(nameInput.value).toBe('Second Text')
 })
 
+test('property kind button state does not leak into other properties', async () => {
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
+
+    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
+
+    fireEvent.click(screen.getByText('Second Text'))
+
+    const contentInput = () => container.querySelector('.property-input button') as HTMLInputElement
+    expect(contentInput().textContent).toBe('fx=')
+    fireEvent.click(contentInput())
+    expect(contentInput().textContent).toBe('abc')
+
+    fireEvent.click(screen.getByText('First Text'))
+    expect(contentInput().textContent).toBe('fx=')
+})
+
 test('shows TextInput element selected in tree in property editor', async () => {
     await actWait(() =>  ({container} = render(<Editor app={appFixture2()} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
     await actWait(() =>  fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[1]))

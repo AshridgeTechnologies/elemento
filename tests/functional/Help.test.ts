@@ -7,7 +7,6 @@ const helpButton = 'button#help'
 const helpPanel = '#helpPanel'
 const helpPanelTitle = `${helpPanel} header .MuiTypography-h6`
 const helpPanelText = `${helpPanel} .helpText`
-const helpTextPane = `${helpPanel} .Pane2`
 const helpPanelClose = `${helpPanel} .closeButton`
 
 test('open help panel and hide it', async ({ page }) => {

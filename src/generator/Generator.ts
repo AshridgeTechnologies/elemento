@@ -8,7 +8,8 @@ import Element from '../model/Element'
 import TextInput from '../model/TextInput'
 import {globalFunctions} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-import {definedPropertiesOf} from '../util/helpers'
+import {definedPropertiesOf, isExpr} from '../util/helpers'
+import {PropertyValue} from '../model/Types'
 
 type IdentifierCollector = {add(s: string): void}
 
@@ -17,6 +18,15 @@ function objectLiteral(obj: object) {
 }
 
 const isGlobalFunction = (name: string) => name in globalFunctions
+
+const valueLiteral = function (propertyValue: string | number | { expr: string } | boolean) {
+    switch (typeof propertyValue) {
+        case 'string':
+            return `'${propertyValue}'`
+        default:
+            return propertyValue.toString()
+    }
+}
 
 export default class Generator {
     constructor(public app: App) {
@@ -121,7 +131,7 @@ ${children}
 
             case "TextInput":
                 const textInput = element as TextInput
-                return `${textInput.codeName}: {value: ${textInput.initialValue || '""'}},`
+                return `${textInput.codeName}: {value: ${Generator.getExpr(textInput.initialValue) || '""'}},`
 
             default:
                 throw new UnsupportedValueError(element.kind)
@@ -130,37 +140,54 @@ ${children}
 
     }
 
-    private static getExprAndIdentifiers(expr: string | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean) {
-        if (expr === undefined) {
+    private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean) {
+        if (propertyValue === undefined) {
             return undefined
         }
 
-        try {
-            const ast = parse(expr)
-            const thisIdentifiers = new Set<string>()
-            visit(ast, {
-                visitIdentifier(path) {
-                    const node = path.value
-                    const parentNode = path.parentPath.value
-                    const isPropertyIdentifier = parentNode.type === "MemberExpression" && parentNode.property === node
-                    if (!isPropertyIdentifier) {
-                        thisIdentifiers.add(node.name)
+        if (isExpr(propertyValue)) {
+            const {expr} = propertyValue
+            try {
+                const ast = parse(expr)
+                const thisIdentifiers = new Set<string>()
+                visit(ast, {
+                    visitIdentifier(path) {
+                        const node = path.value
+                        const parentNode = path.parentPath.value
+                        const isPropertyIdentifier = parentNode.type === "MemberExpression" && parentNode.property === node
+                        if (!isPropertyIdentifier) {
+                            thisIdentifiers.add(node.name)
+                        }
+                        this.traverse(path);
                     }
-                    this.traverse(path);
+                })
+
+                const identifierNames = Array.from(thisIdentifiers.values())
+                const unknownIdentifiers = identifierNames.filter(id => !isKnown(id))
+                if (unknownIdentifiers.length) {
+                    return `React.createElement('span', {title: "Unknown names: ${unknownIdentifiers.join(', ')}"}, '#ERROR')`
                 }
-            })
 
-            const identifierNames = Array.from(thisIdentifiers.values())
-            const unknownIdentifiers = identifierNames.filter(id => !isKnown(id))
-            if (unknownIdentifiers.length) {
-                return `React.createElement('span', {title: "Unknown names: ${unknownIdentifiers.join(', ')}"}, '#ERROR')`
+                identifierNames.forEach(name => identifiers.add(name))
+
+                return expr
+            } catch(e: any) {
+                return `React.createElement('span', {title: "${e.constructor.name}: ${e.message}"}, '#ERROR')`
             }
+        } else {
+            return valueLiteral(propertyValue)
+        }
+    }
 
-            identifierNames.forEach(name => identifiers.add(name))
+    private static getExpr(propertyValue: PropertyValue | undefined) {
+        if (propertyValue === undefined) {
+            return undefined
+        }
 
-            return expr
-        } catch(e: any) {
-            return `React.createElement('span', {title: "${e.constructor.name}: ${e.message}"}, '#ERROR')`
+        if (isExpr(propertyValue)) {
+            return propertyValue.expr
+        } else {
+            return valueLiteral(propertyValue)
         }
     }
 }

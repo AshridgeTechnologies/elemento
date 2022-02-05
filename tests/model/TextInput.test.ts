@@ -2,19 +2,20 @@ import TextInput from '../../src/model/TextInput'
 import Page from '../../src/model/Page'
 import {asJSON} from '../util/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
+import {ex} from '../../src/util/helpers'
 
 test('TextInput has correct properties', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '5', label: 'Text One'})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, maxLength: ex`5`, label: ex`Text One`})
 
     expect(textInput.id).toBe('t1')
     expect(textInput.name).toBe('Text Input 1')
-    expect(textInput.initialValue).toBe('"Some text"')
-    expect(textInput.maxLength).toBe('5')
-    expect(textInput.label).toBe('Text One')
+    expect(textInput.initialValue).toStrictEqual(ex`"Some text"`)
+    expect(textInput.maxLength).toStrictEqual(ex`5`)
+    expect(textInput.label).toStrictEqual(ex`Text One`)
 })
 
 test('tests if an object is this type', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"'})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {}, [])
 
     expect(TextInput.is(textInput)).toBe(true)
@@ -22,28 +23,36 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"'})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const updated = textInput.set('t1', 'name', 'Text 1A')
     expect(updated.name).toBe('Text 1A')
-    expect(updated.initialValue).toBe('"Some text"')
+    expect(updated.initialValue).toStrictEqual(ex`"Some text"`)
     expect(textInput.name).toBe('Text Input 1')
-    expect(textInput.initialValue).toBe('"Some text"')
+    expect(textInput.initialValue).toStrictEqual(ex`"Some text"`)
 
-    const updated2 = updated.set('t1', 'initialValue', 'shazam')
+    const updated2 = updated.set('t1', 'initialValue', `shazam`)
     expect(updated2.name).toBe('Text 1A')
-    expect(updated2.initialValue).toBe('shazam')
+    expect(updated2.initialValue).toStrictEqual(`shazam`)
     expect(updated.name).toBe('Text 1A')
-    expect(updated.initialValue).toBe('"Some text"')
+    expect(updated.initialValue).toStrictEqual(ex`"Some text"`)
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"'})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const updated = textInput.set('x1', 'name', 'Text 1A')
     expect(updated).toBe(textInput)
 })
 
 test('converts to JSON', ()=> {
-    const text = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '10'})
+    const text = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, maxLength: ex`10`, label: ex`"The Text"`})
+    expect(asJSON(text)).toStrictEqual({
+        kind: 'TextInput',
+        id: 't1',
+        name: 'Text Input 1',
+        properties: text.properties
+    })
+
+    const text2 = new TextInput('t1', 'Text Input 2', {initialValue: `Some text`, maxLength: `10`, label: 'The Text'})
     expect(asJSON(text)).toStrictEqual({
         kind: 'TextInput',
         id: 't1',
@@ -53,8 +62,13 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: '"Some text"', maxLength: '10'})
+    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, maxLength: ex`10`})
     const plainObj = asJSON(textInput)
     const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<TextInput>(textInput)
+
+    const textInput2 = new TextInput('t1', 'Text Input 1', {initialValue: `Some text`, maxLength: `10`, label: 'The Text'})
+    const plainObj2 = asJSON(textInput2)
+    const newObj2 = loadJSON(plainObj2)
+    expect(newObj2).toStrictEqual<TextInput>(textInput2)
 })
