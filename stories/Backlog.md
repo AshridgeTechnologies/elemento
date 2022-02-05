@@ -7,9 +7,10 @@ Bugs
 
 Stories
 -------
-- Styling Part 1
-- Formula error clean-up
+- Plain value/formula switch
 - Controls and functions for MVP
+- Delete element
+- General usability Part 1
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -55,3 +56,4 @@ Done
 - Run app from web
 - Basic guided tour
 - Initial documentation
+- Styling Part 1
