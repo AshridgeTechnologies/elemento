@@ -5,7 +5,7 @@ const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
 
 const helpButton = 'button#help'
 const helpPanel = '#helpPanel'
-const helpPanelTitle = `${helpPanel} h1`
+const helpPanelTitle = `${helpPanel} header .MuiTypography-h6`
 const helpPanelText = `${helpPanel} .helpText`
 const helpTextPane = `${helpPanel} .Pane2`
 const helpPanelClose = `${helpPanel} .closeButton`
