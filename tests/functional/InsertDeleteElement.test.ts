@@ -10,6 +10,8 @@ const mainPageTreeExpand = `${treeExpandControlSelector} >> nth=0`
 const treeMainPageElementItem = (n: number) => `${treeItemSelector} >> nth=${n+1}`
 const insertMenu = 'text=Insert'
 const insertMenu_Text = 'ul[role="menu"] :text("Text")'
+const contextMenu_Delete = 'ul[role="menu"] :text("Delete")'
+const confirmMenu_Yes = 'ul[role="menu"] :text("Yes")'
 
 test('can add element as first element when page selected', async ({ page }) => {
 
@@ -45,4 +47,17 @@ test('can add element after selected element', async ({ page }) => {
 
     expect(await page.locator('input#id').inputValue()).toBe('text_5')
 
+})
+
+test('can delete element', async ({ page }) => {
+    await page.goto(runtimeRootUrl)
+    await page.evaluate( (app: string) => window.setAppFromJSONString(app), JSON.stringify(appFixture1()))
+
+    await page.click(mainPageTreeExpand)
+    expect(await page.textContent(treeMainPageElementItem(0))).toBe('First Text')
+    await page.click(treeMainPageElementItem(0), {button: 'right'})
+    await page.click(contextMenu_Delete)
+    await page.click(confirmMenu_Yes)
+
+    expect(await page.textContent(treeMainPageElementItem(0))).toBe('Second Text')
 })

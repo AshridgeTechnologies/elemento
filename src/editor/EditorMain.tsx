@@ -7,6 +7,8 @@ import Editor from './Editor'
 import {editorInitialApp} from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ElementId, ElementType} from '../model/Types'
+import {AppElementAction} from './Types'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 
 let theApp = editorInitialApp()
@@ -41,6 +43,20 @@ const onInsert = (idAfter: ElementId, elementType: ElementType)=> {
     theApp = newApp
     doRender()
     return newElement.id
+}
+
+const onAction = (id: ElementId, action: AppElementAction) => {
+    const doAction = (): App => {
+        switch (action) {
+            case 'delete':
+                return theApp.delete(id)
+            default:
+                throw new UnsupportedValueError(action)
+        }
+    }
+
+    theApp = doAction()
+    doRender()
 }
 
 const userCancelledFilePick = (e:any) => e instanceof DOMException && e.name === 'AbortError'
@@ -139,7 +155,7 @@ function doRender() {
     ReactDOM.render(
         <ThemeProvider theme={theme}>
             {errorMessage}
-            <Editor app={theApp} onChange={onPropertyChange} onInsert={onInsert} onOpen={onOpen} onSave={onSave}/>
+            <Editor app={theApp} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave}/>
         </ThemeProvider>,
         document.getElementById('main')
     )

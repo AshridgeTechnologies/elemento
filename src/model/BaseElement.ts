@@ -58,6 +58,19 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return this
     }
 
+    delete(itemId: ElementId): this {
+        const itemIsInOurElements = !!this.elementArray().find( el => el.id === itemId )
+        const newElements = itemIsInOurElements
+            ? this.elementArray().filter(el => el.id !== itemId)
+            : this.elementArray().map(el => el.delete(itemId))
+
+        if (!equalArrays(newElements, this.elementArray())) {
+            return this.create(this.id, this.name, this.properties, newElements)
+        }
+
+        return this
+    }
+
     findMaxId(elementType: ElementType) : number {
         const ownMax = () => {
             if ((this as unknown as Element).kind === elementType && this.id.match(`${elementType.toLowerCase()}_\\d+`)) {

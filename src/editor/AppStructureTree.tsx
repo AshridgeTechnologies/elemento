@@ -1,10 +1,11 @@
 import Tree, {TreeNodeProps} from 'rc-tree'
 import React from 'react'
-import {BasicDataNode, Key} from 'rc-tree/es/interface'
+import {BasicDataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
-import {useTheme} from '@mui/material'
-import {Web, Subject, RectangleOutlined} from '@mui/icons-material'
+import {Menu, MenuItem, useTheme} from '@mui/material'
+import {RectangleOutlined, Subject, Web} from '@mui/icons-material'
 import {ElementType} from '../model/Types'
+import {AppElementAction} from './Types'
 
 export class ModelTreeItem {
     constructor(public id: string,
@@ -25,19 +26,100 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     }
 }
 
-export default function AppStructureTree({treeData, onSelect, selectedItemId}: {
-    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string}) {
+type Action = {
+    action: AppElementAction,
+    id: string | number,
+    itemName: string
+}
+
+export default function AppStructureTree({treeData, onSelect, selectedItemId, onAction}: {
+    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void}) {
 
     const theme = useTheme()
+    const [actionEl, setActionEl] = React.useState<null | HTMLElement>(null);
+    const [actionNode, setActionNode] = React.useState<null | {id: string, name: string}>(null);
+    const [confirmingEl, setConfirmingEl] = React.useState<null | HTMLElement>(null);
+    const [actionToConfirm, setActionToConfirm] = React.useState<null | Action>(null);
+    const contextMenuOpen = Boolean(actionEl)
+    const confirmMenuOpen = Boolean(confirmingEl)
+
+    const showContextMenu = (event: React.MouseEvent, nodeId: string | number,  nodeTitle: string) => {
+        setActionEl((event as React.MouseEvent<HTMLElement>).currentTarget)
+        setActionNode({id: nodeId.toString(), name: nodeTitle})
+    }
+
+    const confirmAction = (event: React.MouseEvent, action: AppElementAction) => {
+        setConfirmingEl((event as React.MouseEvent<HTMLElement>).currentTarget)
+        setActionToConfirm({action, id: actionNode!.id, itemName: actionNode!.name})
+    }
+
+    const actionConfirmed = () => {
+        onAction(actionToConfirm!)
+        closeMenus()
+    }
+
+    const closeMenus = () => {
+        setActionEl(null)
+        setActionNode(null)
+        setConfirmingEl(null)
+        setActionToConfirm(null)
+    }
+
     function itemSelected(selectedKeys: Key[]) {
         const key = selectedKeys[0]?.toString()
         onSelect && key && onSelect(key)
     }
 
-    return <Tree treeData={treeData.children as BasicDataNode[]}
+    return <>
+        <Tree treeData={treeData.children as BasicDataNode[]}
                  draggable
                  icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
                  selectedKeys={selectedItemId ? [selectedItemId] : []}
                  onSelect={itemSelected}
+                 onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
+                    showContextMenu(event, node.key, 'this item')
+                 }}
                  style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>
+        {
+            contextMenuOpen && (
+                <Menu
+                    id="tree-context-menu"
+                    anchorEl={actionEl}
+                    open={contextMenuOpen}
+                    onClose={closeMenus}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <MenuItem onClick={(event: React.MouseEvent) => confirmAction(event, 'delete')}>Delete</MenuItem>
+                </Menu>
+            )
+        }
+        {
+            confirmMenuOpen && (
+                <Menu
+                    id="tree-confirm-menu"
+                    anchorEl={confirmingEl}
+                    open={confirmMenuOpen}
+                    onClose={closeMenus}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action} {actionToConfirm!.itemName}</MenuItem>
+                    <MenuItem onClick={closeMenus}>No - go back</MenuItem>
+                </Menu>
+            )
+        }
+        </>
 }

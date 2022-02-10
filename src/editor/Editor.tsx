@@ -4,7 +4,7 @@ import Page from '../model/Page'
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from './PropertyEditor'
-import {OnChangeFn, OnInsertWithSelectedFn, OnOpenFn, OnSaveFn} from './Types'
+import {OnChangeFn, OnInsertWithSelectedFn, OnOpenFn, OnSaveFn, OnActionFn, AppElementAction} from './Types'
 import AppBar from './AppBar'
 import MenuBar from './MenuBar'
 import InsertMenu from './InsertMenu'
@@ -32,9 +32,10 @@ export default function Editor({
                                    app,
                                    onChange,
                                    onInsert,
+                                   onAction,
                                    onOpen,
                                    onSave
-                               }: { app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
+                               }: { app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
 
@@ -55,6 +56,8 @@ export default function Editor({
     }
 
     const onHelp = () => setHelpVisible(!helpVisible)
+
+    const onTreeAction = ({action, id}: { action: AppElementAction, id: string | number }) => { onAction(id.toString(), action)}
 
     const appFrameRef = useRef<HTMLIFrameElement>(null);
 
@@ -108,7 +111,7 @@ export default function Editor({
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
-                                                      selectedItemId={selectedItemId}/>
+                                                      selectedItemId={selectedItemId} onAction={onTreeAction}/>
                                 </Grid>
                                 <Grid item xs={8} height='100%' overflow='scroll'>
                                     <Box id='propertyPanel' width='100%'>

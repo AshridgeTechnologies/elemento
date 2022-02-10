@@ -112,6 +112,20 @@ test('creates an updated object on insert element on a page and preserves unchan
     expect(updatedApp.pages[1]).toBe(app.pages[1])
 })
 
+test('creates an updated object on delete element on a page and preserves unchanged objects', ()=> {
+    const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
+    const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_3', 'Text 3', {content: '"Some text 3"'})
+    const text4 = new Text('text_7', 'Text 4', {content: '"Some text 4"'})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1, page2])
+
+    const updatedApp = app.delete(text3.id)
+    expect(updatedApp.pages[1].elements!.map( el => el.name)).toStrictEqual(['Text 4'])
+    expect(updatedApp.pages[0]).toBe(app.pages[0])
+})
+
 test('finds max id for element type', ()=> {
     const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
     const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
