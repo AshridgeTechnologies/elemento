@@ -7,9 +7,8 @@ Bugs
 
 Stories
 -------
-- Plain value/formula switch
-- Controls and functions for MVP
-- Delete element
+- Controls and functions Part 1
+- Formula improvements Part 1
 - General usability Part 1
 - Tutorial Hello World
 - Tutorial Real World 1
@@ -58,3 +57,5 @@ Done
 - Basic guided tour
 - Initial documentation
 - Styling Part 1
+- Plain value/formula switch
+- Delete element
