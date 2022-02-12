@@ -109,7 +109,7 @@ test('creates an updated object on insert element on a page and preserves unchan
     expect(newElement).toBe(updatedApp.pages[0].elements![1])
     expect(newElement.id).toBe('text_8')
     expect(newElement.name).toBe('Text 8')
-    expect((newElement as Text).content).toStrictEqual(ex`"Your text here"`)
+    expect((newElement as Text).content).toBe('Your text here')
     expect(updatedApp.pages[1]).toBe(app.pages[1])
 })
 

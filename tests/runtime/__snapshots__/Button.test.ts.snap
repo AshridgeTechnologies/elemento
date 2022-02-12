@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button element produces output with default values where properties omitted 1`] = `
+<button
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+  <span
+    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;
+
+exports[`Button element produces output with properties supplied 1`] = `
+<button
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+</button>
+`;

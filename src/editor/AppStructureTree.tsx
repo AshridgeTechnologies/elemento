@@ -3,9 +3,10 @@ import React from 'react'
 import {BasicDataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
-import {RectangleOutlined, Subject, Web} from '@mui/icons-material'
+import {Crop75, RectangleOutlined, Subject, Web} from '@mui/icons-material'
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export class ModelTreeItem {
     constructor(public id: string,
@@ -19,10 +20,12 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const kind = (props.data as ModelTreeItem)!.kind
     const sx = { fontSize: 16, color }
     switch (kind) {
+        case 'App': return <Web {...{sx}} />
         case 'Page': return <Web {...{sx}} />
         case 'Text': return <Subject {...{sx}}/>
         case 'TextInput': return <RectangleOutlined {...{sx}}/>
-        default: throw new Error(`Unknown element kind for icon: ${kind}`)
+        case 'Button': return <Crop75 {...{sx}}/>
+        default: throw new UnsupportedValueError(kind)
     }
 }
 

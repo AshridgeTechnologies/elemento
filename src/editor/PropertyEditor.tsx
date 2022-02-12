@@ -8,6 +8,7 @@ import TextInput from '../model/TextInput'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
+import Button from '../model/Button'
 
 export default function PropertyEditor({element, onChange}: {element: Element, onChange: OnChangeFn }) {
 
@@ -38,6 +39,13 @@ export default function PropertyEditor({element, onChange}: {element: Element, o
                     {propertyField<TextInput>('initialValue')}
                     {propertyField<TextInput>('maxLength', 'number')}
                     {propertyField<TextInput>('label')}
+                </>
+
+            case "Button":
+                return <>
+                    {propertyField<Button>('content')}
+                    {propertyField<Button>('action', 'action')}
+                    {propertyField<Button>('display', 'boolean')}
                 </>
             default:
                 throw new UnsupportedValueError(element.kind)

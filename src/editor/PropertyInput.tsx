@@ -4,11 +4,11 @@ import {startCase} from 'lodash'
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
 import {isExpr} from '../util/helpers'
 import {OnChangeFn} from './Types'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export default function PropertyInput({ elementId, name, type, value, onChange}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined, onChange: OnChangeFn }) {
-    const valueIsExpr = value !== undefined ? isExpr(value) : false
+    const valueIsExpr = value !== undefined && isExpr(value) || type === 'action'
     const [expr, setExpr] = useState(valueIsExpr)
-    const buttonLabel = expr ? 'fx=' : 'abc'
 
     const typedValue = (input: string): PropertyValue => {
         switch (type) {
@@ -18,6 +18,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
                 return input
             case 'boolean':
                 return input === 'true'
+            default:
+                throw new UnsupportedValueError(type as never)
         }
     }
     const valueToSend = (inputString: string | undefined, isExpr: boolean) => {
@@ -27,7 +29,6 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
         return isExpr ? {expr: inputString} : typedValue(inputString)
     }
     const updatedPropertyValue = (inputString: string) => {
-        // const inputString = (event.target as HTMLInputElement).value
         return valueToSend(inputString, expr)
     }
 
@@ -44,11 +45,21 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
 
     const numericProps = type === 'number' ? {inputProps: {pattern: '[0-9]*'}} : {}
     const label = startCase(name)
-    const buttonColor = expr ? 'secondary' : 'primary'
+    const fixedButtonColor = 'primary'
+    const exprButtonColor = 'secondary'
+    const exprButtonLabel = 'fx='
+    const fixedButtonLabel = 'abc'
+    const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel
+    const buttonColor = expr ? exprButtonColor : fixedButtonColor
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
 
     return <div style={{display: 'inline-flex'}} className='property-input'>
-        <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem'}} color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
+        {type === 'action'
+            ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem'}}
+                     color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
+            : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem'}}
+                    color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
+        }
         {type === 'boolean' && !expr ?
             <FormControl variant="filled" size='small' sx={{ minWidth: 120 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>

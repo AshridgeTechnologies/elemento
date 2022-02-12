@@ -9,3 +9,6 @@ General usability Part 1
 - Copy/paste before/after on context menu
 - Insert before/after on context menu
 - Change to formula if type = at the start
+- Have fixed kind buttons non-disables but warn if try to change
+- Can't insert unless select an item
+- Icons on Insert Menu

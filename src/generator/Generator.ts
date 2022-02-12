@@ -10,6 +10,7 @@ import {globalFunctions} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {definedPropertiesOf, isExpr} from '../util/helpers'
 import {PropertyValue} from '../model/Types'
+import Button from '../model/Button'
 
 type IdentifierCollector = {add(s: string): void}
 
@@ -17,6 +18,7 @@ function objectLiteral(obj: object) {
     return `{${Object.entries(obj).map(([name, val]) => `${name}: ${val}`).join(', ')}}`
 }
 
+const isAction = true
 const isGlobalFunction = (name: string) => name in globalFunctions
 
 const valueLiteral = function (propertyValue: string | number | { expr: string } | boolean) {
@@ -114,6 +116,15 @@ ${children}
                 const reactProperties = definedPropertiesOf({path, initialValue, maxLength, label})
                 return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
+            case "Button": {
+                const button = element as Button
+                const path = `pathWith('${button.codeName}')`
+                const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown)
+                const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, isAction)
+                const reactProperties = definedPropertiesOf({path, content, action})
+                return `React.createElement(Button, ${objectLiteral(reactProperties)})`
+            }
+
             default:
                 throw new UnsupportedValueError(element.kind)
 
@@ -133,6 +144,9 @@ ${children}
                 const textInput = element as TextInput
                 return `${textInput.codeName}: {value: ${Generator.getExpr(textInput.initialValue) || '""'}},`
 
+            case 'Button':
+                return ''
+
             default:
                 throw new UnsupportedValueError(element.kind)
 
@@ -140,7 +154,7 @@ ${children}
 
     }
 
-    private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean) {
+    private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean, isAction: boolean = false) {
         if (propertyValue === undefined) {
             return undefined
         }
@@ -170,7 +184,7 @@ ${children}
 
                 identifierNames.forEach(name => identifiers.add(name))
 
-                return expr
+                return isAction ? `() => {${expr}}` : expr
             } catch(e: any) {
                 return `React.createElement('span', {title: "${e.constructor.name}: ${e.message}"}, '#ERROR')`
             }

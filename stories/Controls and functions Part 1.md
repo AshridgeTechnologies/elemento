@@ -4,15 +4,22 @@ Controls and functions Part 1
 Controls
 --------
 
-- Button
+  - Button
 - Number input
 - Boolean input
 - Select input
 - Multiline text input box
-- Text -> general Display
+- Text -> general Display, multiline input, etc
 - Page (new)
 
-
+For each control
+----------------
+- Entry in Control reference
+- Add to playwright Controls.test
+- Model implementation
+- Generator
+- Runtime implementation
+- Add to insert menu
 
 Attributes
 ----------
@@ -22,6 +29,7 @@ Attributes
 - Image
 - width, height
 - Style
+- Display
 
 Functions
 ---------

@@ -4,6 +4,7 @@ import App from '../model/App'
 import Generator from '../generator/Generator'
 import TextElement from './TextElement'
 import TextInput from './TextInput'
+import Button from './Button'
 import ErrorFallback from './ErrorFallback'
 import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -77,6 +78,8 @@ function runApp() {
     )
 }
 
+// @ts-ignore
+window.Button = Button
 // @ts-ignore
 window.TextElement = TextElement
 // @ts-ignore

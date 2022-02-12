@@ -4,6 +4,7 @@ import Page from './Page'
 import TextInput from './TextInput'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {startCase} from 'lodash'
+import Button from './Button'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -15,9 +16,11 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         case 'Page':
             return new Page(id, name, {}, [])
         case 'Text':
-            return new Text(id, name, {content: {expr: '"Your text here"'}})
+            return new Text(id, name, {content: 'Your text here'})
         case 'TextInput':
             return new TextInput(id, name, {})
+        case 'Button':
+            return new Button(id, name, {content: 'Do something'})
         default:
             throw new UnsupportedValueError(elementType)
     }

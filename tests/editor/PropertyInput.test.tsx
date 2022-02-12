@@ -30,6 +30,17 @@ test('shows fixed value control for string property if current value is empty', 
     expect(label().textContent).toBe('Length')
 })
 
+test('shows expression-only control for action property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='theAction' type='action' value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(kindButton().disabled).toBe(true)
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('theAction')
+    expect(input().value).toBe('')
+    expect(componentProps(input()).value).toBe('')
+    expect(label().textContent).toBe('The Action')
+})
+
 test('shows fixed value control for string property if current value is a string', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Hi there!'} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('abc')
@@ -64,6 +75,15 @@ test('shows expression control for property if current value is an expression', 
     expect(input().id).toBe('length')
     expect(input().value).toBe('"Hi there!"')
     expect(label().textContent).toBe('Length')
+})
+
+test('shows expression control for property if type is action and current value is an expression', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='onClick' type='action' value={{expr: 'doIt()'}} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('onClick')
+    expect(input().value).toBe('doIt()')
+    expect(label().textContent).toBe('On Click')
 })
 
 test('calls onChange with undefined if input is empty', () => {
@@ -108,8 +128,29 @@ test('calls onChange with new expression value', () => {
     expect(newValue).toStrictEqual({expr: '"New value"'})
 })
 
+test('calls onChange with new action expression value', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='onFoo' type='action' value={{expr: 'doThis()'}} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: 'doThat()'}})
+    expect(newValue).toStrictEqual({expr: 'doThat()'})
+})
+
 test('calls onChange with undefined if input is empty on expression value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'Old_value'}} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: ''}})
+    expect(newValue).toBeUndefined()
+})
+
+test('calls onChange with new action expression value if started empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='onFoo' type='action' value={undefined} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: 'doThat()'}})
+    expect(newValue).toStrictEqual({expr: 'doThat()'})
+})
+
+test('calls onChange with undefined if input is empty on action expression value', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='action' value={{expr: 'doWhat()'}} onChange={onChange}/>))
 
     fireEvent.input(input(), {target: {value: ''}})
     expect(newValue).toBeUndefined()

@@ -3,11 +3,12 @@
  */
 import React, {createElement} from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
-import Text from '../../src/model/Text'
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
+import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
+import Button from '../../src/model/Button'
 import {componentJSON, componentProps} from '../util/testHelpers'
 import {ex} from '../../src/util/helpers'
 
@@ -23,9 +24,9 @@ const input = (label: string) => (screen.getByLabelText(label) as HTMLInputEleme
 const select = (label: string) => (screen.getByLabelText(label).nextSibling as HTMLInputElement)
 const inputValue = (label: string) => input(label).value
 const selectValue = (label: string) => select(label).value
-const kindButton = (index: number): HTMLElement => {
+const kindButton = (index: number) => {
     const nodes = container.querySelectorAll('button').values()
-    return Array.from(nodes)[index] as HTMLElement
+    return Array.from(nodes)[index] as HTMLButtonElement
 }
 
 test('PropertyEditor has expected structure for Text', ()=> {
@@ -90,4 +91,15 @@ test('PropertyEditor has fields for TextInput', ()=> {
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(inputValue('Max Length')).toBe('10')
+})
+
+test('PropertyEditor has fields for Button', ()=> {
+    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, action: ex`doIt()`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Button 1')
+    expect(inputValue('Content')).toBe('"Hi!"')
+    expect(inputValue('Action')).toBe('doIt()')
+    expect(kindButton(1).textContent).toBe('fx=')
+    expect(kindButton(1).disabled).toBe(true)
+    expect(selectValue('Display')).toBe('true')
 })

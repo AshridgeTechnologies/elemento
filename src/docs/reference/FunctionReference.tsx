@@ -28,6 +28,18 @@ export default () =>
             </Para>
         </SubSection>
 
+        <FunctionSection name='Log' helpId='Log' resultType='action'
+                         description='Writes a message to the app log.'
+
+                         inputs={
+                             <FunctionInput name='Items' type='anything list'>The items to write to the log</FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='Log' inputs={['10', '20', '30']}/>
+                             <FunctionExample name='Log' inputs={['"The delivery amount is"', 'Delivery']}/>
+                         </>}
+        />
+
         <FunctionSection name='Sum' helpId='Sum' resultType='number'
                          description='Adds up a list of numbers'
 

@@ -1,6 +1,7 @@
 import Generator from '../../src/generator/Generator'
 import App from '../../src/model/App';
 import Text from '../../src/model/Text';
+import Button from '../../src/model/Button';
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import {ex} from '../../src/util/helpers'
@@ -64,6 +65,25 @@ test('generates TextInput elements with initial value', ()=> {
 `)
 })
 
+test('generates Button elements with properties', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new Button('id1', 'b1', {content: 'Click here!', action: ex`Log("You clicked me!")`}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {})
+    const {Log} = window.globalFunctions
+    return React.createElement('div', {id: props.path},
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', action: () => {Log("You clicked me!")}}),
+    )
+}
+`)
+})
+
 test('generates error marker for syntax error in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -87,7 +107,7 @@ test('generates error marker for syntax error in content expression', ()=> {
 test('global functions available in content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: ex`sum(2, 3, 4)`}),
+                new Text('id1', 't1', {content: ex`Sum(2, 3, 4)`}),
             ]
         )])
 
@@ -95,9 +115,9 @@ test('global functions available in content expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const state = useObjectStateWithDefaults(props.path, {})
-    const {sum} = window.globalFunctions
+    const {Sum} = window.globalFunctions
     return React.createElement('div', {id: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, sum(2, 3, 4)),
+        React.createElement(TextElement, {path: pathWith('t1')}, Sum(2, 3, 4)),
     )
 }
 `)

@@ -100,6 +100,7 @@ const testInsert = (elementType: ElementType) => test(`notifies insert of ${elem
 
 testInsert('Text')
 testInsert('TextInput')
+testInsert('Button')
 
 test('notifies open request', async () => {
     let opened: boolean = false

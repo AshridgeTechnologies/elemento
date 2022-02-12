@@ -32,6 +32,16 @@ export default () =>
             </Para>
         </SubSection>
 
+        <ControlSection name='Button' helpId='Button'
+                        description='A Button control carries out an action when it is clicked.  You use an action formula to define what the button does.'
+            properties={<>
+                <PropertyEntry name='Content' type='text' helpId='button-content'>The text that is displayed in the
+                    button.</PropertyEntry>
+                <PropertyEntry name='Action' type='text' helpId='button-action'>The action formula that is run when the button is clicked.</PropertyEntry>
+                </>
+            }
+        />
+
         <ControlSection name='Text' helpId='Text'
                         description='A Text control simply displays a section of text.  The Name is not shown.'
             properties={

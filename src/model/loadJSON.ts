@@ -5,6 +5,7 @@ import App from './App'
 import TextInput from './TextInput'
 import {ElementId, ElementType} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
+import Button from './Button'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -20,6 +21,8 @@ export function loadJSON({id, kind, name, properties, elements}:
             return new Text(id, name, properties)
         case "TextInput":
             return new TextInput(id, name, properties)
+        case "Button":
+            return new Button(id, name, properties)
         default:
             throw new UnsupportedValueError(kind)
     }

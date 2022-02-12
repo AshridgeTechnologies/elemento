@@ -69,7 +69,7 @@ test('Global functions can be used in formulas', async ({ page })=> {
     await page.click(`${treeItemSelector} >> nth=3`)
     expect(await page.locator('input#content').inputValue()).toBe('"Start your program here..."')
 
-    await page.fill('input#content', 'sum(2, 3, 4, 5)')
+    await page.fill('input#content', 'Sum(2, 3, 4, 5)')
     expect(await appFrame.textContent('p >> nth=2')).toBe('14')
 })
 
