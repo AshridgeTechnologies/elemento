@@ -1,6 +1,6 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 
-const {Sum, Log, If, Left, Mid, Right} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min} = globalFunctions
 
 
 describe('Sum', () => {
@@ -64,4 +64,44 @@ describe('Right', () => {
     test('Gets a part string for non-zero length', ()=> expect(Right('abc', 2)).toBe('bc'))
     test('Gets whole string for length same as string length', ()=> expect(Right('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Right('abc', 4)).toBe('abc'))
+})
+
+describe('And', () => {
+    test('False for single falsy argument', ()=> expect(And(0)).toBe(false))
+    test('True for single truthy argument', ()=> expect(And('abc')).toBe(true))
+    test('False for three falsy arguments', ()=> expect(And(0, false, null)).toBe(false))
+    test('False for one truthy argument and two falsy arguments', ()=> expect(And(false, true, '')).toBe(false))
+    test('True for two truthy arguments', ()=> expect(And('abc', true)).toBe(true))
+})
+
+describe('Or', () => {
+    test('False for single falsy argument', ()=> expect(Or(0)).toBe(false))
+    test('True for single truthy argument', ()=> expect(Or('abc')).toBe(true))
+    test('False for three falsy arguments', ()=> expect(Or(0, false, null)).toBe(false))
+    test('True for one truthy argument and two falsy arguments', ()=> expect(Or(false, true, '')).toBe(true))
+    test('True for two truthy arguments', ()=> expect(Or('abc', true)).toBe(true))
+})
+
+describe('Not', () => {
+    test('true for falsy argument', ()=> expect(Not(0)).toBe(true))
+    test('false for truthy argument', ()=> expect(Not('xx')).toBe(false))
+})
+
+describe('Substitute', () => {
+    test('returns same string if string to replace is empty', () => expect(Substitute('abcde', '', 'xx')).toBe('abcde'))
+    test('returns same string if string to replace is not found', () => expect(Substitute('abcde', 'pq', 'xx')).toBe('abcde'))
+    test('replaces single occurrence if string to replace is found', () => expect(Substitute('abcde', 'pq', 'xx')).toBe('abcde'))
+    test('replaces all occurrences if string to replace is found multiple times', () => expect(Substitute('abcdeffdeggde', 'de', 'xx')).toBe('abcxxffxxggxx'))
+})
+
+describe('Max', () => {
+    test('errors for no arguments', () => expect(() => Max()).toThrow('Wrong number of arguments to Max. Expected at least 1 argument.'))
+    test('returns the argument for single argument', () => expect(Max(3)).toBe(3))
+    test('returns the max argument for multiple arguments', () => expect(Max(3, -1, 4, 0)).toBe(4))
+})
+
+describe('Min', () => {
+    test('errors for no arguments', () => expect(() => Min()).toThrow('Wrong number of arguments to Min. Expected at least 1 argument.'))
+    test('returns the argument for single argument', () => expect(Min(3)).toBe(3))
+    test('returns the min argument for multiple arguments', () => expect(Min(3, -1, 4, 0)).toBe(-1))
 })

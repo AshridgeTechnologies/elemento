@@ -23,5 +23,32 @@ export const globalFunctions = {
 
     Right(s: string, length: number) {
         return s.substring(s.length - length)
+    },
+
+    And(...args: any[]) {
+        return args.reduce( (prev, curr) => !!prev && !!curr, true )
+    },
+
+    Or(...args: any[]) {
+        return args.reduce( (prev, curr) => !!prev || !!curr, false )
+    },
+
+    Not(arg: any) {
+        return !arg
+    },
+
+    Substitute(s: string, toReplace: string, replaceWith: string) {
+        if (toReplace === '') return s
+        return s.replace(new RegExp(toReplace, 'g'), replaceWith)
+    },
+
+    Max(...args: number[]) {
+        if (args.length === 0) throw new Error('Wrong number of arguments to Max. Expected at least 1 argument.')
+        return Math.max(...args)
+    },
+
+    Min(...args: number[]) {
+        if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
+        return Math.min(...args)
     }
 }

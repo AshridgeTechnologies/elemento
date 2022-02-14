@@ -35,9 +35,9 @@ Functions
 ---------
 
   - If
-- And, Or, Not
+  - And, Or, Not
   - Substring
-- Replace
-- Max, Min, Sum
+  - Substitute
+  - Max, Min, Sum
 - Clear (page/control)
 - Show Page
