@@ -25,11 +25,10 @@ test('TextInput shows initial value if no value in the app store section for its
 
 test('TextInput shows existing value from the app store section for its path', () => {
     updateState('app.page1.widget2', {value: 'Letty'})
-    let container = testContainer(createElement(TextInput, {path: 'app.page1.widget2', initialValue: 'Howdy!'}))
+    let container: any
     act(() =>  { ({container} = render(createElement(TextInput, {path: 'app.page1.widget2', initialValue: 'Howdy!'})) ) })
-    const inputEl = container.querySelector('input[id="app.page1.widget2"]')
+    const inputEl = container!.querySelector('input[id="app.page1.widget2"]')
     expect(inputEl.value).toBe('Letty')
-
 })
 
 test('TextInput shows updated value from the app store section for its path', () => {

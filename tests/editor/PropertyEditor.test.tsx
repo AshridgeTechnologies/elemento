@@ -11,6 +11,7 @@ import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import {componentJSON, componentProps} from '../util/testHelpers'
 import {ex} from '../../src/util/helpers'
+import NumberInput from '../../src/model/NumberInput'
 
 let container: any
 let changedValue: any
@@ -91,6 +92,14 @@ test('PropertyEditor has fields for TextInput', ()=> {
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(inputValue('Max Length')).toBe('10')
+})
+
+test('PropertyEditor has fields for NumberInput', ()=> {
+    const element = new NumberInput('id1', 'Number Input 1', {initialValue: ex`40`, label: ex`"Number Input One"`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Number Input 1')
+    expect(inputValue('Label')).toBe('"Number Input One"')
+    expect(inputValue('Initial Value')).toBe('40')
 })
 
 test('PropertyEditor has fields for Button', ()=> {

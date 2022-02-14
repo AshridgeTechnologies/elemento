@@ -41,6 +41,7 @@ export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
             >
                 {menuItem("Text")}
                 {menuItem("TextInput")}
+                {menuItem("NumberInput")}
                 {menuItem("Button")}
             </Menu>
         </div>

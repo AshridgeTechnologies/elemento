@@ -5,7 +5,7 @@ Controls
 --------
 
   - Button
-- Number input
+  - Number input
 - Boolean input
 - Select input
 - Multiline text input box
@@ -20,6 +20,9 @@ For each control
 - Generator
 - Runtime implementation
 - Add to insert menu
+- Add to runApp.ts
+- Add to AppStructureTree
+- Add to PropertyEditor
 
 Attributes
 ----------
