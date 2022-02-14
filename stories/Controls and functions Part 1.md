@@ -34,10 +34,10 @@ Attributes
 Functions
 ---------
 
-- If
-- And, Or, Not
-- Substring
-- Replace
-- Max, Min, Sum
+  - If
+  - And, Or, Not
+  - Substring
+  - Substitute
+  - Max, Min, Sum
 - Clear (page/control)
 - Show Page
