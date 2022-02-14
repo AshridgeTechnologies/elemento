@@ -1,24 +1,67 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 
-const {Sum, Log} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right} = globalFunctions
 
-test('Sum: adds all arguments or zero if empty', ()=> {
-    expect(Sum(1,2,3)).toBe(6)
-    expect(Sum()).toBe(0)
+
+describe('Sum', () => {
+    test('adds all arguments or zero if empty', ()=> {
+        expect(Sum(1,2,3)).toBe(6)
+        expect(Sum()).toBe(0)
+    })
+
+    test('concatenates string arguments with a leading zero', ()=> {
+        // @ts-ignore
+        expect(Sum("aa", 10, "bb")).toBe("0aa10bb")
+    })
+
 })
 
-test('Sum: concatenates string arguments with a leading zero', ()=> {
-    // @ts-ignore
-    expect(Sum("aa", 10, "bb")).toBe("0aa10bb")
+describe('Log', () => {
+    test('writes all arguments to console', () => {
+        const log = jest.spyOn(console, "log").mockImplementation(() => {})
+        try {
+            Log('This is what I did', 'today')
+            expect(log).toBeCalledWith('This is what I did', 'today')
+
+        } finally {
+            log.mockReset();
+        }
+    })
+
 })
 
-test('Log: writes to console', () => {
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
-    try {
-        Log('This is what I did', 'today')
-        expect(log).toBeCalledWith('This is what I did', 'today')
+describe('If', () => {
+    test('with condition and one argument returns the argument if condition true', () => expect(If(true, 'Yes')).toBe('Yes'))
+    test('with condition and two arguments returns the argument if condition truthy', () => expect(If('X', 'Yes', 'No')).toBe('Yes'))
+    test('with condition and one argument returns undefined if condition false', () => expect(If(false, 'Yes')).toBeUndefined())
+    test('with condition and two argument returns second argument if condition falsy', () => expect(If(0, 'Yes', 'No')).toBe('No'))
+})
 
-    } finally {
-        log.mockReset();
-    }
+describe('Left', () => {
+    test('Gets an empty string for negative length', ()=> expect(Left('abc', -1)).toBe(''))
+    test('Gets an empty string for zero length', ()=> expect(Left('abc', 0)).toBe(''))
+    test('Gets a part string for non-zero length', ()=> expect(Left('abc', 2)).toBe('ab'))
+    test('Gets whole string for length same as string length', ()=> expect(Left('abc', 3)).toBe('abc'))
+    test('Gets whole string for length greater than string length', ()=> expect(Left('abc', 4)).toBe('abc'))
+})
+
+describe('Mid', () => {
+    test('Errors for negative start', ()=> expect(() => Mid('abc', -1)).toThrow('Function Mid parameter 2 (start) is -1. It should be greater than or equal to 1.'))
+    test('Errors for zero start', ()=> expect(() => Mid('abc', 0)).toThrow('Function Mid parameter 2 (start) is 0. It should be greater than or equal to 1.'))
+    test('Errors for negative length', ()=> expect(() => Mid('abc', 1, -1)).toThrow('Function Mid parameter 3 (length) is -1. It should be greater than or equal to 0.'))
+    test('Gets an empty string for 1 start, zero length', ()=> expect(Mid('abc', 1, 0)).toBe(''))
+    test('Gets a part string for 1 start, non-zero length', ()=> expect(Mid('abc', 1, 2)).toBe('ab'))
+    test('Gets whole string for 1 start, undefined length', ()=> expect(Mid('abc', 1)).toBe('abc'))
+    test('Gets whole string for 1 start, length same as string length', ()=> expect(Mid('abc', 1, 3)).toBe('abc'))
+    test('Gets a part string for 2 start, length less than string length', ()=> expect(Mid('abcdefg', 2, 3)).toBe('bcd'))
+    test('Gets a part string for 2 start, length greater than string length', ()=> expect(Mid('abc', 2, 4)).toBe('bc'))
+    test('Gets a part string for 2 start, undefined length', ()=> expect(Mid('abc', 2)).toBe('bc'))
+})
+
+describe('Right', () => {
+    test('Gets an empty string for negative length', ()=> expect(Right('abc', -1)).toBe(''))
+    test('Gets an empty string for zero length', ()=> expect(Right('abc', 0)).toBe(''))
+    test('Gets a part string for non-zero length', ()=> expect(Right('abc', 2)).toBe('bc'))
+    test('Gets whole string for length same as string length', ()=> expect(Right('abc', 3)).toBe('abc'))
+    test('Gets whole string for length greater than string length', ()=> expect(Right('abc', 4)).toBe('abc'))
 })

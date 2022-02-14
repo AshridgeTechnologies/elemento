@@ -34,9 +34,9 @@ Attributes
 Functions
 ---------
 
-- If
+  - If
 - And, Or, Not
-- Substring
+  - Substring
 - Replace
 - Max, Min, Sum
 - Clear (page/control)
