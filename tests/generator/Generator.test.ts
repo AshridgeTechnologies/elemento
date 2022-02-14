@@ -5,6 +5,7 @@ import Button from '../../src/model/Button';
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import {ex} from '../../src/util/helpers'
+import NumberInput from '../../src/model/NumberInput'
 
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
@@ -60,6 +61,33 @@ test('generates TextInput elements with initial value', ()=> {
         React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, label: 'Text Input One'}),
         React.createElement(TextInput, {path: pathWith('t2'), initialValue: "Some" + " things", maxLength: 5 + 5}),
         React.createElement(TextInput, {path: pathWith('t3')}),
+    )
+}
+`)
+})
+
+test('generates NumberInput elements with initial value', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new NumberInput('id1', 't1', {initialValue: 44, label: "Number Input One"}),
+            new NumberInput('id2', 't2', {initialValue: ex`22 + 33`}),
+            new NumberInput('id2', 't3', {}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        t1: {value: 44},
+        t2: {value: 22 + 33},
+        t3: {value: 0},
+    })
+
+    return React.createElement('div', {id: props.path},
+        React.createElement(NumberInput, {path: pathWith('t1'), initialValue: 44, label: 'Number Input One'}),
+        React.createElement(NumberInput, {path: pathWith('t2'), initialValue: 22 + 33}),
+        React.createElement(NumberInput, {path: pathWith('t3')}),
     )
 }
 `)

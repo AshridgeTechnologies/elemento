@@ -4,6 +4,7 @@ import App from '../model/App'
 import Generator from '../generator/Generator'
 import TextElement from './TextElement'
 import TextInput from './TextInput'
+import NumberInput from './NumberInput'
 import Button from './Button'
 import ErrorFallback from './ErrorFallback'
 import welcomeApp from '../util/welcomeApp'
@@ -84,6 +85,8 @@ window.Button = Button
 window.TextElement = TextElement
 // @ts-ignore
 window.TextInput = TextInput
+// @ts-ignore
+window.NumberInput = NumberInput
 // @ts-ignore
 window.useObjectState = useObjectState
 // @ts-ignore

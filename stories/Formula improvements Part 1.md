@@ -8,3 +8,4 @@ Formula improvements Part 1
 - Formula errors displayed in the property editor
 - Auto use value of controls
 - Formulas can be multiline eg Record
+- Bugs in setting initial values of Number input

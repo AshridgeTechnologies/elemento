@@ -56,7 +56,17 @@ export default () =>
             properties={<>
                     <PropertyEntry name='Initial Value' type='text' helpId='textInput-initialValue'>The pre-filled text that is displayed when the control is first shown.</PropertyEntry>
                     <PropertyEntry name='Max Length' type='number' helpId='textInput-maxLength'>The maximum length of the text that can be entered.</PropertyEntry>
-                    <PropertyEntry name='Label' type='number' helpId='textInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
+                    <PropertyEntry name='Label' type='text' helpId='textInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
+                </>}
+        />
+
+        <ControlSection name='Number Input' helpId='NumberInput'
+                        description='A Number Input control is a box where the user can enter a number.
+                        It can be given a pre-filled value which the user can change or replace.
+                        It has a label that is shown in or near the control to tell the user what the number entered is for.'
+            properties={<>
+                    <PropertyEntry name='Initial Value' type='number' helpId='numberInput-initialValue'>The pre-filled number that is displayed when the control is first shown.</PropertyEntry>
+                    <PropertyEntry name='Label' type='text' helpId='numberInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
                 </>}
         />
     </Section>

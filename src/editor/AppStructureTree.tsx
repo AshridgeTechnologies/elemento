@@ -3,7 +3,7 @@ import React from 'react'
 import {BasicDataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
-import {Crop75, RectangleOutlined, Subject, Web} from '@mui/icons-material'
+import {Crop75, RectangleOutlined, MoneyOutlined, Subject, Web} from '@mui/icons-material'
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -24,6 +24,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
         case 'Page': return <Web {...{sx}} />
         case 'Text': return <Subject {...{sx}}/>
         case 'TextInput': return <RectangleOutlined {...{sx}}/>
+        case 'NumberInput': return <MoneyOutlined {...{sx}}/>
         case 'Button': return <Crop75 {...{sx}}/>
         default: throw new UnsupportedValueError(kind)
     }

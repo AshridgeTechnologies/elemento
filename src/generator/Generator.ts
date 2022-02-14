@@ -11,6 +11,7 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 import {definedPropertiesOf, isExpr} from '../util/helpers'
 import {PropertyValue} from '../model/Types'
 import Button from '../model/Button'
+import NumberInput from '../model/NumberInput'
 
 type IdentifierCollector = {add(s: string): void}
 
@@ -116,6 +117,15 @@ ${children}
                 const reactProperties = definedPropertiesOf({path, initialValue, maxLength, label})
                 return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
+            case "NumberInput": {
+                const numberInput = element as NumberInput
+                const path = `pathWith('${numberInput.codeName}')`
+                const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown)
+                const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown)
+                const reactProperties = definedPropertiesOf({path, initialValue, label})
+                return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
+            }
+
             case "Button": {
                 const button = element as Button
                 const path = `pathWith('${button.codeName}')`
@@ -143,6 +153,10 @@ ${children}
             case "TextInput":
                 const textInput = element as TextInput
                 return `${textInput.codeName}: {value: ${Generator.getExpr(textInput.initialValue) || '""'}},`
+
+            case "NumberInput":
+                const numberInput = element as NumberInput
+                return `${numberInput.codeName}: {value: ${Generator.getExpr(numberInput.initialValue) || '0'}},`
 
             case 'Button':
                 return ''
