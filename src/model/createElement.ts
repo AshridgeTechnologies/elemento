@@ -6,6 +6,7 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 import {startCase} from 'lodash'
 import Button from './Button'
 import NumberInput from './NumberInput'
+import TrueFalseInput from './TrueFalseInput'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -22,6 +23,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
             return new TextInput(id, name, {})
         case 'NumberInput':
             return new NumberInput(id, name, {})
+        case 'TrueFalseInput':
+            return new TrueFalseInput(id, name, {})
         case 'Button':
             return new Button(id, name, {content: 'Do something'})
         default:

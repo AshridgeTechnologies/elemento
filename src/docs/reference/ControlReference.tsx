@@ -32,7 +32,7 @@ export default () =>
             </Para>
         </SubSection>
 
-        <ControlSection name='Button' helpId='Button'
+        <ControlSection name='Button' helpId='button'
                         description='A Button control carries out an action when it is clicked.  You use an action formula to define what the button does.'
             properties={<>
                 <PropertyEntry name='Content' type='text' helpId='button-content'>The text that is displayed in the
@@ -42,14 +42,14 @@ export default () =>
             }
         />
 
-        <ControlSection name='Text' helpId='Text'
+        <ControlSection name='Text' helpId='text'
                         description='A Text control simply displays a section of text.  The Name is not shown.'
             properties={
                     <PropertyEntry name='Content' type='text' helpId='text-content'>The text that is displayed.</PropertyEntry>
             }
         />
 
-        <ControlSection name='Text Input' helpId='TextInput'
+        <ControlSection name='Text Input' helpId='textInput'
                         description='A Text Input control is a box where the user can enter some text.
                         It can be given some pre-filled text which the user can change or replace.
                         It has a label that is shown in or near the control to tell the user what the text entered is for.'
@@ -60,13 +60,23 @@ export default () =>
                 </>}
         />
 
-        <ControlSection name='Number Input' helpId='NumberInput'
+        <ControlSection name='Number Input' helpId='numberInput'
                         description='A Number Input control is a box where the user can enter a number.
                         It can be given a pre-filled value which the user can change or replace.
                         It has a label that is shown in or near the control to tell the user what the number entered is for.'
             properties={<>
                     <PropertyEntry name='Initial Value' type='number' helpId='numberInput-initialValue'>The pre-filled number that is displayed when the control is first shown.</PropertyEntry>
                     <PropertyEntry name='Label' type='text' helpId='numberInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
+                </>}
+        />
+
+        <ControlSection name='True-False Input' helpId='trueFalseInput'
+                        description='A True-False Input control lets the user set something to either true or false (yes or no).
+                        It can be given a pre-filled value which the user can change.
+                        It has a label that is shown in or near the control to tell the user what the true-false setting is for.'
+            properties={<>
+                    <PropertyEntry name='Initial Value' type='true-false' helpId='trueFalseInput-initialValue'>The pre-filled true-false value that is displayed when the control is first shown.</PropertyEntry>
+                    <PropertyEntry name='Label' type='text' helpId='trueFalseInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
                 </>}
         />
     </Section>

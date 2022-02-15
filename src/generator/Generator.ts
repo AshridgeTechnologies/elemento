@@ -12,6 +12,7 @@ import {definedPropertiesOf, isExpr} from '../util/helpers'
 import {PropertyValue} from '../model/Types'
 import Button from '../model/Button'
 import NumberInput from '../model/NumberInput'
+import TrueFalseInput from '../model/TrueFalseInput'
 
 type IdentifierCollector = {add(s: string): void}
 
@@ -126,6 +127,15 @@ ${children}
                 return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
             }
 
+            case "TrueFalseInput": {
+                const trueFalseInput = element as TrueFalseInput
+                const path = `pathWith('${trueFalseInput.codeName}')`
+                const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown)
+                const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown)
+                const reactProperties = definedPropertiesOf({path, initialValue, label})
+                return `React.createElement(TrueFalseInput, ${objectLiteral(reactProperties)})`
+            }
+
             case "Button": {
                 const button = element as Button
                 const path = `pathWith('${button.codeName}')`
@@ -157,6 +167,10 @@ ${children}
             case "NumberInput":
                 const numberInput = element as NumberInput
                 return `${numberInput.codeName}: {value: ${Generator.getExpr(numberInput.initialValue) || '0'}},`
+
+            case "TrueFalseInput":
+                const trueFalseInput = element as TrueFalseInput
+                return `${trueFalseInput.codeName}: {value: ${Generator.getExpr(trueFalseInput.initialValue) || false}},`
 
             case 'Button':
                 return ''

@@ -6,6 +6,7 @@ import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
+import TrueFalseInput from '../../src/model/TrueFalseInput'
 
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
@@ -88,6 +89,33 @@ test('generates NumberInput elements with initial value', ()=> {
         React.createElement(NumberInput, {path: pathWith('t1'), initialValue: 44, label: 'Number Input One'}),
         React.createElement(NumberInput, {path: pathWith('t2'), initialValue: 22 + 33}),
         React.createElement(NumberInput, {path: pathWith('t3')}),
+    )
+}
+`)
+})
+
+test('generates TrueFalseInput elements with initial value', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TrueFalseInput('id1', 't1', {initialValue: true, label: "True False Input One"}),
+            new TrueFalseInput('id2', 't2', {initialValue: ex`true || false`}),
+            new TrueFalseInput('id3', 't3', {}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        t1: {value: true},
+        t2: {value: true || false},
+        t3: {value: false},
+    })
+
+    return React.createElement('div', {id: props.path},
+        React.createElement(TrueFalseInput, {path: pathWith('t1'), initialValue: true, label: 'True False Input One'}),
+        React.createElement(TrueFalseInput, {path: pathWith('t2'), initialValue: true || false}),
+        React.createElement(TrueFalseInput, {path: pathWith('t3')}),
     )
 }
 `)

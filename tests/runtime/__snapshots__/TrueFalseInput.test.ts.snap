@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TrueFalseInput element produces output with default values where properties omitted 1`] = `
+<label
+  className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1f2kvjf-MuiFormControlLabel-root"
+>
+  <span
+    className="MuiSwitch-root MuiSwitch-sizeSmall css-1ycxvqq-MuiSwitch-root"
+  >
+    <span
+      className="MuiSwitch-switchBase MuiSwitch-colorPrimary MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary PrivateSwitchBase-root css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase"
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={null}
+    >
+      <input
+        checked={false}
+        className="MuiSwitch-input PrivateSwitchBase-input css-1m9pwf3"
+        id="app.page1.height"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="MuiSwitch-thumb css-jsexje-MuiSwitch-thumb"
+      />
+      <span
+        className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </span>
+    <span
+      className="MuiSwitch-track css-1yjjitx-MuiSwitch-track"
+    />
+  </span>
+  <span
+    className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+  >
+    
+  </span>
+</label>
+`;
+
+exports[`TrueFalseInput element produces output with properties supplied 1`] = `
+<label
+  className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1f2kvjf-MuiFormControlLabel-root"
+>
+  <span
+    className="MuiSwitch-root MuiSwitch-sizeSmall css-1ycxvqq-MuiSwitch-root"
+  >
+    <span
+      className="MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary Mui-checked PrivateSwitchBase-root Mui-checked css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase"
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={null}
+    >
+      <input
+        checked={true}
+        className="MuiSwitch-input PrivateSwitchBase-input css-1m9pwf3"
+        id="app.page1.width"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="MuiSwitch-thumb css-jsexje-MuiSwitch-thumb"
+      />
+    </span>
+    <span
+      className="MuiSwitch-track css-1yjjitx-MuiSwitch-track"
+    />
+  </span>
+  <span
+    className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+  >
+    Covered
+  </span>
+</label>
+`;
