@@ -39,10 +39,11 @@ export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
                     'aria-labelledby': 'insertButton',
                 }}
             >
-                {menuItem("Text")}
-                {menuItem("TextInput")}
-                {menuItem("NumberInput")}
-                {menuItem("Button")}
+                {menuItem('Text')}
+                {menuItem('TextInput')}
+                {menuItem('NumberInput')}
+                {menuItem('TrueFalseInput')}
+                {menuItem('Button')}
             </Menu>
         </div>
     );

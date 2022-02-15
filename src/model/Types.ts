@@ -1,4 +1,4 @@
-export type ElementType = 'App' | 'Page' | 'Text' | 'TextInput'| 'NumberInput' | 'Button'
+export type ElementType = 'App' | 'Page' | 'Text' | 'TextInput'| 'NumberInput'| 'TrueFalseInput' | 'Button'
 export type ElementId = string
 export type PropertyType = 'string' | 'number' | 'boolean' | 'action'
 export type PropertyExpr = {expr: string}

@@ -12,6 +12,7 @@ import Button from '../../src/model/Button'
 import {componentJSON, componentProps} from '../util/testHelpers'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
+import TrueFalseInput from '../../src/model/TrueFalseInput'
 
 let container: any
 let changedValue: any
@@ -100,6 +101,14 @@ test('PropertyEditor has fields for NumberInput', ()=> {
     expect(inputValue('Name')).toBe('Number Input 1')
     expect(inputValue('Label')).toBe('"Number Input One"')
     expect(inputValue('Initial Value')).toBe('40')
+})
+
+test('PropertyEditor has fields for TrueFalseInput', ()=> {
+    const element = new TrueFalseInput('id1', 'True False Input 1', {initialValue: ex`true`, label: ex`"True False Input One"`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('True False Input 1')
+    expect(inputValue('Label')).toBe('"True False Input One"')
+    expect(inputValue('Initial Value')).toBe('true')
 })
 
 test('PropertyEditor has fields for Button', ()=> {

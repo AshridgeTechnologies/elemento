@@ -15,14 +15,16 @@ Controls
 For each control
 ----------------
 - Entry in Control reference
-- Add to playwright Controls.test
 - Model implementation
-- Generator
-- Runtime implementation
-- Add to insert menu
-- Add to runApp.ts
+- Add to loadJSON
 - Add to AppStructureTree
 - Add to PropertyEditor
+- Add to insert menu
+- Add to createElement
+- Generator
+- Runtime implementation
+- Add to runApp.ts
+- Add to playwright Controls.test
 
 Attributes
 ----------
