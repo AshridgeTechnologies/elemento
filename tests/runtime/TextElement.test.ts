@@ -17,3 +17,7 @@ test('TextElement element produces output containing value property of object', 
         snapshot(createElement(TextElement, {path: 'page1.para1'}, obj))()
     }
 )
+
+test('TextElement adds line break before line ends', () => {
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, 'Hello\nwhere are you\ntoday?'))()
+})

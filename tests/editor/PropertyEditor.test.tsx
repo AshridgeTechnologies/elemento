@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import React, {createElement} from 'react'
+import React from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
@@ -9,7 +9,7 @@ import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
-import {componentJSON, componentProps} from '../util/testHelpers'
+import {componentProps} from '../util/testHelpers'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
@@ -24,18 +24,15 @@ const onChange = (id: string,propName: string,value: any) => {
 }
 
 const input = (label: string) => (screen.getByLabelText(label) as HTMLInputElement)
+const textarea = (label: string) => (screen.getByLabelText(label) as HTMLTextAreaElement)
 const select = (label: string) => (screen.getByLabelText(label).nextSibling as HTMLInputElement)
 const inputValue = (label: string) => input(label).value
+const textareaValue = (label: string) => textarea(label).textContent
 const selectValue = (label: string) => select(label).value
 const kindButton = (index: number) => {
     const nodes = container.querySelectorAll('button').values()
     return Array.from(nodes)[index] as HTMLButtonElement
 }
-
-test('PropertyEditor has expected structure for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {content: ex`"Hi there!"`})
-    expect(componentJSON(createElement(PropertyEditor, {element, onChange}))).toMatchSnapshot()
-})
 
 test('PropertyEditor updates name', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
@@ -80,20 +77,21 @@ test('PropertyEditor shows controlled component for optional fields for Page', (
 })
 
 test('PropertyEditor has fields for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {content: ex`"Hi!"`})
+    const element = new Text('id1', 'Text 1', {content: 'Hi!\nGood morning'})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text 1')
-    expect(inputValue('Content')).toBe('"Hi!"')
+    expect(textareaValue('Content')).toBe('Hi!\nGood morning')
     expect(selectValue('Display')).toBe('true')
 })
 
 test('PropertyEditor has fields for TextInput', ()=> {
-    const element = new TextInput('id1', 'Text Input 1', {initialValue: ex`"Hi!"`, maxLength: ex`10`, label: ex`"Text One"`})
+    const element = new TextInput('id1', 'Text Input 1', {initialValue: ex`"Hi!"`, maxLength: ex`10`, multiline: ex`true || false`, label: ex`"Text One"`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(inputValue('Max Length')).toBe('10')
+    expect(inputValue('Multiline')).toBe('true || false')
 })
 
 test('PropertyEditor has fields for NumberInput', ()=> {

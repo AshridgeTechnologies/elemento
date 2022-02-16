@@ -16,16 +16,16 @@ test('can edit element properties', async ({ page }) => {
     expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
 
     await page.click(`${treeItemSelector} >> nth=2`)
-    expect(await page.locator('input#content').inputValue()).toBe('"The second bit of text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
 
-    await page.fill('input#content', '"This is more text"')
-    expect(await page.locator('input#content').inputValue()).toBe('"This is more text"')
+    await page.fill('textarea#content', '"This is more text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"This is more text"')
 
     await page.click(`${treeItemSelector} >> nth=1`)
-    expect(await page.locator('input#content').inputValue()).toBe('"The first bit of text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The first bit of text"')
 
     await page.click(`${treeItemSelector} >> nth=2`)
-    expect(await page.locator('input#content').inputValue()).toBe('"This is more text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"This is more text"')
 
 })
 

@@ -14,6 +14,7 @@ const onChange = (elementId: ElementId, name: string, val: any) => newValue = va
 
 const kindButton = () => container.querySelector('button')
 const input = () => container.querySelector('input')
+const textarea = () => container.querySelector('textarea')
 const label = () => container.querySelector('label')
 
 beforeEach(() => {
@@ -57,6 +58,14 @@ test('shows fixed value control for string property if current value is a string
     expect(input().id).toBe('length')
     expect(input().value).toBe('Hi there!')
     expect(label().textContent).toBe('Length')
+})
+
+test('shows fixed value control for string property if current value is a multiline string', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='greeting' type='string multiline' value={'Hi there!\nHow are you?'} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('abc')
+    expect(textarea().id).toBe('greeting')
+    expect(textarea().textContent).toBe('Hi there!\nHow are you?')
+    expect(label().textContent).toBe('Greeting')
 })
 
 test('shows fixed value control for number property if current value is a number', () => {
@@ -116,6 +125,13 @@ test('calls onChange with new string fixed value', () => {
 
     fireEvent.input(input(), {target: {value: 'New value'}})
     expect(newValue).toStrictEqual('New value')
+})
+
+test('calls onChange with new string multiline fixed value', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string multiline' value={'Old value\nLine 2'} onChange={onChange}/>))
+
+    fireEvent.input(textarea(), {target: {value: 'New value\nLine 3'}})
+    expect(newValue).toStrictEqual('New value\nLine 3')
 })
 
 test('calls onChange with new number fixed value', () => {

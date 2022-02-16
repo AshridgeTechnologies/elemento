@@ -56,6 +56,7 @@ export default () =>
             properties={<>
                     <PropertyEntry name='Initial Value' type='text' helpId='textInput-initialValue'>The pre-filled text that is displayed when the control is first shown.</PropertyEntry>
                     <PropertyEntry name='Max Length' type='number' helpId='textInput-maxLength'>The maximum length of the text that can be entered.</PropertyEntry>
+                    <PropertyEntry name='Multiline' type='true-false' helpId='textInput-multiline'>Whether text can be entered on multiple lines.</PropertyEntry>
                     <PropertyEntry name='Label' type='text' helpId='textInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
                 </>}
         />

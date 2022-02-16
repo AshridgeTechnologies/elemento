@@ -60,7 +60,7 @@ test('load app from file into editor', async ({page}) => {
     expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
 
     await page.click(`${treeItemSelector} >> nth=2`)
-    expect(await page.locator('input#content').inputValue()).toBe('"The second bit of text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
 
 })
 
@@ -80,10 +80,10 @@ test('save previously loaded app to file', async ({page}) => {
     expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
 
     await page.click(`${treeItemSelector} >> nth=2`)
-    expect(await page.locator('input#content').inputValue()).toBe('"The second bit of text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
 
-    await page.fill('input#content', '"The updated second text"')
-    expect(await page.locator('input#content').inputValue()).toBe('"The updated second text"')
+    await page.fill('textarea#content', '"The updated second text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The updated second text"')
 
     await page.click(fileMenu)
     await page.click(fileMenu_Save)
@@ -105,10 +105,10 @@ test('save new app to file', async ({page}) => {
     expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
 
     await page.click(`${treeItemSelector} >> nth=2`)
-    expect(await page.locator('input#content').inputValue()).toBe('"The future of low code programming"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The future of low code programming"')
 
-    await page.fill('input#content', '"The updated second text"')
-    expect(await page.locator('input#content').inputValue()).toBe('"The updated second text"')
+    await page.fill('textarea#content', '"The updated second text"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"The updated second text"')
 
     await page.click(fileMenu)
     await page.click(fileMenu_Save)

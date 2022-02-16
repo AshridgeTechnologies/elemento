@@ -2,7 +2,7 @@ General usability Part 1
 ========================
 
 - Form controls all go on their own row
-- Width attributes
+- Width attributes and/or full width controls inc multiline
 - Highlight selected element in running app
 - Click on running app to select element
 - Nav tree like power apps:  full width, menu at right, highlight and menu on hover
