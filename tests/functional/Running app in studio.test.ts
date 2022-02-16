@@ -20,10 +20,10 @@ test('Changes to app definition show immediately in the running app', async ({ p
     expect(await page.textContent(`${treeItemSelector} >> nth=3`)).toBe('Third Text')
 
     await page.click(`${treeItemSelector} >> nth=3`)
-    expect(await page.locator('input#content').inputValue()).toBe('"Start your program here..."')
+    expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
 
-    await page.fill('input#content', '"Get started now!"')
-    expect(await page.locator('input#content').inputValue()).toBe('"Get started now!"')
+    await page.fill('textarea#content', '"Get started now!"')
+    expect(await page.locator('textarea#content').textContent()).toBe('"Get started now!"')
 
     expect(await appFrame.textContent('p >> nth=2')).toBe('Get started now!')
 } )
@@ -35,12 +35,12 @@ test('Formulas in app definition update the running app immediately', async ({ p
 
     await page.click(`${treeExpandControlSelector} >> nth=0`)
     await page.click(`${treeItemSelector} >> nth=3`)
-    expect(await page.locator('input#content').inputValue()).toBe('"Start your program here..."')
+    expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
 
-    await page.fill('input#content', '23 + 45')
+    await page.fill('textarea#content', '23 + 45')
     expect(await appFrame.textContent('p >> nth=2')).toBe('68')
 
-    await page.fill('input#content', '23 + 45 + " things"')
+    await page.fill('textarea#content', '23 + 45 + " things"')
     expect(await appFrame.textContent('p >> nth=2')).toBe('68 things')
 })
 
@@ -51,12 +51,12 @@ test('Invalid formula in app definition shows #ERROR in the running app until co
 
     await page.click(`${treeExpandControlSelector} >> nth=0`)
     await page.click(`${treeItemSelector} >> nth=3`)
-    expect(await page.locator('input#content').inputValue()).toBe('"Start your program here..."')
+    expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
 
-    await page.fill('input#content', '23 +')
+    await page.fill('textarea#content', '23 +')
     expect(await appFrame.textContent('p >> nth=2')).toBe('#ERROR')
 
-    await page.fill('input#content', '23 + 45')
+    await page.fill('textarea#content', '23 + 45')
     expect(await appFrame.textContent('p >> nth=2')).toBe('68')
 })
 
@@ -67,9 +67,9 @@ test('Global functions can be used in formulas', async ({ page })=> {
 
     await page.click(`${treeExpandControlSelector} >> nth=0`)
     await page.click(`${treeItemSelector} >> nth=3`)
-    expect(await page.locator('input#content').inputValue()).toBe('"Start your program here..."')
+    expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
 
-    await page.fill('input#content', 'Sum(2, 3, 4, 5)')
+    await page.fill('textarea#content', 'Sum(2, 3, 4, 5)')
     expect(await appFrame.textContent('p >> nth=2')).toBe('14')
 })
 

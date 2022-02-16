@@ -12,7 +12,7 @@ import SelectInput from '../../src/model/SelectInput'
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 'Text Input 1', {content: 'Hi there!'}),
+            new Text('id1', 'Text 1', {content: 'Hi there!'}),
             new Text('id1', 't2', {content: ex`23 + 45`}),
     ]
         )])
@@ -25,7 +25,7 @@ test('generates app and page 0 output files', ()=> {
     const state = useObjectStateWithDefaults(props.path, {})
 
     return React.createElement('div', {id: props.path},
-        React.createElement(TextElement, {path: pathWith('TextInput1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
         React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
     )
 }
@@ -63,6 +63,27 @@ test('generates TextInput elements with initial value', ()=> {
         React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, multiline: true, label: 'Text Input One'}),
         React.createElement(TextInput, {path: pathWith('t2'), initialValue: "Some" + " things", maxLength: 5 + 5}),
         React.createElement(TextInput, {path: pathWith('t3')}),
+    )
+}
+`)
+})
+
+test('generates Text elements with multiline content', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday'}),
+            ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {})
+
+    return React.createElement('div', {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, \`Hi there!
+How are you?
+Today\`),
     )
 }
 `)

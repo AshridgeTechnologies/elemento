@@ -3,7 +3,7 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../util/helpers'
 import {updateState, useObjectState} from './appData'
 
-type Properties = {path: string, label?: string, initialValue?: string, maxLength?: number}
+type Properties = {path: string, label?: string, initialValue?: string, maxLength?: number, multiline?: boolean}
 
 export default function TextInput({path, initialValue = '', maxLength, multiline, label}: Properties) {
     const state = useObjectState(path)

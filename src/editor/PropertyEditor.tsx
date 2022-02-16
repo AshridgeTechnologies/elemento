@@ -33,7 +33,7 @@ export default function PropertyEditor({element, onChange}: {element: Element, o
 
             case "Text":
                 return <>
-                    {propertyField<Text>('content')}
+                    {propertyField<Text>('content', 'string multiline')}
                     {propertyField<Text>('display', 'boolean')}
                 </>
 

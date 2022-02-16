@@ -18,6 +18,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
                 return input
             case 'string list':
                 return input.trim().split(/ *, */)
+            case 'string multiline':
+                return input
             case 'boolean':
                 return input === 'true'
             default:
@@ -91,6 +93,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
             :
             <TextField {...numericProps} id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                        value={initialInputValue()}
+                       multiline={type === 'string multiline'}
                        onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
         }
     </div>

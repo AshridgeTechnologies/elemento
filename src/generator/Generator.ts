@@ -29,7 +29,7 @@ const valueLiteral = function (propertyValue: PropertyValue): string {
     if (isArray(propertyValue)) {
         return `[${propertyValue.map(valueLiteral).join(', ')}]`
     } else if (typeof propertyValue === 'string') {
-        return `'${propertyValue}'`
+            return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue}'`
     } else {
         return propertyValue.toString()
     }

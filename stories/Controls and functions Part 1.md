@@ -8,8 +8,8 @@ Controls
   - Number input
   - True false input
   - Select input
-- Multiline text input box
-- Text -> general Display, multiline input, etc
+  - Multiline text input box
+  - Text -> general Display, multiline input, etc
 - Page (new)
 
 For each control
