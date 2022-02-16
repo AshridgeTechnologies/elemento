@@ -101,6 +101,7 @@ const testInsert = (elementType: ElementType) => test(`notifies insert of ${elem
 testInsert('Text')
 testInsert('TextInput')
 testInsert('NumberInput')
+testInsert('SelectInput')
 testInsert('TrueFalseInput')
 testInsert('Button')
 

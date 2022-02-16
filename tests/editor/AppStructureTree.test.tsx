@@ -28,6 +28,7 @@ const modelTree = new ModelTreeItem('app1', 'App One', 'App', [
         new ModelTreeItem('text1_1', 'First Text', 'Text'),
         new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput'),
         new ModelTreeItem('numberInput1_2', 'The Number Input', 'NumberInput'),
+        new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput'),
         new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput'),
         new ModelTreeItem('button2_1', 'Some Button', 'Button'),
     ]),
@@ -42,8 +43,8 @@ test("renders tree with all types of model elements",  async () => {
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon',])
 
     await actWait(() => fireEvent.click(container.querySelector(treeExpandControlSelector)))
-    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'The Text Input', 'The Number Input', 'Some True-false', 'Some Button', 'Other Page'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'ToggleOnIcon', 'Crop75Icon', 'WebIcon',])
+    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Other Page'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'WebIcon',])
 
 })
 

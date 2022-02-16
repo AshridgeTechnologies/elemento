@@ -6,8 +6,8 @@ Controls
 
   - Button
   - Number input
-- Boolean input
-- Select input
+  - True false input
+  - Select input
 - Multiline text input box
 - Text -> general Display, multiline input, etc
 - Page (new)

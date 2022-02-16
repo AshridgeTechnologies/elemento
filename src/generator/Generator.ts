@@ -12,7 +12,9 @@ import {definedPropertiesOf, isExpr} from '../util/helpers'
 import {PropertyValue} from '../model/Types'
 import Button from '../model/Button'
 import NumberInput from '../model/NumberInput'
+import SelectInput from '../model/SelectInput'
 import TrueFalseInput from '../model/TrueFalseInput'
+import {isArray} from 'lodash'
 
 type IdentifierCollector = {add(s: string): void}
 
@@ -23,12 +25,13 @@ function objectLiteral(obj: object) {
 const isAction = true
 const isGlobalFunction = (name: string) => name in globalFunctions
 
-const valueLiteral = function (propertyValue: string | number | { expr: string } | boolean) {
-    switch (typeof propertyValue) {
-        case 'string':
-            return `'${propertyValue}'`
-        default:
-            return propertyValue.toString()
+const valueLiteral = function (propertyValue: PropertyValue): string {
+    if (isArray(propertyValue)) {
+        return `[${propertyValue.map(valueLiteral).join(', ')}]`
+    } else if (typeof propertyValue === 'string') {
+        return `'${propertyValue}'`
+    } else {
+        return propertyValue.toString()
     }
 }
 
@@ -127,6 +130,16 @@ ${children}
                 return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
             }
 
+            case "SelectInput": {
+                const selectInput = element as SelectInput
+                const path = `pathWith('${selectInput.codeName}')`
+                const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown)
+                const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown)
+                const label = Generator.getExprAndIdentifiers(selectInput.label, identifiers, isKnown)
+                const reactProperties = definedPropertiesOf({path, values, initialValue, label})
+                return `React.createElement(SelectInput, ${objectLiteral(reactProperties)})`
+            }
+
             case "TrueFalseInput": {
                 const trueFalseInput = element as TrueFalseInput
                 const path = `pathWith('${trueFalseInput.codeName}')`
@@ -166,7 +179,11 @@ ${children}
 
             case "NumberInput":
                 const numberInput = element as NumberInput
-                return `${numberInput.codeName}: {value: ${Generator.getExpr(numberInput.initialValue) || '0'}},`
+                return `${numberInput.codeName}: {value: ${Generator.getExpr(numberInput.initialValue) || 0}},`
+
+            case "SelectInput":
+                const selectInput = element as SelectInput
+                return `${selectInput.codeName}: {value: ${Generator.getExpr(selectInput.initialValue) || undefined}},`
 
             case "TrueFalseInput":
                 const trueFalseInput = element as TrueFalseInput

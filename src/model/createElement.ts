@@ -6,6 +6,7 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 import {startCase} from 'lodash'
 import Button from './Button'
 import NumberInput from './NumberInput'
+import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
@@ -23,6 +24,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
             return new TextInput(id, name, {})
         case 'NumberInput':
             return new NumberInput(id, name, {})
+        case 'SelectInput':
+            return new SelectInput(id, name, {values: []})
         case 'TrueFalseInput':
             return new TrueFalseInput(id, name, {})
         case 'Button':

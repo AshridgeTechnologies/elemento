@@ -13,6 +13,7 @@ import {componentJSON, componentProps} from '../util/testHelpers'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
+import SelectInput from '../../src/model/SelectInput'
 
 let container: any
 let changedValue: any
@@ -109,6 +110,24 @@ test('PropertyEditor has fields for TrueFalseInput', ()=> {
     expect(inputValue('Name')).toBe('True False Input 1')
     expect(inputValue('Label')).toBe('"True False Input One"')
     expect(inputValue('Initial Value')).toBe('true')
+})
+
+test('PropertyEditor has fields for SelectInput', ()=> {
+    const element = new SelectInput('id1', 'Select Input 1', {values: ex`["Green", "Blue", "Pink"]`, initialValue: ex`"Green"`, label: ex`"Select Input One"`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Select Input 1')
+    expect(inputValue('Label')).toBe('"Select Input One"')
+    expect(inputValue('Values')).toBe('["Green", "Blue", "Pink"]')
+    expect(inputValue('Initial Value')).toBe('"Green"')
+})
+
+test('PropertyEditor has fields for SelectInput with fixed value', ()=> {
+    const element = new SelectInput('id1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Green', label: 'Select Input One'})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Select Input 1')
+    expect(inputValue('Label')).toBe('Select Input One')
+    expect(inputValue('Values')).toBe('Green, Blue, Pink')
+    expect(inputValue('Initial Value')).toBe('Green')
 })
 
 test('PropertyEditor has fields for Button', ()=> {

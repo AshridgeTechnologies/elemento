@@ -7,6 +7,7 @@ import {ElementId, ElementType} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import Button from './Button'
 import NumberInput from './NumberInput'
+import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 
 export function loadJSON({id, kind, name, properties, elements}:
@@ -25,6 +26,8 @@ export function loadJSON({id, kind, name, properties, elements}:
             return new TextInput(id, name, properties)
         case "NumberInput":
             return new NumberInput(id, name, properties)
+        case "SelectInput":
+            return new SelectInput(id, name, properties)
         case "TrueFalseInput":
             return new TrueFalseInput(id, name, properties)
         case "Button":
