@@ -4,11 +4,13 @@ import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
+import SelectInput from '../../src/model/SelectInput'
 
 test('creates elements of correct type', () => {
     expect(createElement('Text', 2)).toBeInstanceOf(Text)
     expect(createElement('TextInput', 2)).toBeInstanceOf(TextInput)
     expect(createElement('NumberInput', 2)).toBeInstanceOf(NumberInput)
+    expect(createElement('SelectInput', 2)).toBeInstanceOf(SelectInput)
     expect(createElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
     expect(createElement('Button', 3)).toBeInstanceOf(Button)
 })

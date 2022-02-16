@@ -11,6 +11,7 @@ import {PropertyType, PropertyValue} from '../model/Types'
 import Button from '../model/Button'
 import NumberInput from '../model/NumberInput'
 import TrueFalseInput from '../model/TrueFalseInput'
+import SelectInput from '../model/SelectInput'
 
 export default function PropertyEditor({element, onChange}: {element: Element, onChange: OnChangeFn }) {
 
@@ -47,6 +48,13 @@ export default function PropertyEditor({element, onChange}: {element: Element, o
                 return <>
                     {propertyField<NumberInput>('initialValue', 'number')}
                     {propertyField<NumberInput>('label')}
+                </>
+
+            case "SelectInput":
+                return <>
+                    {propertyField<SelectInput>('values', 'string list')}
+                    {propertyField<SelectInput>('initialValue', 'string')}
+                    {propertyField<SelectInput>('label')}
                 </>
 
             case "TrueFalseInput":

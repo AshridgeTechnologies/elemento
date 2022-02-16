@@ -35,8 +35,13 @@ export default () =>
             As well as using the current value of a control, you can use fixed values, like <code>10</code> or <code>"Hello "</code> in the examples above.
         </Para>
         <Para>
-            Text values need to have quotes around them (eg "Hello "), numbers are written just as you normally would (eg 10)
+            Some things to know about writing fixed values:
         </Para>
+        <BulletList>
+            <li><b>Text values</b> need to have quotes around them eg <code>"Hello "</code></li>
+            <li><b>Numbers</b> are written just as you normally would eg <code>10</code></li>
+            <li><b>Lists of values</b> have square brackets around them, and commas between the items eg <code>["Yes", "No", "Maybe"]</code></li>
+        </BulletList>
 
         <MinorHeading>Where you use formulas</MinorHeading>
         <Para>

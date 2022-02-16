@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {ElementId, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
-import {startCase} from 'lodash'
+import {isArray, startCase} from 'lodash'
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
 import {isExpr} from '../util/helpers'
 import {OnChangeFn} from './Types'
@@ -16,6 +16,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
                 return Number(input)
             case 'string':
                 return input
+            case 'string list':
+                return input.trim().split(/ *, */)
             case 'boolean':
                 return input === 'true'
             default:
@@ -32,6 +34,18 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
         return valueToSend(inputString, expr)
     }
 
+    const initialInputValue = () => {
+        if (value === undefined) {
+            return ''
+        } else if (isExpr(value)) {
+            return value.expr
+        } else if (isArray(value)) {
+            return value.join(', ')
+        } else {
+            return value
+        }
+    }
+
     const toggleKind = () => {
         setExpr(!expr)
 
@@ -41,7 +55,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
         onChange(elementId, name, newValue)
     }
 
-    const initialInputValue = value === undefined ? '' : isExpr(value) ? value.expr : value
+    // const initialInputValue = value === undefined ? '' : isExpr(value) ? value.expr : value
 
     const numericProps = type === 'number' ? {inputProps: {pattern: '[0-9]*'}} : {}
     const label = startCase(name)
@@ -66,7 +80,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
                 <Select
                     labelId={name + '_label'}
                     id={name}
-                    value={initialInputValue.toString()}
+                    value={initialInputValue().toString()}
                     onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
                 >
                     <MenuItem><em>default</em></MenuItem>
@@ -76,7 +90,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
             </FormControl>
             :
             <TextField {...numericProps} id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
-                       value={initialInputValue}
+                       value={initialInputValue()}
                        onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
         }
     </div>

@@ -5,6 +5,8 @@ import Generator from '../generator/Generator'
 import TextElement from './TextElement'
 import TextInput from './TextInput'
 import NumberInput from './NumberInput'
+import SelectInput from './SelectInput'
+import TrueFalseInput from './TrueFalseInput'
 import Button from './Button'
 import ErrorFallback from './ErrorFallback'
 import welcomeApp from '../util/welcomeApp'
@@ -13,7 +15,6 @@ import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
-import TrueFalseInput from './TrueFalseInput'
 
 let theApp: App
 
@@ -88,6 +89,8 @@ window.TextElement = TextElement
 window.TextInput = TextInput
 // @ts-ignore
 window.NumberInput = NumberInput
+// @ts-ignore
+window.SelectInput = SelectInput
 // @ts-ignore
 window.TrueFalseInput = TrueFalseInput
 // @ts-ignore

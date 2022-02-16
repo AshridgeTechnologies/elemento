@@ -30,6 +30,15 @@ test('shows fixed value control for string property if current value is empty', 
     expect(label().textContent).toBe('Length')
 })
 
+test('shows fixed value control for string list property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('abc')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('color')
+    expect(input().value).toBe('')
+    expect(label().textContent).toBe('Color')
+})
+
 test('shows expression-only control for action property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='theAction' type='action' value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
@@ -66,6 +75,15 @@ test('shows fixed value control for boolean property if current value is a boole
     expect(input().previousSibling.id).toBe('display')
     expect(input().value).toBe('true')
     expect(label().textContent).toBe('Display')
+})
+
+test('shows fixed value control for string list property if current value is a list', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={['Green', 'Blue', 'Red']} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('abc')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('color')
+    expect(input().value).toBe('Green, Blue, Red')
+    expect(label().textContent).toBe('Color')
 })
 
 test('shows expression control for property if current value is an expression', () => {
@@ -107,11 +125,11 @@ test('calls onChange with new number fixed value', () => {
     expect(newValue).toStrictEqual(21)
 })
 
-test('calls onChange with new string fixed value', () => {
-    ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Old value'} onChange={onChange}/>))
+test('calls onChange with new string list fixed value and ignores spaces around values', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={['Green', 'Red']} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: 'New value'}})
-    expect(newValue).toStrictEqual('New value')
+    fireEvent.input(input(), {target: {value: ' Blue, Green,   Red, Pinkish grey   '}})
+    expect(newValue).toStrictEqual(['Blue', 'Green', 'Red', 'Pinkish grey'])
 })
 
 test.skip('calls onChange with new boolean fixed value', () => {

@@ -60,6 +60,18 @@ export default () =>
                 </>}
         />
 
+        <ControlSection name='Select Input' helpId='selectInput'
+                        description='A Select Input control presents a number of options that the user can choose.
+                        It can be given a pre-filled value which the user can change.
+                        It has a label that is shown in or near the control to tell the user what the choice is for.'
+            properties={<>
+                    <PropertyEntry name='Options' type='list of string' helpId='selectInput-options'>The options that the user can choose from.</PropertyEntry>
+                    <PropertyEntry name='Initial Value' type='string' helpId='selectInput-initialValue'>
+                        The pre-filled option that is displayed when the control is first shown.  Must be one of the items in the Options property.</PropertyEntry>
+                    <PropertyEntry name='Label' type='text' helpId='selectInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
+                </>}
+        />
+
         <ControlSection name='Number Input' helpId='numberInput'
                         description='A Number Input control is a box where the user can enter a number.
                         It can be given a pre-filled value which the user can change or replace.

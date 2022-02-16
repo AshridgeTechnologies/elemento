@@ -12,3 +12,8 @@ General usability Part 1
 - Have fixed kind buttons non-disables but warn if try to change
 - Can't insert unless select an item
 - Icons on Insert Menu
+
+Help
+----
+
+- How to write fixed values inc lists vs formulas

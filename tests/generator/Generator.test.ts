@@ -7,6 +7,7 @@ import TextInput from '../../src/model/TextInput'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
+import SelectInput from '../../src/model/SelectInput'
 
 test('generates app and page 0 output files', ()=> {
     const app = new App('t1', 'test1', {}, [
@@ -89,6 +90,33 @@ test('generates NumberInput elements with initial value', ()=> {
         React.createElement(NumberInput, {path: pathWith('t1'), initialValue: 44, label: 'Number Input One'}),
         React.createElement(NumberInput, {path: pathWith('t2'), initialValue: 22 + 33}),
         React.createElement(NumberInput, {path: pathWith('t3')}),
+    )
+}
+`)
+})
+
+test('generates SelectInput elements with initial value', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new SelectInput('id1', 't1', {values: ['22', '33', '44'], initialValue: '44', label: "Select Input One"}),
+            new SelectInput('id2', 't2', {values: ['22', '33', '44'], initialValue: ex`4+"4"`}),
+            new SelectInput('id2', 't3', {values: []}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        t1: {value: '44'},
+        t2: {value: 4+"4"},
+        t3: {value: undefined},
+    })
+
+    return React.createElement('div', {id: props.path},
+        React.createElement(SelectInput, {path: pathWith('t1'), values: ['22', '33', '44'], initialValue: '44', label: 'Select Input One'}),
+        React.createElement(SelectInput, {path: pathWith('t2'), values: ['22', '33', '44'], initialValue: 4+"4"}),
+        React.createElement(SelectInput, {path: pathWith('t3'), values: []}),
     )
 }
 `)
