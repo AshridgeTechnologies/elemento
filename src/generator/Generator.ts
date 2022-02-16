@@ -117,8 +117,9 @@ ${children}
                 const path = `pathWith('${textInput.codeName}')`
                 const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown)
                 const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown)
+                const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown)
                 const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown)
-                const reactProperties = definedPropertiesOf({path, initialValue, maxLength, label})
+                const reactProperties = definedPropertiesOf({path, initialValue, maxLength, multiline, label})
                 return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
             case "NumberInput": {

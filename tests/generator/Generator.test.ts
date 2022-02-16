@@ -44,7 +44,7 @@ test('generates app and page 0 output files', ()=> {
 test('generates TextInput elements with initial value', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, label: "Text Input One"}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, multiline: true, label: "Text Input One"}),
             new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, maxLength: ex`5 + 5`}),
             new TextInput('id2', 't3', {}),
     ]
@@ -60,7 +60,7 @@ test('generates TextInput elements with initial value', ()=> {
     })
 
     return React.createElement('div', {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, label: 'Text Input One'}),
+        React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, multiline: true, label: 'Text Input One'}),
         React.createElement(TextInput, {path: pathWith('t2'), initialValue: "Some" + " things", maxLength: 5 + 5}),
         React.createElement(TextInput, {path: pathWith('t3')}),
     )

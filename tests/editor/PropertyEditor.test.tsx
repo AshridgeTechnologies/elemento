@@ -88,12 +88,13 @@ test('PropertyEditor has fields for Text', ()=> {
 })
 
 test('PropertyEditor has fields for TextInput', ()=> {
-    const element = new TextInput('id1', 'Text Input 1', {initialValue: ex`"Hi!"`, maxLength: ex`10`, label: ex`"Text One"`})
+    const element = new TextInput('id1', 'Text Input 1', {initialValue: ex`"Hi!"`, maxLength: ex`10`, multiline: ex`true || false`, label: ex`"Text One"`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(inputValue('Max Length')).toBe('10')
+    expect(inputValue('Multiline')).toBe('true || false')
 })
 
 test('PropertyEditor has fields for NumberInput', ()=> {

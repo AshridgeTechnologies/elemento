@@ -41,6 +41,7 @@ export default function PropertyEditor({element, onChange}: {element: Element, o
                 return <>
                     {propertyField<TextInput>('initialValue')}
                     {propertyField<TextInput>('maxLength', 'number')}
+                    {propertyField<TextInput>('multiline', 'boolean')}
                     {propertyField<TextInput>('label')}
                 </>
 

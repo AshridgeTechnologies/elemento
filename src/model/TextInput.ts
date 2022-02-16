@@ -5,6 +5,7 @@ import {ElementId, PropertyValue} from './Types'
 export type Properties = {
     readonly initialValue?: PropertyValue,
     readonly maxLength?: PropertyValue,
+    readonly multiline?: PropertyValue,
     readonly label?: PropertyValue
 }
 export default class TextInput extends BaseElement<Properties> implements Element {
@@ -22,5 +23,6 @@ export default class TextInput extends BaseElement<Properties> implements Elemen
 
     get initialValue() { return this.properties.initialValue }
     get maxLength() { return this.properties.maxLength }
+    get multiline() { return this.properties.multiline }
     get label() { return this.properties.label }
 }

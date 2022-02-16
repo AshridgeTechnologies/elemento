@@ -13,6 +13,11 @@ test('TextInput element produces output with properties supplied',
     snapshot(createElement(TextInput, {path: 'app.page1.width', initialValue: 'Hi there!', maxLength: 10, label: 'Item Description'}))
 )
 
+test('TextInput element produces output with multiline', async () => {
+    const {container} = render(createElement(TextInput, {path: 'app.page1.description', initialValue: 'Hi there!', multiline: true, label: 'Item Description'}))
+    expect(container.innerHTML).toMatchSnapshot()
+})
+
 test('TextInput element produces output with default values where properties omitted',
     snapshot(createElement(TextInput, {path: 'app.page1.height'}))
 )
