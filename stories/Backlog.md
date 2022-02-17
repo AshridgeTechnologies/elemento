@@ -13,12 +13,15 @@ Stories
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
-- File data storage
+- In-memory data storage
+- Persistent data storage
 - Info website update
 - Editor website
 - Runner website
 
 ### Priority 2
+- Collections
+- List control
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
