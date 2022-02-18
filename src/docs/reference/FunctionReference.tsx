@@ -40,6 +40,17 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='ShowPage' helpId='ShowPage' resultType='action'
+                         description='Shows one of the Pages in the App.'
+
+                         inputs={
+                             <FunctionInput name='Page' type='Page'>The Page to show.  It must be the name of one of the Pages defined under the App.</FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='ShowPage' inputs={['UserPage']}/>
+                         </>}
+        />
+
         <FunctionSection name='Sum' helpId='Sum' resultType='number'
                          description='Adds up a list of numbers'
 

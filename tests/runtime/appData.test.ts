@@ -1,26 +1,8 @@
 import React from 'react'
 import renderer, {act} from 'react-test-renderer'
-import {
-    _dangerouslyResetState,
-    getState,
-    updateState,
-    useObjectState,
-    useObjectStateWithDefaults,
-    useStore
-} from '../../src/runtime/appData'
+import {_dangerouslyResetState, getState, updateState, useObjectStateWithDefaults} from '../../src/runtime/appData'
+import {stateFor} from '../util/testHelpers'
 
-function StatefulComponent(props:{path?: string, exposeState: (state: any) => void}) {
-    const {path, exposeState} = props
-    const state = path === undefined ? useStore() : useObjectState(path)
-    exposeState(state)
-    return null
-}
-
-function stateFor(path?: string) {
-    let state: any = undefined
-    act( () => {renderer.create(React.createElement(StatefulComponent, {path, exposeState: s => state = s}))} )
-    return state
-}
 
 function StatefulComponentWithDefaults(props:{path: string, defaults: object, exposeState: (state: any) => void}) {
     const {path, defaults, exposeState} = props

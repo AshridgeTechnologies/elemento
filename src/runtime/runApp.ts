@@ -13,6 +13,7 @@ import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
+import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
 
@@ -26,6 +27,7 @@ declare global {
     var runApp: () => any
     var AppMain: () => any
     var globalFunctions: object
+    var appFunctions: object
 }
 
 export function app() { return theApp }
@@ -42,6 +44,7 @@ window.setApp = setApp
 window.runApp = runApp
 window.setAppFromJSONString = setAppFromJSONString
 window.globalFunctions = importedGlobalFunctions
+window.appFunctions = importedAppFunctions
 
 const appContainer = () => document.querySelector('#main')
 

@@ -63,7 +63,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
     await actWait(() =>  ({container} = render(<Editor app={appFixture2()} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
     await actWait(() =>  fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[1]))
 
-    expect(itemLabels()).toStrictEqual(['Main Page', 'Other Page', 'Some Text', 'Another Text Input'])
+    expect(itemLabels()).toStrictEqual(['Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2'])
 
     fireEvent.click(screen.getByText('Another Text Input'))
 
