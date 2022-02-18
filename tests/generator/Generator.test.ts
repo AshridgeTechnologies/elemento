@@ -9,12 +9,17 @@ import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 
-test('generates app and page 0 output files', ()=> {
+test('generates app and all page output files', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 'Text 1', {content: 'Hi there!'}),
-            new Text('id1', 't2', {content: ex`23 + 45`}),
-    ]
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id2', 't2', {content: ex`23 + 45`}),
+            ]
+        ),
+        new Page('p2', 'Page 2', {}, [
+                new Text('id3', 'Text 2', {content: 'Green!'}),
+                new Text('id4', 't3', {content: 'Red!'}),
+            ]
         )])
 
     const gen = new Generator(app)
@@ -30,11 +35,25 @@ test('generates app and page 0 output files', ()=> {
     )
 }
 `)
-    expect(gen.outputFiles()[1].name).toBe('appMain.js')
-    expect(gen.outputFiles()[1].content).toBe(`function AppMain(props) {
+    expect(gen.outputFiles()[1].name).toBe('Page2.js')
+    expect(gen.outputFiles()[1].content).toBe(`function Page2(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {})
 
+    return React.createElement('div', {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
+        React.createElement(TextElement, {path: pathWith('t3')}, 'Red!'),
+    )
+}
+`)
+    expect(gen.outputFiles()[2].name).toBe('appMain.js')
+    expect(gen.outputFiles()[2].content).toBe(`function AppMain(props) {
+
+    const appPages = {Page1, Page2}
+    const appState = useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = appState
     return React.createElement('div', {id: 'app'},
-        React.createElement(Page1, {path: 'app.Page1'})
+        React.createElement(appPages[currentPage], {path: \`app.\${currentPage}\`})
     )
 }
 `)
@@ -228,6 +247,30 @@ test('global functions available in content expression', ()=> {
 `)
 })
 
+test('app functions and Page names available in expression', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Button('id1', 'b1', {content: 'Change Page', action: ex`ShowPage(Page2)`}),
+            ]
+        ),
+        new Page('p2', 'Page 2', {}, [
+                new Button('id1', 'b2', {content: 'Back to Page 1', action: ex`ShowPage(Page1)`}),
+            ]
+        )])
+
+    const content = new Generator(app).outputFiles()[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {})
+    const {ShowPage} = window.appFunctions
+    const Page2 = 'Page2'
+    return React.createElement('div', {id: props.path},
+        React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),
+    )
+}
+`)
+})
+
 test('unknown global functions show error marker', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -264,7 +307,6 @@ test('page elements available in content expression', ()=> {
         ForenameInput: {value: ""},
         SurnameInput: {value: ""},
     })
-
     const {ForenameInput, SurnameInput} = state
     return React.createElement('div', {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + " " + SurnameInput.value),

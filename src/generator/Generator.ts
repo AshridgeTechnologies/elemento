@@ -7,6 +7,7 @@ import Text from '../model/Text'
 import Element from '../model/Element'
 import TextInput from '../model/TextInput'
 import {globalFunctions} from '../runtime/globalFunctions'
+import appFunctions from '../runtime/appFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {definedPropertiesOf, isExpr} from '../util/helpers'
 import {PropertyValue} from '../model/Types'
@@ -24,6 +25,7 @@ function objectLiteral(obj: object) {
 
 const isAction = true
 const isGlobalFunction = (name: string) => name in globalFunctions
+const isAppFunction = (name: string) => name in appFunctions
 
 const valueLiteral = function (propertyValue: PropertyValue): string {
     if (isArray(propertyValue)) {
@@ -40,35 +42,38 @@ export default class Generator {
     }
 
     outputFiles() {
-        const page = this.app.pages[0]
-        return [
-            {
-                name: `${(page.codeName)}.js`,
-                content: Generator.pageContent(page)
-            },
-            {
-                name: 'appMain.js',
-                content: Generator.appMainContent(this.app)
-            }
-        ]
+        const pageFiles = this.app.pages.map( page => ({
+            name: `${(page.codeName)}.js`,
+            content: Generator.pageContent(this.app, page)
+        }))
+        const appMainFile = {
+            name: 'appMain.js',
+            content: Generator.appMainContent(this.app)
+        }
+        return [...pageFiles, appMainFile]
     }
 
-    private static pageContent(page: Page) {
+    private static pageContent(app: App, page: Page) {
         const stateDefaultEntries = page.elementArray().map( el => Generator.initialStateEntry(el) ).filter( el => !!el )
         const stateDefaultBlock = stateDefaultEntries.length ? `\n        ${stateDefaultEntries.join('\n        ')}\n    `: ''
         const stateDefaultCall = `    const state = useObjectStateWithDefaults(props.path, {${stateDefaultBlock}})`
 
         const identifierSet = new Set<string>()
         const isPageElement = (name: string) => !!page.elementArray().find( el => el.codeName === name )
-        const isKnown = (name: string) => isGlobalFunction(name) || isPageElement(name)
+        const isPageName = (name: string) => !!app.pages.find( p => p.codeName === name )
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name)
         const pageCode = Generator.generateElement(page, identifierSet, isKnown)
         const identifiers = [...identifierSet.values()]
 
         const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = window.globalFunctions` : ''
+        const appFunctionIdentifiers = identifiers.filter(isAppFunction)
+        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = window.appFunctions` : ''
+        const pageNames = identifiers.filter(isPageName)
+        const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
         const pageIdentifiers = identifiers.filter(isPageElement)
         const pageDeclarations = pageIdentifiers.length ? `    const {${pageIdentifiers.join(', ')}} = state` : ''
-        const declarations = [globalDeclarations, pageDeclarations].join('\n').trimEnd()
+        const declarations = [globalDeclarations, appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
 
         return `function ${page.codeName}(props) {
@@ -82,14 +87,17 @@ ${declarations}
 
     private static appMainContent(app: App) {
         const identifierSet = new Set<string>()
-        const page = app.pages[0]
+        const pages = app.pages
         const identifiers = [...identifierSet.values()]
         const globalFunctionIdentifiers = identifiers.filter( id => isGlobalFunction(id))
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = window.globalFunctions` : ''
         return `function AppMain(props) {
 ${globalDeclarations}
+    const appPages = {${pages.map( p => p.codeName).join(', ')}}
+    const appState = useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = appState
     return React.createElement('div', {id: 'app'},
-        React.createElement(${page.codeName}, {path: 'app.${page.codeName}'})
+        React.createElement(appPages[currentPage], {path: \`app.\${currentPage}\`})
     )
 }
 `.trimLeft()

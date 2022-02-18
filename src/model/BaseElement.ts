@@ -1,5 +1,6 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
+import UnsupportedOperationError from '../util/UnsupportedOperationError'
 
 export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
     if (a === b) return true
@@ -9,8 +10,6 @@ export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
     }
     return true
 }
-
-
 
 export default abstract class BaseElement<PropertiesType extends object> {
     constructor(
@@ -90,5 +89,44 @@ export default abstract class BaseElement<PropertiesType extends object> {
                      elements: ReadonlyArray<Element> | undefined) {
         const ctor = this.constructor as any
         return new ctor(id, name, properties, elements )
+    }
+
+    doInsert(selectedItemId: ElementId, elementType: ElementType, optNewIdSeq?: number): [this, Element | null] {
+        const newIdSeq = optNewIdSeq ?? this.findMaxId(elementType) + 1
+
+        let insertIndex = -1
+        if (selectedItemId === this.id) {
+            insertIndex = 0
+        } else {
+            const selectedItemIndex = this.elementArray().findIndex(it => it.id === selectedItemId)
+            if (selectedItemIndex >= 0) {
+                insertIndex = selectedItemIndex + 1
+            }
+        }
+
+        if (insertIndex !== -1 && this.canContain(elementType)) {
+            const newElements = [...this.elementArray()]
+            const newElement = this.createElement(elementType, newIdSeq)
+            newElements.splice(insertIndex, 0, newElement)
+            return [this.create(this.id, this.name, this.properties, newElements), newElement]
+        }
+
+        const insertResults = this.elementArray().map(p => p.doInsert(selectedItemId, elementType, newIdSeq))
+        const newChildElements = insertResults.map(r => r[0])
+        const newElement = insertResults.map(r => r[1]).find(el => el) as Element
+
+        if (!equalArrays(newChildElements, this.elementArray())) {
+            return [this.create(this.id, this.name, this.properties, newChildElements), newElement]
+        }
+
+        return [this, null]
+    }
+
+    createElement(elementType: ElementType, newIdSeq: number): Element {
+        throw new UnsupportedOperationError()
+    }
+
+    canContain(elementType: ElementType) {
+        return false
     }
 }

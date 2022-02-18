@@ -2,6 +2,7 @@ import Page from './Page';
 import Element from './Element'
 import BaseElement from './BaseElement'
 import {ElementId, ElementType, PropertyValue} from './Types'
+import { createElement } from './createElement';
 
 type Properties = { author?: PropertyValue }
 
@@ -17,10 +18,15 @@ export default class App extends BaseElement<Properties> implements Element {
 
     get pages() {return this.elements as Page[]}
 
+    createElement(elementType: ElementType, newIdSeq: number): Element {
+        return createElement(elementType, newIdSeq)
+    }
+
     insert(selectedItemId: ElementId, elementType: ElementType): [App, Element] {
-        const insertResults = this.pages.map(p => p.insert(selectedItemId, elementType, this.findMaxId(elementType) + 1))
-        const newPages = insertResults.map( r => r[0])
-        const newElement = insertResults.map( r => r[1]).find( el => el ) as Element
-        return [this.create(this.id, this.name, this.properties, newPages), newElement]
+        return this.doInsert(selectedItemId, elementType) as [App, Element]
+    }
+
+    canContain(elementType: ElementType) {
+        return elementType === 'Page'
     }
 }

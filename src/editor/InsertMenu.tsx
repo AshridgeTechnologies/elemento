@@ -45,6 +45,7 @@ export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
                 {menuItem('SelectInput')}
                 {menuItem('TrueFalseInput')}
                 {menuItem('Button')}
+                {menuItem('Page')}
             </Menu>
         </div>
     );

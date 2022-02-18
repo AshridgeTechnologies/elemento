@@ -1,19 +1,19 @@
 import {ElementType} from './Types'
-import Text from './Text'
-import Page from './Page'
-import TextInput from './TextInput'
-import UnsupportedValueError from '../util/UnsupportedValueError'
 import {startCase} from 'lodash'
-import Button from './Button'
+import Page from './Page'
+import Text from './Text'
+import TextInput from './TextInput'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
+import Button from './Button'
+import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
     const name = `${startCase(elementType)} ${newIdSeq}`
 
-    switch(elementType) {
+    switch (elementType) {
         case 'App':
             throw new Error("Cannot create new App")
         case 'Page':

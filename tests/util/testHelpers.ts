@@ -1,7 +1,8 @@
-import renderer from 'react-test-renderer'
+import renderer, {act as rtrAct} from 'react-test-renderer'
 import React from 'react'
 import {act, render} from '@testing-library/react'
 import {treeItemSelector} from '../editor/Selectors'
+import {useObjectState, useStore} from '../../src/runtime/appData'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -34,3 +35,17 @@ export const componentProps = (domElement: any) => {
     const propsKey = Object.keys(domElement).find(k => k.startsWith("__reactProps$"))
     return propsKey !== undefined ? domElement[propsKey as string] : null
 }
+
+function StatefulComponent(props:{path?: string, exposeState: (state: any) => void}) {
+    const {path, exposeState} = props
+    const state = path === undefined ? useStore() : useObjectState(path)
+    exposeState(state)
+    return null
+}
+
+export function stateFor(path?: string) {
+    let state: any = undefined
+    rtrAct( () => {renderer.create(React.createElement(StatefulComponent, {path, exposeState: s => state = s}))} )
+    return state
+}
+

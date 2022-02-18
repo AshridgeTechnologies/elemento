@@ -10,7 +10,7 @@ Controls
   - Select input
   - Multiline text input box
   - Text -> general Display, multiline input, etc
-- Page (new)
+  - Page (new)
 
 For each control
 ----------------
@@ -45,4 +45,4 @@ Functions
   - Substitute
   - Max, Min, Sum
 - Clear (page/control)
-- Show Page
+  - Show Page

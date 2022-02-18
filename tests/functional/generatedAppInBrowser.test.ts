@@ -47,6 +47,20 @@ test('shows TextInput elements', async ({ page }) => {
     expect(await page.inputValue('input[type="text"] >> nth=0')).toBe('A text value')
 })
 
+test('can show pages', async ({ page }) => {
+    await page.goto(runtimeRootUrl)
+    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+
+    await page.evaluate( (app: string) => window.setAppFromJSONString(app), JSON.stringify(appFixture2()))
+    expect(await page.textContent('p >> nth=0')).toBe('Page One')
+
+    await page.click('button')
+    expect(await page.textContent('p >> nth=0')).toBe('Page Two')
+
+    await page.click('button')
+    expect(await page.textContent('p >> nth=0')).toBe('Page One')
+})
+
 test('can load app from web', async ({ page }) => {
 
     await page.goto(runtimeRootUrl+ 'https://www.dropbox.com/s/x895tpr1aophkan/AppOne.json?dl=0')

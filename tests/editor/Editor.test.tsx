@@ -63,7 +63,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
     await actWait(() =>  ({container} = render(<Editor app={appFixture2()} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
     await actWait(() =>  fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[1]))
 
-    expect(itemLabels()).toStrictEqual(['Main Page', 'Other Page', 'Some Text', 'Another Text Input'])
+    expect(itemLabels()).toStrictEqual(['Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2'])
 
     fireEvent.click(screen.getByText('Another Text Input'))
 
@@ -104,6 +104,26 @@ testInsert('NumberInput')
 testInsert('SelectInput')
 testInsert('TrueFalseInput')
 testInsert('Button')
+
+test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
+    let onInsertArgs: any
+    const notionalNewElementId = 'page_2'
+    const onInsert = (selectedItemId: string, elementType: ElementType) => {
+        onInsertArgs = [selectedItemId, elementType]
+        return notionalNewElementId
+    }
+
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
+
+    fireEvent.click(screen.getByText('Main Page'))
+    fireEvent.click(screen.getByText('Insert'))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Page'))
+
+    expect(onInsertArgs).toStrictEqual(['page_1', 'Page'])
+    // const idInput = screen.getByLabelText('Id') as HTMLInputElement
+    // expect(idInput.value).toBe(notionalNewElementId)
+})
 
 test('notifies open request', async () => {
     let opened: boolean = false

@@ -9,12 +9,14 @@ const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
 const mainPageTreeItem = `${treeItemSelector} >> nth=0`
 const mainPageTreeExpand = `${treeExpandControlSelector} >> nth=0`
 const treeMainPageElementItem = (n: number) => `${treeItemSelector} >> nth=${n+1}`
+const treeElementItem = (n: number) => `${treeItemSelector} >> nth=${n}`
 
 const insertMenu = 'text=Insert'
 const insertMenu_Button = 'ul[role="menu"] :text("Button")'
 const insertMenu_NumberInput = 'ul[role="menu"] :text("Number Input")'
 const insertMenu_SelectInput = 'ul[role="menu"] :text("Select Input")'
 const insertMenu_TrueFalseInput = 'ul[role="menu"] :text("True False Input")'
+const insertMenu_Page = 'ul[role="menu"] :text("Page")'
 const yesOption = 'li[role="option"]:text("Yes")'
 
 test.describe('Controls can be used', () => {
@@ -24,7 +26,7 @@ test.describe('Controls can be used', () => {
         const appFrame = page.frame('appFrame') as Frame
 
         const app = new App('app1', 'App One', {}, [
-            new Page('page1', 'Control Test Page', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
                 new TextInput('textInput_1', 'Name Input', {label:`Name`}),
             ]),
         ])
@@ -47,7 +49,7 @@ test.describe('Controls can be used', () => {
         const appFrame = page.frame('appFrame') as Frame
 
         const app = new App('app1', 'App One', {}, [
-            new Page('page1', 'Control Test Page', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
                 new TextInput('textInput_1', 'Name Input', {label:`Name`}),
             ]),
         ])
@@ -70,7 +72,7 @@ test.describe('Controls can be used', () => {
         const appFrame = page.frame('appFrame') as Frame
 
         const app = new App('app1', 'App One', {}, [
-            new Page('page1', 'Control Test Page', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
                 new TextInput('textInput_1', 'Name Input', {label:`Name`}),
             ]),
         ])
@@ -89,13 +91,12 @@ test.describe('Controls can be used', () => {
         expect(await appFrame.inputValue('input >> nth=0')).toBe('Red')
     })
 
-
     test('true false input', async ({ page }) => {
         await page.goto(runtimeRootUrl)
         const appFrame = page.frame('appFrame') as Frame
 
         const app = new App('app1', 'App One', {}, [
-            new Page('page1', 'Control Test Page', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
                 new TextInput('textInput_1', 'Name Input', {label:`Name`}),
             ]),
         ])
@@ -112,6 +113,25 @@ test.describe('Controls can be used', () => {
         await page.click('#initialValue')
         await page.click(yesOption)
         expect(await appFrame.isChecked('input >> nth=0')).toBe(true)
+    })
+
+    test('new page', async ({ page }) => {
+        await page.goto(runtimeRootUrl)
+
+        const app = new App('app1', 'App One', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
+                new TextInput('textInput_1', 'Name Input', {label:`Name`}),
+            ]),
+        ])
+
+        await loadApp(page, app)
+        expect(await page.textContent(mainPageTreeItem)).toBe('Control Test Page')
+        await page.click(mainPageTreeExpand)
+        await page.click(mainPageTreeItem)
+
+        await page.click(insertMenu)
+        await page.click(insertMenu_Page)
+        expect(await page.textContent(treeElementItem(2))).toBe('Page 2')
     })
 
 })

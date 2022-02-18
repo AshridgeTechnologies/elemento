@@ -10,6 +10,7 @@ export default interface Element {
     findMaxId(elementType: ElementType): number
     set(id: ElementId, propertyName: string, value: any): Element
     delete(itemId: ElementId): Element
+    doInsert(selectedItemId: ElementId, elementType: ElementType, newIdSeq?: number): [Element, Element | null]
 
     get codeName(): string
 }
