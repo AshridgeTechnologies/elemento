@@ -7,7 +7,7 @@ import {ex} from '../../src/util/helpers'
 export function appFixture1() {
 
     return new App('app1', 'App One', {}, [
-        new Page('page1', 'Main Page', {}, [
+        new Page('page_1', 'Main Page', {}, [
             new Text('text_1', 'First Text', {content: ex`"The first bit of text"`}),
             new Text('text_2', 'Second Text', {content: ex`"The second bit of text"`}),
         ]),
@@ -21,7 +21,7 @@ export function appFixture1() {
 export function appFixture2() {
 
     return new App('app1', 'App One', {}, [
-        new Page('page1', 'Main Page', {}, [
+        new Page('page_1', 'Main Page', {}, [
             new Text('text_1', 'First Text', {content: ex`"The first bit of text"`}),
             new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value"`, maxLength: ex`30`}),
         ]),

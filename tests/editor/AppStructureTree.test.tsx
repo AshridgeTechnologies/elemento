@@ -24,7 +24,7 @@ const selectedItemLabel = () => {
 }
 
 const modelTree = new ModelTreeItem('app1', 'App One', 'App', [
-    new ModelTreeItem('page1','Main Page', 'Page', [
+    new ModelTreeItem('page_1','Main Page', 'Page', [
         new ModelTreeItem('text1_1', 'First Text', 'Text'),
         new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput'),
         new ModelTreeItem('numberInput1_2', 'The Number Input', 'NumberInput'),
@@ -63,11 +63,11 @@ test('notifies selected item id', async () => {
 
     await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} onSelect={storeSelectedId} onAction={jest.fn()}/>)))
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
-    expect(storeSelectedId).toHaveBeenCalledWith('page1')
+    expect(storeSelectedId).toHaveBeenCalledWith('page_1')
 
     await actWait(() => fireEvent.click(container.querySelector(treeExpandControlSelector)))
     await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
-    expect(storeSelectedId).toHaveBeenCalledWith('page1')
+    expect(storeSelectedId).toHaveBeenCalledWith('page_1')
 })
 
 test('shows selected item highlighted', async () => {

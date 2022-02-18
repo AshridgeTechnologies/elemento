@@ -28,6 +28,7 @@ Stories
 - Highlight in Help
 - Persistent help position
 - Editor deep links - use in help examples
+- App shown in nav tree
 
 Epics
 -----

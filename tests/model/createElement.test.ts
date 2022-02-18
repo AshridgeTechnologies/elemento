@@ -1,10 +1,10 @@
-import {createElement} from '../../src/model/createElement'
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
+import {createElement} from '../../src/model/createElement'
 
 test('creates elements of correct type', () => {
     expect(createElement('Text', 2)).toBeInstanceOf(Text)

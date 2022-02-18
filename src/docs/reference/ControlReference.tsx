@@ -92,5 +92,13 @@ export default () =>
                     <PropertyEntry name='Label' type='text' helpId='trueFalseInput-label'>The descriptive label that is shown in or near the control.</PropertyEntry>
                 </>}
         />
+
+        <ControlSection name='Page' helpId='page'
+                        description='A Page control groups together a set of other controls that can be shown on the screen together.
+                        A Page can only be inserted directly under the App.
+                        To change the page shown on the screen, you use the Show() function.'
+            properties={<>
+                </>}
+        />
     </Section>
 

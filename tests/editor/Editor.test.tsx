@@ -105,6 +105,26 @@ testInsert('SelectInput')
 testInsert('TrueFalseInput')
 testInsert('Button')
 
+test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
+    let onInsertArgs: any
+    const notionalNewElementId = 'page_2'
+    const onInsert = (selectedItemId: string, elementType: ElementType) => {
+        onInsertArgs = [selectedItemId, elementType]
+        return notionalNewElementId
+    }
+
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
+
+    fireEvent.click(screen.getByText('Main Page'))
+    fireEvent.click(screen.getByText('Insert'))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Page'))
+
+    expect(onInsertArgs).toStrictEqual(['page_1', 'Page'])
+    // const idInput = screen.getByLabelText('Id') as HTMLInputElement
+    // expect(idInput.value).toBe(notionalNewElementId)
+})
+
 test('notifies open request', async () => {
     let opened: boolean = false
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={() => opened = true}/>)))
