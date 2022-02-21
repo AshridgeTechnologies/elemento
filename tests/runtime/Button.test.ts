@@ -20,12 +20,13 @@ test('Button element produces output with default values where properties omitte
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!'}))
 )
 
-test('Button does action when clicked', () => {
+test('Button does action when clicked', async () => {
     let container = testContainer(createElement(Button, {path: 'app.page1.save', content: 'Save me!', action: () => Log("I'm saved!")}, ))
     const buttonEl = container.querySelector('button[id="app.page1.save"]')
+    const user = userEvent.setup()
     const log = jest.spyOn(console, "log").mockImplementation(() => {})
     try {
-        userEvent.click(buttonEl)
+        await user.click(buttonEl)
         expect(log).toBeCalledWith("I'm saved!")
 
     } finally {

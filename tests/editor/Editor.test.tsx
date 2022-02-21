@@ -78,7 +78,8 @@ test('shows TextInput element selected in tree in property editor', async () => 
 })
 
 
-const testInsert = (elementType: ElementType) => test(`notifies insert of ${elementType} with item selected in tree and selects new item`, async () => {
+test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button'])
+    (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {
     let onInsertArgs: any
     const notionalNewElementId = 'text_1'
     const onInsert = (selectedItemId: string, elementType: ElementType) => {
@@ -97,13 +98,6 @@ const testInsert = (elementType: ElementType) => test(`notifies insert of ${elem
     const idInput = screen.getByLabelText('Id') as HTMLInputElement
     expect(idInput.value).toBe(notionalNewElementId)
 })
-
-testInsert('Text')
-testInsert('TextInput')
-testInsert('NumberInput')
-testInsert('SelectInput')
-testInsert('TrueFalseInput')
-testInsert('Button')
 
 test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
     let onInsertArgs: any

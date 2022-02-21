@@ -49,7 +49,8 @@ test('renders editor and updates app', async () => {
     await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
     await actWait(async () => setApp(theApp))
 
-    await actWait(() => userEvent.click(container.querySelector(treeExpandControlSelector) as Element))
+    const user = userEvent.setup()
+    await actWait(() => user.click(container.querySelector(treeExpandControlSelector) as Element))
     await wait(500)
     expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
 
@@ -57,7 +58,7 @@ test('renders editor and updates app', async () => {
     const elementId = app().pages[0].elements[0].id
     expect(elementId).toBe('text_1')
 
-    userEvent.click(itemElements()[2])
+    await user.click(itemElements()[2])
 
     const inputs = Array.from(container.querySelectorAll('input[type="text"]'))
     const nameInput = inputs[1] as HTMLInputElement
@@ -67,8 +68,8 @@ test('renders editor and updates app', async () => {
     // @ts-ignore
     expect(app().pages[0].elements[1].name).toBe('Second Text')
 
-    userEvent.clear(nameInput)
-    userEvent.type(nameInput, 'Further Text')
+    await user.clear(nameInput)
+    await user.type(nameInput, 'Further Text')
     await actWait( () => {})
     // @ts-ignore
     expect(app().pages[0].elements[1].name).toBe('Further Text')
@@ -81,7 +82,8 @@ test('loads app from JSON string', async () => {
     await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
     await actWait(async () => setAppFromJSONString(JSON.stringify(theApp)))
 
-    await actWait(() => userEvent.click(container.querySelector(treeExpandControlSelector) as Element))
+    const user = userEvent.setup()
+    await actWait(() => user.click(container.querySelector(treeExpandControlSelector) as Element))
     await wait(500)
     expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
 

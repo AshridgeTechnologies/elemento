@@ -11,6 +11,7 @@ Controls
   - Multiline text input box
   - Text -> general Display, multiline input, etc
   - Page (new)
+- Display attributes
 
 For each control
 ----------------

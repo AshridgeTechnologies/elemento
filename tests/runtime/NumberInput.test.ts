@@ -47,11 +47,12 @@ test('NumberInput shows updated value from the app store section for its path', 
     expect(inputEl.value).toBe('55')
 })
 
-test('NumberInput stores updated values in the app store section for its path', () => {
+test('NumberInput stores updated values in the app store section for its path', async () => {
     let container = testContainer(createElement(NumberInput, {path: 'app.page1.sprocket', initialValue: 27}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    userEvent.clear(inputEl)
-    userEvent.type(inputEl, '66')
+    const user = userEvent.setup()
+    await user.clear(inputEl)
+    await user.type(inputEl, '66')
     expect((useStore.getState() as any).app.page1.sprocket).toStrictEqual({value: 66})
     expect(inputEl.value).toBe('66')
 } )

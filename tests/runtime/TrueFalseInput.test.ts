@@ -47,13 +47,14 @@ test('TrueFalseInput shows updated value from the app store section for its path
     expect(inputEl.checked).toBe(true)
 })
 
-test('TrueFalseInput stores updated values in the app store section for its path', () => {
+test('TrueFalseInput stores updated values in the app store section for its path', async () => {
     let container = testContainer(createElement(TrueFalseInput, {path: 'app.page1.sprocket', initialValue: false}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    userEvent.click(inputEl)
+    const user = userEvent.setup()
+    await user.click(inputEl)
     expect((useStore.getState() as any).app.page1.sprocket).toStrictEqual({value: true})
     expect(inputEl.checked).toBe(true)
-    userEvent.click(inputEl)
+    await user.click(inputEl)
     expect((useStore.getState() as any).app.page1.sprocket).toStrictEqual({value: false})
     expect(inputEl.checked).toBe(false)
 } )

@@ -45,10 +45,11 @@ test('TextInput shows updated value from the app store section for its path', ()
     expect(inputEl.value).toBe('Billy')
 })
 
-test('TextInput stores updated values in the app store section for its path', () => {
+test('TextInput stores updated values in the app store section for its path', async () => {
     let container = testContainer(createElement(TextInput, {path: 'app.page1.sprocket', initialValue: 'Hi!'}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    userEvent.type(inputEl, ' How are you?')
+    const user = userEvent.setup()
+    await user.type(inputEl, ' How are you?')
     expect((useStore.getState() as any).app.page1.sprocket).toStrictEqual({value: 'Hi! How are you?'})
     expect(inputEl.value).toBe('Hi! How are you?')
 } )

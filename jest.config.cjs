@@ -10,6 +10,9 @@ module.exports = {
     coverageProvider: 'v8',
     collectCoverageFrom: [
         "src/**/*.{ts,tsx}",
+        "!src/docs/**",
+        "!src/util/*Error.ts",
+        "!src/util/welcomeApp.ts",
     ],
     // transform: {
     //     '^.+\\.tsx?$': ['@swc/jest'],
