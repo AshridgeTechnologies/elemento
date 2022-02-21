@@ -8,7 +8,8 @@ test('TextElement element produces output containing string children',
 
 test('TextElement element produces output containing ReactElement children', () => {
         const para = createElement('p', null, 'where are you')
-        snapshot(createElement(TextElement, {path: 'page1.para1'}, 'Hello', para))()
+        snapshot(createElement(TextElement, {path: 'page1.para1',
+            fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}, 'Hello', para))()
     }
 )
 

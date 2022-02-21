@@ -77,10 +77,19 @@ test('PropertyEditor shows controlled component for optional fields for Page', (
 })
 
 test('PropertyEditor has fields for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {content: 'Hi!\nGood morning'})
+    const element = new Text('id1', 'Text 1', {content: 'Hi!\nGood morning',
+        fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text 1')
     expect(textareaValue('Content')).toBe('Hi!\nGood morning')
+    expect(inputValue('Font Size')).toBe('44')
+    expect(inputValue('Font Family')).toBe('Dog')
+    expect(inputValue('Color')).toBe('red')
+    expect(inputValue('Background Color')).toBe('blue')
+    expect(inputValue('Border')).toBe('10')
+    expect(inputValue('Border Color')).toBe('black')
+    expect(inputValue('Width')).toBe('100')
+    expect(inputValue('Height')).toBe('200')
     expect(selectValue('Display')).toBe('true')
 })
 

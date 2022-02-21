@@ -29,13 +29,13 @@ Array [
   <style
     dangerouslySetInnerHTML={
       Object {
-        "__html": ".css-d3wcwz-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;}",
+        "__html": ".css-njimjm-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;margin-bottom:0.35em;border:10px solid;width:100px;height:200px;font-size:32px;font-family:Courier;color:red;background-color:green;border-color:black;}",
       }
     }
-    data-emotion="css d3wcwz-MuiTypography-root"
+    data-emotion="css njimjm-MuiTypography-root"
   />,
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-njimjm-MuiTypography-root"
     id="page1.para1"
   >
     Hello

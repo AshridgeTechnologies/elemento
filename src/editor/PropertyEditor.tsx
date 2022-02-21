@@ -34,7 +34,15 @@ export default function PropertyEditor({element, onChange}: {element: Element, o
             case "Text":
                 return <>
                     {propertyField<Text>('content', 'string multiline')}
+                    {propertyField<Text>('fontSize', 'number')}
+                    {propertyField<Text>('fontFamily', 'string')}
+                    {propertyField<Text>('color', 'string')}
+                    {propertyField<Text>('backgroundColor', 'string')}
+                    {propertyField<Text>('border', 'number')}
+                    {propertyField<Text>('borderColor', 'string')}
                     {propertyField<Text>('display', 'boolean')}
+                    {propertyField<Text>('width', 'number')}
+                    {propertyField<Text>('height', 'number')}
                 </>
 
             case "TextInput":

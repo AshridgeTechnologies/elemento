@@ -2,7 +2,10 @@ import React from 'react'
 import {Typography} from '@mui/material'
 import {flatten} from 'ramda'
 
-type Properties = {path: string, children?: any}
+type Properties = {path: string, children?: any
+    fontSize?: string | number, fontFamily?: string, color?: string, backgroundColor?: string,
+    border?: number, borderColor?: string, width?: number, height?: number
+    }
 
 function asText(content: any) {
     if (React.isValidElement(content)) return content
@@ -16,6 +19,8 @@ function asText(content: any) {
     }
     return contentValue
 }
-export default function TextElement({children, path}: Properties) {
-    return React.createElement(Typography, {id: path, gutterBottom: true}, asText(children))
+
+export default function TextElement({children, path, border, width, height, ...rest}: Properties) {
+    return React.createElement(Typography, {id: path, gutterBottom: true,
+        border: border, width, height, ...rest}, asText(children))
 }

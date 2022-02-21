@@ -40,6 +40,17 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Reset' helpId='Reset' resultType='action'
+                         description='Reset the value of a control to its initial value.'
+
+                         inputs={
+                             <FunctionInput name='Control' type='Control'>The control to reset.</FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='Reset' inputs={['LastnameInput']}/>
+                         </>}
+        />
+
         <FunctionSection name='ShowPage' helpId='ShowPage' resultType='action'
                          description='Shows one of the Pages in the App.'
 

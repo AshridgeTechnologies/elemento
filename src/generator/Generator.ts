@@ -115,10 +115,21 @@ ${globalDeclarations}
                 return `React.createElement('div', {id: props.path},
 ${children}
     )`
-            case "Text":
+            case "Text": {
                 const text = element as Text
+                const path = `pathWith('${text.codeName}')`
                 const content = Generator.getExprAndIdentifiers(text.content, identifiers, isKnown)
-                return `React.createElement(TextElement, {path: pathWith('${text.codeName}')}, ${content})`
+                const fontSize = Generator.getExprAndIdentifiers(text.fontSize, identifiers, isKnown)
+                const fontFamily = Generator.getExprAndIdentifiers(text.fontFamily, identifiers, isKnown)
+                const color = Generator.getExprAndIdentifiers(text.color, identifiers, isKnown)
+                const backgroundColor = Generator.getExprAndIdentifiers(text.backgroundColor, identifiers, isKnown)
+                const border = Generator.getExprAndIdentifiers(text.border, identifiers, isKnown)
+                const borderColor = Generator.getExprAndIdentifiers(text.borderColor, identifiers, isKnown)
+                const width = Generator.getExprAndIdentifiers(text.width, identifiers, isKnown)
+                const height = Generator.getExprAndIdentifiers(text.height, identifiers, isKnown)
+                const reactProperties = definedPropertiesOf({path, fontSize, fontFamily, color, backgroundColor, border, borderColor, width, height})
+                return `React.createElement(TextElement, ${objectLiteral(reactProperties)}, ${content})`
+            }
 
             case "TextInput":
                 const textInput = element as TextInput

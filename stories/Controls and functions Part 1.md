@@ -45,5 +45,5 @@ Functions
   - Substring
   - Substitute
   - Max, Min, Sum
-- Clear (page/control)
+- Reset (page/control)
   - Show Page

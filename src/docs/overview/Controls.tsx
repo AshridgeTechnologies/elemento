@@ -48,5 +48,8 @@ export default () =>
             <Para>
                 As you change property values, you can see the effect immediately in the Running program.  If you don't like what you see, just change it back or try something else.
             </Para>
+            <Para>Property values that control the size of something on the screen are given in <b>pixels.</b>
+                A pixel is one of the tiny dots that make up the screen display.
+                A typical computer screen is 1920 pixels wide and 1080 high.  A normal character on the screen is between 10 and 20 pixels tall.</Para>
         </SubSection>
     </Section>

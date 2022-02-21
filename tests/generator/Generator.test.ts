@@ -90,7 +90,8 @@ test('generates TextInput elements with initial value', ()=> {
 test('generates Text elements with multiline content', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday'}),
+                new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday',
+                    fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}),
             ]
         )])
 
@@ -100,7 +101,7 @@ test('generates Text elements with multiline content', ()=> {
     const state = useObjectStateWithDefaults(props.path, {})
 
     return React.createElement('div', {id: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, \`Hi there!
+        React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}, \`Hi there!
 How are you?
 Today\`),
     )

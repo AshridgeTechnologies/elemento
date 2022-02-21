@@ -1,5 +1,6 @@
 import React from "react"
 import {ControlSection, Heading, Para, PropertyEntry, Section, SubHeading, SubSection} from '../HelpComponents'
+import {Link} from '@mui/material'
 
 export default () =>
     <Section helpId='controls-reference'>
@@ -43,10 +44,25 @@ export default () =>
         />
 
         <ControlSection name='Text' helpId='text'
-                        description='A Text control simply displays a section of text.  The Name is not shown.'
-            properties={
+                        description='A Text control simply displays a section of text.  The Name is not shown.
+                        You can set various properties to control how the text is displayed.'
+            properties={<>
                     <PropertyEntry name='Content' type='text' helpId='text-content'>The text that is displayed.</PropertyEntry>
-            }
+                    <PropertyEntry name='Font Size' type='number' helpId='text-fontSize'>The size of the text that is displayed, in pixels.</PropertyEntry>
+                    <PropertyEntry name='Font Family' type='number' helpId='text-fontSize'>The name of the typeface of the text that is displayed.
+                    Knowing what names you can use is a big subject, but you could start with <Link href='https://blog.hubspot.com/website/web-safe-html-css-fonts' target='_blank'>this article</Link>.
+                    </PropertyEntry>
+                    <PropertyEntry name='color' type='text' helpId='text-color'>The color of the text displayed.
+                        Most plain color names like 'green' will work, and you can find more in <Link href='https://www.w3schools.com/cssref/css_colors.asp' target='_blank'>this article</Link></PropertyEntry>
+                    <PropertyEntry name='backgroundColor' type='text' helpId='text-backgroundColor'>The color of the background of the text section.
+                        See the <b>color</b> property for the color names you can use.</PropertyEntry>
+                    <PropertyEntry name='width' type='number' helpId='text-width'>The width of the text section displayed, in pixels.</PropertyEntry>
+                    <PropertyEntry name='height' type='number' helpId='text-height'>The height of the text section displayed, in pixels.</PropertyEntry>
+                    <PropertyEntry name='border' type='text' helpId='text-border'>The size of the border around the text section, in pixels.
+                        </PropertyEntry>
+                    <PropertyEntry name='borderColor' type='text' helpId='text-borderColor'>The color of the border around the text section.
+                        See the <b>color</b> property for the color names you can use.</PropertyEntry>
+                </>}
         />
 
         <ControlSection name='Text Input' helpId='textInput'
