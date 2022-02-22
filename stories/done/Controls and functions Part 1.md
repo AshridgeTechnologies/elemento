@@ -11,7 +11,7 @@ Controls
   - Multiline text input box
   - Text -> general Display, multiline input, etc
   - Page (new)
-- Display attributes
+  - Display attributes
 
 For each control
 ----------------
@@ -45,5 +45,5 @@ Functions
   - Substring
   - Substitute
   - Max, Min, Sum
-- Reset (page/control)
+- ~~Reset (page/control)~~
   - Show Page

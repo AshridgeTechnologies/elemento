@@ -7,13 +7,13 @@ Bugs
 
 Stories
 -------
-- Controls and functions Part 1
 - Formula improvements Part 1
+- Spike: Using app elements in expressions
+- In-memory data storage and updates
 - General usability Part 1
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
-- In-memory data storage
 - Persistent data storage
 - Info website update
 - Editor website
@@ -63,3 +63,4 @@ Done
 - Styling Part 1
 - Plain value/formula switch
 - Delete element
+- Controls and functions Part 1

@@ -139,9 +139,9 @@ test('generates NumberInput elements with initial value', ()=> {
 test('generates SelectInput elements with initial value', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new SelectInput('id1', 't1', {values: ['22', '33', '44'], initialValue: '44', label: "Select Input One"}),
-            new SelectInput('id2', 't2', {values: ['22', '33', '44'], initialValue: ex`4+"4"`}),
-            new SelectInput('id2', 't3', {values: []}),
+            new SelectInput('id1', 'Select1', {values: ['22', '33', '44'], initialValue: '44', label: "Select Input One"}),
+            new SelectInput('id2', 'Select2', {values: ['22', '33', '44'], initialValue: ex`4+"4"`}),
+            new SelectInput('id2', 'Select3', {values: []}),
     ]
         )])
 
@@ -149,15 +149,15 @@ test('generates SelectInput elements with initial value', ()=> {
     expect(gen.outputFiles()[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const state = useObjectStateWithDefaults(props.path, {
-        t1: {value: '44'},
-        t2: {value: 4+"4"},
-        t3: {value: undefined},
+        Select1: {value: '44'},
+        Select2: {value: 4+"4"},
+        Select3: {value: undefined},
     })
 
     return React.createElement('div', {id: props.path},
-        React.createElement(SelectInput, {path: pathWith('t1'), values: ['22', '33', '44'], initialValue: '44', label: 'Select Input One'}),
-        React.createElement(SelectInput, {path: pathWith('t2'), values: ['22', '33', '44'], initialValue: 4+"4"}),
-        React.createElement(SelectInput, {path: pathWith('t3'), values: []}),
+        React.createElement(SelectInput, {path: pathWith('Select1'), values: ['22', '33', '44'], initialValue: '44', label: 'Select Input One'}),
+        React.createElement(SelectInput, {path: pathWith('Select2'), values: ['22', '33', '44'], initialValue: 4+"4"}),
+        React.createElement(SelectInput, {path: pathWith('Select3'), values: []}),
     )
 }
 `)
