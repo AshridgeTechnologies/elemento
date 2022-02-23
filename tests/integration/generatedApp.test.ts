@@ -22,8 +22,8 @@ test('generated Page creates React element with correct structure', ()=> {
         ])])
 
     const gen = new Generator(app)
-    expect(gen.outputFiles()[0].name).toBe('Page1.js')
-    const PageComponent = makeComponentFunction(gen.outputFiles()[0].content)
+    expect(gen.output().files[0].name).toBe('Page1.js')
+    const PageComponent = makeComponentFunction(gen.output().files[0].content)
 
     global.React = React
     // @ts-ignore
@@ -45,10 +45,10 @@ test('generated AppMain creates React elements with correct structure', ()=> {
         ])])
 
     const gen = new Generator(app)
-    expect(gen.outputFiles()[1].name).toBe('appMain.js')
+    expect(gen.output().files[1].name).toBe('appMain.js')
 
-    const Page1 = makeComponentFunction(gen.outputFiles()[0].content)
-    const AppMain = makeComponentFunction(gen.outputFiles()[1].content)
+    const Page1 = makeComponentFunction(gen.output().files[0].content)
+    const AppMain = makeComponentFunction(gen.output().files[1].content)
 
     global.React = React
     // @ts-ignore

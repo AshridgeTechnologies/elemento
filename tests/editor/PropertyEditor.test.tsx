@@ -19,7 +19,7 @@ let container: any
 let changedValue: any
 
 const render = (element: React.ReactElement) => ({container} = tlRender(element))
-const onChange = (id: string,propName: string,value: any) => {
+const onChange = (id: string, propName: string, value: any) => {
     changedValue = value
 }
 
@@ -27,6 +27,10 @@ const input = (label: string) => (screen.getByLabelText(label) as HTMLInputEleme
 const textarea = (label: string) => (screen.getByLabelText(label) as HTMLTextAreaElement)
 const select = (label: string) => (screen.getByLabelText(label).nextSibling as HTMLInputElement)
 const inputValue = (label: string) => input(label).value
+const errorValue = (label: string) => {
+    const helperId = `${(input(label).id)}-helper-text`
+    return container.querySelector(`[id="${helperId}"]`).textContent
+}
 const textareaValue = (label: string) => textarea(label).textContent
 const selectValue = (label: string) => select(label).value
 const kindButton = (index: number) => {
@@ -34,16 +38,15 @@ const kindButton = (index: number) => {
     return Array.from(nodes)[index] as HTMLButtonElement
 }
 
-test('PropertyEditor updates name', () => {
+test('updates name', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Page 1')
     fireEvent.input(input('Name'), {target: {value: 'Page One'}})
-    // expect(inputValue('Name')).toBe('Page One')
     expect(changedValue).toBe('Page One')
 })
 
-test('PropertyEditor updates other properties', () => {
+test('updates other properties', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Style')).toBe('funky')
@@ -51,16 +54,15 @@ test('PropertyEditor updates other properties', () => {
     expect(changedValue).toStrictEqual({expr: 'cool'})
 })
 
-test('PropertyEditor has fields for Page', ()=> {
+test('has fields for Page', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Page 1')
     expect(inputValue('Style')).toBe('funky')
-
     expect(kindButton(0).textContent).toBe('fx=')
 })
 
-test('PropertyEditor has fields for Page with literal value', ()=> {
+test('has fields for Page with literal value', () => {
     const element = new Page('id1', 'Page 1', {style: `clear`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Page 1')
@@ -68,7 +70,7 @@ test('PropertyEditor has fields for Page with literal value', ()=> {
     expect(kindButton(0).textContent).toBe('abc')
 })
 
-test('PropertyEditor shows controlled component for optional fields for Page', ()=> {
+test('shows controlled component for optional fields for Page', () => {
     const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Style')).toBe('')
@@ -76,9 +78,18 @@ test('PropertyEditor shows controlled component for optional fields for Page', (
     expect(componentProps(styleInput).value).toBe('')
 })
 
-test('PropertyEditor has fields for Text', ()=> {
-    const element = new Text('id1', 'Text 1', {content: 'Hi!\nGood morning',
-        fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200})
+test('has fields for Text', () => {
+    const element = new Text('id1', 'Text 1', {
+        content: 'Hi!\nGood morning',
+        fontSize: 44,
+        fontFamily: 'Dog',
+        color: 'red',
+        backgroundColor: 'blue',
+        border: 10,
+        borderColor: 'black',
+        width: 100,
+        height: 200
+    })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text 1')
     expect(textareaValue('Content')).toBe('Hi!\nGood morning')
@@ -93,8 +104,13 @@ test('PropertyEditor has fields for Text', ()=> {
     expect(selectValue('Display')).toBe('true')
 })
 
-test('PropertyEditor has fields for TextInput', ()=> {
-    const element = new TextInput('id1', 'Text Input 1', {initialValue: ex`"Hi!"`, maxLength: ex`10`, multiline: ex`true || false`, label: ex`"Text One"`})
+test('has fields for TextInput', () => {
+    const element = new TextInput('id1', 'Text Input 1', {
+        initialValue: ex`"Hi!"`,
+        maxLength: ex`10`,
+        multiline: ex`true || false`,
+        label: ex`"Text One"`
+    })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
@@ -103,7 +119,7 @@ test('PropertyEditor has fields for TextInput', ()=> {
     expect(inputValue('Multiline')).toBe('true || false')
 })
 
-test('PropertyEditor has fields for NumberInput', ()=> {
+test('has fields for NumberInput', () => {
     const element = new NumberInput('id1', 'Number Input 1', {initialValue: ex`40`, label: ex`"Number Input One"`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Number Input 1')
@@ -111,16 +127,23 @@ test('PropertyEditor has fields for NumberInput', ()=> {
     expect(inputValue('Initial Value')).toBe('40')
 })
 
-test('PropertyEditor has fields for TrueFalseInput', ()=> {
-    const element = new TrueFalseInput('id1', 'True False Input 1', {initialValue: ex`true`, label: ex`"True False Input One"`})
+test('has fields for TrueFalseInput', () => {
+    const element = new TrueFalseInput('id1', 'True False Input 1', {
+        initialValue: ex`true`,
+        label: ex`"True False Input One"`
+    })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('True False Input 1')
     expect(inputValue('Label')).toBe('"True False Input One"')
     expect(inputValue('Initial Value')).toBe('true')
 })
 
-test('PropertyEditor has fields for SelectInput', ()=> {
-    const element = new SelectInput('id1', 'Select Input 1', {values: ex`["Green", "Blue", "Pink"]`, initialValue: ex`"Green"`, label: ex`"Select Input One"`})
+test('has fields for SelectInput', () => {
+    const element = new SelectInput('id1', 'Select Input 1', {
+        values: ex`["Green", "Blue", "Pink"]`,
+        initialValue: ex`"Green"`,
+        label: ex`"Select Input One"`
+    })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('"Select Input One"')
@@ -128,8 +151,12 @@ test('PropertyEditor has fields for SelectInput', ()=> {
     expect(inputValue('Initial Value')).toBe('"Green"')
 })
 
-test('PropertyEditor has fields for SelectInput with fixed value', ()=> {
-    const element = new SelectInput('id1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Green', label: 'Select Input One'})
+test('has fields for SelectInput with fixed value', () => {
+    const element = new SelectInput('id1', 'Select Input 1', {
+        values: ['Green', 'Blue', 'Pink'],
+        initialValue: 'Green',
+        label: 'Select Input One'
+    })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('Select Input One')
@@ -137,7 +164,7 @@ test('PropertyEditor has fields for SelectInput with fixed value', ()=> {
     expect(inputValue('Initial Value')).toBe('Green')
 })
 
-test('PropertyEditor has fields for Button', ()=> {
+test('has fields for Button', () => {
     const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, action: ex`doIt()`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Button 1')
@@ -147,3 +174,32 @@ test('PropertyEditor has fields for Button', ()=> {
     expect(kindButton(1).disabled).toBe(true)
     expect(selectValue('Display')).toBe('true')
 })
+
+test('shows errors for each property', () => {
+    const element = new Text('id1', 'Text 1', {
+        content: 'Hi!\nGood morning',
+        fontSize: 44,
+        fontFamily: 'Dog',
+        color: 'red',
+        backgroundColor: ex`Splurge`,
+        border: 10,
+        borderColor: 'black',
+        width: -100,
+        height: 200
+    })
+    render(<PropertyEditor element={element} onChange={onChange} errors={{
+        backgroundColor: 'Unknown name "Splurge"',
+        width: 'Must be greater than or equal to zero'
+    }}/>)
+    expect(inputValue('Name')).toBe('Text 1')
+    expect(textareaValue('Content')).toBe('Hi!\nGood morning')
+    expect(inputValue('Background Color')).toBe('Splurge')
+    expect(errorValue('Background Color')).toBe('Unknown name "Splurge"')
+    expect(inputValue('Width')).toBe('-100')
+    expect(errorValue('Width')).toBe('Must be greater than or equal to zero')
+
+})
+
+
+
+

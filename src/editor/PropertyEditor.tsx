@@ -13,11 +13,13 @@ import NumberInput from '../model/NumberInput'
 import TrueFalseInput from '../model/TrueFalseInput'
 import SelectInput from '../model/SelectInput'
 
-export default function PropertyEditor({element, onChange}: {element: Element, onChange: OnChangeFn }) {
+export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
     function propertyField<T extends Element>(name: string, type: PropertyType = 'string') {
         const propertyValue = (element as T)[name as keyof T] as unknown as PropertyValue
-        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange}/>
+        const error = errors[name as keyof object]
+        const errorProps = error ? {error} : {}
+        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} {...errorProps}/>
     }
 
     function propertyFields() {

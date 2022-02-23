@@ -6,7 +6,8 @@ import {isExpr} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 
-export default function PropertyInput({ elementId, name, type, value, onChange}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined, onChange: OnChangeFn }) {
+export default function PropertyInput({ elementId, name, type, value, onChange, error}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
+    onChange: OnChangeFn, error?: string }) {
     const valueIsExpr = value !== undefined && isExpr(value) || type === 'action'
     const [expr, setExpr] = useState(valueIsExpr)
 
@@ -57,25 +58,25 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
         onChange(elementId, name, newValue)
     }
 
-    // const initialInputValue = value === undefined ? '' : isExpr(value) ? value.expr : value
-
-    const numericProps = type === 'number' ? {inputProps: {pattern: '[0-9]*'}} : {}
+    const numericProps = (type === 'number' && !expr) ? {type: 'number', inputProps: {min: 0}, sx: { minWidth: 120, flex: 0 }} : {}
     const label = startCase(name)
     const fixedButtonColor = 'primary'
     const exprButtonColor = 'secondary'
     const exprButtonLabel = 'fx='
-    const fixedButtonLabel = 'abc'
+    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : 'abc'
     const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel
     const buttonColor = expr ? exprButtonColor : fixedButtonColor
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
+    const errorProps = error ? {error: true, helperText: error} : {}
+
+    const button = type === 'action'
+        ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
+                  color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
+        : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
+                  color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
 
     return <div style={{display: 'inline-flex'}} className='property-input'>
-        {type === 'action'
-            ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem'}}
-                     color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
-            : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem'}}
-                    color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
-        }
+        {button}
         {type === 'boolean' && !expr ?
             <FormControl variant="filled" size='small' sx={{ minWidth: 120 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>
@@ -91,9 +92,11 @@ export default function PropertyInput({ elementId, name, type, value, onChange}:
                 </Select>
             </FormControl>
             :
-            <TextField {...numericProps} id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
+            <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                        value={initialInputValue()}
                        multiline={type === 'string multiline'}
+                       {...numericProps}
+                       {...errorProps}
                        onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
         }
     </div>

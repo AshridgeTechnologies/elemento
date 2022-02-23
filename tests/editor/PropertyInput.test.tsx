@@ -14,6 +14,7 @@ const onChange = (elementId: ElementId, name: string, val: any) => newValue = va
 
 const kindButton = () => container.querySelector('button')
 const input = () => container.querySelector('input')
+const error = () => container.querySelector('label+div+p')
 const textarea = () => container.querySelector('textarea')
 const label = () => container.querySelector('label')
 
@@ -70,8 +71,8 @@ test('shows fixed value control for string property if current value is a multil
 
 test('shows fixed value control for number property if current value is a number', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='number' value={10} onChange={() => {} }/>))
-    expect(kindButton().textContent).toBe('abc')
-    expect(input().type).toBe('text')
+    expect(kindButton().textContent).toBe('123')
+    expect(input().type).toBe('number')
     expect(input().id).toBe('length')
     expect(input().value).toBe('10')
     expect(label().textContent).toBe('Length')
@@ -79,7 +80,7 @@ test('shows fixed value control for number property if current value is a number
 
 test('shows fixed value control for boolean property if current value is a boolean', () => {
     ({container} = render(<PropertyInput elementId='el1' name='display' type='boolean' value={true} onChange={() => {} }/>))
-    expect(kindButton().textContent).toBe('abc')
+    expect(kindButton().textContent).toBe('y/n')
     expect(input().type).toBe('text')
     expect(input().previousSibling.id).toBe('display')
     expect(input().value).toBe('true')
@@ -95,12 +96,21 @@ test('shows fixed value control for string list property if current value is a l
     expect(label().textContent).toBe('Color')
 })
 
-test('shows expression control for property if current value is an expression', () => {
+test('shows expression control for string property if current value is an expression', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '"Hi there!"'}} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
     expect(input().type).toBe('text')
     expect(input().id).toBe('length')
     expect(input().value).toBe('"Hi there!"')
+    expect(label().textContent).toBe('Length')
+})
+
+test('shows expression control for number property if current value is an expression', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='number' value={{expr: '10 + 20'}} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('length')
+    expect(input().value).toBe('10 + 20')
     expect(label().textContent).toBe('Length')
 })
 
@@ -111,6 +121,16 @@ test('shows expression control for property if type is action and current value 
     expect(input().id).toBe('onClick')
     expect(input().value).toBe('doIt()')
     expect(label().textContent).toBe('On Click')
+})
+
+test('shows error message for text field if given', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '"Hi there!"'}} error='Must be a number' onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('length')
+    expect(input().value).toBe('"Hi there!"')
+    expect(label().textContent).toBe('Length')
+    expect(error().textContent).toBe('Must be a number')
 })
 
 test('calls onChange with undefined if input is empty', () => {
@@ -205,9 +225,6 @@ test('calls onChange with new expression value if started with fixed value and t
 
     fireEvent.click(kindButton())
     expect(newValue).toStrictEqual({expr: 'Old value'})
-
-    // fireEvent.input(input(), {target: {value: '"New value"'}})
-    // expect(newValue).toStrictEqual({expr: '"New value"'})
 })
 
 test('calls onChange with new fixed value if started with expression and toggle button', () => {
@@ -215,9 +232,6 @@ test('calls onChange with new fixed value if started with expression and toggle 
 
     fireEvent.click(kindButton())
     expect(newValue).toStrictEqual('Old_value')
-
-    // fireEvent.input(input(), {target: {value: 'New value'}})
-    // expect(newValue).toStrictEqual('New value')
 })
 
 test('calls onChange with new expression value if started with boolean fixed value and toggle button', () => {
@@ -225,9 +239,6 @@ test('calls onChange with new expression value if started with boolean fixed val
 
     fireEvent.click(kindButton())
     expect(newValue).toStrictEqual({expr: "true"})
-
-    // fireEvent.input(input(), {target: {value: '"New value"'}})
-    // expect(newValue).toStrictEqual({expr: '"New value"'})
 })
 
 test('calls onChange with undefined on boolean if started with expression and toggle button', () => {
@@ -235,9 +246,6 @@ test('calls onChange with undefined on boolean if started with expression and to
 
     fireEvent.click(kindButton())
     expect(newValue).toBe(undefined)
-
-    // fireEvent.input(input(), {target: {value: 'New value'}})
-    // expect(newValue).toStrictEqual('New value')
 })
 
 

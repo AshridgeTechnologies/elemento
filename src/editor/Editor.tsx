@@ -19,6 +19,7 @@ import ControlReference from '../docs/reference/ControlReference'
 import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
+import Generator from '../generator/Generator'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -39,11 +40,13 @@ export default function Editor({
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
 
+    const {errors} = new Generator(app).output()
+
     const propertyArea = () => {
         if (selectedItemId) {
             const element = app.findElement(selectedItemId)
             if (element) {
-                return <PropertyEditor element={element} onChange={onChange}/>
+                return <PropertyEditor element={element} onChange={onChange} errors={errors[element.id]}/>
             }
         }
 

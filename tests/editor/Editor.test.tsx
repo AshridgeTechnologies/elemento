@@ -10,6 +10,10 @@ import {appFixture1, appFixture2} from '../util/appFixtures'
 import {ElementType} from '../../src/model/Types'
 import {startCase} from 'lodash'
 import {actWait, treeItemLabels} from '../util/testHelpers'
+import Page from '../../src/model/Page'
+import TextInput from '../../src/model/TextInput'
+import App from '../../src/model/App'
+import {ex} from '../../src/util/helpers'
 
 let container: any = null
 
@@ -77,6 +81,29 @@ test('shows TextInput element selected in tree in property editor', async () => 
     expect(maxLengthInput.value).toBe('50')
 })
 
+test('shows errors for properties', async () => {
+    jest.setTimeout(10000000)
+    const appWithErrors = new App('app1', 'App One', {}, [
+        new Page('page_1', 'Main Page', {}, [
+            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, maxLength: ex`BadName + 30`}),
+        ]),
+    ])
+    await actWait(() =>  ({container} = render(<Editor app={appWithErrors} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await actWait(() =>  fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[0]))
+
+    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text Input'])
+
+    fireEvent.click(screen.getByText('First Text Input'))
+    const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
+    expect(initialValueInput.value).toBe('"A text value" + ')
+    const initialValueError = container.querySelector(`[id="initialValue-helper-text"]`)
+    expect(initialValueError.textContent).toBe('Error: Line 1: Unexpected end of input')
+
+    const maxLengthInput = screen.getByLabelText('Max Length') as HTMLInputElement
+    expect(maxLengthInput.value).toBe('BadName + 30')
+    const maxLengthError = container.querySelector(`[id="maxLength-helper-text"]`)
+    expect(maxLengthError.textContent).toBe('Unknown names: BadName')
+})
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button'])
     (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {

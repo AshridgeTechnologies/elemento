@@ -44,7 +44,7 @@ test('Formulas in app definition update the running app immediately', async ({ p
     expect(await appFrame.textContent('p >> nth=2')).toBe('68 things')
 })
 
-test('Invalid formula in app definition shows #ERROR in the running app until corrected', async ({ page })=> {
+test('Invalid formula in app definition shows empty content in the running app until corrected', async ({ page })=> {
     await page.goto(runtimeRootUrl)
     const appFrame = page.frame('appFrame') as Frame
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
@@ -54,7 +54,7 @@ test('Invalid formula in app definition shows #ERROR in the running app until co
     expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
 
     await page.fill('textarea#content', '23 +')
-    expect(await appFrame.textContent('p >> nth=2')).toBe('#ERROR')
+    expect(await appFrame.textContent('p >> nth=2')).toBe('')
 
     await page.fill('textarea#content', '23 + 45')
     expect(await appFrame.textContent('p >> nth=2')).toBe('68')

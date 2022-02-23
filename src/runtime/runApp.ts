@@ -16,6 +16,7 @@ import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
+import {codeGenerationError} from './runtimeFunctions'
 
 let theApp: App
 
@@ -68,7 +69,7 @@ function showError({appUrl, error}: {appUrl:string, error: Error}) {
 }
 
 function runApp() {
-    const appMainCode = new Generator(theApp).outputFiles().map( f => f.content ).join('\n')
+    const appMainCode = new Generator(theApp).output().files.map( f => f.content ).join('\n')
 
     const scriptElement = document.createElement('script')
     scriptElement.id = 'appMainCode'
@@ -104,6 +105,8 @@ window.updateState = updateState
 window.getState = getState
 // @ts-ignore
 window.useObjectStateWithDefaults = useObjectStateWithDefaults
+// @ts-ignore
+window.codeGenerationError = codeGenerationError
 
 
 loadApp().then( runApp, showError )
