@@ -1,12 +1,11 @@
 import React from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
-import {updateState, useObjectState} from './appData'
+import {updateState} from './appData'
 
-type Properties = { path: string, label?: string, values?: string[], initialValue?: string }
+type Properties = { label?: string, values?: string[], state: {value?: string, _path: string, } }
 
-export default function SelectInput({path, values = [], initialValue = '', label}: Properties) {
-    const state = useObjectState(path)
-    const value = (state?.value !== undefined) ? state.value : initialValue
+export default function SelectInput({values = [], state, label}: Properties) {
+    const {value = '', _path: path} = state
     const onChange = (event: SelectChangeEvent) => updateState(path, {value: (event.target as any).value})
 
     return <FormControl variant="filled" size='small' sx={{minWidth: 120}}>

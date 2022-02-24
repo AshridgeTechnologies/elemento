@@ -1,8 +1,10 @@
 Formula improvements Part 2
 ===========================
 
-- Functions without arguments are invalid
+- Stop invalid formulas being generated into code eg TextInput InitialValue of "xx  (no closing quote)
+- Functions without brackets are invalid
 - Auto use value of controls
+- Reset(page/control) function
 
 Auto use value of controls
 --------------------------

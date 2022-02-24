@@ -15,7 +15,8 @@ import Button from '../model/Button'
 import NumberInput from '../model/NumberInput'
 import SelectInput from '../model/SelectInput'
 import TrueFalseInput from '../model/TrueFalseInput'
-import {isArray} from 'lodash'
+import {isArray, isPlainObject} from 'lodash'
+import {uniq} from 'ramda'
 
 type IdentifierCollector = {add(s: string): void}
 interface ErrorCollector {
@@ -30,9 +31,19 @@ const isAction = true
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => name in appFunctions
 
-const valueLiteral = function (propertyValue: PropertyValue): string {
-    if (isArray(propertyValue)) {
+class Ref {
+    constructor(
+        public ref: string
+    ) {}
+}
+
+const valueLiteral = function (propertyValue: any): string {
+    if (isPlainObject(propertyValue)) {
+        return `{${Object.entries(propertyValue).map(([name, val]) => `${name}: ${valueLiteral(val)}`).join(', ')}}`
+    } else if (isArray(propertyValue)) {
         return `[${propertyValue.map(valueLiteral).join(', ')}]`
+    } else if (propertyValue instanceof Ref) {
+            return propertyValue.ref
     } else if (typeof propertyValue === 'string') {
             return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue}'`
     } else {
@@ -69,6 +80,7 @@ export default class Generator {
     }
 
     private static pageContent(app: App, page: Page, errors: ErrorCollector) {
+        const stateNames = page.elementArray().map( el => Generator.initialStateEntry(el) ? el.codeName : null ).filter( el => el !== null )
         const stateDefaultEntries = page.elementArray().map( el => Generator.initialStateEntry(el) ).filter( el => !!el )
         const stateDefaultBlock = stateDefaultEntries.length ? `\n        ${stateDefaultEntries.join('\n        ')}\n    `: ''
         const stateDefaultCall = `    const state = useObjectStateWithDefaults(props.path, {${stateDefaultBlock}})`
@@ -86,10 +98,9 @@ export default class Generator {
         const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = window.appFunctions` : ''
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
-        const pageIdentifiers = identifiers.filter(isPageElement)
+        const pageIdentifiers = uniq(identifiers.filter(isPageElement).concat(stateNames as string[]))
         const pageDeclarations = pageIdentifiers.length ? `    const {${pageIdentifiers.join(', ')}} = state` : ''
         const declarations = [globalDeclarations, appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
-
 
         return `function ${page.codeName}(props) {
     const pathWith = name => props.path + '.' + name
@@ -150,39 +161,39 @@ ${children}
 
             case "TextInput":
                 const textInput = element as TextInput
-                const path = `pathWith('${textInput.codeName}')`
                 const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = textInput.codeName
                 const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
                 const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
                 const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({path, initialValue, maxLength, multiline, label})
+                const reactProperties = definedPropertiesOf({state, maxLength, multiline, label})
                 return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
             case "NumberInput": {
                 const numberInput = element as NumberInput
-                const path = `pathWith('${numberInput.codeName}')`
                 const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = numberInput.codeName
                 const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({path, initialValue, label})
+                const reactProperties = definedPropertiesOf({state, label})
                 return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
             }
 
             case "SelectInput": {
                 const selectInput = element as SelectInput
-                const path = `pathWith('${selectInput.codeName}')`
                 const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown, onError('values'))
                 const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = selectInput.codeName
                 const label = Generator.getExprAndIdentifiers(selectInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({path, values, initialValue, label})
+                const reactProperties = definedPropertiesOf({state, values, label})
                 return `React.createElement(SelectInput, ${objectLiteral(reactProperties)})`
             }
 
             case "TrueFalseInput": {
                 const trueFalseInput = element as TrueFalseInput
-                const path = `pathWith('${trueFalseInput.codeName}')`
                 const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = trueFalseInput.codeName
                 const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({path, initialValue, label})
+                const reactProperties = definedPropertiesOf({state, label})
                 return `React.createElement(TrueFalseInput, ${objectLiteral(reactProperties)})`
             }
 
@@ -197,11 +208,16 @@ ${children}
 
             default:
                 throw new UnsupportedValueError(element.kind)
-
         }
     }
 
     private static initialStateEntry(element: Element): string {
+        function valueEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
+            const input = element as T
+            const valueExpr = Generator.getExpr(input.initialValue)
+            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : 'defaultValue: ' + valueLiteral((input.constructor as any).defaultValue ?? '')}},`
+
+        }
         switch(element.kind) {
             case "App":
                 return ''
@@ -211,29 +227,17 @@ ${children}
                 return ''
 
             case "TextInput":
-                const textInput = element as TextInput
-                return `${textInput.codeName}: {value: ${Generator.getExpr(textInput.initialValue) || '""'}},`
-
             case "NumberInput":
-                const numberInput = element as NumberInput
-                return `${numberInput.codeName}: {value: ${Generator.getExpr(numberInput.initialValue) || 0}},`
-
             case "SelectInput":
-                const selectInput = element as SelectInput
-                return `${selectInput.codeName}: {value: ${Generator.getExpr(selectInput.initialValue) || undefined}},`
-
             case "TrueFalseInput":
-                const trueFalseInput = element as TrueFalseInput
-                return `${trueFalseInput.codeName}: {value: ${Generator.getExpr(trueFalseInput.initialValue) || false}},`
+                return valueEntry(element)
 
             case 'Button':
                 return ''
 
             default:
                 throw new UnsupportedValueError(element.kind)
-
         }
-
     }
 
     private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,

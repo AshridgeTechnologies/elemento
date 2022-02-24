@@ -19,6 +19,8 @@ export default class TrueFalseInput extends BaseElement<Properties> implements E
         return element.constructor.name === this.name
     }
 
+    static defaultValue = false
+
     get initialValue() { return this.properties.initialValue }
     get label() { return this.properties.label }
 }

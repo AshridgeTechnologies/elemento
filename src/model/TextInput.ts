@@ -21,6 +21,8 @@ export default class TextInput extends BaseElement<Properties> implements Elemen
         return element.constructor.name === this.name
     }
 
+    static defaultValue = ''
+
     get initialValue() { return this.properties.initialValue }
     get maxLength() { return this.properties.maxLength }
     get multiline() { return this.properties.multiline }

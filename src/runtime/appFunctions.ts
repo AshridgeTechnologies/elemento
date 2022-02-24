@@ -5,7 +5,7 @@ export default {
         updateState('app._data', {currentPage: pageName})
     },
 
-    Reset(controlPath: string) {
-        updateState(controlPath, {value: null})
+    Reset(component: {update: (changes: {value: any}) => void}) {
+        component.update({value: undefined})
     },
 }

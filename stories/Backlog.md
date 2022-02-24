@@ -44,6 +44,8 @@ Tech debt
 - Refactor EditorMain into component and fix unit test
 - Refactor runApp.ts and unit test
 - Review Generator.initialStateEntry vs generateElement
+- Mechanism for generating defaults, state and properties code from model object - mark as stateful?
+
 
 Done
 ====

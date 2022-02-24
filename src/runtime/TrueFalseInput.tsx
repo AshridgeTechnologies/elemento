@@ -1,12 +1,11 @@
 import React, {ChangeEvent} from 'react'
 import {FormControlLabel, Switch} from '@mui/material'
-import {updateState, useObjectState} from './appData'
+import {updateState} from './appData'
 
-type Properties = {path: string, label?: string, initialValue?: boolean}
+type Properties = {state: {value?: boolean, _path: string, }, label?: string}
 
-export default function TrueFalseInput({path, initialValue = false, label = ''}: Properties) {
-    const state = useObjectState(path)
-    const value: boolean = (state?.value !== undefined) ? state.value : initialValue
+export default function TrueFalseInput({state, label = ''}: Properties) {
+    const {value, _path: path} = state
     const onChange = (event: ChangeEvent) => updateState(path, {value: (event.target as any).checked })
 
     return <FormControlLabel

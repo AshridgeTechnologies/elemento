@@ -29,7 +29,7 @@ Forces
 - BUT parents need component state values to use in formulas
 - Elements use the path as an id in the React element
 - Some state values are updates to properties, some public in app state, some private
-- 
+- Want to have formulas automatically use value of a control where appropriate
 
 Possibilities
 -------------

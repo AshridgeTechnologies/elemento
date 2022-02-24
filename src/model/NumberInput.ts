@@ -19,6 +19,8 @@ export default class NumberInput extends BaseElement<Properties> implements Elem
         return element.constructor.name === this.name
     }
 
+    static defaultValue = 0
+
     get initialValue() { return this.properties.initialValue }
     get label() { return this.properties.label }
 }

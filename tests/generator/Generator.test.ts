@@ -75,13 +75,13 @@ test('generates TextInput elements with initial value', ()=> {
     const state = useObjectStateWithDefaults(props.path, {
         t1: {value: 'Hi there!'},
         t2: {value: "Some" + " things"},
-        t3: {value: ""},
+        t3: {defaultValue: ''},
     })
-
+    const {t1, t2, t3} = state
     return React.createElement('div', {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), initialValue: 'Hi there!', maxLength: 10, multiline: true, label: 'Text Input One'}),
-        React.createElement(TextInput, {path: pathWith('t2'), initialValue: "Some" + " things", maxLength: 5 + 5}),
-        React.createElement(TextInput, {path: pathWith('t3')}),
+        React.createElement(TextInput, {state: t1, maxLength: 10, multiline: true, label: 'Text Input One'}),
+        React.createElement(TextInput, {state: t2, maxLength: 5 + 5}),
+        React.createElement(TextInput, {state: t3}),
     )
 }
 `)
@@ -124,13 +124,13 @@ test('generates NumberInput elements with initial value', ()=> {
     const state = useObjectStateWithDefaults(props.path, {
         t1: {value: 44},
         t2: {value: 22 + 33},
-        t3: {value: 0},
+        t3: {defaultValue: 0},
     })
-
+    const {t1, t2, t3} = state
     return React.createElement('div', {id: props.path},
-        React.createElement(NumberInput, {path: pathWith('t1'), initialValue: 44, label: 'Number Input One'}),
-        React.createElement(NumberInput, {path: pathWith('t2'), initialValue: 22 + 33}),
-        React.createElement(NumberInput, {path: pathWith('t3')}),
+        React.createElement(NumberInput, {state: t1, label: 'Number Input One'}),
+        React.createElement(NumberInput, {state: t2}),
+        React.createElement(NumberInput, {state: t3}),
     )
 }
 `)
@@ -151,13 +151,13 @@ test('generates SelectInput elements with initial value', ()=> {
     const state = useObjectStateWithDefaults(props.path, {
         Select1: {value: '44'},
         Select2: {value: 4+"4"},
-        Select3: {value: undefined},
+        Select3: {defaultValue: ''},
     })
-
+    const {Select1, Select2, Select3} = state
     return React.createElement('div', {id: props.path},
-        React.createElement(SelectInput, {path: pathWith('Select1'), values: ['22', '33', '44'], initialValue: '44', label: 'Select Input One'}),
-        React.createElement(SelectInput, {path: pathWith('Select2'), values: ['22', '33', '44'], initialValue: 4+"4"}),
-        React.createElement(SelectInput, {path: pathWith('Select3'), values: []}),
+        React.createElement(SelectInput, {state: Select1, values: ['22', '33', '44'], label: 'Select Input One'}),
+        React.createElement(SelectInput, {state: Select2, values: ['22', '33', '44']}),
+        React.createElement(SelectInput, {state: Select3, values: []}),
     )
 }
 `)
@@ -178,13 +178,13 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     const state = useObjectStateWithDefaults(props.path, {
         t1: {value: true},
         t2: {value: true || false},
-        t3: {value: false},
+        t3: {defaultValue: false},
     })
-
+    const {t1, t2, t3} = state
     return React.createElement('div', {id: props.path},
-        React.createElement(TrueFalseInput, {path: pathWith('t1'), initialValue: true, label: 'True False Input One'}),
-        React.createElement(TrueFalseInput, {path: pathWith('t2'), initialValue: true || false}),
-        React.createElement(TrueFalseInput, {path: pathWith('t3')}),
+        React.createElement(TrueFalseInput, {state: t1, label: 'True False Input One'}),
+        React.createElement(TrueFalseInput, {state: t2}),
+        React.createElement(TrueFalseInput, {state: t3}),
     )
 }
 `)
@@ -273,6 +273,32 @@ test('app functions and Page names available in expression', ()=> {
     const Page2 = 'Page2'
     return React.createElement('div', {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),
+    )
+}
+`)
+})
+
+test('page elements available in content expression', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`ForenameInput.value + " " + SurnameInput.value`}),
+                new TextInput('id2', 'Forename Input', {}),
+                new TextInput('id3', 'Surname Input', {}),
+            ]
+        )])
+
+    const content = new Generator(app).output().files[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        ForenameInput: {defaultValue: ''},
+        SurnameInput: {defaultValue: ''},
+    })
+    const {ForenameInput, SurnameInput} = state
+    return React.createElement('div', {id: props.path},
+        React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + " " + SurnameInput.value),
+        React.createElement(TextInput, {state: ForenameInput}),
+        React.createElement(TextInput, {state: SurnameInput}),
     )
 }
 `)
@@ -394,12 +420,12 @@ test('assignment in function argument is treated as comparison', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const state = useObjectStateWithDefaults(props.path, {
-        Input: {value: ""},
+        Input: {defaultValue: ''},
     })
     const {If} = window.globalFunctions
     const {Input} = state
     return React.createElement('div', {id: props.path},
-        React.createElement(TextInput, {path: pathWith('Input')}),
+        React.createElement(TextInput, {state: Input}),
         React.createElement(TextElement, {path: pathWith('Answer')}, If(Input.value == 42, 10, 20)),
     )
 }
@@ -443,32 +469,4 @@ test('Unexpected number error in expression generates error', ()=> {
     })
 
 })
-
-test('page elements available in content expression', ()=> {
-    const app = new App('t1', 'test1', {}, [
-        new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: ex`ForenameInput.value + " " + SurnameInput.value`}),
-                new TextInput('id2', 'Forename Input', {}),
-                new TextInput('id3', 'Surname Input', {}),
-            ]
-        )])
-
-    const content = new Generator(app).output().files[0].content
-    expect(content).toBe(`function Page1(props) {
-    const pathWith = name => props.path + '.' + name
-    const state = useObjectStateWithDefaults(props.path, {
-        ForenameInput: {value: ""},
-        SurnameInput: {value: ""},
-    })
-    const {ForenameInput, SurnameInput} = state
-    return React.createElement('div', {id: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + " " + SurnameInput.value),
-        React.createElement(TextInput, {path: pathWith('ForenameInput')}),
-        React.createElement(TextInput, {path: pathWith('SurnameInput')}),
-    )
-}
-`)
-})
-
-
 

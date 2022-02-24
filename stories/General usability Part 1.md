@@ -1,6 +1,7 @@
 General usability Part 1
 ========================
 
+- Decide what the value of a control should be in a formula if not set - same as React element, undefined, null, empty string?
 - Form controls all go on their own row
 - Width attributes and/or full width controls inc multiline
 - Highlight selected element in running app
@@ -12,6 +13,8 @@ General usability Part 1
 - Have fixed kind buttons non-disables but warn if try to change
 - Can't insert unless select an item
 - Icons on Insert Menu
+- Inputs can have undefined value
+- Number input is type number and can also be undefined
 
 Help
 ----
