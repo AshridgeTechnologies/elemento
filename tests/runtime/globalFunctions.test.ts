@@ -1,6 +1,6 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List} = globalFunctions
 const {valueOf} = globalFunctions
 
 const valObj = <T>(val: T) => ({v: val, valueOf() { return this.v }})
@@ -144,4 +144,17 @@ describe('Min', () => {
     test('returns the argument for single argument', () => expect(Min(3)).toBe(3))
     test('returns the min argument for multiple arguments', () => expect(Min(3, -1, 4, 0)).toBe(-1))
     test('Gets value of objects', ()=> expect(Min(valObj(3), valObj(2))).toBe(2))
+})
+
+describe('Record', () => {
+    test('errors for uneven number of arguments', ()=> expect( () => Record('x')).toThrow('Odd number of arguments - must have pairs of name, value'))
+    test('returns an empty object for no arguments', ()=> expect(Record()).toStrictEqual({}))
+    test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee')).toStrictEqual({a: 10, b: 'Bee'}))
+    test('gets value of objects', ()=> expect(Record(valObj('c'), valObj(2))).toStrictEqual({c: 2}))
+})
+
+describe('List', () => {
+    test('returns an empty list for no arguments', ()=> expect(List()).toStrictEqual([]))
+    test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee')).toStrictEqual(['a', 10, true, 'Bee']))
+    test('gets value of objects', ()=> expect(List(valObj('c'), valObj(2))).toStrictEqual(['c', 2]))
 })

@@ -15,6 +15,8 @@ General usability Part 1
 - Icons on Insert Menu
 - Inputs can have undefined value
 - Number input is type number and can also be undefined
+- Reset function acts on whole page
+- Data store has type and enforces it
 
 Help
 ----

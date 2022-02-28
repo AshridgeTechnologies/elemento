@@ -9,6 +9,7 @@ import Button from './Button'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
+import Data from './Data'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -32,6 +33,8 @@ export function loadJSON({id, kind, name, properties, elements}:
             return new TrueFalseInput(id, name, properties)
         case "Button":
             return new Button(id, name, properties)
+        case "Data":
+            return new Data(id, name, properties)
         default:
             throw new UnsupportedValueError(kind)
     }

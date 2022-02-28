@@ -8,6 +8,7 @@ import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Button from './Button'
+import Data from './Data'
 import ErrorFallback from './ErrorFallback'
 import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -16,7 +17,7 @@ import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
-import {codeGenerationError} from './runtimeFunctions'
+import {codeGenerationError, appCode} from './runtimeFunctions'
 
 let theApp: App
 
@@ -98,6 +99,8 @@ window.SelectInput = SelectInput
 // @ts-ignore
 window.TrueFalseInput = TrueFalseInput
 // @ts-ignore
+window.Data = Data
+// @ts-ignore
 window.useObjectState = useObjectState
 // @ts-ignore
 window.updateState = updateState
@@ -107,6 +110,7 @@ window.getState = getState
 window.useObjectStateWithDefaults = useObjectStateWithDefaults
 // @ts-ignore
 window.codeGenerationError = codeGenerationError
-
+// @ts-ignore
+window.appCode = appCode
 
 loadApp().then( runApp, showError )

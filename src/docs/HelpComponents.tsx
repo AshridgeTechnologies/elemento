@@ -28,7 +28,7 @@ export const ControlSection = ({name, description, helpId, properties}: {name: s
 export const FunctionInput = ({name, type, optional = false, children}: {name: string, type: string, optional?: boolean, children: any}) =>
     <Para> <b>{name}</b>&nbsp;&nbsp;&nbsp;&nbsp;<i>Type: {type} {optional ? '(optional)' : ''}</i><br/>{children}</Para>
 
-export const FunctionExample = ({name, inputs}: {name: string, inputs: string[]}) => <Para><code>{name}( {inputs.join(', ')} )</code></Para>
+export const FunctionExample = ({name, inputs, children}: {name: string, inputs: string[], children?: ReactNode}) => <Para><code>{name}( {inputs.join(', ')} )</code><br/>{children}</Para>
 
 export const FunctionSection = ({name, description, helpId, resultType, inputs, examples}:
                                     {name: string, description: ReactNode, helpId: string, resultType: string, inputs: ReactNode, examples: ReactNode}) =>

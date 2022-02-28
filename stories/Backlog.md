@@ -7,9 +7,6 @@ Bugs
 
 Stories
 -------
-- Formula improvements Part 1
-- Spike: Using app elements in expressions
-- In-memory data storage and updates
 - General usability Part 1
 - Tutorial Hello World
 - Tutorial Real World 1
@@ -66,3 +63,6 @@ Done
 - Plain value/formula switch
 - Delete element
 - Controls and functions Part 1
+- Formula improvements Part 1
+- App state refactor
+- In-memory data storage and updates

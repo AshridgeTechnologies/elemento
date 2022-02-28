@@ -17,6 +17,7 @@ import SelectInput from '../model/SelectInput'
 import TrueFalseInput from '../model/TrueFalseInput'
 import {isArray, isPlainObject} from 'lodash'
 import {uniq} from 'ramda'
+import Data from '../model/Data'
 
 type IdentifierCollector = {add(s: string): void}
 interface ErrorCollector {
@@ -30,6 +31,7 @@ function objectLiteral(obj: object) {
 const isAction = true
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => name in appFunctions
+const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 
 class Ref {
     constructor(
@@ -206,6 +208,15 @@ ${children}
                 return `React.createElement(Button, ${objectLiteral(reactProperties)})`
             }
 
+            case "Data": {
+                const data = element as Data
+                const initialValue = Generator.getExprAndIdentifiers(data.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = data.codeName
+                const display = Generator.getExprAndIdentifiers(data.display, identifiers, isKnown, onError('display'))
+                const reactProperties = definedPropertiesOf({state, display})
+                return `React.createElement(Data, ${objectLiteral(reactProperties)})`
+            }
+
             default:
                 throw new UnsupportedValueError(element.kind)
         }
@@ -214,10 +225,10 @@ ${children}
     private static initialStateEntry(element: Element): string {
         function valueEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
             const input = element as T
-            const valueExpr = Generator.getExpr(input.initialValue)
+            const [valueExpr, isError] = Generator.getExpr(input.initialValue)
             return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : 'defaultValue: ' + valueLiteral((input.constructor as any).defaultValue ?? '')}},`
-
         }
+
         switch(element.kind) {
             case "App":
                 return ''
@@ -231,6 +242,12 @@ ${children}
             case "SelectInput":
             case "TrueFalseInput":
                 return valueEntry(element)
+
+            case "Data":{
+                const data = element as Data
+                const [valueExpr, isError] = Generator.getExpr(data.initialValue)
+                return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
+            }
 
             case 'Button':
                 return ''
@@ -267,7 +284,8 @@ ${children}
         if (isExpr(propertyValue)) {
             const {expr} = propertyValue
             try {
-                const ast = parse(expr)
+                const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
+                const ast = parse(exprToParse)
                 checkIsExpression(ast)
                 checkErrors(ast)
                 const thisIdentifiers = new Set<string>()
@@ -276,7 +294,8 @@ ${children}
                         const node = path.value
                         const parentNode = path.parentPath.value
                         const isPropertyIdentifier = parentNode.type === "MemberExpression" && parentNode.property === node
-                        if (!isPropertyIdentifier) {
+                        const isPropertyKey = parentNode.type === "Property" && parentNode.key === node
+                        if (!isPropertyIdentifier && !isPropertyKey) {
                             thisIdentifiers.add(node.name)
                         }
                         this.traverse(path);
@@ -312,14 +331,13 @@ ${children}
     }
 
     private static getExpr(propertyValue: PropertyValue | undefined) {
-        if (propertyValue === undefined) {
-            return undefined
-        }
+        const isKnown = () => true
+        const identifiers = new Set()
+        const errors = []
+        const onError = (err: string) => errors.push(err)
+        const expr = trimParens(Generator.getExprAndIdentifiers(propertyValue, identifiers, isKnown, onError))
+        const isError = !!errors.length
 
-        if (isExpr(propertyValue)) {
-            return propertyValue.expr
-        } else {
-            return valueLiteral(propertyValue)
-        }
+        return [expr, isError]
     }
 }

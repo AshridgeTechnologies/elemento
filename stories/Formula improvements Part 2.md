@@ -3,8 +3,12 @@ Formula improvements Part 2
 
 - Stop invalid formulas being generated into code eg TextInput InitialValue of "xx  (no closing quote)
 - Functions without brackets are invalid
-- Auto use value of controls
+- Improve auto use of value - proxy, code generation?
 - Reset(page/control) function
+- Error for reference to unknown property eg Data1.valu,  or show undefined in code
+- Error for reference to unknown name in object value eg const state = useObjectStateWithDefaults(props.path, { Data1: {value: {a: 10, b: true, c }}, })
+- Error for Objects are not valid as a React child when put Data.value in a Text content
+- Runtime errors reported in the editor
 
 Auto use value of controls
 --------------------------
@@ -14,3 +18,10 @@ Auto use value of controls
 - Could pre-process function arguments
 - BUT control names may occur in operator expressions
 - A combination of coercing function arguments and adding valueOf to state objects should work
+
+Proxy
+-----
+
+- Could handle all the valueOf, path, and update stuff
+- Could give out nested properties of value
+- Could wrap results in a Proxy, so could do Set(data.x.y.z, 99)

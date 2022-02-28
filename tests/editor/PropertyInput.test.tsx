@@ -45,10 +45,8 @@ test('shows expression-only control for action property if current value is empt
     ({container} = render(<PropertyInput elementId='el1' name='theAction' type='action' value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
     expect(kindButton().disabled).toBe(true)
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('theAction')
-    expect(input().value).toBe('')
-    expect(componentProps(input()).value).toBe('')
+    expect(textarea().id).toBe('theAction')
+    expect(textarea().textContent).toBe('')
     expect(label().textContent).toBe('The Action')
 })
 
@@ -99,36 +97,32 @@ test('shows fixed value control for string list property if current value is a l
 test('shows expression control for string property if current value is an expression', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '"Hi there!"'}} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('"Hi there!"')
+    expect(textarea().id).toBe('length')
+    expect(textarea().textContent).toBe('"Hi there!"')
     expect(label().textContent).toBe('Length')
 })
 
 test('shows expression control for number property if current value is an expression', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='number' value={{expr: '10 + 20'}} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('10 + 20')
+    expect(textarea().id).toBe('length')
+    expect(textarea().textContent).toBe('10 + 20')
     expect(label().textContent).toBe('Length')
 })
 
 test('shows expression control for property if type is action and current value is an expression', () => {
     ({container} = render(<PropertyInput elementId='el1' name='onClick' type='action' value={{expr: 'doIt()'}} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('onClick')
-    expect(input().value).toBe('doIt()')
+    expect(textarea().id).toBe('onClick')
+    expect(textarea().textContent).toBe('doIt()')
     expect(label().textContent).toBe('On Click')
 })
 
 test('shows error message for text field if given', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '"Hi there!"'}} error='Must be a number' onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('"Hi there!"')
+    expect(textarea().id).toBe('length')
+    expect(textarea().textContent).toBe('"Hi there!"')
     expect(label().textContent).toBe('Length')
     expect(error().textContent).toBe('Must be a number')
 })
@@ -178,35 +172,35 @@ test.skip('calls onChange with new boolean fixed value', () => {
 test('calls onChange with new expression value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'Old_value'}} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: '"New value"'}})
+    fireEvent.input(textarea(), {target: {value: '"New value"'}})
     expect(newValue).toStrictEqual({expr: '"New value"'})
 })
 
 test('calls onChange with new action expression value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='onFoo' type='action' value={{expr: 'doThis()'}} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: 'doThat()'}})
+    fireEvent.input(textarea(), {target: {value: 'doThat()'}})
     expect(newValue).toStrictEqual({expr: 'doThat()'})
 })
 
 test('calls onChange with undefined if input is empty on expression value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'Old_value'}} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: ''}})
+    fireEvent.input(textarea(), {target: {value: ''}})
     expect(newValue).toBeUndefined()
 })
 
 test('calls onChange with new action expression value if started empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='onFoo' type='action' value={undefined} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: 'doThat()'}})
+    fireEvent.input(textarea(), {target: {value: 'doThat()'}})
     expect(newValue).toStrictEqual({expr: 'doThat()'})
 })
 
 test('calls onChange with undefined if input is empty on action expression value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='action' value={{expr: 'doWhat()'}} onChange={onChange}/>))
 
-    fireEvent.input(input(), {target: {value: ''}})
+    fireEvent.input(textarea(), {target: {value: ''}})
     expect(newValue).toBeUndefined()
 })
 
@@ -216,7 +210,7 @@ test('calls onChange with undefined if started empty and toggle button, but save
     fireEvent.click(kindButton())
     expect(newValue).toBeUndefined()
 
-    fireEvent.input(input(), {target: {value: '"New value"'}})
+    fireEvent.input(textarea(), {target: {value: '"New value"'}})
     expect(newValue).toStrictEqual({expr: '"New value"'})
 })
 

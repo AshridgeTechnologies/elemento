@@ -28,6 +28,20 @@ export default () =>
             </Para>
         </SubSection>
 
+        <FunctionSection name='List' helpId='List' resultType='list'
+                         description='Create a list from the item values supplied.'
+
+                         inputs={
+                             <FunctionInput name='Items' type='list'>A list of item values, of any type.
+                             </FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='List' inputs={['"Wayne"', '"Cheng"', '10']}>
+                                 This results in a list with three items:  "Wayne", "Cheng", 10
+                             </FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Log' helpId='Log' resultType='action'
                          description='Writes a message to the app log.'
 
@@ -40,6 +54,22 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Record' helpId='Record' resultType='record'
+                         description='Create a record from successive pairs of item name and value.'
+
+                         inputs={
+                             <FunctionInput name='Name Value Pairs' type='list'>A list of pairs of name and value.  There must be an even number of arguments.
+                                 The first argument and all other odd-numbered arguments are the names of the items, and they must be text.
+                                 The second argument and the other even-numbered arguments are the values associated with the preceding name, and they can be any type of value.
+                             </FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='Record' inputs={['FirstName', '"Wayne"', 'LastName', '"Cheng"']}>
+                                 This results in a record with two items:  FirstName = "Wayne" and LastName = "Cheng"
+                             </FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Reset' helpId='Reset' resultType='action'
                          description='Reset the value of a control to its initial value.'
 
@@ -48,6 +78,19 @@ export default () =>
                          }
                          examples={<>
                              <FunctionExample name='Reset' inputs={['LastnameInput']}/>
+                         </>}
+        />
+
+        <FunctionSection name='Set' helpId='Set' resultType='action'
+                         description='Set the value of a Data control.  Any previous value is completely replaced.'
+
+                         inputs={<>
+                             <FunctionInput name='Control' type='Data Control'>The Data control in which the value is set.</FunctionInput>
+                             <FunctionInput name='Value' type='anything'>The value to set.</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Set' inputs={['NameToUse', 'NameInput']}/>
                          </>}
         />
 
@@ -74,5 +117,24 @@ export default () =>
                              <FunctionExample name='Sum' inputs={['Goods', 'Delivery', 'Tax']}/>
                          </>}
         />
+
+        <FunctionSection name='Update' helpId='Update' resultType='action'
+                         description='Update the value of a Data control.  Any previous value is updated with the changes given,
+                         and items not affected by the changes remain the same.
+                         This only works if the Data control is storing a record value.'
+
+                         inputs={<>
+                             <FunctionInput name='Control' type='Data Control'>The Data control in which the value is set.</FunctionInput>
+                             <FunctionInput name='Changes' type='record'>The changes to make to the current record.</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Update' inputs={['Customer', '{Firstname: "Marcel", Surname: "Dupont"}']}>
+                                 This will update the Firstname and Surname data items in the Customer Data control, but leave all the other data items the same.
+                             </FunctionExample>
+                         </>}
+        />
+
+
     </Section>
 

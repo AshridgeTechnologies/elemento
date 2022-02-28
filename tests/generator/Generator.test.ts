@@ -8,6 +8,7 @@ import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
+import Data from '../../src/model/Data'
 
 test('generates app and all page output files', ()=> {
     const app = new App('t1', 'test1', {}, [
@@ -209,6 +210,34 @@ test('generates Button elements with properties', ()=> {
 `)
 })
 
+test('generates Data elements with initial value and no errors on object expressions', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Data('id1', 't1', {initialValue: 44}),
+                new Data('id2', 't2', {initialValue: ex`{a:10, b: "Bee"}`, display: true}),
+                new Data('id3', 't3', {}),
+            ]
+        )])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        t1: {value: 44},
+        t2: {value: {a:10, b: "Bee"}},
+        t3: {},
+    })
+    const {t1, t2, t3} = state
+    return React.createElement('div', {id: props.path},
+        React.createElement(Data, {state: t1, display: false}),
+        React.createElement(Data, {state: t2, display: true}),
+        React.createElement(Data, {state: t3, display: false}),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+})
+
 test('generates error on correct line for syntax error in multiline content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -351,6 +380,34 @@ test('return statement in expression generates error', ()=> {
     expect(output.errors).toStrictEqual({
         id1: {
             content: 'Error: Invalid expression'
+        }
+    })
+
+})
+
+test('syntax error statement in initialValue generates error into state defaults', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new TextInput('id2', 'Name Input', {initialValue: ex`{a: 10,`}),
+            ]
+        )])
+
+    const output = new Generator(app).output()
+    const content = output.files[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {
+        NameInput: {value: codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )')},
+    })
+    const {NameInput} = state
+    return React.createElement('div', {id: props.path},
+        React.createElement(TextInput, {state: NameInput}),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({
+        id2: {
+            initialValue: 'Error: Line 1: Unexpected token )'
         }
     })
 

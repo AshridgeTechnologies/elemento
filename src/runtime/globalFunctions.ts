@@ -1,4 +1,5 @@
 import {isObject} from 'lodash'
+import {fromPairs, splitEvery} from 'ramda'
 
 type Value<T> = T | {valueOf: () => T }
 
@@ -63,5 +64,16 @@ export const globalFunctions = {
     Min(...args: Value<number>[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
         return Math.min(...args as number[])
-    }
+    },
+
+    Record(...args: Value<any>[]) {
+        if (args.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')
+        const argVals = args.map( valueOf )
+        const pairs = splitEvery(2, argVals) as [string, any][]
+        return fromPairs(pairs)
+    },
+
+    List(...args: Value<any>[]) {
+        return args.map( valueOf )
+    },
 }

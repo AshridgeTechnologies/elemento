@@ -54,3 +54,17 @@ Spike 1
 - State object can have a valueOf method
 - Functions can wrapped to get valueOf from all their args
 - Mechanism for generating defaults code from model object - mark as stateful?
+
+Decision 1 Mar 22
+-----------------
+
+- Revert the valueOf mechanism for controls, because
+  - it does not work everywhere
+  - it is "magic" that is not obvious in the generated code
+  - it gets confusing when used with Data controls
+- Instead, in the code generator, transform expressions using Input control identifiers to add .value where necessary
+
+Other possibilities
+-------------------
+
+- Return a proxy for state objects

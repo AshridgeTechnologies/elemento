@@ -14,6 +14,7 @@ import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
+import Data from '../../src/model/Data'
 
 let container: any
 let changedValue: any
@@ -173,6 +174,14 @@ test('has fields for Button', () => {
     expect(kindButton(1).textContent).toBe('fx=')
     expect(kindButton(1).disabled).toBe(true)
     expect(selectValue('Display')).toBe('true')
+})
+
+test('has fields for Data', () => {
+    const element = new Data('id1', 'Data 1', {initialValue: ex`"Hi!"`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Data 1')
+    expect(inputValue('Initial Value')).toBe('"Hi!"')
+    expect(selectValue('Display')).toBe('false')
 })
 
 test('shows errors for each property', () => {

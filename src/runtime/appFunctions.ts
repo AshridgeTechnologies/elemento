@@ -5,7 +5,15 @@ export default {
         updateState('app._data', {currentPage: pageName})
     },
 
-    Reset(component: {update: (changes: {value: any}) => void}) {
-        component.update({value: undefined})
+    Reset(component: {_update: (changes: {value: any}) => void}) {
+        component._update({value: undefined})
+    },
+
+    Set(component: {_update: (value: any, replace?: boolean) => void}, value: any) {
+        component._update({value}, true)
+    },
+
+    Update(component: {_update: (changes: object) => void}, changes: object) {
+        component._update({value: changes})
     },
 }

@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Data element produces output with record value 1`] = `
+<div
+  id="app.page1.data2"
+>
+  <div>
+    app.page1.data2
+  </div>
+  <code>
+    {a: 10, b: 'Bee1', c: true}
+  </code>
+</div>
+`;
+
+exports[`Data element produces output with simple value 1`] = `
+<div
+  id="app.page1.data1"
+>
+  <div>
+    app.page1.data1
+  </div>
+  <code>
+    'Hi there!'
+  </code>
+</div>
+`;

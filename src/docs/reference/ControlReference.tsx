@@ -116,5 +116,19 @@ export default () =>
             properties={<>
                 </>}
         />
+
+        <ControlSection name='Data' helpId='data'
+                        description='A Data control holds data used by the app while it is running.  When the browser page is closed, the data is deleted.
+                        It can be used like a notepad to hold data needed temporarily.  A Data control can hold a simple values, a record or a list.
+                        You use the Set and Update functions to put data into a Data control and change it afterwards.
+                        You can use the data in the control simply by using its name in a formula.
+                        A data control would normally be kept hidden, with Display set to No, but you can set Display to Yes to
+                        show the current data in order to understand more about what the program is doing.'
+            properties={<>
+                <PropertyEntry name='Initial Value' type='any' helpId='data-initialValue'>The pre-filled data in the control when the app start running.</PropertyEntry>
+                <PropertyEntry name='Display' type='true-false' helpId='data-display'>Whether the current data is shown on the screen.  Normally set to No.</PropertyEntry>
+
+            </>}
+        />
     </Section>
 

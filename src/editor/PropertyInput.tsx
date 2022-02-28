@@ -94,7 +94,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             :
             <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                        value={initialInputValue()}
-                       multiline={type === 'string multiline'}
+                       multiline={type === 'string multiline' || expr}
                        {...numericProps}
                        {...errorProps}
                        onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>

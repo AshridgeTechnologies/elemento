@@ -1,6 +1,6 @@
 import React from 'react'
 import renderer, {act} from 'react-test-renderer'
-import {_dangerouslyResetState, getState, updateState, useObjectStateWithDefaults} from '../../src/runtime/appData'
+import {_dangerouslyResetState, getState, setState, updateState, useObjectStateWithDefaults} from '../../src/runtime/appData'
 import {stateFor} from '../util/testHelpers'
 
 
@@ -130,6 +130,18 @@ test('can update state below app level and keep existing objects below the part 
         }})
 })
 
+test('can update element in an array below app level and keep other existing objects', ()=> {
+    act( () => {setState('app.page1.parts', [{color: 'red', length: 23}, {color: 'blue', length: 34}]) } )
+    const page1Parts0State = stateFor('app.page1.parts.0')
+    act( () => {updateState('app.page1.parts.1', {length: 44}) } )
+    const page1Parts0StateAfter = stateFor('app.page1.parts[0]')  // test alternative index notation
+    expect(page1Parts0StateAfter).toBe(page1Parts0State)
+
+    expect(getState()).toStrictEqual({app: {
+        page1: {parts: [{color: 'red', length: 23}, {color: 'blue', length: 44}]},
+        }})
+})
+
 test('can update state below app level and whole state is the same if nothing changed', ()=> {
     act( () => {updateState('app.page1.description', {color: 'red', length: 23}) } )
     const existingState = getState()
@@ -137,11 +149,78 @@ test('can update state below app level and whole state is the same if nothing ch
     expect(getState()).toBe(existingState)
 })
 
-test('can update nested state through result of useObjectStateWithDefaults', () => {
-    act( () => {updateState('app.page1.description', {value: 'Doddle'}) } )
+test('can partially update nested state through result of useObjectStateWithDefaults', () => {
+    act( () => {updateState('app.page1.description', {value: 'Doddle', answer: 42}) } )
     let componentState = stateWithDefaultsFor('app.page1', {description: { value: 'Fiddle'}})
-    act( () => {componentState.description.update({value: 'Bingo'}) } )
+    expect(componentState.description).toMatchObject({value: 'Doddle', answer: 42})
+    act( () => {componentState.description._update({value: 'Bingo'}) } )
     expect(getState()).toStrictEqual({app: {
-            page1: {description: {value: 'Bingo'}},
+            page1: {description: {value: 'Bingo', answer: 42}},
         }})
 })
+
+test('error if try to update primitive value state', ()=> {
+    act( () => {setState('app.page1.description', 'It is red') } )
+    expect( () => act( () => {updateState('app.page1.description', {color: 'red'}) } ) ).toThrow(`app.page1.description: cannot update existing value 'It is red' with {color: 'red'}`)
+})
+
+describe('setState', () => {
+
+    test('can set state below app level and get it again', ()=> {
+        act( () => {setState('app.page1.description', {color: 'red', length: 23}) } )
+        expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
+        expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red', length: 23}})
+        expect(stateFor('app')).toStrictEqual({page1: {description: {color: 'red', length: 23}}})
+        expect(getState()).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
+    })
+
+    test('can set state with array and get it again', ()=> {
+        act( () => {setState('app.page1.description', ['red', 'green', 'blue']) } )
+        expect(stateFor('app.page1.description')).toStrictEqual(['red', 'green', 'blue'])
+        expect(stateFor('app.page1')).toStrictEqual({description: ['red', 'green', 'blue']})
+        expect(stateFor('app')).toStrictEqual({page1: {description: ['red', 'green', 'blue']}})
+        expect(getState()).toStrictEqual({app: {page1: {description: ['red', 'green', 'blue']}}})
+    })
+
+    test('can set state below app level and keep existing objects', ()=> {
+        act( () => {setState('app.page1.description', {color: 'red', length: 23}) } )
+        const page1State = stateFor('app.page1')
+        act( () => {setState('app.page2.description', {color: 'blue', length: 499}) } )
+        const page1StateAfter = stateFor('app.page1')
+        expect(page1StateAfter).toBe(page1State)
+
+        expect(getState()).toStrictEqual({app: {
+                page1: {description: {color: 'red', length: 23}},
+                page2: {description: {color: 'blue', length: 499}},
+            }})
+    })
+
+    test('can set state below app level and remove existing objects below the part changed', ()=> {
+        act( () => {setState('app.page1.description', {color: 'red', length: 23}) } )
+        act( () => {setState('app.page1', {route: 66}) } )
+
+        expect(getState()).toStrictEqual({app: {
+                page1: {route: 66},
+            }})
+    })
+
+    test('can set state below app level and whole state is the same if nothing changed', ()=> {
+        act( () => {setState('app.page1.description', {color: 'red', length: 23}) } )
+        const existingState = getState()
+        act( () => {setState('app.page1.description', {color: 'red', length: 23}) } )
+        expect(getState()).toBe(existingState)
+    })
+
+    test('can set nested state through result of useObjectStateWithDefaults', () => {
+        act( () => {setState('app.page1.description', {value: 'Doddle', answer: 42}) } )
+        let componentState = stateWithDefaultsFor('app.page1', {description: { value: 'Fiddle'}})
+        expect(componentState.description).toMatchObject({value: 'Doddle', answer: 42})
+        act( () => {componentState.description._update({value: 'Bingo'}, true) } )
+        expect(getState()).toStrictEqual({app: {
+                page1: {description: {value: 'Bingo'}},
+            }})
+    })
+
+})
+
+

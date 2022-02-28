@@ -5,6 +5,7 @@ import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 import {createElement} from '../../src/model/createElement'
+import Data from '../../src/model/Data'
 
 test('creates elements of correct type', () => {
     expect(createElement('Text', 2)).toBeInstanceOf(Text)
@@ -13,6 +14,7 @@ test('creates elements of correct type', () => {
     expect(createElement('SelectInput', 2)).toBeInstanceOf(SelectInput)
     expect(createElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
     expect(createElement('Button', 3)).toBeInstanceOf(Button)
+    expect(createElement('Data', 4)).toBeInstanceOf(Data)
 })
 
 test('creates elements with next sequence number in lowercase id', ()=> {

@@ -16,6 +16,7 @@ const insertMenu_Button = 'ul[role="menu"] :text("Button")'
 const insertMenu_NumberInput = 'ul[role="menu"] :text("Number Input")'
 const insertMenu_SelectInput = 'ul[role="menu"] :text("Select Input")'
 const insertMenu_TrueFalseInput = 'ul[role="menu"] :text("True False Input")'
+const insertMenu_Data = 'ul[role="menu"] :text("Data")'
 const insertMenu_Page = 'ul[role="menu"] :text("Page")'
 const yesOption = 'li[role="option"]:text("Yes")'
 
@@ -113,6 +114,31 @@ test.describe('Controls can be used', () => {
         await page.click('#initialValue')
         await page.click(yesOption)
         expect(await appFrame.isChecked('input >> nth=0')).toBe(true)
+    })
+
+    test('data', async ({ page }) => {
+        await page.goto(runtimeRootUrl)
+        const appFrame = page.frame('appFrame') as Frame
+
+        const app = new App('app1', 'App One', {}, [
+            new Page('page_1', 'Control Test Page', {}, [
+                new TextInput('textInput_1', 'Name Input', {label:`Name`}),
+            ]),
+        ])
+
+        await loadApp(page, app)
+        expect(await page.textContent(mainPageTreeItem)).toBe('Control Test Page')
+        await page.click(mainPageTreeExpand)
+        await page.click(mainPageTreeItem)
+
+        await page.click(insertMenu)
+        await page.click(insertMenu_Data)
+        expect(await page.textContent(treeMainPageElementItem(0))).toBe('Data 1')
+
+        await page.fill('input#initialValue', 'Some data')
+        await page.click('#display')
+        await page.click(yesOption)
+        expect(await appFrame.textContent('div[id="app.ControlTestPage.Data1"] code')).toBe(`'Some data'`)
     })
 
     test('new page', async ({ page }) => {

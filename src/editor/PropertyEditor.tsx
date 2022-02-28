@@ -12,6 +12,7 @@ import Button from '../model/Button'
 import NumberInput from '../model/NumberInput'
 import TrueFalseInput from '../model/TrueFalseInput'
 import SelectInput from '../model/SelectInput'
+import Data from '../model/Data'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -79,6 +80,12 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                     {propertyField<Button>('content')}
                     {propertyField<Button>('action', 'action')}
                     {propertyField<Button>('display', 'boolean')}
+                </>
+
+            case "Data":
+                return <>
+                    {propertyField<Data>('initialValue')}
+                    {propertyField<Data>('display', 'boolean')}
                 </>
             default:
                 throw new UnsupportedValueError(element.kind)
