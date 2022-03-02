@@ -1,7 +1,8 @@
-import {isArray, isPlainObject} from 'lodash'
+import {isArray, isObject, isPlainObject} from 'lodash'
+import {map} from 'ramda'
 
-export function codeGenerationError(expr: string, err: string) {
-    console.log('Error in expression:', expr, ':', err)
+export function codeGenerationError(_expr: string, _err: string) {
+    //console.log('Error in expression:', _expr, ':', _err)
     return undefined
 }
 
@@ -18,9 +19,16 @@ export const valueLiteral = function (propertyValue: any): string {
     }
 }
 
-export const appCode = () => {
+export const showAppCode = () => {
     // @ts-ignore
-    const code = frames[0].document.querySelector('script#appMainCode').innerHTML
+    const code = document.querySelector('script#appMainCode').innerHTML
     console.log(code)
     return code
 }
+
+export type Value<T> = T | { valueOf: () => T }
+export function valueOf<T>(x: Value<T>): T {
+    return isObject(x) ? x.valueOf() : x
+}
+
+export const valueOfProps = (props: object): any => map(valueOf, props)

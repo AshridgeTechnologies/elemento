@@ -3,7 +3,6 @@ import renderer, {act} from 'react-test-renderer'
 import {_dangerouslyResetState, getState, setState, updateState, useObjectStateWithDefaults} from '../../src/runtime/appData'
 import {stateFor} from '../util/testHelpers'
 
-
 function StatefulComponentWithDefaults(props:{path: string, defaults: object, exposeState: (state: any) => void}) {
     const {path, defaults, exposeState} = props
     const state = useObjectStateWithDefaults(path, defaults)
@@ -36,7 +35,9 @@ test('can set app state and get it again', ()=> {
 
 test('can use non-existent state below app level and get defaults', ()=> {
     let newState = stateWithDefaultsFor('app.page1', {description: { value: 'Fiddle'}})
-    expect(newState).toMatchObject({_path: 'app.page1', description: { value: 'Fiddle', _path: 'app.page1.description'}})
+    expect(newState).toMatchObject({description: { value: 'Fiddle'}})
+    expect(newState._path).toBe('app.page1')
+    expect(newState.description._path).toBe('app.page1.description')
     expect(stateFor('app.page1')).toBeUndefined()
 })
 
@@ -44,7 +45,7 @@ test('can use existing state below app level and get existing value without chan
     act( () => {updateState('app.page1.description', {color: 'red', length: 23}) } )
     const existingState = getState()
     let newState = stateWithDefaultsFor('app.page1', {description: { color: 'blue', length: 1}})
-    expect(newState).toMatchObject({_path: 'app.page1', description: {color: 'red', length: 23, _path: 'app.page1.description'}})
+    expect(newState).toMatchObject({description: {color: 'red', length: 23}})
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
     expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red', length: 23}})
     expect(stateFor()).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
@@ -54,7 +55,7 @@ test('can use existing state below app level and get existing value without chan
 test('can use partially existing state below app level and get value with defaults', ()=> {
     act( () => {updateState('app.page1.description', {color: 'red'}) } )
     let newState = stateWithDefaultsFor('app.page1', {description: { color: 'blue', length: 1}})
-    expect(newState).toMatchObject({_path: 'app.page1', description: {color: 'red', length: 1, _path: 'app.page1.description'}})
+    expect(newState).toMatchObject({description: {color: 'red', length: 1,}})
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red'})
     expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red'}})
     expect(stateFor()).toStrictEqual({app: {page1: {description: {color: 'red'}}}})
@@ -68,7 +69,6 @@ test('state with defaults does not add properties to the base store', () => {
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red'})
     expect(stateFor('app.page1.color')).toStrictEqual({value: 'red'})
 })
-
 
 test('state with defaults has valueOf method at each level that returns value if present and self if not', () => {
     act( () => {updateState('app.page1.color', {value: 'red'}) } )
@@ -88,6 +88,39 @@ test('state with defaultValue has valueOf method at each level that returns defa
     expect(newState.color + ' sky').toBe('blue sky')
 })
 
+test('can get nested properties of value in state directly', () => {
+    act( () => {setState('app.page1.data', {a: 10, value: {b: 20, c: { d: 30, value: {e: 40}}}}) } )
+    let newState = stateWithDefaultsFor('app.page1.data', {})
+    expect(newState).toMatchObject({a: 10, value: {b: 20, c: { d: 30, value: {e: 40}}}})
+    expect(newState.valueOf()).toMatchObject({b: 20, c: { d: 30, value: {e: 40}}})
+    expect(newState.a).toBe(10)
+    expect(newState.b).toBe(20)
+    expect(newState.c.d).toBe(30)
+    expect(newState.c.e).toBe(40)
+})
+
+test('can get nested properties of value in initial value directly', () => {
+    act( () => {setState('app.page1.data', {value: undefined}) } )
+    let newState = stateWithDefaultsFor('app.page1.data', {a: 10, value: {b: 20, c: { d: 30, value: {e: 40}}}})
+    expect(newState).toMatchObject({a: 10, value: {b: 20, c: { d: 30, value: {e: 40}}}})
+    expect(newState.valueOf()).toMatchObject({b: 20, c: { d: 30, value: {e: 40}}})
+    expect(newState.a).toBe(10)
+    expect(newState.b).toBe(20)
+    expect(newState.c.d).toBe(30)
+    expect(newState.c.e).toBe(40)
+})
+
+test('can get nested properties of value in default value directly', () => {
+    act( () => {setState('app.page1.data', {value: undefined}) } )
+    let newState = stateWithDefaultsFor('app.page1.data', {a: 10, defaultValue: {b: 20, c: { d: 30, defaultValue: {e: 40}}}})
+    expect(newState).toMatchObject({a: 10, defaultValue: {b: 20, c: { d: 30, defaultValue: {e: 40}}}})
+    expect(newState.valueOf()).toMatchObject({b: 20, c: { d: 30, defaultValue: {e: 40}}})
+    expect(newState.a).toBe(10)
+    expect(newState.b).toBe(20)
+    expect(newState.c.d).toBe(30)
+    expect(newState.c.e).toBe(40)
+})
+
 test('can set state below app level and get it again', ()=> {
     act( () => {updateState('app.page1.description', {color: 'red', length: 23}) } )
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
@@ -102,7 +135,7 @@ test('can set an item in state below app level to undefined and get it again and
     act( () => {updateState('app.page1.description', {length: undefined}) } )
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: undefined})
     let newState = stateWithDefaultsFor('app.page1', {description: { color: 'blue', length: 111}})
-    expect(newState).toMatchObject({_path: 'app.page1', description: {color: 'red', length: 111, _path: 'app.page1.description'}})
+    expect(newState).toMatchObject({description: {color: 'red', length: 111}})
 })
 
 test('can update state below app level and keep existing objects', ()=> {

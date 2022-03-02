@@ -1,11 +1,13 @@
 import React from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {updateState} from './appData'
+import {valueOfProps} from './runtimeFunctions'
 
 type Properties = { label?: string, values?: string[], state: {value?: string, _path: string, } }
 
-export default function SelectInput({values = [], state, label}: Properties) {
+export default function SelectInput({state, ...props}: Properties) {
     const {value = '', _path: path} = state
+    const {values = [], label} = valueOfProps(props)
     const onChange = (event: SelectChangeEvent) => updateState(path, {value: (event.target as any).value})
 
     return <FormControl variant="filled" size='small' sx={{minWidth: 120}}>
@@ -17,7 +19,7 @@ export default function SelectInput({values = [], state, label}: Properties) {
             onChange={onChange}
         >
             <MenuItem>&nbsp;</MenuItem>
-            {values.map( v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
+            {values.map( (v: any) => <MenuItem key={v} value={v}>{v}</MenuItem>)}
         </Select>
     </FormControl>
 }

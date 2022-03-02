@@ -511,6 +511,32 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     expect(output.errors).toStrictEqual({})
 })
 
+test('property shorthand to name of property reports error and generates an error in the code', () => {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`{a: 10, xxx}`}),
+            ]
+        )])
+
+    const output = new Generator(app).output()
+    const content = output.files[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const state = useObjectStateWithDefaults(props.path, {})
+
+    return React.createElement('div', {id: props.path},
+        React.createElement(TextElement, {path: pathWith('t1')}, ({a: 10, xxx: undefined})),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({
+        id1: {
+            content: 'Incomplete item: xxx'
+        }
+    })
+
+})
+
 test('Unexpected number error in expression generates error', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [

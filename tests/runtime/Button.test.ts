@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import Button from '../../src/runtime/Button'
-import {snapshot, testContainer} from '../util/testHelpers'
+import {componentJSON, snapshot, stateVal, testContainer, wait} from '../util/testHelpers'
 import userEvent from '@testing-library/user-event'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 
@@ -16,8 +16,18 @@ test('Button element produces output with properties supplied',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}}))
 )
 
-test('Button element produces output with default values where properties omitted',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!'}))
+test('Button element produces output with properties supplied as state values', async () => {
+        const element = createElement(Button, {path: 'app.page1.save', content: stateVal('Click me!'), action: () => {doIt()}})
+        await wait(10)
+        expect(componentJSON(element)).toMatchSnapshot()
+    }
+)
+
+test('Button element produces output with default values where properties omitted', async () => {
+        const element = createElement(Button, {path: 'app.page1.save', content: 'Click me!'})
+        await wait(10)
+        expect(componentJSON(element)).toMatchSnapshot()
+    }
 )
 
 test('Button does action when clicked', async () => {

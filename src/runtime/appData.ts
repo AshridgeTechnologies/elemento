@@ -1,6 +1,6 @@
 import create from 'zustand'
-import {clone, equals, lensPath, mergeDeepRight, mergeDeepWith, set, view} from 'ramda'
-import {isBoolean, isNumber, isObject, isPlainObject, isString} from 'lodash'
+import {equals, lensPath, mergeDeepRight, mergeDeepWith, set, view} from 'ramda'
+import {isObject, isPlainObject} from 'lodash'
 import assert from 'assert'
 import {valueLiteral} from './runtimeFunctions'
 
@@ -48,32 +48,40 @@ export const useObjectState = (path: string) => useStore(selectState(path))
 
 export const _dangerouslyResetState = () => useStore.setState(baseStore(), true)
 
-
 const useRightIfDefined = (left: any, right: any) => right !== undefined ? right : left
-const valueOfFn = function (this: any) { return this.value !== undefined ? this.value : this.defaultValue }
-const updateFn = function (this: any, changes: object, replace: boolean = false) { replace ? setState(this._path, changes) : updateState(this._path, changes) }
-const addPath = (obj: object, path: string) => {
-    const updatableObj = obj as any
-    Object.defineProperty(updatableObj, '_path', {value: path})
-    Object.defineProperty(updatableObj, '_update', {value: updateFn})
-    if ('value' in updatableObj || 'defaultValue' in updatableObj) {
-        updatableObj.valueOf = valueOfFn
-    }
-    for (const p in obj) {
-        const prop = obj[p as keyof object]
-        if (isPlainObject(prop) || (isObject(prop) && (isString(prop) || isNumber(prop) || isBoolean(prop)))) {
-            addPath(prop, `${path}.${p}`)
+
+const stateProxyHandler = (path: string) => ({
+
+    get(obj: any, prop: string): any {
+        if (prop === '_path') {
+            return path
         }
+
+        if (prop === '_update') {
+            return function(changes: object, replace: boolean = false) { replace ? setState(path, changes) : updateState(path, changes) }
+        }
+
+        if (prop === 'valueOf') {
+            if ('value' in obj || 'defaultValue' in obj) {
+                return function() {return obj.value ?? obj.defaultValue}
+            }
+            return obj.valueOf
+        }
+
+        const result = obj[prop] ?? obj.value?.[prop] ?? obj.defaultValue?.[prop]
+        return isPlainObject(result) ? proxify(result, `${path}.${prop}`) : result
     }
+
+})
+
+export function proxify(obj: object, path: string) {
+    return new Proxy(obj, stateProxyHandler(path))
 }
 
 export const useObjectStateWithDefaults = (path: string, defaults: object) => {
     const existingStateAtPath = useObjectState(path) || {}
     const mergedState = mergeDeepWith(useRightIfDefined, defaults, existingStateAtPath)
-    const mergedStateCopy = clone(mergedState)
-
-    addPath(mergedStateCopy, path)
-    return mergedStateCopy
+    return proxify(mergedState, path)
 }
 
 export const getState = useStore.getState

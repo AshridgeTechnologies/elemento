@@ -1,11 +1,5 @@
-import {isObject} from 'lodash'
 import {fromPairs, splitEvery} from 'ramda'
-
-type Value<T> = T | {valueOf: () => T }
-
-function valueOf<T>(x: Value<T>) : T {
-    return isObject(x) ? x.valueOf() : x
-}
+import {Value, valueOf} from './runtimeFunctions'
 
 export const globalFunctions = {
     valueOf,

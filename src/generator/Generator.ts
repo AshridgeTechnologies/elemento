@@ -53,6 +53,8 @@ const valueLiteral = function (propertyValue: any): string {
     }
 }
 
+
+
 export default class Generator {
     constructor(public app: App) {
     }
@@ -90,7 +92,8 @@ export default class Generator {
         const identifierSet = new Set<string>()
         const isPageElement = (name: string) => !!page.elementArray().find( el => el.codeName === name )
         const isPageName = (name: string) => !!app.pages.find( p => p.codeName === name )
-        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name)
+        const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name) || isBuiltIn(name)
         const pageCode = Generator.generateElement(page, identifierSet, isKnown, errors)
         const identifiers = [...identifierSet.values()]
 
@@ -281,6 +284,10 @@ ${children}
             }
         }
 
+        function isShorthandProperty(node: any) {
+            return node.shorthand
+        }
+
         if (isExpr(propertyValue)) {
             const {expr} = propertyValue
             try {
@@ -304,6 +311,16 @@ ${children}
                         const node = path.value
                         node.type = "BinaryExpression"
                         node.operator = '=='
+                        this.traverse(path);
+                    },
+
+                    visitProperty(path) {
+                        const node = path.value
+                        if (isShorthandProperty(node)) {
+                            node.value.name = 'undefined'
+                            const errorMessage = `Incomplete item: ${node.key.name}`
+                            onError(errorMessage)
+                        }
                         this.traverse(path);
                     }
                 })

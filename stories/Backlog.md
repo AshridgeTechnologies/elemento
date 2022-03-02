@@ -8,6 +8,7 @@ Bugs
 Stories
 -------
 - General usability Part 1
+- State debugging
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -66,3 +67,4 @@ Done
 - Formula improvements Part 1
 - App state refactor
 - In-memory data storage and updates
+- Formula improvements Part 2

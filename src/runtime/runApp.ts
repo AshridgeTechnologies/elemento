@@ -17,7 +17,7 @@ import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
-import {codeGenerationError, appCode} from './runtimeFunctions'
+import {codeGenerationError, showAppCode} from './runtimeFunctions'
 
 let theApp: App
 
@@ -30,6 +30,7 @@ declare global {
     var AppMain: () => any
     var globalFunctions: object
     var appFunctions: object
+    var appCode: string
 }
 
 export function app() { return theApp }
@@ -69,18 +70,20 @@ function showError({appUrl, error}: {appUrl:string, error: Error}) {
     ReactDOM.render(React.createElement(AppLoadError, {appUrl, error}), appContainer())
 }
 
+
 function runApp() {
     const appMainCode = new Generator(theApp).output().files.map( f => f.content ).join('\n')
 
     const scriptElement = document.createElement('script')
     scriptElement.id = 'appMainCode'
     scriptElement.innerHTML = appMainCode
+    window.appCode = appMainCode
 
     document.getElementById('appMainCode')?.remove()
     document.body.append(scriptElement)
 
     ReactDOM.render(
-        React.createElement(ErrorBoundary, {FallbackComponent: ErrorFallback},
+        React.createElement(ErrorBoundary, {FallbackComponent: ErrorFallback, resetKeys:[appMainCode]},
             React.createElement(AppMain, null)
         ), appContainer()
     )
@@ -111,6 +114,6 @@ window.useObjectStateWithDefaults = useObjectStateWithDefaults
 // @ts-ignore
 window.codeGenerationError = codeGenerationError
 // @ts-ignore
-window.appCode = appCode
+window.showAppCode = showAppCode
 
 loadApp().then( runApp, showError )

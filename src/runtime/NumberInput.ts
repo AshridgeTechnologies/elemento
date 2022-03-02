@@ -2,10 +2,13 @@ import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../util/helpers'
 import {updateState} from './appData'
+import {valueOfProps} from './runtimeFunctions'
 
 type Properties = {state: {value?: number, _path: string}, label?: string}
 
-export default function NumberInput({state, label}: Properties) {
+export default function NumberInput({state, ...props}: Properties) {
+    const {label} = valueOfProps(props)
+
     const optionalProps = definedPropertiesOf({label})
     const {_path: path, value = ''} = state
     const onChange = (event: ChangeEvent) => {
