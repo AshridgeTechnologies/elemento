@@ -2,7 +2,7 @@
 
 exports[`NumberInput element produces output with default values where properties omitted 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
 >
   <div
     className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
@@ -19,7 +19,7 @@ exports[`NumberInput element produces output with default values where propertie
       onChange={[Function]}
       onFocus={[Function]}
       required={false}
-      type="text"
+      type="number"
       value={0}
     />
     <fieldset
@@ -45,7 +45,7 @@ exports[`NumberInput element produces output with default values where propertie
 
 exports[`NumberInput element produces output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
 >
   <label
     className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
@@ -70,7 +70,7 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
       onChange={[Function]}
       onFocus={[Function]}
       required={false}
-      type="text"
+      type="number"
       value={27}
     />
     <fieldset

@@ -4,9 +4,9 @@
 
 import {fireEvent, render, screen} from '@testing-library/react'
 import React from 'react'
-import {actWait, treeItemLabels} from '../util/testHelpers'
+import {actWait, treeItemLabels} from '../testutil/testHelpers'
 import AutoRun from '../../src/autorun/AutoRun'
-import {editorAutorunFixture1} from '../util/autorunFixtures'
+import {editorAutorunFixture1} from '../testutil/autorunFixtures'
 
 let container: any = null
 

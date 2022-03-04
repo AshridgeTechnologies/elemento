@@ -7,6 +7,7 @@ import TextInput from './TextInput'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
+import Page from './Page'
 import Button from './Button'
 import Data from './Data'
 import ErrorFallback from './ErrorFallback'
@@ -17,7 +18,7 @@ import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
 import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
-import {codeGenerationError, showAppCode} from './runtimeFunctions'
+import {codeGenerationError, showAppCode, highlightElement} from './runtimeFunctions'
 
 let theApp: App
 
@@ -25,6 +26,7 @@ declare global {
     var app: () => App
     var setApp: (app: App) => void
     var setAppFromJSONString: (appJson: string) => void
+    var setAppEventListener: (eventType: string, callback: (ev: Event) => void) => void
 
     var runApp: () => any
     var AppMain: () => any
@@ -32,6 +34,10 @@ declare global {
     var appFunctions: object
     var appCode: string
 }
+
+const appContainer = () => document.querySelector('#main')
+let appEventListenerCallback: (ev: Event) => void
+const appEventListener = (ev: Event) => appEventListenerCallback?.call(null, ev)
 
 export function app() { return theApp }
 export function setApp(app: App) {
@@ -41,15 +47,19 @@ export function setApp(app: App) {
 export function setAppFromJSONString(appJson: string) {
     setApp(loadJSONFromString(appJson) as App)
 }
+export function setAppEventListener(eventType: string, callback: (ev: Event) => void) {
+    appEventListenerCallback = callback
+    appContainer()?.addEventListener(eventType, appEventListener, true)
+}
 
 window.app = app
 window.setApp = setApp
 window.runApp = runApp
 window.setAppFromJSONString = setAppFromJSONString
+window.setAppEventListener = setAppEventListener
 window.globalFunctions = importedGlobalFunctions
 window.appFunctions = importedAppFunctions
 
-const appContainer = () => document.querySelector('#main')
 
 async function loadApp() {
     const path = location.pathname.substring(1)
@@ -90,6 +100,8 @@ function runApp() {
 }
 
 // @ts-ignore
+window.Page = Page
+// @ts-ignore
 window.Button = Button
 // @ts-ignore
 window.TextElement = TextElement
@@ -115,5 +127,7 @@ window.useObjectStateWithDefaults = useObjectStateWithDefaults
 window.codeGenerationError = codeGenerationError
 // @ts-ignore
 window.showAppCode = showAppCode
+// @ts-ignore
+window.highlightElement = highlightElement
 
 loadApp().then( runApp, showError )

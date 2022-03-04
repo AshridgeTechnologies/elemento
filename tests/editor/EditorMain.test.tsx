@@ -7,8 +7,8 @@ import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {act} from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import App from '../../src/model/App'
-import {appFixture1} from '../util/appFixtures'
-import {treeItemLabels} from '../util/testHelpers'
+import {appFixture1} from '../testutil/appFixtures'
+import {treeItemLabels} from '../testutil/testHelpers'
 
 let container: HTMLDivElement;
 

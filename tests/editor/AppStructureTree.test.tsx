@@ -7,7 +7,11 @@ import {fireEvent, render, screen} from '@testing-library/react'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {actWait, treeItemLabels} from '../util/testHelpers'
+import {
+    actWait,
+    suppressRcTreeJSDomError,
+    treeItemLabels
+} from '../testutil/testHelpers'
 
 let container: any
 
@@ -37,6 +41,63 @@ const modelTree = new ModelTreeItem('app1', 'App One', 'App', [
         new ModelTreeItem('text2_1', 'Some Text', 'Text'),
     ])
 ])
+
+beforeAll(suppressRcTreeJSDomError)
+
+describe('ModelTreeItem', () => {
+    test('finds ancestor keys of the item with a given key', () => {
+        const deepTree = new ModelTreeItem('app1', 'App One', 'App', [
+            new ModelTreeItem('page_1','Main Page', 'Page', [
+                new ModelTreeItem('text1_1', 'First Text', 'Text'),
+                new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput', [
+                    new ModelTreeItem('id1', 'An item', 'Text', [
+                        new ModelTreeItem('id2', 'A deeper item', 'Text')
+                    ])
+                ]),
+            ]),
+            new ModelTreeItem('page2','Other Page', 'Page', [
+                new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+            ])
+        ])
+
+        expect(deepTree.ancestorKeysOf('app1')).toStrictEqual([])
+        expect(deepTree.ancestorKeysOf('page2')).toStrictEqual(['app1'])
+        expect(deepTree.ancestorKeysOf('text1_1')).toStrictEqual(['app1', 'page_1'])
+        expect(deepTree.ancestorKeysOf('id1')).toStrictEqual(['app1', 'page_1', 'textInput1_2'])
+        expect(deepTree.ancestorKeysOf('id2')).toStrictEqual(['app1', 'page_1', 'textInput1_2', 'id1'])
+        expect(deepTree.ancestorKeysOf('non_existent')).toStrictEqual([])
+        expect(deepTree.ancestorKeysOf(undefined)).toStrictEqual([])
+    })
+
+    test('knows whether it contains the item with a given key', () => {
+        let item_id2, item_textInput1
+        const deepTree = new ModelTreeItem('app1', 'App One', 'App', [
+            new ModelTreeItem('page1','Main Page', 'Page', [
+                new ModelTreeItem('text1', 'First Text', 'Text'),
+                item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', [
+                    new ModelTreeItem('id1', 'An item', 'Text', [
+                        item_id2 = new ModelTreeItem('id2', 'A deeper item', 'Text')
+                    ])
+                ]),
+            ]),
+            new ModelTreeItem('page2','Other Page', 'Page', [
+                new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+            ])
+        ])
+
+        expect(deepTree.containsKey('app1')).toBe(false)
+        expect(deepTree.containsKey('page2')).toBe(true)
+        expect(deepTree.containsKey('id2')).toBe(true)
+
+        expect(item_id2.containsKey('id2')).toBe(false)
+        expect(item_id2.containsKey('textInput1')).toBe(false)
+
+        expect(item_textInput1.containsKey('textInput1')).toBe(false)
+        expect(item_textInput1.containsKey('page1')).toBe(false)
+        expect(item_textInput1.containsKey('id1')).toBe(true)
+        expect(item_textInput1.containsKey('id2')).toBe(true)
+    })
+})
 
 test("renders tree with all types of model elements",  async () => {
     await actWait( () => ({container} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()}/>)))
@@ -76,6 +137,24 @@ test('shows selected item highlighted', async () => {
     await actWait(() => fireEvent.click(container.querySelector(treeExpandControlSelector)))
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
+})
+
+test('expands to show selected item highlighted', async () => {
+    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'} onSelect={jest.fn()} onAction={jest.fn()}/>)))
+    expect(itemLabels()).toContain('First Text')
+    expect(selectedItemLabel()).toBe('The Text Input')
+})
+
+test('selects collapsed item if it contained the selected item', async () => {
+    const onSelect = jest.fn()
+    await actWait(() => {
+        return ({container} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'}
+                                                       onSelect={onSelect} onAction={jest.fn()}/>))
+    })
+    expect(itemLabels()).toContain('First Text')
+    expect(selectedItemLabel()).toBe('The Text Input')
+    await actWait(() => fireEvent.click(container.querySelector(treeExpandControlSelector)))
+    expect(onSelect).toHaveBeenCalledWith('page_1')
 })
 
 test('notifies delete with item id', async () => {

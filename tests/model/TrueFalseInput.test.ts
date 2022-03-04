@@ -1,6 +1,6 @@
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'
 
@@ -11,6 +11,15 @@ test('TrueFalseInput has correct properties', ()=> {
     expect(trueFalseInput.name).toBe('True-False Input 1')
     expect(trueFalseInput.initialValue).toStrictEqual(ex`true`)
     expect(trueFalseInput.label).toStrictEqual(ex`True-False One`)
+})
+
+test('TrueFalseInput has correct defaults', ()=> {
+    const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {})
+
+    expect(trueFalseInput.id).toBe('t1')
+    expect(trueFalseInput.name).toBe('True-False Input 1')
+    expect(trueFalseInput.initialValue).toBeUndefined()
+    expect(trueFalseInput.label).toBe('True-False Input 1')
 })
 
 test('tests if an object is this type', ()=> {

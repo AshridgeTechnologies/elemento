@@ -1,6 +1,6 @@
 import SelectInput from '../../src/model/SelectInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'
 
@@ -9,8 +9,20 @@ test('SelectInput has correct properties', ()=> {
 
     expect(selectInput.id).toBe('t1')
     expect(selectInput.name).toBe('Select Input 1')
+    expect(selectInput.values).toStrictEqual(['Green', 'Blue', 'Pink'])
     expect(selectInput.initialValue).toStrictEqual(ex`Blue`)
     expect(selectInput.label).toStrictEqual(ex`Select One`)
+})
+
+test('SelectInput has correct default values', ()=> {
+    const selectInput = new SelectInput('t1', 'Select Input 1', {values: []})
+
+    expect(selectInput.id).toBe('t1')
+    expect(selectInput.name).toBe('Select Input 1')
+    expect(selectInput.values).toStrictEqual([])
+    expect(selectInput.initialValue).toBeUndefined()
+    expect(selectInput.label).toBe('Select Input 1')
+    expect(selectInput.properties.label).toBeUndefined()
 })
 
 test('tests if an object is this type', ()=> {

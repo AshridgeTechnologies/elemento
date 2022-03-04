@@ -18,6 +18,8 @@ export default class App extends BaseElement<Properties> implements Element {
 
     get pages() {return this.elements as Page[]}
 
+    get pathSegment() { return 'app'}
+
     createElement(elementType: ElementType, newIdSeq: number): Element {
         return createElement(elementType, newIdSeq)
     }

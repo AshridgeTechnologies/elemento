@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import TextElement from '../../src/runtime/TextElement'
-import {snapshot, stateVal} from '../util/testHelpers'
+import {snapshot, stateVal} from '../testutil/testHelpers'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 
 const {Sum} = globalFunctions

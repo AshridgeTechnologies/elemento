@@ -24,8 +24,9 @@ interface ErrorCollector {
     add(elementId: ElementId, propertyName: string, error: string): void
 }
 
+function safeKey(name: string) { return name.match(/\W/) ? `'${name}'` : name}
 function objectLiteral(obj: object) {
-    return `{${Object.entries(obj).map(([name, val]) => `${name}: ${val}`).join(', ')}}`
+    return `{${Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')}}`
 }
 
 const isAction = true
@@ -145,7 +146,7 @@ ${globalDeclarations}
             case "Page":
                 const page = element as Page
                 const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, isKnown, errors)},`).join('\n');
-                return `React.createElement('div', {id: props.path},
+                return `React.createElement(Page, {id: props.path},
 ${children}
     )`
             case "Text": {
@@ -169,9 +170,10 @@ ${children}
                 const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = textInput.codeName
                 const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
+                const width = Generator.getExprAndIdentifiers(textInput.width, identifiers, isKnown, onError('width'))
                 const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
                 const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({state, maxLength, multiline, label})
+                const reactProperties = definedPropertiesOf({state, maxLength, multiline, label, width})
                 return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
             case "NumberInput": {
@@ -229,7 +231,7 @@ ${children}
         function valueEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
             const input = element as T
             const [valueExpr, isError] = Generator.getExpr(input.initialValue)
-            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : 'defaultValue: ' + valueLiteral((input.constructor as any).defaultValue ?? '')}},`
+            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr + ', ' : ''}defaultValue: ${valueLiteral((input.constructor as any).defaultValue ?? '')}},`
         }
 
         switch(element.kind) {

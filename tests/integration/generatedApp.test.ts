@@ -5,6 +5,7 @@ import Text from '../../src/model/Text'
 import App from '../../src/model/App'
 import Generator from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
+import RuntimePage from '../../src/runtime/Page'
 import {useObjectStateWithDefaults} from '../../src/runtime/appData'
 import {ex} from '../../src/util/helpers'
 
@@ -29,6 +30,8 @@ test('generated Page creates React element with correct structure', ()=> {
     // @ts-ignore
     global.TextElement = TextElement
     // @ts-ignore
+    global.Page = RuntimePage
+    // @ts-ignore
     global.useObjectStateWithDefaults = useObjectStateWithDefaults
     // @ts-ignore
     const component = renderer.create(React.createElement(PageComponent, {path: 'app.Page1'}))
@@ -51,6 +54,8 @@ test('generated AppMain creates React elements with correct structure', ()=> {
     const AppMain = makeComponentFunction(gen.output().files[1].content)
 
     global.React = React
+    // @ts-ignore
+    global.Page = RuntimePage
     // @ts-ignore
     global.TextElement = TextElement
     // @ts-ignore

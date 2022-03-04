@@ -2,7 +2,7 @@ import renderer, {act as rtrAct} from 'react-test-renderer'
 import React from 'react'
 import {act, render} from '@testing-library/react'
 import {treeItemSelector} from '../editor/Selectors'
-import {proxify, useObjectState, useStore} from '../../src/runtime/appData'
+import {stateProxy, useObjectState, useStore} from '../../src/runtime/appData'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -49,4 +49,24 @@ export function stateFor(path?: string) {
     return state
 }
 
-export const stateVal = (value: any, path = 'path.x') => proxify({value}, path)
+export const stateVal = (value: any, path = 'path.x') => stateProxy(path, {value})
+
+let suppressionReported = false
+const originalConsoleError = console.error
+
+export const suppressRcTreeJSDomError = () => {
+    if (console.error === originalConsoleError) {
+        jest.spyOn(console, 'error').mockImplementation( (...args: any[]) => {
+            if (args[1].message?.match(/Cannot read properties of null \(reading 'removeEventListener'\)/)) {
+                !suppressionReported && console.log('Suppressed JSDOM removeEventListener error')
+                suppressionReported = true
+            } else {
+                originalConsoleError(...args)
+            }
+        })
+    }
+}
+export const stopSuppressingRcTreeJSDomError = () => {
+    jest.restoreAllMocks()
+    suppressionReported = false
+}

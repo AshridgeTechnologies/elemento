@@ -5,14 +5,16 @@ import MenuItem from '@mui/material/MenuItem';
 import {OnInsertFn} from './Types'
 import {ElementType} from '../model/Types'
 import {startCase} from 'lodash'
+import {Alert, Popover} from '@mui/material'
 
-export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
+export default function InsertMenu({onInsert, items}: {onInsert: OnInsertFn, items: ElementType[]}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const open = Boolean(anchorEl)
+    const hasItems = Boolean(items.length)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
     const handleInsert = (elementType: ElementType) => () => {
-        onInsert(elementType)
+        onInsert(elementType.replace(/ /g, '') as ElementType)
         handleClose()
     }
 
@@ -33,21 +35,22 @@ export default function InsertMenu({onInsert}: {onInsert: OnInsertFn}) {
                 id="insertMenu"
                 data-testid="insertMenu"
                 anchorEl={anchorEl}
-                open={open}
+                open={open && hasItems}
                 onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'insertButton',
-                }}
+                MenuListProps={{'aria-labelledby': 'insertButton'}}
             >
-                {menuItem('Text')}
-                {menuItem('TextInput')}
-                {menuItem('NumberInput')}
-                {menuItem('SelectInput')}
-                {menuItem('TrueFalseInput')}
-                {menuItem('Button')}
-                {menuItem('Data')}
-                {menuItem('Page')}
+                {React.Children.toArray(items.map(menuItem))}
             </Menu>
+            <Popover
+                id='insertWarning'
+                data-testid="insertWarning"
+                open={open && !hasItems}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
+            >
+                <Alert severity="warning">Please select the item you want to insert after</Alert>
+            </Popover>
         </div>
     );
 }

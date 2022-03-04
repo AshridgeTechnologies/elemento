@@ -8,7 +8,7 @@ type Properties = { label?: string, values?: string[], state: {value?: string, _
 export default function SelectInput({state, ...props}: Properties) {
     const {value = '', _path: path} = state
     const {values = [], label} = valueOfProps(props)
-    const onChange = (event: SelectChangeEvent) => updateState(path, {value: (event.target as any).value})
+    const onChange = (event: SelectChangeEvent) => updateState(path, {value: (event.target as any).value || null})
 
     return <FormControl variant="filled" size='small' sx={{minWidth: 120}}>
         <InputLabel id={path + '_label'}>{label}</InputLabel>

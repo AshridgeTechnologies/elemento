@@ -20,6 +20,7 @@ import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
 import Generator from '../generator/Generator'
+import {without} from 'ramda'
 
 
 const treeData = (app: App): ModelTreeItem => {
@@ -53,9 +54,25 @@ export default function Editor({
         return null
     }
 
+    function insertMenuItems() : ElementType[] {
+        if (selectedItemId) {
+            const element = app.findElement(selectedItemId)
+            if (element) {
+                const allItems = ['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] as ElementType[]
+                if (Page.is(element)) {
+                    return allItems
+                } else {
+                    return without(['Page'], allItems) as ElementType[]
+                }
+            }
+        }
+
+        return []
+    }
+
     const onMenuInsert = (elementType: ElementType) => {
         const newElementId = onInsert(selectedItemId, elementType)
-        setSelectedItemId((newElementId))
+        setSelectedItemId(newElementId)
     }
 
     const onHelp = () => setHelpVisible(!helpVisible)
@@ -64,17 +81,46 @@ export default function Editor({
 
     const appFrameRef = useRef<HTMLIFrameElement>(null);
 
+    function handleAppFrameClick(event: PointerEvent) {
+        if (event.altKey) {
+            const path = (event.target as HTMLElement).id
+            const element = app.findElementByPath(path)
+            if (element) {
+                setSelectedItemId(element.id)
+                event.preventDefault()
+            }
+        }
+    }
+
     function setAppInAppFrame(): boolean {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
-            const setAppFn = appWindow['setAppFromJSONString' as keyof Window];
+            const setAppFn = appWindow['setAppFromJSONString' as keyof Window]
             if (setAppFn) {
                 setAppFn(JSON.stringify(app))
+                const setEventListenerFn = appWindow['setAppEventListener' as keyof Window]
+                if (setEventListenerFn) {
+                    setEventListenerFn('click', handleAppFrameClick)
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    function highlightElementInAppFrame(id: string | null) {
+        const appWindow = appFrameRef.current?.contentWindow
+        if (appWindow) {
+            const highlightFn = appWindow['highlightElement' as keyof Window];
+            if (highlightFn) {
+                highlightFn(id)
                 return true
             }
         }
 
         return false
+
     }
 
     useEffect(() => {
@@ -84,11 +130,13 @@ export default function Editor({
             }
         }, 200)
     }, []);
+
     setAppInAppFrame()
+    highlightElementInAppFrame(app.findElementPath(selectedItemId))
 
     const EditorMenuBar = () => <MenuBar>
         <FileMenu onOpen={onOpen} onSave={onSave}/>
-        <InsertMenu onInsert={onMenuInsert}/>
+        <InsertMenu onInsert={onMenuInsert} items={insertMenuItems()}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
 

@@ -1,5 +1,5 @@
 import {expect, test} from '@playwright/test';
-import {appFixture1, appFixture2} from '../util/appFixtures'
+import {appFixture1, appFixture2} from '../testutil/appFixtures'
 
 // Expects test server such as Parcel dev server running on port 1235 at top level
 const runtimeRootUrl = 'http://localhost:1235/'

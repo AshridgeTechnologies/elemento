@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page element produces output containing children 1`] = `
+<div
+  className="css-1suj1uj-MuiStack-root"
+  id="page1"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    id="page1.para1"
+  >
+    Hello
+    where are you
+  </p>
+</div>
+`;

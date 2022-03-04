@@ -28,8 +28,34 @@ export default abstract class BaseElement<PropertiesType extends object> {
         if (id === this.id) {
             return this as unknown as Element
         }
-        for (const p of this.elementArray()) {
-            const element = p.findElement(id)
+        for (const el of this.elementArray()) {
+            const element = el.findElement(id)
+            if (element) return element
+        }
+
+        return null
+    }
+
+    findElementPath(id: ElementId): string | null {
+        if (id === this.id) {
+            return this.pathSegment
+        }
+
+        for (const el of this.elementArray()) {
+            const path = el.findElementPath(id)
+            if (path) return this.pathSegment + '.' + path
+        }
+
+        return null
+    }
+
+    findElementByPath(path: string) : Element | null {
+        const [firstElementName, ...remainingPathSegments] = path.split('.')
+        if (firstElementName === this.pathSegment && remainingPathSegments.length === 0) {
+            return this as unknown as Element
+        }
+        for (const el of this.elementArray()) {
+            const element = el.findElementByPath(remainingPathSegments.join('.'))
             if (element) return element
         }
 
@@ -81,7 +107,12 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return Math.max(ownMax(), ...this.elementArray().map( el => el.findMaxId(elementType)))
     }
 
-    get codeName() { return this.name.replace(/ /g, '')}
+    get codeName() {
+        const noSpaceName = this.name.replace(/ /g, '')
+        return noSpaceName === this.constructor.name ? `${noSpaceName}_${this.id}` : noSpaceName
+    }
+
+    get pathSegment() { return this.codeName}
 
     protected create(id: ElementId,
                      name: string,

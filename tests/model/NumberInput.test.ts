@@ -1,6 +1,6 @@
 import NumberInput from '../../src/model/NumberInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'
 
@@ -12,6 +12,17 @@ test('NumberInput has correct properties', ()=> {
     expect(numberInput.initialValue).toStrictEqual({expr: '40'})
     expect(numberInput.label).toStrictEqual(ex`Number One`)
 })
+
+test('NumberInput has default values', ()=> {
+    const numberInput = new NumberInput('t1', 'Number Input 1', {})
+
+    expect(numberInput.id).toBe('t1')
+    expect(numberInput.name).toBe('Number Input 1')
+    expect(numberInput.initialValue).toBeUndefined()
+    expect(numberInput.label).toBe(`Number Input 1`)
+    expect(numberInput.properties.label).toBeUndefined()
+})
+
 
 test('tests if an object is this type', ()=> {
     const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}})

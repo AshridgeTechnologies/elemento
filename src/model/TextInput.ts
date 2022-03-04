@@ -1,14 +1,16 @@
-import BaseElement from './BaseElement'
 import Element from './Element'
-import {ElementId, PropertyValue} from './Types'
+import {ElementId, PropertyValueType} from './Types'
+import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
-    readonly initialValue?: PropertyValue,
-    readonly maxLength?: PropertyValue,
-    readonly multiline?: PropertyValue,
-    readonly label?: PropertyValue
+    readonly initialValue?: PropertyValueType<string>,
+    readonly maxLength?: PropertyValueType<number>,
+    readonly multiline?: PropertyValueType<boolean>,
+    readonly width?: PropertyValueType<string|number>,
+    readonly label?: PropertyValueType<string>
 }
-export default class TextInput extends BaseElement<Properties> implements Element {
+
+export default class TextInput extends BaseInputElement<Properties> implements Element {
 
     constructor(
         id: ElementId,
@@ -23,8 +25,7 @@ export default class TextInput extends BaseElement<Properties> implements Elemen
 
     static defaultValue = ''
 
-    get initialValue() { return this.properties.initialValue }
     get maxLength() { return this.properties.maxLength }
     get multiline() { return this.properties.multiline }
-    get label() { return this.properties.label }
+    get width() { return this.properties.width }
 }

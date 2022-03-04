@@ -2,7 +2,7 @@ import {act} from 'react-test-renderer'
 import {updateState} from '../../src/runtime/appData'
 
 import appFunctions from '../../src/runtime/appFunctions'
-import {stateFor} from '../util/testHelpers'
+import {stateFor} from '../testutil/testHelpers'
 
 const {Reset, ShowPage, Set, Update} = appFunctions
 

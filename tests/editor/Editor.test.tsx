@@ -6,10 +6,14 @@ import React from 'react'
 import Editor from '../../src/editor/Editor'
 import {treeExpandControlSelector} from './Selectors'
 import {fireEvent, render, screen, within} from '@testing-library/react'
-import {appFixture1, appFixture2} from '../util/appFixtures'
+import {appFixture1, appFixture2} from '../testutil/appFixtures'
 import {ElementType} from '../../src/model/Types'
 import {startCase} from 'lodash'
-import {actWait, treeItemLabels} from '../util/testHelpers'
+import {
+    actWait,
+    suppressRcTreeJSDomError,
+    treeItemLabels
+} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
@@ -25,6 +29,7 @@ const onPropertyChange = ()=> {}
 const onAction = jest.fn()
 const onInsert = ()=> '123'
 
+beforeAll(suppressRcTreeJSDomError)
 
 test("renders tree with app elements",  async () => {
     await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
@@ -82,7 +87,6 @@ test('shows TextInput element selected in tree in property editor', async () => 
 })
 
 test('shows errors for properties', async () => {
-    jest.setTimeout(10000000)
     const appWithErrors = new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
             new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, maxLength: ex`BadName + 30`}),
@@ -103,6 +107,26 @@ test('shows errors for properties', async () => {
     expect(maxLengthInput.value).toBe('BadName + 30')
     const maxLengthError = container.querySelector(`[id="maxLength-helper-text"]`)
     expect(maxLengthError.textContent).toBe('Unknown names: BadName')
+})
+
+test('shows allowed items in insert menu', async () => {
+    const optionsShown = () => screen.queryByTestId('insertMenu') && within(screen.getByTestId('insertMenu')).queryAllByRole('menuitem').map( el => el.textContent)
+    const warningMessage = () => screen.getByTestId('insertWarning')
+
+    await actWait(() =>  ({container} = render(<Editor app={app} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    fireEvent.click(screen.getByText('Insert'))
+    expect(optionsShown()).toBeNull()
+    expect(warningMessage().textContent).toMatch(/Please select/)
+
+    await actWait(() =>  fireEvent.click(container.querySelector(treeExpandControlSelector)))
+
+    fireEvent.click(screen.getByText('Second Text'))
+    fireEvent.click(screen.getByText('Insert'))
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Data'])
+
+    fireEvent.click(screen.getByText('Main Page'))
+    fireEvent.click(screen.getByText('Insert'))
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Data', 'Page'])
 })
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button'])

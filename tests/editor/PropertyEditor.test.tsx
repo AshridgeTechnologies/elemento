@@ -9,7 +9,7 @@ import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
-import {componentProps} from '../util/testHelpers'
+import {componentProps} from '../testutil/testHelpers'
 import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
@@ -58,7 +58,9 @@ test('updates other properties', () => {
 test('has fields for Page', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Id')).toBe('id1')
     expect(inputValue('Name')).toBe('Page 1')
+    expect(inputValue('Formula Name')).toBe('Page1')
     expect(inputValue('Style')).toBe('funky')
     expect(kindButton(0).textContent).toBe('fx=')
 })
@@ -89,7 +91,8 @@ test('has fields for Text', () => {
         border: 10,
         borderColor: 'black',
         width: 100,
-        height: 200
+        height: 200,
+        display: true
     })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Text 1')
@@ -110,6 +113,7 @@ test('has fields for TextInput', () => {
         initialValue: ex`"Hi!"`,
         maxLength: ex`10`,
         multiline: ex`true || false`,
+        width: ex`22`,
         label: ex`"Text One"`
     })
     render(<PropertyEditor element={element} onChange={onChange}/>)
@@ -117,7 +121,19 @@ test('has fields for TextInput', () => {
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(inputValue('Max Length')).toBe('10')
+    expect(inputValue('Width')).toBe('22')
     expect(inputValue('Multiline')).toBe('true || false')
+})
+
+test('has fields for TextInput with default values', () => {
+    const element = new TextInput('id1', 'Text Input 1', {})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Text Input 1')
+    expect(inputValue('Label')).toBe('')
+    expect(inputValue('Initial Value')).toBe('')
+    expect(inputValue('Max Length')).toBe('')
+    expect(inputValue('Width')).toBe('')
+    expect(inputValue('Multiline')).toBe(undefined)
 })
 
 test('has fields for NumberInput', () => {
@@ -166,14 +182,14 @@ test('has fields for SelectInput with fixed value', () => {
 })
 
 test('has fields for Button', () => {
-    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, action: ex`doIt()`})
+    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, action: ex`doIt()`, display: false})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(inputValue('Action')).toBe('doIt()')
     expect(kindButton(1).textContent).toBe('fx=')
     expect(kindButton(1).disabled).toBe(true)
-    expect(selectValue('Display')).toBe('true')
+    expect(selectValue('Display')).toBe('false')
 })
 
 test('has fields for Data', () => {
@@ -181,7 +197,7 @@ test('has fields for Data', () => {
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Data 1')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
-    expect(selectValue('Display')).toBe('false')
+    expect(selectValue('Display')).toBe('')
 })
 
 test('shows errors for each property', () => {

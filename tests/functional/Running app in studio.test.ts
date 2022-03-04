@@ -11,6 +11,28 @@ test('app shown in frame', async ({ page }) => {
 
 })
 
+test('Selecting element in editor highlights in the running app', async ({ page }) => {
+    await page.goto(runtimeRootUrl)
+    const appFrame = page.frame('appFrame') as Frame
+    const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))
+
+    expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
+
+    await page.click(`${treeExpandControlSelector} >> nth=0`)
+    expect(await page.textContent(`${treeItemSelector} >> nth=3`)).toBe('Third Text')
+
+    await page.click(`${treeItemSelector} >> nth=3`)
+    expect(await page.locator('textarea#content').textContent()).toBe('"Start your program here..."')
+    expect(await getOutlineStyle('p >> nth=2')).not.toBe('none')
+
+    await appFrame.click('p >> nth=0', {modifiers: ['Alt']})
+    expect(await page.locator('textarea#content').textContent()).toBe('"Welcome to Elemento!"')
+    expect(await getOutlineStyle('p >> nth=2')).toBe('none')
+    expect(await getOutlineStyle('p >> nth=0')).not.toBe('none')
+} )
+
+
+
 test('Changes to app definition show immediately in the running app', async ({ page }) => {
     await page.goto(runtimeRootUrl)
     const appFrame = page.frame('appFrame') as Frame

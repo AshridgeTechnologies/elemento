@@ -3,7 +3,7 @@ import Element from './Element'
 import BaseElement from './BaseElement'
 
 type Properties = {
-    readonly content: PropertyValue,
+    readonly content?: PropertyValue,
     readonly action?: PropertyValue,
     readonly style?: PropertyValue,
     readonly display?: PropertyValue,
@@ -22,7 +22,7 @@ export default class Button extends BaseElement<Properties> implements Element {
         return element.constructor.name === this.name
     }
 
-    get content() {return this.properties.content}
+    get content() {return this.properties.content ?? this.name}
     get action() {return this.properties.action}
     get style() {return this.properties.style}
     get display() {return this.properties.display ?? true}

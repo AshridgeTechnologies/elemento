@@ -1,7 +1,7 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import { ex } from '../../src/util/helpers'
@@ -31,7 +31,7 @@ test('can find page by id', ()=> {
     expect(app.findElement('p2')).toBe(page2)
 })
 
-test('can find element on a page by id', ()=> {
+let testApp = function () {
     const text1 = new Text('t1', 'Text 1', {content: ex``})
     const text2 = new Text('t2', 'Text 3', {content: ex``})
     let page1 = new Page('p1', 'Page 1', {}, [
@@ -43,8 +43,37 @@ test('can find element on a page by id', ()=> {
         text3, text4,
     ])
     const app = new App('app1', 'test1', {}, [page1, page2])
-
+    return {text4, app}
+}
+test('can find element on a page by id', ()=> {
+    const {text4, app} = testApp()
     expect(app.findElement('t4')).toBe(text4)
+})
+
+
+test('can find path of app itself by id', ()=> {
+    let page1 = new Page('p1', 'Page 1', {}, [])
+    const app = new App('a1', 'test1', {}, [page1])
+
+    expect(app.findElementPath('a1')).toBe('app')
+})
+
+test('can find path of page by id', ()=> {
+    let page1 = new Page('p1', 'Page 1', {}, [])
+    let page2 = new Page('p2', 'Page 2', {}, [])
+    const app = new App('t1', 'test1', {}, [page1, page2])
+
+    expect(app.findElementPath('p2')).toBe('app.Page2')
+})
+
+test('can find path of element on a page by id', ()=> {
+    const {text4, app} = testApp()
+    expect(app.findElementPath(text4.id)).toBe('app.Page2.Text4')
+})
+
+test('can find element by path', () => {
+    const {text4, app} = testApp()
+    expect(app.findElementByPath('app.Page2.Text4')).toBe(text4)
 })
 
 

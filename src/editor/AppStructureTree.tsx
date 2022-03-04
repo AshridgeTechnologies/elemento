@@ -1,19 +1,36 @@
 import Tree, {TreeNodeProps} from 'rc-tree'
-import React from 'react'
-import {BasicDataNode, EventDataNode, Key} from 'rc-tree/es/interface'
+import React, {useState} from 'react'
+import {BasicDataNode, DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
-import {Crop75, RectangleOutlined, MoneyOutlined, DensitySmall, Subject, ToggleOn, Web, Note} from '@mui/icons-material'
+import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
+import {union} from 'ramda'
 
-export class ModelTreeItem {
+export class ModelTreeItem implements DataNode {
     constructor(public id: string,
                 public title: string,
                 public kind: ElementType,
                 public children?: ModelTreeItem[]) {}
     get key() { return this.id }
+
+    ancestorKeysOf = (id: Key | undefined): Key[] => {
+        const hasChildWithId = this.children?.some( item => item.id === id)
+        if (hasChildWithId) {
+            return [this.id]
+        }
+
+        const childPathToId = this.children?.map( child => child.ancestorKeysOf(id)).find( result => result.length )
+        if (childPathToId) {
+            return [this.id, ...childPathToId]
+        }
+
+        return []
+    }
+
+    containsKey = (id: Key | undefined) => Boolean(this.ancestorKeysOf(id).length)
 }
 
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
@@ -43,10 +60,11 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
     treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void}) {
 
     const theme = useTheme()
-    const [actionEl, setActionEl] = React.useState<null | HTMLElement>(null);
-    const [actionNode, setActionNode] = React.useState<null | {id: string, name: string}>(null);
-    const [confirmingEl, setConfirmingEl] = React.useState<null | HTMLElement>(null);
-    const [actionToConfirm, setActionToConfirm] = React.useState<null | Action>(null);
+    const [actionEl, setActionEl] = useState<null | HTMLElement>(null);
+    const [actionNode, setActionNode] = useState<null | {id: string, name: string}>(null);
+    const [confirmingEl, setConfirmingEl] = useState<null | HTMLElement>(null);
+    const [actionToConfirm, setActionToConfirm] = useState<null | Action>(null);
+    const [expandedKeys, setExpandedKeys] = useState<Key[]>([])
     const contextMenuOpen = Boolean(actionEl)
     const confirmMenuOpen = Boolean(confirmingEl)
 
@@ -77,12 +95,26 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
         onSelect && key && onSelect(key)
     }
 
+    const onExpand = (newExpandedKeys: Key[], {expanded, node}: {expanded: boolean, node: DataNode}) => {
+        setExpandedKeys(newExpandedKeys)
+        if (!expanded && (node as ModelTreeItem).containsKey(selectedItemId)) {
+            onSelect && onSelect(node.key.toString())
+        }
+    }
+
+    const allExpandedKeys = union(expandedKeys, treeData.ancestorKeysOf(selectedItemId))
+    if (allExpandedKeys.length > expandedKeys.length) {
+        setExpandedKeys(allExpandedKeys)
+    }
+
     return <>
         <Tree treeData={treeData.children as BasicDataNode[]}
                  draggable
                  icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
                  selectedKeys={selectedItemId ? [selectedItemId] : []}
+                 expandedKeys={expandedKeys}
                  onSelect={itemSelected}
+                 onExpand={onExpand}
                  onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
                     showContextMenu(event, node.key, 'this item')
                  }}

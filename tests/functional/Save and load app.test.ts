@@ -1,6 +1,6 @@
 import {expect, test} from '@playwright/test'
 import {App, Text} from '../../src/model/index'
-import {appFixture1} from '../util/appFixtures'
+import {appFixture1} from '../testutil/appFixtures'
 import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
 import {loadJSONFromString} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'

@@ -1,6 +1,6 @@
 import {expect, test} from '@playwright/test'
 import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
-import {appFixture1} from '../util/appFixtures'
+import {appFixture1} from '../testutil/appFixtures'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/editor/index.html'

@@ -5,7 +5,7 @@ import React from 'react'
 import PropertyInput from '../../src/editor/PropertyInput'
 
 import {fireEvent, render} from '@testing-library/react'
-import {componentProps} from '../util/testHelpers'
+import {componentProps} from '../testutil/testHelpers'
 import {ElementId} from '../../src/model/Types'
 
 let container: any
@@ -25,6 +25,16 @@ beforeEach(() => {
 test('shows fixed value control for string property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('abc')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('length')
+    expect(input().value).toBe('')
+    expect(componentProps(input()).value).toBe('')
+    expect(label().textContent).toBe('Length')
+})
+
+test('shows fixed value control for string or number property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('a12')
     expect(input().type).toBe('text')
     expect(input().id).toBe('length')
     expect(input().value).toBe('')
@@ -67,6 +77,15 @@ test('shows fixed value control for string property if current value is a multil
     expect(label().textContent).toBe('Greeting')
 })
 
+test('shows fixed value control for string or number property if current value is a string', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Hi there!'} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('a12')
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('length')
+    expect(input().value).toBe('Hi there!')
+    expect(label().textContent).toBe('Length')
+})
+
 test('shows fixed value control for number property if current value is a number', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='number' value={10} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('123')
@@ -99,6 +118,14 @@ test('shows expression control for string property if current value is an expres
     expect(kindButton().textContent).toBe('fx=')
     expect(textarea().id).toBe('length')
     expect(textarea().textContent).toBe('"Hi there!"')
+    expect(label().textContent).toBe('Length')
+})
+
+test('shows expression control for string or number property if current value is an expression', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={{expr: '47 + 53'}} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(textarea().id).toBe('length')
+    expect(textarea().textContent).toBe('47 + 53')
     expect(label().textContent).toBe('Length')
 })
 
@@ -138,21 +165,35 @@ test('calls onChange with new string fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Old value'} onChange={onChange}/>))
 
     fireEvent.input(input(), {target: {value: 'New value'}})
-    expect(newValue).toStrictEqual('New value')
+    expect(newValue).toBe('New value')
 })
 
 test('calls onChange with new string multiline fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string multiline' value={'Old value\nLine 2'} onChange={onChange}/>))
 
     fireEvent.input(textarea(), {target: {value: 'New value\nLine 3'}})
-    expect(newValue).toStrictEqual('New value\nLine 3')
+    expect(newValue).toBe('New value\nLine 3')
+})
+
+test('calls onChange with new string fixed value in string or number', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Old value'} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: 'New value'}})
+    expect(newValue).toBe('New value')
+})
+
+test('calls onChange with new number fixed value in string or number', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Old value'} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: '27'}})
+    expect(newValue).toBe(27)
 })
 
 test('calls onChange with new number fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='number' value={10} onChange={onChange}/>))
 
     fireEvent.input(input(), {target: {value: '21'}})
-    expect(newValue).toStrictEqual(21)
+    expect(newValue).toBe(21)
 })
 
 test('calls onChange with new string list fixed value and ignores spaces around values', () => {
@@ -166,7 +207,7 @@ test.skip('calls onChange with new boolean fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='boolean' value={true} onChange={onChange}/>))
 
     fireEvent.change(input(), {target: {value: 'false'}})
-    expect(newValue).toStrictEqual(false)
+    expect(newValue).toBe(false)
 })
 
 test('calls onChange with new expression value', () => {

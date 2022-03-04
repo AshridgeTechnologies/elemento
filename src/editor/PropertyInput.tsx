@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {ElementId, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
 import {isArray, startCase} from 'lodash'
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
-import {isExpr} from '../util/helpers'
+import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 
@@ -21,6 +21,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 return input.trim().split(/ *, */)
             case 'string multiline':
                 return input
+            case 'string|number':
+                return isNumeric(input) ? Number(input) : input
             case 'boolean':
                 return input === 'true'
             default:
@@ -45,7 +47,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
         } else if (isArray(value)) {
             return value.join(', ')
         } else {
-            return value
+            return value.toString()
         }
     }
 
@@ -63,7 +65,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     const fixedButtonColor = 'primary'
     const exprButtonColor = 'secondary'
     const exprButtonLabel = 'fx='
-    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : 'abc'
+    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : type === 'string|number' ? 'a12' : 'abc'
     const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel
     const buttonColor = expr ? exprButtonColor : fixedButtonColor
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
@@ -83,7 +85,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 <Select
                     labelId={name + '_label'}
                     id={name}
-                    value={initialInputValue().toString()}
+                    value={initialInputValue()}
                     onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
                 >
                     <MenuItem><em>default</em></MenuItem>

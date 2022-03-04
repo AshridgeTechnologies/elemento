@@ -1,15 +1,15 @@
 import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {ex} from '../../src/util/helpers'
 
 test('Button has correct properties with default values', ()=> {
-    const button1 = new Button('id1', 'Button 1', {content: 'Some button'})
+    const button1 = new Button('id1', 'Button 1', {})
 
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
-    expect(button1.content).toBe('Some button')
+    expect(button1.content).toBe('Button 1')
     expect(button1.action).toBe(undefined)
     expect(button1.style).toBe(undefined)
     expect(button1.display).toBe(true)

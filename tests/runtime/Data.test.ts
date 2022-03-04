@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import Data from '../../src/runtime/Data'
-import {snapshot} from '../util/testHelpers'
+import {snapshot} from '../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 test('Data element produces output with simple value',

@@ -1,12 +1,12 @@
-import BaseElement from './BaseElement'
 import Element from './Element'
-import {ElementId, PropertyValue} from './Types'
+import {ElementId, PropertyValueType} from './Types'
+import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
-    readonly initialValue?: PropertyValue,
-    readonly label?: PropertyValue
+    readonly initialValue?: PropertyValueType<number>,
+    readonly label?: PropertyValueType<string>
 }
-export default class NumberInput extends BaseElement<Properties> implements Element {
+export default class NumberInput extends BaseInputElement<Properties> implements Element {
 
     constructor(
         id: ElementId,
@@ -20,7 +20,4 @@ export default class NumberInput extends BaseElement<Properties> implements Elem
     }
 
     static defaultValue = 0
-
-    get initialValue() { return this.properties.initialValue }
-    get label() { return this.properties.label }
 }

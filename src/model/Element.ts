@@ -7,6 +7,8 @@ export default interface Element {
     properties: object
     elements: ReadonlyArray<Element> | undefined
     findElement(id: ElementId) : Element | null
+    findElementPath(id: ElementId) : string | null
+    findElementByPath(path: string) : Element | null
     findMaxId(elementType: ElementType): number
     set(id: ElementId, propertyName: string, value: any): Element
     delete(itemId: ElementId): Element

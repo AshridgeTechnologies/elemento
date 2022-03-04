@@ -1,6 +1,6 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'

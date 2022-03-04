@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import Button from '../../src/runtime/Button'
-import {componentJSON, snapshot, stateVal, testContainer, wait} from '../util/testHelpers'
+import {componentJSON, snapshot, stateVal, testContainer, wait} from '../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 

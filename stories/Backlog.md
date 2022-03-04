@@ -19,6 +19,7 @@ Stories
 - Runner website
 
 ### Priority 2
+- General usability Part 2
 - List control
 - Validate App Model loaded from JSON
 - Load time optimisation

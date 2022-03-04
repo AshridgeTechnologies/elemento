@@ -12,3 +12,5 @@ export function ex([s]: TemplateStringsArray) {
 export const isExpr = function (propertyValue: PropertyValue): propertyValue is PropertyExpr {
     return isObject(propertyValue) && 'expr' in propertyValue
 }
+
+export const isNumeric = (s: string) : boolean => s!== '' && s.match(/^\d*\.?\d*$/) !== null

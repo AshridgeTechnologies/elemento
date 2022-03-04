@@ -61,6 +61,14 @@ const stateProxyHandler = (path: string) => ({
             return function(changes: object, replace: boolean = false) { replace ? setState(path, changes) : updateState(path, changes) }
         }
 
+        if (prop === '_controlValue') {
+            return obj.value ?? null
+        }
+
+        if (prop === 'value') {
+            return obj.value ?? obj.defaultValue
+        }
+
         if (prop === 'valueOf') {
             if ('value' in obj || 'defaultValue' in obj) {
                 return function() {return obj.value ?? obj.defaultValue}
@@ -69,19 +77,20 @@ const stateProxyHandler = (path: string) => ({
         }
 
         const result = obj[prop] ?? obj.value?.[prop] ?? obj.defaultValue?.[prop]
-        return isPlainObject(result) ? proxify(result, `${path}.${prop}`) : result
+        return isPlainObject(result) ? stateProxy(`${path}.${prop}`, result) : result
     }
 
 })
 
-export function proxify(obj: object, path: string) {
-    return new Proxy(obj, stateProxyHandler(path))
+export function stateProxy(path: string, storedState: object | undefined, initialValuesAndDefaults: object = {}) {
+    const existingStateAtPath = storedState || {}
+    const mergedState = mergeDeepWith(useRightIfDefined, initialValuesAndDefaults, existingStateAtPath)
+    return new Proxy(mergedState, stateProxyHandler(path))
 }
 
-export const useObjectStateWithDefaults = (path: string, defaults: object) => {
-    const existingStateAtPath = useObjectState(path) || {}
-    const mergedState = mergeDeepWith(useRightIfDefined, defaults, existingStateAtPath)
-    return proxify(mergedState, path)
+export const useObjectStateWithDefaults = (path: string, initialValuesAndDefaults: object) => {
+    const existingStateAtPath = useObjectState(path)
+    return stateProxy(path, existingStateAtPath, initialValuesAndDefaults)
 }
 
 export const getState = useStore.getState

@@ -1,7 +1,7 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON} from '../util/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {ex} from '../../src/util/helpers'
 
 test('Text has correct properties with default values', ()=> {
