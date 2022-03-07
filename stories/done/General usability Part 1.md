@@ -12,3 +12,8 @@ General usability Part 1
 - ✅ Inputs can have undefined value
 - ✅ Number in running app input is type number
 - ✅ Inputs can be set to 'empty' even if an initial value is supplied
+
+Help
+----
+
+- How to write fixed values inc lists vs formulas

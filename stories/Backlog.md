@@ -7,8 +7,7 @@ Bugs
 
 Stories
 -------
-- General usability Part 1
-- State debugging
+- Project and App shown in nav tree
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -20,6 +19,8 @@ Stories
 
 ### Priority 2
 - General usability Part 2
+- State debugging
+- General usability Part 2
 - List control
 - Validate App Model loaded from JSON
 - Load time optimisation
@@ -30,7 +31,6 @@ Stories
 - Highlight in Help
 - Persistent help position
 - Editor deep links - use in help examples
-- App shown in nav tree
 
 Epics
 -----
@@ -69,3 +69,4 @@ Done
 - App state refactor
 - In-memory data storage and updates
 - Formula improvements Part 2
+- General usability Part 1
