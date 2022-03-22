@@ -1,9 +1,9 @@
-import {expect, test} from '@playwright/test'
-import {App, Text} from '../../src/model/index'
-import {appFixture1} from '../testutil/appFixtures'
-import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
+import {expect, Page, test} from '@playwright/test'
+import {App, Project, Text} from '../../src/model/index'
+import {treeExpand, treeItem} from './playwrightHelpers'
 import {loadJSONFromString} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'
+import {projectFixture1} from '../testutil/projectFixtures'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
@@ -43,43 +43,44 @@ const fileMenu = 'text=File'
 const fileMenu_Open = 'ul[role="menu"] :text("Open")'
 const fileMenu_Save = 'ul[role="menu"] :text("Save")'
 
+let openMainPage = async function (page: Page) {
+    await page.click(treeExpand(0))
+    await page.click(treeExpand(1))
+    await page.click(treeExpand(2))
+    expect(await page.textContent(treeItem(4))).toBe('Second Text')
+}
 
 test('load app from file into editor', async ({page}) => {
     await page.goto(runtimeRootUrl)
 
-    await page.evaluate( installMockFilePickers, appFixture1())
+    await page.evaluate( installMockFilePickers, projectFixture1())
 
     await page.click(fileMenu)
     await page.click(fileMenu_Open)
 
     // would select the app file here
 
-    expect(await page.textContent(`${treeItemSelector} >> nth=0`)).toBe('Main Page')
+    await openMainPage(page)
+    expect(await page.textContent(treeItem(4))).toBe('Second Text')
 
-    await page.click(`${treeExpandControlSelector} >> nth=0`)
-    expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
-
-    await page.click(`${treeItemSelector} >> nth=2`)
+    await page.click(treeItem(4))
     expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
-
 })
 
 test('save previously loaded app to file', async ({page}) => {
     await page.goto(runtimeRootUrl)
 
-    await page.evaluate( installMockFilePickers, appFixture1())
+    await page.evaluate( installMockFilePickers, projectFixture1())
 
     await page.click(fileMenu)
     await page.click(fileMenu_Open)
 
     // would select the app file here
 
-    expect(await page.textContent(`${treeItemSelector} >> nth=0`)).toBe('Main Page')
+    await openMainPage(page)
+    expect(await page.textContent(treeItem(4))).toBe('Second Text')
 
-    await page.click(`${treeExpandControlSelector} >> nth=0`)
-    expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
-
-    await page.click(`${treeItemSelector} >> nth=2`)
+    await page.click(treeItem(4))
     expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
 
     await page.fill('textarea#content', '"The updated second text"')
@@ -88,9 +89,9 @@ test('save previously loaded app to file', async ({page}) => {
     await page.click(fileMenu)
     await page.click(fileMenu_Save)
 
-    const updatedAppText = (await page.textContent('#_testFile')) as string
-    const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
+    const updatedProjectText = (await page.textContent('#_testFile')) as string
+    const updatedProject = loadJSONFromString(updatedProjectText) as Project
+    expect(((updatedProject.elementArray()[0] as App).pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('save new app to file', async ({page}) => {
@@ -99,12 +100,10 @@ test('save new app to file', async ({page}) => {
 
     // expect editorInitialApp to be loaded
 
-    expect(await page.textContent(`${treeItemSelector} >> nth=0`)).toBe('Main Page')
+    await openMainPage(page)
+    expect(await page.textContent(treeItem(4))).toBe('Second Text')
 
-    await page.click(`${treeExpandControlSelector} >> nth=0`)
-    expect(await page.textContent(`${treeItemSelector} >> nth=2`)).toBe('Second Text')
-
-    await page.click(`${treeItemSelector} >> nth=2`)
+    await page.click(treeItem(4))
     expect(await page.locator('textarea#content').textContent()).toBe('"The future of low code programming"')
 
     await page.fill('textarea#content', '"The updated second text"')
@@ -113,9 +112,9 @@ test('save new app to file', async ({page}) => {
     await page.click(fileMenu)
     await page.click(fileMenu_Save)
 
-    const updatedAppText = (await page.textContent('#_testFile')) as string
-    const updatedApp = loadJSONFromString(updatedAppText) as App
-    expect((updatedApp.pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
+    const updatedProjectText = (await page.textContent('#_testFile')) as string
+    const updatedProject = loadJSONFromString(updatedProjectText) as Project
+    expect(((updatedProject.elementArray()[0] as App).pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('error message if cannot read app from file', async ({page}) => {
@@ -126,5 +125,5 @@ test('error message if cannot read app from file', async ({page}) => {
 
     // would select the app file here
 
-    expect(await page.textContent('#errorMessage')).toBe('This file does not contain a valid Elemento app')
+    expect(await page.textContent('#errorMessage')).toBe('This file does not contain a valid Elemento project')
 })

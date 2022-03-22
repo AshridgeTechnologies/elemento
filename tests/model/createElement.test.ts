@@ -6,8 +6,12 @@ import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 import {createElement} from '../../src/model/createElement'
 import Data from '../../src/model/Data'
+import Page from '../../src/model/Page'
+import App from '../../src/model/App'
 
 test('creates elements of correct type', () => {
+    expect(createElement('App', 2)).toBeInstanceOf(App)
+    expect(createElement('Page', 2)).toBeInstanceOf(Page)
     expect(createElement('Text', 2)).toBeInstanceOf(Text)
     expect(createElement('TextInput', 2)).toBeInstanceOf(TextInput)
     expect(createElement('NumberInput', 2)).toBeInstanceOf(NumberInput)
@@ -15,6 +19,10 @@ test('creates elements of correct type', () => {
     expect(createElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
     expect(createElement('Button', 3)).toBeInstanceOf(Button)
     expect(createElement('Data', 4)).toBeInstanceOf(Data)
+})
+
+test('cannot create a Project', () => {
+    expect( ()=> createElement('Project', 2)).toThrow('Cannot create new Project')
 })
 
 test('creates elements with next sequence number in lowercase id', ()=> {

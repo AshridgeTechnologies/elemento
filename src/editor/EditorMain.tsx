@@ -2,60 +2,59 @@ import React, {ReactElement} from 'react'
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import ReactDOM from 'react-dom'
 import {Alert, AlertTitle} from '@mui/material'
-import App from '../model/App'
 import Editor from './Editor'
-import {editorInitialApp} from '../util/welcomeApp'
+import {editorInitialProject} from '../util/welcomeProject'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ElementId, ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
+import Project from '../model/Project'
 
-
-let theApp = editorInitialApp()
+let theProject = editorInitialProject()
 let loadedFileHandle: any = null
 let errorMessage: ReactElement | null = null
 
 declare global {
-    var app: () => App
-    var setApp: (app: App) => void
-    var setAppFromJSONString: (appJson: string) => void
+    var project: () => Project
+    var setProject: (project: Project) => void
+    var setProjectFromJSONString: (projectJson: string) => void
 }
-export function app() { return theApp }
-export function setApp(app: App) {
-    theApp = app
+export function project() { return theProject }
+export function setProject(project: Project) {
+    theProject = project
     doRender()
 }
-export function setAppFromJSONString(appJson: string) {
-    setApp(loadJSONFromString(appJson) as App)
+export function setProjectFromJSONString(projectJson: string) {
+    setProject(loadJSONFromString(projectJson) as Project)
 }
 
-window.app = app
-window.setApp = setApp
-window.setAppFromJSONString = setAppFromJSONString
+window.project = project
+window.setProject = setProject
+window.setProjectFromJSONString = setProjectFromJSONString
 
 const onPropertyChange = (id: ElementId, propertyName: string, value: any)=> {
-    theApp = theApp.set(id, propertyName, value)
+    theProject = theProject.set(id, propertyName, value)
     doRender()
 }
 
 const onInsert = (idAfter: ElementId, elementType: ElementType)=> {
-    const [newApp, newElement] = theApp.insert(idAfter, elementType)
-    theApp = newApp
+    const [newProject, newElement] = theProject.insert(idAfter, elementType)
+    theProject = newProject
     doRender()
     return newElement.id
 }
 
 const onAction = (id: ElementId, action: AppElementAction) => {
-    const doAction = (): App => {
+    const doAction = (): Project => {
         switch (action) {
             case 'delete':
-                return theApp.delete(id)
+                return theProject.delete(id)
             default:
                 throw new UnsupportedValueError(action)
         }
     }
 
-    theApp = doAction()
+    theProject = doAction()
     doRender()
 }
 
@@ -81,27 +80,27 @@ const onOpen = async () => {
         const [fileHandle] = await window.showOpenFilePicker()
         file = await fileHandle.getFile()
         const jsonText = await file.text()
-        setAppFromJSONString(jsonText)
+        setProjectFromJSONString(jsonText)
         loadedFileHandle = fileHandle
     } catch (e: any) {
         if (userCancelledFilePick(e)) {
             return
         }
-        showError(`Error opening app file ${file?.name}`,
-            'This file does not contain a valid Elemento app',
+        showError(`Error opening project file ${file?.name}`,
+            'This file does not contain a valid Elemento project',
             `Error message: ${e.message}`)
     }
 }
 
-const writeAppToFile = async function (fileHandle: any) {
+const writeProjectToFile = async function (fileHandle: any) {
     const writable = await fileHandle.createWritable();
-    await writable.write(JSON.stringify(theApp));
+    await writable.write(JSON.stringify(theProject));
     await writable.close();
 }
 
 const onSave = async () => {
     if (loadedFileHandle) {
-        await writeAppToFile(loadedFileHandle)
+        await writeProjectToFile(loadedFileHandle)
     } else {
         await onSaveAs()
     }
@@ -111,9 +110,9 @@ const onSaveAs = async () => {
     const options = {
         types: [
             {
-                description: 'App JSON Files',
+                description: 'Project JSON Files',
                 accept: {
-                    'application/json': ['.json'],
+                    'projectlication/json': ['.json'],
                 },
             },
         ],
@@ -121,7 +120,7 @@ const onSaveAs = async () => {
     try { // @ts-ignore
         const fileHandle = await window.showSaveFilePicker(options)
         if (fileHandle) {
-            await writeAppToFile(fileHandle)
+            await writeProjectToFile(fileHandle)
             loadedFileHandle = fileHandle
         }
     } catch (e: any) {
@@ -155,7 +154,7 @@ function doRender() {
     ReactDOM.render(
         <ThemeProvider theme={theme}>
             {errorMessage}
-            <Editor app={theApp} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave}/>
+            <Editor project={theProject} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave}/>
         </ThemeProvider>,
         document.getElementById('main')
     )

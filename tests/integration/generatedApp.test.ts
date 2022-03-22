@@ -41,7 +41,7 @@ test('generated Page creates React element with correct structure', ()=> {
 
 test('generated AppMain creates React elements with correct structure', ()=> {
 
-    const app = new App('t1', 'test1', {}, [
+    const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new Text('id1', 't1', {content: ex`"Hi there!"`}),
             new Text('id1', 't2', {content: ex`2 + 2`}),

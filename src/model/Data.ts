@@ -1,4 +1,4 @@
-import {ElementId, PropertyValue} from './Types'
+import {ElementId, ElementType, PropertyValue} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -19,6 +19,8 @@ export default class Data extends BaseElement<Properties> implements Element {
     static is(element: Element): element is Data {
         return element.constructor.name === this.name
     }
+
+    kind = 'Data' as ElementType
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

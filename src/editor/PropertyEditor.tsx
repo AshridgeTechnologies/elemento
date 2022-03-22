@@ -13,6 +13,8 @@ import NumberInput from '../model/NumberInput'
 import TrueFalseInput from '../model/TrueFalseInput'
 import SelectInput from '../model/SelectInput'
 import Data from '../model/Data'
+import App from '../model/App'
+import Project from '../model/Project'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -26,8 +28,15 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
     function propertyFields() {
 
         switch(element.kind) {
+            case "Project":
+                return <>
+                    {propertyField<Project>('author')}
+                </>
+
             case "App":
-                return null
+                return <>
+                    {propertyField<App>('author')}
+                </>
 
             case "Page":
                 return <>

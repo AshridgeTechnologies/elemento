@@ -37,6 +37,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const kind = (props.data as ModelTreeItem)!.kind
     const sx = { fontSize: 16, color }
     switch (kind) {
+        case 'Project': return <Web {...{sx}} />
         case 'App': return <Web {...{sx}} />
         case 'Page': return <Web {...{sx}} />
         case 'Text': return <Subject {...{sx}}/>
@@ -108,7 +109,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
     }
 
     return <>
-        <Tree treeData={treeData.children as BasicDataNode[]}
+        <Tree treeData={[treeData] as BasicDataNode[]}
                  draggable
                  icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
                  selectedKeys={selectedItemId ? [selectedItemId] : []}

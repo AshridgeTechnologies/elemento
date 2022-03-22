@@ -128,8 +128,8 @@ ${globalDeclarations}
     const appPages = {${pages.map( p => p.codeName).join(', ')}}
     const appState = useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
-    return React.createElement('div', {id: 'app'},
-        React.createElement(appPages[currentPage], {path: \`app.\${currentPage}\`})
+    return React.createElement('div', {id: '${app.codeName}'},
+        React.createElement(appPages[currentPage], {path: \`${app.codeName}.\${currentPage}\`})
     )
 }
 `.trimLeft()
@@ -140,6 +140,8 @@ ${globalDeclarations}
         const onError = (propertyName: string) => (err: string) => errors.add(element.id, propertyName, err)
 
         switch(element.kind) {
+            case "Project":
+                throw new Error('Cannot generate code for Project')
             case "App":
                 const app = element as App
                 return this.appMainContent(app)
@@ -235,6 +237,8 @@ ${children}
         }
 
         switch(element.kind) {
+            case "Project":
+                throw new Error('Cannot generate code for Project')
             case "App":
                 return ''
             case "Page":

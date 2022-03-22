@@ -12,6 +12,8 @@ export function equalArrays(a: ReadonlyArray<any>, b:  ReadonlyArray<any>) {
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
+    abstract kind: ElementType
+
     constructor(
         public readonly id: ElementId,
         public readonly name: string,
@@ -19,8 +21,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
     }
-
-    kind = this.constructor.name as ElementType
 
     elementArray() : ReadonlyArray<Element> { return this.elements || [] }
 
@@ -43,7 +43,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
         for (const el of this.elementArray()) {
             const path = el.findElementPath(id)
-            if (path) return this.pathSegment + '.' + path
+            if (path) {
+                return this.pathSegment !== '' ? this.pathSegment + '.' + path : path
+            }
         }
 
         return null
@@ -51,6 +53,12 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     findElementByPath(path: string) : Element | null {
         const [firstElementName, ...remainingPathSegments] = path.split('.')
+        if (this.pathSegment === '') {
+            for (const el of this.elementArray()) {
+                const element = el.findElementByPath(path)
+                if (element) return element
+            }
+        }
         if (firstElementName === this.pathSegment && remainingPathSegments.length === 0) {
             return this as unknown as Element
         }

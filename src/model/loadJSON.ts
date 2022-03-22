@@ -10,6 +10,7 @@ import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Data from './Data'
+import Project from './Project'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -17,23 +18,25 @@ export function loadJSON({id, kind, name, properties, elements}:
     const loadElements = () => (elements || []).map(el => loadJSON(el))
 
     switch(kind) {
-        case "App":
+        case 'Project':
+            return new Project(id, name, properties, loadElements())
+        case 'App':
             return new App(id, name, properties, loadElements())
-        case "Page":
+        case 'Page':
             return new Page(id, name, properties, loadElements())
-        case "Text":
+        case 'Text':
             return new Text(id, name, properties)
-        case "TextInput":
+        case 'TextInput':
             return new TextInput(id, name, properties)
-        case "NumberInput":
+        case 'NumberInput':
             return new NumberInput(id, name, properties)
-        case "SelectInput":
+        case 'SelectInput':
             return new SelectInput(id, name, properties)
-        case "TrueFalseInput":
+        case 'TrueFalseInput':
             return new TrueFalseInput(id, name, properties)
-        case "Button":
+        case 'Button':
             return new Button(id, name, properties)
-        case "Data":
+        case 'Data':
             return new Data(id, name, properties)
         default:
             throw new UnsupportedValueError(kind)

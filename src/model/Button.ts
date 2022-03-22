@@ -1,4 +1,4 @@
-import {ElementId, PropertyValue} from './Types'
+import {ElementId, ElementType, PropertyValue} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -21,6 +21,8 @@ export default class Button extends BaseElement<Properties> implements Element {
     static is(element: Element): element is Button {
         return element.constructor.name === this.name
     }
+
+    kind = 'Button' as ElementType
 
     get content() {return this.properties.content ?? this.name}
     get action() {return this.properties.action}

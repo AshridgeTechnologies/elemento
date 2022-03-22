@@ -42,7 +42,7 @@ let testApp = function () {
     let page2 = new Page('p2', 'Page 2', {}, [
         text3, text4,
     ])
-    const app = new App('app1', 'test1', {}, [page1, page2])
+    const app = new App('app1', 'App 1', {}, [page1, page2])
     return {text4, app}
 }
 test('can find element on a page by id', ()=> {
@@ -53,22 +53,22 @@ test('can find element on a page by id', ()=> {
 
 test('can find path of app itself by id', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
-    const app = new App('a1', 'test1', {}, [page1])
+    const app = new App('a1', 'App 1', {}, [page1])
 
-    expect(app.findElementPath('a1')).toBe('app')
+    expect(app.findElementPath('a1')).toBe('App1')
 })
 
 test('can find path of page by id', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const app = new App('t1', 'test1', {}, [page1, page2])
+    const app = new App('t1', 'App 1', {}, [page1, page2])
 
-    expect(app.findElementPath('p2')).toBe('app.Page2')
+    expect(app.findElementPath('p2')).toBe('App1.Page2')
 })
 
 test('can find path of element on a page by id', ()=> {
     const {text4, app} = testApp()
-    expect(app.findElementPath(text4.id)).toBe('app.Page2.Text4')
+    expect(app.findElementPath(text4.id)).toBe('App1.Page2.Text4')
 })
 
 test('can find element by path', () => {
@@ -203,6 +203,14 @@ test('finds max id for element type', ()=> {
     expect(app.findMaxId('Page')).toBe(2)
     expect(app.findMaxId('TextInput')).toBe(0)
 
+})
+
+test('can contain Page, not other types', () => {
+    const app = new App('id1', 'App 1', {}, [])
+    expect(app.canContain('Page')).toBe(true)
+    expect(app.canContain('Text')).toBe(false)
+    expect(app.canContain('App')).toBe(false)
+    expect(app.canContain('Project')).toBe(false)
 })
 
 test('converts to JSON', ()=> {

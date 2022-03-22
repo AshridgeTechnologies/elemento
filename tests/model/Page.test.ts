@@ -4,6 +4,7 @@ import {asJSON} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ex} from '../../src/util/helpers'
+import Project from '../../src/model/Project'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -94,6 +95,15 @@ test('ignores the insert and returns itself if the id is not matched', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const [updatedPage] = page1.doInsert('x1', 'Text', 5)
     expect(updatedPage).toBe(page1)
+})
+
+test('can contain types apart from Project, App, Page', () => {
+    const page = new Page('p1', 'Page 1', {}, [])
+    expect(page.canContain('Project')).toBe(false)
+    expect(page.canContain('App')).toBe(false)
+    expect(page.canContain('Page')).toBe(false)
+    expect(page.canContain('Text')).toBe(true)
+    expect(page.canContain('Button')).toBe(true)
 })
 
 test('converts to JSON', ()=> {

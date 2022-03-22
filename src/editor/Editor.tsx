@@ -21,31 +21,33 @@ import FileMenu from './FileMenu'
 import './splitPane.css'
 import Generator from '../generator/Generator'
 import {without} from 'ramda'
+import Project from '../model/Project'
 
 
-const treeData = (app: App): ModelTreeItem => {
-    const treeNodeFromElement = (el: Element): ModelTreeItem => new ModelTreeItem(el.id, el.name, el.kind)
-    const treeFromPage = (page: Page): ModelTreeItem => new ModelTreeItem(page.id, page.name, page.kind, page.elementArray().map(treeNodeFromElement))
-
-    return new ModelTreeItem(app.id, app.name, app.kind, app.pages.map(treeFromPage))
+const treeData = (project: Project): ModelTreeItem => {
+    const treeNodeFromElement = (el: Element): ModelTreeItem => {
+        const children = el.elements?.map(treeNodeFromElement)
+        return new ModelTreeItem(el.id, el.name, el.kind, children)
+    }
+    return treeNodeFromElement(project)
 }
 
-export default function Editor({
-                                   app,
+export default function Editor({project,
                                    onChange,
                                    onInsert,
                                    onAction,
                                    onOpen,
                                    onSave
-                               }: { app: App, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
+                               }: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
 
+    const app = project.elementArray()[0] as App
     const {errors} = new Generator(app).output()
 
     const propertyArea = () => {
         if (selectedItemId) {
-            const element = app.findElement(selectedItemId)
+            const element = project.findElement(selectedItemId)
             if (element) {
                 return <PropertyEditor element={element} onChange={onChange} errors={errors[element.id]}/>
             }
@@ -161,7 +163,7 @@ export default function Editor({
                         <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
-                                    <AppStructureTree treeData={treeData(app)} onSelect={setSelectedItemId}
+                                    <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemId}
                                                       selectedItemId={selectedItemId} onAction={onTreeAction}/>
                                 </Grid>
                                 <Grid item xs={8} height='100%' overflow='scroll'>

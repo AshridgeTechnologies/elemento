@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ElementId, ElementType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
@@ -20,4 +20,6 @@ export default class TrueFalseInput extends BaseInputElement<Properties> impleme
     }
 
     static defaultValue = false
+
+    kind = 'TrueFalseInput' as ElementType
 }

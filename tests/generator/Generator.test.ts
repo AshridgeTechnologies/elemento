@@ -11,7 +11,7 @@ import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 
 test('generates app and all page output files', ()=> {
-    const app = new App('t1', 'test1', {}, [
+    const app = new App('t1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 new Text('id2', 't2', {content: ex`23 + 45`}),
@@ -53,8 +53,8 @@ test('generates app and all page output files', ()=> {
     const appPages = {Page1, Page2}
     const appState = useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
-    return React.createElement('div', {id: 'app'},
-        React.createElement(appPages[currentPage], {path: \`app.\${currentPage}\`})
+    return React.createElement('div', {id: 'App1'},
+        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`})
     )
 }
 `)

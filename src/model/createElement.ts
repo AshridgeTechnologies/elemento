@@ -1,5 +1,6 @@
 import {ElementType} from './Types'
 import {startCase} from 'lodash'
+import App from './App'
 import Page from './Page'
 import Text from './Text'
 import TextInput from './TextInput'
@@ -15,8 +16,10 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
     const name = `${startCase(elementType)} ${newIdSeq}`
 
     switch (elementType) {
+        case 'Project':
+            throw new Error('Cannot create new Project')
         case 'App':
-            throw new Error("Cannot create new App")
+            return new App(id, name, {}, [])
         case 'Page':
             return new Page(id, name, {}, [])
         case 'Text':

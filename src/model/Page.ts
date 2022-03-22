@@ -20,6 +20,8 @@ export default class Page extends BaseElement<Properties> implements Element {
         return element.constructor.name === this.name
     }
 
+    kind = 'Page' as ElementType
+
     get style() { return this.properties.style }
 
     createElement(elementType: ElementType, newIdSeq: number): Element {
@@ -27,7 +29,7 @@ export default class Page extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return elementType !== 'Page' && elementType !== 'App'
+        return !['Project', 'App', 'Page'].includes(elementType)
     }
 
 }

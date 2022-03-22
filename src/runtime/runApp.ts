@@ -11,7 +11,6 @@ import Page from './Page'
 import Button from './Button'
 import Data from './Data'
 import ErrorFallback from './ErrorFallback'
-import welcomeApp from '../util/welcomeApp'
 import {loadJSONFromString} from '../model/loadJSON'
 import {ErrorBoundary} from 'react-error-boundary'
 import {globalFunctions as importedGlobalFunctions} from './globalFunctions'
@@ -19,6 +18,7 @@ import importedAppFunctions from './appFunctions'
 import {getState, updateState, useObjectState, useObjectStateWithDefaults} from './appData'
 import AppLoadError from './AppLoadError'
 import {codeGenerationError, showAppCode, highlightElement} from './runtimeFunctions'
+import welcomeProject from '../util/welcomeProject'
 
 let theApp: App
 
@@ -72,7 +72,7 @@ async function loadApp() {
             throw {appUrl, error}
         }
     } else {
-        theApp = welcomeApp()
+        theApp = welcomeProject().elementArray()[0] as App
     }
 }
 

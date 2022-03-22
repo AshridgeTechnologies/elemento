@@ -2,7 +2,7 @@
 
 exports[`generated AppMain creates React elements with correct structure 1`] = `
 <div
-  id="app"
+  id="Test1"
 >
   <style
     dangerouslySetInnerHTML={
@@ -14,7 +14,7 @@ exports[`generated AppMain creates React elements with correct structure 1`] = `
   />
   <div
     className="css-1suj1uj-MuiStack-root"
-    id="app.Page1"
+    id="Test1.Page1"
   >
     <style
       dangerouslySetInnerHTML={
@@ -26,13 +26,13 @@ exports[`generated AppMain creates React elements with correct structure 1`] = `
     />
     <p
       className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
-      id="app.Page1.t1"
+      id="Test1.Page1.t1"
     >
       Hi there!
     </p>
     <p
       className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
-      id="app.Page1.t2"
+      id="Test1.Page1.t2"
     >
       4
     </p>

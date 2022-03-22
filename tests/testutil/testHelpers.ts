@@ -1,7 +1,7 @@
 import renderer, {act as rtrAct} from 'react-test-renderer'
 import React from 'react'
-import {act, render} from '@testing-library/react'
-import {treeItemSelector} from '../editor/Selectors'
+import {act, fireEvent, render} from '@testing-library/react'
+import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
 import {stateProxy, useObjectState, useStore} from '../../src/runtime/appData'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
@@ -31,6 +31,10 @@ export const treeItemLabels = (container: any) => {
     return [...treeNodesShown.values()].map( (it: any) => it.textContent)
 }
 
+export const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
+    for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
+}
+
 export const componentProps = (domElement: any) => {
     const propsKey = Object.keys(domElement).find(k => k.startsWith("__reactProps$"))
     return propsKey !== undefined ? domElement[propsKey as string] : null
@@ -57,7 +61,7 @@ const originalConsoleError = console.error
 export const suppressRcTreeJSDomError = () => {
     if (console.error === originalConsoleError) {
         jest.spyOn(console, 'error').mockImplementation( (...args: any[]) => {
-            if (args[1].message?.match(/Cannot read properties of null \(reading 'removeEventListener'\)/)) {
+            if (args[1]?.message?.match(/Cannot read properties of null \(reading 'removeEventListener'\)/)) {
                 !suppressionReported && console.log('Suppressed JSDOM removeEventListener error')
                 suppressionReported = true
             } else {

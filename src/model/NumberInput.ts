@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ElementId, ElementType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
@@ -20,4 +20,6 @@ export default class NumberInput extends BaseInputElement<Properties> implements
     }
 
     static defaultValue = 0
+
+    kind = 'NumberInput' as ElementType
 }

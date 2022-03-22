@@ -16,9 +16,9 @@ export default class App extends BaseElement<Properties> implements Element {
         super(id, name, properties, elements)
     }
 
+    kind = 'App' as ElementType
     get pages() {return this.elements as Page[]}
 
-    get pathSegment() { return 'app'}
 
     createElement(elementType: ElementType, newIdSeq: number): Element {
         return createElement(elementType, newIdSeq)

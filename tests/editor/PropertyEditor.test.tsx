@@ -15,6 +15,8 @@ import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
+import App from '../../src/model/App'
+import Project from '../../src/model/Project'
 
 let container: any
 let changedValue: any
@@ -53,6 +55,26 @@ test('updates other properties', () => {
     expect(inputValue('Style')).toBe('funky')
     fireEvent.input(input('Style'), {target: {value: 'cool'}})
     expect(changedValue).toStrictEqual({expr: 'cool'})
+})
+
+test('has fields for Project', () => {
+    const element = new Project('id1', 'Project 1', {author: 'Me!'}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Id')).toBe('id1')
+    expect(inputValue('Name')).toBe('Project 1')
+    expect(inputValue('Formula Name')).toBe('Project1')
+    expect(inputValue('Author')).toBe('Me!')
+    expect(kindButton(0).textContent).toBe('abc')
+})
+
+test('has fields for App', () => {
+    const element = new App('id1', 'App 1', {author: ex`Me + You`}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Id')).toBe('id1')
+    expect(inputValue('Name')).toBe('App 1')
+    expect(inputValue('Formula Name')).toBe('App1')
+    expect(inputValue('Author')).toBe('Me + You')
+    expect(kindButton(0).textContent).toBe('fx=')
 })
 
 test('has fields for Page', () => {

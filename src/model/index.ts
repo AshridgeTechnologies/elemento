@@ -1,3 +1,5 @@
+//TODO is this needed?
+export {default as Project} from './Project'
 export {default as App} from './App'
 export type {default as Element} from './Element'
 export {default as Page} from './Page'

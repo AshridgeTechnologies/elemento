@@ -6,11 +6,12 @@ import React from 'react'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {act} from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
-import App from '../../src/model/App'
-import {appFixture1} from '../testutil/appFixtures'
+import Project from '../../src/model/Project'
+import {projectFixture1} from '../testutil/projectFixtures'
 import {treeItemLabels} from '../testutil/testHelpers'
+import {fireEvent} from '@testing-library/react'
 
-let container: HTMLDivElement;
+let container: HTMLDivElement
 
 beforeEach(() => {
     container = document.createElement('div');
@@ -34,6 +35,10 @@ const actWait = async (testFn: () => any) => {
     return result
 }
 
+const clickExpandControl = async (...indexes: number[]) => {
+    for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
+}
+
 const itemLabels = () => treeItemLabels(container)
 
 const itemElements = () => {
@@ -41,24 +46,24 @@ const itemElements = () => {
     return Array.from(treeNodesShown)
 }
 
-let theApp = appFixture1()
+let theProject = projectFixture1()
 
-test('renders editor and updates app', async () => {
-    let app
-    let setApp: (app:App) => void
-    await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
-    await actWait(async () => setApp(theApp))
+test('renders editor and updates project', async () => {
+    let project
+    let setProject: (project:Project) => void
+    await actWait(async () => ({project, setProject} = (await import('../../src/editor/EditorMain'))))
+    await actWait(async () => setProject(theProject))
 
     const user = userEvent.setup()
-    await actWait(() => user.click(container.querySelector(treeExpandControlSelector) as Element))
+    await clickExpandControl(0, 1, 2)
     await wait(500)
-    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'Other Page'])
 
     // @ts-ignore
-    const elementId = app().pages[0].elements[0].id
+    const elementId = project().elements[0].pages[0].elements[0].id
     expect(elementId).toBe('text_1')
 
-    await user.click(itemElements()[2])
+    await user.click(itemElements()[4])
 
     const inputs = Array.from(container.querySelectorAll('input[type="text"]'))
     const nameInput = inputs[1] as HTMLInputElement
@@ -66,29 +71,28 @@ test('renders editor and updates app', async () => {
     expect(nameInput.value).toBe('Second Text')
 
     // @ts-ignore
-    expect(app().pages[0].elements[1].name).toBe('Second Text')
+    expect(project().elements[0].pages[0].elements[1].name).toBe('Second Text')
 
     await user.clear(nameInput)
     await user.type(nameInput, 'Further Text')
     await actWait( () => {})
     // @ts-ignore
-    expect(app().pages[0].elements[1].name).toBe('Further Text')
+    expect(project().elements[0].pages[0].elements[1].name).toBe('Further Text')
     expect((nameInput).value).toBe('Further Text')
 })
 
-test('loads app from JSON string', async () => {
-    let app
-    let setApp: (app:App) => void
-    await actWait(async () => ({app, setApp} = (await import('../../src/editor/EditorMain'))))
-    await actWait(async () => setAppFromJSONString(JSON.stringify(theApp)))
+test('loads project from JSON string', async () => {
+    let project
+    let setProject: (project: Project) => void
+    await actWait(async () => ({project, setProject} = (await import('../../src/editor/EditorMain'))))
+    await actWait(async () => setProjectFromJSONString(JSON.stringify(theProject)))
 
-    const user = userEvent.setup()
-    await actWait(() => user.click(container.querySelector(treeExpandControlSelector) as Element))
+    await clickExpandControl(0, 1, 2)
     await wait(500)
-    expect(itemLabels()).toStrictEqual(['Main Page', 'First Text', 'Second Text', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'Other Page'])
 
     // @ts-ignore
-    const elementId = app().pages[0].elements[0].id
+    const elementId = project().elements[0].elements[0].elements[0].id
     expect(elementId).toBe('text_1')
 
 })

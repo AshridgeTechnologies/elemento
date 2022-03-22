@@ -12,7 +12,7 @@ module.exports = {
         "src/**/*.{ts,tsx}",
         "!src/docs/**",
         "!src/util/*Error.ts",
-        "!src/util/welcomeApp.ts",
+        "!src/util/welcomeProject.ts",
     ],
     // transform: {
     //     '^.+\\.tsx?$': ['@swc/jest'],

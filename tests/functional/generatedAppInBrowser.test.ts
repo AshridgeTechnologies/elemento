@@ -1,5 +1,7 @@
 import {expect, test} from '@playwright/test';
 import {appFixture1, appFixture2} from '../testutil/appFixtures'
+import {projectFixture1} from '../testutil/projectFixtures'
+import App from '../../src/model/App'
 
 // Expects test server such as Parcel dev server running on port 1235 at top level
 const runtimeRootUrl = 'http://localhost:1235/'
@@ -32,7 +34,7 @@ test('can replace app on page', async ({ page }) => {
     await page.goto(runtimeRootUrl)
     expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
 
-    await page.evaluate( (app: string) => window.setAppFromJSONString(app), JSON.stringify(appFixture1()))
+    await page.evaluate( (app: string) => window.setAppFromJSONString(app), JSON.stringify(projectFixture1().elementArray()[0] as App))
 
     expect(await page.textContent('p >> nth=0')).toBe('The first bit of text')
 })
