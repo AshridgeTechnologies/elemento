@@ -198,5 +198,5 @@ test('has iframe for running app', async () => {
     await actWait(() =>  ({container} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
 
     const appFrame = container.querySelector('iframe[name="appFrame"]')
-    expect(appFrame.src).toMatch(/.*\/runtime\/app.html$/)
+    expect(appFrame.src).toMatch(/.*\/runtime\/index.html$/)
 })

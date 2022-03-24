@@ -63,8 +63,9 @@ window.appFunctions = importedAppFunctions
 
 async function loadApp() {
     const path = location.pathname.substring(1)
-    if (path.startsWith('https://') || path.startsWith('http://') ) {
-        const appUrl = path.replace(/www.dropbox.com/, 'dl.dropboxusercontent.com')
+    const pathMatch = path.match(/https?:\/\/.+$/)
+    if (pathMatch) {
+        const appUrl = pathMatch[0].replace(/www.dropbox.com/, 'dl.dropboxusercontent.com')
         try {
             const appData = await fetch(appUrl).then(resp => resp.text())
             theApp = loadJSONFromString(appData)

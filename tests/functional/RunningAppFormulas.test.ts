@@ -1,10 +1,10 @@
 import {expect, test} from '@playwright/test';
-import {Project, App, Page, Text, TextInput, Button} from '../../src/model/index'
+import {App, Button, Page, Text, TextInput} from '../../src/model/index'
 import {ex} from '../../src/util/helpers'
 import {loadApp} from './playwrightHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/runtime/app.html'
+const runtimeRootUrl = 'http://localhost:1234/runtime/'
 
 test('formulas using inputs update as the input changes', async ({page}) => {
     await page.goto(runtimeRootUrl)

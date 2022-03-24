@@ -2,13 +2,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "compile": "tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/app.html build/src/runtime/app.html",
+    "compile": "tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/index.html build/src/runtime/index.html",
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
-    "build": "parcel build src/runtime/app.html src/editor/index.html src/autorun/index.html",
-    "serve": "parcel src/runtime/app.html src/editor/index.html src/autorun/index.html",
-    "serveruntime": "parcel -p 1235 src/runtime/app.html",
+    "build": "parcel build src/runtime/index.html src/editor/index.html src/autorun/index.html",
+    "serve": "parcel src/runtime/index.html src/editor/index.html src/autorun/index.html",
+    "serveruntime": "parcel -p 1235 src/runtime/index.html",
     "functest": "playwright test"
   },
   "devDependencies": {

@@ -1,10 +1,10 @@
 import {expect, test} from '@playwright/test';
-import {appFixture1, appFixture2} from '../testutil/appFixtures'
+import {appFixture2} from '../testutil/appFixtures'
 import {projectFixture1} from '../testutil/projectFixtures'
 import App from '../../src/model/App'
 
-// Expects test server such as Parcel dev server running on port 1235 at top level
-const runtimeRootUrl = 'http://localhost:1235/'
+// Expects test server such as Parcel dev server running on port 1234 at top level
+const runtimeRootUrl = 'http://localhost:1234/runtime/'
 
 test('welcome app shows elements on page', async ({ page }) => {
 
