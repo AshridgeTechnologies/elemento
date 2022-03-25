@@ -7,14 +7,13 @@ Bugs
 
 Stories
 -------
+- Apps website
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
 - Collections
 - Persistent data storage Part 1
 - Info website update
-- Editor website
-- Runner website
 
 ### Priority 2
 - General usability Part 2
