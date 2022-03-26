@@ -1,5 +1,5 @@
 import {parse, print} from 'recast'
-import {visit,} from "ast-types"
+import {visit,} from 'ast-types'
 
 import App from '../model/App'
 import Page from '../model/Page'
@@ -7,6 +7,7 @@ import Text from '../model/Text'
 import Element from '../model/Element'
 import TextInput from '../model/TextInput'
 import {globalFunctions} from '../runtime/globalFunctions'
+import * as components from '../runtime/components'
 import appFunctions from '../runtime/appFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {definedPropertiesOf, isExpr} from '../util/helpers'
@@ -30,6 +31,7 @@ function objectLiteral(obj: object) {
 }
 
 const isAction = true
+const isComponent = (name: string) => name in components
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => name in appFunctions
 const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
@@ -54,7 +56,9 @@ const valueLiteral = function (propertyValue: any): string {
     }
 }
 
-
+export function generate(app: App) {
+    return new Generator(app).output()
+}
 
 export default class Generator {
     constructor(public app: App) {
@@ -81,14 +85,17 @@ export default class Generator {
             name: 'appMain.js',
             content: Generator.appMainContent(this.app)
         }
-        return {files: [...pageFiles, appMainFile], errors: errorCollector.errors}
+        return {files: [...pageFiles, appMainFile],
+            errors: errorCollector.errors,
+            get code() { return this.files.map( f => `// ${f.name}\n${f.content}` ).join('\n')}
+        }
     }
 
     private static pageContent(app: App, page: Page, errors: ErrorCollector) {
         const stateNames = page.elementArray().map( el => Generator.initialStateEntry(el) ? el.codeName : null ).filter( el => el !== null )
         const stateDefaultEntries = page.elementArray().map( el => Generator.initialStateEntry(el) ).filter( el => !!el )
         const stateDefaultBlock = stateDefaultEntries.length ? `\n        ${stateDefaultEntries.join('\n        ')}\n    `: ''
-        const stateDefaultCall = `    const state = useObjectStateWithDefaults(props.path, {${stateDefaultBlock}})`
+        const stateDefaultCall = `    const state = Elemento.useObjectStateWithDefaults(props.path, {${stateDefaultBlock}})`
 
         const identifierSet = new Set<string>()
         const isPageElement = (name: string) => !!page.elementArray().find( el => el.codeName === name )
@@ -98,15 +105,17 @@ export default class Generator {
         const pageCode = Generator.generateElement(page, identifierSet, isKnown, errors)
         const identifiers = [...identifierSet.values()]
 
+        const componentIdentifiers = identifiers.filter(isComponent)
+        const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
-        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = window.globalFunctions` : ''
+        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         const appFunctionIdentifiers = identifiers.filter(isAppFunction)
-        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = window.appFunctions` : ''
+        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions` : ''
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
         const pageIdentifiers = uniq(identifiers.filter(isPageElement).concat(stateNames as string[]))
         const pageDeclarations = pageIdentifiers.length ? `    const {${pageIdentifiers.join(', ')}} = state` : ''
-        const declarations = [globalDeclarations, appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
+        const declarations = [componentDeclarations, globalDeclarations, appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         return `function ${page.codeName}(props) {
     const pathWith = name => props.path + '.' + name
@@ -122,11 +131,11 @@ ${declarations}
         const pages = app.pages
         const identifiers = [...identifierSet.values()]
         const globalFunctionIdentifiers = identifiers.filter( id => isGlobalFunction(id))
-        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = window.globalFunctions` : ''
+        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         return `function AppMain(props) {
 ${globalDeclarations}
     const appPages = {${pages.map( p => p.codeName).join(', ')}}
-    const appState = useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
     return React.createElement('div', {id: '${app.codeName}'},
         React.createElement(appPages[currentPage], {path: \`${app.codeName}.\${currentPage}\`})
@@ -147,12 +156,14 @@ ${globalDeclarations}
                 return this.appMainContent(app)
             case "Page":
                 const page = element as Page
+                identifiers.add('Page')
                 const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, isKnown, errors)},`).join('\n');
                 return `React.createElement(Page, {id: props.path},
 ${children}
     )`
             case "Text": {
                 const text = element as Text
+                identifiers.add('TextElement')
                 const path = `pathWith('${text.codeName}')`
                 const content = Generator.getExprAndIdentifiers(text.content, identifiers, isKnown, onError('content'))
                 const fontSize = Generator.getExprAndIdentifiers(text.fontSize, identifiers, isKnown, onError('fontSize'))
@@ -169,6 +180,7 @@ ${children}
 
             case "TextInput":
                 const textInput = element as TextInput
+                identifiers.add('TextInput')
                 const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = textInput.codeName
                 const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
@@ -180,6 +192,7 @@ ${children}
 
             case "NumberInput": {
                 const numberInput = element as NumberInput
+                identifiers.add('NumberInput')
                 const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = numberInput.codeName
                 const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown, onError('label'))
@@ -189,6 +202,7 @@ ${children}
 
             case "SelectInput": {
                 const selectInput = element as SelectInput
+                identifiers.add('SelectInput')
                 const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown, onError('values'))
                 const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = selectInput.codeName
@@ -199,6 +213,7 @@ ${children}
 
             case "TrueFalseInput": {
                 const trueFalseInput = element as TrueFalseInput
+                identifiers.add('TrueFalseInput')
                 const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = trueFalseInput.codeName
                 const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown, onError('label'))
@@ -208,6 +223,7 @@ ${children}
 
             case "Button": {
                 const button = element as Button
+                identifiers.add('Button')
                 const path = `pathWith('${button.codeName}')`
                 const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
                 const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
@@ -217,6 +233,7 @@ ${children}
 
             case "Data": {
                 const data = element as Data
+                identifiers.add('Data')
                 const initialValue = Generator.getExprAndIdentifiers(data.initialValue, identifiers, isKnown, onError('initialValue'))
                 const state = data.codeName
                 const display = Generator.getExprAndIdentifiers(data.display, identifiers, isKnown, onError('display'))
@@ -336,7 +353,7 @@ ${children}
                 if (unknownIdentifiers.length) {
                     const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
                     onError(errorMessage)
-                    return `codeGenerationError(\`${expr}\`, '${errorMessage}')`
+                    return `Elemento.codeGenerationError(\`${expr}\`, '${errorMessage}')`
                 }
 
                 identifierNames.forEach(name => identifiers.add(name))
@@ -346,7 +363,7 @@ ${children}
             } catch(e: any) {
                 const errorMessage = `${e.constructor.name}: ${e.message}`
                 onError(errorMessage)
-                return `codeGenerationError(\`${expr}\`, '${errorMessage}')`
+                return `Elemento.codeGenerationError(\`${expr}\`, '${errorMessage}')`
             }
         } else {
             return valueLiteral(propertyValue)

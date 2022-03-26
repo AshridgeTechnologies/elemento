@@ -2,7 +2,7 @@ import {expect, Frame, Page, test} from '@playwright/test';
 import {treeExpand, treeItem} from './playwrightHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
+const runtimeRootUrl = 'http://localhost:1234/studio'
 
 let openMainPage = async function (page: Page) {
     await page.click(treeExpand(0))

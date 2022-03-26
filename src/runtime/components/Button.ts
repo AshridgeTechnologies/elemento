@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button as MuiButton} from '@mui/material'
-import {definedPropertiesOf} from '../util/helpers'
-import {valueOf} from './runtimeFunctions'
+import {definedPropertiesOf} from '../../util/helpers'
+import {valueOf} from '../runtimeFunctions'
 
 type Properties = {path: string, content: React.ReactNode, action?: () => void}
 

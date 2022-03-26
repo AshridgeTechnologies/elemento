@@ -1,7 +1,7 @@
 import React from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
-import {updateState} from './appData'
-import {valueOfProps} from './runtimeFunctions'
+import {updateState} from '../appData'
+import {valueOfProps} from '../runtimeFunctions'
 
 type Properties = { label?: string, values?: string[], state: {value?: string, _path: string, } }
 

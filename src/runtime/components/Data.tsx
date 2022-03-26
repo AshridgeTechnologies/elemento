@@ -1,5 +1,5 @@
 import React from 'react'
-import {valueLiteral} from './runtimeFunctions'
+import {valueLiteral} from '../runtimeFunctions'
 
 type Properties = {state: any, display?: boolean}
 

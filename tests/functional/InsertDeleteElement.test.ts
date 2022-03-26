@@ -4,7 +4,7 @@ import {projectFixture1} from '../testutil/projectFixtures'
 import {Page as PWPage} from 'playwright-core'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
+const runtimeRootUrl = 'http://localhost:1234/studio'
 
 const insertMenu = 'text=Insert'
 const insertMenu_Text = 'ul[role="menu"] :text("Text")'

@@ -41,7 +41,7 @@ export default function AutoRun({script}: { script: Step[] }) {
             </div>
             <div style={{width: '79%',}}>
                 <div style={{width: '98%', margin: 'auto'}}>
-                    <iframe name='targetFrame' src="/editor/index.html" style={{width: '100%', height: 600}} onLoad={updateHighlightedItem}/>
+                    <iframe name='targetFrame' src="/html/studio/index.html" style={{width: '100%', height: 600}} onLoad={updateHighlightedItem}/>
                 </div>
             </div>
         </div>

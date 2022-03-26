@@ -1,5 +1,5 @@
 import React from 'react'
-import {valueOfProps} from './runtimeFunctions'
+import {valueOfProps} from '../runtimeFunctions'
 import {Stack} from '@mui/material'
 
 type Properties = {path: string, children?: any}

@@ -6,7 +6,7 @@ import {ex} from '../../src/util/helpers'
 import {projectFixture1} from '../testutil/projectFixtures'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
+const runtimeRootUrl = 'http://localhost:1234/studio'
 
 // mock selecting the app file
 const installMockFilePickers = (app: any) => {

@@ -2,18 +2,18 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "compile": "tsc && cp src/editor/index.html build/src/editor/index.html && cp src/runtime/index.html build/src/runtime/index.html",
+    "compile": "tsc && cp src/html/studio/index.html build/src/studio/index.html && cp src/html/run/index.html build/src/run/index.html",
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
-    "build": "parcel build src/runtime/index.html src/editor/index.html src/autorun/index.html",
-    "serve": "parcel src/runtime/index.html src/editor/index.html src/autorun/index.html",
-    "serveruntime": "parcel -p 1235 src/runtime/index.html",
+    "build": "parcel build src/html/run/index.html src/html/studio/index.html",
+    "serve": "parcel src/html/run/index.html src/html/studio/index.html",
+    "serveruntime": "parcel -p 1235 src/html/run/index.html",
     "functest": "playwright test"
   },
   "devDependencies": {
     "@parcel/transformer-less": "^2.0.1",
-    "@playwright/test": "^1.16.1",
+    "@playwright/test": "^1.20.1",
     "@swc/core": "^1.2.138",
     "@swc/jest": "^0.2.17",
     "@testing-library/react": "^12.1.3",

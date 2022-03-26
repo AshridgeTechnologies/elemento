@@ -19,7 +19,7 @@ import ControlReference from '../docs/reference/ControlReference'
 import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import Generator from '../generator/Generator'
+import Generator, {generate} from '../generator/Generator'
 import {without} from 'ramda'
 import Project from '../model/Project'
 
@@ -97,9 +97,9 @@ export default function Editor({project,
     function setAppInAppFrame(): boolean {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
-            const setAppFn = appWindow['setAppFromJSONString' as keyof Window]
-            if (setAppFn) {
-                setAppFn(JSON.stringify(app))
+            const setAppCode = appWindow['setAppCode' as keyof Window]
+            if (setAppCode) {
+                setAppCode(generate(app).code)
                 const setEventListenerFn = appWindow['setAppEventListener' as keyof Window]
                 if (setEventListenerFn) {
                     setEventListenerFn('click', handleAppFrameClick)
@@ -182,7 +182,7 @@ export default function Editor({project,
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
                     <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
-                        <iframe name='appFrame' src="/runtime/index.html" ref={appFrameRef}
+                        <iframe name='appFrame' src="/run/index.html" ref={appFrameRef}
                                 style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                     </Box>
                 </Grid>

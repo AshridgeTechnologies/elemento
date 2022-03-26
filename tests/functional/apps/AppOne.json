@@ -1,56 +1,64 @@
 {
-  "id": "app1",
-  "name": "App One",
+  "id":  "proj1",
+  "name":  "Project One",
   "properties": {},
   "elements": [
     {
-      "id": "page1",
-      "name": "Main Page",
+      "id": "app1",
+      "name": "App One",
       "properties": {},
       "elements": [
         {
-          "id": "text_1",
-          "name": "First Text",
-          "properties": {
-            "content": {"expr": "\"This is App One\""}
-          },
-          "kind": "Text"
+          "id": "page1",
+          "name": "Main Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_1",
+              "name": "First Text",
+              "properties": {
+                "content": {"expr": "\"This is App One\""}
+              },
+              "kind": "Text"
+            },
+            {
+              "id": "text_2",
+              "name": "Second Text",
+              "properties": {
+                "content": {"expr": "\"The second bit of text\""}
+              },
+              "kind": "Text"
+            }
+          ],
+          "kind": "Page"
         },
         {
-          "id": "text_2",
-          "name": "Second Text",
-          "properties": {
-            "content": {"expr": "\"The second bit of text\""}
-          },
-          "kind": "Text"
+          "id": "page2",
+          "name": "Other Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_3",
+              "name": "Some Text",
+              "properties": {
+                "content": {"expr": "\"Some text here\""}
+              },
+              "kind": "Text"
+            },
+            {
+              "id": "text_4",
+              "name": "More Text",
+              "properties": {
+                "content": {"expr": "\"...and more text\""}
+              },
+              "kind": "Text"
+            }
+          ],
+          "kind": "Page"
         }
       ],
-      "kind": "Page"
-    },
-    {
-      "id": "page2",
-      "name": "Other Page",
-      "properties": {},
-      "elements": [
-        {
-          "id": "text_3",
-          "name": "Some Text",
-          "properties": {
-            "content": {"expr": "\"Some text here\""}
-          },
-          "kind": "Text"
-        },
-        {
-          "id": "text_4",
-          "name": "More Text",
-          "properties": {
-            "content": {"expr": "\"...and more text\""}
-          },
-          "kind": "Text"
-        }
-      ],
-      "kind": "Page"
+      "kind": "App"
     }
   ],
-  "kind": "App"
+  "kind": "Project"
 }

@@ -4,14 +4,17 @@ Apps website
 Refactor to run from code
 -------------------------
 
-- App code is generated in the editor
-- Runtime can have code inserted by the editor for preview
-- Runtime loads code file
-- Runtime expects a React component that it renders
-
+- ✅ App code is generated in the editor
+- ✅ Runtime can have code inserted by the editor for preview
+- ✅ Runtime loads code file
+- ✅ Runtime expects a React component that it renders
+- runApp.ts is refactored to a sensible module or component, and unit tested
+- ✅ Runtime path is just 'run'
+- Can save app code from the editor
 
 Editing
 -------
+
 - Site on apps.elemento.software
 - Home page has create an app and run an app panels with links
 - Create an app opens studio on /studio path
@@ -19,10 +22,12 @@ Editing
 
 Login
 -----
+
 - Can login with Google, Facebook or email/password
 
 Publishing
 ----------
+
 - Editor can load code to cloud storage
 - Publish or update the code
 - Must be logged in to create or update
@@ -49,8 +54,7 @@ Loading the code
 ----------------
 
 - The code is available through a GET to /code/<id-plus-name>
-- It is served with content-type application/json
-
+- It is served with content-type text/javascript
 
 Setup Environment
 ----------------- 

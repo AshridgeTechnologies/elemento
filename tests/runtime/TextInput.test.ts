@@ -3,7 +3,7 @@
  */
 
 import {createElement} from 'react'
-import TextInput from '../../src/runtime/TextInput'
+import {TextInput} from '../../src/runtime/components'
 import {snapshot, testContainer, wait} from '../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {stateProxy, useStore} from '../../src/runtime/appData'

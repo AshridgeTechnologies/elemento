@@ -4,8 +4,8 @@
 
 import {createElement} from 'react'
 import {componentJSON} from '../testutil/testHelpers'
-import TextElement from '../../src/runtime/TextElement'
-import Page from '../../src/runtime/Page'
+import TextElement from '../../src/runtime/components/TextElement'
+import {Page} from '../../src/runtime/components'
 
 test('Page element produces output containing children', () => {
     const child = createElement(TextElement, {path: 'page1.para1'}, 'Hello', 'where are you')

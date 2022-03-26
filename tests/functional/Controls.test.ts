@@ -3,7 +3,7 @@ import {Project, App, Page, TextInput} from '../../src/model/index'
 import {loadProject, treeItem, treeExpand} from './playwrightHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
+const runtimeRootUrl = 'http://localhost:1234/studio'
 
 const insertMenu = 'text=Insert'
 const insertMenu_Button = 'ul[role="menu"] :text("Button")'

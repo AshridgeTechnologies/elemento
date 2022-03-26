@@ -3,7 +3,7 @@
  */
 
 import {createElement} from 'react'
-import Data from '../../src/runtime/Data'
+import {Data} from '../../src/runtime/components'
 import {snapshot} from '../testutil/testHelpers'
 import {render} from '@testing-library/react'
 

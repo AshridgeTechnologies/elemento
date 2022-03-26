@@ -3,7 +3,7 @@
  */
 
 import {createElement} from 'react'
-import SelectInput from '../../src/runtime/SelectInput'
+import {SelectInput} from '../../src/runtime/components'
 import {snapshot, testContainer} from '../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
 import {stateProxy, useStore} from '../../src/runtime/appData'

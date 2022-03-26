@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/editor/index.html'
+const runtimeRootUrl = 'http://localhost:1234/studio/'
 
 const helpButton = 'button#help'
 const helpPanel = '#helpPanel'

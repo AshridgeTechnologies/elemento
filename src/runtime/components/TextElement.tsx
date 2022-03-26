@@ -1,7 +1,7 @@
 import React from 'react'
 import {Typography} from '@mui/material'
 import {isArray} from 'lodash'
-import {asText, valueOfProps} from './runtimeFunctions'
+import {asText, valueOfProps} from '../runtimeFunctions'
 
 type Properties = {path: string, children?: any
     fontSize?: string | number, fontFamily?: string, color?: string, backgroundColor?: string,

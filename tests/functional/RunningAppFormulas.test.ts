@@ -4,7 +4,7 @@ import {ex} from '../../src/util/helpers'
 import {loadApp} from './playwrightHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/runtime/'
+const runtimeRootUrl = 'http://localhost:1234/run/'
 
 test('formulas using inputs update as the input changes', async ({page}) => {
     await page.goto(runtimeRootUrl)

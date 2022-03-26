@@ -1,8 +1,8 @@
 import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
-import {definedPropertiesOf} from '../util/helpers'
-import {updateState} from './appData'
-import {valueOfProps} from './runtimeFunctions'
+import {definedPropertiesOf} from '../../util/helpers'
+import {updateState} from '../appData'
+import {valueOfProps} from '../runtimeFunctions'
 
 type Properties = {state: {value?: number, _path: string, _controlValue: number | null}, label?: string}
 

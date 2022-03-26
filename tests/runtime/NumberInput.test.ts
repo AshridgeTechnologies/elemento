@@ -3,7 +3,7 @@
  */
 
 import {createElement} from 'react'
-import NumberInput from '../../src/runtime/NumberInput'
+import {NumberInput} from '../../src/runtime/components'
 import {snapshot, testContainer} from '../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
 import {stateProxy, useStore} from '../../src/runtime/appData'

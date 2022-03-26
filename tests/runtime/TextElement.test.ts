@@ -1,5 +1,5 @@
 import {createElement} from 'react'
-import TextElement from '../../src/runtime/TextElement'
+import {TextElement} from '../../src/runtime/components'
 import {snapshot, stateVal} from '../testutil/testHelpers'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 

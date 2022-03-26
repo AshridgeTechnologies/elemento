@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from 'react'
 import {FormControlLabel, Switch} from '@mui/material'
-import {updateState} from './appData'
-import {valueOfProps} from './runtimeFunctions'
+import {updateState} from '../appData'
+import {valueOfProps} from '../runtimeFunctions'
 
 type Properties = {state: {value?: boolean, _path: string, _controlValue: boolean | null}, label?: string}
 
