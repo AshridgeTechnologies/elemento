@@ -1,10 +1,9 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import { ex } from '../../src/util/helpers'
 import Project from '../../src/model/Project'
 
 test('Project has correct properties', ()=> {

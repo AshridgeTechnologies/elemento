@@ -3,7 +3,7 @@ import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
 import {loadJSONFromString} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
+import {ex} from '../testutil/testHelpers'
 
 // tests for loadJSON are in the test for each model class
 

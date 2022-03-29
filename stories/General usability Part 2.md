@@ -1,6 +1,7 @@
 General usability Part 2
 ========================
 
+- Show a Page in the Preview
 - Input adornment of = in Fx mode
 - Change to formula if type = at the start
 - Nav tree like power apps:  full width, menu at right, highlight and menu on hover

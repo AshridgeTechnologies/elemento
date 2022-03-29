@@ -1,8 +1,7 @@
 import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON} from '../testutil/testHelpers'
-import {ex} from '../../src/util/helpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 
 test('Button has correct properties with default values', ()=> {
     const button1 = new Button('id1', 'Button 1', {})

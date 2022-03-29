@@ -203,7 +203,7 @@ test('calls onChange with new string list fixed value and ignores spaces around 
     expect(newValue).toStrictEqual(['Blue', 'Green', 'Red', 'Pinkish grey'])
 })
 
-test.skip('calls onChange with new boolean fixed value', () => {
+test('calls onChange with new boolean fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='boolean' value={true} onChange={onChange}/>))
 
     fireEvent.change(input(), {target: {value: 'false'}})

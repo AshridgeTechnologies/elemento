@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react'
+import {createRoot} from 'react-dom/client'
 import {createTheme, ThemeProvider} from '@mui/material/styles'
-import ReactDOM from 'react-dom'
 import {Alert, AlertTitle} from '@mui/material'
 import Editor from './Editor'
 import {editorInitialProject} from '../util/welcomeProject'
@@ -130,34 +130,37 @@ const onSaveAs = async () => {
     }
 }
 
-function doRender() {
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#0098a0',
-            },
-            secondary: {
-                main: '#7e28ff',
-            },
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#0098a0',
         },
+        secondary: {
+            main: '#7e28ff',
+        },
+    },
 
-        components: {
-            MuiInputBase: {
-                styleOverrides: {
-                    root: {
-                        fontSize: '0.85rem',
-                    },
+    components: {
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    fontSize: '0.85rem',
                 },
             },
-        }
-    })
-    ReactDOM.render(
+        },
+    }
+})
+
+
+const container = document.getElementById('main')
+const root = createRoot(container!)
+
+function doRender() {
+    root.render(
         <ThemeProvider theme={theme}>
             {errorMessage}
             <Editor project={theProject} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave}/>
-        </ThemeProvider>,
-        document.getElementById('main')
-    )
+        </ThemeProvider>)
 }
 
 doRender()

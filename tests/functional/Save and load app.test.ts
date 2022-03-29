@@ -2,8 +2,8 @@ import {expect, Page, test} from '@playwright/test'
 import {App, Project, Text} from '../../src/model/index'
 import {treeExpand, treeItem} from './playwrightHelpers'
 import {loadJSONFromString} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
 import {projectFixture1} from '../testutil/projectFixtures'
+import {ex} from '../testutil/testHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/studio'

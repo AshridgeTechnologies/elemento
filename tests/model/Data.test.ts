@@ -1,8 +1,7 @@
 import Data from '../../src/model/Data'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON} from '../testutil/testHelpers'
-import {ex} from '../../src/util/helpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 
 test('Data has correct properties with default values', ()=> {
     const data1 = new Data('id1', 'Data 1', {})

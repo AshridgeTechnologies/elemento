@@ -1,8 +1,7 @@
 import NumberInput from '../../src/model/NumberInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
 
 test('NumberInput has correct properties', ()=> {
     const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`})

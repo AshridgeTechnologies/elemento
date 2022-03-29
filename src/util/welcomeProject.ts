@@ -26,6 +26,9 @@ export function editorInitialProject() {
 }
 
 export const welcomeAppCode = () => `
+import React from 'react'
+import Elemento from 'elemento-runtime'
+
 function MainPage(props) {
     const pathWith = name => props.path + '.' + name
     const state = Elemento.useObjectStateWithDefaults(props.path, {})
@@ -37,7 +40,7 @@ function MainPage(props) {
     )
 }
 
-function AppMain(props) {
+export default function WelcomeApp(props) {
 
     const appPages = {MainPage}
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})

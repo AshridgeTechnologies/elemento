@@ -1,10 +1,10 @@
 import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {updateState} from '../appData'
 import {valueOfProps} from '../runtimeFunctions'
+import {proxyUpdateFnType} from '../stateProxy'
 
-type Properties = {state: {value?: number, _path: string, _controlValue: number | null}, label?: string}
+type Properties = {state: {value?: number, _path: string, _controlValue: number | null, _update: proxyUpdateFnType}, label?: string}
 
 export default function NumberInput({state, ...props}: Properties) {
     const {label} = valueOfProps(props)
@@ -16,7 +16,7 @@ export default function NumberInput({state, ...props}: Properties) {
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
         const updateValue = controlValue !== '' ? Number(controlValue) : null
-        updateState(path, {value: updateValue })
+        state._update({value: updateValue})
     }
 
     return React.createElement(TextField, {

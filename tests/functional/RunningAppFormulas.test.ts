@@ -1,14 +1,13 @@
 import {expect, test} from '@playwright/test';
 import {App, Button, Page, Text, TextInput} from '../../src/model/index'
-import {ex} from '../../src/util/helpers'
 import {loadApp} from './playwrightHelpers'
+import {ex} from '../testutil/testHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
 const runtimeRootUrl = 'http://localhost:1234/run/'
 
 test('formulas using inputs update as the input changes', async ({page}) => {
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+    await page.goto(runtimeRootUrl + '?editorPreview')
 
     const app = new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
@@ -30,8 +29,7 @@ test('formulas using inputs update as the input changes', async ({page}) => {
 })
 
 test('actions can refer to other controls', async ({page}) => {
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+    await page.goto(runtimeRootUrl + '?editorPreview')
 
     const app = new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [

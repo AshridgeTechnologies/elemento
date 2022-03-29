@@ -1,8 +1,7 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON} from '../testutil/testHelpers'
-import {ex} from '../../src/util/helpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 
 test('Text has correct properties with default values', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

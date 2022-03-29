@@ -27,7 +27,7 @@ export const showAppCode = () => {
     return code
 }
 
-const highlightClassName = 'elemento-editor-highlight'
+export const highlightClassName = 'elemento-editor-highlight'
 const highlightStyleId = 'elementoEditorHighlight'
 
 const findElementWith = (el: Element, condition: (el: Element) => boolean) => {

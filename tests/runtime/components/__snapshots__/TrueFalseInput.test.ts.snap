@@ -43,9 +43,7 @@ exports[`TrueFalseInput element produces output with default values where proper
   </span>
   <span
     className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
-  >
-    
-  </span>
+  />
 </label>
 `;
 

@@ -3,14 +3,25 @@
  */
 
 import React from 'react'
-import {fireEvent, render, screen} from '@testing-library/react'
+import {act, fireEvent, render, screen} from '@testing-library/react/pure'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
-import {treeItemSelector} from './Selectors'
-import {actWait, clickExpandControlFn, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
+import {treeExpandControlSelector, treeItemSelector} from './Selectors'
+import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 
-let container: any
+let container: any, unmount: any
 
+const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time) )
+const actWait = async (testFn: () => void) => {
+    await act(async ()=> {
+        testFn()
+        await wait(20)
+    })
+}
+
+const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
+    for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
+}
 const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(container)(...indexes)
 
 const itemLabels = () => treeItemLabels(container)
@@ -42,7 +53,19 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
     ])
 ])
 
+
 beforeAll(suppressRcTreeJSDomError)
+afterAll(stopSuppressingRcTreeJSDomError)
+
+afterEach( async () => await act(() => {
+    try{
+        unmount && unmount()
+    } catch(e: any) {
+        if (!e.message?.match(/Cannot read properties of null \(reading 'removeEventListener'\)/)) {
+            throw e
+        }
+    }
+}))
 
 describe('ModelTreeItem', () => {
     test('finds ancestor keys of the item with a given key', () => {
@@ -105,7 +128,7 @@ describe('ModelTreeItem', () => {
 })
 
 test("renders tree with all types of model elements",  async () => {
-    await actWait( () => ({container} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()}/>)))
+    ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()}/>))
     await clickExpandControl(0, 1)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page'])
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon',])
@@ -113,11 +136,10 @@ test("renders tree with all types of model elements",  async () => {
     await clickExpandControl(2)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Data', 'Other Page'])
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'NoteIcon', 'WebIcon',])
-
 })
 
 test("can expand and collapse branches and show",  async () => {
-    await actWait( () => ({container} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()}/>)))
+    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()}/>)))
 
     await clickExpandControl(0, 1, 2)
     expect(itemLabels()).toContain('First Text')
@@ -129,7 +151,7 @@ test("can expand and collapse branches and show",  async () => {
 test('notifies selected item id', async () => {
     const storeSelectedId = jest.fn()
 
-    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} onSelect={storeSelectedId} onAction={jest.fn()}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={storeSelectedId} onAction={jest.fn()}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
     expect(storeSelectedId).toHaveBeenCalledWith('page_1')
@@ -140,13 +162,13 @@ test('notifies selected item id', async () => {
 })
 
 test('shows selected item highlighted', async () => {
-    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} selectedItemId={'project_1'} onSelect={jest.fn()} onAction={jest.fn()}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'project_1'} onSelect={jest.fn()} onAction={jest.fn()}/>)))
     expect(itemLabels()).toContain('Project One')
     expect(selectedItemLabel()).toBe('Project One')
 })
 
 test('expands to show selected item highlighted', async () => {
-    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'} onSelect={jest.fn()} onAction={jest.fn()}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'} onSelect={jest.fn()} onAction={jest.fn()}/>)))
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
 })
@@ -154,7 +176,7 @@ test('expands to show selected item highlighted', async () => {
 test('selects collapsed item if it contained the selected item', async () => {
     const onSelect = jest.fn()
     await actWait(() => {
-        return ({container} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'}
+        return ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'}
                                                        onSelect={onSelect} onAction={jest.fn()}/>))
     })
     expect(itemLabels()).toContain('First Text')
@@ -166,7 +188,7 @@ test('selects collapsed item if it contained the selected item', async () => {
 test('notifies delete with item id', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -183,7 +205,7 @@ test('notifies delete with item id', async () => {
 test('abandons delete if do not confirm', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 

@@ -13,5 +13,5 @@ export default function Button({path, action, content}: Properties) {
         variant: 'outlined',
         size: 'small',
         ...optionalProps,
-    }, valueOf(content))
+    }, valueOf(content) as React.ReactNode)
 }

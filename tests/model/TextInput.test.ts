@@ -1,8 +1,7 @@
 import TextInput from '../../src/model/TextInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
 
 test('TextInput shows get values from properties', ()=> {
     const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, maxLength: ex`5`, multiline: true, width: 10, label: ex`Text One`})

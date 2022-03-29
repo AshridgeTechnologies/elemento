@@ -1,10 +1,9 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import { ex } from '../../src/util/helpers'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])

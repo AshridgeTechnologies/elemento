@@ -1,3 +1,6 @@
+import React from 'react'
+import Elemento from 'elemento-runtime'
+
 // MainPage.js
 function MainPage(props) {
     const pathWith = name => props.path + '.' + name
@@ -21,7 +24,7 @@ function OtherPage(props) {
 }
 
 // appMain.js
-function AppMain(props) {
+export default function AppMain(props) {
 
     const appPages = {MainPage, OtherPage}
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})

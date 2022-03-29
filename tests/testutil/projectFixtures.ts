@@ -2,9 +2,9 @@ import App from '../../src/model/App'
 import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
-import {ex} from '../../src/util/helpers'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
+import {ex} from './testHelpers'
 
 export function projectFixture1() {
 

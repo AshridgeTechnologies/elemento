@@ -1,8 +1,7 @@
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
 
 test('TrueFalseInput has correct properties', ()=> {
     const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`True-False One`})

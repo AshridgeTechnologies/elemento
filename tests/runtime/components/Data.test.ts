@@ -3,8 +3,8 @@
  */
 
 import {createElement} from 'react'
-import {Data} from '../../src/runtime/components'
-import {snapshot} from '../testutil/testHelpers'
+import {Data} from '../../../src/runtime/components/index'
+import {snapshot} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 test('Data element produces output with simple value',

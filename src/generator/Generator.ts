@@ -30,10 +30,11 @@ function objectLiteral(obj: object) {
     return `{${Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')}}`
 }
 
+const appFunctionsObj = appFunctions({_updateApp() {}})
 const isAction = true
 const isComponent = (name: string) => name in components
 const isGlobalFunction = (name: string) => name in globalFunctions
-const isAppFunction = (name: string) => name in appFunctions
+const isAppFunction = (name: string) => name in appFunctionsObj
 const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 
 class Ref {
@@ -83,11 +84,16 @@ export default class Generator {
         }))
         const appMainFile = {
             name: 'appMain.js',
-            content: Generator.appMainContent(this.app)
+            content: 'export default ' + Generator.appMainContent(this.app)
         }
-        return {files: [...pageFiles, appMainFile],
+
+        const imports = `import React from 'react'\nimport Elemento from 'elemento-runtime'\n\n`
+        return {
+            files: [...pageFiles, appMainFile],
             errors: errorCollector.errors,
-            get code() { return this.files.map( f => `// ${f.name}\n${f.content}` ).join('\n')}
+            get code() {
+                return imports + this.files.map( f => `// ${f.name}\n${f.content}` ).join('\n')
+            }
         }
     }
 
@@ -110,7 +116,7 @@ export default class Generator {
         const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         const appFunctionIdentifiers = identifiers.filter(isAppFunction)
-        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions` : ''
+        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions(state)` : ''
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
         const pageIdentifiers = uniq(identifiers.filter(isPageElement).concat(stateNames as string[]))

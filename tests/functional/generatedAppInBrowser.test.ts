@@ -13,36 +13,18 @@ test('welcome app shows elements on page', async ({ page }) => {
     expect(await page.textContent('p >> nth=1')).toBe('The future of low code programming')
 })
 
-test('can update app on page', async ({ page }) => {
+test('can set app on page', async ({ page }) => {
 
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
-
-    await page.evaluate(()=> {
-        // @ts-ignore
-        const existingCode = window.showAppCode()
-        // @ts-ignore
-        window.setAppCode(existingCode.replace('Welcome to Elemento!', 'This is Elemento!'))
-    })
-
-    expect(await page.textContent('p >> nth=0')).toBe('This is Elemento!')
-
-})
-
-test('can replace app on page', async ({ page }) => {
-
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+    await page.goto(runtimeRootUrl+ '?editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture1().elementArray()[0] as App).code)
 
-    expect(await page.textContent('p >> nth=0')).toBe('The first bit of text')
+    expect(await page.textContent('p[id="AppOne.MainPage.FirstText"]')).toBe('The first bit of text')
 })
 
 test('shows TextInput elements', async ({ page }) => {
 
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+    await page.goto(runtimeRootUrl+ '?editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture2().elementArray()[0] as App).code)
 
@@ -50,8 +32,7 @@ test('shows TextInput elements', async ({ page }) => {
 })
 
 test('can show pages', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
-    expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
+    await page.goto(runtimeRootUrl+ '?editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture2().elementArray()[0] as App).code)
     expect(await page.textContent('p >> nth=0')).toBe('Page One')
@@ -66,11 +47,11 @@ test('can show pages', async ({ page }) => {
 test('can load app from web', async ({ page }) => {
 
     await page.goto(runtimeRootUrl+ 'https://www.dropbox.com/s/vqvwpfub8m4r9ni/AppOne.js?dl=0')
-    expect(await page.textContent('p >> nth=0')).toBe('This is App One')
+    expect(await page.textContent('p[id="AppOne.MainPage.FirstText"]')).toBe('This is App One')
 })
 
 test('shows error if cannot load app from web', async ({ page }) => {
 
     await page.goto(runtimeRootUrl+ 'https://www.dropbox.com/s/xxx/AppOne.js?dl=0')
-    expect(await page.textContent('div.MuiAlertTitle-root')).toBe('App loading problem')
+    expect(await page.textContent('div.MuiAlertTitle-root')).toBe('Invalid app code')
 })

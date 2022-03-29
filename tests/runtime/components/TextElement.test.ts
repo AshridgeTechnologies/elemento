@@ -1,7 +1,7 @@
 import {createElement} from 'react'
-import {TextElement} from '../../src/runtime/components'
-import {snapshot, stateVal} from '../testutil/testHelpers'
-import {globalFunctions} from '../../src/runtime/globalFunctions'
+import {TextElement} from '../../../src/runtime/components/index'
+import {snapshot, stateVal} from '../../testutil/testHelpers'
+import {globalFunctions} from '../../../src/runtime/globalFunctions'
 
 const {Sum} = globalFunctions
 

@@ -1,10 +1,10 @@
 import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {updateState} from '../appData'
 import {valueOfProps} from '../runtimeFunctions'
+import {proxyUpdateFnType} from '../stateProxy'
 
-type Properties = {state: {value?: string, _path: string, _controlValue: string | null}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
+type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _update: proxyUpdateFnType}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
 
 export default function TextInput({state, ...props}: Properties) {
     const {maxLength, label, multiline, width} = valueOfProps(props)
@@ -17,7 +17,7 @@ export default function TextInput({state, ...props}: Properties) {
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
         const updateValue = controlValue !== '' ? controlValue : null
-        updateState(path, {value: updateValue })
+        state._update({value: updateValue })
     }
 
     return React.createElement(TextField, {

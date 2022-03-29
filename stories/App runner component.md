@@ -1,17 +1,21 @@
 App runner component
 --------------------
 
-- Can run from code
-- Can run from URL
-- Defaults to welcome app
-- Connects running app to runtime
-- Updates running app if code changes
-- Keeps state of app as far as possible on update
-- Can run multiple apps on the same page
-- Multiple apps have independent state
-- Callback for Alt-Click events
-- Can highlight elements with a given selector
-- Shows error if error in code
-- Shows error if URL does not load
-- Shows error if URL does not have valid code
-- Integration tests working again
+- ✅ Can run from code
+- ✅ Can run from URL
+- ✅ Can run from function
+- ✅ Defaults to welcome app
+- ✅ Connects running app to runtime
+- ✅ Use import and export where possible
+- ✅ Updates running app if code changes
+- ✅ Keeps state of app as far as possible on update
+- ✅ Can run multiple apps on the same page
+- ✅ App is a runtime component like others
+- ✅ Multiple apps or two instances of the same app have independent state
+- ✅ Callback for Alt-Click events
+- ✅ Can highlight elements with a given id
+- ✅ Shows error if error in code
+- ✅ Shows error if URL does not load
+- ✅ Rewrites special URLs (dropbox)
+- ✅ Integration tests working again
+- ✅ Upgrade to React 18

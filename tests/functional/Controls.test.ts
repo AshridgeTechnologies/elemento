@@ -14,6 +14,12 @@ const insertMenu_Data = 'ul[role="menu"] :text("Data")'
 const insertMenu_Page = 'ul[role="menu"] :text("Page")'
 const yesOption = 'li[role="option"]:text("Yes")'
 
+const getAppFrame = async (page: PWPage) => {
+    await page.locator('iframe[name="appFrame"]').waitFor();
+    return page.frame('appFrame') as Frame
+}
+
+
 test.describe('Controls can be used', () => {
 
     const project = new Project('project1', 'Project One', {}, [new App('app1', 'App One', {}, [
@@ -33,7 +39,6 @@ test.describe('Controls can be used', () => {
 
     test('button', async ({ page }) => {
         await page.goto(runtimeRootUrl)
-        const appFrame = page.frame('appFrame') as Frame
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -43,12 +48,13 @@ test.describe('Controls can be used', () => {
         expect(await page.textContent(treeItem(3))).toBe('Button 1')
 
         await page.fill('input#content', 'A button!')
+
+        const appFrame = await getAppFrame(page)
         expect(await appFrame.textContent('button >> nth=0')).toBe('A button!')
     })
 
     test('number input', async ({ page }) => {
         await page.goto(runtimeRootUrl)
-        const appFrame = page.frame('appFrame') as Frame
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -58,12 +64,12 @@ test.describe('Controls can be used', () => {
         expect(await page.textContent(treeItem(3))).toBe('Number Input 1')
 
         await page.fill('input#initialValue', '99')
+        const appFrame = await getAppFrame(page)
         expect(await appFrame.inputValue('input >> nth=0')).toBe('99')
     })
 
     test('select input', async ({ page }) => {
         await page.goto(runtimeRootUrl)
-        const appFrame = page.frame('appFrame') as Frame
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -74,12 +80,12 @@ test.describe('Controls can be used', () => {
 
         await page.fill('input#values', 'Blue, Red')
         await page.fill('input#initialValue', 'Red')
+        const appFrame = await getAppFrame(page)
         expect(await appFrame.inputValue('input >> nth=0')).toBe('Red')
     })
 
     test('true false input', async ({ page }) => {
         await page.goto(runtimeRootUrl)
-        const appFrame = page.frame('appFrame') as Frame
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -90,12 +96,12 @@ test.describe('Controls can be used', () => {
 
         await page.click('#initialValue')
         await page.click(yesOption)
+        const appFrame = await getAppFrame(page)
         expect(await appFrame.isChecked('input >> nth=0')).toBe(true)
     })
 
     test('data', async ({ page }) => {
         await page.goto(runtimeRootUrl)
-        const appFrame = page.frame('appFrame') as Frame
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -107,6 +113,7 @@ test.describe('Controls can be used', () => {
         await page.fill('input#initialValue', 'Some data')
         await page.click('#display')
         await page.click(yesOption)
+        const appFrame = await getAppFrame(page)
         expect(await appFrame.textContent('div[id="AppOne.ControlTestPage.Data1"] code')).toBe(`'Some data'`)
     })
 

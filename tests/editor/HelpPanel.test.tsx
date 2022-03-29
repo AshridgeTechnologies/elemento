@@ -3,12 +3,9 @@
  */
 
 import React from 'react'
-import {act, fireEvent, render, screen} from '@testing-library/react'
-
-import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
-// import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {actWait, treeItemLabels} from '../testutil/testHelpers'
+import {fireEvent, render} from '@testing-library/react'
 import HelpPanel from '../../src/editor/HelpPanel'
+import {actWait} from '../testutil/rtlHelpers'
 
 window.HTMLElement.prototype.scrollIntoView = function() {}
 

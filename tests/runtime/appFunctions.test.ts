@@ -1,18 +1,13 @@
-import {act} from 'react-test-renderer'
-import {updateState} from '../../src/runtime/appData'
-
 import appFunctions from '../../src/runtime/appFunctions'
-import {stateFor} from '../testutil/testHelpers'
 
-const {Reset, ShowPage, Set, Update} = appFunctions
+const _updateApp = jest.fn()
+const {Reset, ShowPage, Set, Update} = appFunctions( {_updateApp} )
+
+beforeEach( ()=> jest.resetAllMocks() )
 
 test('ShowPage _updates current page app state', () => {
-    act(() => {
-        updateState('app._data', {currentPage: 'Main'})
-    })
-    expect(stateFor('app._data')).toStrictEqual({currentPage: 'Main'})
-    act(() => ShowPage('Other'))
-    expect(stateFor('app._data')).toStrictEqual({currentPage: 'Other'})
+    ShowPage('Other')
+    expect(_updateApp).toHaveBeenCalledWith({_data: {currentPage: 'Other'}})
 })
 
 test('Reset sets value to undefined', () => {

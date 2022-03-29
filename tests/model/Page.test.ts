@@ -1,10 +1,8 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
-import Project from '../../src/model/Project'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

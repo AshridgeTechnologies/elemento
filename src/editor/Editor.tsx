@@ -32,7 +32,8 @@ const treeData = (project: Project): ModelTreeItem => {
     return treeNodeFromElement(project)
 }
 
-export default function Editor({project,
+export default function Editor({
+                                   project,
                                    onChange,
                                    onInsert,
                                    onAction,
@@ -56,11 +57,11 @@ export default function Editor({project,
         return null
     }
 
-    function insertMenuItems() : ElementType[] {
+    function insertMenuItems(): ElementType[] {
         if (selectedItemId) {
             const element = app.findElement(selectedItemId)
             if (element) {
-                const allItems = ['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] as ElementType[]
+                const allItems = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] as ElementType[]
                 if (Page.is(element)) {
                     return allItems
                 } else {
@@ -79,18 +80,16 @@ export default function Editor({project,
 
     const onHelp = () => setHelpVisible(!helpVisible)
 
-    const onTreeAction = ({action, id}: { action: AppElementAction, id: string | number }) => { onAction(id.toString(), action)}
+    const onTreeAction = ({action, id}: { action: AppElementAction, id: string | number }) => {
+        onAction(id.toString(), action)
+    }
 
     const appFrameRef = useRef<HTMLIFrameElement>(null);
 
-    function handleAppFrameClick(event: PointerEvent) {
-        if (event.altKey) {
-            const path = (event.target as HTMLElement).id
-            const element = app.findElementByPath(path)
-            if (element) {
-                setSelectedItemId(element.id)
-                event.preventDefault()
-            }
+    function handleComponentSelected(id: string) {
+        const element = app.findElementByPath(id)
+        if (element) {
+            setSelectedItemId(element.id)
         }
     }
 
@@ -100,9 +99,9 @@ export default function Editor({project,
             const setAppCode = appWindow['setAppCode' as keyof Window]
             if (setAppCode) {
                 setAppCode(generate(app).code)
-                const setEventListenerFn = appWindow['setAppEventListener' as keyof Window]
+                const setEventListenerFn = appWindow['setComponentSelectedListener' as keyof Window]
                 if (setEventListenerFn) {
-                    setEventListenerFn('click', handleAppFrameClick)
+                    setEventListenerFn(handleComponentSelected)
                     return true
                 }
             }
@@ -182,7 +181,7 @@ export default function Editor({project,
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
                     <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
-                        <iframe name='appFrame' src="/run/index.html" ref={appFrameRef}
+                        <iframe name='appFrame' src="/run?editorPreview" ref={appFrameRef}
                                 style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                     </Box>
                 </Grid>

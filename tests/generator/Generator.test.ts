@@ -4,11 +4,11 @@ import Text from '../../src/model/Text';
 import Button from '../../src/model/Button';
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
-import {ex} from '../../src/util/helpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
+import {ex} from '../testutil/testHelpers'
 
 test('generates app and all page output files', ()=> {
     const app = new App('t1', 'App 1', {}, [
@@ -48,7 +48,7 @@ test('generates app and all page output files', ()=> {
 }
 `)
     expect(gen.output().files[2].name).toBe('appMain.js')
-    expect(gen.output().files[2].content).toBe(`function AppMain(props) {
+    expect(gen.output().files[2].content).toBe(`export default function AppMain(props) {
 
     const appPages = {Page1, Page2}
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
@@ -61,7 +61,7 @@ test('generates app and all page output files', ()=> {
 
 })
 
-test('can get all code in one string from the output', function () {
+test('can get all code in one string from the output with imports and export', function () {
     const app = new App('t1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
@@ -74,7 +74,10 @@ test('can get all code in one string from the output', function () {
 
     const output = generate(app)
 
-    expect(output.code).toBe(`// Page1.js
+    expect(output.code).toBe(`import React from 'react'
+import Elemento from 'elemento-runtime'
+
+// Page1.js
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const state = Elemento.useObjectStateWithDefaults(props.path, {})
@@ -95,7 +98,7 @@ function Page2(props) {
 }
 
 // appMain.js
-function AppMain(props) {
+export default function AppMain(props) {
 
     const appPages = {Page1, Page2}
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
@@ -353,7 +356,7 @@ test('app functions and Page names available in expression', ()=> {
     const pathWith = name => props.path + '.' + name
     const state = Elemento.useObjectStateWithDefaults(props.path, {})
     const {Page, Button} = Elemento.components
-    const {ShowPage} = Elemento.appFunctions
+    const {ShowPage} = Elemento.appFunctions(state)
     const Page2 = 'Page2'
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),

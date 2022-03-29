@@ -1,69 +1,39 @@
-import renderer from 'react-test-renderer'
-import React, {FunctionComponent} from 'react'
-import TextElement from '../../src/runtime/components/TextElement'
+/**
+ * @jest-environment jsdom
+ */
+
 import Text from '../../src/model/Text'
 import App from '../../src/model/App'
-import Generator from '../../src/generator/Generator'
+import {generate} from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
-import RuntimePage from '../../src/runtime/components/Page'
-import {useObjectStateWithDefaults} from '../../src/runtime/appData'
-import {ex} from '../../src/util/helpers'
+import {ex} from '../testutil/testHelpers'
+import {runAppFromWindowUrl} from '../../src/runtime/AppMain'
+import {containerFunctions} from '../testutil/elementHelpers'
+import '@testing-library/jest-dom'
+import {act} from '@testing-library/react'
+import {wait} from '../testutil/rtlHelpers'
 
-let makeComponentFunction = function (functionCode: string) {
-    const functionBody = functionCode.replace(/^function \w+.*/m, '').replace(/^}$/m, '').trim()
-    return new Function('props', functionBody) as FunctionComponent
-}
-
-// TODO fix when app runner component done
-test.skip('generated Page creates React element with correct structure', ()=> {
-
-    const app = new App('t1', 'test1', {}, [
-        new Page('p1', 'Page 1', {}, [
-            new Text('id1', 't1', {content: ex`"Hi there!"`}),
-            new Text('id1', 't2', {content: ex`2 + 2`}),
-        ])])
-
-    const gen = new Generator(app)
-    expect(gen.output().files[0].name).toBe('Page1.js')
-    const PageComponent = makeComponentFunction(gen.output().files[0].content)
-
-    global.React = React
+afterEach(() => {
     // @ts-ignore
-    global.TextElement = TextElement
-    // @ts-ignore
-    global.Page = RuntimePage
-    // @ts-ignore
-    global.useObjectStateWithDefaults = useObjectStateWithDefaults
-    // @ts-ignore
-    const component = renderer.create(React.createElement(PageComponent, {path: 'app.Page1'}))
-    let tree = component.toJSON()
-    expect(tree).toMatchSnapshot()
+    global.fetch = undefined
 })
 
-test.skip('generated AppMain creates React elements with correct structure', ()=> {
+test('generated app can be shown in runner page', async ()=> {
 
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('id1', 't1', {content: ex`"Hi there!"`}),
-            new Text('id1', 't2', {content: ex`2 + 2`}),
+            new Text('text1', 'Text 1', {content: ex`"Hi there!"`}),
+            new Text('text2', 'Text 2', {content: ex`2 + 2`}),
         ])])
 
-    const gen = new Generator(app)
-    expect(gen.output().files[1].name).toBe('appMain.js')
+    const theAppCode = generate(app).code
+    // @ts-ignore
+    global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
-    const Page1 = makeComponentFunction(gen.output().files[0].content)
-    const AppMain = makeComponentFunction(gen.output().files[1].content)
+    await act( () => runAppFromWindowUrl('/https://some.funky.app'))
+    await act( () => wait(20) )
 
-    global.React = React
-    // @ts-ignore
-    global.Page = RuntimePage
-    // @ts-ignore
-    global.TextElement = TextElement
-    // @ts-ignore
-    global.Page1 = Page1
-    // @ts-ignore
-    global.useObjectStateWithDefaults = useObjectStateWithDefaults
-    const component = renderer.create(React.createElement(AppMain))
-    let tree = component.toJSON()
-    expect(tree).toMatchSnapshot()
+    const {expectEl} = containerFunctions(document.getElementById('main') as HTMLElement)
+    expectEl('Text1').toHaveTextContent('Hi there!')
+    expectEl('Text2').toHaveTextContent(/^4$/)
 })

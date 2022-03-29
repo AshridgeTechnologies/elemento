@@ -1,8 +1,7 @@
 import SelectInput from '../../src/model/SelectInput'
 import Page from '../../src/model/Page'
-import {asJSON} from '../testutil/testHelpers'
+import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ex} from '../../src/util/helpers'
 
 test('SelectInput has correct properties', ()=> {
     const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`Select One`})

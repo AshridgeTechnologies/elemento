@@ -3,10 +3,11 @@
  */
 
 import {createElement} from 'react'
-import {Button} from '../../src/runtime/components'
-import {componentJSON, snapshot, stateVal, testContainer, wait} from '../testutil/testHelpers'
+import {Button} from '../../../src/runtime/components/index'
+import {componentJSON, snapshot, stateVal} from '../../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
-import {globalFunctions} from '../../src/runtime/globalFunctions'
+import {globalFunctions} from '../../../src/runtime/globalFunctions'
+import {testContainer, wait} from '../../testutil/rtlHelpers'
 
 const {Log} = globalFunctions
 

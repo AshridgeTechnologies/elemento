@@ -2,11 +2,12 @@
  * @jest-environment jsdom
  */
 
-import {actWait, treeItemLabels} from '../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import React from 'react'
 import AutoRunMain from '../../src/autorun/AutoRunMain'
 import {editorAutorunFixture1} from '../testutil/autorunFixtures'
+import {actWait} from '../testutil/rtlHelpers'
+import {treeItemLabels} from '../testutil/testHelpers'
 
 let container: any = null
 
