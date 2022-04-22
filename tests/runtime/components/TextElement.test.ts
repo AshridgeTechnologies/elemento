@@ -14,10 +14,12 @@ test('TextElement element produces output containing undefined children',
 )
 
 test('TextElement element produces output containing string version of object children',
+    // @ts-ignore
     snapshot(createElement(TextElement, {path: 'page1.para1'}, {a:10}, {c: 'Hi'}))
 )
 
 test('TextElement element produces output containing string version of function children',
+    // @ts-ignore
     snapshot(createElement(TextElement, {path: 'page1.para1'}, Sum))
 )
 

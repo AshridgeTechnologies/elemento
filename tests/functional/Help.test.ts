@@ -1,7 +1,6 @@
 import {expect, test} from '@playwright/test'
 
-// Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio/'
+const pageUrl = '/studio'
 
 const helpButton = 'button#help'
 const helpPanel = '#helpPanel'
@@ -10,7 +9,7 @@ const helpPanelText = `${helpPanel} .helpText`
 const helpPanelClose = `${helpPanel} .closeButton`
 
 test('open help panel and hide it', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
 
     await expect(page.locator(helpPanel)).toBeHidden()
     await page.click(helpButton)
@@ -23,7 +22,7 @@ test('open help panel and hide it', async ({ page }) => {
 })
 
 test('help panel contents scrolls to help item', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await page.click(helpButton)
 
     const itemContentLink = (itemTitle: string) => `${helpPanel} .helpContent >> text=${itemTitle}`
@@ -48,5 +47,4 @@ test('help panel contents scrolls to help item', async ({ page }) => {
     await page.click(itemContentLink(secondLevelItemTitle))
     await expect(page.locator(helpItem(secondLevelItemTitle, 'h5'))).toBeVisible()
     await page.waitForFunction(isScrolledToTopInPage, `${helpPanelText}|#help-control-properties`, {timeout: 3000})
-
 })

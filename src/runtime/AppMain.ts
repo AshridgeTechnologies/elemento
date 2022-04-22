@@ -5,25 +5,25 @@ import AppRunnerFromCode from './AppRunnerFromCode'
 import {welcomeAppCode} from '../util/welcomeProject'
 import AppRunnerForPreview from './AppRunnerForPreview'
 
-type Properties = {windowUrlPath: string, windowUrlQuery: string}
+type Properties = {windowUrlPath: string}
 
-export default function AppMain({windowUrlPath, windowUrlQuery}: Properties) {
-    const path = windowUrlPath.substring(1)
-    const query = windowUrlQuery.substring(1)
-    const pathMatch = path.match(/https?:\/\/.+$/)
-    if (pathMatch) {
-        return createElement(AppRunnerFromUrl, {appCodeUrl: pathMatch[0]})
-    } else if (query.includes('editorPreview')) {
+export default function AppMain({windowUrlPath}: Properties) {
+    const path = decodeURIComponent(windowUrlPath)
+    const webMatch = path.match(/\/web\/(.+)$/)
+    if (webMatch) {
+        const appCodeUrl = `https://${webMatch[1]}`
+        return createElement(AppRunnerFromUrl, {appCodeUrl})
+    } else if (path.match(/\/editorPreview$/)) {
         return createElement(AppRunnerForPreview, {})
     } else {
         return createElement(AppRunnerFromCode, {appCode: welcomeAppCode()})
     }
 }
 
-export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, windowUrlQuery: string = location.search, containerElementId: string = 'main') => {
+export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, containerElementId: string = 'main') => {
     const container = document.createElement('div')
     container.id = containerElementId
     document.body.appendChild(container)
     const root = createRoot(container)
-    root.render(React.createElement(AppMain, {windowUrlPath, windowUrlQuery}))
+    root.render(React.createElement(AppMain, {windowUrlPath}))
 }

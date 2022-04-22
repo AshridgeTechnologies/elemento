@@ -2,13 +2,12 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "compile": "tsc && cp src/html/studio/index.html build/src/studio/index.html && cp src/html/run/index.html build/src/run/index.html",
+    "compile": "tsc && cp src/appswebsite/studio/index.html build/src/studio/index.html && cp src/appswebsite/run/index.html build/src/run/index.html",
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
-    "build": "parcel build src/html/run/index.html src/html/studio/index.html",
-    "serve": "parcel src/html/run/index.html src/html/studio/index.html",
-    "serveruntime": "parcel -p 1235 src/html/run/index.html",
+    "build": "parcel build src/appswebsite/index.html src/appswebsite/run/index.html src/appswebsite/studio/index.html src/appswebsite/terms/index.html src/appswebsite/privacy/index.html",
+    "serve": "parcel --dist-dir devDist src/appswebsite/index.html src/appswebsite/run/index.html src/appswebsite/studio/index.html src/appswebsite/terms/index.html src/appswebsite/privacy/index.html",
     "functest": "playwright test"
   },
   "devDependencies": {
@@ -38,12 +37,15 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.65",
     "@mui/material": "^5.0.6",
+    "firebase": "^9.6.11",
+    "firebase-tools": "^10.7.0",
     "lodash": "^4.17.21",
     "ramda": "^0.27.1",
     "rc-tree": "^5.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-error-boundary": "^3.1.4",
+    "react-firebaseui": "^6.0.0",
     "react-split-pane": "^0.1.92",
     "recast": "^0.20.5",
     "zustand": "^3.6.5"

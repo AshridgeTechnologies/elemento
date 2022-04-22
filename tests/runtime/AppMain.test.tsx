@@ -45,7 +45,7 @@ afterEach(() => {
     global.fetch = undefined
 })
 
-const appMain = (windowUrlPath: string, windowUrlQuery = '') => createElement(AppMain, {windowUrlPath, windowUrlQuery})
+const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
 
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = {} as any
 beforeEach(() => {
@@ -53,13 +53,19 @@ beforeEach(() => {
 })
 
 test('runs app from url at end of window location path', async () => {
-    renderIt(appMain('/runner/https://some.code/app.js'))
+    renderIt(appMain('/runner/web/some.code/app.js'))
     await act(() => wait(20))
     expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
 })
 
-test('runs in editor preview mode if search string found', async () => {
-    renderIt(appMain('/runner', '?editorPreview'))
+test('runs app from encoded url at end of window location path', async () => {
+    renderIt(appMain('/runner/web/some.code%2fapp.js'))
+    await act(() => wait(20))
+    expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
+})
+
+test('runs in editor preview mode if path found', async () => {
+    renderIt(appMain('/runner/editorPreview'))
     await act( () => wait(20) )
     expect(global.setAppCode).not.toBeUndefined()
 })

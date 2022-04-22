@@ -1,7 +1,11 @@
 build
 dist
+devDist
+private
 node_modules
 *.log
 .parcel-cache
 coverage
 /tempTestFiles/
+/.firebase/
+

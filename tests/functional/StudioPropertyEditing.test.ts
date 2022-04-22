@@ -2,8 +2,7 @@ import {expect, Page, test} from '@playwright/test'
 import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
 import {projectFixture1} from '../testutil/projectFixtures'
 
-// Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio'
+const pageUrl = '/studio'
 
 let openMainPage = async function (page: Page) {
     await page.click(treeExpand(0))
@@ -13,7 +12,7 @@ let openMainPage = async function (page: Page) {
 }
 
 test('can edit element properties', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
 
     await openMainPage(page)
@@ -31,7 +30,7 @@ test('can edit element properties', async ({ page }) => {
 })
 
 test('can edit page properties', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     await page.click(treeExpand(0))
     await page.click(treeExpand(1))
@@ -51,7 +50,7 @@ test('can edit page properties', async ({ page }) => {
 })
 
 test('can edit project properties', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     expect(await page.textContent(treeItem(0))).toBe('Project One')
 

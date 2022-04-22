@@ -1,8 +1,8 @@
 import {expect, Frame, Page, test} from '@playwright/test';
 import {treeExpand, treeItem} from './playwrightHelpers'
+import {waitUntil} from '../testutil/testHelpers'
 
-// Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio'
+const pageUrl = '/studio'
 
 let openMainPage = async (page: Page) => {
     await page.click(treeExpand(0))
@@ -11,20 +11,16 @@ let openMainPage = async (page: Page) => {
     expect(await page.textContent(treeItem(5))).toBe('Third Text')
 }
 
-const getAppFrame = async (page: Page) => {
-    await page.locator('iframe[name="appFrame"]').waitFor();
-    return page.frame('appFrame') as Frame
-}
+const getAppFrame = (page: Page) => waitUntil(() => page.frame('appFrame') as Frame)
 
 test('app shown in frame', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
-
 })
 
 test('Selecting element in editor highlights in the running app', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))
 
@@ -43,7 +39,7 @@ test('Selecting element in editor highlights in the running app', async ({ page 
 } )
 
 test('Changes to app definition show immediately in the running app', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
 
@@ -59,7 +55,7 @@ test('Changes to app definition show immediately in the running app', async ({ p
 } )
 
 test('Formulas in app definition update the running app immediately', async ({ page })=> {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
 
@@ -75,7 +71,7 @@ test('Formulas in app definition update the running app immediately', async ({ p
     expect(await appFrame.textContent('p >> nth=2')).toBe('68 things')
 })
 test('Invalid formula in app definition shows empty content in the running app until corrected', async ({ page })=> {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
     await openMainPage(page)
@@ -91,7 +87,7 @@ test('Invalid formula in app definition shows empty content in the running app u
 })
 
 test('Global functions can be used in formulas', async ({ page })=> {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
 

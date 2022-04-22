@@ -181,7 +181,7 @@ export default function Editor({
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
                     <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
-                        <iframe name='appFrame' src="/run?editorPreview" ref={appFrameRef}
+                        <iframe name='appFrame' src="/run/editorPreview" ref={appFrameRef}
                                 style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                     </Box>
                 </Grid>

@@ -6,7 +6,7 @@ import {projectFixture1} from '../testutil/projectFixtures'
 import {ex} from '../testutil/testHelpers'
 
 // Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio'
+const pageUrl = '/studio'
 
 // mock selecting the app file
 const installMockFilePickers = (app: any) => {
@@ -51,7 +51,7 @@ let openMainPage = async function (page: Page) {
 }
 
 test('load app from file into editor', async ({page}) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
 
     await page.evaluate( installMockFilePickers, projectFixture1())
 
@@ -68,7 +68,7 @@ test('load app from file into editor', async ({page}) => {
 })
 
 test('save previously loaded app to file', async ({page}) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
 
     await page.evaluate( installMockFilePickers, projectFixture1())
 
@@ -95,7 +95,7 @@ test('save previously loaded app to file', async ({page}) => {
 })
 
 test('save new app to file', async ({page}) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await page.evaluate( installMockFilePickers, {})
 
     // expect editorInitialApp to be loaded
@@ -118,7 +118,7 @@ test('save new app to file', async ({page}) => {
 })
 
 test('error message if cannot read app from file', async ({page}) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await page.evaluate(installMockFilePickers, {})
     await page.click(fileMenu)
     await page.click(fileMenu_Open)

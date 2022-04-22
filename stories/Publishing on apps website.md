@@ -1,6 +1,7 @@
 Publishing on apps website
 --------------------------
 
+- Apps are given a unique id when created/saved
 - Editor can load code to cloud storage
 - Editor can save app code to a file
 - Publish or update the code

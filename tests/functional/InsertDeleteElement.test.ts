@@ -3,8 +3,7 @@ import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
 import {projectFixture1} from '../testutil/projectFixtures'
 import {Page as PWPage} from 'playwright-core'
 
-// Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio'
+const pageUrl = '/studio'
 
 const insertMenu = 'text=Insert'
 const insertMenu_Text = 'ul[role="menu"] :text("Text")'
@@ -21,7 +20,7 @@ let selectMainPage = async function (page: PWPage) {
 
 
 test('can add element as first element when page selected', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     await selectMainPage(page)
     await page.click(treeItem(2))
@@ -33,7 +32,7 @@ test('can add element as first element when page selected', async ({ page }) => 
 })
 
 test('can add element after selected element', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     await selectMainPage(page)
     await page.click(treeItem(3))
@@ -48,7 +47,7 @@ test('can add element after selected element', async ({ page }) => {
 })
 
 test('can delete element', async ({ page }) => {
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     await selectMainPage(page)
 

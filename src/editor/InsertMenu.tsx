@@ -52,5 +52,5 @@ export default function InsertMenu({onInsert, items}: {onInsert: OnInsertFn, ite
                 <Alert severity="warning">Please select the item you want to insert after</Alert>
             </Popover>
         </div>
-    );
+    )
 }

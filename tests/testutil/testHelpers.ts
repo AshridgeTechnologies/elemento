@@ -18,7 +18,7 @@ export const componentProps = (domElement: any) => {
 
 export const stateVal = (value: any, path = 'path.x') => testProxy(path, {value})
 
-const dummyUpdateFn = (path: string, changes: object, replace?: boolean) => {
+const dummyUpdateFn = () => {
     throw new Error('Dummy update fn called')
 }
 export const testProxy = (path: string, storedState: object | undefined, initialValuesAndDefaults: object = {}) => stateProxy(path, storedState, initialValuesAndDefaults, dummyUpdateFn)
@@ -62,3 +62,33 @@ export const treeItemLabels = (container: any) => {
     const treeNodesShown = container.querySelectorAll(treeItemSelector)
     return [...treeNodesShown.values()].map((it: any) => it.textContent)
 }
+
+export const waitUntil = (fn: () => any, time = 1000, wait = 10000) => {
+    const startTime = new Date().getTime();
+    try {
+        const result = fn()
+        if (result) {
+            return Promise.resolve(result)
+        } else {
+            return new Promise((resolve, reject) => {
+                const timer = setInterval(() => {
+                    try {
+                        const result = fn()
+                        if (result) {
+                            clearInterval(timer);
+                            resolve(result);
+                        } else if (new Date().getTime() - startTime > wait) {
+                            clearInterval(timer);
+                            reject(new Error('Max wait reached'));
+                        }
+                    } catch (e) {
+                        clearInterval(timer);
+                        reject(e);
+                    }
+                }, time);
+            });
+        }
+    } catch (e) {
+        return Promise.reject(e);
+    }
+};

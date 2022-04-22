@@ -1,8 +1,7 @@
 import {expect, Frame, test} from '@playwright/test'
 import {treeItem} from '../editor/Selectors'
 
-// Expects test server such as Parcel dev server running on port 1234
-const autorunRootUrl = 'http://localhost:1234/autorun/index.html'
+const autorunRootUrl = '/autorun/index.html'
 
 test.skip('Shows autorun with steps and description and navigates', async ({ page }) => {
 

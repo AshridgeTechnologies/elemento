@@ -2,8 +2,7 @@ import {expect, Frame, test, Page as PWPage} from '@playwright/test';
 import {Project, App, Page, TextInput} from '../../src/model/index'
 import {loadProject, treeItem, treeExpand} from './playwrightHelpers'
 
-// Expects test server such as Parcel dev server running on port 1234
-const runtimeRootUrl = 'http://localhost:1234/studio'
+const pageUrl = '/studio'
 
 const insertMenu = 'text=Insert'
 const insertMenu_Button = 'ul[role="menu"] :text("Button")'
@@ -18,7 +17,6 @@ const getAppFrame = async (page: PWPage) => {
     await page.locator('iframe[name="appFrame"]').waitFor();
     return page.frame('appFrame') as Frame
 }
-
 
 test.describe('Controls can be used', () => {
 
@@ -38,7 +36,7 @@ test.describe('Controls can be used', () => {
     }
 
     test('button', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -54,7 +52,7 @@ test.describe('Controls can be used', () => {
     })
 
     test('number input', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -69,7 +67,7 @@ test.describe('Controls can be used', () => {
     })
 
     test('select input', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -85,7 +83,7 @@ test.describe('Controls can be used', () => {
     })
 
     test('true false input', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -101,7 +99,7 @@ test.describe('Controls can be used', () => {
     })
 
     test('data', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)
@@ -118,7 +116,7 @@ test.describe('Controls can be used', () => {
     })
 
     test('new page', async ({ page }) => {
-        await page.goto(runtimeRootUrl)
+        await page.goto(pageUrl)
 
         await loadProject(page, project)
         await selectControlTestPage(page)

@@ -3,19 +3,18 @@ import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import App from '../../src/model/App'
 import {generate} from '../../src/generator/Generator'
 
-// Expects test server such as Parcel dev server running on port 1234 at top level
-const runtimeRootUrl = 'http://localhost:1234/run/'
+const pageUrl = '/run'
 
 test('welcome app shows elements on page', async ({ page }) => {
 
-    await page.goto(runtimeRootUrl)
+    await page.goto(pageUrl)
     expect(await page.textContent('p >> nth=0')).toBe('Welcome to Elemento!')
     expect(await page.textContent('p >> nth=1')).toBe('The future of low code programming')
 })
 
 test('can set app on page', async ({ page }) => {
 
-    await page.goto(runtimeRootUrl+ '?editorPreview')
+    await page.goto(pageUrl+ '/editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture1().elementArray()[0] as App).code)
 
@@ -24,7 +23,7 @@ test('can set app on page', async ({ page }) => {
 
 test('shows TextInput elements', async ({ page }) => {
 
-    await page.goto(runtimeRootUrl+ '?editorPreview')
+    await page.goto(pageUrl+ '/editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture2().elementArray()[0] as App).code)
 
@@ -32,7 +31,7 @@ test('shows TextInput elements', async ({ page }) => {
 })
 
 test('can show pages', async ({ page }) => {
-    await page.goto(runtimeRootUrl+ '?editorPreview')
+    await page.goto(pageUrl+ '/editorPreview')
 
     await page.evaluate( (appCode: string) => window.setAppCode(appCode), generate(projectFixture2().elementArray()[0] as App).code)
     expect(await page.textContent('p >> nth=0')).toBe('Page One')
@@ -45,13 +44,11 @@ test('can show pages', async ({ page }) => {
 })
 
 test('can load app from web', async ({ page }) => {
-
-    await page.goto(runtimeRootUrl+ 'https://www.dropbox.com/s/vqvwpfub8m4r9ni/AppOne.js?dl=0')
+    await page.goto(pageUrl+ '/web/www.dropbox.com/s/vqvwpfub8m4r9ni/AppOne.js?dl=0')
     expect(await page.textContent('p[id="AppOne.MainPage.FirstText"]')).toBe('This is App One')
 })
 
 test('shows error if cannot load app from web', async ({ page }) => {
-
-    await page.goto(runtimeRootUrl+ 'https://www.dropbox.com/s/xxx/AppOne.js?dl=0')
+    await page.goto(pageUrl+ '/web/www.dropbox.com/s/xxx/AppOne.js?dl=0')
     expect(await page.textContent('div.MuiAlertTitle-root')).toBe('Invalid app code')
 })
