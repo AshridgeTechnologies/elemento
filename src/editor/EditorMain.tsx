@@ -138,7 +138,7 @@ const onPublish = async ({name, code}: {name: string, code: string}) => {
     if(user === null) {
         throw new Error('Must be logged in to publish')
     }
-    const publishPath = `code/${user.uid}/${publishName}`
+    const publishPath = `apps/${user.uid}/${publishName}`
     const storageRef = ref(storage, publishPath)
     const metadata = {
         contentType: 'text/javascript',

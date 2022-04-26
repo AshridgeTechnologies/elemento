@@ -41,3 +41,29 @@ export function projectFixture2() {
     ])
     return new Project('project_1', 'Project One', {}, [app])
 }
+
+export const appCode1 = (url: string) => `
+import React from 'react'
+import Elemento from 'elemento-runtime'
+
+function MainPage(props) {
+    const pathWith = (name) => props.path + '.' + name
+    // const state = Elemento.useObjectStateWithDefaults(props.path, {})
+    const {Page, TextElement} = Elemento.components
+    // @ts-ignore
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('FirstText')}, "This is App One from ${url}"),
+    )
+}
+
+export default function AppOne(props) {
+
+    const appPages = {MainPage}
+    // const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = {currentPage: 'MainPage'} //appState
+    return React.createElement('div', {id: 'AppOne'},
+        React.createElement(appPages[currentPage], {path: \`AppOne.\${currentPage}\`})
+    )
+}
+
+`

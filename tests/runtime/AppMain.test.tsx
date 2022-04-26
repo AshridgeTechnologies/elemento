@@ -8,36 +8,20 @@ import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {addContainer} from '../testutil/elementHelpers'
 import {wait} from '../testutil/rtlHelpers'
+import {appCode1} from '../testutil/projectFixtures'
 
-const appCode = (url: string) => `
-import React from 'react'
-import Elemento from 'elemento-runtime'
+import {getDownloadURL} from 'firebase/storage'
 
-function MainPage(props) {
-    const pathWith = (name) => props.path + '.' + name
-    // const state = Elemento.useObjectStateWithDefaults(props.path, {})
-    const {Page, TextElement} = Elemento.components
-    // @ts-ignore
-    return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('FirstText')}, "This is App One from ${url}"),
-    )
+jest.mock('firebase/storage')
+
+function mockDownloadURL(path: string) {
+    const mock_getDownloadURL = getDownloadURL as jest.MockedFunction<any>
+    mock_getDownloadURL.mockResolvedValue(`https://firebase.storage/${path}`)
 }
-
-export default function AppOne(props) {
-
-    const appPages = {MainPage}
-    // const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
-    const {currentPage} = {currentPage: 'MainPage'} //appState
-    return React.createElement('div', {id: 'AppOne'},
-        React.createElement(appPages[currentPage], {path: \`AppOne.\${currentPage}\`})
-    )
-}
-
-`
 
 beforeEach(() => {
     // @ts-ignore
-    global.fetch = jest.fn((url) => Promise.resolve( {text: () => wait(10).then( () => appCode(url) )}))
+    global.fetch = jest.fn((url) => Promise.resolve( {text: () => wait(10).then( () => appCode1(url) )}))
 })
 
 afterEach(() => {
@@ -62,6 +46,13 @@ test('runs app from encoded url at end of window location path', async () => {
     renderIt(appMain('/runner/web/some.code%2fapp.js'))
     await act(() => wait(20))
     expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
+})
+
+test('runs app from storage location at end of window location path', async () => {
+    mockDownloadURL('apps/xxx222/myApp.js')
+    renderIt(appMain('/runner/apps/xxx222/myApp.js'))
+    await act(() => wait(20))
+    expect(el`FirstText`).toHaveTextContent('This is App One from https://firebase.storage/apps/xxx222/myApp.js')
 })
 
 test('runs in editor preview mode if path found', async () => {

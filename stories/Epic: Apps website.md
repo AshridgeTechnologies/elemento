@@ -6,5 +6,5 @@ Apps website
 - ✅ Initial apps website 
 - ✅ Studio on apps website
 - ✅ Publishing on apps website
-- Running from apps website (inc separate runtime lib)
+- ✅ Running from apps website (inc separate runtime lib)
 

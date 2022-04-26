@@ -5,7 +5,7 @@ export default function AppLoadError({appUrl, error}: {appUrl: string, error: Er
     return (
         <Alert id='errorMessage' severity="error">
             <AlertTitle>App loading problem</AlertTitle>
-            <p>Elemento was unable to load an app from this web location:</p>
+            <p>Elemento was unable to load an app from this location:</p>
             <p>{appUrl}</p>
             <p>Error message: {error.message}</p>
         </Alert>)

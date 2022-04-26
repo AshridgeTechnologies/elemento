@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://elemento-apps.web.app", "http://localhost:1234"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  }
+]
