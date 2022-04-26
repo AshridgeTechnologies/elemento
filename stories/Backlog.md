@@ -7,7 +7,6 @@ Bugs
 
 Stories
 -------
-- Apps website
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -70,3 +69,4 @@ Done
 - Formula improvements Part 2
 - General usability Part 1
 - Project and App shown in nav tree
+- Apps website
