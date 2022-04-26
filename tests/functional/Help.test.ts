@@ -34,8 +34,7 @@ test('help panel contents scrolls to help item', async ({ page }) => {
         const elementPos = document.querySelector(el)!.getBoundingClientRect().top
 
         const difference = elementPos - containerPos
-        const result = difference > 0 && difference < 20
-        return result
+        return difference > 0 && difference < 20
     }
 
     const topLevelItemTitle = 'Controls'
