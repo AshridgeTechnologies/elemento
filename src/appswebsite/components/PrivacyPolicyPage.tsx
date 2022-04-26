@@ -1,12 +1,12 @@
 import React from 'react'
 import {Box, Stack, Typography} from '@mui/material'
-import AppBar from './AppBar'
+import AppBar from '../../shared/AppBar'
 
 export default function PrivacyPolicyPage() {
 
     return <Box display='flex' flexDirection='column' height='100%' width='100%'>
         <Box flex='0'>
-            <AppBar/>
+            <AppBar title='Privacy Policy'/>
         </Box>
         <Box flex='1' minHeight={0}>
             <Stack spacing={2}>

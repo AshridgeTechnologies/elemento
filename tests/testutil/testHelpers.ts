@@ -63,7 +63,7 @@ export const treeItemLabels = (container: any) => {
     return [...treeNodesShown.values()].map((it: any) => it.textContent)
 }
 
-export const waitUntil = (fn: () => any, time = 1000, wait = 10000) => {
+export const waitUntil = <T>(fn: () => T, time = 1000, wait = 10000): Promise<T> => {
     const startTime = new Date().getTime();
     try {
         const result = fn()

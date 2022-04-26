@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react'
 import {createRoot} from 'react-dom/client'
 import {createTheme, ThemeProvider} from '@mui/material/styles'
-import {Alert, AlertTitle} from '@mui/material'
+import {Alert, AlertColor, AlertTitle, Link} from '@mui/material'
 import Editor from './Editor'
 import {editorInitialProject} from '../util/welcomeProject'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -9,10 +9,13 @@ import {ElementId, ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import Project from '../model/Project'
+import {camelCase} from 'lodash'
+import {getAuth, storage} from '../shared/configuredFirebase'
+import {ref, uploadString} from 'firebase/storage'
 
 let theProject = editorInitialProject()
 let loadedFileHandle: any = null
-let errorMessage: ReactElement | null = null
+let alertMessage: ReactElement | null = null
 
 declare global {
     var project: () => Project
@@ -60,14 +63,14 @@ const onAction = (id: ElementId, action: AppElementAction) => {
 
 const userCancelledFilePick = (e:any) => e instanceof DOMException && e.name === 'AbortError'
 
-const showError = function (title: string, message: string, detail: string) {
+const showAlert = function (title: string, message: string, detail: React.ReactNode, severity: AlertColor) {
     const removeError = () => {
-        errorMessage = null
+        alertMessage = null
         doRender()
     }
-    errorMessage = (<Alert severity="error" onClose={removeError}>
+    alertMessage = (<Alert severity={severity} onClose={removeError}>
         <AlertTitle>{title}</AlertTitle>
-        <p id='errorMessage'>{message}</p>
+        <p id="alertMessage">{message}</p>
         <p>{detail}</p>
     </Alert>)
     doRender()
@@ -86,9 +89,7 @@ const onOpen = async () => {
         if (userCancelledFilePick(e)) {
             return
         }
-        showError(`Error opening project file ${file?.name}`,
-            'This file does not contain a valid Elemento project',
-            `Error message: ${e.message}`)
+        showAlert(`Error opening project file ${file?.name}`, 'This file does not contain a valid Elemento project', `Error message: ${e.message}`, 'error')
     }
 }
 
@@ -112,7 +113,7 @@ const onSaveAs = async () => {
             {
                 description: 'Project JSON Files',
                 accept: {
-                    'projectlication/json': ['.json'],
+                    'application/json': ['.json'],
                 },
             },
         ],
@@ -128,6 +129,25 @@ const onSaveAs = async () => {
             throw e
         }
     }
+}
+
+const onPublish = async ({name, code}: {name: string, code: string}) => {
+    console.log('Publishing', name)
+    const publishName = camelCase(name) + '.js'
+    const user = getAuth().currentUser
+    if(user === null) {
+        throw new Error('Must be logged in to publish')
+    }
+    const publishPath = `code/${user.uid}/${publishName}`
+    const storageRef = ref(storage, publishPath)
+    const metadata = {
+        contentType: 'text/javascript',
+    }
+    await uploadString(storageRef, code, 'raw', metadata)
+    const runUrl = window.location.origin + '/run/' + publishPath
+    const runLink = <Link href={runUrl}>{runUrl}</Link>
+    showAlert(`Published ${name}`, 'You can run the app with the link below', runLink, 'success')
+    console.log('Published', publishPath, 'run URL', runUrl)
 }
 
 const theme = createTheme({
@@ -158,8 +178,8 @@ const root = createRoot(container!)
 function doRender() {
     root.render(
         <ThemeProvider theme={theme}>
-            {errorMessage}
-            <Editor project={theProject} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave}/>
+            {alertMessage}
+            <Editor project={theProject} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave} onPublish={onPublish}/>
         </ThemeProvider>)
 }
 

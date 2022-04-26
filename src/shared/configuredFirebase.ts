@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { getStorage, ref } from 'firebase/storage'
 import * as auth from 'firebase/auth'
 
 let config = {
@@ -13,5 +14,6 @@ let config = {
 const app = initializeApp(config)
 
 const getAuth = () => auth.getAuth(app)
+const storage = getStorage(app)
 
-export {auth, getAuth}
+export {auth, getAuth, storage, ref}

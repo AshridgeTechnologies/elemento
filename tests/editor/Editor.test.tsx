@@ -14,6 +14,12 @@ import App from '../../src/model/App'
 import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
+import {generate} from '../../src/generator/Generator'
+
+import * as authUtils from '../../src/shared/authUtils'
+
+jest.mock('../../src/shared/authUtils')
+
 
 let container: any = null, unmount: any
 
@@ -26,19 +32,24 @@ const onPropertyChange = ()=> {}
 const onAction = jest.fn()
 const onInsert = ()=> '123'
 
-export const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time))
-export const actWait = async (testFn: () => void) => {
+const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time))
+const actWait = async (testFn: () => void) => {
     await act(async () => {
         testFn()
         await wait(20)
     })
 }
-export const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
+const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
 }
 
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
+
+function mockSignedInValue(signedInValue: boolean) {
+    const mock_useSignedInState = authUtils.useSignedInState as jest.MockedFunction<any>
+    mock_useSignedInState.mockReturnValue(signedInValue)
+}
 
 afterEach( async () => await act(() => {
     try{
@@ -203,6 +214,28 @@ test('notifies save request', async () => {
     fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('Save'))
     expect(saved).toBe(true)
+})
+
+test('notifies publish request if logged in', async () => {
+    const onPublish = jest.fn()
+    const editor = () => <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}
+                                 onPublish={onPublish}/>
+    mockSignedInValue(true)
+    await actWait(() =>  ({container, unmount} = render(editor())))
+    fireEvent.click(screen.getByText('File'))
+    fireEvent.click(screen.getByText('Publish'))
+    expect(onPublish).toHaveBeenCalledWith({name: 'App One', code: generate(project.elementArray()[0] as App).code})
+})
+
+test('publish disabled if not logged in', async () => {
+    const onPublish = jest.fn()
+    const editor = () => <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}
+                                 onPublish={onPublish}/>
+    mockSignedInValue(false)
+    await actWait(() =>  ({container, unmount} = render(editor())))
+    fireEvent.click(screen.getByText('File'))
+    fireEvent.click(screen.getByText('Publish - please Login'))
+    expect(onPublish).not.toHaveBeenCalled()
 })
 
 test(`notifies tree action with item selected in tree`, async () => {

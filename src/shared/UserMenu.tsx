@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
 import {Box, IconButton, Link, Popover, Typography} from '@mui/material'
 import {AccountCircle} from '@mui/icons-material'
 import {auth, getAuth} from './configuredFirebase'
 import {StyledFirebaseAuth} from 'react-firebaseui'
+import {useSignedInState} from './authUtils'
 
 function UserPanel({isSignedIn, handleLogout}: {isSignedIn: boolean, handleLogout: () => void}) {
 
@@ -38,13 +38,7 @@ export default function UserMenu() {
         getAuth().signOut()
         handleClose()
     }
-
-    const [isSignedIn, setIsSignedIn] = useState(false)
-
-    useEffect(() => {
-        const unregisterAuthObserver = auth.onAuthStateChanged(getAuth(), user => setIsSignedIn(!!user))
-        return () => unregisterAuthObserver() // Un-register Firebase observers when the component unmounts.
-    }, [])
+    const isSignedIn = useSignedInState()
 
     return (
         <div>

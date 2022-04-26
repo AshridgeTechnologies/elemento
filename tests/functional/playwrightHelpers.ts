@@ -9,6 +9,6 @@ export const loadProject = (page: PWPage, projectToLoad: Project) => page.evalua
 export const treeItem = (n: number) => `${treeItemSelector} >> nth=${n}`
 export const treeExpand = (n: number) => `${treeExpandControlSelector} >> nth=${n}`
 export const pageFunctions = (page: Page) => {
-    const functions = ['goto', 'click', 'fill', 'press', 'locator'] as Array<keyof Page>
+    const functions = ['goto', 'click', 'fill', 'press', 'locator', 'waitForSelector'] as Array<keyof Page>
     return Object.fromEntries(functions.map(f => [f, (page[f] as any).bind(page)]))
 }

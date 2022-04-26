@@ -2,15 +2,19 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import {OnOpenFn, OnSaveFn} from './Types'
+import {MenuItemFn} from './Types'
 
-export default function FileMenu({onOpen, onSave}: {onOpen?: OnOpenFn, onSave?: OnSaveFn}) {
+export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?: MenuItemFn, onSave?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
 
     const menuItem = (label: string, action: () => void) => <MenuItem onClick={action}>{label}</MenuItem>
+
+    const signedInMenuItem = (label: string, action: () => void) => signedIn ?
+        <MenuItem onClick={action}>{label}</MenuItem> :
+        <MenuItem disabled>{`${label} - please Login` }</MenuItem>
 
     return (
         <div>
@@ -35,6 +39,7 @@ export default function FileMenu({onOpen, onSave}: {onOpen?: OnOpenFn, onSave?: 
             >
                 {onOpen ? menuItem('Open', onOpen): null}
                 {onSave ? menuItem('Save', onSave): null}
+                {onPublish ? signedInMenuItem('Publish', onPublish): null}
             </Menu>
         </div>
     );

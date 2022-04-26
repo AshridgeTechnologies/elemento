@@ -4,8 +4,16 @@ import Page from '../model/Page'
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from './PropertyEditor'
-import {OnChangeFn, OnInsertWithSelectedFn, OnOpenFn, OnSaveFn, OnActionFn, AppElementAction} from './Types'
-import AppBar from './AppBar'
+import {
+    OnChangeFn,
+    OnInsertWithSelectedFn,
+    OnOpenFn,
+    OnSaveFn,
+    OnActionFn,
+    AppElementAction,
+    OnPublishFn
+} from './Types'
+import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
 import InsertMenu from './InsertMenu'
 import {ElementType} from '../model/Types'
@@ -22,7 +30,7 @@ import './splitPane.css'
 import Generator, {generate} from '../generator/Generator'
 import {without} from 'ramda'
 import Project from '../model/Project'
-
+import {useSignedInState} from '../shared/authUtils'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -38,8 +46,10 @@ export default function Editor({
                                    onInsert,
                                    onAction,
                                    onOpen,
-                                   onSave
-                               }: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn, onOpen?: OnOpenFn, onSave?: OnSaveFn }) {
+                                   onSave,
+                                    onPublish
+                               }: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn,
+                                    onOpen?: OnOpenFn, onSave?: OnSaveFn, onPublish?: OnPublishFn }) {
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
 
@@ -135,8 +145,18 @@ export default function Editor({
     setAppInAppFrame()
     highlightElementInAppFrame(app.findElementPath(selectedItemId))
 
+    const signedIn = useSignedInState()
+
+    const onPublishMenu = () => {
+        if (onPublish) {
+            const name = app.name
+            const code = generate(app).code
+            onPublish({name, code})
+        }
+    }
+
     const EditorMenuBar = () => <MenuBar>
-        <FileMenu onOpen={onOpen} onSave={onSave}/>
+        <FileMenu onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
         <InsertMenu onInsert={onMenuInsert} items={insertMenuItems()}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
@@ -152,7 +172,7 @@ export default function Editor({
 
     return <Box display='flex' flexDirection='column' height='100%' width='100%'>
         <Box flex='0'>
-            <AppBar/>
+            <AppBar title='Elemento Studio'/>
             <EditorMenuBar/>
         </Box>
         <Box flex='1' minHeight={0}>

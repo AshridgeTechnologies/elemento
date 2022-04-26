@@ -1,7 +1,7 @@
 import React from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import {Box, Link, Stack, Typography} from '@mui/material'
-import AppBar from './AppBar'
+import AppBar from '../../shared/AppBar'
 
 function MenuBar({children = [] }: {children?: React.ReactNode}) {
     return (
@@ -17,7 +17,7 @@ export default function HomePage() {
 
     return <Box display='flex' flexDirection='column' height='100%' width='100%'>
         <Box flex='0'>
-            <AppBar/>
+            <AppBar title='Elemento Apps'/>
             <MenuBar/>
         </Box>
         <Box flex='1' minHeight={0}>

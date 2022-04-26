@@ -125,5 +125,5 @@ test('error message if cannot read app from file', async ({page}) => {
 
     // would select the app file here
 
-    expect(await page.textContent('#errorMessage')).toBe('This file does not contain a valid Elemento project')
+    expect(await page.textContent('#alertMessage')).toBe('This file does not contain a valid Elemento project')
 })

@@ -11,7 +11,7 @@ let openMainPage = async (page: Page) => {
     expect(await page.textContent(treeItem(5))).toBe('Third Text')
 }
 
-const getAppFrame = (page: Page) => waitUntil(() => page.frame('appFrame') as Frame)
+const getAppFrame = (page: Page): Promise<Frame> => waitUntil(() => page.frame('appFrame') as Frame)
 
 test('app shown in frame', async ({ page }) => {
     await page.goto(pageUrl)
