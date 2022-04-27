@@ -6,13 +6,24 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [ {
-      "source": "/run/**",
-      "destination": "/run/index.html"
-    },{
-      "source": "/studio/**",
-      "destination": "/studio/index.html"
-    }
+    "rewrites": [
+      {
+        "source": "/run/**",
+        "destination": "/run/index.html"
+      },
+      {
+        "source": "/studio/**",
+        "destination": "/studio/index.html"
+      }
     ]
+  },
+  "emulators": {
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true,
+      "port": 5001
+    }
   }
 }

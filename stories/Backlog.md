@@ -16,8 +16,8 @@ Stories
 
 ### Priority 2
 - General usability Part 2
+- Formula improvements Part 3
 - State debugging
-- General usability Part 2
 - List control
 - Validate App Model loaded from JSON
 - Load time optimisation
@@ -37,11 +37,13 @@ Epics
 Tech debt
 ---------
 
+- Script environment creation
 - Refactor EditorMain into component and fix unit test
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent
 - Review Generator.initialStateEntry vs generateElement
 - Mechanism for generating defaults, state and properties code from model object - mark as stateful?
+- Upgrade Parcel - babel _typeof error in prod build after 2.3.2
 
 
 Done

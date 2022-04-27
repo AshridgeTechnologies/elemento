@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://elemento-apps.web.app", "http://localhost:1234"],
+    "origin": ["https://elemento-apps.web.app", "http://localhost:1234", "http://localhost:5000", "https://elemento-apps--publish-and-run-p47khjx8.web.app"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
