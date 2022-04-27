@@ -13,8 +13,8 @@ export default function SelectInput({state, ...props}: Properties) {
     }
 
     let labelId = path + '_label'
-    const menuItems = [el(MenuItem, null, '&nbsp;'),
-        ...values.map((v: any) => el(MenuItem, {key: v, value: v}, v))]
+    const noSelectionItem = el(MenuItem, {value: ''}, el('em', null, 'None'))
+    const menuItems = [noSelectionItem, ...values.map((v: any) => el(MenuItem, {key: v, value: v}, v))]
 
     return el(FormControl, {variant: 'filled', size: 'small', sx: {minWidth: 120}},
         el(InputLabel, {id: labelId}, label),

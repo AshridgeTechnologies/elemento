@@ -27,16 +27,13 @@ exports[`NumberInput element produces output with default values where propertie
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-1a1ihhj"
+        className="css-hdw1oc"
       >
         <span
           className="notranslate"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "&#8203;",
-            }
-          }
-        />
+        >
+          ​
+        </span>
       </legend>
     </fieldset>
   </div>
@@ -48,7 +45,7 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
   className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.width"
     id="app.page1.width-label"
@@ -78,7 +75,7 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-186xcr5"
+        className="css-1in441m"
       >
         <span>
           Width

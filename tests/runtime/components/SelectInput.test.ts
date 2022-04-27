@@ -76,7 +76,7 @@ test('SelectInput stores null value in the app store when cleared', async () => 
     container = localContainer
     fireEvent.mouseDown(getByRole('button'))
 
-    fireEvent.click(within(getByRole('listbox')).getAllByRole('option')[0])
+    fireEvent.click(within(getByRole('listbox')).getByText('None'))
 
     expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: null}, false)
 } )

@@ -92,7 +92,7 @@ exports[`Components InsertMenu has expected structure 1`] = `
   <button
     aria-controls="insertMenu"
     aria-haspopup="true"
-    className="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+    className="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1e6y48t-MuiButtonBase-root-MuiButton-root"
     disabled={false}
     id="insertButton"
     onBlur={[Function]}

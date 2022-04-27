@@ -10,7 +10,7 @@ exports[`SelectInput element produces output with default values where propertie
     id="app.page1.height_label"
   />
   <div
-    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiSelect-root css-cio0x1-MuiInputBase-root-MuiFilledInput-root"
+    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
@@ -28,12 +28,9 @@ exports[`SelectInput element produces output with default values where propertie
     >
       <span
         className="notranslate"
-        dangerouslySetInnerHTML={
-          Object {
-            "__html": "&#8203;",
-          }
-        }
-      />
+      >
+        ​
+      </span>
     </div>
     <input
       aria-hidden={true}
@@ -65,14 +62,14 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
   className="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-bohyag-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     id="app.page1.background_label"
   >
     Background
   </label>
   <div
-    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiSelect-root css-cio0x1-MuiInputBase-root-MuiFilledInput-root"
+    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
