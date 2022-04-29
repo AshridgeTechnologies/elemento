@@ -7,6 +7,9 @@ Bugs
 
 Stories
 -------
+- Save and load project on apps website
+- List apps
+- Demo ready 1
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
