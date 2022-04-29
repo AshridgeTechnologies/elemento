@@ -91,4 +91,4 @@ export const waitUntil = <T>(fn: () => T, time = 1000, wait = 10000): Promise<T>
     } catch (e) {
         return Promise.reject(e);
     }
-};
+}

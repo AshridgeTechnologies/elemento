@@ -16,10 +16,9 @@ import Project from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
 import {generate} from '../../src/generator/Generator'
 
-import * as authUtils from '../../src/shared/authUtils'
+import * as authentication from '../../src/shared/authentication'
 
-jest.mock('../../src/shared/authUtils')
-
+jest.mock('../../src/shared/authentication')
 
 let container: any = null, unmount: any
 
@@ -47,7 +46,7 @@ beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
 
 function mockSignedInValue(signedInValue: boolean) {
-    const mock_useSignedInState = authUtils.useSignedInState as jest.MockedFunction<any>
+    const mock_useSignedInState = authentication.useSignedInState as jest.MockedFunction<any>
     mock_useSignedInState.mockReturnValue(signedInValue)
 }
 

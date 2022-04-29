@@ -14,10 +14,6 @@ test('TextInput element produces output with properties supplied',
     snapshot(createElement(TextInput, {state: testProxy('app.page1.width', {value: 'Hi there!'}), maxLength: 10, width: 22, label: 'Item Description'}))
 )
 
-test('TextInput element produces output with string width',
-    snapshot(createElement(TextInput, {state: testProxy('app.page1.width', {value: 'Hi there!'}), maxLength: 10, width: '22', label: 'Item Description'}))
-)
-
 test('TextInput element produces output with properties supplied as state objects', () => {
     let container = testContainer(createElement(TextInput, {
         state: testProxy('app.page1.widget1', {value: 'Hello!'}),

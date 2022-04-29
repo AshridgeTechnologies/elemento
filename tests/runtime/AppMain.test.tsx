@@ -9,17 +9,18 @@ import '@testing-library/jest-dom'
 import {addContainer} from '../testutil/elementHelpers'
 import {wait} from '../testutil/rtlHelpers'
 import {appCode1} from '../testutil/projectFixtures'
+import {getTextFromStorage} from '../../src/shared/storage'
 
-import {getDownloadURL} from 'firebase/storage'
+jest.mock('../../src/shared/storage')
 
-jest.mock('firebase/storage')
-
-function mockDownloadURL(path: string) {
-    const mock_getDownloadURL = getDownloadURL as jest.MockedFunction<any>
-    mock_getDownloadURL.mockResolvedValue(`https://firebase.storage/${path}`)
+function mock_getTextFromStorage(path: string) {
+    const mock_fn = getTextFromStorage as jest.MockedFunction<any>
+    mock_fn.mockImplementation( () => wait(10).then(() => path.includes('bad') ? Promise.reject(new Error(`URL ${path} not found`)) : Promise.resolve(appCode1(path))))
 }
 
 beforeEach(() => {
+    jest.resetAllMocks();
+    ({domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = addContainer())
     // @ts-ignore
     global.fetch = jest.fn((url) => Promise.resolve( {text: () => wait(10).then( () => appCode1(url) )}))
 })
@@ -32,9 +33,6 @@ afterEach(() => {
 const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
 
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = {} as any
-beforeEach(() => {
-    ({domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = addContainer())
-})
 
 test('runs app from url at end of window location path', async () => {
     renderIt(appMain('/runner/web/some.code/app.js'))
@@ -49,10 +47,10 @@ test('runs app from encoded url at end of window location path', async () => {
 })
 
 test('runs app from storage location at end of window location path', async () => {
-    mockDownloadURL('apps/xxx222/myApp.js')
+    mock_getTextFromStorage('apps/xxx222/myApp.js')
     renderIt(appMain('/runner/apps/xxx222/myApp.js'))
     await act(() => wait(20))
-    expect(el`FirstText`).toHaveTextContent('This is App One from https://firebase.storage/apps/xxx222/myApp.js')
+    expect(el`FirstText`).toHaveTextContent('This is App One from apps/xxx222/myApp.js')
 })
 
 test('runs in editor preview mode if path found', async () => {

@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import AppLoadError from './AppLoadError'
-import {storage} from '../shared/configuredFirebase'
-import {ref, getDownloadURL} from 'firebase/storage'
+import {getTextFromStorage} from '../shared/storage'
+
 type Properties = {appCodePath: string}
 
 export default function AppRunnerFromStorage({appCodePath}: Properties) {
@@ -11,10 +11,7 @@ export default function AppRunnerFromStorage({appCodePath}: Properties) {
     const [appPathFetched, setAppPathFetched] = useState<string | null>(null)
     const [fetchError, setFetchError] = useState<Error | null>(null)
     if (appPathFetched !== appCodePath) {
-        const storageRef = ref(storage, appCodePath)
-        getDownloadURL(storageRef)
-            .then(url => fetch(url))
-            .then(resp => resp.text())
+        getTextFromStorage(appCodePath)
             .catch(error => setFetchError(error))
             .then(text => setAppCode(text ?? null))
         setAppPathFetched(appCodePath)

@@ -30,7 +30,7 @@ import './splitPane.css'
 import Generator, {generate} from '../generator/Generator'
 import {without} from 'ramda'
 import Project from '../model/Project'
-import {useSignedInState} from '../shared/authUtils'
+import {useSignedInState} from '../shared/authentication'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
