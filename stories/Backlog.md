@@ -7,17 +7,25 @@ Bugs
 
 Stories
 -------
+
+### Priority 1
+- Collections
+- List component
+- Persistent data storage Part 1
+- Info website update
+
+### Priority for Pro apps
+- Server side functions
+- Types
+- Model-driven components
+
+### Priority 2
 - Save and load project on apps website
 - List apps
 - Demo ready 1
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
-- Collections
-- Persistent data storage Part 1
-- Info website update
-
-### Priority 2
 - General usability Part 2
 - Formula improvements Part 3
 - State debugging
@@ -41,7 +49,6 @@ Tech debt
 ---------
 
 - Script environment creation
-- Refactor EditorMain into component and fix unit test
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent
 - Review Generator.initialStateEntry vs generateElement
@@ -75,3 +82,4 @@ Done
 - General usability Part 1
 - Project and App shown in nav tree
 - Apps website
+- Refactor EditorMain into component and fix unit test
