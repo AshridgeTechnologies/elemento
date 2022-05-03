@@ -1,9 +1,8 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
+import {valObj} from '../testutil/testHelpers'
 
 const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List} = globalFunctions
 const {valueOf} = globalFunctions
-
-const valObj = <T>(val: T) => ({v: val, valueOf() { return this.v }})
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valObj(10))).toBe(10))

@@ -10,6 +10,7 @@ import TrueFalseInput from './TrueFalseInput'
 import Button from './Button'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import Data from './Data'
+import Collection from './Collection'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -36,6 +37,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
             return new Button(id, name, {content: 'Do something'})
         case 'Data':
             return new Data(id, name, {})
+        case 'Collection':
+            return new Collection(id, name, {})
         default:
             throw new UnsupportedValueError(elementType)
     }

@@ -8,6 +8,7 @@ import {createElement} from '../../src/model/createElement'
 import Data from '../../src/model/Data'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
+import {Collection} from '../../src/model/index'
 
 test('creates elements of correct type', () => {
     expect(createElement('App', 2)).toBeInstanceOf(App)
@@ -19,6 +20,7 @@ test('creates elements of correct type', () => {
     expect(createElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
     expect(createElement('Button', 3)).toBeInstanceOf(Button)
     expect(createElement('Data', 4)).toBeInstanceOf(Data)
+    expect(createElement('Collection', 4)).toBeInstanceOf(Collection)
 })
 
 test('cannot create a Project', () => {

@@ -6,7 +6,7 @@ import Editor from './Editor'
 import {AppElementAction} from './Types'
 import {Alert, AlertColor, AlertTitle, Link} from '@mui/material'
 import {camelCase} from 'lodash'
-import {Project} from '../model/index'
+import {Project} from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 
 declare global {

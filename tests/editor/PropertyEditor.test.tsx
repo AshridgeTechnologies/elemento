@@ -16,6 +16,7 @@ import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
 import Project from '../../src/model/Project'
+import { Collection } from '../../src/model'
 
 let container: any
 let changedValue: any
@@ -218,6 +219,14 @@ test('has fields for Data', () => {
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Data 1')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
+    expect(selectValue('Display')).toBe('')
+})
+
+test('has fields for Collection', () => {
+    const element = new Collection('id1', 'Collection 1', {initialValue: ex`["green", "blue"]`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Collection 1')
+    expect(inputValue('Initial Value')).toBe('["green", "blue"]')
     expect(selectValue('Display')).toBe('')
 })
 

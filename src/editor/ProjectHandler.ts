@@ -1,4 +1,4 @@
-import {Project} from '../model/index'
+import Project from '../model/Project'
 import {ElementId, ElementType} from '../model/Types'
 import {editorInitialProject} from '../util/welcomeProject'
 import {AppElementAction} from './Types'

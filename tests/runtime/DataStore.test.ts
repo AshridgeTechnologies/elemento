@@ -1,4 +1,4 @@
-import DataStore from '../../src/runtime/DataStore'
+import DataStore, {_DELETE} from '../../src/runtime/DataStore'
 
 test('sets store to initial state', ()=> {
     const initialState = {app: {}}
@@ -63,6 +63,23 @@ test('can update state below app level and keep existing objects below the part 
 
     expect(store.select('')).toStrictEqual({app: {
         page1: {route: 66, description: {color: 'red', length: 23}},
+        }})
+})
+
+test('can remove elements in state below app level and keep existing objects below the part changed', ()=> {
+    let store = new DataStore({app: {}})
+    store = store.update('app.page1.description', {
+        value: {
+            id1: {a: 10},
+            id2: {a: 20},
+        }
+    })
+    store = store.update('app.page1.description', {value: {id2: _DELETE}})
+
+    expect(store.select('')).toStrictEqual({app: {
+        page1: {description: {value: {
+                    id1: {a: 10},
+                }}},
         }})
 })
 

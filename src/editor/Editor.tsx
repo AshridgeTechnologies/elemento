@@ -71,7 +71,7 @@ export default function Editor({
         if (selectedItemId) {
             const element = app.findElement(selectedItemId)
             if (element) {
-                const allItems = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] as ElementType[]
+                const allItems = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Collection', 'Page'] as ElementType[]
                 if (Page.is(element)) {
                     return allItems
                 } else {

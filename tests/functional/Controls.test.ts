@@ -1,6 +1,6 @@
-import {expect, Frame, test, Page as PWPage} from '@playwright/test';
-import {Project, App, Page, TextInput} from '../../src/model/index'
-import {loadProject, treeItem, treeExpand} from './playwrightHelpers'
+import {expect, Frame, Page as PWPage, test} from '@playwright/test';
+import {App, Page, Project, TextInput} from '../../src/model/index'
+import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
 
 const pageUrl = '/studio'
 
@@ -10,8 +10,10 @@ const insertMenu_NumberInput = 'ul[role="menu"] :text("Number Input")'
 const insertMenu_SelectInput = 'ul[role="menu"] :text("Select Input")'
 const insertMenu_TrueFalseInput = 'ul[role="menu"] :text("True False Input")'
 const insertMenu_Data = 'ul[role="menu"] :text("Data")'
+const insertMenu_Collection = 'ul[role="menu"] :text("Collection")'
 const insertMenu_Page = 'ul[role="menu"] :text("Page")'
 const yesOption = 'li[role="option"]:text("Yes")'
+const switchToFxButton='text=abc'
 
 const getAppFrame = async (page: PWPage) => {
     await page.locator('iframe[name="appFrame"]').waitFor();
@@ -113,6 +115,24 @@ test.describe('Controls can be used', () => {
         await page.click(yesOption)
         const appFrame = await getAppFrame(page)
         expect(await appFrame.textContent('div[id="AppOne.ControlTestPage.Data1"] code')).toBe(`'Some data'`)
+    })
+
+    test('collection', async ({ page }) => {
+        await page.goto(pageUrl)
+
+        await loadProject(page, project)
+        await selectControlTestPage(page)
+
+        await page.click(insertMenu)
+        await page.click(insertMenu_Collection)
+        expect(await page.textContent(treeItem(3))).toBe('Collection 1')
+
+        await page.click(switchToFxButton)
+        await page.fill('textarea#initialValue', "['green', 'blue']")
+        await page.click('#display')
+        await page.click(yesOption)
+        const appFrame = await getAppFrame(page)
+        expect(await appFrame.textContent('div[id="AppOne.ControlTestPage.Collection1"] code')).toBe(`{green: 'green', blue: 'blue'}`)
     })
 
     test('new page', async ({ page }) => {

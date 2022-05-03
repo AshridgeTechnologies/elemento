@@ -4,6 +4,7 @@ import {BasicDataNode, DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
 import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -47,6 +48,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
         case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
         case 'Button': return <Crop75 {...{sx}}/>
         case 'Data': return <Note {...{sx}}/>
+        case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
         default: throw new UnsupportedValueError(kind)
     }
 }

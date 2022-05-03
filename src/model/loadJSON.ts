@@ -10,6 +10,7 @@ import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Data from './Data'
+import Collection from './Collection'
 import Project from './Project'
 
 export function loadJSON({id, kind, name, properties, elements}:
@@ -38,6 +39,8 @@ export function loadJSON({id, kind, name, properties, elements}:
             return new Button(id, name, properties)
         case 'Data':
             return new Data(id, name, properties)
+        case 'Collection':
+            return new Collection(id, name, properties)
         default:
             throw new UnsupportedValueError(kind)
     }

@@ -92,3 +92,9 @@ export const waitUntil = <T>(fn: () => T, time = 1000, wait = 10000): Promise<T>
         return Promise.reject(e);
     }
 }
+
+export const valObj = <T>(val: T) => ({
+    v: val, valueOf() {
+        return this.v
+    }
+})

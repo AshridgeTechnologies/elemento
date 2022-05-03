@@ -15,6 +15,7 @@ import SelectInput from '../model/SelectInput'
 import Data from '../model/Data'
 import App from '../model/App'
 import Project from '../model/Project'
+import {Collection} from '../model/index'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -96,6 +97,12 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                 return <>
                     {propertyField<Data>('initialValue')}
                     {propertyField<Data>('display', 'boolean')}
+                </>
+
+            case "Collection":
+                return <>
+                    {propertyField<Collection>('initialValue')}
+                    {propertyField<Collection>('display', 'boolean')}
                 </>
             default:
                 throw new UnsupportedValueError(element.kind)

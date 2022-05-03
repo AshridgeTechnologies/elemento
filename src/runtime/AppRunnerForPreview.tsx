@@ -3,6 +3,7 @@ import AppRunnerFromCode from './AppRunnerFromCode'
 
 declare global {
     var setAppCode: (appCode: string) => void
+    var getAppCode: () => string | null
     var setComponentSelectedListener: (callback: (id: string) => void) => void
     var highlightElement: (id: string) => void
 }
@@ -14,6 +15,7 @@ export default function AppRunnerForPreview() {
 
     useEffect( ()=> {
         window.setAppCode = (appCode: string) => setAppCode(appCode)
+        window.getAppCode = () => appCode
         window.setComponentSelectedListener = (callback: (id: string) => void) => setOnComponentSelected(() => callback)
         window.highlightElement = (id: string) => setSelectedComponentId(id)
     })

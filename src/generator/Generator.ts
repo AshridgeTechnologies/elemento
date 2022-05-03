@@ -19,6 +19,7 @@ import TrueFalseInput from '../model/TrueFalseInput'
 import {isArray, isPlainObject} from 'lodash'
 import {uniq} from 'ramda'
 import Data from '../model/Data'
+import {Collection} from '../model/index'
 
 type IdentifierCollector = {add(s: string): void}
 interface ErrorCollector {
@@ -115,18 +116,21 @@ export default class Generator {
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
+        const elementoDeclarations = [componentDeclarations, globalDeclarations].filter( d => d !== '').join('\n').trimEnd()
+
         const appFunctionIdentifiers = identifiers.filter(isAppFunction)
         const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions(state)` : ''
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
         const pageIdentifiers = uniq(identifiers.filter(isPageElement).concat(stateNames as string[]))
         const pageDeclarations = pageIdentifiers.length ? `    const {${pageIdentifiers.join(', ')}} = state` : ''
-        const declarations = [componentDeclarations, globalDeclarations, appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
+        const localDeclarations = [appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         return `function ${page.codeName}(props) {
     const pathWith = name => props.path + '.' + name
+${elementoDeclarations}
 ${stateDefaultCall}
-${declarations}
+${localDeclarations}
     return ${pageCode}
 }
 `.trimLeft()
@@ -247,6 +251,16 @@ ${children}
                 return `React.createElement(Data, ${objectLiteral(reactProperties)})`
             }
 
+            case "Collection": {
+                const collection = element as Collection
+                identifiers.add(element.kind)
+                const initialValue = Generator.getExprAndIdentifiers(collection.initialValue, identifiers, isKnown, onError('initialValue'))
+                const state = collection.codeName
+                const display = Generator.getExprAndIdentifiers(collection.display, identifiers, isKnown, onError('display'))
+                const reactProperties = definedPropertiesOf({state, display})
+                return `React.createElement(Collection, ${objectLiteral(reactProperties)})`
+            }
+
             default:
                 throw new UnsupportedValueError(element.kind)
         }
@@ -255,7 +269,7 @@ ${children}
     private static initialStateEntry(element: Element): string {
         function valueEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
             const input = element as T
-            const [valueExpr, isError] = Generator.getExpr(input.initialValue)
+            const [valueExpr] = Generator.getExpr(input.initialValue)
             return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr + ', ' : ''}defaultValue: ${valueLiteral((input.constructor as any).defaultValue ?? '')}},`
         }
 
@@ -277,8 +291,14 @@ ${children}
 
             case "Data":{
                 const data = element as Data
-                const [valueExpr, isError] = Generator.getExpr(data.initialValue)
+                const [valueExpr] = Generator.getExpr(data.initialValue)
                 return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
+            }
+
+            case "Collection":{
+                const collection = element as Collection
+                const [valueExpr] = Generator.getExpr(collection.initialValue)
+                return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
             }
 
             case 'Button':
