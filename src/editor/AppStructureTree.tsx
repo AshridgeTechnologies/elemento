@@ -5,6 +5,7 @@ import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
 import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
+import ViewListIcon from '@mui/icons-material/ViewList';
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -47,6 +48,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
         case 'SelectInput': return <DensitySmall {...{sx}}/>
         case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
         case 'Button': return <Crop75 {...{sx}}/>
+        case 'List': return <ViewListIcon {...{sx}}/>
         case 'Data': return <Note {...{sx}}/>
         case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
         default: throw new UnsupportedValueError(kind)

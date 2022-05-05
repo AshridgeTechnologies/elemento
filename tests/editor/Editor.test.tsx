@@ -151,14 +151,14 @@ test('shows allowed items in insert menu', async () => {
 
     fireEvent.click(screen.getByText('Second Text'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Data', 'Collection'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection'])
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Data', 'Collection', 'Page'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection', 'Page'])
 })
 
-test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Collection'])
+test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection'])
     (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {
     let onInsertArgs: any
     const notionalNewElementId = 'text_1'

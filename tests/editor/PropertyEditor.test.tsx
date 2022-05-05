@@ -12,6 +12,7 @@ import Button from '../../src/model/Button'
 import {componentProps, ex} from '../testutil/testHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
+import List from '../../src/model/List'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
@@ -212,6 +213,17 @@ test('has fields for Button', () => {
     expect(kindButton(1).textContent).toBe('fx=')
     expect(kindButton(1).disabled).toBe(true)
     expect(selectValue('Display')).toBe('false')
+})
+
+test('has fields for List', () => {
+    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Id')).toBe('id1')
+    expect(inputValue('Name')).toBe('List 1')
+    expect(inputValue('Formula Name')).toBe('List1')
+    expect(inputValue('Items')).toBe('[{a: 10}, {a: 20}]')
+    expect(kindButton(0).textContent).toBe('fx=')
+    expect(inputValue('Style')).toBe('funky')
 })
 
 test('has fields for Data', () => {

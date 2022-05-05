@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListItem produces output containing ReactElement children 1`] = `
+<li
+  className="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1p823my-MuiListItem-root"
+  disabled={false}
+  id="page1.para1"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  >
+    where are you?
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  >
+    over here!
+  </p>
+</li>
+`;

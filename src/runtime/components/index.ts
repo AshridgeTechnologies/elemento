@@ -7,5 +7,7 @@ export {default as Collection} from './Collection'
 export {default as Page} from './Page'
 export {default as SelectInput} from './SelectInput'
 export {default as TextElement} from './TextElement'
+export {default as ListElement} from './ListElement'
+export {default as ListItem} from './ListItem'
 export {default as TextInput} from './TextInput'
 

@@ -16,3 +16,4 @@ Requirements
 - Items formatted with a divider between each item
 - $item represents the element in expressions
 - Any unknown identifiers are assumed to come from the item
+- Component can contain stateful components

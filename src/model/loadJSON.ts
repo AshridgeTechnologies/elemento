@@ -12,6 +12,7 @@ import TrueFalseInput from './TrueFalseInput'
 import Data from './Data'
 import Collection from './Collection'
 import Project from './Project'
+import List from './List'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -37,6 +38,8 @@ export function loadJSON({id, kind, name, properties, elements}:
             return new TrueFalseInput(id, name, properties)
         case 'Button':
             return new Button(id, name, properties)
+        case 'List':
+            return new List(id, name, properties, loadElements())
         case 'Data':
             return new Data(id, name, properties)
         case 'Collection':

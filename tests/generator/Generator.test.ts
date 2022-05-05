@@ -7,6 +7,7 @@ import TextInput from '../../src/model/TextInput'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
+import List from '../../src/model/List'
 import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
 import {Collection} from '../../src/model/index'
@@ -328,6 +329,81 @@ test('generates Collection elements with initial value and no errors on object e
 }
 `)
     expect(output.errors).toStrictEqual({})
+})
+
+test('generates List element with separate child component', ()=> {
+    const app = new App('t1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new List('l1', 'List 1', {items: [{a: 10}, {a: 20}]}, [
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id2', 't2', {content: ex`23 + 45`}),
+            ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app)
+
+    expect(gen.output().files[0].content).toBe(`function List1Item(props) {
+    const pathWith = name => props.path + '.' + name
+    const {$item} = props
+    const {ListItem, TextElement} = Elemento.components
+
+    return React.createElement(ListItem, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
+    )
+}
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, ListElement} = Elemento.components
+    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(ListElement, {path: pathWith('List1')}, 
+            [{a: 10}, {a: 20}].map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+    )
+}
+`)
+
+})
+
+test('generates List element with empty items expression', ()=> {
+    const app = new App('t1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            // @ts-ignore
+            new List('l1', 'List 1', {items: undefined}, [
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+            ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app)
+
+    expect(gen.output().files[0].content).toBe(`function List1Item(props) {
+    const pathWith = name => props.path + '.' + name
+    const {$item} = props
+    const {ListItem, TextElement} = Elemento.components
+
+    return React.createElement(ListItem, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+    )
+}
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, ListElement} = Elemento.components
+    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(ListElement, {path: pathWith('List1')}, 
+            [].map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+    )
+}
+`)
+
 })
 
 test('generates error on correct line for syntax error in multiline content expression', ()=> {

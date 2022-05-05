@@ -45,6 +45,7 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
             new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput'),
             new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput'),
             new ModelTreeItem('button2_1', 'Some Button', 'Button'),
+            new ModelTreeItem('list1_1', 'The List', 'List'),
             new ModelTreeItem('data_1_1', 'Some Data', 'Data'),
             new ModelTreeItem('collection_1_1', 'A Collection', 'Collection'),
         ]),
@@ -135,8 +136,8 @@ test("renders tree with all types of model elements",  async () => {
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon',])
 
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Data', 'A Collection', 'Other Page'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'WebIcon',])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'The List', 'Some Data', 'A Collection', 'Other Page'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'WebIcon',])
 })
 
 test("can expand and collapse branches and show",  async () => {

@@ -15,7 +15,7 @@ import SelectInput from '../model/SelectInput'
 import Data from '../model/Data'
 import App from '../model/App'
 import Project from '../model/Project'
-import {Collection} from '../model/index'
+import {Collection, List} from '../model/index'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -91,6 +91,12 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                     {propertyField<Button>('content')}
                     {propertyField<Button>('action', 'action')}
                     {propertyField<Button>('display', 'boolean')}
+                </>
+
+            case "List":
+                return <>
+                    {propertyField<List>('items')}
+                    {propertyField<List>('style')}
                 </>
 
             case "Data":

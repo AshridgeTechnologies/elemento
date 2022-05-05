@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import {createElement} from 'react'
 import {TextElement} from '../../../src/runtime/components/index'
 import {snapshot, stateVal} from '../../testutil/testHelpers'
