@@ -9,7 +9,7 @@ Stories
 -------
 
 ### Priority 1
-- Collections
+- Insert at position
 - List component
 - Persistent data storage Part 1
 - Info website update
@@ -83,3 +83,4 @@ Done
 - Project and App shown in nav tree
 - Apps website
 - Refactor EditorMain into component and fix unit test
+- Collections

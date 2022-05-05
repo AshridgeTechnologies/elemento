@@ -28,6 +28,20 @@ export default () =>
             </Para>
         </SubSection>
 
+        <FunctionSection name='Add' helpId='Add' resultType='action'
+                         description='Add an item to a Collection'
+
+                         inputs={
+                             <FunctionInput name='Items' type='list'>A list of item values, of any type.
+                             </FunctionInput>
+                         }
+                         examples={<>
+                             <FunctionExample name='List' inputs={['"Wayne"', '"Cheng"', '10']}>
+                                 This results in a list with three items:  "Wayne", "Cheng", 10
+                             </FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='List' helpId='List' resultType='list'
                          description='Create a list from the item values supplied.'
 
