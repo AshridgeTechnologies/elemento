@@ -1,8 +1,8 @@
-import Page from './Page';
+import Page from './Page'
 import Element from './Element'
 import BaseElement from './BaseElement'
 import {ElementId, ElementType, PropertyValue} from './Types'
-import { createElement } from './createElement';
+import { createElement } from './createElement'
 
 type Properties = { author?: PropertyValue }
 

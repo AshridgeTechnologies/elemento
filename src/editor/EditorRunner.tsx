@@ -6,7 +6,7 @@ import Editor from './Editor'
 import {AppElementAction} from './Types'
 import {Alert, AlertColor, AlertTitle, Link} from '@mui/material'
 import {camelCase} from 'lodash'
-import {Project} from '../model/Project'
+import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 
 declare global {
@@ -73,7 +73,7 @@ export default function EditorRunner() {
             await projectHandler.openFile()
             updateProject()
         } catch (e: any) {
-            showAlert(`Error opening project file`, 'This file does not contain a valid Elemento project', `Error message: ${e.message}`, 'error')
+            showAlert('Error opening project file', 'This file does not contain a valid Elemento project', `Error message: ${e.message}`, 'error')
         }
     }
 
@@ -100,8 +100,12 @@ export default function EditorRunner() {
     }
 
 
-    return <ThemeProvider theme={theme}>
-        {alertMessage}
-        <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={onOpen} onSave={onSave} onPublish={onPublish}/>
-    </ThemeProvider>
+    return <React.StrictMode>
+        <ThemeProvider theme={theme}>
+            {alertMessage}
+            <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}
+                onOpen={onOpen}
+                onSave={onSave} onPublish={onPublish}/>
+        </ThemeProvider>
+    </React.StrictMode>
 }

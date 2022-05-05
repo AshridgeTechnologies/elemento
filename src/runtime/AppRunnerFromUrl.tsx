@@ -11,11 +11,11 @@ export default function AppRunnerFromUrl({appCodeUrl}: Properties) {
     const [appUrlFetched, setAppUrlFetched] = useState<string | null>(null)
     const [fetchError, setFetchError] = useState<Error | null>(null)
     if ( appUrlFetched !== appUrlToFetch) {
-            fetch(appUrlToFetch)
-                .then(resp => resp.text())
-                .catch(error => setFetchError(error))
-                .then(text => setAppCode(text ?? null))
-            setAppUrlFetched(appUrlToFetch)
+        fetch(appUrlToFetch)
+            .then(resp => resp.text())
+            .catch(error => setFetchError(error))
+            .then(text => setAppCode(text ?? null))
+        setAppUrlFetched(appUrlToFetch)
     }
 
     return fetchError !== null ? React.createElement(AppLoadError, {appUrl: appCodeUrl, error: fetchError})

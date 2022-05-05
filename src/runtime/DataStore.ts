@@ -17,8 +17,8 @@ const removeDeleted = (obj: object) => {
     for (const key of Object.keys(obj)) {
         const k = key as keyof object
         if (obj[k] === _DELETE) {
-                delete obj[k];
-        } else if (typeof obj[k] === "object") {
+            delete obj[k]
+        } else if (typeof obj[k] === 'object') {
             removeDeleted(obj[k])
         }
     }
@@ -36,7 +36,7 @@ export default class DataStore {
         return view(lensFor(path), this.state)
     }
 
-    update(path: string, changes: Changes, replace: boolean = false): DataStore {
+    update(path: string, changes: Changes, replace = false): DataStore {
         const lens = lensFor(path)
         const existingState = this.state
         const existingStateAtPath = view(lens, existingState)

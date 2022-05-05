@@ -138,7 +138,18 @@ test('shows errors for properties', async () => {
     expect(maxLengthError.textContent).toBe('Unknown names: BadName')
 })
 
-test('shows allowed items in insert menu', async () => {
+test.skip('shows allowed items in context insert menu of a page item', async () => {
+    const optionsShown = () => screen.queryByTestId('insertMenu') && within(screen.getByTestId('insertMenu')).queryAllByRole('menuitem').map( el => el.textContent)
+
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
+    await actWait(() => fireEvent.click(screen.getByText('Insert before')))
+
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection'])
+})
+
+test('shows allowed items in menu bar insert menu', async () => {
     const optionsShown = () => screen.queryByTestId('insertMenu') && within(screen.getByTestId('insertMenu')).queryAllByRole('menuitem').map( el => el.textContent)
     const warningMessage = () => screen.getByTestId('insertWarning')
 

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import Mui_AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import * as React from 'react'
+import Mui_AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
 import UserMenu from './UserMenu'
 
 type Properties = {title: string}
@@ -29,5 +29,5 @@ export default function AppBar({title}: Properties) {
                 </Toolbar>
             </Mui_AppBar>
         </Box>
-    );
+    )
 }

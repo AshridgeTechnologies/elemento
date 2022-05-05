@@ -13,20 +13,20 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const typedValue = (input: string): PropertyValue => {
         switch (type) {
-            case 'number':
-                return Number(input)
-            case 'string':
-                return input
-            case 'string list':
-                return input.trim().split(/ *, */)
-            case 'string multiline':
-                return input
-            case 'string|number':
-                return isNumeric(input) ? Number(input) : input
-            case 'boolean':
-                return input === 'true'
-            default:
-                throw new UnsupportedValueError(type as never)
+        case 'number':
+            return Number(input)
+        case 'string':
+            return input
+        case 'string list':
+            return input.trim().split(/ *, */)
+        case 'string multiline':
+            return input
+        case 'string|number':
+            return isNumeric(input) ? Number(input) : input
+        case 'boolean':
+            return input === 'true'
+        default:
+            throw new UnsupportedValueError(type as never)
         }
     }
     const valueToSend = (inputString: string | undefined, isExpr: boolean) => {
@@ -73,9 +73,9 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const button = type === 'action'
         ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
-                  color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
+            color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
         : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
-                  color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
+            color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
 
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button}
@@ -95,11 +95,11 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             </FormControl>
             :
             <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
-                       value={initialInputValue()}
-                       multiline={type === 'string multiline' || expr}
-                       {...numericProps}
-                       {...errorProps}
-                       onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
+                value={initialInputValue()}
+                multiline={type === 'string multiline' || expr}
+                {...numericProps}
+                {...errorProps}
+                onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
         }
     </div>
 }

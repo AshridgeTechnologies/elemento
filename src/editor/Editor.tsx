@@ -41,14 +41,14 @@ const treeData = (project: Project): ModelTreeItem => {
 }
 
 export default function Editor({
-                                   project,
-                                   onChange,
-                                   onInsert,
-                                   onAction,
-                                   onOpen,
-                                   onSave,
-                                    onPublish
-                               }: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn,
+    project,
+    onChange,
+    onInsert,
+    onAction,
+    onOpen,
+    onSave,
+    onPublish
+}: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn,
                                     onOpen?: OnOpenFn, onSave?: OnSaveFn, onPublish?: OnPublishFn }) {
     const [selectedItemId, setSelectedItemId] = useState('')
     const [helpVisible, setHelpVisible] = useState(false)
@@ -94,7 +94,7 @@ export default function Editor({
         onAction(id.toString(), action)
     }
 
-    const appFrameRef = useRef<HTMLIFrameElement>(null);
+    const appFrameRef = useRef<HTMLIFrameElement>(null)
 
     function handleComponentSelected(id: string) {
         const element = app.findElementByPath(id)
@@ -123,7 +123,7 @@ export default function Editor({
     function highlightElementInAppFrame(id: string | null) {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
-            const highlightFn = appWindow['highlightElement' as keyof Window];
+            const highlightFn = appWindow['highlightElement' as keyof Window]
             if (highlightFn) {
                 highlightFn(id)
                 return true
@@ -140,7 +140,7 @@ export default function Editor({
                 clearInterval(interval)
             }
         }, 200)
-    }, []);
+    }, [])
 
     setAppInAppFrame()
     highlightElementInAppFrame(app.findElementPath(selectedItemId))
@@ -183,7 +183,7 @@ export default function Editor({
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemId}
-                                                      selectedItemId={selectedItemId} onAction={onTreeAction}/>
+                                        selectedItemId={selectedItemId} onAction={onTreeAction}/>
                                 </Grid>
                                 <Grid item xs={8} height='100%' overflow='scroll'>
                                     <Box id='propertyPanel' width='100%'>
@@ -202,7 +202,7 @@ export default function Editor({
                 <Grid item xs={10} height='100%' overflow='scroll'>
                     <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
                         <iframe name='appFrame' src="/run/editorPreview" ref={appFrameRef}
-                                style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
+                            style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                     </Box>
                 </Grid>
             </Grid>

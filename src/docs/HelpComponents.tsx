@@ -22,7 +22,7 @@ export const ControlSection = ({name, description, helpId, properties}: {name: s
         <Para>{description}</Para>
 
         <MinorHeading>Properties</MinorHeading>
-            {properties}
+        {properties}
     </SubSection>
 
 export const FunctionInput = ({name, type, optional = false, children}: {name: string, type: string, optional?: boolean, children: any}) =>
@@ -39,8 +39,8 @@ export const FunctionSection = ({name, description, helpId, resultType, inputs, 
         <Para>{description}</Para>
 
         <MinorHeading>Inputs</MinorHeading>
-            {inputs}
+        {inputs}
 
         <MinorHeading>Examples</MinorHeading>
-            {examples}
+        {examples}
     </SubSection>

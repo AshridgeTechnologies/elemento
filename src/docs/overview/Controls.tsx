@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 import {NumberedList, Para, Heading, SubHeading, Section, SubSection} from '../HelpComponents'
 
 export default () =>

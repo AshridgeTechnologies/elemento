@@ -13,11 +13,11 @@ export default function TrueFalseInput({state, ...props}: Properties) {
 
     return createElement(FormControlLabel, {
         label,
-        labelPlacement: "start",
+        labelPlacement: 'start',
         control: createElement(Switch, {
             id: path,
             size: 'small',
-            color: "primary",
+            color: 'primary',
             checked: value,
             onChange: onChange
         })

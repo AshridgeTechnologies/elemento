@@ -10,5 +10,5 @@ export default function App({id, pages}: Properties) {
     const pagePath = id + '.' + currentPage
 
     return createElement('div', {id},
-            createElement(pages[currentPage], {path: pagePath}))
+        createElement(pages[currentPage], {path: pagePath}))
 }

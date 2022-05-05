@@ -17,7 +17,7 @@ export default function AutoRun({script}: { script: Step[] }) {
         const targetFrame = document.querySelector('iframe[name=targetFrame]') as HTMLIFrameElement
         const targetHead = targetFrame?.contentWindow?.document.head
         if (targetHead && !targetHead.querySelector('#elemento-style')) {
-            targetHead.insertAdjacentHTML('beforeend', `<style id="elemento-style">.elemento-highlight { outline: dashed 2px orangered;}</style>`)
+            targetHead.insertAdjacentHTML('beforeend', '<style id="elemento-style">.elemento-highlight { outline: dashed 2px orangered;}</style>')
         }
         const targetBody = targetFrame?.contentWindow?.document.body
         if (targetBody) {

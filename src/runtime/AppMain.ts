@@ -25,7 +25,7 @@ export default function AppMain({windowUrlPath}: Properties) {
     }
 }
 
-export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, containerElementId: string = 'main') => {
+export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, containerElementId = 'main') => {
     const container = document.createElement('div')
     container.id = containerElementId
     document.body.appendChild(container)

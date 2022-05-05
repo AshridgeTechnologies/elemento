@@ -1,14 +1,14 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import {OnInsertFn} from './Types'
 import {ElementType} from '../model/Types'
 import {startCase} from 'lodash'
 import {Alert, Popover} from '@mui/material'
 
 export default function InsertMenu({onInsert, items}: {onInsert: OnInsertFn, items: ElementType[]}) {
-    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const hasItems = Boolean(items.length)
     const handleClose = () => setAnchorEl(null)

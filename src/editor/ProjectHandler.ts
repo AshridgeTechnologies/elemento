@@ -50,10 +50,10 @@ export default class ProjectHandler {
     elementAction(elementId: ElementId, action: AppElementAction) {
         const doAction = (): Project => {
             switch (action) {
-                case 'delete':
-                    return this.project.delete(elementId)
-                default:
-                    throw new UnsupportedValueError(action)
+            case 'delete':
+                return this.project.delete(elementId)
+            default:
+                throw new UnsupportedValueError(action)
             }
         }
 
@@ -93,7 +93,7 @@ export default class ProjectHandler {
                     },
                 },
             ],
-        };
+        }
         try {
             const fileHandle = await this.externals.showSaveFilePicker(options)
             if (fileHandle) {

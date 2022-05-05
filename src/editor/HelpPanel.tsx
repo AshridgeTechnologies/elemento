@@ -1,11 +1,11 @@
 import {equals} from 'ramda'
 import {Box, IconButton, Typography} from '@mui/material'
-import Mui_AppBar from '@mui/material/AppBar';
+import Mui_AppBar from '@mui/material/AppBar'
 
 import {TreeItem, TreeView} from '@mui/lab'
 import Close from '@mui/icons-material/Close'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
 

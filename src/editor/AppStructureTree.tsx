@@ -5,7 +5,7 @@ import 'rc-tree/assets/index.less'
 import {Menu, MenuItem, useTheme} from '@mui/material'
 import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
-import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewListIcon from '@mui/icons-material/ViewList'
 import {ElementType} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -39,19 +39,19 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const kind = (props.data as ModelTreeItem)!.kind
     const sx = { fontSize: 16, color }
     switch (kind) {
-        case 'Project': return <Web {...{sx}} />
-        case 'App': return <Web {...{sx}} />
-        case 'Page': return <Web {...{sx}} />
-        case 'Text': return <Subject {...{sx}}/>
-        case 'TextInput': return <RectangleOutlined {...{sx}}/>
-        case 'NumberInput': return <MoneyOutlined {...{sx}}/>
-        case 'SelectInput': return <DensitySmall {...{sx}}/>
-        case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
-        case 'Button': return <Crop75 {...{sx}}/>
-        case 'List': return <ViewListIcon {...{sx}}/>
-        case 'Data': return <Note {...{sx}}/>
-        case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
-        default: throw new UnsupportedValueError(kind)
+    case 'Project': return <Web {...{sx}} />
+    case 'App': return <Web {...{sx}} />
+    case 'Page': return <Web {...{sx}} />
+    case 'Text': return <Subject {...{sx}}/>
+    case 'TextInput': return <RectangleOutlined {...{sx}}/>
+    case 'NumberInput': return <MoneyOutlined {...{sx}}/>
+    case 'SelectInput': return <DensitySmall {...{sx}}/>
+    case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
+    case 'Button': return <Crop75 {...{sx}}/>
+    case 'List': return <ViewListIcon {...{sx}}/>
+    case 'Data': return <Note {...{sx}}/>
+    case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
+    default: throw new UnsupportedValueError(kind)
     }
 }
 
@@ -65,10 +65,10 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
     treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void}) {
 
     const theme = useTheme()
-    const [actionEl, setActionEl] = useState<null | HTMLElement>(null);
-    const [actionNode, setActionNode] = useState<null | {id: string, name: string}>(null);
-    const [confirmingEl, setConfirmingEl] = useState<null | HTMLElement>(null);
-    const [actionToConfirm, setActionToConfirm] = useState<null | Action>(null);
+    const [actionEl, setActionEl] = useState<null | HTMLElement>(null)
+    const [actionNode, setActionNode] = useState<null | {id: string, name: string}>(null)
+    const [confirmingEl, setConfirmingEl] = useState<null | HTMLElement>(null)
+    const [actionToConfirm, setActionToConfirm] = useState<null | Action>(null)
     const [expandedKeys, setExpandedKeys] = useState<Key[]>([])
     const contextMenuOpen = Boolean(actionEl)
     const confirmMenuOpen = Boolean(confirmingEl)
@@ -114,16 +114,16 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
 
     return <>
         <Tree treeData={[treeData] as BasicDataNode[]}
-                 draggable
-                 icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
-                 selectedKeys={selectedItemId ? [selectedItemId] : []}
-                 expandedKeys={expandedKeys}
-                 onSelect={itemSelected}
-                 onExpand={onExpand}
-                 onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
-                    showContextMenu(event, node.key, 'this item')
-                 }}
-                 style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>
+            draggable
+            icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
+            selectedKeys={selectedItemId ? [selectedItemId] : []}
+            expandedKeys={expandedKeys}
+            onSelect={itemSelected}
+            onExpand={onExpand}
+            onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
+                showContextMenu(event, node.key, 'this item')
+            }}
+            style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>
         {
             contextMenuOpen && (
                 <Menu
@@ -165,5 +165,5 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
                 </Menu>
             )
         }
-        </>
+    </>
 }

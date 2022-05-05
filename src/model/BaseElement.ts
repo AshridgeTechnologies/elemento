@@ -123,9 +123,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
     get pathSegment() { return this.codeName}
 
     protected create(id: ElementId,
-                     name: string,
-                     properties: PropertiesType,
-                     elements: ReadonlyArray<Element> | undefined) {
+        name: string,
+        properties: PropertiesType,
+        elements: ReadonlyArray<Element> | undefined) {
         const ctor = this.constructor as any
         return new ctor(id, name, properties, elements )
     }

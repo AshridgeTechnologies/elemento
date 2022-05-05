@@ -1,6 +1,6 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
 
 export default function MenuBar({children = [] }: {children?: React.ReactNode}) {
     return (
@@ -9,5 +9,5 @@ export default function MenuBar({children = [] }: {children?: React.ReactNode}) 
                 {children}
             </Toolbar>
         </Box>
-    );
+    )
 }

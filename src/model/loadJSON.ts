@@ -20,32 +20,32 @@ export function loadJSON({id, kind, name, properties, elements}:
     const loadElements = () => (elements || []).map(el => loadJSON(el))
 
     switch(kind) {
-        case 'Project':
-            return new Project(id, name, properties, loadElements())
-        case 'App':
-            return new App(id, name, properties, loadElements())
-        case 'Page':
-            return new Page(id, name, properties, loadElements())
-        case 'Text':
-            return new Text(id, name, properties)
-        case 'TextInput':
-            return new TextInput(id, name, properties)
-        case 'NumberInput':
-            return new NumberInput(id, name, properties)
-        case 'SelectInput':
-            return new SelectInput(id, name, properties)
-        case 'TrueFalseInput':
-            return new TrueFalseInput(id, name, properties)
-        case 'Button':
-            return new Button(id, name, properties)
-        case 'List':
-            return new List(id, name, properties, loadElements())
-        case 'Data':
-            return new Data(id, name, properties)
-        case 'Collection':
-            return new Collection(id, name, properties)
-        default:
-            throw new UnsupportedValueError(kind)
+    case 'Project':
+        return new Project(id, name, properties, loadElements())
+    case 'App':
+        return new App(id, name, properties, loadElements())
+    case 'Page':
+        return new Page(id, name, properties, loadElements())
+    case 'Text':
+        return new Text(id, name, properties)
+    case 'TextInput':
+        return new TextInput(id, name, properties)
+    case 'NumberInput':
+        return new NumberInput(id, name, properties)
+    case 'SelectInput':
+        return new SelectInput(id, name, properties)
+    case 'TrueFalseInput':
+        return new TrueFalseInput(id, name, properties)
+    case 'Button':
+        return new Button(id, name, properties)
+    case 'List':
+        return new List(id, name, properties, loadElements())
+    case 'Data':
+        return new Data(id, name, properties)
+    case 'Collection':
+        return new Collection(id, name, properties)
+    default:
+        throw new UnsupportedValueError(kind)
     }
 
 }

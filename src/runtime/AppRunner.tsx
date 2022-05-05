@@ -27,9 +27,9 @@ type Properties = {appFunction: React.FunctionComponent<any>, onComponentSelecte
 export default function AppRunner({appFunction, onComponentSelected, selectedComponentId}: Properties) {
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider>
-        <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
-            {React.createElement(appFunction)}
-        </SelectionProvider>
-    </StoreProvider>
-</ErrorBoundary>
+            <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
+                {React.createElement(appFunction)}
+            </SelectionProvider>
+        </StoreProvider>
+    </ErrorBoundary>
 }

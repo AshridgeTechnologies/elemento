@@ -53,9 +53,9 @@ const valueLiteral = function (propertyValue: any): string {
     } else if (isArray(propertyValue)) {
         return `[${propertyValue.map(valueLiteral).join(', ')}]`
     } else if (propertyValue instanceof Ref) {
-            return propertyValue.ref
+        return propertyValue.ref
     } else if (typeof propertyValue === 'string') {
-            return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue}'`
+        return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue}'`
     } else {
         return String(propertyValue)
     }
@@ -91,7 +91,7 @@ export default class Generator {
             content: 'export default ' + Generator.appMainComponent(this.app)
         }
 
-        const imports = `import React from 'react'\nimport Elemento from 'elemento-runtime'\n\n`
+        const imports = 'import React from \'react\'\nimport Elemento from \'elemento-runtime\'\n\n'
         return {
             files: [...pageFiles, appMainFile],
             errors: errorCollector.errors,
@@ -107,7 +107,7 @@ export default class Generator {
         const topLevelFunctions = new Set<string>()
         identifierSet.add('ListItem')
         const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isBuiltIn(name)
-        const children = list.elementArray().map(p => `        ${Generator.generateElement(p, identifierSet, topLevelFunctions, isKnown, errors)},`).join('\n');
+        const children = list.elementArray().map(p => `        ${Generator.generateElement(p, identifierSet, topLevelFunctions, isKnown, errors)},`).join('\n')
 
         const identifiers = [...identifierSet.values()]
         const componentIdentifiers = identifiers.filter(isComponent)
@@ -188,122 +188,122 @@ ${globalDeclarations}
         const onError = (propertyName: string) => (err: string) => errors.add(element.id, propertyName, err)
 
         switch(element.kind) {
-            case "Project":
-                throw new Error('Cannot generate code for Project')
-            case "App":
-                const app = element as App
-                return this.appMainComponent(app)
-            case "Page":
-                const page = element as Page
-                identifiers.add('Page')
-                const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n');
-                return `React.createElement(Page, {id: props.path},
+        case 'Project':
+            throw new Error('Cannot generate code for Project')
+        case 'App':
+            const app = element as App
+            return this.appMainComponent(app)
+        case 'Page':
+            const page = element as Page
+            identifiers.add('Page')
+            const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
+            return `React.createElement(Page, {id: props.path},
 ${children}
     )`
-            case "Text": {
-                const text = element as Text
-                identifiers.add('TextElement')
-                const path = `pathWith('${text.codeName}')`
-                const content = Generator.getExprAndIdentifiers(text.content, identifiers, isKnown, onError('content'))
-                const fontSize = Generator.getExprAndIdentifiers(text.fontSize, identifiers, isKnown, onError('fontSize'))
-                const fontFamily = Generator.getExprAndIdentifiers(text.fontFamily, identifiers, isKnown, onError('fontFamily'))
-                const color = Generator.getExprAndIdentifiers(text.color, identifiers, isKnown, onError('color'))
-                const backgroundColor = Generator.getExprAndIdentifiers(text.backgroundColor, identifiers, isKnown, onError('backgroundColor'))
-                const border = Generator.getExprAndIdentifiers(text.border, identifiers, isKnown, onError('border'))
-                const borderColor = Generator.getExprAndIdentifiers(text.borderColor, identifiers, isKnown, onError('borderColor'))
-                const width = Generator.getExprAndIdentifiers(text.width, identifiers, isKnown, onError('width'))
-                const height = Generator.getExprAndIdentifiers(text.height, identifiers, isKnown, onError('height'))
-                const reactProperties = definedPropertiesOf({path, fontSize, fontFamily, color, backgroundColor, border, borderColor, width, height})
-                return `React.createElement(TextElement, ${objectLiteral(reactProperties)}, ${content})`
-            }
+        case 'Text': {
+            const text = element as Text
+            identifiers.add('TextElement')
+            const path = `pathWith('${text.codeName}')`
+            const content = Generator.getExprAndIdentifiers(text.content, identifiers, isKnown, onError('content'))
+            const fontSize = Generator.getExprAndIdentifiers(text.fontSize, identifiers, isKnown, onError('fontSize'))
+            const fontFamily = Generator.getExprAndIdentifiers(text.fontFamily, identifiers, isKnown, onError('fontFamily'))
+            const color = Generator.getExprAndIdentifiers(text.color, identifiers, isKnown, onError('color'))
+            const backgroundColor = Generator.getExprAndIdentifiers(text.backgroundColor, identifiers, isKnown, onError('backgroundColor'))
+            const border = Generator.getExprAndIdentifiers(text.border, identifiers, isKnown, onError('border'))
+            const borderColor = Generator.getExprAndIdentifiers(text.borderColor, identifiers, isKnown, onError('borderColor'))
+            const width = Generator.getExprAndIdentifiers(text.width, identifiers, isKnown, onError('width'))
+            const height = Generator.getExprAndIdentifiers(text.height, identifiers, isKnown, onError('height'))
+            const reactProperties = definedPropertiesOf({path, fontSize, fontFamily, color, backgroundColor, border, borderColor, width, height})
+            return `React.createElement(TextElement, ${objectLiteral(reactProperties)}, ${content})`
+        }
 
-            case "TextInput":
-                const textInput = element as TextInput
-                identifiers.add('TextInput')
-                const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = textInput.codeName
-                const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
-                const width = Generator.getExprAndIdentifiers(textInput.width, identifiers, isKnown, onError('width'))
-                const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
-                const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({state, maxLength, multiline, label, width})
-                return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
+        case 'TextInput':
+            const textInput = element as TextInput
+            identifiers.add('TextInput')
+            const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = textInput.codeName
+            const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
+            const width = Generator.getExprAndIdentifiers(textInput.width, identifiers, isKnown, onError('width'))
+            const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
+            const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
+            const reactProperties = definedPropertiesOf({state, maxLength, multiline, label, width})
+            return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
-            case "NumberInput": {
-                const numberInput = element as NumberInput
-                identifiers.add('NumberInput')
-                const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = numberInput.codeName
-                const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({state, label})
-                return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
-            }
+        case 'NumberInput': {
+            const numberInput = element as NumberInput
+            identifiers.add('NumberInput')
+            const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = numberInput.codeName
+            const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown, onError('label'))
+            const reactProperties = definedPropertiesOf({state, label})
+            return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
+        }
 
-            case "SelectInput": {
-                const selectInput = element as SelectInput
-                identifiers.add('SelectInput')
-                const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown, onError('values'))
-                const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = selectInput.codeName
-                const label = Generator.getExprAndIdentifiers(selectInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({state, values, label})
-                return `React.createElement(SelectInput, ${objectLiteral(reactProperties)})`
-            }
+        case 'SelectInput': {
+            const selectInput = element as SelectInput
+            identifiers.add('SelectInput')
+            const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown, onError('values'))
+            const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = selectInput.codeName
+            const label = Generator.getExprAndIdentifiers(selectInput.label, identifiers, isKnown, onError('label'))
+            const reactProperties = definedPropertiesOf({state, values, label})
+            return `React.createElement(SelectInput, ${objectLiteral(reactProperties)})`
+        }
 
-            case "TrueFalseInput": {
-                const trueFalseInput = element as TrueFalseInput
-                identifiers.add('TrueFalseInput')
-                const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = trueFalseInput.codeName
-                const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown, onError('label'))
-                const reactProperties = definedPropertiesOf({state, label})
-                return `React.createElement(TrueFalseInput, ${objectLiteral(reactProperties)})`
-            }
+        case 'TrueFalseInput': {
+            const trueFalseInput = element as TrueFalseInput
+            identifiers.add('TrueFalseInput')
+            const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = trueFalseInput.codeName
+            const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown, onError('label'))
+            const reactProperties = definedPropertiesOf({state, label})
+            return `React.createElement(TrueFalseInput, ${objectLiteral(reactProperties)})`
+        }
 
-            case "Button": {
-                const button = element as Button
-                identifiers.add('Button')
-                const path = `pathWith('${button.codeName}')`
-                const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
-                const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
-                const reactProperties = definedPropertiesOf({path, content, action})
-                return `React.createElement(Button, ${objectLiteral(reactProperties)})`
-            }
+        case 'Button': {
+            const button = element as Button
+            identifiers.add('Button')
+            const path = `pathWith('${button.codeName}')`
+            const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
+            const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
+            const reactProperties = definedPropertiesOf({path, content, action})
+            return `React.createElement(Button, ${objectLiteral(reactProperties)})`
+        }
 
-            case "List": {
-                const list = element as List
-                identifiers.add('ListElement')
-                const path = `pathWith('${list.codeName}')`
-                const items = Generator.getExprAndIdentifiers(list.items, identifiers, isKnown, onError('items')) ?? '[]'
-                const reactProperties = definedPropertiesOf({path})
-                const [listItemName, listItemCode] = Generator.listItemComponent(list, errors)
-                topLevelFunctions.add(listItemCode)
-                return `React.createElement(ListElement, ${objectLiteral(reactProperties)}, 
+        case 'List': {
+            const list = element as List
+            identifiers.add('ListElement')
+            const path = `pathWith('${list.codeName}')`
+            const items = Generator.getExprAndIdentifiers(list.items, identifiers, isKnown, onError('items')) ?? '[]'
+            const reactProperties = definedPropertiesOf({path})
+            const [listItemName, listItemCode] = Generator.listItemComponent(list, errors)
+            topLevelFunctions.add(listItemCode)
+            return `React.createElement(ListElement, ${objectLiteral(reactProperties)}, 
             ${items}.map( (item, index) => React.createElement(${listItemName}, {path: pathWith(\`${list.codeName}.\${index}\`), key: item.id ?? index, $item: item})) )`
-            }
+        }
 
-            case "Data": {
-                const data = element as Data
-                identifiers.add('Data')
-                const initialValue = Generator.getExprAndIdentifiers(data.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = data.codeName
-                const display = Generator.getExprAndIdentifiers(data.display, identifiers, isKnown, onError('display'))
-                const reactProperties = definedPropertiesOf({state, display})
-                return `React.createElement(Data, ${objectLiteral(reactProperties)})`
-            }
+        case 'Data': {
+            const data = element as Data
+            identifiers.add('Data')
+            const initialValue = Generator.getExprAndIdentifiers(data.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = data.codeName
+            const display = Generator.getExprAndIdentifiers(data.display, identifiers, isKnown, onError('display'))
+            const reactProperties = definedPropertiesOf({state, display})
+            return `React.createElement(Data, ${objectLiteral(reactProperties)})`
+        }
 
-            case "Collection": {
-                const collection = element as Collection
-                identifiers.add(element.kind)
-                const initialValue = Generator.getExprAndIdentifiers(collection.initialValue, identifiers, isKnown, onError('initialValue'))
-                const state = collection.codeName
-                const display = Generator.getExprAndIdentifiers(collection.display, identifiers, isKnown, onError('display'))
-                const reactProperties = definedPropertiesOf({state, display})
-                return `React.createElement(Collection, ${objectLiteral(reactProperties)})`
-            }
+        case 'Collection': {
+            const collection = element as Collection
+            identifiers.add(element.kind)
+            const initialValue = Generator.getExprAndIdentifiers(collection.initialValue, identifiers, isKnown, onError('initialValue'))
+            const state = collection.codeName
+            const display = Generator.getExprAndIdentifiers(collection.display, identifiers, isKnown, onError('display'))
+            const reactProperties = definedPropertiesOf({state, display})
+            return `React.createElement(Collection, ${objectLiteral(reactProperties)})`
+        }
 
-            default:
-                throw new UnsupportedValueError(element.kind)
+        default:
+            throw new UnsupportedValueError(element.kind)
         }
     }
 
@@ -315,43 +315,43 @@ ${children}
         }
 
         switch(element.kind) {
-            case "Project":
-                throw new Error('Cannot generate code for Project')
-            case "App":
-            case "Page":
-            case "Text":
-            case "List":
-                return ''
+        case 'Project':
+            throw new Error('Cannot generate code for Project')
+        case 'App':
+        case 'Page':
+        case 'Text':
+        case 'List':
+            return ''
 
-            case "TextInput":
-            case "NumberInput":
-            case "SelectInput":
-            case "TrueFalseInput":
-                return valueEntry(element)
+        case 'TextInput':
+        case 'NumberInput':
+        case 'SelectInput':
+        case 'TrueFalseInput':
+            return valueEntry(element)
 
-            case "Data":{
-                const data = element as Data
-                const [valueExpr] = Generator.getExpr(data.initialValue)
-                return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
-            }
+        case 'Data':{
+            const data = element as Data
+            const [valueExpr] = Generator.getExpr(data.initialValue)
+            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
+        }
 
-            case "Collection":{
-                const collection = element as Collection
-                const [valueExpr] = Generator.getExpr(collection.initialValue)
-                return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
-            }
+        case 'Collection':{
+            const collection = element as Collection
+            const [valueExpr] = Generator.getExpr(collection.initialValue)
+            return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
+        }
 
-            case 'Button':
-                return ''
+        case 'Button':
+            return ''
 
-            default:
-                throw new UnsupportedValueError(element.kind)
+        default:
+            throw new UnsupportedValueError(element.kind)
         }
     }
 
     private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,
-                                         isKnown: (name: string) => boolean,
-                                         onError: (err: string) => void, isAction: boolean = false) {
+        isKnown: (name: string) => boolean,
+        onError: (err: string) => void, isAction = false) {
         if (propertyValue === undefined) {
             return undefined
         }
@@ -389,18 +389,18 @@ ${children}
                     visitIdentifier(path) {
                         const node = path.value
                         const parentNode = path.parentPath.value
-                        const isPropertyIdentifier = parentNode.type === "MemberExpression" && parentNode.property === node
-                        const isPropertyKey = parentNode.type === "Property" && parentNode.key === node
+                        const isPropertyIdentifier = parentNode.type === 'MemberExpression' && parentNode.property === node
+                        const isPropertyKey = parentNode.type === 'Property' && parentNode.key === node
                         if (!isPropertyIdentifier && !isPropertyKey) {
                             thisIdentifiers.add(node.name)
                         }
-                        this.traverse(path);
+                        this.traverse(path)
                     },
                     visitAssignmentExpression(path) {
                         const node = path.value
-                        node.type = "BinaryExpression"
+                        node.type = 'BinaryExpression'
                         node.operator = '=='
-                        this.traverse(path);
+                        this.traverse(path)
                     },
 
                     visitProperty(path) {
@@ -410,7 +410,7 @@ ${children}
                             const errorMessage = `Incomplete item: ${node.key.name}`
                             onError(errorMessage)
                         }
-                        this.traverse(path);
+                        this.traverse(path)
                     }
                 })
 

@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 import {TextField} from '@mui/material'
 import {BulletList, Heading, MinorHeading, NumberedList, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 
@@ -28,7 +28,7 @@ export default () =>
         <Para>So if you had a Text Input control where someone could enter their name, and you gave it the name "First Name",
             you can use <code>FirstName</code> in a formula to get the current value of the control - what the user has entered as their first name.</Para>
         <Para><em>Note:</em> you will see that although you called the control "First Name", in the formula you write <code>FirstName</code> - just miss out the spaces.
-            </Para>
+        </Para>
 
         <MinorHeading>Fixed values in formulas</MinorHeading>
         <Para>
@@ -80,7 +80,7 @@ export default () =>
                 <li>You can also use + to join text with another value</li>
             </BulletList>
             <Para>Here are some examples, with the steps you would take to work them out on a calculator:</Para>
-                <BulletList>
+            <BulletList>
                 <li>Height - 10<br/>
                 Take the value of Height, subtract 10
                 </li>
@@ -107,7 +107,7 @@ export default () =>
                 <li>working with text, such as converting all the characters to capitals (UpperCase)</li>
                 <li>making decisions, such as choosing between two different calculations (If)</li>
             </BulletList>
-                <Para>
+            <Para>
                 A function will usually need one or more inputs - values to do the calculation with.
                 To use a function, you type:</Para>
             <NumberedList>
@@ -118,7 +118,7 @@ export default () =>
             </NumberedList>
 
             <Para>Here are some examples, with a short explanation of what they do:</Para>
-                <BulletList>
+            <BulletList>
                 <li>Sum(Goods, Delivery, Tax)<br/>
                 Add up the values of goods, delivery and tax
                 </li>

@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 import {Para, Heading, Section} from '../HelpComponents'
 
 export default () =>

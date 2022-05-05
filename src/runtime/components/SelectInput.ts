@@ -12,7 +12,7 @@ export default function SelectInput({state, ...props}: Properties) {
         state._update({value: (event.target as any).value || null})
     }
 
-    let labelId = path + '_label'
+    const labelId = path + '_label'
     const noSelectionItem = el(MenuItem, {value: ''}, el('em', null, 'None'))
     const menuItems = [noSelectionItem, ...values.map((v: any) => el(MenuItem, {key: v, value: v}, v))]
 

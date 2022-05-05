@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn} from './Types'
 
 export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?: MenuItemFn, onSave?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
-    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
@@ -42,5 +42,5 @@ export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?
                 {onPublish ? signedInMenuItem('Publish', onPublish): null}
             </Menu>
         </div>
-    );
+    )
 }

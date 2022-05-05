@@ -29,89 +29,89 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
     function propertyFields() {
 
         switch(element.kind) {
-            case "Project":
-                return <>
-                    {propertyField<Project>('author')}
-                </>
+        case 'Project':
+            return <>
+                {propertyField<Project>('author')}
+            </>
 
-            case "App":
-                return <>
-                    {propertyField<App>('author')}
-                </>
+        case 'App':
+            return <>
+                {propertyField<App>('author')}
+            </>
 
-            case "Page":
-                return <>
-                    {propertyField<Page>('style')}
-                </>
+        case 'Page':
+            return <>
+                {propertyField<Page>('style')}
+            </>
 
-            case "Text":
-                return <>
-                    {propertyField<Text>('content', 'string multiline')}
-                    {propertyField<Text>('fontSize', 'number')}
-                    {propertyField<Text>('fontFamily', 'string')}
-                    {propertyField<Text>('color', 'string')}
-                    {propertyField<Text>('backgroundColor', 'string')}
-                    {propertyField<Text>('border', 'number')}
-                    {propertyField<Text>('borderColor', 'string')}
-                    {propertyField<Text>('display', 'boolean')}
-                    {propertyField<Text>('width', 'string|number')}
-                    {propertyField<Text>('height', 'string|number')}
-                </>
+        case 'Text':
+            return <>
+                {propertyField<Text>('content', 'string multiline')}
+                {propertyField<Text>('fontSize', 'number')}
+                {propertyField<Text>('fontFamily', 'string')}
+                {propertyField<Text>('color', 'string')}
+                {propertyField<Text>('backgroundColor', 'string')}
+                {propertyField<Text>('border', 'number')}
+                {propertyField<Text>('borderColor', 'string')}
+                {propertyField<Text>('display', 'boolean')}
+                {propertyField<Text>('width', 'string|number')}
+                {propertyField<Text>('height', 'string|number')}
+            </>
 
-            case "TextInput":
-                return <>
-                    {propertyField<TextInput>('initialValue')}
-                    {propertyField<TextInput>('maxLength', 'number')}
-                    {propertyField<TextInput>('width', 'string|number')}
-                    {propertyField<TextInput>('multiline', 'boolean')}
-                    {propertyField<TextInput>('label')}
-                </>
+        case 'TextInput':
+            return <>
+                {propertyField<TextInput>('initialValue')}
+                {propertyField<TextInput>('maxLength', 'number')}
+                {propertyField<TextInput>('width', 'string|number')}
+                {propertyField<TextInput>('multiline', 'boolean')}
+                {propertyField<TextInput>('label')}
+            </>
 
-            case "NumberInput":
-                return <>
-                    {propertyField<NumberInput>('initialValue', 'number')}
-                    {propertyField<NumberInput>('label')}
-                </>
+        case 'NumberInput':
+            return <>
+                {propertyField<NumberInput>('initialValue', 'number')}
+                {propertyField<NumberInput>('label')}
+            </>
 
-            case "SelectInput":
-                return <>
-                    {propertyField<SelectInput>('values', 'string list')}
-                    {propertyField<SelectInput>('initialValue', 'string')}
-                    {propertyField<SelectInput>('label')}
-                </>
+        case 'SelectInput':
+            return <>
+                {propertyField<SelectInput>('values', 'string list')}
+                {propertyField<SelectInput>('initialValue', 'string')}
+                {propertyField<SelectInput>('label')}
+            </>
 
-            case "TrueFalseInput":
-                return <>
-                    {propertyField<TrueFalseInput>('initialValue', 'boolean')}
-                    {propertyField<TrueFalseInput>('label')}
-                </>
+        case 'TrueFalseInput':
+            return <>
+                {propertyField<TrueFalseInput>('initialValue', 'boolean')}
+                {propertyField<TrueFalseInput>('label')}
+            </>
 
-            case "Button":
-                return <>
-                    {propertyField<Button>('content')}
-                    {propertyField<Button>('action', 'action')}
-                    {propertyField<Button>('display', 'boolean')}
-                </>
+        case 'Button':
+            return <>
+                {propertyField<Button>('content')}
+                {propertyField<Button>('action', 'action')}
+                {propertyField<Button>('display', 'boolean')}
+            </>
 
-            case "List":
-                return <>
-                    {propertyField<List>('items')}
-                    {propertyField<List>('style')}
-                </>
+        case 'List':
+            return <>
+                {propertyField<List>('items')}
+                {propertyField<List>('style')}
+            </>
 
-            case "Data":
-                return <>
-                    {propertyField<Data>('initialValue')}
-                    {propertyField<Data>('display', 'boolean')}
-                </>
+        case 'Data':
+            return <>
+                {propertyField<Data>('initialValue')}
+                {propertyField<Data>('display', 'boolean')}
+            </>
 
-            case "Collection":
-                return <>
-                    {propertyField<Collection>('initialValue')}
-                    {propertyField<Collection>('display', 'boolean')}
-                </>
-            default:
-                throw new UnsupportedValueError(element.kind)
+        case 'Collection':
+            return <>
+                {propertyField<Collection>('initialValue')}
+                {propertyField<Collection>('display', 'boolean')}
+            </>
+        default:
+            throw new UnsupportedValueError(element.kind)
         }
 
 
@@ -131,7 +131,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
             <TextField id="id" label="Id" variant='filled' size='small' value={element.id} inputProps={{readOnly: true}}/>
             <Stack direction='row' spacing={2}>
                 <TextField id='name' label="Name" variant='filled' size='small' value={element.name}
-                           onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)} sx={{flexGrow: 0.5}}/>
+                    onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)} sx={{flexGrow: 0.5}}/>
                 <TextField id="formulaName" label="Formula Name" variant='filled' size='small' value={element.codeName} inputProps={{readOnly: true}} sx={{flexGrow: 0.5}}/>
             </Stack>
             {children}

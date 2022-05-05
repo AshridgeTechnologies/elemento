@@ -11,7 +11,7 @@ type StoreType = {
 
 const baseStore = (set: (updater: (state: StoreType) => object) => void): StoreType => ({
     store: new DataStore({app: {}}),
-    update(path: string, changes: Changes, replace: boolean = false) {
+    update(path: string, changes: Changes, replace = false) {
         set((state: StoreType) => {
             const store = state.store
             const updatedStore = store.update(path, changes, replace)
@@ -20,7 +20,7 @@ const baseStore = (set: (updater: (state: StoreType) => object) => void): StoreT
     }
 })
 
-const { Provider, useStore } = createContext<StoreType>();
+const { Provider, useStore } = createContext<StoreType>()
 
 const createStore = () => create(baseStore)
 

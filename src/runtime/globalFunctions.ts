@@ -13,7 +13,7 @@ export const globalFunctions = {
     },
 
     If(condition: any, trueValue: any, falseValue?: any) {
-        return !!valueOf(condition) ? trueValue : falseValue
+        return valueOf(condition) ? trueValue : falseValue
     },
 
     Left(s: Value<string>, length: Value<number>) {

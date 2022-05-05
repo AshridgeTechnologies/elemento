@@ -13,7 +13,7 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
         }
 
         if (prop === '_update') {
-            return (changes: object, replace: boolean = false) => updateFn(path, changes, replace)
+            return (changes: object, replace = false) => updateFn(path, changes, replace)
         }
 
         if (prop === '_updateApp') {
@@ -46,7 +46,7 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 const useRightIfDefined = (left: any, right: any) => right !== undefined ? right : left
 
 export function stateProxy(path: string, storedState: object | undefined, initialValuesAndDefaults: object,
-                           updateFn: updateFnType) {
+    updateFn: updateFnType) {
     const existingStateAtPath = storedState || {}
     const mergedState = mergeDeepWith(useRightIfDefined, initialValuesAndDefaults, existingStateAtPath)
     return new Proxy(mergedState, stateProxyHandler(path, updateFn))
