@@ -51,6 +51,7 @@ Tech debt
 - Script environment creation
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent
+- Use React.StrictMode in some tests that do not need sign-in
 - Review Generator.initialStateEntry vs generateElement
 - Mechanism for generating defaults, state and properties code from model object - mark as stateful?
 - Upgrade Parcel - babel _typeof error in prod build after 2.3.2

@@ -1,5 +1,5 @@
 import Project from '../model/Project'
-import {ElementId, ElementType} from '../model/Types'
+import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {editorInitialProject} from '../util/welcomeProject'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -40,8 +40,8 @@ export default class ProjectHandler {
         this.project = this.project.set(elementId, propertyName, value)
     }
 
-    insertElement(idAfter: ElementId, elementType: ElementType): ElementId {
-        const [newProject, newElement] = this.project.insert(idAfter, elementType)
+    insertElement(insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType): ElementId {
+        const [newProject, newElement] = this.project.insert(insertPosition, targetElementId, elementType)
         this.project = newProject
         return newElement.id
     }

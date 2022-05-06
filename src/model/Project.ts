@@ -1,4 +1,4 @@
-import {ElementId, ElementType, PropertyValue} from './Types'
+import {ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
 
@@ -16,8 +16,15 @@ export default class Project extends BaseElement<Properties> implements Element 
 
     kind = 'Project' as ElementType
 
-    insert(selectedItemId: ElementId, elementType: ElementType): [Project, Element] {
-        return this.doInsert(selectedItemId, elementType) as [Project, Element]
+    canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
+        if (insertPosition === 'inside') {
+            return Boolean(this.findElement(targetItemId)?.canContain(elementType))
+        }
+        return Boolean(this.findParent(targetItemId)?.canContain(elementType))
+    }
+
+    insert(insertPosition: InsertPosition, selectedItemId: ElementId, elementType: ElementType): [Project, Element] {
+        return this.doInsert(insertPosition, selectedItemId, elementType) as [Project, Element]
     }
 
     get pathSegment() {

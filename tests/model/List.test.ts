@@ -30,7 +30,7 @@ test('creates an updated object on insert', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const list = new List('l1', 'List 1', {items: []}, [text1, text2])
-    const [updatedList] = list.doInsert('t2', 'Text', 5)
+    const [updatedList] = list.doInsert('inside', 'l1', 'Text', 5)
     expect(updatedList.name).toBe('List 1')
     expect(updatedList.elementArray().length).toBe(3)
     expect(updatedList.elementArray()[0]).toBe(text1)

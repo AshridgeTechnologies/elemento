@@ -1,5 +1,5 @@
 import {expect, Frame, Page as PWPage, test} from '@playwright/test';
-import {App, Page, Project, TextInput} from '../../src/model/index'
+import {App, Page, Project, Text} from '../../src/model/index'
 import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
 
 const pageUrl = '/studio'
@@ -24,7 +24,7 @@ test.describe('Controls can be used', () => {
 
     const project = new Project('project1', 'Project One', {}, [new App('app1', 'App One', {}, [
         new Page('page_1', 'Control Test Page', {}, [
-            new TextInput('textInput_1', 'Name Input', {label: `Name`}),
+            new Text('text_1', 'The text', {content: `Some text`}),
         ]),
     ])
     ])
@@ -34,7 +34,7 @@ test.describe('Controls can be used', () => {
         await page.click(treeExpand(1))
         expect(await page.textContent(treeItem(2))).toBe('Control Test Page')
         await page.click(treeExpand(2))
-        await page.click(treeItem(2))
+        await page.click(treeItem(3))
     }
 
     test('button', async ({ page }) => {
@@ -45,7 +45,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_Button)
-        expect(await page.textContent(treeItem(3))).toBe('Button 1')
+        expect(await page.textContent(treeItem(4))).toBe('Button 1')
 
         await page.fill('input#content', 'A button!')
 
@@ -61,7 +61,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_NumberInput)
-        expect(await page.textContent(treeItem(3))).toBe('Number Input 1')
+        expect(await page.textContent(treeItem(4))).toBe('Number Input 1')
 
         await page.fill('input#initialValue', '99')
         const appFrame = await getAppFrame(page)
@@ -76,7 +76,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_SelectInput)
-        expect(await page.textContent(treeItem(3))).toBe('Select Input 1')
+        expect(await page.textContent(treeItem(4))).toBe('Select Input 1')
 
         await page.fill('input#values', 'Blue, Red')
         await page.fill('input#initialValue', 'Red')
@@ -92,7 +92,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_TrueFalseInput)
-        expect(await page.textContent(treeItem(3))).toBe('True False Input 1')
+        expect(await page.textContent(treeItem(4))).toBe('True False Input 1')
 
         await page.click('#initialValue')
         await page.click(yesOption)
@@ -108,7 +108,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_Data)
-        expect(await page.textContent(treeItem(3))).toBe('Data 1')
+        expect(await page.textContent(treeItem(4))).toBe('Data 1')
 
         await page.fill('input#initialValue', 'Some data')
         await page.click('#display')
@@ -125,7 +125,7 @@ test.describe('Controls can be used', () => {
 
         await page.click(insertMenu)
         await page.click(insertMenu_Collection)
-        expect(await page.textContent(treeItem(3))).toBe('Collection 1')
+        expect(await page.textContent(treeItem(4))).toBe('Collection 1')
 
         await page.click(switchToFxButton)
         await page.fill('textarea#initialValue', "['green', 'blue']")
@@ -140,6 +140,7 @@ test.describe('Controls can be used', () => {
 
         await loadProject(page, project)
         await selectControlTestPage(page)
+        await page.click(treeItem(2))
 
         await page.click(insertMenu)
         await page.click(insertMenu_Page)

@@ -5,7 +5,6 @@
 import React from 'react'
 import Editor from '../../src/editor/Editor'
 import {act, fireEvent, render, screen, within} from '@testing-library/react/pure'
-import {ElementType} from '../../src/model/Types'
 import {startCase} from 'lodash'
 import {ex, stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
@@ -166,17 +165,13 @@ test('shows allowed items in menu bar insert menu', async () => {
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection', 'Page'])
+    expect(optionsShown()).toStrictEqual(['Page'])
 })
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection'])
     (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {
-    let onInsertArgs: any
     const notionalNewElementId = 'text_1'
-    const onInsert = (selectedItemId: string, elementType: ElementType) => {
-        onInsertArgs = [selectedItemId, elementType]
-        return notionalNewElementId
-    }
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
     await clickExpandControl(0, 1, 2)
@@ -185,18 +180,48 @@ test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', '
     fireEvent.click(screen.getByText('Insert'))
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
-    expect(onInsertArgs).toStrictEqual(['text_2', elementType])
+    expect(onInsert).toHaveBeenCalledWith('after', 'text_2', elementType)
+    const idInput = screen.getByLabelText('Id') as HTMLInputElement
+    expect(idInput.value).toBe(notionalNewElementId)
+})
+
+test.each([['Text', 'before'], ['TextInput', 'after']])
+    (`notifies context menu insert of %s %s item in tree and selects new item`, async (elementType, position) => {
+    const notionalNewElementId = 'text_1'
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await clickExpandControl(0, 1, 2)
+
+    fireEvent.contextMenu(screen.getByText('Second Text'))
+    fireEvent.click(screen.getByText(`Insert ${position}`))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
+
+    expect(onInsert).toHaveBeenCalledWith(position, 'text_2', elementType)
+    const idInput = screen.getByLabelText('Id') as HTMLInputElement
+    expect(idInput.value).toBe(notionalNewElementId)
+})
+
+test.each([['NumberInput', 'inside']])
+    (`notifies context menu insert of %s %s item in tree and selects new item`, async (elementType, position) => {
+    const notionalNewElementId = 'text_1'
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await clickExpandControl(0, 1, 2)
+
+    fireEvent.contextMenu(screen.getByText('Main Page'))
+    fireEvent.click(screen.getByText(`Insert ${position}`))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
+
+    expect(onInsert).toHaveBeenCalledWith(position, 'page_1', elementType)
     const idInput = screen.getByLabelText('Id') as HTMLInputElement
     expect(idInput.value).toBe(notionalNewElementId)
 })
 
 test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
-    let onInsertArgs: any
     const notionalNewElementId = 'page_2'
-    const onInsert = (selectedItemId: string, elementType: ElementType) => {
-        onInsertArgs = [selectedItemId, elementType]
-        return notionalNewElementId
-    }
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
     await clickExpandControl(0, 1, 2)
@@ -205,7 +230,7 @@ test(`notifies insert of Page with item selected in tree and selects new item`, 
     fireEvent.click(screen.getByText('Insert'))
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Page'))
 
-    expect(onInsertArgs).toStrictEqual(['page_1', 'Page'])
+    expect(onInsert).toHaveBeenCalledWith('after', 'page_1', 'Page')
     // const idInput = screen.getByLabelText('Id') as HTMLInputElement
     // expect(idInput.value).toBe(notionalNewElementId)
 })

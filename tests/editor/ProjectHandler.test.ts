@@ -80,9 +80,10 @@ test('can set a property on the project', () => {
 })
 
 test('can insert an element on the project', () => {
-    const newId = handler.insertElement('text_3', 'TextInput')
+    const newId = handler.insertElement('inside', 'page_2', 'Text')
     expect(handler.current).not.toBe(project)
     expect((handler.current.findElement(newId) as TextInput).id).toBe(newId)
+    expect((handler.current.findElement('page_2')?.elements as any)[2].id).toBe('text_5')
 })
 
 test('can do action on the project', () => {

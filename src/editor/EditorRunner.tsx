@@ -1,6 +1,6 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useState} from 'react'
-import {ElementId, ElementType} from '../model/Types'
+import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {AppElementAction} from './Types'
@@ -56,8 +56,8 @@ export default function EditorRunner() {
         updateProject()
     }
 
-    const onInsert = (idAfter: ElementId, elementType: ElementType)=> {
-        const newId = projectHandler.insertElement(idAfter, elementType)
+    const onInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType)=> {
+        const newId = projectHandler.insertElement(insertPosition, targetElementId, elementType)
         updateProject()
         return newId
     }
@@ -100,12 +100,10 @@ export default function EditorRunner() {
     }
 
 
-    return <React.StrictMode>
-        <ThemeProvider theme={theme}>
+    return <ThemeProvider theme={theme}>
             {alertMessage}
             <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}
                 onOpen={onOpen}
                 onSave={onSave} onPublish={onPublish}/>
         </ThemeProvider>
-    </React.StrictMode>
 }

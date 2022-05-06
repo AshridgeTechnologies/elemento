@@ -1,8 +1,8 @@
 import Page from './Page'
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType, PropertyValue} from './Types'
-import { createElement } from './createElement'
+import {ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
+import {createElement} from './createElement'
 
 type Properties = { author?: PropertyValue }
 
@@ -24,8 +24,8 @@ export default class App extends BaseElement<Properties> implements Element {
         return createElement(elementType, newIdSeq)
     }
 
-    insert(selectedItemId: ElementId, elementType: ElementType): [App, Element] {
-        return this.doInsert(selectedItemId, elementType) as [App, Element]
+    insert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [App, Element] {
+        return this.doInsert(insertPosition, targetItemId, elementType) as [App, Element]
     }
 
     canContain(elementType: ElementType) {

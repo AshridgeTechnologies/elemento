@@ -1,22 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react'
 import App from '../model/App'
-import Page from '../model/Page'
+
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from './PropertyEditor'
 import {
+    AppElementAction,
+    OnActionFn,
     OnChangeFn,
     OnInsertWithSelectedFn,
     OnOpenFn,
-    OnSaveFn,
-    OnActionFn,
-    AppElementAction,
-    OnPublishFn
+    OnPublishFn,
+    OnSaveFn
 } from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
-import InsertMenu from './InsertMenu'
-import {ElementType} from '../model/Types'
+import InsertMenuWithButton from './InsertMenuWithButton'
+import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {Box, Button, Grid} from '@mui/material'
 import HelpPanel from './HelpPanel'
 import WhatIsElemento from '../docs/overview/WhatIsElemento'
@@ -28,7 +28,6 @@ import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
 import Generator, {generate} from '../generator/Generator'
-import {without} from 'ramda'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 
@@ -39,6 +38,8 @@ const treeData = (project: Project): ModelTreeItem => {
     }
     return treeNodeFromElement(project)
 }
+
+const allElementTypes = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection', 'Page'] as ElementType[]
 
 export default function Editor({
     project,
@@ -67,24 +68,17 @@ export default function Editor({
         return null
     }
 
-    function insertMenuItems(): ElementType[] {
-        if (selectedItemId) {
-            const element = app.findElement(selectedItemId)
-            if (element) {
-                const allItems = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection', 'Page'] as ElementType[]
-                if (Page.is(element)) {
-                    return allItems
-                } else {
-                    return without(['Page'], allItems) as ElementType[]
-                }
-            }
-        }
-
-        return []
+    function insertMenuItems(insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] {
+        return allElementTypes.filter( type => project.canInsert(insertPosition, targetItemId, type))
     }
 
     const onMenuInsert = (elementType: ElementType) => {
-        const newElementId = onInsert(selectedItemId, elementType)
+        const newElementId = onInsert('after', selectedItemId, elementType)
+        setSelectedItemId(newElementId)
+    }
+
+    const onContextMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
+        const newElementId = onInsert(insertPosition, targetElementId, elementType)
         setSelectedItemId(newElementId)
     }
 
@@ -157,7 +151,7 @@ export default function Editor({
 
     const EditorMenuBar = () => <MenuBar>
         <FileMenu onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
-        <InsertMenu onInsert={onMenuInsert} items={insertMenuItems()}/>
+        <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', selectedItemId)}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
 
@@ -183,7 +177,7 @@ export default function Editor({
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemId}
-                                        selectedItemId={selectedItemId} onAction={onTreeAction}/>
+                                        selectedItemId={selectedItemId} onAction={onTreeAction} onInsert={onContextMenuInsert} insertMenuItemFn={insertMenuItems}/>
                                 </Grid>
                                 <Grid item xs={8} height='100%' overflow='scroll'>
                                     <Box id='propertyPanel' width='100%'>

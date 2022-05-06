@@ -2,14 +2,16 @@ import Tree, {TreeNodeProps} from 'rc-tree'
 import React, {useState} from 'react'
 import {BasicDataNode, DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
-import {Menu, MenuItem, useTheme} from '@mui/material'
+import {ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
 import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ViewListIcon from '@mui/icons-material/ViewList'
-import {ElementType} from '../model/Types'
+import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {union} from 'ramda'
+import {InsertMenu} from './InsertMenu'
 
 export class ModelTreeItem implements DataNode {
     constructor(public id: string,
@@ -60,18 +62,27 @@ type Action = {
     id: string | number,
     itemName: string
 }
+type Insertion = {
+    insertPosition: InsertPosition,
+    id: ElementId
+}
 
-export default function AppStructureTree({treeData, onSelect, selectedItemId, onAction}: {
-    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void}) {
+export default function AppStructureTree({treeData, onSelect, selectedItemId, onAction, onInsert, insertMenuItemFn}: {
+    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void,
+    insertMenuItemFn: (insertPosition: InsertPosition, targetElementId: ElementId) => ElementType[],
+    onInsert: (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => void}) {
 
     const theme = useTheme()
     const [actionEl, setActionEl] = useState<null | HTMLElement>(null)
     const [actionNode, setActionNode] = useState<null | {id: string, name: string}>(null)
     const [confirmingEl, setConfirmingEl] = useState<null | HTMLElement>(null)
+    const [insertMenuEl, setInsertMenuEl] = useState<null | HTMLElement>(null)
     const [actionToConfirm, setActionToConfirm] = useState<null | Action>(null)
+    const [insertion, setInsertion] = useState<null | Insertion>(null)
     const [expandedKeys, setExpandedKeys] = useState<Key[]>([])
     const contextMenuOpen = Boolean(actionEl)
     const confirmMenuOpen = Boolean(confirmingEl)
+    const insertMenuOpen = Boolean(insertMenuEl)
 
     const showContextMenu = (event: React.MouseEvent, nodeId: string | number,  nodeTitle: string) => {
         setActionEl((event as React.MouseEvent<HTMLElement>).currentTarget)
@@ -83,8 +94,18 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
         setActionToConfirm({action, id: actionNode!.id, itemName: actionNode!.name})
     }
 
+    const showInsertMenu = (event: React.MouseEvent, insertPosition: InsertPosition) => {
+        setInsertMenuEl((event as React.MouseEvent<HTMLElement>).currentTarget)
+        setInsertion({insertPosition, id: actionNode!.id})
+    }
+
     const actionConfirmed = () => {
         onAction(actionToConfirm!)
+        closeMenus()
+    }
+
+    const insertConfirmed = (elementType: ElementType) => {
+        onInsert(insertion!.insertPosition, insertion!.id, elementType)
         closeMenus()
     }
 
@@ -92,6 +113,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
         setActionEl(null)
         setActionNode(null)
         setConfirmingEl(null)
+        setInsertMenuEl(null)
         setActionToConfirm(null)
     }
 
@@ -112,6 +134,54 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
         setExpandedKeys(allExpandedKeys)
     }
 
+    const insertMenuItem = (position: InsertPosition) => {
+        const hasItemsToInsert = Boolean(insertMenuItemFn(position, actionNode!.id)?.length)
+        return hasItemsToInsert ? (
+            <MenuItem onClick={(event: React.MouseEvent) => showInsertMenu(event, position)}>
+                <ListItemText sx={{minWidth: 2}}>Insert {position}</ListItemText><ArrowRightIcon/>
+            </MenuItem>
+        ) : null
+    }
+    const contextMenuIfOpen = contextMenuOpen && (
+        <Menu
+            id="tree-context-menu"
+            anchorEl={actionEl}
+            open={contextMenuOpen}
+            onClose={closeMenus}
+            anchorOrigin={{vertical: 'top', horizontal: 'right',}}
+            transformOrigin={{vertical: 'top', horizontal: 'left',}}
+        >
+            {insertMenuItem('before')}
+            {insertMenuItem('after')}
+            {insertMenuItem('inside')}
+            <MenuItem onClick={(event: React.MouseEvent) => confirmAction(event, 'delete')}>Delete</MenuItem>
+        </Menu>
+    )
+
+    const confirmMenuIfOpen = confirmMenuOpen && (
+        <Menu
+            id="tree-confirm-menu"
+            anchorEl={confirmingEl}
+            open={confirmMenuOpen}
+            onClose={closeMenus}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+        >
+            <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action} {actionToConfirm!.itemName}</MenuItem>
+            <MenuItem onClick={closeMenus}>No - go back</MenuItem>
+        </Menu>
+    )
+
+    const insertMenuIfOpen = insertMenuOpen && <InsertMenu anchorEl={insertMenuEl} anchorOrigin={{vertical: 'top', horizontal: 'right'}} open={insertMenuOpen} onClose={closeMenus}
+                                                           items={insertMenuItemFn(insertion!.insertPosition, insertion!.id)}
+                                                           onInsert={insertConfirmed}/>
+
     return <>
         <Tree treeData={[treeData] as BasicDataNode[]}
             draggable
@@ -124,46 +194,8 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
                 showContextMenu(event, node.key, 'this item')
             }}
             style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>
-        {
-            contextMenuOpen && (
-                <Menu
-                    id="tree-context-menu"
-                    anchorEl={actionEl}
-                    open={contextMenuOpen}
-                    onClose={closeMenus}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                >
-                    <MenuItem onClick={(event: React.MouseEvent) => confirmAction(event, 'delete')}>Delete</MenuItem>
-                </Menu>
-            )
-        }
-        {
-            confirmMenuOpen && (
-                <Menu
-                    id="tree-confirm-menu"
-                    anchorEl={confirmingEl}
-                    open={confirmMenuOpen}
-                    onClose={closeMenus}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                >
-                    <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action} {actionToConfirm!.itemName}</MenuItem>
-                    <MenuItem onClick={closeMenus}>No - go back</MenuItem>
-                </Menu>
-            )
-        }
+        {contextMenuIfOpen}
+        {confirmMenuIfOpen}
+        {insertMenuIfOpen}
     </>
 }

@@ -123,7 +123,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedApp.pages[1].elementArray()[0]).toBe(text3)
 })
 
-test('creates an updated object on insert element in a page and preserves unchanged objects', ()=> {
+describe('insert element', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
@@ -132,42 +132,40 @@ test('creates an updated object on insert element in a page and preserves unchan
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1, page2])
 
-    const [updatedApp, newElement] = app.insert(text1.id, 'Text')
-    expect(updatedApp.pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
-    expect(newElement).toBe(updatedApp.pages[0].elements![1])
-    expect(newElement!.id).toBe('text_8')
-    expect(newElement!.name).toBe('Text 8')
-    expect((newElement as Text).content).toBe('Your text here')
-    expect(updatedApp.pages[1]).toBe(app.pages[1])
+    test('creates an updated object on insert after element in a page and preserves unchanged objects', ()=> {
+
+        const [updatedApp, newElement] = app.insert('after', text1.id, 'Text')
+        expect(updatedApp.pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
+        expect(newElement).toBe(updatedApp.pages[0].elements![1])
+        expect(newElement!.id).toBe('text_8')
+        expect(newElement!.name).toBe('Text 8')
+        expect((newElement as Text).content).toBe('Your text here')
+        expect(updatedApp.pages[1]).toBe(app.pages[1])
+    })
+
+    test('creates an updated object on insert element inside a page and preserves unchanged objects', ()=> {
+
+        const [updatedApp, newElement] = app.insert('inside', page1.id, 'Text')
+        expect(updatedApp.pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
+        expect(newElement).toBe(updatedApp.pages[0].elements![2])
+        expect(newElement!.id).toBe('text_8')
+        expect(newElement!.name).toBe('Text 8')
+        expect((newElement as Text).content).toBe('Your text here')
+        expect(updatedApp.pages[0]).not.toBe(app.pages[0])
+        expect(updatedApp.pages[1]).toBe(app.pages[1])
+    })
+
+
 })
 
-test('creates an updated object on insert element at start of a page and preserves unchanged objects', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
-    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
-    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
-    const app = new App('app', 'App 1', {}, [page1, page2])
-
-    const [updatedApp, newElement] = app.insert(page1.id, 'Text')
-    expect(updatedApp.pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
-    expect(newElement).toBe(updatedApp.pages[0].elements![0])
-    expect(newElement!.id).toBe('text_8')
-    expect(newElement!.name).toBe('Text 8')
-    expect((newElement as Text).content).toBe('Your text here')
-    expect(updatedApp.pages[0]).not.toBe(app.pages[0])
-    expect(updatedApp.pages[1]).toBe(app.pages[1])
-})
-
-test('creates an updated object on insert page and preserves unchanged objects', () => {
+test('creates an updated object on insert page after a page and preserves unchanged objects', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1])
     const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3])
     const app = new App('app', 'App 1', {}, [page1, page2])
 
-    const [updatedApp, newElement] = app.insert(page1.id, 'Page')
+    const [updatedApp, newElement] = app.insert('after', page1.id, 'Page')
     expect(updatedApp.pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3', 'Page 2'])
     expect(newElement).toBe(updatedApp.pages[1])
     expect(newElement!.id).toBe('page_3')

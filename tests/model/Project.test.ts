@@ -63,6 +63,13 @@ test('can find element by id', ()=> {
     expect(project.findElement('t4')).toBe(text4)
 })
 
+test('can find parent of element by id', ()=> {
+    const {project} = testProject()
+    expect(project.findParent('pr1')).toBe(null)
+    expect(project.findParent('app1')).toBe(project)
+    expect(project.findParent('t4')).toBe(project.findElement('p2'))
+    expect(project.findParent('xxx')).toBe(null)
+})
 
 test('path of project itself is empty string', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
@@ -143,7 +150,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect((updatedProject.elements![1] as App).pages[0].elementArray()[0]).toBe(text3)
 })
 
-test('creates an updated object on insert element in a page and preserves unchanged objects', ()=> {
+describe('Insert element', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
@@ -154,52 +161,54 @@ test('creates an updated object on insert element in a page and preserves unchan
     const app2 = new App('a2', 'App 2', {}, [page2])
     const project = new Project('pr1', 'proj1', {}, [app, app2])
 
-    const [updatedProject, newElement] = project.insert(text1.id, 'Text')
-    expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
-    expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
-    expect(newElement!.id).toBe('text_8')
-    expect(newElement!.name).toBe('Text 8')
-    expect((newElement as Text).content).toBe('Your text here')
-    expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
-})
+    test('creates an updated object on insert before element in a page and preserves unchanged objects', ()=> {
 
-test('creates an updated object on insert element at start of a page and preserves unchanged objects', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
-    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
-    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
-    const app = new App('app', 'App 1', {}, [page1])
-    const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+        const [updatedProject, newElement] = project.insert('before', text1.id, 'Text')
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
+        expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
+        expect(newElement!.id).toBe('text_8')
+        expect(newElement!.name).toBe('Text 8')
+        expect((newElement as Text).content).toBe('Your text here')
+        expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
+    })
 
-    const [updatedProject, newElement] = project.insert(page1.id, 'Text')
-    expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
-    expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
-    expect(newElement!.id).toBe('text_8')
-    expect(newElement!.name).toBe('Text 8')
-    expect((newElement as Text).content).toBe('Your text here')
-    expect((updatedProject.elements![0] as App).pages[0]).not.toBe(app.pages[0])
-    expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
-})
+    test('creates an updated object on insert  element in a page and preserves unchanged objects', ()=> {
 
-test('creates an updated object on insert page and preserves unchanged objects', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const page1 = new Page('page_1', 'Page 1', {}, [text1])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const page2 = new Page('page_2', 'Page 2', {}, [text3])
-    const app = new App('app', 'App 1', {}, [page1])
-    const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+        const [updatedProject, newElement] = project.insert('after', text1.id, 'Text')
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
+        expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
+        expect(newElement!.id).toBe('text_8')
+        expect(newElement!.name).toBe('Text 8')
+        expect((newElement as Text).content).toBe('Your text here')
+        expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
+    })
 
-    const [updatedProject, newElement] = project.insert(page1.id, 'Page')
-    expect((updatedProject.elements![0] as App).pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3'])
-    expect(newElement).toBe((updatedProject.elements![0] as App).pages[1])
-    expect(newElement!.id).toBe('page_3')
-    expect(newElement!.name).toBe('Page 3')
-    expect((updatedProject.elements![0] as App).pages[0]).toBe(app.pages[0])
-    expect((updatedProject.elements![1] as App).pages[0]).toBe(app2.pages[0])
+    test('creates an updated object on insert element inside a page and preserves unchanged objects', ()=> {
+        const [updatedProject, newElement] = project.insert('inside', page1.id, 'Text')
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
+        expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![2])
+        expect(newElement!.id).toBe('text_8')
+        expect(newElement!.name).toBe('Text 8')
+        expect((newElement as Text).content).toBe('Your text here')
+        expect((updatedProject.elements![0] as App).pages[0]).not.toBe(app.pages[0])
+        expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
+    })
+
+    test('creates an updated object on insert page and preserves unchanged objects', () => {
+        const [updatedProject, newElement] = project.insert('after', page1.id, 'Page')
+        expect((updatedProject.elements![0] as App).pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3'])
+        expect(newElement).toBe((updatedProject.elements![0] as App).pages[1])
+        expect(newElement!.id).toBe('page_3')
+        expect(newElement!.name).toBe('Page 3')
+        expect((updatedProject.elements![0] as App).pages[0]).toBe(app.pages[0])
+        expect((updatedProject.elements![1] as App).pages[0]).toBe(app2.pages[0])
+    })
+
+    test('returns an unchanged object on illegal insert page inside page', () => {
+        const [updatedProject, newElement] = project.insert('inside', page1.id, 'Page')
+        expect(updatedProject).toBe(project)
+        expect(newElement).toBe(null)
+    })
 })
 
 test('creates an updated object on delete element on a page and preserves unchanged objects', ()=> {
@@ -235,11 +244,38 @@ test('finds max id for element type', ()=> {
 })
 
 test('can contain App, not other types', () => {
-    const app = new Project('id1', 'Project 1', {}, [])
-    expect(app.canContain('App')).toBe(true)
-    expect(app.canContain('Page')).toBe(false)
-    expect(app.canContain('Project')).toBe(false)
-    expect(app.canContain('Text')).toBe(false)
+    const project = new Project('id1', 'Project 1', {}, [])
+    expect(project.canContain('App')).toBe(true)
+    expect(project.canContain('Page')).toBe(false)
+    expect(project.canContain('Project')).toBe(false)
+    expect(project.canContain('Text')).toBe(false)
+})
+
+test('finds element types that can insert for a position and target element', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1])
+    const app2 = new App('a2', 'App 2', {}, [page2])
+    const project = new Project('pr1', 'proj1', {}, [app, app2])
+
+    expect(project.canInsert('inside', 'page_2', 'Text')).toBe(true)
+    expect(project.canInsert('inside', 'page_2', 'Page')).toBe(false)
+    expect(project.canInsert('inside', 'text_2', 'Text')).toBe(false)
+
+    expect(project.canInsert('before', 'page_2', 'Text')).toBe(false)
+    expect(project.canInsert('before', 'page_2', 'Page')).toBe(true)
+    expect(project.canInsert('before', 'text_2', 'Text')).toBe(true)
+    expect(project.canInsert('before', 'text_2', 'Page')).toBe(false)
+
+    expect(project.canInsert('after', 'page_2', 'Text')).toBe(false)
+    expect(project.canInsert('after', 'page_2', 'Page')).toBe(true)
+    expect(project.canInsert('after', 'page_2', 'App')).toBe(false)
+    expect(project.canInsert('after', 'app', 'App')).toBe(true)
+
 })
 
 test('converts to JSON', ()=> {

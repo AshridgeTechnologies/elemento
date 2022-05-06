@@ -116,6 +116,35 @@ exports[`Components InsertMenu has expected structure 1`] = `
 </div>
 `;
 
+exports[`Components InsertMenuWithButton has expected structure 1`] = `
+<div>
+  <button
+    aria-controls="insertMenu"
+    aria-haspopup="true"
+    className="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+    disabled={false}
+    id="insertButton"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    Insert
+  </button>
+</div>
+`;
+
 exports[`Components MenuBar has expected structure 1`] = `
 <div
   className="MuiBox-root css-i9gxme"
