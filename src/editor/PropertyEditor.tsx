@@ -95,7 +95,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
 
         case 'List':
             return <>
-                {propertyField<List>('items')}
+                {propertyField<List>('items', 'expr')}
                 {propertyField<List>('style')}
             </>
 

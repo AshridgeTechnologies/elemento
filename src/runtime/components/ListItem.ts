@@ -6,5 +6,5 @@ type Properties = {path: string, children?: any }
 
 export default function ListItem({children, path, ...props}: Properties) {
     const propVals = valueOfProps(props)
-    return React.createElement(Mui_ListItem, {id: path, ...propVals}, children)
+    return React.createElement(Mui_ListItem, {id: path, divider: true, sx:{flexDirection: 'column', alignItems: 'flex-start' }, ...propVals}, children)
 }

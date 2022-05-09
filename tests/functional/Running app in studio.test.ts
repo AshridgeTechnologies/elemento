@@ -1,6 +1,7 @@
 import {expect, Frame, Page, test} from '@playwright/test';
-import {treeExpand, treeItem} from './playwrightHelpers'
+import {loadProject, treeExpand, treeItem, treeItemText} from './playwrightHelpers'
 import {waitUntil} from '../testutil/testHelpers'
+import {projectFixtureWithList} from '../testutil/projectFixtures'
 
 const pageUrl = '/studio'
 
@@ -8,10 +9,36 @@ let openMainPage = async (page: Page) => {
     await page.click(treeExpand(0))
     await page.click(treeExpand(1))
     await page.click(treeExpand(2))
-    expect(await page.textContent(treeItem(5))).toBe('Third Text')
 }
 
 const getAppFrame = (page: Page): Promise<Frame> => waitUntil(() => page.frame('appFrame') as Frame)
+
+test('Selecting list element in editor or running app highlights in the running app', async ({ page }) => {
+    test.skip(true, 'Only works when run headed for some reason');
+    const item1para1 = 'li >> nth=0 >> p >> nth=0'
+    const item1para2 = 'li >> nth=0 >> p >> nth=1'
+
+    await page.goto(pageUrl)
+    await loadProject(page, projectFixtureWithList())
+
+    const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))
+
+    expect(await (await getAppFrame(page)).textContent(item1para1)).toBe('Hi there!')
+    const appFrame = await getAppFrame(page)
+    expect(await appFrame.textContent(item1para2)).toBe('This is gre')
+
+    await openMainPage(page)
+    await page.click(treeExpand(3))
+
+    await page.click(treeItemText('Text 1'))
+    expect(await page.locator('textarea#content').textContent()).toBe('Hi there!')
+    expect(await getOutlineStyle(item1para1)).not.toBe('none')
+
+    await appFrame.click(item1para2, {modifiers: ['Alt']})
+    expect(await page.locator('textarea#content').textContent()).toBe(`"This is " + Left($item.color, 3)`)
+    expect(await getOutlineStyle(item1para1)).toBe('none')
+    expect(await getOutlineStyle(item1para2)).not.toBe('none')
+} )
 
 test('app shown in frame', async ({ page }) => {
     await page.goto(pageUrl)
@@ -19,7 +46,7 @@ test('app shown in frame', async ({ page }) => {
     expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
 })
 
-test('Selecting element in editor highlights in the running app', async ({ page }) => {
+test('Selecting element in editor or running app highlights in the running app', async ({ page }) => {
     await page.goto(pageUrl)
     const appFrame = await getAppFrame(page)
     const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))

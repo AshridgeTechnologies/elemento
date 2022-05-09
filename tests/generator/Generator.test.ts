@@ -331,12 +331,12 @@ test('generates Collection elements with initial value and no errors on object e
     expect(output.errors).toStrictEqual({})
 })
 
-test('generates List element with separate child component', ()=> {
+test('generates List element with separate child component and global functions', ()=> {
     const app = new App('t1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new List('l1', 'List 1', {items: [{a: 10}, {a: 20}]}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
-                new Text('id2', 't2', {content: ex`23 + 45`}),
+                new Text('id2', 't2', {content: ex`"This is " + Left($item, 3)`}),
             ])
             ]
         ),
@@ -348,10 +348,11 @@ test('generates List element with separate child component', ()=> {
     const pathWith = name => props.path + '.' + name
     const {$item} = props
     const {ListItem, TextElement} = Elemento.components
+    const {Left} = Elemento.globalFunctions
 
     return React.createElement(ListItem, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
-        React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
+        React.createElement(TextElement, {path: pathWith('t2')}, "This is " + Left($item, 3)),
     )
 }
 
@@ -362,7 +363,7 @@ function Page1(props) {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(ListElement, {path: pathWith('List1')}, 
-            [{a: 10}, {a: 20}].map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+            Elemento.asArray([{a: 10}, {a: 20}]).map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
     )
 }
 `)
@@ -399,7 +400,7 @@ function Page1(props) {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(ListElement, {path: pathWith('List1')}, 
-            [].map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+            Elemento.asArray([]).map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
     )
 }
 `)

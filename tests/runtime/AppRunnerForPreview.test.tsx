@@ -85,3 +85,12 @@ test('can highlight component on page', () => {
     })
     expectEl('FirstText').toHaveClass(highlightClassName)
 })
+
+test('can highlight component in a list on page', () => {
+    renderIt(appRunnerForPreview())
+    act(() => {
+        window.setAppCode(appCode('"One"'))
+        window.highlightElement('AppOne.MainPage.FirstText')
+    })
+    expectEl('FirstText').toHaveClass(highlightClassName)
+})

@@ -8,7 +8,8 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 
 export default function PropertyInput({ elementId, name, type, value, onChange, error}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
     onChange: OnChangeFn, error?: string }) {
-    const valueIsExpr = value !== undefined && isExpr(value) || type === 'action'
+    const exprOnlyProperty = type === 'action' || type === 'expr'
+    const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
     const [expr, setExpr] = useState(valueIsExpr)
 
     const typedValue = (input: string): PropertyValue => {
@@ -71,9 +72,9 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
     const errorProps = error ? {error: true, helperText: error} : {}
 
-    const button = type === 'action'
+    const button = exprOnlyProperty
         ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
-            color={exprButtonColor} disabled title={'Action expression required'}>{exprButtonLabel}</Button>
+            color={exprButtonColor} disabled title={'Expression required'}>{exprButtonLabel}</Button>
         : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
             color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
 

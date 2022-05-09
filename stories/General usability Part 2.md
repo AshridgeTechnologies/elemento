@@ -11,6 +11,7 @@ General usability Part 2
 - Icons on Insert Menu
 - Reset function acts on whole page
 - Data store has type and enforces it
+- Alt-hover over running app highlights the elements
 
 Help
 ----

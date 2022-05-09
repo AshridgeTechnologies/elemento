@@ -2,7 +2,7 @@
 
 exports[`ListItem produces output containing ReactElement children 1`] = `
 <li
-  className="MuiListItem-root MuiListItem-gutters MuiListItem-padding css-1p823my-MuiListItem-root"
+  className="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-divider css-1qycr05-MuiListItem-root"
   disabled={false}
   id="page1.para1"
 >

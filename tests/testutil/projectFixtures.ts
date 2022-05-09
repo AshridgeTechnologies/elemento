@@ -5,6 +5,7 @@ import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
+import List from '../../src/model/List'
 
 export function projectFixture1() {
 
@@ -39,6 +40,21 @@ export function projectFixture2() {
         page1,
         page2
     ])
+    return new Project('project_1', 'Project One', {}, [app])
+}
+
+export function projectFixtureWithList() {
+    const page1 = new Page('p1', 'Page 1', {}, [
+            new List('l1', 'List 1', {items: [{color: 'green'}, {color: 'red'}, {color: 'blue'}]}, [
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id2', 'Text 2', {content: ex`"This is " + Left($item.color, 3)`}),
+            ])
+        ]
+    )
+    const app = new App('t1', 'App 1', {}, [
+        page1,
+    ])
+
     return new Project('project_1', 'Project One', {}, [app])
 }
 

@@ -223,6 +223,7 @@ test('has fields for List', () => {
     expect(inputValue('Formula Name')).toBe('List1')
     expect(inputValue('Items')).toBe('[{a: 10}, {a: 20}]')
     expect(kindButton(0).textContent).toBe('fx=')
+    expect(kindButton(0).disabled).toBe(true)
     expect(inputValue('Style')).toBe('funky')
 })
 

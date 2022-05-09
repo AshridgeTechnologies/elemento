@@ -39,6 +39,7 @@ const isComponent = (name: string) => name in components
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => name in appFunctionsObj
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
+const isItemVar = (name: string) => name === '$item'
 const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 
 class Ref {
@@ -106,17 +107,20 @@ export default class Generator {
         const identifierSet = new Set<string>()
         const topLevelFunctions = new Set<string>()
         identifierSet.add('ListItem')
-        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isBuiltIn(name)
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isBuiltIn(name) || isItemVar(name)
         const children = list.elementArray().map(p => `        ${Generator.generateElement(p, identifierSet, topLevelFunctions, isKnown, errors)},`).join('\n')
 
         const identifiers = [...identifierSet.values()]
         const componentIdentifiers = identifiers.filter(isComponent)
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
+        const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
+        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
+        const elementoDeclarations = [componentDeclarations, globalDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         const code = `function ${name}(props) {
     const pathWith = name => props.path + '.' + name
     const {$item} = props
-${componentDeclarations}
+${elementoDeclarations}
 
     return React.createElement(ListItem, {id: props.path},
 ${children}
@@ -279,7 +283,7 @@ ${children}
             const [listItemName, listItemCode] = Generator.listItemComponent(list, errors)
             topLevelFunctions.add(listItemCode)
             return `React.createElement(ListElement, ${objectLiteral(reactProperties)}, 
-            ${items}.map( (item, index) => React.createElement(${listItemName}, {path: pathWith(\`${list.codeName}.\${index}\`), key: item.id ?? index, $item: item})) )`
+            Elemento.asArray(${items}).map( (item, index) => React.createElement(${listItemName}, {path: pathWith(\`${list.codeName}.\${index}\`), key: item.id ?? index, $item: item})) )`
         }
 
         case 'Data': {

@@ -60,6 +60,15 @@ test('shows expression-only control for action property if current value is empt
     expect(label().textContent).toBe('The Action')
 })
 
+test('shows expression-only control for expr property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='theItems' type='expr' value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(kindButton().disabled).toBe(true)
+    expect(textarea().id).toBe('theItems')
+    expect(textarea().textContent).toBe('')
+    expect(label().textContent).toBe('The Items')
+})
+
 test('shows fixed value control for string property if current value is a string', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Hi there!'} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('abc')

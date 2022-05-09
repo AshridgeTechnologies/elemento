@@ -3,7 +3,6 @@ import {flatten, map} from 'ramda'
 import React from 'react'
 
 export function codeGenerationError(_expr: string, _err: string) {
-    //console.log('Error in expression:', _expr, ':', _err)
     return undefined
 }
 
@@ -51,8 +50,13 @@ export const highlightElement = (id: string | null) => {
     const oldHighlightedElements = document.querySelectorAll('.' + highlightClassName)
     oldHighlightedElements.forEach( el => el.classList.remove(highlightClassName))
     if (id) {
-        const newHighlightedElements = document.querySelectorAll(`[id = '${id}']`)
-        newHighlightedElements.forEach( el => {
+        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${id}']`)
+        if( matchingElements.length === 0) {
+            const indexRegExp = /\.\d+/g
+            const allElementsWithId = document.querySelectorAll(`[id]`) as NodeList
+            matchingElements = Array.from(allElementsWithId).filter( (node) => (<Element>node).id.replace(indexRegExp, '') === id) as Element[]
+        }
+        matchingElements.forEach( el => {
             const elToHighlight = findInputParentLabel(el) ?? el
             elToHighlight.classList.add(highlightClassName)
         })
@@ -79,4 +83,21 @@ export function asText(content: any) {
         return 'function ' + contentValue.name
     }
     return contentValue
+}
+
+export function asArray(value: any[] | object | any) {
+    const val = valueOf(value)
+    if (isPlainObject(val)) {
+        return Object.values(val)
+    }
+
+    if (isArray(val)) {
+        return val
+    }
+
+    if (val === null || val === undefined) {
+        return []
+    }
+
+    return [val]
 }

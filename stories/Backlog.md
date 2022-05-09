@@ -9,8 +9,8 @@ Stories
 -------
 
 ### Priority 1
-- Insert at position
-- List component
+- List component - display
+- List component - updates and actions 
 - Persistent data storage Part 1
 - Info website update
 
@@ -85,3 +85,4 @@ Done
 - Apps website
 - Refactor EditorMain into component and fix unit test
 - Collections
+- Insert at position

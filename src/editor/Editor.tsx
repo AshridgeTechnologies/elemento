@@ -91,7 +91,10 @@ export default function Editor({
     const appFrameRef = useRef<HTMLIFrameElement>(null)
 
     function handleComponentSelected(id: string) {
-        const element = app.findElementByPath(id)
+        const indexRegExp = /\.\d+/g
+        const idWithoutIndexes = id.replace(indexRegExp, '')
+
+        const element = app.findElementByPath(idWithoutIndexes)
         if (element) {
             setSelectedItemId(element.id)
         }
