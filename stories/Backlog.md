@@ -9,17 +9,17 @@ Stories
 -------
 
 ### Priority 1
-- List component - display
-- List component - updates and actions 
-- Persistent data storage Part 1
-- Info website update
+- File data storage
+- Database example app
 
 ### Priority for Pro apps
+- List component - updates and actions
 - Server side functions
 - Types
 - Model-driven components
 
 ### Priority 2
+- Info website update
 - Save and load project on apps website
 - List apps
 - Demo ready 1
@@ -29,7 +29,6 @@ Stories
 - General usability Part 2
 - Formula improvements Part 3
 - State debugging
-- List control
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
@@ -86,3 +85,4 @@ Done
 - Refactor EditorMain into component and fix unit test
 - Collections
 - Insert at position
+- List component - display

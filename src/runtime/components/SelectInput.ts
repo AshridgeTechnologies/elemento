@@ -2,6 +2,7 @@ import {createElement as el} from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
 import {proxyUpdateFnType} from '../stateProxy'
+import {InputComponentState} from './InputComponentState'
 
 type Properties = { label?: string, values?: string[], state: { value?: string, _path: string, _update: proxyUpdateFnType } }
 
@@ -26,4 +27,8 @@ export default function SelectInput({state, ...props}: Properties) {
             onChange: onChange
         }, ...menuItems)
     )
+}
+
+SelectInput.State = class State extends InputComponentState<string> {
+    defaultValue = ''
 }

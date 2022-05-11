@@ -1,8 +1,16 @@
 import {mergeDeepWith} from 'ramda'
-import {isPlainObject} from 'lodash'
+import {isFunction, isPlainObject} from 'lodash'
 
 export type updateFnType = (path: string, changes: object, replace?: boolean) => void
 export type proxyUpdateFnType = (changes: object) => void
+
+class Update {
+    constructor(public changes: object, public replace: boolean) {}
+}
+
+export function update(changes: object, replace = false) {
+    return new Update(changes, replace)
+}
 
 
 const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
@@ -21,7 +29,7 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
         }
 
         if (prop === '_controlValue') {
-            return obj.value ?? null
+            return obj.value
         }
 
         if (prop === 'value') {
@@ -37,7 +45,21 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
             return obj.valueOf
         }
 
-        const result = obj[prop] ?? obj.value?.[prop] ?? obj.defaultValue?.[prop]
+        if (prop === 'constructor') {
+            return obj.constructor
+        }
+
+        const result = obj[prop] ?? obj.value?.[prop]
+        if (isFunction(result)) {
+            return function(...args: any[]) {
+                const returnVal = result.call(obj, ...args)
+                if (returnVal instanceof Update) {
+                    updateFn(path, returnVal.changes, returnVal.replace)
+                } else {
+                    return returnVal
+                }
+            }
+        }
         return isPlainObject(result) ? stateProxy(`${path}.${prop}`, result, {}, updateFn) : result
     }
 
@@ -45,9 +67,10 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 
 const useRightIfDefined = (left: any, right: any) => right !== undefined ? right : left
 
-export function stateProxy(path: string, storedState: object | undefined, initialValuesAndDefaults: object,
-    updateFn: updateFnType) {
+export function stateProxy(path: string, storedState: object | undefined, initialValues: object, updateFn: updateFnType) {
     const existingStateAtPath = storedState || {}
-    const mergedState = mergeDeepWith(useRightIfDefined, initialValuesAndDefaults, existingStateAtPath)
-    return new Proxy(mergedState, stateProxyHandler(path, updateFn))
+    const mergedState = mergeDeepWith(useRightIfDefined, initialValues, existingStateAtPath)
+    const {_type, ...proxyState} = mergedState
+    const proxyTarget = _type ? new _type(proxyState) : proxyState
+    return new Proxy(proxyTarget, stateProxyHandler(path, updateFn))
 }

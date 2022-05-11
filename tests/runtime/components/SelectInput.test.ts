@@ -6,7 +6,7 @@ import {createElement} from 'react'
 import {SelectInput} from '../../../src/runtime/components/index'
 import {snapshot, testProxy} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
-import {stateProxy} from '../../../src/runtime/stateProxy'
+import {stateProxy, update} from '../../../src/runtime/stateProxy'
 import {testContainer} from '../../testutil/rtlHelpers'
 
 let container: any
@@ -21,7 +21,7 @@ test('SelectInput element produces output with default values where properties o
 )
 
 test('SelectInput shows value from the state supplied', () => {
-    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: 'Red'}, {defaultValue: ''})}))
+    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: 'Red'}, {_type: SelectInput.State})}))
     expect(selectInput('app.page1.widget1').value).toBe('Red')
 })
 
@@ -40,22 +40,22 @@ test('SelectInput element produces output with properties supplied as state obje
 
 
 test('SelectInput shows value of empty string if value in state is undefined', () => {
-    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: undefined}, {defaultValue: ''})}))
+    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: undefined}, {_type: SelectInput.State})}))
     expect(selectInput('app.page1.widget1').value).toBe('')
 })
 
 test('SelectInput shows value of empty string if value in state is absent', () => {
-    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {}, {defaultValue: ''})}))
+    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {}, {_type: SelectInput.State})}))
     expect(selectInput('app.page1.widget1').value).toBe('')
 })
 
 test('SelectInput shows initial value when state value is set to undefined and initial value exists', () => {
-    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: undefined}, {defaultValue: '', value: 'Red'})}))
+    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: undefined}, {_type: SelectInput.State, value: 'Red'})}))
     expect(selectInput('app.page1.widget1').value).toBe('Red')
 })
 
 test('SelectInput shows empty value when state value is set to null and initial value exists', () => {
-    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: null}, {defaultValue: '', value: 'Red'})}))
+    container = testContainer(createElement(SelectInput, {values: ['Green', 'Red'], state: testProxy('app.page1.widget1', {value: null}, {_type: SelectInput.State, value: 'Red'})}))
     expect(selectInput('app.page1.widget1').value).toBe('')
 })
 
@@ -80,3 +80,11 @@ test('SelectInput stores null value in the app store when cleared', async () => 
 
     expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: null}, false)
 } )
+
+test('State class has correct properties', () => {
+    const state = new SelectInput.State({value: 'green'})
+    expect(state.value).toBe('green')
+    expect(state.defaultValue).toBe('')
+
+    expect(state.Reset()).toStrictEqual(update({value: undefined}))
+})

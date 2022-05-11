@@ -19,7 +19,5 @@ export default class TrueFalseInput extends BaseInputElement<Properties> impleme
         return element.constructor.name === this.name
     }
 
-    static defaultValue = false
-
     kind = 'TrueFalseInput' as ElementType
 }

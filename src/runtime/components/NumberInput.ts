@@ -3,6 +3,7 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
 import {proxyUpdateFnType} from '../stateProxy'
+import {InputComponentState} from './InputComponentState'
 
 type Properties = {state: {value?: number, _path: string, _controlValue: number | null, _update: proxyUpdateFnType}, label?: string}
 
@@ -28,4 +29,8 @@ export default function NumberInput({state, ...props}: Properties) {
         ...numericProps,
         ...optionalProps
     })
+}
+
+NumberInput.State = class State extends InputComponentState<number> {
+    defaultValue = 0
 }

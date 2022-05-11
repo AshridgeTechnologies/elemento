@@ -3,6 +3,7 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
 import {proxyUpdateFnType} from '../stateProxy'
+import {InputComponentState} from './InputComponentState'
 
 type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _update: proxyUpdateFnType}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
 
@@ -31,4 +32,8 @@ export default function TextInput({state, ...props}: Properties) {
         ...sxProps,
         ...optionalProps
     })
+}
+
+TextInput.State = class State extends InputComponentState<string> {
+    defaultValue = ''
 }

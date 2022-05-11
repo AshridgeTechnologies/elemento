@@ -11,12 +11,12 @@ const appFunctions = (state: {_updateApp: (changes: object) => void }) => {
             _updateApp( {_data: {currentPage: pageName}})
         },
 
-        Reset(component: {_update: (changes: {value: any}) => void}) {
-            component._update({value: undefined})
+        Reset(component: {Reset: () => void}) {
+            component.Reset()
         },
 
-        Set(component: {_update: (value: any, replace?: boolean) => void}, value: any) {
-            component._update({value: valueOf(value)}, true)
+        Set(component: {Set: (value: any) => void}, value: any) {
+            component.Set(valueOf(value))
         },
 
         Update(component: {_update: (changes: object) => void}, idOrChanges: object | Value<Id>, changes?: object) {

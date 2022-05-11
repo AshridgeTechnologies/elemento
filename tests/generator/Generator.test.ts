@@ -131,9 +131,9 @@ test('generates TextInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: 'Hi there!', defaultValue: ''},
-        t2: {value: "Some" + " things", defaultValue: ''},
-        t3: {defaultValue: ''},
+        t1: {value: 'Hi there!', _type: TextInput.State},
+        t2: {value: "Some" + " things", _type: TextInput.State},
+        t3: {_type: TextInput.State},
     })
     const {t1, t2, t3} = state
     return React.createElement(Page, {id: props.path},
@@ -182,9 +182,9 @@ test('generates NumberInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, NumberInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: 44, defaultValue: 0},
-        t2: {value: 22 + 33, defaultValue: 0},
-        t3: {defaultValue: 0},
+        t1: {value: 44, _type: NumberInput.State},
+        t2: {value: 22 + 33, _type: NumberInput.State},
+        t3: {_type: NumberInput.State},
     })
     const {t1, t2, t3} = state
     return React.createElement(Page, {id: props.path},
@@ -210,9 +210,9 @@ test('generates SelectInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, SelectInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        Select1: {value: '44', defaultValue: ''},
-        Select2: {value: 4+"4", defaultValue: ''},
-        Select3: {defaultValue: ''},
+        Select1: {value: '44', _type: SelectInput.State},
+        Select2: {value: 4+"4", _type: SelectInput.State},
+        Select3: {_type: SelectInput.State},
     })
     const {Select1, Select2, Select3} = state
     return React.createElement(Page, {id: props.path},
@@ -238,9 +238,9 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TrueFalseInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: true, defaultValue: false},
-        t2: {value: true || false, defaultValue: false},
-        t3: {defaultValue: false},
+        t1: {value: true, _type: TrueFalseInput.State},
+        t2: {value: true || false, _type: TrueFalseInput.State},
+        t3: {_type: TrueFalseInput.State},
     })
     const {t1, t2, t3} = state
     return React.createElement(Page, {id: props.path},
@@ -494,8 +494,8 @@ test('page elements available in content expression', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, TextInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        ForenameInput: {defaultValue: ''},
-        SurnameInput: {defaultValue: ''},
+        ForenameInput: {_type: TextInput.State},
+        SurnameInput: {_type: TextInput.State},
     })
     const {ForenameInput, SurnameInput} = state
     return React.createElement(Page, {id: props.path},
@@ -574,7 +574,7 @@ test('syntax error statement in initialValue generates error into state defaults
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        NameInput: {value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), defaultValue: ''},
+        NameInput: {value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), _type: TextInput.State},
     })
     const {NameInput} = state
     return React.createElement(Page, {id: props.path},
@@ -658,7 +658,7 @@ test('assignment in function argument is treated as comparison', ()=> {
     const {Page, TextInput, TextElement} = Elemento.components
     const {If} = Elemento.globalFunctions
     const state = Elemento.useObjectStateWithDefaults(props.path, {
-        Input: {defaultValue: ''},
+        Input: {_type: TextInput.State},
     })
     const {Input} = state
     return React.createElement(Page, {id: props.path},

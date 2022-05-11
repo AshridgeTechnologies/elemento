@@ -24,11 +24,11 @@ const { Provider, useStore } = createContext<StoreType>()
 
 const createStore = () => create(baseStore)
 
-const useObjectStateWithDefaults = (path: string, initialValuesAndDefaults: object) => {
+const useObjectStateWithDefaults = <T>(path: string, initialValues: object) => {
     const selectState = (state: any) => [state.store.select(path), state.update]
     const compareOnlyState = (a: any[], b: any[]) => a[0] === b[0]
     const [existingStateAtPath, updateFn] = useStore(selectState, compareOnlyState)
-    return stateProxy(path, existingStateAtPath, initialValuesAndDefaults, updateFn)
+    return stateProxy(path, existingStateAtPath, initialValues, updateFn)
 }
 
 const StoreProvider = ({children}: {children: React.ReactNode}) => React.createElement(Provider, {createStore, children})

@@ -1,27 +1,34 @@
 File data storage
 =================
 
-Spike
------
+Aims
+----
+
+- A user can keep data used by the app in a disk file that acts like a mini-database
+
+Requirements
+------------
 
 - File data store control
 - Can insert under App
 - Not visible on page
-- Has a data property
-- Can refer to the data store in formulas - how?
 - Open(data store) function - displays file picker
-- Save(data store) function - displays file picker if not connected
+- Automatically asks to open file when first needed
 - Close(data store) function
+- Collection has a data store property that can be set to a data store
+- Collections can be under the app
+- Collections automatically load and save from the data store
+- Data store can contain data from multiple collections
+- Saves data as single JSON object, collections under top level
 
-Also need
----------
+Future needs
+------------
 
-- Ways to manipulate data: update records, add to lists
-- Approach to storing working copies
-- Approach to creating a new data store
+- Compatible with other types of store - Google Sheet, database
+- Collections hava a consistent interface to a data store
 
-Consider
---------
+Issues
+------
 
-- How to make this consistent with a database
-- How to cater for defined entity types
+- How the Initial values property of Collection fits with a backing data store
+- How to deal with inconsistent data files eg not having collections expected or not even being data

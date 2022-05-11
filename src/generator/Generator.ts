@@ -312,44 +312,44 @@ ${children}
     }
 
     private static initialStateEntry(element: Element): string {
-        function valueEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
+        function valueAndTypeEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
             const input = element as T
             const [valueExpr] = Generator.getExpr(input.initialValue)
-            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr + ', ' : ''}defaultValue: ${valueLiteral((input.constructor as any).defaultValue ?? '')}},`
+            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr + ', ' : ''}_type: ${input.kind}.State},`
         }
 
-        switch(element.kind) {
-        case 'Project':
-            throw new Error('Cannot generate code for Project')
-        case 'App':
-        case 'Page':
-        case 'Text':
-        case 'List':
-            return ''
+        switch (element.kind) {
+            case 'Project':
+                throw new Error('Cannot generate code for Project')
+            case 'App':
+            case 'Page':
+            case 'Text':
+            case 'List':
+                return ''
 
-        case 'TextInput':
-        case 'NumberInput':
-        case 'SelectInput':
-        case 'TrueFalseInput':
-            return valueEntry(element)
+            case 'TextInput':
+            case 'SelectInput':
+            case 'TrueFalseInput':
+            case 'NumberInput':
+                return valueAndTypeEntry(element)
 
-        case 'Data':{
-            const data = element as Data
-            const [valueExpr] = Generator.getExpr(data.initialValue)
-            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
-        }
+            case 'Data': {
+                const data = element as Data
+                const [valueExpr] = Generator.getExpr(data.initialValue)
+                return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
+            }
 
-        case 'Collection':{
-            const collection = element as Collection
-            const [valueExpr] = Generator.getExpr(collection.initialValue)
-            return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
-        }
+            case 'Collection': {
+                const collection = element as Collection
+                const [valueExpr] = Generator.getExpr(collection.initialValue)
+                return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
+            }
 
-        case 'Button':
-            return ''
+            case 'Button':
+                return ''
 
-        default:
-            throw new UnsupportedValueError(element.kind)
+            default:
+                throw new UnsupportedValueError(element.kind)
         }
     }
 

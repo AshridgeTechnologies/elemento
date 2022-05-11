@@ -3,6 +3,7 @@ import {_DELETE} from '../../src/runtime/DataStore'
 import {valObj} from '../testutil/testHelpers'
 
 const _updateApp = jest.fn()
+const _update = jest.fn()
 const {Reset, ShowPage, Set, Update, Add, Remove, Get, GetAll} = appFunctions( {_updateApp} )
 
 beforeEach( ()=> jest.resetAllMocks() )
@@ -12,41 +13,36 @@ test('ShowPage _updates current page app state', () => {
     expect(_updateApp).toHaveBeenCalledWith({_data: {currentPage: 'Other'}})
 })
 
-test('Reset sets value to undefined', () => {
-    const _update = jest.fn()
-    const elementState = {value: 42, _update}
+test('Reset calls Reset on the target state', () => {
+    const elementState = {value: 42, Reset: _update}
     Reset(elementState)
-    expect(_update).toBeCalledWith({value: undefined})
+    expect(elementState.Reset).toBeCalledWith()
 })
 
 describe('Set', () => {
     test('sets state at path to simple value', () => {
-        const _update = jest.fn()
-        const elementState = {value: 42, _path: 'x.y.z', _update}
+        const elementState = {value: 42, _path: 'x.y.z', Set: _update}
         Set(elementState, 42)
-        expect(_update).toBeCalledWith({value: 42}, true)
+        expect(elementState.Set).toBeCalledWith(42)
     })
 
     test('sets state at path to undefined', () => {
-        const _update = jest.fn()
-        const elementState = {value: 42, _path: 'x.y.z', _update}
+        const elementState = {value: 42, _path: 'x.y.z',Set: _update}
         Set(elementState, undefined)
-        expect(_update).toBeCalledWith({value: undefined}, true)
+        expect(elementState.Set).toBeCalledWith(undefined)
     })
 
     test('sets state at path to object value', () => {
-        const _update = jest.fn()
-        const elementState = {value: {foo: 42}, _path: 'x.y.z', _update}
+        const elementState = {value: {foo: 42}, _path: 'x.y.z', Set: _update}
         const setValue = {a: 10, b: 'Bee'}
         Set(elementState, setValue)
-        expect(_update).toBeCalledWith({value: setValue}, true)
+        expect(elementState.Set).toBeCalledWith(setValue)
     })
 
     test('uses object value', () => {
-        const _update = jest.fn()
-        const elementState = {value: 42, _path: 'x.y.z', _update}
+        const elementState = {value: 42, _path: 'x.y.z', Set: _update}
         Set(elementState, valObj(42))
-        expect(_update).toBeCalledWith({value: 42}, true)
+        expect(elementState.Set).toBeCalledWith(42)
     })
 })
 

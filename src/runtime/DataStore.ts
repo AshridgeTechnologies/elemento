@@ -18,7 +18,7 @@ const removeDeleted = (obj: object) => {
         const k = key as keyof object
         if (obj[k] === _DELETE) {
             delete obj[k]
-        } else if (typeof obj[k] === 'object') {
+        } else if (isPlainObject(obj[k])) {
             removeDeleted(obj[k])
         }
     }

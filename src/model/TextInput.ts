@@ -23,8 +23,6 @@ export default class TextInput extends BaseInputElement<Properties> implements E
         return element.constructor.name === this.name
     }
 
-    static defaultValue = ''
-
     kind = 'TextInput' as ElementType
 
     get maxLength() { return this.properties.maxLength }

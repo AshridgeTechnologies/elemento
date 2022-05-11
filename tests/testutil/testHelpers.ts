@@ -21,12 +21,11 @@ export const stateVal = (value: any, path = 'path.x') => testProxy(path, {value}
 const dummyUpdateFn = () => {
     throw new Error('Dummy update fn called')
 }
-export const testProxy = (path: string, storedState: object | undefined, initialValuesAndDefaults: object = {}) => stateProxy(path, storedState, initialValuesAndDefaults, dummyUpdateFn)
-export const testUpdatableProxy = (path: string, storedState: object | undefined, initialValuesAndDefaults: object = {}) => {
+export const testProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => stateProxy(path, storedState, initialValues, dummyUpdateFn)
+export const testUpdatableProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => {
     const updateFn = jest.fn()
-    const proxy = stateProxy(path, storedState, initialValuesAndDefaults, updateFn)
-    proxy.updateFn = updateFn
-    return proxy
+    const proxy = stateProxy(path, storedState, initialValues, updateFn)
+    return [proxy, updateFn]
 }
 
 let suppressionReported = false

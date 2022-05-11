@@ -39,6 +39,22 @@ test('can update an item in state below app level', ()=> {
     expect(store.select('app.page1.description')).toStrictEqual({color: 'red', length: undefined, width: 99})
 })
 
+test('can update an item in state below app level to null', ()=> {
+    let store = new DataStore({app: {}})
+    store = store.update('app.page1.description', {color: 'red', length: 23})
+    expect(store.select('app.page1.description')).toStrictEqual({color: 'red', length: 23})
+    store = store.update('app.page1.description', {length: null, width: 99})
+    expect(store.select('app.page1.description')).toStrictEqual({color: 'red', length: null, width: 99})
+})
+
+test('can update value in state below app level to null', ()=> {
+    let store = new DataStore({app: {}})
+    store = store.update('app.page1.description', {value: 2})
+    expect(store.select('app.page1.description')).toStrictEqual({value: 2})
+    store = store.update('app.page1.description', {value: null})
+    expect(store.select('app.page1.description')).toStrictEqual({value: null})
+})
+
 test('can update state below app level and keep existing objects', ()=> {
     let store = new DataStore({app: {}})
     store = store.update('app.page1.description', {color: 'red', length: 23})
