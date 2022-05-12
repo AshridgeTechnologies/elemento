@@ -1,31 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Collection element produces output with record values 1`] = `
-<div
-  id="app.page1.collection2"
->
-  <div>
-    app.page1.collection2
-  </div>
-  <code>
-    [{a: 10, b: 'Bee1', c: true}, {a: 11}]
-  </code>
-</div>
-`;
-
-exports[`Collection element produces output with simple values 1`] = `
-<div
-  id="app.page1.collection1"
->
-  <div>
-    app.page1.collection1
-  </div>
-  <code>
-    ['green', 'blue']
-  </code>
-</div>
-`;
-
 exports[`produces output with record values 1`] = `
 <div
   id="app.page1.collection2"

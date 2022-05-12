@@ -34,7 +34,8 @@ const originalConsoleError = console.error
 export const suppressRcTreeJSDomError = () => {
     if (console.error === originalConsoleError) {
         jest.spyOn(console, 'error').mockImplementation( (...args: any[]) => {
-            if (args[0].match(/Cannot read properties of null \(reading 'removeEventListener'\)|The above error occurred in/)) {
+            const message = args[0].message ?? args[0]
+            if (message.match(/Cannot read properties of null \(reading 'removeEventListener'\)|The above error occurred in/)) {
                 !suppressionReported && console.log('Suppressed JSDOM removeEventListener error')
                 suppressionReported = true
             } else {
@@ -44,6 +45,7 @@ export const suppressRcTreeJSDomError = () => {
     }
 }
 export const stopSuppressingRcTreeJSDomError = () => {
+    console.error = originalConsoleError
     jest.restoreAllMocks()
     suppressionReported = false
 }

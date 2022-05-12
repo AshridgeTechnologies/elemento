@@ -18,22 +18,3 @@ exports[`App element produces output containing page 1`] = `
   </div>
 </div>
 `;
-
-exports[`App shows first page initially 1`] = `
-<div
-  id="app1"
->
-  <div
-    className="css-1suj1uj-MuiStack-root"
-    id="app1.page1"
-  >
-    <p
-      className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
-      id="app1.page1.para1"
-    >
-      Hello
-      where are you
-    </p>
-  </div>
-</div>
-`;
