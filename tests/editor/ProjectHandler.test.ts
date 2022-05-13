@@ -1,10 +1,18 @@
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1} from '../testutil/projectFixtures'
-import {Project, Text, TextInput} from '../../src/model/index'
+import {Text, TextInput} from '../../src/model/index'
 import {AppElementAction} from '../../src/editor/Types'
 import welcomeProject from '../../src/util/welcomeProject'
 import {currentUser} from '../../src/shared/authentication'
 import {uploadTextToStorage} from '../../src/shared/storage'
+import {
+    filePickerCancelling,
+    filePickerErroring,
+    filePickerReturning, resetSaveFileCallData,
+    saveFileData,
+    saveFilePicker,
+    saveFilePickerOptions
+} from '../testutil/testHelpers'
 
 jest.mock('../../src/shared/authentication')
 jest.mock('../../src/shared/storage')
@@ -18,51 +26,12 @@ beforeEach(() => {
     handler.setProject(project)
 })
 
-function fileHandle(returnedProject?: Project) {
-    const file = {
-        async text() {
-            return JSON.stringify(returnedProject)
-        }
-    }
-
-    const writable = {
-        async write(data: any) {
-            saveFileData = data
-        },
-        async close() {
-        }
-    }
-
-    return {
-        async getFile() {
-            return file
-        },
-        async createWritable() {
-            return writable
-        }
-    }
-}
-
-let saveFilePickerOptions: any
-let saveFileData: any
 beforeEach(() => {
-    saveFileData = undefined
-    saveFilePickerOptions = undefined
+    resetSaveFileCallData
 })
-
-const saveFilePicker = () => async (options: any) => {
-    saveFilePickerOptions = options
-    return fileHandle()
-}
 
 const baseUrl = 'http://some.site'
 
-function filePickerReturning(returnedProject: Project) {
-    return () => Promise.resolve([fileHandle(returnedProject)])
-}
-const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
-
-const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
 
 test('has default project', () => {
     expect(new ProjectHandler().current.id).toBe('project_1')
@@ -153,6 +122,7 @@ test('Save does Save As if not previously saved', async () => {
 })
 
 test('can cancel Save As', async () => {
+    resetSaveFileCallData()
     const handler = new ProjectHandler(project, {showOpenFilePicker: jest.fn(), showSaveFilePicker: filePickerCancelling, baseUrl})
     await handler.saveFileAs()
     expect(saveFileData).toBeUndefined()
@@ -160,6 +130,7 @@ test('can cancel Save As', async () => {
 })
 
 test('can get error from Save As', async () => {
+    resetSaveFileCallData()
     const handler = new ProjectHandler(project, {
         showOpenFilePicker: jest.fn(),
         showSaveFilePicker: filePickerErroring,

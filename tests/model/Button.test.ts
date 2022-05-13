@@ -8,6 +8,7 @@ test('Button has correct properties with default values', ()=> {
 
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
+    expect(button1.componentType).toBe('statelessUI')
     expect(button1.content).toBe('Button 1')
     expect(button1.action).toBe(undefined)
     expect(button1.style).toBe(undefined)
@@ -58,6 +59,7 @@ test('converts to JSON without optional proerties', ()=> {
     const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`})
     expect(asJSON(button)).toStrictEqual({
         kind: 'Button',
+        componentType: 'statelessUI',
         id: 'id1',
         name: 'Button 1',
         properties: button.properties
@@ -68,6 +70,7 @@ test('converts to JSON with optional properties', ()=> {
     const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, style:'cool', display: false})
     expect(asJSON(button)).toStrictEqual({
         kind: 'Button',
+        componentType: 'statelessUI',
         id: 'id1',
         name: 'Button 1',
         properties: button.properties

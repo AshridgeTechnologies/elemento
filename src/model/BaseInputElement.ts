@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyValueType} from './Types'
 import BaseElement from './BaseElement'
 
 
@@ -17,6 +17,8 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
     ) {
         super(id, name, properties, elements)
     }
+
+    componentType = 'statefulUI' as ComponentType
 
     get initialValue() { return this.properties.initialValue }
     get label() { return this.properties.label ?? this.name }

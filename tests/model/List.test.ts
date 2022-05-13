@@ -17,11 +17,12 @@ test('List has correct properties', ()=> {
     expect(list.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
 
-test('can contain types apart from Project, App, Page', () => {
+test('can contain types apart from Project, App, Page, DataStore', () => {
     const list = new List('l1', 'List 1', {items: []}, [])
     expect(list.canContain('Project')).toBe(false)
     expect(list.canContain('App')).toBe(false)
     expect(list.canContain('Page')).toBe(false)
+    expect(list.canContain('MemoryDataStore')).toBe(false)
     expect(list.canContain('Text')).toBe(true)
     expect(list.canContain('Button')).toBe(true)
 })
@@ -45,6 +46,7 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(list)).toStrictEqual({
         kind: 'List',
+        componentType: 'statelessUI',
         id: 'l1',
         name: 'List 1',
         properties: list.properties,

@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`produces output with record values 1`] = `
+<div
+  id="app.page1.collection2"
+>
+  <div>
+    app.page1.collection2
+  </div>
+  <code />
+</div>
+`;

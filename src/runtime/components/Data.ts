@@ -22,5 +22,9 @@ Data.State = class State {
     Set(value: any) {
         return update({value}, true)
     }
+
+    Update(changes: object) {
+        return update({value: changes})
+    }
 }
 

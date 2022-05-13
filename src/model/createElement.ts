@@ -12,6 +12,8 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 import Data from './Data'
 import Collection from './Collection'
 import List from './List'
+import MemoryDataStore from './MemoryDataStore'
+import FileDataStore from './FileDataStore'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -42,6 +44,10 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         return new Data(id, name, {})
     case 'Collection':
         return new Collection(id, name, {})
+    case 'MemoryDataStore':
+        return new MemoryDataStore(id, name, {})
+    case 'FileDataStore':
+        return new FileDataStore(id, name, {})
     default:
         throw new UnsupportedValueError(elementType)
     }

@@ -1,226 +1,135 @@
 import appFunctions from '../../src/runtime/appFunctions'
-import {_DELETE} from '../../src/runtime/DataStore'
 import {valObj} from '../testutil/testHelpers'
 
-const _updateApp = jest.fn()
+import * as appData from '../../src/runtime/appData'
+jest.mock('../../src/runtime/appData')
+
 const _update = jest.fn()
-const {Reset, ShowPage, Set, Update, Add, Remove, Get, GetAll} = appFunctions( {_updateApp} )
+const mockFn = jest.fn()
+const {Reset, ShowPage, Set, Update, Add, Remove, Get, GetAll} = appFunctions( )
+
 
 beforeEach( ()=> jest.resetAllMocks() )
 
 test('ShowPage _updates current page app state', () => {
+    const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
+    mock_useObjectStateWithDefaults.mockReturnValue({_update})
     ShowPage('Other')
-    expect(_updateApp).toHaveBeenCalledWith({_data: {currentPage: 'Other'}})
+    expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
+    expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
 })
 
 test('Reset calls Reset on the target state', () => {
-    const elementState = {value: 42, Reset: _update}
+    const elementState = {value: 42, Reset: mockFn}
     Reset(elementState)
     expect(elementState.Reset).toBeCalledWith()
 })
 
 describe('Set', () => {
     test('sets state at path to simple value', () => {
-        const elementState = {value: 42, _path: 'x.y.z', Set: _update}
+        const elementState = {value: 42, Set: mockFn}
         Set(elementState, 42)
         expect(elementState.Set).toBeCalledWith(42)
     })
 
     test('sets state at path to undefined', () => {
-        const elementState = {value: 42, _path: 'x.y.z',Set: _update}
+        const elementState = {value: 42, Set: mockFn}
         Set(elementState, undefined)
         expect(elementState.Set).toBeCalledWith(undefined)
     })
 
     test('sets state at path to object value', () => {
-        const elementState = {value: {foo: 42}, _path: 'x.y.z', Set: _update}
+        const elementState = {value: {foo: 42}, Set: mockFn}
         const setValue = {a: 10, b: 'Bee'}
         Set(elementState, setValue)
         expect(elementState.Set).toBeCalledWith(setValue)
     })
 
     test('uses object value', () => {
-        const elementState = {value: 42, _path: 'x.y.z', Set: _update}
+        const elementState = {value: 42, Set: mockFn}
         Set(elementState, valObj(42))
         expect(elementState.Set).toBeCalledWith(42)
     })
 })
 
 describe('Update single item', () => {
-    test('updates object state value at path', () => {
-        const _update = jest.fn()
-        const elementState = {value: {foo: 42}, _path: 'x.y.z', _update}
+    test('updates object state value', () => {
+        const elementState = {value: {foo: 42}, Update: mockFn}
         const changes = {a: 10, b: 'Bee'}
         Update(elementState, changes)
-        expect(_update).toBeCalledWith({value: changes})
+        expect(elementState.Update).toBeCalledWith(changes)
     })
 })
 
 describe('Add', () => {
-    test('inserts a new object with id into a collection', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Add(elementState, {id: 'x3', a: 30})
-        expect(_update).toBeCalledWith({value: {
-                x3: {id: 'x3', a: 30},
-            }})
+
+    test('adds an object with id', () => {
+        const elementState = {value: {}, Add: mockFn}
+        Add(elementState, {id: 'x3', a: 50, b: 'Bee'})
+        expect(elementState.Add).toBeCalledWith({id: 'x3', a: 50, b: 'Bee'})
     })
 
-    test('inserts a new item without id into a collection', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Add(elementState, {a: 30})
-        expect(_update).toBeCalledWith({value: {
-                1: {a: 30},
-            }})
-    })
-
-    test('inserts a new simple value into a collection', () => {
-        const _update = jest.fn()
-        const existingCollection = {}
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Add(elementState, 'green')
-        Add(elementState, 27)
-        expect(_update).toBeCalledWith({value: {green: 'green',}})
-        expect(_update).toBeCalledWith({value: {27: 27,}})
-    })
-
-    test('uses object value', () => {
-        const _update = jest.fn()
-        const existingCollection = {}
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
+    test('uses object value for id', () => {
+        const elementState = {value: {}, Add: mockFn}
         Add(elementState, valObj('green'))
-        expect(_update).toBeCalledWith({value: {green: 'green',}})
+        expect(elementState.Add).toBeCalledWith('green')
     })
 })
 
 describe('Remove', () => {
-    test('removes an item from a collection', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Remove(elementState, 'x1')
-        expect(_update).toBeCalledWith({value: {x1: _DELETE}})
+    test('removes an object with id', () => {
+        const elementState = {value: {}, Remove: mockFn}
+        Remove(elementState, 'x3')
+        expect(elementState.Remove).toBeCalledWith('x3')
     })
 
-    test('uses object value', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Remove(elementState, valObj('x1'))
-        expect(_update).toBeCalledWith({value: {x1: _DELETE}})
+    test('uses object value for id', () => {
+        const elementState = {value: {}, Remove: mockFn}
+        Remove(elementState, valObj('x3'))
+        expect(elementState.Remove).toBeCalledWith('x3')
     })
+
 })
 
 describe('Update item in collection', () => {
-    test('updates an object by id', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Update(elementState, 'x1', {a: 50, b: 'Bee'})
-        expect(_update).toBeCalledWith({
-            value: {
-                x1: {a: 50, b: 'Bee'},
-            }
-        })
-    })
+    const existingCollection = {}
 
-    test('cannot update id', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
-        Update(elementState, 'x1', {id: 'xxx333', a: 50, b: 'Bee'})
-        expect(_update).toBeCalledWith({
-            value: {
-                x1: {a: 50, b: 'Bee'},
-            }
-        })
+    test('updates an object by id', () => {
+        const elementState = {value: existingCollection, Update: mockFn}
+        Update(elementState, 'x1', {a: 50, b: 'Bee'})
+        expect(elementState.Update).toBeCalledWith('x1', {a: 50, b: 'Bee'})
     })
 
     test('uses object value for id', () => {
-        const _update = jest.fn()
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection, _path: 'x.y.z', _update}
+        const elementState = {value: existingCollection, Update: mockFn}
         Update(elementState, valObj('x1'), {a: 50, b: 'Bee'})
-        expect(_update).toBeCalledWith({
-            value: {
-                x1: {a: 50, b: 'Bee'},
-            }
-        })
+        expect(elementState.Update).toBeCalledWith('x1', {a: 50, b: 'Bee'})
     })
-
-
 })
 
 describe('Get', () => {
-    test('get object by id from collection', () => {
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection}
-        const result = Get(elementState, 'x2' as keyof object)
-        expect(result).toStrictEqual({id: 'x2', a: 20})
-    })
+    const existingCollection = {}
 
-    test('get simple value by id from collection', () => {
-        const existingCollection = {
-            green: 'green',
-            blue: 'blue',
-            99: 99
-        }
-        const elementState = {value: existingCollection}
-        expect(Get(elementState, 'green' as keyof object)).toBe('green')
-        expect(Get(elementState, 99 as keyof object)).toBe(99)
+    test('gets an object by id', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = Get(elementState, 'x1')
+        expect(result).toStrictEqual({a: 50, b: 'Bee'})
+        expect(elementState.Get).toBeCalledWith('x1')
     })
 
     test('uses object value for id', () => {
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection}
-        const result = Get(elementState, valObj('x2') as keyof object)
-        expect(result).toStrictEqual({id: 'x2', a: 20})
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = Get(elementState, valObj('x1'))
+        expect(result).toStrictEqual({a: 50, b: 'Bee'})
+        expect(elementState.Get).toBeCalledWith('x1')
     })
-
-
 })
 
 describe('GetAll', () => {
-    test('get all objects collection', () => {
-        const existingCollection = {
-            x1: {id: 'x1', a: 10},
-            x2: {id: 'x2', a: 20},
-        }
-        const elementState = {value: existingCollection}
-        expect(GetAll(elementState)).toStrictEqual([
-            {id: 'x1', a: 10},
-            {id: 'x2', a: 20},
-        ])
+    test('gets all objects', () => {
+        const elementState = {value: {}, GetAll: mockFn.mockReturnValue([{a: 50, b: 'Bee'}, {c: 30}])}
+        const result = GetAll(elementState)
+        expect(result).toStrictEqual([{a: 50, b: 'Bee'}, {c: 30}])
+        expect(elementState.GetAll).toBeCalledWith()
     })
-
 })

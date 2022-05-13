@@ -27,3 +27,10 @@ test('Set returns correct update', () => {
 
     expect(state.Set({a:20, b:'Cee'})).toStrictEqual(update({value: {a:20, b:'Cee'}}, true))
 })
+
+test('Update returns correct update', () => {
+    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
+    expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
+
+    expect(state.Update({a:20, b:'Cee'})).toStrictEqual(update({value: {a:20, b:'Cee'}}))
+})

@@ -107,9 +107,22 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
 
         case 'Collection':
             return <>
-                {propertyField<Collection>('initialValue')}
+                {propertyField<Collection>('initialValue', 'expr')}
+                {propertyField<Collection>('dataStore', 'expr')}
+                {propertyField<Collection>('collectionName', 'string')}
                 {propertyField<Collection>('display', 'boolean')}
             </>
+
+        case 'MemoryDataStore':
+            return <>
+                {propertyField<Collection>('initialValue', 'expr')}
+                {propertyField<Collection>('display', 'boolean')}
+            </>
+
+        case 'FileDataStore':
+            return <>
+            </>
+
         default:
             throw new UnsupportedValueError(element.kind)
         }

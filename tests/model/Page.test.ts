@@ -100,6 +100,8 @@ test('can contain types apart from Project, App, Page', () => {
     expect(page.canContain('Project')).toBe(false)
     expect(page.canContain('App')).toBe(false)
     expect(page.canContain('Page')).toBe(false)
+    expect(page.canContain('MemoryDataStore')).toBe(false)
+    expect(page.canContain('FileDataStore')).toBe(false)
     expect(page.canContain('Text')).toBe(true)
     expect(page.canContain('Button')).toBe(true)
 })
@@ -111,6 +113,7 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(page)).toStrictEqual({
         kind: 'Page',
+        componentType: 'statefulUI',
         id: 'p1',
         name: 'Page 1',
         properties: page.properties,
@@ -121,6 +124,7 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(page2)).toStrictEqual({
         kind: 'Page',
+        componentType: 'statefulUI',
         id: 'p1',
         name: 'Page 2',
         properties: page2.properties,

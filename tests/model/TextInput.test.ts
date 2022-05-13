@@ -70,6 +70,7 @@ test('converts to JSON', ()=> {
     const text = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, maxLength: ex`10`, multiline: true, label: ex`"The Text"`})
     expect(asJSON(text)).toStrictEqual({
         kind: 'TextInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Text Input 1',
         properties: text.properties
@@ -78,6 +79,7 @@ test('converts to JSON', ()=> {
     const text2 = new TextInput('t1', 'Text Input 2', {initialValue: `Some text`, maxLength: 10, multiline: true, label: 'The Text'})
     expect(asJSON(text2)).toStrictEqual({
         kind: 'TextInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Text Input 2',
         properties: text2.properties

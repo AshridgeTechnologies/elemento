@@ -11,6 +11,8 @@ import List from '../../src/model/List'
 import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
 import {Collection} from '../../src/model/index'
+import MemoryDataStore from '../../src/model/MemoryDataStore'
+import FileDataStore from '../../src/model/FileDataStore'
 
 test('generates app and all page output files', ()=> {
     const app = new App('t1', 'App 1', {}, [
@@ -31,7 +33,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
@@ -43,7 +45,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[1].content).toBe(`function Page2(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
@@ -55,10 +57,14 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[2].content).toBe(`export default function AppMain(props) {
 
     const appPages = {Page1, Page2}
+
+
+
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
     return React.createElement('div', {id: 'App1'},
-        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`})
+        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`}),
+
     )
 }
 `)
@@ -85,7 +91,7 @@ import Elemento from 'elemento-runtime'
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
@@ -96,7 +102,7 @@ function Page1(props) {
 function Page2(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
@@ -107,16 +113,19 @@ function Page2(props) {
 export default function AppMain(props) {
 
     const appPages = {Page1, Page2}
+
+
+
     const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
     return React.createElement('div', {id: 'App1'},
-        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`})
+        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`}),
+
     )
 }
 `)
-
-
 })
+
 test('generates TextInput elements with initial value', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -130,12 +139,10 @@ test('generates TextInput elements with initial value', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: 'Hi there!', _type: TextInput.State},
-        t2: {value: "Some" + " things", _type: TextInput.State},
-        t3: {_type: TextInput.State},
-    })
-    const {t1, t2, t3} = state
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), {value: 'Hi there!', _type: TextInput.State},)
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), {value: "Some" + " things", _type: TextInput.State},)
+    const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), {_type: TextInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {state: t1, maxLength: 10, multiline: true, label: 'Text Input One', width: 150}),
         React.createElement(TextInput, {state: t2, maxLength: 5 + 5, label: 't2'}),
@@ -157,7 +164,7 @@ test('generates Text elements with multiline content', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}, \`Hi there!
@@ -181,12 +188,10 @@ test('generates NumberInput elements with initial value', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, NumberInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: 44, _type: NumberInput.State},
-        t2: {value: 22 + 33, _type: NumberInput.State},
-        t3: {_type: NumberInput.State},
-    })
-    const {t1, t2, t3} = state
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), {value: 44, _type: NumberInput.State},)
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), {value: 22 + 33, _type: NumberInput.State},)
+    const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), {_type: NumberInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {state: t1, label: 'Number Input One'}),
         React.createElement(NumberInput, {state: t2, label: 't2'}),
@@ -209,12 +214,10 @@ test('generates SelectInput elements with initial value', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, SelectInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        Select1: {value: '44', _type: SelectInput.State},
-        Select2: {value: 4+"4", _type: SelectInput.State},
-        Select3: {_type: SelectInput.State},
-    })
-    const {Select1, Select2, Select3} = state
+    const Select1 = Elemento.useObjectStateWithDefaults(pathWith('Select1'), {value: '44', _type: SelectInput.State},)
+    const Select2 = Elemento.useObjectStateWithDefaults(pathWith('Select2'), {value: 4+"4", _type: SelectInput.State},)
+    const Select3 = Elemento.useObjectStateWithDefaults(pathWith('Select3'), {_type: SelectInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(SelectInput, {state: Select1, values: ['22', '33', '44'], label: 'Select Input One'}),
         React.createElement(SelectInput, {state: Select2, values: ['22', '33', '44'], label: 'Select2'}),
@@ -237,12 +240,10 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TrueFalseInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: true, _type: TrueFalseInput.State},
-        t2: {value: true || false, _type: TrueFalseInput.State},
-        t3: {_type: TrueFalseInput.State},
-    })
-    const {t1, t2, t3} = state
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), {value: true, _type: TrueFalseInput.State},)
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), {value: true || false, _type: TrueFalseInput.State},)
+    const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), {_type: TrueFalseInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(TrueFalseInput, {state: t1, label: 'True False Input One'}),
         React.createElement(TrueFalseInput, {state: t2, label: 't2'}),
@@ -264,7 +265,7 @@ test('generates Button elements with properties', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const {Log} = Elemento.globalFunctions
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', action: () => {Log("You clicked me!")}}),
@@ -286,12 +287,10 @@ test('generates Data elements with initial value and no errors on object express
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Data} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: 44},
-        t2: {value: {a:10, b: "Bee"}},
-        t3: {},
-    })
-    const {t1, t2, t3} = state
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), {value: 44, _type: Data.State},)
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), {value: {a:10, b: "Bee"}, _type: Data.State},)
+    const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), {_type: Data.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {state: t1, display: false}),
         React.createElement(Data, {state: t2, display: true}),
@@ -305,22 +304,23 @@ test('generates Data elements with initial value and no errors on object express
 test('generates Collection elements with initial value and no errors on object expressions', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Collection('id1', 't1', {initialValue: ['green', 'blue']}),
+                new Collection('id1', 't1', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
                 new Collection('id2', 't2', {initialValue: ex`["red", "yellow"]`, display: true}),
                 new Collection('id3', 't3', {}),
             ]
-        )])
+        ),
+        new FileDataStore('fds1', 'Store1', {})
+    ])
 
     const output = new Generator(app).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Collection} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        t1: {value: Collection.initialValue(['green', 'blue'])},
-        t2: {value: Collection.initialValue(["red", "yellow"])},
-        t3: {value: Collection.initialValue()},
-    })
-    const {t1, t2, t3} = state
+    const Store1 = Elemento.useObjectStateWithDefaults('app.Store1')
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), {dataStore: Store1, collectionName: 'Widgets', _type: Collection.State},)
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), {value: ["red", "yellow"], _type: Collection.State},)
+    const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), {_type: Collection.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(Collection, {state: t1, display: false}),
         React.createElement(Collection, {state: t2, display: true}),
@@ -329,6 +329,100 @@ test('generates Collection elements with initial value and no errors on object e
 }
 `)
     expect(output.errors).toStrictEqual({})
+})
+
+test('generates elements under App used in Page', ()=> {
+    const app = new App('t1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('t1', 'Text 1', {content: 'Update the widget'}),
+                new NumberInput('n1', 'Widget Value', {initialValue: ex`Get(Widgets, 'x1').a`, label: 'New widget value'}),
+            ]
+        ),
+        new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+        new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
+        new FileDataStore('fds1', 'Store 2', {}),
+    ])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement, NumberInput} = Elemento.components
+    const {Get} = Elemento.appFunctions()
+    const Widgets = Elemento.useObjectStateWithDefaults('app.Widgets')
+    const WidgetValue = Elemento.useObjectStateWithDefaults(pathWith('WidgetValue'), {value: Get(Widgets, 'x1').a, _type: NumberInput.State},)
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
+        React.createElement(NumberInput, {state: WidgetValue, label: 'New widget value'}),
+    )
+}
+`)
+
+    expect(output.files[1].content).toBe(`export default function AppMain(props) {
+    const {Collection, MemoryDataStore, FileDataStore} = Elemento.components
+    const appPages = {Page1}
+    const [Store1] = React.useState(new MemoryDataStore({value: { Widgets: { x1: {a: 10}}}}))
+    const Widgets = Elemento.useObjectStateWithDefaults('app.Widgets', {dataStore: Store1, collectionName: 'Widgets', _type: Collection.State},)
+    const Store2 = Elemento.useObjectStateWithDefaults('app.Store2', {_type: FileDataStore.State})
+
+    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = appState
+    return React.createElement('div', {id: 'App1'},
+        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`}),
+        React.createElement(Collection, {state: Widgets, display: false})
+    )
+}
+`)
+
+    expect(output.errors).toStrictEqual({})
+})
+
+test('generates codeGenerationError for unknown names in elements under App used in Page', ()=> {
+    const app = new App('t1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('t1', 'Text 1', {content: 'Update the widget'}),
+                new NumberInput('n1', 'Widget Value', {initialValue: ex`Get(Widgets, 'x1').a`, label: 'New widget value'}),
+            ]
+        ),
+        new Collection('coll1', 'Widgets', {dataStore: ex`StoreX`, collectionName: 'Widgets'}),
+        new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
+    ])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement, NumberInput} = Elemento.components
+    const {Get} = Elemento.appFunctions()
+    const Widgets = Elemento.useObjectStateWithDefaults('app.Widgets')
+    const WidgetValue = Elemento.useObjectStateWithDefaults(pathWith('WidgetValue'), {value: Get(Widgets, 'x1').a, _type: NumberInput.State},)
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
+        React.createElement(NumberInput, {state: WidgetValue, label: 'New widget value'}),
+    )
+}
+`)
+
+    expect(output.files[1].content).toBe(`export default function AppMain(props) {
+    const {Collection, MemoryDataStore} = Elemento.components
+    const appPages = {Page1}
+    const [Store1] = React.useState(new MemoryDataStore({value: { Widgets: { x1: {a: 10}}}}))
+    const Widgets = Elemento.useObjectStateWithDefaults('app.Widgets', {dataStore: Elemento.codeGenerationError(\`StoreX\`, 'Unknown names: StoreX'), collectionName: 'Widgets', _type: Collection.State},)
+
+    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = appState
+    return React.createElement('div', {id: 'App1'},
+        React.createElement(appPages[currentPage], {path: \`App1.\${currentPage}\`}),
+        React.createElement(Collection, {state: Widgets, display: false})
+    )
+}
+`)
+
+    expect(output.errors).toStrictEqual({
+        coll1: {
+            dataStore: 'Unknown names: StoreX'
+        }
+    })
 })
 
 test('generates List element with separate child component and global functions', ()=> {
@@ -359,7 +453,7 @@ test('generates List element with separate child component and global functions'
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, ListElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(ListElement, {path: pathWith('List1')}, 
@@ -396,7 +490,7 @@ test('generates List element with empty items expression', ()=> {
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, ListElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(ListElement, {path: pathWith('List1')}, 
@@ -418,7 +512,7 @@ test('generates error on correct line for syntax error in multiline content expr
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`23
@@ -446,7 +540,7 @@ test('global functions available in content expression', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Sum(2, 3, 4)),
@@ -470,8 +564,8 @@ test('app functions and Page names available in expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
-    const {ShowPage} = Elemento.appFunctions(state)
+    const {ShowPage} = Elemento.appFunctions()
+
     const Page2 = 'Page2'
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),
@@ -493,11 +587,9 @@ test('page elements available in content expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, TextInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        ForenameInput: {_type: TextInput.State},
-        SurnameInput: {_type: TextInput.State},
-    })
-    const {ForenameInput, SurnameInput} = state
+    const ForenameInput = Elemento.useObjectStateWithDefaults(pathWith('ForenameInput'), {_type: TextInput.State},)
+    const SurnameInput = Elemento.useObjectStateWithDefaults(pathWith('SurnameInput'), {_type: TextInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + " " + SurnameInput.value),
         React.createElement(TextInput, {state: ForenameInput, label: 'Forename Input'}),
@@ -519,7 +611,7 @@ test('unknown global functions generate error', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')),
@@ -546,7 +638,7 @@ test('return statement in expression generates error', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`return 42\`, 'Error: Invalid expression')),
@@ -573,10 +665,8 @@ test('syntax error statement in initialValue generates error into state defaults
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        NameInput: {value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), _type: TextInput.State},
-    })
-    const {NameInput} = state
+    const NameInput = Elemento.useObjectStateWithDefaults(pathWith('NameInput'), {value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), _type: TextInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {state: NameInput, label: 'Name Input'}),
     )
@@ -633,7 +723,7 @@ test('assignment at top level is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Sum == 1),
@@ -657,10 +747,8 @@ test('assignment in function argument is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput, TextElement} = Elemento.components
     const {If} = Elemento.globalFunctions
-    const state = Elemento.useObjectStateWithDefaults(props.path, {
-        Input: {_type: TextInput.State},
-    })
-    const {Input} = state
+    const Input = Elemento.useObjectStateWithDefaults(pathWith('Input'), {_type: TextInput.State},)
+
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {state: Input, label: 'Input'}),
         React.createElement(TextElement, {path: pathWith('Answer')}, If(Input.value == 42, 10, 20)),
@@ -683,7 +771,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, Sum(Log == 12, 3, 4))),
@@ -705,7 +793,7 @@ test('property shorthand to name of property reports error and generates an erro
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
+
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, ({a: 10, xxx: undefined})),

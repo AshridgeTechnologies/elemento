@@ -21,6 +21,8 @@ import {isArray, isPlainObject} from 'lodash'
 import {uniq} from 'ramda'
 import Data from '../model/Data'
 import {Collection} from '../model/index'
+import MemoryDataStore from '../model/MemoryDataStore'
+import FileDataStore from '../model/FileDataStore'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -33,7 +35,7 @@ function objectLiteral(obj: object) {
     return `{${Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')}}`
 }
 
-const appFunctionsObj = appFunctions({_updateApp() {}})
+const appFunctionsObj = appFunctions()
 const isAction = true
 const isComponent = (name: string) => name in components
 const isGlobalFunction = (name: string) => name in globalFunctions
@@ -89,7 +91,7 @@ export default class Generator {
         }))
         const appMainFile = {
             name: 'appMain.js',
-            content: 'export default ' + Generator.appMainComponent(this.app)
+            content: 'export default ' + Generator.appMainComponent(this.app, errorCollector)
         }
 
         const imports = 'import React from \'react\'\nimport Elemento from \'elemento-runtime\'\n\n'
@@ -131,16 +133,12 @@ ${children}
     }
 
     private static pageComponent(app: App, page: Page, errors: ErrorCollector) {
-        const stateNames = page.elementArray().map( el => Generator.initialStateEntry(el) ? el.codeName : null ).filter( el => el !== null )
-        const stateDefaultEntries = page.elementArray().map( el => Generator.initialStateEntry(el) ).filter( el => !!el )
-        const stateDefaultBlock = stateDefaultEntries.length ? `\n        ${stateDefaultEntries.join('\n        ')}\n    `: ''
-        const stateDefaultCall = `    const state = Elemento.useObjectStateWithDefaults(props.path, {${stateDefaultBlock}})`
-
         const identifierSet = new Set<string>()
         const topLevelFunctions = new Set<string>()
+        const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
         const isPageElement = (name: string) => !!page.elementArray().find( el => el.codeName === name )
         const isPageName = (name: string) => !!app.pages.find( p => p.codeName === name )
-        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name) || isBuiltIn(name)
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name) || isAppElement(name) || isBuiltIn(name)
         const pageCode = Generator.generateElement(page, identifierSet, topLevelFunctions, isKnown, errors)
         const identifiers = [...identifierSet.values()]
 
@@ -148,43 +146,65 @@ ${children}
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = identifiers.filter(isGlobalFunction)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
-        const elementoDeclarations = [componentDeclarations, globalDeclarations].filter( d => d !== '').join('\n').trimEnd()
-
         const appFunctionIdentifiers = identifiers.filter(isAppFunction)
-        const appDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions(state)` : ''
+        const appFunctionDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions()` : ''
+        const appLevelIdentifiers = identifiers.filter(isAppElement)
+        const appLevelDeclarations = appLevelIdentifiers.map( ident => `    const ${ident} = Elemento.useObjectStateWithDefaults('app.${ident}')`).join('\n')
+        const elementoDeclarations = [componentDeclarations, globalDeclarations, appFunctionDeclarations, appLevelDeclarations].filter( d => d !== '').join('\n').trimEnd()
+
+        const stateNames = page.elementArray().map( el => Generator.initialStateEntry(el, isKnown) ? el.codeName : null ).filter(el => el !== null )
+        const stateDefaultEntries = page.elementArray().map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
+        const stateDefaultBlock = stateDefaultEntries.map( ([name, entry]) =>
+            `    const ${name} = Elemento.useObjectStateWithDefaults(pathWith('${name}'), ${entry})`).join('\n')
+
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
         const pageIdentifiers = uniq(identifiers.filter(isPageElement).concat(stateNames as string[]))
         const pageDeclarations = pageIdentifiers.length ? `    const {${pageIdentifiers.join(', ')}} = state` : ''
-        const localDeclarations = [appDeclarations, pageNameDeclarations, pageDeclarations].filter( d => d !== '').join('\n').trimEnd()
+        const localDeclarations = [pageNameDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         const pageFunction = `function ${page.codeName}(props) {
     const pathWith = name => props.path + '.' + name
 ${elementoDeclarations}
-${stateDefaultCall}
+${stateDefaultBlock}
 ${localDeclarations}
     return ${pageCode}
 }
-`.trimLeft()
+`.trimStart()
         return [...topLevelFunctions, pageFunction].join('\n\n')
     }
 
-    private static appMainComponent(app: App, /*errors: ErrorCollector*/) {
+    private static appMainComponent(app: App, errors: ErrorCollector) {
         const identifierSet = new Set<string>()
-        const pages = app.pages
+        const topLevelFunctions = new Set<string>()
+        const isPageElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isBuiltIn(name)
+        const code = Generator.generateElement(app, identifierSet, topLevelFunctions, isKnown, errors)
         const identifiers = [...identifierSet.values()]
+
+        const componentIdentifiers = identifiers.filter(isComponent)
+        const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = identifiers.filter( id => isGlobalFunction(id))
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
+        const elementoDeclarations = [componentDeclarations, globalDeclarations].filter( d => d !== '').join('\n').trimEnd()
+
+        const statefulComponents = app.otherComponents.filter( el => el.componentType === 'statefulUI' || el.componentType === 'background')
+        const stateDefaultEntries = statefulComponents.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
+        const stateDefaultBlock = stateDefaultEntries.map( ([name, entry]) =>
+            `    const ${name} = Elemento.useObjectStateWithDefaults('app.${name}', ${entry})`).join('\n')
+
+        const backgroundFixedComponents = app.otherComponents.filter( comp => comp.componentType === 'backgroundFixed')
+        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => `    const [${comp.codeName}] = React.useState(${Generator.initialStateEntry(comp, isKnown)})`).join('\n')
+        const localDeclarations = [].filter( d => d !== '').join('\n').trimEnd()
+
         return `function AppMain(props) {
-${globalDeclarations}
-    const appPages = {${pages.map( p => p.codeName).join(', ')}}
-    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
-    const {currentPage} = appState
-    return React.createElement('div', {id: '${app.codeName}'},
-        React.createElement(appPages[currentPage], {path: \`${app.codeName}.\${currentPage}\`})
-    )
-}
-`.trimLeft()
+${elementoDeclarations}
+    const appPages = {${app.pages.map(p => p.codeName).join(', ')}}
+${backgroundFixedDeclarations}
+${stateDefaultBlock}
+${localDeclarations}
+${code}
+`.trimStart()
     }
 
     private static generateElement(element: Element, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, errors: ErrorCollector): string {
@@ -192,18 +212,29 @@ ${globalDeclarations}
         const onError = (propertyName: string) => (err: string) => errors.add(element.id, propertyName, err)
 
         switch(element.kind) {
-        case 'Project':
-            throw new Error('Cannot generate code for Project')
-        case 'App':
-            const app = element as App
-            return this.appMainComponent(app)
-        case 'Page':
-            const page = element as Page
-            identifiers.add('Page')
-            const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
-            return `React.createElement(Page, {id: props.path},
+            case 'Project':
+                throw new Error('Cannot generate code for Project')
+            case 'App': {
+                const app = element as App
+                const children = app.otherComponents.map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)}`).filter( line => !!line.trim()).join(',\n')
+                return `    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const {currentPage} = appState
+    return React.createElement('div', {id: '${app.codeName}'},
+        React.createElement(appPages[currentPage], {path: \`${app.codeName}.\${currentPage}\`}),
+${children}
+    )
+}`
+            }
+
+        case 'Page': {
+                const page = element as Page
+                identifiers.add('Page')
+                const children = page.elementArray().map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
+                return `React.createElement(Page, {id: props.path},
 ${children}
     )`
+        }
+
         case 'Text': {
             const text = element as Text
             identifiers.add('TextElement')
@@ -302,8 +333,20 @@ ${children}
             const initialValue = Generator.getExprAndIdentifiers(collection.initialValue, identifiers, isKnown, onError('initialValue'))
             const state = collection.codeName
             const display = Generator.getExprAndIdentifiers(collection.display, identifiers, isKnown, onError('display'))
-            const reactProperties = definedPropertiesOf({state, display})
+            const dataStore = Generator.getExprAndIdentifiers(collection.dataStore, identifiers, isKnown, onError('dataStore'))
+            const collectionName = Generator.getExprAndIdentifiers(collection.collectionName, identifiers, isKnown, onError('collectionName'))
+            const reactProperties = definedPropertiesOf({state, display/*, dataStore, collectionName*/})
             return `React.createElement(Collection, ${objectLiteral(reactProperties)})`
+        }
+
+        case 'MemoryDataStore': {
+            identifiers.add(element.kind)
+            return ''
+        }
+
+        case 'FileDataStore': {
+            identifiers.add(element.kind)
+            return ''
         }
 
         default:
@@ -311,11 +354,14 @@ ${children}
         }
     }
 
-    private static initialStateEntry(element: Element): string {
+    private static initialStateEntry(element: Element, isKnown: (name: string) => boolean): string {
+        function ifDefined(name: string, expr: string | boolean | undefined) {
+            return expr ? name + ': ' + expr + ', ' : ''
+        }
         function valueAndTypeEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
             const input = element as T
-            const [valueExpr] = Generator.getExpr(input.initialValue)
-            return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr + ', ' : ''}_type: ${input.kind}.State},`
+            const [valueExpr] = Generator.getExpr(input.initialValue, isKnown)
+            return `{${ifDefined('value', valueExpr)}_type: ${input.kind}.State},`
         }
 
         switch (element.kind) {
@@ -325,28 +371,31 @@ ${children}
             case 'Page':
             case 'Text':
             case 'List':
+            case 'Button':
                 return ''
 
             case 'TextInput':
             case 'SelectInput':
             case 'TrueFalseInput':
             case 'NumberInput':
+            case 'Data':
                 return valueAndTypeEntry(element)
-
-            case 'Data': {
-                const data = element as Data
-                const [valueExpr] = Generator.getExpr(data.initialValue)
-                return `${element.codeName}: {${valueExpr ? 'value: ' + valueExpr : ''}},`
-            }
 
             case 'Collection': {
                 const collection = element as Collection
-                const [valueExpr] = Generator.getExpr(collection.initialValue)
-                return `${element.codeName}: {${valueExpr ? `value: Collection.initialValue(${valueExpr})` : 'value: Collection.initialValue()'}},`
+                const [valueExpr] = Generator.getExpr(collection.initialValue, isKnown)
+                const [dataStoreExpr] = Generator.getExpr(collection.dataStore, isKnown)
+                const [collectionNameExpr] = Generator.getExpr(collection.collectionName, isKnown)
+                return `{${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}_type: ${collection.kind}.State},`
             }
+            case 'MemoryDataStore':
+                const store = element as MemoryDataStore
+                const [valueExpr] = Generator.getExpr(store.initialValue, isKnown)
+                return `new MemoryDataStore({${valueExpr ? 'value: ' + valueExpr : ''}})`
 
-            case 'Button':
-                return ''
+            case 'FileDataStore':
+                const fileStore = element as FileDataStore
+                return `{_type: ${fileStore.kind}.State}`
 
             default:
                 throw new UnsupportedValueError(element.kind)
@@ -440,8 +489,7 @@ ${children}
         }
     }
 
-    private static getExpr(propertyValue: PropertyValue | undefined) {
-        const isKnown = () => true
+    private static getExpr(propertyValue: PropertyValue | undefined, isKnown: (name: string) => boolean) {
         const identifiers = new Set()
         const errors = []
         const onError = (err: string) => errors.push(err)

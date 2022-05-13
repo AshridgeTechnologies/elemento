@@ -10,6 +10,8 @@ import Data from '../../src/model/Data'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
 import {Collection} from '../../src/model/index'
+import MemoryDataStore from '../../src/model/MemoryDataStore'
+import FileDataStore from '../../src/model/FileDataStore'
 
 test('creates elements of correct type', () => {
     expect(createElement('App', 2)).toBeInstanceOf(App)
@@ -23,6 +25,8 @@ test('creates elements of correct type', () => {
     expect(createElement('List', 3)).toBeInstanceOf(List)
     expect(createElement('Data', 4)).toBeInstanceOf(Data)
     expect(createElement('Collection', 4)).toBeInstanceOf(Collection)
+    expect(createElement('MemoryDataStore', 5)).toBeInstanceOf(MemoryDataStore)
+    expect(createElement('FileDataStore', 5)).toBeInstanceOf(FileDataStore)
 })
 
 test('cannot create a Project', () => {

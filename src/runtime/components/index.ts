@@ -10,4 +10,7 @@ export {default as TextElement} from './TextElement'
 export {default as ListElement} from './ListElement'
 export {default as ListItem} from './ListItem'
 export {default as TextInput} from './TextInput'
+export {default as MemoryDataStore} from './MemoryDataStore'
+export {default as FileDataStore} from './FileDataStore'
+export {default as FileDataStoreImpl} from './FileDataStoreImpl'
 

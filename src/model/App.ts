@@ -1,8 +1,9 @@
 import Page from './Page'
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
+import {ComponentType, ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
 import {createElement} from './createElement'
+import {without} from 'ramda'
 
 type Properties = { author?: PropertyValue }
 
@@ -17,7 +18,9 @@ export default class App extends BaseElement<Properties> implements Element {
     }
 
     kind = 'App' as ElementType
-    get pages() {return this.elements as Page[]}
+    componentType = 'app' as ComponentType
+    get pages() {return this.elementArray().filter( el => el.kind === 'Page') as Page[]}
+    get otherComponents() {return without(this.pages, this.elementArray())}
 
 
     createElement(elementType: ElementType, newIdSeq: number): Element {
@@ -29,6 +32,6 @@ export default class App extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return elementType === 'Page'
+        return ['Page', 'MemoryDataStore', 'FileDataStore', 'Collection'].includes(elementType)
     }
 }

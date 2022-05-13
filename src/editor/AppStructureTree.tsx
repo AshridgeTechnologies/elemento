@@ -7,6 +7,8 @@ import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, T
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ViewListIcon from '@mui/icons-material/ViewList'
+import MemoryIcon from '@mui/icons-material/Memory'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -53,6 +55,8 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     case 'List': return <ViewListIcon {...{sx}}/>
     case 'Data': return <Note {...{sx}}/>
     case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
+    case 'MemoryDataStore': return <MemoryIcon {...{sx}}/>
+    case 'FileDataStore': return <InsertDriveFileIcon {...{sx}}/>
     default: throw new UnsupportedValueError(kind)
     }
 }

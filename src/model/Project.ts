@@ -1,4 +1,4 @@
-import {ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
+import {ComponentType, ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
 
@@ -15,6 +15,7 @@ export default class Project extends BaseElement<Properties> implements Element 
     }
 
     kind = 'Project' as ElementType
+    componentType = 'app' as ComponentType
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
         if (insertPosition === 'inside') {

@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, ElementType, InsertPosition} from './Types'
+import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
 import UnsupportedOperationError from '../util/UnsupportedOperationError'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
@@ -13,6 +13,7 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
 
 export default abstract class BaseElement<PropertiesType extends object> {
     abstract kind: ElementType
+    abstract componentType: ComponentType
 
     constructor(
         public readonly id: ElementId,

@@ -1,4 +1,4 @@
-import {ElementId, ElementType, PropertyValue} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyValue} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -21,6 +21,7 @@ export default class Data extends BaseElement<Properties> implements Element {
     }
 
     kind = 'Data' as ElementType
+    componentType = 'statefulUI' as ComponentType
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

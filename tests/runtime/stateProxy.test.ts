@@ -1,4 +1,5 @@
-import {stateProxy, update} from '../../src/runtime/stateProxy'
+import {ResultWithUpdates, stateProxy, update} from '../../src/runtime/stateProxy'
+import {wait} from '../testutil/rtlHelpers'
 
 const dummyUpdateFn = () => {
     throw new Error('Dummy update fn called')
@@ -231,13 +232,6 @@ test('can set nested state through _update', () => {
     expect(updateFn).toHaveBeenCalledWith('app.page1.description', {value: 'Bingo'}, true)
 })
 
-test('can update app state via _updateApp', function () {
-    const updateFn = jest.fn()
-    const state = stateProxy('app.page1.data', {a: 10, value: {b: 20, c: {d: 30, value: {e: 40}}}}, {}, updateFn)
-    state._updateApp({top: {levelTwo: 22}})
-    expect(updateFn).toHaveBeenCalledWith('app', {top: {levelTwo: 22}}, false)
-})
-
 test('can call an update function on the state object and apply the updates', () => {
     const updateFn = jest.fn()
     let componentState = stateProxy('app.page1', {
@@ -263,6 +257,29 @@ test('can call an update function on the state object and apply the updates with
     expect(componentState.description).toMatchObject({value: 'Doddle'})
     componentState.description.makeDifficult()
     expect(updateFn).toHaveBeenCalledWith('app.page1.description', {value: 'Hard'}, true)
+
+})
+
+test('can call a function on the state object and get immediate results with updates', async () => {
+    const updateFn = jest.fn()
+    let componentState = stateProxy('app.page1', {
+        description: {
+            value: 'Doddle',
+            makeDifficultLater() { return new ResultWithUpdates('Ramping up',
+                update({value: 'Getting tricky now'}),
+                Promise.resolve(update({value: 'Really difficult now'})))}
+        }
+    }, {}, updateFn)
+    expect(componentState.description).toMatchObject({value: 'Doddle'})
+
+    const immediateResult = componentState.description.makeDifficultLater()
+    expect(immediateResult).toBe('Ramping up')
+    expect(updateFn).toHaveBeenCalledTimes(1)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.description', {value: 'Getting tricky now'}, false)
+
+    await wait(5)
+    expect(updateFn).toHaveBeenCalledTimes(2)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.description', {value: 'Really difficult now'}, false)
 
 })
 

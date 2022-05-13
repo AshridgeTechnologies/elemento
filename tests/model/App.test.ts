@@ -4,6 +4,7 @@ import App from '../../src/model/App'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
+import {ElementType} from '../../src/model/Types'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -87,7 +88,7 @@ test('creates an updated object with a property set to a new value', ()=> {
     const app = new App('a1', 'App 1', {}, [page1, page2])
     const updatedApp = app.set('a1', 'name', 'App 1A')
     expect(updatedApp.name).toBe('App 1A')
-    expect(updatedApp.pages).toBe(app.pages)
+    expect(updatedApp.elements).toBe(app.elements)
     expect(app.name).toBe('App 1')
 
     const updatedApp2 = updatedApp.set('a1', 'elements', [page1, page2, page3])
@@ -202,9 +203,9 @@ test('finds max id for element type', ()=> {
 
 })
 
-test('can contain Page, not other types', () => {
+test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection'])('can contain %s not other types', (elementType) => {
     const app = new App('id1', 'App 1', {}, [])
-    expect(app.canContain('Page')).toBe(true)
+    expect(app.canContain(elementType as ElementType)).toBe(true)
     expect(app.canContain('Text')).toBe(false)
     expect(app.canContain('App')).toBe(false)
     expect(app.canContain('Project')).toBe(false)
@@ -221,6 +222,7 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(app)).toStrictEqual({
         kind: 'App',
+        componentType: 'app',
         id: 'a1',
         name: 'App 1',
         properties: app.properties,

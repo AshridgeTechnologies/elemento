@@ -8,17 +8,17 @@ import {currentUser} from '../shared/authentication'
 import {uploadTextToStorage} from '../shared/storage'
 
 declare global {
-    var showOpenFilePicker: () => any
+    var showOpenFilePicker: (options: object) => any
     var showSaveFilePicker: (options: object) => any
     var location: Location
 }
 const globalExternals = {
-    showOpenFilePicker: () => global.showOpenFilePicker(),
+    showOpenFilePicker: (options: object) => global.showOpenFilePicker(options),
     showSaveFilePicker: (options: object) => global.showSaveFilePicker(options),
     baseUrl: global.location?.origin
 }
 
-type Externals = { showOpenFilePicker: () => any; showSaveFilePicker: (options: object) => any, baseUrl: string }
+type Externals = { showOpenFilePicker: (options: object) => any; showSaveFilePicker: (options: object) => any, baseUrl: string }
 
 export default class ProjectHandler {
     private externals: Externals
@@ -64,7 +64,7 @@ export default class ProjectHandler {
 
     async openFile() {
         try {
-            const [fileHandle] = await this.externals.showOpenFilePicker()
+            const [fileHandle] = await this.externals.showOpenFilePicker({id: 'elemento_editor'})
             const file = await fileHandle.getFile()
             const jsonText = await file.text()
             this.project = loadJSONFromString(jsonText) as Project

@@ -56,6 +56,7 @@ test('converts to JSON', ()=> {
     const number = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`"The Number"`})
     expect(asJSON(number)).toStrictEqual({
         kind: 'NumberInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Number Input 1',
         properties: number.properties
@@ -64,6 +65,7 @@ test('converts to JSON', ()=> {
     const number2 = new NumberInput('t1', 'Number Input 2', {initialValue: 40, label: 'The Number'})
     expect(asJSON(number2)).toStrictEqual({
         kind: 'NumberInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Number Input 2',
         properties: number2.properties

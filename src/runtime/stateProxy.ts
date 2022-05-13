@@ -4,8 +4,12 @@ import {isFunction, isPlainObject} from 'lodash'
 export type updateFnType = (path: string, changes: object, replace?: boolean) => void
 export type proxyUpdateFnType = (changes: object) => void
 
-class Update {
+export class Update {
     constructor(public changes: object, public replace: boolean) {}
+}
+
+export class ResultWithUpdates {
+    constructor(public result: any, public syncUpdate?: Update, public asyncUpdate?: Promise<Update>) {}
 }
 
 export function update(changes: object, replace = false) {
@@ -22,10 +26,6 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 
         if (prop === '_update') {
             return (changes: object, replace = false) => updateFn(path, changes, replace)
-        }
-
-        if (prop === '_updateApp') {
-            return (changes: object) => updateFn('app', changes, false)
         }
 
         if (prop === '_controlValue') {
@@ -53,7 +53,15 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
         if (isFunction(result)) {
             return function(...args: any[]) {
                 const returnVal = result.call(obj, ...args)
-                if (returnVal instanceof Update) {
+                if (returnVal instanceof ResultWithUpdates) {
+                    if (returnVal.syncUpdate) {
+                        updateFn(path, returnVal.syncUpdate.changes, returnVal.syncUpdate.replace)
+                    }
+                    if (returnVal.asyncUpdate) {
+                        returnVal.asyncUpdate.then( (result: Update) => updateFn(path, result.changes, result.replace) )
+                    }
+                    return returnVal.result
+                } else if (returnVal instanceof Update) {
                     updateFn(path, returnVal.changes, returnVal.replace)
                 } else {
                     return returnVal
@@ -67,10 +75,11 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 
 const useRightIfDefined = (left: any, right: any) => right !== undefined ? right : left
 
-export function stateProxy(path: string, storedState: object | undefined, initialValues: object, updateFn: updateFnType) {
-    const existingStateAtPath = storedState || {}
-    const mergedState = mergeDeepWith(useRightIfDefined, initialValues, existingStateAtPath)
+export function stateProxy(path: string, storedState: object | undefined, initialValues: object | undefined, updateFn: updateFnType) {
+    const mergedState = mergeDeepWith(useRightIfDefined, initialValues || {}, storedState || {})
     const {_type, ...proxyState} = mergedState
     const proxyTarget = _type ? new _type(proxyState) : proxyState
-    return new Proxy(proxyTarget, stateProxyHandler(path, updateFn))
+    const proxy = new Proxy(proxyTarget, stateProxyHandler(path, updateFn))
+    proxy.init?.((changes: object, replace?: boolean) => updateFn(path, changes, replace))
+    return proxy
 }

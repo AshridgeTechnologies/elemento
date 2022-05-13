@@ -2,9 +2,8 @@
  * @jest-environment jsdom
  */
 
-import React, {createElement} from 'react'
+import {createElement} from 'react'
 import '@testing-library/jest-dom'
-import {addContainer,} from '../testutil/elementHelpers'
 import {projectFixture1} from '../testutil/projectFixtures'
 import userEvent from '@testing-library/user-event'
 import {actWait, wait} from '../testutil/rtlHelpers'

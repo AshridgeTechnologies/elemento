@@ -99,3 +99,49 @@ export const valObj = <T>(val: T) => ({
         return this.v
     }
 })
+
+export let saveFileData: any
+export let saveFilePickerOptions: any
+
+export function resetSaveFileCallData() {
+    saveFileData = undefined
+    saveFilePickerOptions = undefined
+}
+
+export function mockFileHandle(returnedData?: object, name?: string) {
+    const file = {
+        async text() {
+            return JSON.stringify(returnedData)
+        }
+    }
+
+    const writable = {
+        async write(data: any) {
+            saveFileData = data
+        },
+        async close() {
+        }
+    }
+
+    return {
+        name,
+        async getFile() {
+            return file
+        },
+        async createWritable() {
+            return writable
+        }
+    } as unknown as FileSystemFileHandle
+}
+
+export const saveFilePicker = (fileHandleName?: string) => async (options: any) => {
+    saveFilePickerOptions = options
+    return mockFileHandle(undefined, fileHandleName)
+}
+
+export function filePickerReturning(returnedData: object, fileHandleName?: string) {
+    return () => Promise.resolve([mockFileHandle(returnedData, fileHandleName)])
+}
+
+export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
+export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))

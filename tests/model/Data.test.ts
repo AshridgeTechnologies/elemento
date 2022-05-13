@@ -54,6 +54,7 @@ test('converts to JSON without optional proerties', ()=> {
     const data = new Data('id1', 'Data 1', {})
     expect(asJSON(data)).toStrictEqual({
         kind: 'Data',
+        componentType: 'statefulUI',
         id: 'id1',
         name: 'Data 1',
         properties: data.properties
@@ -64,6 +65,7 @@ test('converts to JSON with optional properties', ()=> {
     const data = new Data('id1', 'Data 1', {initialValue: ex`"Some data"`, display: true})
     expect(asJSON(data)).toStrictEqual({
         kind: 'Data',
+        componentType: 'statefulUI',
         id: 'id1',
         name: 'Data 1',
         properties: data.properties

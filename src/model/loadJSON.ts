@@ -13,6 +13,8 @@ import Data from './Data'
 import Collection from './Collection'
 import Project from './Project'
 import List from './List'
+import MemoryDataStore from './MemoryDataStore'
+import FileDataStore from './FileDataStore'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -44,6 +46,10 @@ export function loadJSON({id, kind, name, properties, elements}:
         return new Data(id, name, properties)
     case 'Collection':
         return new Collection(id, name, properties)
+    case 'MemoryDataStore':
+        return new MemoryDataStore(id, name, properties)
+    case 'FileDataStore':
+        return new FileDataStore(id, name, properties)
     default:
         throw new UnsupportedValueError(kind)
     }

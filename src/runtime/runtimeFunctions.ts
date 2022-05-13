@@ -49,17 +49,23 @@ export const highlightElement = (id: string | null) => {
     }
     const oldHighlightedElements = document.querySelectorAll('.' + highlightClassName)
     oldHighlightedElements.forEach( el => el.classList.remove(highlightClassName))
-    if (id) {
-        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${id}']`)
-        if( matchingElements.length === 0) {
+
+    const addHighlightClass = (idToHighlight: string) => {
+        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${idToHighlight}']`)
+        if (matchingElements.length === 0) {
             const indexRegExp = /\.\d+/g
             const allElementsWithId = document.querySelectorAll(`[id]`) as NodeList
-            matchingElements = Array.from(allElementsWithId).filter( (node) => (<Element>node).id.replace(indexRegExp, '') === id) as Element[]
+            matchingElements = Array.from(allElementsWithId).filter((node) => (<Element>node).id.replace(indexRegExp, '') === idToHighlight) as Element[]
         }
-        matchingElements.forEach( el => {
+        matchingElements.forEach(el => {
             const elToHighlight = findInputParentLabel(el) ?? el
             elToHighlight.classList.add(highlightClassName)
         })
+    }
+
+    if (id) {
+        addHighlightClass(id)
+        addHighlightClass(id.replace(/^\w+/, 'app'))  //TODO hack to get round wrong ids on input elements
     }
 }
 
@@ -101,3 +107,5 @@ export function asArray(value: any[] | object | any) {
 
     return [val]
 }
+
+export const _DELETE = '_DELETE'

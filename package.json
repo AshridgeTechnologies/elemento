@@ -28,6 +28,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
+    "@types/zen-observable": "^0.8.3",
     "assert": "^2.0.0",
     "eslint": "^8.14.0",
     "eslint-plugin-react": "^7.29.4",
@@ -56,6 +57,7 @@
     "react-firebaseui": "^6.0.0",
     "react-split-pane": "^0.1.92",
     "recast": "^0.20.5",
+    "zen-observable": "^0.8.15",
     "zustand": "^3.6.5"
   }
 }

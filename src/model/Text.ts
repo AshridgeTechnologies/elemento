@@ -1,6 +1,6 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
 
 type Properties = {
     readonly content: PropertyValue,
@@ -30,6 +30,7 @@ export default class Text extends BaseElement<Properties> implements Element {
     }
 
     kind = 'Text' as ElementType
+    componentType = 'statelessUI' as ComponentType
 
     get content() {return this.properties.content}
     get style() {return this.properties.style}

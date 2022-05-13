@@ -291,6 +291,7 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(project)).toStrictEqual({
         kind: 'Project',
+        componentType: 'app',
         id: 'pr1',
         name: 'Project 1',
         properties: project.properties,

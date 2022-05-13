@@ -9,7 +9,6 @@ Stories
 -------
 
 ### Priority 1
-- File data storage
 - Database example app
 
 ### Priority for Pro apps
@@ -86,3 +85,4 @@ Done
 - Collections
 - Insert at position
 - List component - display
+- File data storage

@@ -37,7 +37,7 @@ export default function AutoRun({script}: { script: Step[] }) {
     return <div>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
             <div style={{backgroundColor: 'lightgreen', width: '20%', height: 400}}>
-                <AppStructureTree treeData={treeData(script)} onSelect={setSelectedItemId} selectedItemId={selectedItemId} onAction={() => {}}/>
+                <AppStructureTree treeData={treeData(script)} onSelect={setSelectedItemId} selectedItemId={selectedItemId} onAction={() => {}} onInsert={() => {}} insertMenuItemFn={() => []}/>
             </div>
             <div style={{width: '79%',}}>
                 <div style={{width: '98%', margin: 'auto'}}>

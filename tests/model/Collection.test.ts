@@ -9,15 +9,19 @@ test('Collection has correct properties with default values', ()=> {
     expect(collection1.id).toBe('id1')
     expect(collection1.name).toBe('Collection 1')
     expect(collection1.initialValue).toBe(undefined)
+    expect(collection1.dataStore).toBe(undefined)
+    expect(collection1.collectionName).toBe(undefined)
     expect(collection1.display).toBe(false)
 })
 
 test('Collection has correct properties with specified values', ()=> {
-    const collection1 = new Collection('id1', 'Collection 1', {initialValue: ['green', 'blue'], display: true})
+    const collection1 = new Collection('id1', 'Collection 1', {initialValue: ['green', 'blue'], dataStore: ex`dataStore_1`, collectionName: 'Stuffz', display: true})
 
     expect(collection1.id).toBe('id1')
     expect(collection1.name).toBe('Collection 1')
     expect(collection1.initialValue).toStrictEqual(['green', 'blue'])
+    expect(collection1.dataStore).toStrictEqual(ex`dataStore_1`)
+    expect(collection1.collectionName).toBe('Stuffz')
     expect(collection1.display).toBe(true)
 })
 
@@ -54,6 +58,7 @@ test('converts to JSON without optional proerties', ()=> {
     const collection = new Collection('id1', 'Collection 1', {})
     expect(asJSON(collection)).toStrictEqual({
         kind: 'Collection',
+        componentType: 'statefulUI',
         id: 'id1',
         name: 'Collection 1',
         properties: collection.properties
@@ -64,6 +69,7 @@ test('converts to JSON with optional properties', ()=> {
     const collection = new Collection('id1', 'Collection 1', {initialValue: ex`['green', 'blue']`, display: true})
     expect(asJSON(collection)).toStrictEqual({
         kind: 'Collection',
+        componentType: 'statefulUI',
         id: 'id1',
         name: 'Collection 1',
         properties: collection.properties
@@ -71,7 +77,7 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const collection = new Collection('id1', 'Collection 1', {initialValue: ex`['green', 'blue']`, display: ex`false && true`})
+    const collection = new Collection('id1', 'Collection 1', {initialValue: ex`['green', 'blue']`, dataStore: ex`dataStore_1`, collectionName: 'Stuffz', display: ex`false && true`})
     const plainObj = asJSON(collection)
     const newCollection = loadJSON(plainObj)
     expect(newCollection).toStrictEqual<Collection>(collection)

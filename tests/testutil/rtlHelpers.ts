@@ -10,7 +10,7 @@ export const testContainer = function (element: React.ReactElement) {
     return container
 }
 
-export const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time))
+export const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 export const actWait = async (testFn: () => void) => {
     await act(async () => {
         testFn()

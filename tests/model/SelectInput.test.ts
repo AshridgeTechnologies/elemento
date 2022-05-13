@@ -57,6 +57,7 @@ test('converts to JSON', ()=> {
     const select = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`"The Select"`})
     expect(asJSON(select)).toStrictEqual({
         kind: 'SelectInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Select Input 1',
         properties: select.properties
@@ -65,6 +66,7 @@ test('converts to JSON', ()=> {
     const select2 = new SelectInput('t1', 'Select Input 2', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Blue', label: 'The Select'})
     expect(asJSON(select2)).toStrictEqual({
         kind: 'SelectInput',
+        componentType: 'statefulUI',
         id: 't1',
         name: 'Select Input 2',
         properties: select2.properties

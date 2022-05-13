@@ -18,6 +18,8 @@ import Data from '../../src/model/Data'
 import App from '../../src/model/App'
 import Project from '../../src/model/Project'
 import { Collection } from '../../src/model'
+import MemoryDataStore from '../../src/model/MemoryDataStore'
+import FileDataStore from '../../src/model/FileDataStore'
 
 let container: any
 let changedValue: any
@@ -236,11 +238,33 @@ test('has fields for Data', () => {
 })
 
 test('has fields for Collection', () => {
-    const element = new Collection('id1', 'Collection 1', {initialValue: ex`["green", "blue"]`})
+    const element = new Collection('id1', 'Collection 1', {initialValue: ex`["green", "blue"]`, dataStore: ex`dataStore_1`, collectionName: 'Things'})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Collection 1')
     expect(inputValue('Initial Value')).toBe('["green", "blue"]')
+    expect(kindButton(0).textContent).toBe('fx=')
+    expect(kindButton(0).disabled).toBe(true)
+    expect(inputValue('Data Store')).toBe('dataStore_1')
+    expect(kindButton(1).textContent).toBe('fx=')
+    expect(kindButton(1).disabled).toBe(true)
+    expect(inputValue('Collection Name')).toBe('Things')
     expect(selectValue('Display')).toBe('')
+})
+
+test('has fields for MemoryDataStore', () => {
+    const element = new MemoryDataStore('id1', 'Memory Data Store 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Memory Data Store 1')
+    expect(inputValue('Initial Value')).toBe('{ Widgets: { w1: {a: 10}} }')
+    expect(kindButton(0).textContent).toBe('fx=')
+    expect(kindButton(0).disabled).toBe(true)
+    expect(selectValue('Display')).toBe('')
+})
+
+test('has fields for FileDataStore', () => {
+    const element = new FileDataStore('id1', 'File Data Store 1', {})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('File Data Store 1')
 })
 
 test('shows errors for each property', () => {

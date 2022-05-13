@@ -1,6 +1,6 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
 import { createElement } from './createElement'
 
 type Properties = { items: PropertyValueType<any[]>, style?: PropertyValue }
@@ -21,6 +21,7 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     kind = 'List' as ElementType
+    componentType = 'statelessUI' as ComponentType
 
     get style() { return this.properties.style }
     get items() { return this.properties.items }
@@ -30,7 +31,7 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'Page'].includes(elementType)
+        return !['Project', 'App', 'Page', 'MemoryDataStore'].includes(elementType)
     }
 
 }
