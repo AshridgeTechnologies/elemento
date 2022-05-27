@@ -3,7 +3,7 @@ import {_DELETE, valueLiteral} from '../runtimeFunctions'
 import {clone, isArray, isNumber, isObject, isPlainObject, isString} from 'lodash'
 import {omit} from 'ramda'
 import {ResultWithUpdates, update, Update} from '../stateProxy'
-import DataStore, {CollectionName, Id, InvalidateAll, Pending} from '../DataStore'
+import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
 
 type Properties = {state: any, display?: boolean}
 
@@ -38,11 +38,13 @@ const initialValue = (value?: any): object => {
 }
 
 Collection.State = class State {
-    private props: { value: object, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }
+    private props: { value: object, queries: object, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }
     private immediatePendingGets = new Set()
 
-    constructor({collectionName, dataStore, subscription, value}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }) {
-        this.props = {value: initialValue(value),
+    constructor({value, queries, collectionName, dataStore, subscription }: { value?: any, queries?: any, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }) {
+        this.props = {
+            value: initialValue(value),
+            queries: queries ?? {},
             dataStore,
             collectionName,
             subscription
@@ -54,7 +56,10 @@ Collection.State = class State {
         if (dataStore && collectionName && !subscription) {
             const newSubscription = dataStore.observable(collectionName).subscribe((update) => {
                 if (update.type === InvalidateAll) {
-                    updateFn({value: _DELETE})
+                    updateFn({value: _DELETE, queries: _DELETE})
+                }
+                if (update.type === InvalidateAllQueries) {
+                    updateFn({queries: _DELETE})
                 }
             })
             updateFn({subscription: newSubscription})
@@ -121,6 +126,31 @@ Collection.State = class State {
         }
 
         return null
+    }
+
+    Query(criteria: Criteria) {
+        if (this.dataStore) {
+
+            const criteriaKey = valueLiteral(criteria)
+            const storedResult = this.props.queries[criteriaKey as keyof object]
+            if (storedResult) {
+                return storedResult
+            }
+
+            if (this.immediatePendingGets.has(criteriaKey)) {
+                return {_type: Pending}
+            }
+            const result = {_type: Pending}
+            const syncUpdate = update({queries: {[criteriaKey]: result}})
+            const asyncUpdate = this.dataStore.query(this.props.collectionName!, criteria).then(data => {
+                return update({queries: {[criteriaKey]: data}})
+            })
+            this.immediatePendingGets.add(criteriaKey)
+            return new ResultWithUpdates(result, syncUpdate, asyncUpdate)
+        }
+
+        return null
+
     }
 
     private storedValue(id: Id) {

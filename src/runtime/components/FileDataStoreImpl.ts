@@ -1,4 +1,12 @@
-import DataStore, {CollectionName, Criteria, DataStoreObject, Id, InvalidateAll, UpdateNotification} from '../DataStore'
+import DataStore, {
+    CollectionName,
+    Criteria,
+    DataStoreObject,
+    Id,
+    InvalidateAll,
+    InvalidateAllQueries,
+    UpdateNotification
+} from '../DataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
@@ -81,6 +89,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async add(collection: CollectionName, id: Id, item: DataStoreObject) {
         await this.inMemoryStore.add(collection, id, item)
+        this.invalidateCollectionQueries(collection)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -88,6 +97,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async update(collection: CollectionName, id: Id, changes: object) {
         await this.inMemoryStore.update(collection, id, changes)
+        this.invalidateCollectionQueries(collection)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -95,6 +105,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async remove(collection: CollectionName, id: Id) {
         await this.inMemoryStore.remove(collection, id)
+        this.invalidateCollectionQueries(collection)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -115,6 +126,13 @@ export default class FileDataStoreImpl implements DataStore {
 
     private invalidateAllCollections() {
         this.collectionObservables.forEach((obs, collection) => obs.send({collection, type: InvalidateAll}))
+    }
+
+    private invalidateCollectionQueries(collection: CollectionName) {
+        let observable = this.collectionObservables.get(collection)
+        if (observable) {
+            observable.send({collection, type: InvalidateAllQueries})
+        }
     }
 
     private async writeDataToFile (fileHandle: any) {

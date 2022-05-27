@@ -8,7 +8,7 @@ import {
     saveFilePickerOptions
 } from '../../testutil/testHelpers'
 import {mergeDeepRight} from 'ramda'
-import {InvalidateAll} from '../../../src/runtime/DataStore'
+import {InvalidateAll, InvalidateAllQueries} from '../../../src/runtime/DataStore'
 
 beforeEach(() => resetSaveFileCallData() )
 
@@ -239,4 +239,42 @@ describe('subscribe', () => {
         expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAll})
         expect(onNextSprockets).toHaveBeenCalledWith({collection: 'Sprockets', type: InvalidateAll})
     })
+
+    test('sends InvalidateAllQueries on Add to subscriptions for that collection', async () => {
+        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+        const onNextWidgets = jest.fn()
+        const onNextSprockets = jest.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Sprockets').subscribe(onNextSprockets)
+        await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextSprockets).not.toHaveBeenCalled()
+    })
+
+    test('sends InvalidateAllQueries on Update to subscriptions for that collection', async () => {
+        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+        const onNextWidgets = jest.fn()
+        const onNextSprockets = jest.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Sprockets').subscribe(onNextSprockets)
+        await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true}) // create the Widgets collection
+        onNextWidgets.mockReset()
+        await store.update('Widgets', 'w1', {c: true})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextSprockets).not.toHaveBeenCalled()
+    })
+
+    test('sends InvalidateAllQueries on Remove to subscriptions for that collection', async () => {
+        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+        const onNextWidgets = jest.fn()
+        const onNextSprockets = jest.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Sprockets').subscribe(onNextSprockets)
+        await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true}) // create the Widgets collection
+        onNextWidgets.mockReset()
+        await store.remove('Widgets', 'w1')
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextSprockets).not.toHaveBeenCalled()
+    })
+
 })

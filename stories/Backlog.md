@@ -9,7 +9,6 @@ Stories
 -------
 
 ### Priority 1
-- Queries in Collections
 - Horizontal layouts
 - Calculations
 - Selection on List
@@ -91,3 +90,4 @@ Done
 - Insert at position
 - List component - display
 - File data storage
+- Queries in Collections

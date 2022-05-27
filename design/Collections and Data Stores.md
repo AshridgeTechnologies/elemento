@@ -100,12 +100,15 @@ Initial design 13 May 22
 Update 27 May 22
 ----------------
 
-### Use in-memory backing store for all Collections
+### Using in-memory backing store for all Collections
 
-#### Why
-- Will simplify collection code
+#### Yes
+- Will simplify code in Collection functions
 - Query code only needs to be in the in-memory store
 
-#### How
-- Add to state if not supplied in constructor
+#### No
+- Will complicate code in setting up the in memory data store and keeping it in state
+- Query code will be easily shared between Collection and MemoryDataStore as a filter predicate generator
+
+#### Decision at this point: NO
 

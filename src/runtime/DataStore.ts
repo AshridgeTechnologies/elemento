@@ -7,9 +7,10 @@ export type DataStoreObject = object
 export type Id = string | number
 
 export const InvalidateAll = 'InvalidateAll'
+export const InvalidateAllQueries = 'InvalidateAllQueries'
 export type UpdateNotification = {
     collection: CollectionName,
-    type: 'Change' | typeof InvalidateAll,
+    type: 'Change' | typeof InvalidateAll | typeof InvalidateAllQueries,
     changes?: object
 }
 export class Pending {
