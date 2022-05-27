@@ -10,9 +10,8 @@ Stories
 
 ### Priority 1
 - Horizontal layouts
-- Calculations
-- Selection on List
-- Nav bar
+- App frame
+- Nav bar/menu
 - Database example app
 
 ### Priority for Pro apps
@@ -23,6 +22,7 @@ Stories
 
 ### Priority 2
 - Info website update
+- Read-only calculations
 - Save and load project on apps website
 - List apps
 - Demo ready 1
@@ -91,3 +91,4 @@ Done
 - List component - display
 - File data storage
 - Queries in Collections
+- Selection in List

@@ -108,7 +108,6 @@ export default class Generator {
         const name = list.codeName + 'Item'
         const identifierSet = new Set<string>()
         const topLevelFunctions = new Set<string>()
-        identifierSet.add('ListItem')
         const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isBuiltIn(name) || isItemVar(name)
         const children = list.elementArray().map(p => `        ${Generator.generateElement(p, identifierSet, topLevelFunctions, isKnown, errors)},`).join('\n')
 
@@ -124,7 +123,7 @@ export default class Generator {
     const {$item} = props
 ${elementoDeclarations}
 
-    return React.createElement(ListItem, {id: props.path},
+    return React.createElement(React.Fragment, null,
 ${children}
     )
 }`
@@ -310,11 +309,11 @@ ${children}
             identifiers.add('ListElement')
             const path = `pathWith('${list.codeName}')`
             const items = Generator.getExprAndIdentifiers(list.items, identifiers, isKnown, onError('items')) ?? '[]'
-            const reactProperties = definedPropertiesOf({path})
-            const [listItemName, listItemCode] = Generator.listItemComponent(list, errors)
+            const state = list.codeName
+            const [itemContentComponent, listItemCode] = Generator.listItemComponent(list, errors)
             topLevelFunctions.add(listItemCode)
-            return `React.createElement(ListElement, ${objectLiteral(reactProperties)}, 
-            Elemento.asArray(${items}).map( (item, index) => React.createElement(${listItemName}, {path: pathWith(\`${list.codeName}.\${index}\`), key: item.id ?? index, $item: item})) )`
+            const reactProperties = definedPropertiesOf({state, items, itemContentComponent})
+            return `React.createElement(ListElement, ${objectLiteral(reactProperties)})`
         }
 
         case 'Data': {
@@ -370,7 +369,6 @@ ${children}
             case 'App':
             case 'Page':
             case 'Text':
-            case 'List':
             case 'Button':
                 return ''
 
@@ -387,6 +385,11 @@ ${children}
                 const [dataStoreExpr] = Generator.getExpr(collection.dataStore, isKnown)
                 const [collectionNameExpr] = Generator.getExpr(collection.collectionName, isKnown)
                 return `{${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}_type: ${collection.kind}.State},`
+            }
+            case 'List': {
+                const list = element as List
+                const [itemsExpr] = Generator.getExpr(list.items, isKnown)
+                return `{${ifDefined('value', itemsExpr)}_type: ListElement.State},`
             }
             case 'MemoryDataStore':
                 const store = element as MemoryDataStore

@@ -3,27 +3,125 @@
 exports[`ListElement produces output containing ReactElement children 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-h4y409-MuiList-root"
-  id="page1.para1"
+  id="app.page1.list1"
 >
-  <li
-    className="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-divider css-1qycr05-MuiListItem-root"
-    disabled={false}
+  <div
+    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    id="app.page1.list1.0"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    tabIndex={0}
   >
     <p
       className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+      id="app.page1.list1.0.Text99"
     >
       where are you?
     </p>
-  </li>
-  <li
-    className="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-divider css-1qycr05-MuiListItem-root"
-    disabled={false}
+  </div>
+  <div
+    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    id="app.page1.list1.1"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    tabIndex={0}
   >
     <p
       className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+      id="app.page1.list1.1.Text99"
     >
       over here!
     </p>
-  </li>
+  </div>
+</ul>
+`;
+
+exports[`ListElement shows selectedItem as selected 1`] = `
+<ul
+  className="MuiList-root MuiList-padding css-h4y409-MuiList-root"
+  id="app.page1.list1"
+>
+  <div
+    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    id="app.page1.list1.0"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+      id="app.page1.list1.0.Text99"
+    >
+      where are you?
+    </p>
+    <span
+      className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </div>
+  <div
+    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    id="app.page1.list1.1"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+      id="app.page1.list1.1.Text99"
+    >
+      over here!
+    </p>
+    <span
+      className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </div>
 </ul>
 `;

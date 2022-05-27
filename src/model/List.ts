@@ -21,7 +21,7 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     kind = 'List' as ElementType
-    componentType = 'statelessUI' as ComponentType
+    componentType = 'statefulUI' as ComponentType
 
     get style() { return this.properties.style }
     get items() { return this.properties.items }

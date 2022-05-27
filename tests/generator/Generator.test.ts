@@ -441,10 +441,10 @@ test('generates List element with separate child component and global functions'
     expect(gen.output().files[0].content).toBe(`function List1Item(props) {
     const pathWith = name => props.path + '.' + name
     const {$item} = props
-    const {ListItem, TextElement} = Elemento.components
+    const {TextElement} = Elemento.components
     const {Left} = Elemento.globalFunctions
 
-    return React.createElement(ListItem, {id: props.path},
+    return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
         React.createElement(TextElement, {path: pathWith('t2')}, "This is " + Left($item, 3)),
     )
@@ -453,11 +453,10 @@ test('generates List element with separate child component and global functions'
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, ListElement} = Elemento.components
-
+    const List1 = Elemento.useObjectStateWithDefaults(pathWith('List1'), {value: [{a: 10}, {a: 20}], _type: ListElement.State},)
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1')}, 
-            Elemento.asArray([{a: 10}, {a: 20}]).map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+        React.createElement(ListElement, {state: List1, items: [{a: 10}, {a: 20}], itemContentComponent: List1Item}),
     )
 }
 `)
@@ -480,9 +479,9 @@ test('generates List element with empty items expression', ()=> {
     expect(gen.output().files[0].content).toBe(`function List1Item(props) {
     const pathWith = name => props.path + '.' + name
     const {$item} = props
-    const {ListItem, TextElement} = Elemento.components
+    const {TextElement} = Elemento.components
 
-    return React.createElement(ListItem, {id: props.path},
+    return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
     )
 }
@@ -490,11 +489,10 @@ test('generates List element with empty items expression', ()=> {
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, ListElement} = Elemento.components
-
+    const List1 = Elemento.useObjectStateWithDefaults(pathWith('List1'), {_type: ListElement.State},)
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1')}, 
-            Elemento.asArray([]).map( (item, index) => React.createElement(List1Item, {path: pathWith(\`List1.\${index}\`), key: item.id ?? index, $item: item})) ),
+        React.createElement(ListElement, {state: List1, items: [], itemContentComponent: List1Item}),
     )
 }
 `)

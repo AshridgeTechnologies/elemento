@@ -1,10 +1,10 @@
 import React from 'react'
-import Mui_ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
 import {valueOfProps} from '../runtimeFunctions'
 
-type Properties = {path: string, children?: any }
+type Properties = {path: string, selected: boolean, onClick: () => void, children?: any }
 
 export default function ListItem({children, path, ...props}: Properties) {
     const propVals = valueOfProps(props)
-    return React.createElement(Mui_ListItem, {id: path, divider: true, sx:{flexDirection: 'column', alignItems: 'flex-start' }, ...propVals}, children)
+    return React.createElement(ListItemButton, {id: path, divider: true, sx:{flexDirection: 'column', alignItems: 'flex-start' }, ...propVals}, children)
 }
