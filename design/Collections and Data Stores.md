@@ -59,10 +59,15 @@ Initial design 13 May 22
 - Request result updates the cache
 
 #### Query
-- If query in cache with same params and projection, use it
+- Collection has a cache of queries, "keyed" by the criteria objects
+- If query in cache with same criteria, use it
 - If placeholder, return it
 - Else request data, put placeholder in cache
-- Request result updates the query cache _and_ the object caches
+- On request result, store the ids as the query result, use the objects to update the object cache
+- On Add, invalidate all queries
+- On Remove, invalidate all queries
+- On Update, invalidate all queries 
+- Later: On Update, invalidate if criteria uses a property that has changed
 
 #### Update
 - Apply update to the object cache
@@ -90,3 +95,17 @@ Initial design 13 May 22
 - Request updates for a collection
 - Return an observable
 - Updates are an object with ids as keys, changes as values OR Invalidate All
+
+
+Update 27 May 22
+----------------
+
+### Use in-memory backing store for all Collections
+
+#### Why
+- Will simplify collection code
+- Query code only needs to be in the in-memory store
+
+#### How
+- Add to state if not supplied in constructor
+

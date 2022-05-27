@@ -9,6 +9,11 @@ Stories
 -------
 
 ### Priority 1
+- Queries in Collections
+- Horizontal layouts
+- Calculations
+- Selection on List
+- Nav bar
 - Database example app
 
 ### Priority for Pro apps

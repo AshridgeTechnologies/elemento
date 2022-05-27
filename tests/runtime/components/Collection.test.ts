@@ -17,7 +17,8 @@ const mockDataStore = (): DataStore => ({
     add: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
-    observable: jest.fn().mockImplementation( () => testObservable )
+    observable: jest.fn().mockImplementation( () => testObservable ),
+    query: jest.fn()
 })
 
 test('produces output with simple values',
