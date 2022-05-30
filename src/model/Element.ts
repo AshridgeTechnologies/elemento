@@ -12,6 +12,7 @@ export default interface Element {
     findElementPath(id: ElementId) : string | null
     findElementByPath(path: string) : Element | null
     findMaxId(elementType: ElementType): number
+    allElements(): Element[]
     set(id: ElementId, propertyName: string, value: any): Element
     delete(itemId: ElementId): Element
 

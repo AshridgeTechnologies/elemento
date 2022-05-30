@@ -3,18 +3,28 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import List from '../../src/model/List'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
+import Page from '../../src/model/Page'
 
 test('List has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const list = new List('l1', 'List the First', {items: [{a:10}, {b: 20}], style: ex`color: blue`}, [text1, text2])
+    const list = new List('l1', 'List the First', {items: [{a:10}, {b: 20}], style: ex`color: blue`, width: 200}, [text1, text2])
 
     expect(list.id).toBe('l1')
     expect(list.name).toBe('List the First')
     expect(list.codeName).toBe('ListtheFirst')
     expect(list.style).toStrictEqual(ex`color: blue`)
+    expect(list.width).toBe(200)
     expect(list.items).toStrictEqual([{a:10}, {b: 20}])
     expect(list.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+})
+
+test('tests if an object is this type', ()=> {
+    const list = new List('l1', 'List 1', {items: []}, [])
+    const page = new Page('p1', 'Page 1', {}, [])
+
+    expect(List.is(list)).toBe(true)
+    expect(List.is(page)).toBe(false)
 })
 
 test('can contain types apart from Project, App, Page, DataStore', () => {
@@ -52,7 +62,6 @@ test('converts to JSON', ()=> {
         properties: list.properties,
         elements: [asJSON(text1), asJSON(text2)]
     })
-
 })
 
 test('converts from plain object with correct types for elements', ()=> {

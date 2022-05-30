@@ -16,6 +16,7 @@ import Data from '../model/Data'
 import App from '../model/App'
 import Project from '../model/Project'
 import {Collection, List} from '../model/index'
+import Layout from '../model/Layout'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -42,6 +43,13 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
         case 'Page':
             return <>
                 {propertyField<Page>('style')}
+            </>
+
+        case 'Layout':
+            return <>
+                {propertyField<Layout>('horizontal', 'boolean')}
+                {propertyField<Layout>('width', 'string|number')}
+                {propertyField<Layout>('wrap', 'boolean')}
             </>
 
         case 'Text':
@@ -96,6 +104,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
         case 'List':
             return <>
                 {propertyField<List>('items', 'expr')}
+                {propertyField<List>('width', 'string|number')}
                 {propertyField<List>('style')}
             </>
 

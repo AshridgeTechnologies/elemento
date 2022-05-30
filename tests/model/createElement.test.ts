@@ -12,10 +12,12 @@ import App from '../../src/model/App'
 import {Collection} from '../../src/model/index'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
+import Layout from '../../src/model/Layout'
 
 test('creates elements of correct type', () => {
     expect(createElement('App', 2)).toBeInstanceOf(App)
     expect(createElement('Page', 2)).toBeInstanceOf(Page)
+    expect(createElement('Layout', 2)).toBeInstanceOf(Layout)
     expect(createElement('Text', 2)).toBeInstanceOf(Text)
     expect(createElement('TextInput', 2)).toBeInstanceOf(TextInput)
     expect(createElement('NumberInput', 2)).toBeInstanceOf(NumberInput)

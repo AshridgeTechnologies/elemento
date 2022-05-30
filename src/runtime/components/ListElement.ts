@@ -7,12 +7,14 @@ import {update, proxyUpdateFnType} from '../stateProxy'
 type Properties = {
     items?: any[],
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
-    state: { selectedItem?: string, _path: string, _update: proxyUpdateFnType }
+    state: { selectedItem?: string, _path: string, _update: proxyUpdateFnType },
+    width?: string | number,
+    style?: string
 }
 
 export default function ListElement({state, itemContentComponent, ...props}: Properties) {
     const {selectedItem = undefined, _path: path} = state
-    const {items = []} = valueOfProps(props)
+    const {items = [], width, style} = valueOfProps(props)
     const handleClick = (index: number) => state._update({selectedItem: items[index]})
     const children = asArray(items).map((item, index) => {
             const itemPath = `${path}.${index}`
@@ -23,7 +25,7 @@ export default function ListElement({state, itemContentComponent, ...props}: Pro
         }
     )
 
-    return React.createElement(List, {id: path}, children)
+    return React.createElement(List, {id: path, sx:{width}, style}, children)
 }
 
 ListElement.State = class State {

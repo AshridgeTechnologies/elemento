@@ -3,7 +3,7 @@ import BaseElement from './BaseElement'
 import {ComponentType, ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
 import { createElement } from './createElement'
 
-type Properties = { items: PropertyValueType<any[]>, style?: PropertyValue }
+type Properties = { items: PropertyValueType<any[]>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
 
 export default class List extends BaseElement<Properties> implements Element {
 
@@ -17,7 +17,7 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     static is(element: Element): element is List {
-        return false //element.constructor.name === this.name
+        return element.constructor.name === this.name
     }
 
     kind = 'List' as ElementType
@@ -25,6 +25,7 @@ export default class List extends BaseElement<Properties> implements Element {
 
     get style() { return this.properties.style }
     get items() { return this.properties.items }
+    get width() { return this.properties.width }
 
     createElement(elementType: ElementType, newIdSeq: number): Element {
         return createElement(elementType, newIdSeq)

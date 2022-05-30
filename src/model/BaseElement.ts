@@ -1,6 +1,7 @@
 import Element from './Element'
 import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
 import UnsupportedOperationError from '../util/UnsupportedOperationError'
+import {flatten} from 'ramda'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
@@ -25,6 +26,10 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
+    }
+
+    allElements(): Element[] {
+        return flatten(this.elementArray().map( el => [el, el.allElements()]))
     }
 
     findElement(id: ElementId): Element | null {

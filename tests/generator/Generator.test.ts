@@ -13,6 +13,7 @@ import {ex} from '../testutil/testHelpers'
 import {Collection} from '../../src/model/index'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
+import Layout from '../../src/model/Layout'
 
 test('generates app and all page output files', ()=> {
     const app = new App('t1', 'App 1', {}, [
@@ -428,7 +429,7 @@ test('generates codeGenerationError for unknown names in elements under App used
 test('generates List element with separate child component and global functions', ()=> {
     const app = new App('t1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new List('l1', 'List 1', {items: [{a: 10}, {a: 20}]}, [
+            new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 new Text('id2', 't2', {content: ex`"This is " + Left($item, 3)`}),
             ])
@@ -456,11 +457,10 @@ function Page1(props) {
     const List1 = Elemento.useObjectStateWithDefaults(pathWith('List1'), {value: [{a: 10}, {a: 20}], _type: ListElement.State},)
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {state: List1, items: [{a: 10}, {a: 20}], itemContentComponent: List1Item}),
+        React.createElement(ListElement, {state: List1, items: [{a: 10}, {a: 20}], itemContentComponent: List1Item, width: 200, style: 'color: red'}),
     )
 }
 `)
-
 })
 
 test('generates List element with empty items expression', ()=> {
@@ -498,6 +498,41 @@ function Page1(props) {
 `)
 
 })
+
+test('generates Layout element with properties and children', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
+            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`}, [
+                new Text('t1', 'T1', {content: ex`23 + 45`}),
+                new TextInput('input1', 'Name Input', {}),
+                new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
+                new Button('b1', 'B1', {content: 'Click here!'}),
+            ])
+            ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.output().files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, NumberInput, Layout, TextElement, TextInput, SelectInput, Button} = Elemento.components
+    const WidgetCount = Elemento.useObjectStateWithDefaults(pathWith('WidgetCount'), {value: 18, _type: NumberInput.State},)
+    const NameInput = Elemento.useObjectStateWithDefaults(pathWith('NameInput'), {_type: TextInput.State},)
+    const Colour = Elemento.useObjectStateWithDefaults(pathWith('Colour'), {_type: SelectInput.State},)
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(NumberInput, {state: WidgetCount, label: 'New widget value'}),
+        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200},
+            React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
+            React.createElement(TextInput, {state: NameInput, label: 'Name Input'}),
+            React.createElement(SelectInput, {state: Colour, values: ['red', 'green'], label: 'Colour'}),
+            React.createElement(Button, {path: pathWith('B1'), content: 'Click here!'}),
+    ),
+    )
+}
+`)
+})
+
 
 test('generates error on correct line for syntax error in multiline content expression', ()=> {
     const app = new App('t1', 'test1', {}, [

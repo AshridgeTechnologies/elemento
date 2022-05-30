@@ -16,7 +16,7 @@ function ListItem1(props: {path: string, $item: {text: string}}) {
 const listData = [{Id: 'id1', text: 'where are you?'}, {Id: 'id2', text: 'over here!'}]
 
 test('ListElement produces output containing ReactElement children', () => {
-    snapshot(createElement(ListElement, {state: testProxy('app.page1.list1', {}), itemContentComponent: ListItem1, items: listData}))()
+    snapshot(createElement(ListElement, {state: testProxy('app.page1.list1', {}), itemContentComponent: ListItem1, items: listData, style: 'color: red', width: 200}))()
 })
 
 test('ListElement shows selectedItem as selected', () => {

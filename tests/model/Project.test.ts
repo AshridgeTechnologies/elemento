@@ -55,8 +55,14 @@ let testProject = function () {
     ])
     const app = new App('app1', 'App 1', {}, [page1, page2])
     const project = new Project('pr1', 'proj1', {}, [app])
-    return {text4, project}
+    return {text1, text2, page1, text3, text4, page2, app, project}
 }
+
+test('can find all elements below an element', () => {
+    const {text1, text2, page1, text3, text4, page2, app, project} = testProject()
+    expect(project.allElements()).toStrictEqual([app, page1, text1, text2, page2, text3, text4])
+    expect(page2.allElements()).toStrictEqual([text3, text4])
+})
 
 test('can find element by id', ()=> {
     const {text4, project} = testProject()

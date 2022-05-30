@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Layout element produces output containing children horizontal 1`] = `
+<div
+  className="css-481lrq-MuiStack-root"
+  id="app.page1.things"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    id="app.page1.things.text1"
+  >
+    First text
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    id="app.page1.things.text2"
+  >
+    Second text
+  </p>
+</div>
+`;
+
+exports[`Layout element produces output containing children horizontal and wrapped 1`] = `
+<div
+  className="css-1ktm5gt-MuiStack-root"
+  id="app.page1.things"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    id="app.page1.things.text1"
+  >
+    First text
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    id="app.page1.things.text2"
+  >
+    Second text
+  </p>
+</div>
+`;
+
+exports[`Layout element produces output containing children vertical 1`] = `
+<div
+  className="css-17rejox-MuiStack-root"
+  id="app.page1.things"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    id="app.page1.things.text1"
+  >
+    First text
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    id="app.page1.things.text2"
+  >
+    Second text
+  </p>
+</div>
+`;

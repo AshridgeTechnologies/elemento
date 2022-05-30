@@ -20,6 +20,7 @@ import Project from '../../src/model/Project'
 import { Collection } from '../../src/model'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
+import Layout from '../../src/model/Layout'
 
 let container: any
 let changedValue: any
@@ -133,6 +134,19 @@ test('has fields for Text', () => {
     expect(selectValue('Display')).toBe('true')
 })
 
+test('has fields for Layout', () => {
+    const element = new Layout('id1', 'Layout 1', {
+        width: 100,
+        horizontal: true,
+        wrap: false,
+    }, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('Layout 1')
+    expect(selectValue('Horizontal')).toBe('true')
+    expect(selectValue('Wrap')).toBe('false')
+    expect(inputValue('Width')).toBe('100')
+})
+
 test('has fields for TextInput', () => {
     const element = new TextInput('id1', 'Text Input 1', {
         initialValue: ex`"Hi!"`,
@@ -218,7 +232,7 @@ test('has fields for Button', () => {
 })
 
 test('has fields for List', () => {
-    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`}, [])
+    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`, width: '100%'}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Id')).toBe('id1')
     expect(inputValue('Name')).toBe('List 1')
@@ -227,6 +241,7 @@ test('has fields for List', () => {
     expect(kindButton(0).textContent).toBe('fx=')
     expect(kindButton(0).disabled).toBe(true)
     expect(inputValue('Style')).toBe('funky')
+    expect(inputValue('Width')).toBe('100%')
 })
 
 test('has fields for Data', () => {

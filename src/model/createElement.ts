@@ -14,6 +14,7 @@ import Collection from './Collection'
 import List from './List'
 import MemoryDataStore from './MemoryDataStore'
 import FileDataStore from './FileDataStore'
+import Layout from './Layout'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -26,6 +27,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         return new App(id, name, {}, [])
     case 'Page':
         return new Page(id, name, {}, [])
+    case 'Layout':
+        return new Layout(id, name, {}, [])
     case 'Text':
         return new Text(id, name, {content: 'Your text here'})
     case 'TextInput':

@@ -15,6 +15,7 @@ import Project from './Project'
 import List from './List'
 import MemoryDataStore from './MemoryDataStore'
 import FileDataStore from './FileDataStore'
+import Layout from './Layout'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -28,6 +29,8 @@ export function loadJSON({id, kind, name, properties, elements}:
         return new App(id, name, properties, loadElements())
     case 'Page':
         return new Page(id, name, properties, loadElements())
+    case 'Layout':
+        return new Layout(id, name, properties, loadElements())
     case 'Text':
         return new Text(id, name, properties)
     case 'TextInput':

@@ -52,6 +52,7 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
             new ModelTreeItem('list1_1', 'The List', 'List'),
             new ModelTreeItem('data_1_1', 'Some Data', 'Data'),
             new ModelTreeItem('collection_1_1', 'A Collection', 'Collection'),
+            new ModelTreeItem('layout_1_1', 'A Layout', 'Layout'),
         ]),
         new ModelTreeItem('page_2', 'Other Page', 'Page', [
             new ModelTreeItem('text2_1', 'Some Text', 'Text'),
@@ -142,8 +143,8 @@ test("renders tree with all types of model elements",  async () => {
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon'])
 
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'The List', 'Some Data', 'A Collection', 'Other Page', 'The Data Store', 'The File Data Store'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'The List', 'Some Data', 'A Collection', 'A Layout', 'Other Page', 'The Data Store', 'The File Data Store'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon'])
 })
 
 test("can expand and collapse branches and show",  async () => {

@@ -13,10 +13,11 @@ export function defaultDataStore(): DataStore {
     return defaultDataStoreInstance
 }
 
-const appFunctions = () => {
+const appFunctions = (init: boolean = true) => {
+    const appData = init && useObjectStateWithDefaults('app._data')
     return ({
         ShowPage(pageName: string) {
-            useObjectStateWithDefaults('app._data')._update( {currentPage: pageName})
+            appData._update( {currentPage: pageName})
         },
 
         Reset(component: {Reset: () => void}) {
@@ -59,6 +60,10 @@ const appFunctions = () => {
             alert(`${description}\n${error.message}`)
         }
     })
+}
+
+export const appFunctionsNames = () => {
+    return Object.keys(appFunctions(false))
 }
 
 export default appFunctions

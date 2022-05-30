@@ -1,4 +1,4 @@
-import appFunctions from '../../src/runtime/appFunctions'
+import appFunctions, {appFunctionsNames} from '../../src/runtime/appFunctions'
 import {valObj} from '../testutil/testHelpers'
 
 import * as appData from '../../src/runtime/appData'
@@ -11,10 +11,14 @@ const {Reset, ShowPage, Set, Update, Add, Remove, Get, GetAll} = appFunctions( )
 
 beforeEach( ()=> jest.resetAllMocks() )
 
+test('can get app functions names', () => {
+    expect(appFunctionsNames()).toStrictEqual(['ShowPage', 'Reset', 'Set', 'Update', 'Add', 'Remove', 'Get', 'GetAll', 'NotifyError'])
+})
+
 test('ShowPage _updates current page app state', () => {
     const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
     mock_useObjectStateWithDefaults.mockReturnValue({_update})
-    ShowPage('Other')
+    appFunctions().ShowPage('Other')
     expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
     expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
 })

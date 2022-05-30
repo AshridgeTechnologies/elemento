@@ -161,14 +161,14 @@ test('shows allowed items in menu bar insert menu', async () => {
 
     fireEvent.click(screen.getByText('Second Text'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'List', 'Data', 'Collection', 'Layout'])
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
     expect(optionsShown()).toStrictEqual(['Collection', 'Page', 'Memory Data Store', 'File Data Store'])
 })
 
-test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection'])
+test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection', 'Layout'])
     (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {
     const notionalNewElementId = 'text_1'
     const onInsert = jest.fn().mockReturnValue(notionalNewElementId)

@@ -9,12 +9,13 @@ Aims
 Requirements
 ------------
 
-- Single rows of small items can be arranged horizontally eg first name and last name
-- Responsive wrapping happens automatically on screen size changes
-- Whole page can be split horizontally eg for list and selected item
-- Widths of items can be adjusted 
-- No additional wrapping elements are required on items in a horizontal layout
-- Also need a Box component to wrap vertical groups of items within the horizontal layout 
+- ✅ Single rows of small items can be arranged horizontally eg first name and last name
+- ✅ Responsive wrapping happens automatically on screen size changes
+- ✅ Whole page can be split horizontally eg for list and selected item
+- ✅ Widths of items can be adjusted esp List
+- ✅ No additional wrapping elements are required on items in a horizontal layout
+- ✅ Also need component to wrap vertical groups of items within the horizontal layout
+- ~~Ids and selection are correct for nested items~~ => new story
 
 Technical
 ---------
@@ -26,5 +27,5 @@ Technical
 - Keep in mind the goal of easily adding any React component
 - BUT that is another story
 - SO:
-  - Add a Box component, with width
+  - Add a Layout component, with width
   - Add width to List
