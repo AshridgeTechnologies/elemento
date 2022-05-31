@@ -5,6 +5,7 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project from '../../src/model/Project'
+import Layout from '../../src/model/Layout'
 
 test('Project has correct properties', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
@@ -98,6 +99,20 @@ test('can find path of element on a page by id', ()=> {
     const {text4, project} = testProject()
     expect(project.findElementPath(text4.id)).toBe('App1.Page2.Text4')
 })
+
+test('can find path of element in a layout by id', ()=> {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const innerLayout = new Layout('lay2', 'Layout 2', {}, [text2])
+    const layout = new Layout('lay1', 'Layout 1', {}, [text1, innerLayout])
+    const page = new Page('p1', 'Page 1', {}, [layout])
+    const app = new App('app1', 'App 1', {}, [page])
+    const project = new Project('proj1', 'Project 1', {}, [app])
+
+    expect(project.findElementPath(text1.id)).toBe('App1.Page1.Text1')
+    expect(project.findElementPath(text2.id)).toBe('App1.Page1.Text2')
+})
+
 
 test('can find element by path', () => {
     const {text4, project} = testProject()

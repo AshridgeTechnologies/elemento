@@ -24,7 +24,8 @@ const testApp = (version: string) => {
         return React.createElement(Page, {id: props.path},
             React.createElement(TextElement, {path: pathWith('FirstText')}, `This is App ${version}`),
             React.createElement(TextInput, {state: input1, label: 'input1'}),
-            React.createElement(TextElement, {path: pathWith('SecondText')}, "Input is " + input1),
+            // @ts-ignore
+            React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
         )
     }
 

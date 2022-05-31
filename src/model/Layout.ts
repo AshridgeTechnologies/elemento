@@ -23,6 +23,8 @@ export default class Layout extends BaseElement<Properties> implements Element {
     kind = 'Layout' as ElementType
     componentType = 'statefulUI' as ComponentType
 
+    isLayoutOnly() { return true }
+
     get horizontal() { return this.properties.horizontal ?? false }
     get width() { return this.properties.width }
     get wrap() { return this.properties.wrap ?? false }

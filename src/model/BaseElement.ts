@@ -16,6 +16,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
     abstract kind: ElementType
     abstract componentType: ComponentType
 
+
     constructor(
         public readonly id: ElementId,
         public readonly name: string,
@@ -23,6 +24,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
     }
+
+    isLayoutOnly() { return false }
 
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
@@ -65,7 +68,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
         for (const el of this.elementArray()) {
             const path = el.findElementPath(id)
             if (path) {
-                return this.pathSegment !== '' ? this.pathSegment + '.' + path : path
+                if (this.isLayoutOnly()) return path
+                if (this.pathSegment === '') return path
+                return this.pathSegment + '.' + path
             }
         }
 
@@ -83,8 +88,10 @@ export default abstract class BaseElement<PropertiesType extends object> {
         if (firstElementName === this.pathSegment && remainingPathSegments.length === 0) {
             return this as unknown as Element
         }
+
+        const remainingPath = this.isLayoutOnly() ? path : remainingPathSegments.join('.')
         for (const el of this.elementArray()) {
-            const element = el.findElementByPath(remainingPathSegments.join('.'))
+            const element = el.findElementByPath(remainingPath)
             if (element) return element
         }
 

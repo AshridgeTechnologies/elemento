@@ -3,7 +3,6 @@ import Layout from '../../src/model/Layout'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import NumberInput from '../../src/model/NumberInput'
 import Page from '../../src/model/Page'
 
 test('Layout has correct defaults', ()=> {
@@ -121,8 +120,6 @@ test('ignores the insert and returns itself if the id is not matched', ()=> {
     expect(updatedLayout).toBe(layout1)
 })
 
-
-
 test('can contain types apart from Project, App, Page', () => {
     const layout = new Layout('lay1', 'Layout 1', {}, [])
     expect(layout.canContain('Project')).toBe(false)
@@ -134,6 +131,20 @@ test('can contain types apart from Project, App, Page', () => {
     expect(layout.canContain('Text')).toBe(true)
     expect(layout.canContain('Button')).toBe(true)
 })
+
+
+test('finds itself and children in a page', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const innerLayout = new Layout('lay2', 'Layout 2', {}, [text2])
+    const layout = new Layout('lay1', 'Layout 1', {}, [text1, innerLayout])
+    const page = new Page('p1', 'Page 1', {}, [layout])
+
+    expect(page.findElementByPath('Page1.Layout1')).toBe(layout)
+    expect(page.findElementByPath('Page1.Text1')).toBe(text1)
+    expect(page.findElementByPath('Page1.Text2')).toBe(text2)
+})
+
 
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

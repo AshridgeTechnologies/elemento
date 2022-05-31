@@ -9,6 +9,8 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
 
     const selectionEventListener = (event: MouseEvent) => {
         if (event.altKey) {
+            event.preventDefault()
+            event.stopPropagation()
             onComponentSelected((event.target as HTMLElement).id)
         }
     }

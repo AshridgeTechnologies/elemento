@@ -9,7 +9,6 @@ Stories
 -------
 
 ### Priority 1
-- Fix selection and highlighting
 - App frame
 - Nav bar/menu
 - Database example app
@@ -93,3 +92,4 @@ Done
 - Queries in Collections
 - Selection in List
 - Horizontal layouts
+- Fix selection and highlighting
