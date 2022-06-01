@@ -9,8 +9,7 @@ Stories
 -------
 
 ### Priority 1
-- App frame
-- Nav bar/menu
+- App frame and Nav bar-menu
 - Database example app
 
 ### Priority for Pro apps
