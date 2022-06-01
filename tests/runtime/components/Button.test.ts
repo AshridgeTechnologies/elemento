@@ -14,7 +14,7 @@ const {Log} = globalFunctions
 const doIt = () => {}
 
 test('Button element produces output with properties supplied',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}}))
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', filled: true, action: () => {doIt()}}))
 )
 
 test('Button element produces output with properties supplied as state values', async () => {

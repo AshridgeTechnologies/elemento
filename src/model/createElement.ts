@@ -15,6 +15,7 @@ import List from './List'
 import MemoryDataStore from './MemoryDataStore'
 import FileDataStore from './FileDataStore'
 import Layout from './Layout'
+import AppBar from './AppBar'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -29,6 +30,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         return new Page(id, name, {}, [])
     case 'Layout':
         return new Layout(id, name, {}, [])
+    case 'AppBar':
+        return new AppBar(id, name, {}, [])
     case 'Text':
         return new Text(id, name, {content: 'Your text here'})
     case 'TextInput':

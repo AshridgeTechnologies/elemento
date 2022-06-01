@@ -6,7 +6,7 @@ jest.mock('../../src/runtime/appData')
 
 const _update = jest.fn()
 const mockFn = jest.fn()
-const {Reset, ShowPage, Set, Update, Add, Remove, Get, GetAll} = appFunctions( )
+const {Reset, Set, Update, Add, Remove, Get, GetAll} = appFunctions( )
 
 
 beforeEach( ()=> jest.resetAllMocks() )
@@ -19,6 +19,15 @@ test('ShowPage _updates current page app state', () => {
     const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
     mock_useObjectStateWithDefaults.mockReturnValue({_update})
     appFunctions().ShowPage('Other')
+    expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
+    expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
+})
+
+test('ShowPage _updates current page app state with name of a function', () => {
+    const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
+    mock_useObjectStateWithDefaults.mockReturnValue({_update})
+    const Other = function Other() {}
+    appFunctions().ShowPage(Other)
     expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
     expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
 })

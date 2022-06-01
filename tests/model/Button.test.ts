@@ -11,17 +11,19 @@ test('Button has correct properties with default values', ()=> {
     expect(button1.componentType).toBe('statelessUI')
     expect(button1.content).toBe('Button 1')
     expect(button1.action).toBe(undefined)
+    expect(button1.filled).toBe(undefined)
     expect(button1.style).toBe(undefined)
     expect(button1.display).toBe(true)
 })
 
 test('Button has correct properties with specified values', ()=> {
-    const button1 = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, style: 'cool', display: false})
+    const button1 = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, filled: true, style: 'cool', display: false})
 
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
     expect(button1.content).toStrictEqual(ex`"Some button"`)
     expect(button1.action).toStrictEqual(ex`doIt()`)
+    expect(button1.filled).toBe(true)
     expect(button1.style).toBe('cool')
     expect(button1.display).toBe(false)
 })
@@ -67,7 +69,7 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, style:'cool', display: false})
+    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, filled: true, style:'cool', display: false})
     expect(asJSON(button)).toStrictEqual({
         kind: 'Button',
         componentType: 'statelessUI',
@@ -78,7 +80,7 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, style: ex`red`, display: ex`false && true`})
+    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, filled: true, style: ex`red`, display: ex`false && true`})
     const plainObj = asJSON(button)
     const newButton = loadJSON(plainObj)
     expect(newButton).toStrictEqual<Button>(button)

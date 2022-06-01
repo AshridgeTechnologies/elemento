@@ -7,3 +7,8 @@ Formula improvements Part 3
 - Error for reference to unknown property eg Data1.valu
 - Wrap primitive results in a Proxy, so could do Set(data.x.y.z, 99)
 - Multiple statements in actions
+- Null chaining - automatic?
+- Allow quotes in Text
+- Everything under the App Bar is available throughout the app
+- Everything under the app, is available in the app bar
+- Can have Data at app level

@@ -4,7 +4,7 @@
 
 import React, {createElement} from 'react'
 import {componentJSON} from '../../testutil/testHelpers'
-import {App, Page, TextElement} from '../../../src/runtime/components/index'
+import {App, Collection, Page, TextElement, AppBar} from '../../../src/runtime/components/index'
 import {StoreProvider} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {fireEvent} from '@testing-library/react'
@@ -14,6 +14,26 @@ test('App element produces output containing page', () => {
     const text = () => createElement(TextElement, {path: 'app1.page1.para1'}, 'Hello', 'where are you')
     const mainPage = () => createElement(Page, {path: 'app1.page1'}, text())
     const app = createElement(App, {id: 'app1', pages: {mainPage}})
+    const runningApp = createElement(StoreProvider, {children: app})
+    expect(componentJSON(runningApp)).toMatchSnapshot()
+})
+
+test('App element produces output with max width', () => {
+    const text = () => createElement(TextElement, {path: 'app1.page1.para1'}, 'Hello', 'where are you')
+    const mainPage = () => createElement(Page, {path: 'app1.page1'}, text())
+    const app = createElement(App, {id: 'app1', maxWidth: 500, pages: {mainPage}})
+    const runningApp = createElement(StoreProvider, {children: app})
+    expect(componentJSON(runningApp)).toMatchSnapshot()
+})
+
+test('App element produces output containing page and additional components with app bar at the top', () => {
+    const text = () => createElement(TextElement, {path: 'app1.page1.para1'}, 'Hello', 'where are you')
+    const mainPage = () => createElement(Page, {path: 'app1.page1'}, text())
+    const collection1 = createElement(Collection, {state: {}, display: true})
+    const collection2 = createElement(Collection, {state: {}, display: true})
+    const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
+
+    const app = createElement(App, {id: 'app1', pages: {mainPage}, topChildren: appBar1}, collection1, collection2)
     const runningApp = createElement(StoreProvider, {children: app})
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })

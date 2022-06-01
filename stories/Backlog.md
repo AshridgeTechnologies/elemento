@@ -9,7 +9,6 @@ Stories
 -------
 
 ### Priority 1
-- App frame and Nav bar-menu
 - Database example app
 
 ### Priority for Pro apps
@@ -92,3 +91,4 @@ Done
 - Selection in List
 - Horizontal layouts
 - Fix selection and highlighting
+- App frame and Nav bar-menu

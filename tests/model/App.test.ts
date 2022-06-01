@@ -1,6 +1,8 @@
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
+import AppBar from '../../src/model/AppBar'
+import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
@@ -9,11 +11,26 @@ import {ElementType} from '../../src/model/Types'
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const app = new App('t1', 'test1', {}, [page1, page2])
+    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200}, [page1, page2])
 
     expect(app.id).toBe('t1')
     expect(app.name).toBe('test1')
+    expect(app.author).toBe('Herself')
+    expect(app.maxWidth).toBe(200)
     expect(app.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
+})
+
+test('can distinguish different types of element', () => {
+    let page1 = new Page('p1', 'Page 1', {}, [])
+    let page2 = new Page('p2', 'Page 2', {}, [])
+    let appBar = new AppBar('ab2', 'AppBar 1', {}, [])
+    let collection = new Collection('coll1', 'Collection 1', {},)
+    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200}, [page1, page2, appBar, collection])
+    expect(app.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
+    expect(app.otherComponents.map( p => p.id )).toStrictEqual(['ab2', 'coll1'])
+    expect(app.topChildren.map( p => p.id )).toStrictEqual(['ab2'])
+    expect(app.bottomChildren.map( p => p.id )).toStrictEqual(['coll1'])
+
 })
 
 test('can find app itself by id', ()=> {
@@ -203,7 +220,7 @@ test('finds max id for element type', ()=> {
 
 })
 
-test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection'])('can contain %s not other types', (elementType) => {
+test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar'])('can contain %s not other types', (elementType) => {
     const app = new App('id1', 'App 1', {}, [])
     expect(app.canContain(elementType as ElementType)).toBe(true)
     expect(app.canContain('Text')).toBe(false)

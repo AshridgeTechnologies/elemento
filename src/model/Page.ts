@@ -30,7 +30,7 @@ export default class Page extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
+        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }
 
 }

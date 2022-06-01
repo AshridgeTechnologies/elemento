@@ -3,9 +3,9 @@ import BaseElement from './BaseElement'
 import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
 import {createElement} from './createElement'
 
-type Properties = { items: PropertyValueType<any[]>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
+type Properties = { title?: PropertyValueType<string> }
 
-export default class List extends BaseElement<Properties> implements Element {
+export default class AppBar extends BaseElement<Properties> implements Element {
 
     constructor(
         id: ElementId,
@@ -16,23 +16,23 @@ export default class List extends BaseElement<Properties> implements Element {
         super(id, name, properties, elements)
     }
 
-    static is(element: Element): element is List {
+    static is(element: Element): element is AppBar {
         return element.constructor.name === this.name
     }
 
-    kind = 'List' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    kind = 'AppBar' as ElementType
+    componentType = 'statelessUI' as ComponentType
 
-    get style() { return this.properties.style }
-    get items() { return this.properties.items }
-    get width() { return this.properties.width }
+    isLayoutOnly() { return true }
+
+    get title() { return this.properties.title }
 
     createElement(elementType: ElementType, newIdSeq: number): Element {
         return createElement(elementType, newIdSeq)
     }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore'].includes(elementType)
+        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }
 
 }

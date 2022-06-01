@@ -2,7 +2,7 @@
 
 exports[`Page element produces output containing children 1`] = `
 <div
-  className="css-1suj1uj-MuiStack-root"
+  className="css-1ggex8v-MuiStack-root"
   id="page1"
 >
   <p

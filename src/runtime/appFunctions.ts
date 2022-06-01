@@ -16,7 +16,8 @@ export function defaultDataStore(): DataStore {
 const appFunctions = (init: boolean = true) => {
     const appData = init && useObjectStateWithDefaults('app._data')
     return ({
-        ShowPage(pageName: string) {
+        ShowPage(page: string | Function) {
+            const pageName = typeof page === 'function' ? page.name : valueOf(page)
             appData._update( {currentPage: pageName})
         },
 

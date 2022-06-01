@@ -17,6 +17,7 @@ import App from '../model/App'
 import Project from '../model/Project'
 import {Collection, List} from '../model/index'
 import Layout from '../model/Layout'
+import AppBar from '../model/AppBar'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -37,7 +38,8 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
 
         case 'App':
             return <>
-                {propertyField<App>('author')}
+                {propertyField<App>('author', 'string')}
+                {propertyField<App>('maxWidth', 'string|number')}
             </>
 
         case 'Page':
@@ -50,6 +52,11 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                 {propertyField<Layout>('horizontal', 'boolean')}
                 {propertyField<Layout>('width', 'string|number')}
                 {propertyField<Layout>('wrap', 'boolean')}
+            </>
+
+        case 'AppBar':
+            return <>
+                {propertyField<AppBar>('title', 'string')}
             </>
 
         case 'Text':
@@ -98,6 +105,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
             return <>
                 {propertyField<Button>('content')}
                 {propertyField<Button>('action', 'action')}
+                {propertyField<Button>('filled', 'boolean')}
                 {propertyField<Button>('display', 'boolean')}
             </>
 

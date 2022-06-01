@@ -1,6 +1,8 @@
 import Text from '../../src/model/Text'
+import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
+import AppBar from '../../src/model/AppBar'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
@@ -46,22 +48,28 @@ test('can find page by id', ()=> {
 let testProject = function () {
     const text1 = new Text('t1', 'Text 1', {content: ex``})
     const text2 = new Text('t2', 'Text 3', {content: ex``})
+    const layout1 = new Layout('lay1', 'Layout 1', {}, [text2])
     const page1 = new Page('p1', 'Page 1', {}, [
-        text1, text2,
+        text1, layout1,
     ])
     const text3 = new Text('t3', 'Text 1', {content: ex``})
     const text4 = new Text('t4', 'Text 4', {content: ex``})
     const page2 = new Page('p2', 'Page 2', {}, [
         text3, text4,
     ])
-    const app = new App('app1', 'App 1', {}, [page1, page2])
+
+    const button1 = new Button('b1', 'Button 1', {})
+    const appBar = new AppBar('ab1', 'AppBar 1', {}, [button1])
+    const app = new App('app1', 'App 1', {}, [page1, page2, appBar])
     const project = new Project('pr1', 'proj1', {}, [app])
-    return {text1, text2, page1, text3, text4, page2, app, project}
+    return {text1, text2, page1, text3, text4, layout1, page2, app, appBar, button1, project}
 }
 
-test('can find all elements below an element', () => {
-    const {text1, text2, page1, text3, text4, page2, app, project} = testProject()
-    expect(project.allElements()).toStrictEqual([app, page1, text1, text2, page2, text3, text4])
+test('can find all elements below an element excluding pages', () => {
+    const {text1, text2, page1, text3, text4, layout1, page2, app, appBar, button1, project} = testProject()
+    expect(project.allElements()).toStrictEqual([app, appBar, button1])
+    expect(app.allElements()).toStrictEqual([appBar, button1])
+    expect(page1.allElements()).toStrictEqual([text1, layout1, text2])
     expect(page2.allElements()).toStrictEqual([text3, text4])
 })
 

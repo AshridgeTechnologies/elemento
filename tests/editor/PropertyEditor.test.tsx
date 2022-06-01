@@ -21,6 +21,7 @@ import { Collection } from '../../src/model'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
+import AppBar from '../../src/model/AppBar'
 
 let container: any
 let changedValue: any
@@ -72,12 +73,13 @@ test('has fields for Project', () => {
 })
 
 test('has fields for App', () => {
-    const element = new App('id1', 'App 1', {author: ex`Me + You`}, [])
+    const element = new App('id1', 'App 1', {author: ex`Me + You`, maxWidth: '50%'}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Id')).toBe('id1')
     expect(inputValue('Name')).toBe('App 1')
     expect(inputValue('Formula Name')).toBe('App1')
     expect(inputValue('Author')).toBe('Me + You')
+    expect(inputValue('Max Width')).toBe('50%')
     expect(kindButton(0).textContent).toBe('fx=')
 })
 
@@ -145,6 +147,15 @@ test('has fields for Layout', () => {
     expect(selectValue('Horizontal')).toBe('true')
     expect(selectValue('Wrap')).toBe('false')
     expect(inputValue('Width')).toBe('100')
+})
+
+test('has fields for AppBar', () => {
+    const element = new AppBar('id1', 'AppBar 1', {
+        title: 'My App',
+    }, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(inputValue('Name')).toBe('AppBar 1')
+    expect(inputValue('Title')).toBe('My App')
 })
 
 test('has fields for TextInput', () => {
@@ -221,10 +232,11 @@ test('has fields for SelectInput with fixed value', () => {
 })
 
 test('has fields for Button', () => {
-    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, action: ex`doIt()`, display: false})
+    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, filled: true, action: ex`doIt()`, display: false})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(inputValue('Name')).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
+    expect(selectValue('Filled')).toBe('true')
     expect(inputValue('Action')).toBe('doIt()')
     expect(kindButton(1).textContent).toBe('fx=')
     expect(kindButton(1).disabled).toBe(true)

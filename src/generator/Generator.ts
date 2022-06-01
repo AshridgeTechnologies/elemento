@@ -18,12 +18,12 @@ import SelectInput from '../model/SelectInput'
 import TrueFalseInput from '../model/TrueFalseInput'
 import List from '../model/List'
 import {isArray, isPlainObject} from 'lodash'
-import {uniq} from 'ramda'
 import Data from '../model/Data'
 import {Collection} from '../model/index'
 import MemoryDataStore from '../model/MemoryDataStore'
 import FileDataStore from '../model/FileDataStore'
 import Layout from '../model/Layout'
+import AppBar from '../model/AppBar'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -32,8 +32,14 @@ interface ErrorCollector {
 }
 
 function safeKey(name: string) { return name.match(/\W/) ? `'${name}'` : name}
+
+function objectLiteralEntries(obj: object, suffixIfNotEmpty: string = '') {
+    const entries = Object.entries(obj)
+    return entries.length ? entries.map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ') + suffixIfNotEmpty : ''
+}
+
 function objectLiteral(obj: object) {
-    return `{${Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')}}`
+    return `{${objectLiteralEntries(obj)}}`
 }
 
 const appFunctions = appFunctionsNames()
@@ -88,11 +94,11 @@ export default class Generator {
         }
         const pageFiles = this.app.pages.map( page => ({
             name: `${(page.codeName)}.js`,
-            content: Generator.pageComponent(this.app, page, errorCollector)
+            content: Generator.generateComponent(this.app, page, errorCollector)
         }))
         const appMainFile = {
             name: 'appMain.js',
-            content: 'export default ' + Generator.appMainComponent(this.app, errorCollector)
+            content: 'export default ' + Generator.generateComponent(this.app, this.app, errorCollector)
         }
 
         const imports = 'import React from \'react\'\nimport Elemento from \'elemento-runtime\'\n\n'
@@ -132,15 +138,16 @@ ${children}
         return [name, code]
     }
 
-    private static pageComponent(app: App, page: Page, errors: ErrorCollector) {
+    private static generateComponent(app: App, component: Page | App, errors: ErrorCollector) {
+        const componentIsApp = component instanceof App
         const identifierSet = new Set<string>()
         const topLevelFunctions = new Set<string>()
-        const allPageElements = page.allElements()
+        const allComponentElements = component.allElements()
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
-        const isPageElement = (name: string) => !!allPageElements.find(el => el.codeName === name )
+        const isComponentElement = (name: string) => !!allComponentElements.find(el => el.codeName === name )
         const isPageName = (name: string) => !!app.pages.find( p => p.codeName === name )
-        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isPageName(name) || isAppElement(name) || isBuiltIn(name)
-        const pageUiElementCode = Generator.generateElement(page, identifierSet, topLevelFunctions, isKnown, errors)
+        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isComponentElement(name) || isPageName(name) || isAppElement(name) || isBuiltIn(name)
+        const uiElementCode = Generator.generateElement(component, identifierSet, topLevelFunctions, isKnown, errors)
         const identifiers = [...identifierSet.values()]
 
         const componentIdentifiers = identifiers.filter(isComponent)
@@ -149,60 +156,41 @@ ${children}
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         const appFunctionIdentifiers = identifiers.filter(isAppFunction)
         const appFunctionDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions()` : ''
-        const appLevelIdentifiers = identifiers.filter(isAppElement)
-        const appLevelDeclarations = appLevelIdentifiers.map( ident => `    const ${ident} = Elemento.useObjectStateWithDefaults('app.${ident}')`).join('\n')
+
+        let appLevelDeclarations
+        if (!componentIsApp) {
+            const appLevelIdentifiers = identifiers.filter(isAppElement)
+            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = Elemento.useObjectStateWithDefaults('app.${ident}')`).join('\n')
+        }
         const elementoDeclarations = [componentDeclarations, globalDeclarations, appFunctionDeclarations, appLevelDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
-        const stateEntries = allPageElements.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
+        const statefulComponents = allComponentElements.filter( el => el.componentType === 'statefulUI' || el.componentType === 'background')
+        const stateEntries = statefulComponents.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
+        const statePathExpr = (name: string) => componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
         const stateBlock = stateEntries.map( ([name, entry]) =>
-            `    const ${name} = Elemento.useObjectStateWithDefaults(pathWith('${name}'), ${entry})`).join('\n')
+            `    const ${name} = Elemento.useObjectStateWithDefaults(${statePathExpr(name)}, ${entry})`).join('\n')
 
         const pageNames = identifiers.filter(isPageName)
         const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
-        const localDeclarations = [pageNameDeclarations].filter( d => d !== '').join('\n').trimEnd()
+        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.componentType === 'backgroundFixed') : []
+        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => `    const [${comp.codeName}] = React.useState(${Generator.initialStateEntry(comp, isKnown)})`).join('\n')
+        const pages = componentIsApp ? `    const pages = {${app.pages.map(p => p.codeName).join(', ')}}` : ''
 
-        const pageFunction = `function ${page.codeName}(props) {
-    const pathWith = name => props.path + '.' + name
-${elementoDeclarations}
+        const localDeclarations = [pages].filter( d => d !== '').join('\n').trimEnd()
+        const pathWith = componentIsApp ? `    const pathWith = name => '${component.codeName}' + '.' + name`
+                                        : `    const pathWith = name => props.path + '.' + name`
+
+
+
+        const pageFunction = `function ${component.codeName}(props) {
+${pathWith}
+${[elementoDeclarations, backgroundFixedDeclarations].filter( d => d !== '').join('\n')}
 ${stateBlock}
 ${localDeclarations}
-    return ${pageUiElementCode}
+    return ${uiElementCode}
 }
 `.trimStart()
         return [...topLevelFunctions, pageFunction].join('\n\n')
-    }
-
-    private static appMainComponent(app: App, errors: ErrorCollector) {
-        const identifierSet = new Set<string>()
-        const topLevelFunctions = new Set<string>()
-        const isPageElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
-        const isKnown = (name: string) => isGlobalFunction(name) || isAppFunction(name) || isPageElement(name) || isBuiltIn(name)
-        const code = Generator.generateElement(app, identifierSet, topLevelFunctions, isKnown, errors)
-        const identifiers = [...identifierSet.values()]
-
-        const componentIdentifiers = identifiers.filter(isComponent)
-        const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
-        const globalFunctionIdentifiers = identifiers.filter( id => isGlobalFunction(id))
-        const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
-        const elementoDeclarations = [componentDeclarations, globalDeclarations].filter( d => d !== '').join('\n').trimEnd()
-
-        const statefulComponents = app.otherComponents.filter( el => el.componentType === 'statefulUI' || el.componentType === 'background')
-        const stateDefaultEntries = statefulComponents.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
-        const stateDefaultBlock = stateDefaultEntries.map( ([name, entry]) =>
-            `    const ${name} = Elemento.useObjectStateWithDefaults('app.${name}', ${entry})`).join('\n')
-
-        const backgroundFixedComponents = app.otherComponents.filter( comp => comp.componentType === 'backgroundFixed')
-        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => `    const [${comp.codeName}] = React.useState(${Generator.initialStateEntry(comp, isKnown)})`).join('\n')
-        const localDeclarations = [].filter( d => d !== '').join('\n').trimEnd()
-
-        return `function AppMain(props) {
-${elementoDeclarations}
-    const appPages = {${app.pages.map(p => p.codeName).join(', ')}}
-${backgroundFixedDeclarations}
-${stateDefaultBlock}
-${localDeclarations}
-${code}
-`.trimStart()
     }
 
     private static generateElement(element: Element, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, errors: ErrorCollector): string {
@@ -214,16 +202,18 @@ ${code}
         switch(element.kind) {
             case 'Project':
                 throw new Error('Cannot generate code for Project')
+
             case 'App': {
                 const app = element as App
-                const children = app.otherComponents.map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)}`).filter( line => !!line.trim()).join(',\n')
-                return `    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
-    const {currentPage} = appState
-    return React.createElement('div', {id: '${app.codeName}'},
-        React.createElement(appPages[currentPage], {path: \`${app.codeName}.\${currentPage}\`}),
-${children}
-    )
-}`
+                identifiers.add('App')
+                const topChildrenElements = app.topChildren.map(p => `${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)}`).filter( line => !!line.trim()).join(',\n')
+                const topChildren = topChildrenElements.length ? `topChildren: React.createElement( React.Fragment, null, ${topChildrenElements})\n    ` : ''
+                const bottomChildrenElements = app.bottomChildren.map(p => `        ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)}`).filter(line => !!line.trim()).join(',\n')
+                const bottomChildren = bottomChildrenElements ? `\n${bottomChildrenElements}\n    ` : ''
+                const maxWidth = Generator.getExprAndIdentifiers(app.maxWidth, identifiers, isKnown, onError('maxWidth'))
+                const additionalReactProperties = definedPropertiesOf({maxWidth})
+
+                return `React.createElement(App, {id: '${app.codeName}', pages, ${objectLiteralEntries(additionalReactProperties, ',')}${topChildren}},${bottomChildren})`
             }
 
         case 'Page': {
@@ -245,6 +235,18 @@ ${children}
             const wrap = Generator.getExprAndIdentifiers(layout.wrap, identifiers, isKnown, onError('wrap'))
             const reactProperties = definedPropertiesOf({path, horizontal, width, wrap})
             return `React.createElement(Layout, ${objectLiteral(reactProperties)},
+${children}
+    )`
+        }
+
+        case 'AppBar': {
+            const appBar = element as AppBar
+            const path = pathWith(appBar.codeName)
+            identifiers.add('AppBar')
+            const children = appBar.elementArray().map(p => `            ${Generator.generateElement(p, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
+            const title = Generator.getExprAndIdentifiers(appBar.title, identifiers, isKnown, onError('title'))
+            const reactProperties = definedPropertiesOf({path, title})
+            return `React.createElement(AppBar, ${objectLiteral(reactProperties)},
 ${children}
     )`
         }
@@ -315,7 +317,8 @@ ${children}
             const path = pathWith(button.codeName)
             const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
             const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
-            const reactProperties = definedPropertiesOf({path, content, action})
+            const filled = Generator.getExprAndIdentifiers(button.filled, identifiers, isKnown, onError('filled'))
+            const reactProperties = definedPropertiesOf({path, content, filled, action})
             return `React.createElement(Button, ${objectLiteral(reactProperties)})`
         }
 
@@ -386,6 +389,7 @@ ${children}
             case 'App':
             case 'Page':
             case 'Layout':
+            case 'AppBar':
             case 'Text':
             case 'Button':
                 return ''

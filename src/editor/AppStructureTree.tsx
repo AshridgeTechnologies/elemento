@@ -10,6 +10,7 @@ import ViewListIcon from '@mui/icons-material/ViewList'
 import MemoryIcon from '@mui/icons-material/Memory'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import WebAssetIcon from '@mui/icons-material/WebAsset';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -48,6 +49,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     case 'App': return <Web {...{sx}} />
     case 'Page': return <Web {...{sx}} />
     case 'Layout': return <ViewModuleIcon {...{sx}} />
+    case 'AppBar': return <WebAssetIcon {...{sx}} />
     case 'Text': return <Subject {...{sx}}/>
     case 'TextInput': return <RectangleOutlined {...{sx}}/>
     case 'NumberInput': return <MoneyOutlined {...{sx}}/>

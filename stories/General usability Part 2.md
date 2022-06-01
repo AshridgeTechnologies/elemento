@@ -2,6 +2,7 @@ General usability Part 2
 ========================
 
 - Adjust split between nav tree and property editor
+- Highlights show for App, Page, List items, elements at edge
 - Show a Page in the Preview
 - Input adornment of = in Fx mode
 - Change to formula if type = at the start
@@ -14,6 +15,7 @@ General usability Part 2
 - Data store has type and enforces it
 - Alt-hover over running app highlights the elements
 - Drag and drop items in list
+- Highlight elements with errors
 
 Help
 ----

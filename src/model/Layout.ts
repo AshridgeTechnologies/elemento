@@ -34,7 +34,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
+        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }
 
 }

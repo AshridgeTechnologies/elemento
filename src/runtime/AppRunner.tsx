@@ -11,7 +11,11 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
         if (event.altKey) {
             event.preventDefault()
             event.stopPropagation()
-            onComponentSelected((event.target as HTMLElement).id)
+            const target = event.target as HTMLElement
+            const id = target.id || target.closest('[id]')?.id
+            if (id) {
+                onComponentSelected(id)
+            }
         }
     }
     useEffect(() => (containerRef.current as HTMLElement).addEventListener('click', selectionEventListener) )
@@ -21,7 +25,7 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
         }
     })
     // @ts-ignore
-    return <div ref={containerRef}>{children}</div>
+    return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
 }
 
 type Properties = {appFunction: React.FunctionComponent<any>, onComponentSelected: (id: string) => void, selectedComponentId?: string}

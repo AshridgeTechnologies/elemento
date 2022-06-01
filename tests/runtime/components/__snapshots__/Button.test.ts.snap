@@ -2,7 +2,7 @@
 
 exports[`Button element produces output with default values where properties omitted 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-11c7338-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -26,7 +26,7 @@ exports[`Button element produces output with default values where properties omi
 
 exports[`Button element produces output with properties supplied 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1ysosz0-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -51,7 +51,7 @@ exports[`Button element produces output with properties supplied 1`] = `
 
 exports[`Button element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-11c7338-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}

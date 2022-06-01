@@ -1,12 +1,13 @@
-import {ComponentType, ElementId, ElementType, PropertyValue} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
 type Properties = {
-    readonly content?: PropertyValue,
-    readonly action?: PropertyValue,
-    readonly style?: PropertyValue,
-    readonly display?: PropertyValue,
+    readonly content?: PropertyValueType<string>,
+    readonly action?: PropertyValueType<string>,
+    readonly filled?: PropertyValueType<boolean>,
+    readonly style?: PropertyValueType<string>,
+    readonly display?: PropertyValueType<boolean>,
 }
 
 export default class Button extends BaseElement<Properties> implements Element {
@@ -27,6 +28,7 @@ export default class Button extends BaseElement<Properties> implements Element {
 
     get content() {return this.properties.content ?? this.name}
     get action() {return this.properties.action}
+    get filled() {return this.properties.filled}
     get style() {return this.properties.style}
     get display() {return this.properties.display ?? true}
 }

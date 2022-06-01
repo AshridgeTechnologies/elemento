@@ -165,7 +165,7 @@ test('shows allowed items in menu bar insert menu', async () => {
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Collection', 'Page', 'Memory Data Store', 'File Data Store'])
+    expect(optionsShown()).toStrictEqual(['Collection', 'App Bar', 'Page', 'Memory Data Store', 'File Data Store'])
 })
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Collection', 'Layout'])
@@ -231,8 +231,20 @@ test(`notifies insert of Page with item selected in tree and selects new item`, 
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Page'))
 
     expect(onInsert).toHaveBeenCalledWith('after', 'page_1', 'Page')
-    // const idInput = screen.getByLabelText('Id') as HTMLInputElement
-    // expect(idInput.value).toBe(notionalNewElementId)
+})
+
+test(`notifies insert of AppBar with item selected in tree and selects new item`, async () => {
+    const notionalNewElementId = 'page_2'
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}/>)))
+    await clickExpandControl(0, 1, 2)
+
+    fireEvent.click(screen.getByText('Main Page'))
+    fireEvent.click(screen.getByText('Insert'))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('App Bar'))
+
+    expect(onInsert).toHaveBeenCalledWith('after', 'page_1', 'AppBar')
 })
 
 test(`notifies insert of DataStore under the App and selects new item`, async () => {
