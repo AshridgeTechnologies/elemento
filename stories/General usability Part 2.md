@@ -3,6 +3,7 @@ General usability Part 2
 
 - Adjust split between nav tree and property editor
 - Highlights show for App, Page, List items, elements at edge
+- Sort elements into the order they reference each other
 - Show a Page in the Preview
 - Input adornment of = in Fx mode
 - Change to formula if type = at the start

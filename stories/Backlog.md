@@ -9,7 +9,7 @@ Stories
 -------
 
 ### Priority 1
-- Database example app
+- Simple Database example app
 
 ### Priority for Pro apps
 - List component - updates and actions
