@@ -1,7 +1,7 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
 import {ComponentType, ElementId, ElementType, PropertyValue} from './Types'
-import { createElement } from './createElement'
+import {createElement} from './createElement'
 
 type Properties = { style?: PropertyValue }
 
@@ -13,15 +13,14 @@ export default class Page extends BaseElement<Properties> implements Element {
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'Page', properties, elements)
     }
 
     static is(element: Element): element is Page {
         return element.constructor.name === this.name
     }
 
-    kind = 'Page' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
 
     get style() { return this.properties.style }
 

@@ -13,18 +13,16 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
-    abstract kind: ElementType
-    abstract componentType: ComponentType
-
-
     constructor(
         public readonly id: ElementId,
         public readonly name: string,
+        public readonly kind: ElementType,
         public readonly properties: PropertiesType,
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
     }
 
+    abstract type(): ComponentType
     isLayoutOnly() { return false }
 
     elementArray(): ReadonlyArray<Element> {

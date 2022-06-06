@@ -54,7 +54,6 @@ test('converts to JSON without optional proerties', ()=> {
     const store = new MemoryDataStore('id1', 'MemoryDataStore 1', {})
     expect(asJSON(store)).toStrictEqual({
         kind: 'MemoryDataStore',
-        componentType: 'backgroundFixed',
         id: 'id1',
         name: 'MemoryDataStore 1',
         properties: store.properties
@@ -65,7 +64,6 @@ test('converts to JSON with optional properties', ()=> {
     const store = new MemoryDataStore('id1', 'MemoryDataStore 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`, display: true})
     expect(asJSON(store)).toStrictEqual({
         kind: 'MemoryDataStore',
-        componentType: 'backgroundFixed',
         id: 'id1',
         name: 'MemoryDataStore 1',
         properties: store.properties

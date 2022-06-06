@@ -70,4 +70,8 @@ export const globalFunctions = {
     List(...args: Value<any>[]) {
         return args.map( valueOf )
     },
+
+    Timestamp() {
+        return Date.now()
+    }
 }

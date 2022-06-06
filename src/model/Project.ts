@@ -11,11 +11,11 @@ export default class Project extends BaseElement<Properties> implements Element 
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'Project', properties, elements)
     }
 
-    kind = 'Project' as ElementType
-    componentType = 'app' as ComponentType
+    type(): ComponentType { return 'app' }
+
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
         if (insertPosition === 'inside') {

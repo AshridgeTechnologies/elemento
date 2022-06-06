@@ -1,4 +1,4 @@
-import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -16,19 +16,18 @@ export default class Button extends BaseElement<Properties> implements Element {
         name: string,
         properties: Properties
     ) {
-        super(id, name, properties)
+        super(id, name, 'Button', properties)
     }
 
     static is(element: Element): element is Button {
         return element.constructor.name === this.name
     }
 
-    kind = 'Button' as ElementType
-    componentType = 'statelessUI' as ComponentType
+    type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}
     get action() {return this.properties.action}
     get filled() {return this.properties.filled}
     get style() {return this.properties.style}
-    get display() {return this.properties.display ?? true}
+    get display() {return this.properties.display}
 }

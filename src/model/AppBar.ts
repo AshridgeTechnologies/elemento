@@ -13,15 +13,15 @@ export default class AppBar extends BaseElement<Properties> implements Element {
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'AppBar', properties, elements)
     }
 
     static is(element: Element): element is AppBar {
         return element.constructor.name === this.name
     }
 
-    kind = 'AppBar' as ElementType
-    componentType = 'statelessUI' as ComponentType
+    type(): ComponentType { return 'statelessUI' }
+
 
     isLayoutOnly() { return true }
 

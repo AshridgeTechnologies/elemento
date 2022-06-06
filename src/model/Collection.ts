@@ -1,4 +1,4 @@
-import {ComponentType, ElementId, ElementType, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -15,15 +15,14 @@ export default class Collection extends BaseElement<Properties> implements Eleme
         name: string,
         properties: Properties
     ) {
-        super(id, name, properties)
+        super(id, name, 'Collection', properties)
     }
 
     static is(element: Element): element is Collection {
         return element.constructor.name === this.name
     }
 
-    kind = 'Collection' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

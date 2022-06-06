@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementId, ElementType} from './Types'
+import {ComponentType, ElementId} from './Types'
 
 type Properties = {
 }
@@ -11,14 +11,13 @@ export default class FileDataStore extends BaseElement<Properties> implements El
         name: string,
         properties: Properties
     ) {
-        super(id, name, properties)
+        super(id, name, 'FileDataStore', properties)
     }
 
     static is(element: Element): element is FileDataStore {
         return element.constructor.name === this.name
     }
 
-    kind = 'FileDataStore' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
 
 }

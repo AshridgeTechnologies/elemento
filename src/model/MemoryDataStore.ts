@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyValueType} from './Types'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,
@@ -13,15 +13,14 @@ export default class MemoryDataStore extends BaseElement<Properties> implements 
         name: string,
         properties: Properties
     ) {
-        super(id, name, properties)
+        super(id, name, 'MemoryDataStore', properties)
     }
 
     static is(element: Element): element is MemoryDataStore {
         return element.constructor.name === this.name
     }
 
-    kind = 'MemoryDataStore' as ElementType
-    componentType = 'backgroundFixed' as ComponentType
+    type(): ComponentType { return 'backgroundFixed' }
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

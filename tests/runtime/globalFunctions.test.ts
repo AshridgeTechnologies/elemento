@@ -1,7 +1,7 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Timestamp} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -157,3 +157,12 @@ describe('List', () => {
     test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee')).toStrictEqual(['a', 10, true, 'Bee']))
     test('gets value of objects', ()=> expect(List(valObj('c'), valObj(2))).toStrictEqual(['c', 2]))
 })
+
+describe('Timestamp', function () {
+    test('is close to current time', () => {
+        const timestamp = Timestamp()
+        const timeNow = Date.now()
+        expect(timeNow).toBeGreaterThanOrEqual(timestamp)
+        expect(timeNow - timestamp).toBeLessThan(5)
+    })
+});

@@ -25,18 +25,21 @@ export default function ListElement({state, itemContentComponent, ...props}: Pro
         }
     )
 
-    return React.createElement(List, {id: path, sx:{width}, style}, children)
+    return React.createElement(List, {id: path, sx:{width, overflow: 'scroll', maxHeight: '100%', py: 0}, style}, children)
 }
 
 ListElement.State = class State {
     constructor(private props: { selectedItem: any }) {
     }
-
     get selectedItem() {
         return this.props.selectedItem
     }
 
     Reset() {
         return update({selectedItem: undefined})
+    }
+
+    Set(selectedItem: any) {
+        return update({selectedItem})
     }
 }

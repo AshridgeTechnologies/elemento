@@ -1,6 +1,6 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyValue, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyValue, PropertyValueType} from './Types'
 
 type Properties = {
     readonly content: PropertyValue,
@@ -22,15 +22,14 @@ export default class Text extends BaseElement<Properties> implements Element {
         name: string,
         properties: Properties
     ) {
-        super(id, name, properties)
+        super(id, name, 'Text', properties)
     }
 
     static is(element: Element): element is Text {
         return element.constructor.name === this.name
     }
 
-    kind = 'Text' as ElementType
-    componentType = 'statelessUI' as ComponentType
+    type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content}
     get style() {return this.properties.style}

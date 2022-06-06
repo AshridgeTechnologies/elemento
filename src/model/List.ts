@@ -13,15 +13,14 @@ export default class List extends BaseElement<Properties> implements Element {
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'List', properties, elements)
     }
 
     static is(element: Element): element is List {
         return element.constructor.name === this.name
     }
 
-    kind = 'List' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
 
     get style() { return this.properties.style }
     get items() { return this.properties.items }

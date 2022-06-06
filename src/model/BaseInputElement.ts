@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ComponentType, ElementId, PropertyValueType} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
 import BaseElement from './BaseElement'
 
 
@@ -12,13 +12,15 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
     constructor(
         id: ElementId,
         name: string,
+        kind: ElementType,
         properties: PropertiesType,
         elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
-        super(id, name, properties, elements)
+        super(id, name, kind, properties, elements)
     }
 
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
+
 
     get initialValue() { return this.properties.initialValue }
     get label() { return this.properties.label ?? this.name }

@@ -11,4 +11,5 @@ Formula improvements Part 3
 - Allow quotes in Text
 - Everything under the App Bar is available throughout the app
 - Everything under the app, is available in the app bar
-- Can have Data at app level
+- Data at app level
+- Live calculations at app level

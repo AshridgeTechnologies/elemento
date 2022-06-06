@@ -153,7 +153,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(layout)).toStrictEqual({
         kind: 'Layout',
-        componentType: 'statefulUI',
         id: 'lay1',
         name: 'Layout 1',
         properties: layout.properties,
@@ -164,7 +163,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(layout2)).toStrictEqual({
         kind: 'Layout',
-        componentType: 'statefulUI',
         id: 'lay1',
         name: 'Layout 2',
         properties: layout2.properties,

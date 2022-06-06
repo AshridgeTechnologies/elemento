@@ -54,7 +54,6 @@ test('converts to JSON', ()=> {
     const trueFalse = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`"The True-False"`})
     expect(asJSON(trueFalse)).toStrictEqual({
         kind: 'TrueFalseInput',
-        componentType: 'statefulUI',
         id: 't1',
         name: 'True-False Input 1',
         properties: trueFalse.properties
@@ -63,7 +62,6 @@ test('converts to JSON', ()=> {
     const trueFalse2 = new TrueFalseInput('t1', 'True-False Input 2', {initialValue: false, label: 'The True-False'})
     expect(asJSON(trueFalse2)).toStrictEqual({
         kind: 'TrueFalseInput',
-        componentType: 'statefulUI',
         id: 't1',
         name: 'True-False Input 2',
         properties: trueFalse2.properties

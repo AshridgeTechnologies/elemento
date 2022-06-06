@@ -78,7 +78,7 @@ export default class ProjectHandler {
 
     private async writeProjectToFile (fileHandle: any) {
         const writable = await fileHandle.createWritable()
-        await writable.write(JSON.stringify(this.project))
+        await writable.write(JSON.stringify(this.project, null, 2))
         await writable.close()
     }
 

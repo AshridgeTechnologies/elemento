@@ -35,7 +35,6 @@ test('converts to JSON without optional proerties', ()=> {
     const store = new FileDataStore('id1', 'FileDataStore 1', {})
     expect(asJSON(store)).toStrictEqual({
         kind: 'FileDataStore',
-        componentType: 'statefulUI',
         id: 'id1',
         name: 'FileDataStore 1',
         properties: store.properties
@@ -46,7 +45,6 @@ test('converts to JSON with optional properties', ()=> {
     const store = new FileDataStore('id1', 'FileDataStore 1', {})
     expect(asJSON(store)).toStrictEqual({
         kind: 'FileDataStore',
-        componentType: 'statefulUI',
         id: 'id1',
         name: 'FileDataStore 1',
         properties: store.properties

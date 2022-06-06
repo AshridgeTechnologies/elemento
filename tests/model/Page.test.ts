@@ -113,7 +113,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(page)).toStrictEqual({
         kind: 'Page',
-        componentType: 'statefulUI',
         id: 'p1',
         name: 'Page 1',
         properties: page.properties,
@@ -124,7 +123,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(page2)).toStrictEqual({
         kind: 'Page',
-        componentType: 'statefulUI',
         id: 'p1',
         name: 'Page 2',
         properties: page2.properties,

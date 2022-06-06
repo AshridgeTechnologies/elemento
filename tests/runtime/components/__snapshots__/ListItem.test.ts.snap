@@ -5,6 +5,7 @@ exports[`ListItem produces output containing ReactElement children 1`] = `
   className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
   id="page1.para1"
   onBlur={[Function]}
+  onClick={[Function]}
   onContextMenu={[Function]}
   onDragLeave={[Function]}
   onFocus={[Function]}

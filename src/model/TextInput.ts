@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, ElementType, PropertyValueType} from './Types'
+import {ElementId, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
@@ -16,14 +16,12 @@ export default class TextInput extends BaseInputElement<Properties> implements E
         id: ElementId,
         name: string,
         properties: Properties) {
-        super(id, name, properties)
+        super(id, name, 'TextInput', properties)
     }
 
     static is(element: Element): element is TextInput {
         return element.constructor.name === this.name
     }
-
-    kind = 'TextInput' as ElementType
 
     get maxLength() { return this.properties.maxLength }
     get multiline() { return this.properties.multiline }

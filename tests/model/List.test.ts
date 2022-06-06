@@ -56,7 +56,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(list)).toStrictEqual({
         kind: 'List',
-        componentType: 'statefulUI',
         id: 'l1',
         name: 'List 1',
         properties: list.properties,

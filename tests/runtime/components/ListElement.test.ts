@@ -39,4 +39,5 @@ test('State class has correct properties', () => {
     expect(state.selectedItem).toBe(item)
 
     expect(state.Reset()).toStrictEqual(update({selectedItem: undefined}))
+    expect(state.Set({id: 123, a: 10})).toStrictEqual(update({selectedItem: {id: 123, a: 10}}))
 })

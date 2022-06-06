@@ -14,11 +14,11 @@ export default class App extends BaseElement<Properties> implements Element {
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'App', properties, elements)
     }
 
-    kind = 'App' as ElementType
-    componentType = 'app' as ComponentType
+    type(): ComponentType { return 'app' }
+
     get pages() {return this.elementArray().filter( el => el.kind === 'Page') as Page[]}
     get otherComponents() {return without(this.pages, this.elementArray())}
     get topChildren() {return this.otherComponents.filter( el => el.kind === 'AppBar')}

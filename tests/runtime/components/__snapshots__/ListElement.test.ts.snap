@@ -2,7 +2,7 @@
 
 exports[`ListElement produces output containing ReactElement children 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-1xp004l-MuiList-root"
+  className="MuiList-root MuiList-padding css-73avcf-MuiList-root"
   id="app.page1.list1"
   style="color: red"
 >
@@ -63,7 +63,7 @@ exports[`ListElement produces output containing ReactElement children 1`] = `
 
 exports[`ListElement shows selectedItem as selected 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-h4y409-MuiList-root"
+  className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
   id="app.page1.list1"
 >
   <div

@@ -66,7 +66,6 @@ test('converts to JSON without optional proerties', ()=> {
     const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
-        componentType: 'statelessUI',
         id: 't1',
         name: 'Text 1',
         properties: text.properties
@@ -78,7 +77,6 @@ test('converts to JSON with optional properties', ()=> {
         fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
-        componentType: 'statelessUI',
         id: 't1',
         name: 'Text 1',
         properties: text.properties

@@ -5,8 +5,8 @@ export default interface Element {
     id: ElementId
     name: string
     properties: object
-    componentType: ComponentType
     elements: ReadonlyArray<Element> | undefined
+    type() : ComponentType
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

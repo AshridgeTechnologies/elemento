@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, ElementType, PropertyValueType} from './Types'
+import {ElementId, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
@@ -12,12 +12,10 @@ export default class TrueFalseInput extends BaseInputElement<Properties> impleme
         id: ElementId,
         name: string,
         properties: Properties) {
-        super(id, name, properties)
+        super(id, name, 'TrueFalseInput', properties)
     }
 
     static is(element: Element): element is TrueFalseInput {
         return element.constructor.name === this.name
     }
-
-    kind = 'TrueFalseInput' as ElementType
 }

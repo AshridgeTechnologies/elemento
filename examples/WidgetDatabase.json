@@ -1,0 +1,315 @@
+{
+  "id": "project_1",
+  "name": "Widgets 3",
+  "kind": "Project",
+  "properties": {},
+  "elements": [
+    {
+      "id": "app1",
+      "name": "Widgets 3",
+      "kind": "App",
+      "properties": {
+        "author": "PB"
+      },
+      "elements": [
+        {
+          "id": "page_1",
+          "name": "Main Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "layout_1",
+              "name": "Page Layout ",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              },
+              "elements": [
+                {
+                  "id": "list_1",
+                  "name": "Widget List",
+                  "kind": "List",
+                  "properties": {
+                    "items": {
+                      "expr": "Widgets.Query({})"
+                    },
+                    "width": 250
+                  },
+                  "elements": [
+                    {
+                      "id": "text_1",
+                      "name": "List Description",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Description"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "layout_2",
+                  "name": "Widget Form",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": false,
+                    "width": 400
+                  },
+                  "elements": [
+                    {
+                      "id": "data_1",
+                      "name": "WidgetId",
+                      "kind": "Data",
+                      "properties": {
+                        "display": false,
+                        "initialValue": {
+                          "expr": "WidgetList.selectedItem && WidgetList.selectedItem.Id"
+                        }
+                      }
+                    },
+                    {
+                      "id": "data_3",
+                      "name": "TheWidget",
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "WidgetId.value && Get(Widgets, WidgetId.value)"
+                        },
+                        "display": false
+                      }
+                    },
+                    {
+                      "id": "layout_4",
+                      "name": "Layout 4",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true
+                      },
+                      "elements": [
+                        {
+                          "id": "text_3",
+                          "name": "Text 3",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "\"Widget\""
+                            },
+                            "fontSize": 21
+                          }
+                        },
+                        {
+                          "id": "text_4",
+                          "name": "Text 4",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "WidgetId"
+                            },
+                            "display": false,
+                            "color": "gray",
+                            "width": 160
+                          }
+                        },
+                        {
+                          "id": "button_12",
+                          "name": "New Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "New Widget",
+                            "action": {
+                              "expr": "Reset(Description) , Reset(Length), Reset(Shiny),Reset(WidgetList)"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "textinput_1",
+                      "name": "Description",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheWidget.Description"
+                        }
+                      }
+                    },
+                    {
+                      "id": "numberinput_1",
+                      "name": "Length",
+                      "kind": "NumberInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheWidget.Length"
+                        },
+                        "label": "Length"
+                      }
+                    },
+                    {
+                      "id": "truefalseinput_2",
+                      "name": "Shiny",
+                      "kind": "TrueFalseInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheWidget.Shiny"
+                        }
+                      }
+                    },
+                    {
+                      "id": "layout_3",
+                      "name": "Page Buttons",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "button_8",
+                          "name": "Add Widget Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Add Widget",
+                            "display": {
+                              "expr": "!WidgetId.value"
+                            },
+                            "action": {
+                              "expr": "let newWidget = Record('Id', 'w' + Timestamp(), 'Description', Description, 'Length', Length, 'Shiny', Shiny);\nAdd(Widgets, newWidget);\nReset(Description) ;  Reset(Length);  Reset(Shiny)\nSet(WidgetList, newWidget)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_9",
+                          "name": "Update Widget Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Save Changes",
+                            "display": {
+                              "expr": "!!WidgetId.value"
+                            },
+                            "action": {
+                              "expr": "Update(Widgets, WidgetId, Record('Description', Description, 'Length', Length, 'Shiny', Shiny))\nReset(Description) , Reset(Length), Reset(Shiny)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_10",
+                          "name": "Cancel Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Discard Changes",
+                            "action": {
+                              "expr": "Reset(Description) , Reset(Length), Reset(Shiny)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_11",
+                          "name": "Delete Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Delete",
+                            "action": {
+                              "expr": "Remove(Widgets, WidgetId)\nReset(WidgetList)\nReset(Description) , Reset(Length), Reset(Shiny)"
+                            },
+                            "display": {
+                              "expr": "!!WidgetId.value"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "text_2",
+                      "name": "Text 2",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "Your widget is covered\nby all current regulations\napplicable in the EU and\nother territories.\nYou must agree\nto all terms and conditions\nof the Widget Fair Use Policy\nand comply with local laws\nwhile deploying your widget.\nPlease enjoy your widget responsibly.",
+                        "display": false
+                      }
+                    },
+                    {
+                      "id": "truefalseinput_1",
+                      "name": "Agree YN",
+                      "kind": "TrueFalseInput",
+                      "properties": {
+                        "label": "I have read and agree",
+                        "initialValue": false
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "filedatastore_1",
+          "name": "File Data Store 1",
+          "kind": "FileDataStore",
+          "properties": {}
+        },
+        {
+          "id": "collection_1",
+          "name": "Widgets",
+          "kind": "Collection",
+          "properties": {
+            "collectionName": "Widgets",
+            "dataStore": {
+              "expr": "FileDataStore1"
+            },
+            "display": false
+          }
+        },
+        {
+          "id": "appbar_1",
+          "name": "App Bar 1",
+          "kind": "AppBar",
+          "properties": {
+            "title": "Widgets"
+          },
+          "elements": [
+            {
+              "id": "button_6",
+              "name": "Open File Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Open File",
+                "action": {
+                  "expr": "FileDataStore1.Open()"
+                },
+                "filled": true
+              }
+            },
+            {
+              "id": "button_7",
+              "name": "New File Button",
+              "kind": "Button",
+              "properties": {
+                "content": "New File",
+                "filled": true,
+                "action": {
+                  "expr": "FileDataStore1.New()"
+                }
+              }
+            },
+            {
+              "id": "button_13",
+              "name": "Save File Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Save As",
+                "filled": true,
+                "action": {
+                  "expr": "FileDataStore1.SaveAs()"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

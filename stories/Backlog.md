@@ -15,6 +15,7 @@ Stories
 - List component - updates and actions
 - Server side functions
 - Types
+- Validation
 - Model-driven components
 
 ### Priority 2

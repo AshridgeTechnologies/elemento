@@ -60,7 +60,6 @@ test('converts to JSON', ()=> {
 
     expect(asJSON(appBar)).toStrictEqual({
         kind: 'AppBar',
-        componentType: 'statelessUI',
         id: 'ab1',
         name: 'AppBar 1',
         properties: appBar.properties,

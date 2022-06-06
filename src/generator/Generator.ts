@@ -24,6 +24,7 @@ import MemoryDataStore from '../model/MemoryDataStore'
 import FileDataStore from '../model/FileDataStore'
 import Layout from '../model/Layout'
 import AppBar from '../model/AppBar'
+import {without} from 'ramda'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -164,15 +165,13 @@ ${children}
         }
         const elementoDeclarations = [componentDeclarations, globalDeclarations, appFunctionDeclarations, appLevelDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
-        const statefulComponents = allComponentElements.filter( el => el.componentType === 'statefulUI' || el.componentType === 'background')
+        const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
         const stateEntries = statefulComponents.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
         const statePathExpr = (name: string) => componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
         const stateBlock = stateEntries.map( ([name, entry]) =>
             `    const ${name} = Elemento.useObjectStateWithDefaults(${statePathExpr(name)}, ${entry})`).join('\n')
 
-        const pageNames = identifiers.filter(isPageName)
-        const pageNameDeclarations = pageNames.length ? `    const ${pageNames.map( p => `${p} = '${p}'` ).join(', ')}` : ''
-        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.componentType === 'backgroundFixed') : []
+        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => `    const [${comp.codeName}] = React.useState(${Generator.initialStateEntry(comp, isKnown)})`).join('\n')
         const pages = componentIsApp ? `    const pages = {${app.pages.map(p => p.codeName).join(', ')}}` : ''
 
@@ -318,7 +317,8 @@ ${children}
             const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
             const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
             const filled = Generator.getExprAndIdentifiers(button.filled, identifiers, isKnown, onError('filled'))
-            const reactProperties = definedPropertiesOf({path, content, filled, action})
+            const display = Generator.getExprAndIdentifiers(button.display, identifiers, isKnown, onError('display'))
+            const reactProperties = definedPropertiesOf({path, content, filled, display, action})
             return `React.createElement(Button, ${objectLiteral(reactProperties)})`
         }
 
@@ -435,13 +435,15 @@ ${children}
         }
 
         function checkIsExpression(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            if (bodyStatements.length !== 1) {
-                throw new Error('Must be a single expression')
-            }
-            const mainStatement = bodyStatements[0]
-            if (mainStatement.type !== 'ExpressionStatement') {
-                throw new Error('Invalid expression')
+            if (!isAction) {
+                const bodyStatements = ast.program.body as any[]
+                if (bodyStatements.length !== 1) {
+                    throw new Error('Must be a single expression')
+                }
+                const mainStatement = bodyStatements[0]
+                if (mainStatement.type !== 'ExpressionStatement') {
+                    throw new Error('Invalid expression')
+                }
             }
         }
 
@@ -463,13 +465,20 @@ ${children}
                 checkIsExpression(ast)
                 checkErrors(ast)
                 const thisIdentifiers = new Set<string>()
+                const variableIdentifiers = new Set<string>()
                 visit(ast, {
+                    visitVariableDeclarator(path) {
+                        const node = path.value
+                        variableIdentifiers.add(node.id.name)
+                        this.traverse(path)
+                    },
                     visitIdentifier(path) {
                         const node = path.value
                         const parentNode = path.parentPath.value
                         const isPropertyIdentifier = parentNode.type === 'MemberExpression' && parentNode.property === node
                         const isPropertyKey = parentNode.type === 'Property' && parentNode.key === node
-                        if (!isPropertyIdentifier && !isPropertyKey) {
+                        const isVariableDeclaration = parentNode.type === 'VariableDeclarator' && parentNode.id === node
+                        if (!isPropertyIdentifier && !isPropertyKey && !isVariableDeclaration) {
                             thisIdentifiers.add(node.name)
                         }
                         this.traverse(path)
@@ -493,14 +502,16 @@ ${children}
                 })
 
                 const identifierNames = Array.from(thisIdentifiers.values())
-                const unknownIdentifiers = identifierNames.filter(id => !isKnown(id))
+                const isLocal = (id: string) => variableIdentifiers.has(id)
+                const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id))
                 if (unknownIdentifiers.length) {
                     const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
                     onError(errorMessage)
                     return `Elemento.codeGenerationError(\`${expr}\`, '${errorMessage}')`
                 }
 
-                identifierNames.forEach(name => identifiers.add(name))
+                const externalIdentifiers = without(Array.from(variableIdentifiers), identifierNames)
+                externalIdentifiers.forEach(name => identifiers.add(name))
 
                 const exprCode = print(ast).code
                 return isAction ? `() => {${exprCode}}` : exprCode

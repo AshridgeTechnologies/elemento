@@ -102,7 +102,8 @@ test('can get error from opening a project', async () => {
 test('can Save As a JSON file', async () => {
     const handler = new ProjectHandler(project, {showOpenFilePicker: jest.fn(), showSaveFilePicker: saveFilePicker(), baseUrl})
     await handler.saveFileAs()
-    expect(saveFileData).toStrictEqual(JSON.stringify(project))
+    expect(saveFileData).toStrictEqual(JSON.stringify(project, null, 2))
+    expect(saveFileData).not.toMatch(/componentType/)
     expect(saveFilePickerOptions).toStrictEqual({
         types: [
             {
@@ -118,7 +119,7 @@ test('can Save As a JSON file', async () => {
 test('Save does Save As if not previously saved', async () => {
     const handler = new ProjectHandler(project, {showOpenFilePicker: jest.fn(), showSaveFilePicker: saveFilePicker(), baseUrl})
     await handler.save()
-    expect(saveFileData).toStrictEqual(JSON.stringify(project))
+    expect(saveFileData).toStrictEqual(JSON.stringify(project, null, 2))
 })
 
 test('can cancel Save As', async () => {
@@ -158,7 +159,7 @@ test('can Save after open', async () => {
 
     handler.setProperty('text_3', 'content', 'New content')
     await handler.save()
-    expect(saveFileData).toStrictEqual(JSON.stringify(handler.current))
+    expect(saveFileData).toStrictEqual(JSON.stringify(handler.current, null, 2))
 })
 
 test('can Save directly after a Save As', async () => {
@@ -167,7 +168,7 @@ test('can Save directly after a Save As', async () => {
 
     handler.setProperty('text_3', 'content', 'New content')
     await handler.save()
-    expect(saveFileData).toStrictEqual(JSON.stringify(handler.current))
+    expect(saveFileData).toStrictEqual(JSON.stringify(handler.current, null, 2))
 })
 
 test('publish when logged in', async () => {

@@ -35,10 +35,12 @@ Forces
 - _controlValue may not be needed
 - State objects are independent - don't have to be in a tree
 - BUT may want to find all components under another eg for form processing
+- And may need to find them in an async call when the store is not available from the context
 - Only need to replace one state object usually
 - Must use paths for ids because in lists there may be many instances of the same id
 - State objects know best for themselves when they are updated
 - The proxy is a different aspect to the state updating
+- Delegating direct to a value sub-property could be difficult without a proxy
 
 
 Possibilities
@@ -47,7 +49,9 @@ Possibilities
 - State objects return a new version of themselves and their children, ready to insert into the app state
 - State object base class and/or mixin
 - State object can update itself and queue the update
+- State objects have a ref to the state (or an interface to part of it) so they can get associated components and update themselves
 - Code may be clearer (and faster?) without proxies
+- Could have proxy for Data - only case where need/(want?) to elide the 'value' and go straight to a sub-property
 - Could arrange for state updates to be queued
 - Maybe update the current state instance _and_ queue the update
 - How much is a proxy really needed?  Could a state superclass do the same job?

@@ -13,15 +13,14 @@ export default class Layout extends BaseElement<Properties> implements Element {
         properties: Properties,
         elements: ReadonlyArray<Element>
     ) {
-        super(id, name, properties, elements)
+        super(id, name, 'Layout', properties, elements)
     }
 
     static is(element: Element): element is Layout {
         return element.constructor.name === this.name
     }
 
-    kind = 'Layout' as ElementType
-    componentType = 'statefulUI' as ComponentType
+    type(): ComponentType { return 'statefulUI' }
 
     isLayoutOnly() { return true }
 

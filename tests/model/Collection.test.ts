@@ -58,7 +58,6 @@ test('converts to JSON without optional proerties', ()=> {
     const collection = new Collection('id1', 'Collection 1', {})
     expect(asJSON(collection)).toStrictEqual({
         kind: 'Collection',
-        componentType: 'statefulUI',
         id: 'id1',
         name: 'Collection 1',
         properties: collection.properties
@@ -69,7 +68,6 @@ test('converts to JSON with optional properties', ()=> {
     const collection = new Collection('id1', 'Collection 1', {initialValue: ex`['green', 'blue']`, display: true})
     expect(asJSON(collection)).toStrictEqual({
         kind: 'Collection',
-        componentType: 'statefulUI',
         id: 'id1',
         name: 'Collection 1',
         properties: collection.properties

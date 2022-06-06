@@ -270,9 +270,11 @@ test('generates TrueFalseInput elements with initial value', ()=> {
 })
 
 test('generates Button elements with properties', ()=> {
+    const actionExpr = ex`const message = "You clicked me!"; Log(message)
+    Log("Didn't you?")`
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Button('id1', 'b1', {content: 'Click here!', action: ex`Log("You clicked me!")`, filled: ex`22 || 33`}),
+            new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, filled: ex`22 || 33`, display: false}),
     ]
         )])
 
@@ -284,7 +286,8 @@ test('generates Button elements with properties', ()=> {
 
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', filled: 22 || 33, action: () => {Log("You clicked me!")}}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', filled: 22 || 33, display: false, action: () => {const message = "You clicked me!"; Log(message)
+    Log("Didn't you?")}}),
     )
 }
 `)
@@ -737,7 +740,7 @@ test('statement not expression generates error', ()=> {
     })
 })
 
-test('multiple statements in expression generates error', ()=> {
+test('multiple statements in value expression generates error', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 't1', {content: ex`while (true) log(10); return 42`}),
@@ -750,6 +753,18 @@ test('multiple statements in expression generates error', ()=> {
             content: 'Error: Must be a single expression'
         }
     })
+})
+
+test('multiple statements in action expression is ok', ()=> {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Button('id1', 'b1', {action: ex`while (true) Log(10); let answer = 42
+                Log(answer)`}),
+            ]
+        )])
+
+    const output = new Generator(app).output()
+    expect(output.errors).toStrictEqual({})
 })
 
 test('assignment at top level is treated as comparison', ()=> {

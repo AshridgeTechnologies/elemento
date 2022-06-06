@@ -24,6 +24,59 @@ exports[`Button element produces output with default values where properties omi
 </button>
 `;
 
+exports[`Button element produces output with display false 1`] = `
+<button
+  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-8lgvfk-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+</button>
+`;
+
+exports[`Button element produces output with display true 1`] = `
+<button
+  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1ysosz0-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+  <span
+    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;
+
 exports[`Button element produces output with properties supplied 1`] = `
 <button
   className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1ysosz0-MuiButtonBase-root-MuiButton-root"
@@ -51,7 +104,7 @@ exports[`Button element produces output with properties supplied 1`] = `
 
 exports[`Button element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-11c7338-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1b8mixh-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
