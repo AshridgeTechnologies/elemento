@@ -9,7 +9,8 @@ Stories
 -------
 
 ### Priority 1
-- Simple Database example app
+- General usability Part 2
+
 
 ### Priority for Pro apps
 - List component - updates and actions
@@ -19,17 +20,15 @@ Stories
 - Model-driven components
 
 ### Priority 2
+- Formula improvements Part 3
 - Info website update
 - Read-only calculations
-- Save and load project on apps website
-- List apps
-- Demo ready 1
+- State debugging
+
+### The Rest
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
-- General usability Part 2
-- Formula improvements Part 3
-- State debugging
 - Validate App Model loaded from JSON
 - Load time optimisation
 - Splash screens - editor and app
@@ -39,6 +38,8 @@ Stories
 - Highlight in Help
 - Persistent help position
 - Editor deep links - use in help examples
+- Save and load project on apps website
+- List apps
 
 Epics
 -----
@@ -93,3 +94,4 @@ Done
 - Horizontal layouts
 - Fix selection and highlighting
 - App frame and Nav bar-menu
+- Simple Database example app
