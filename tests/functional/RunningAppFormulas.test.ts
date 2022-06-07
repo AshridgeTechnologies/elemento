@@ -1,12 +1,12 @@
 import {expect, test} from '@playwright/test';
 import {App, Button, Page, Text, TextInput} from '../../src/model/index'
-import {loadApp} from './playwrightHelpers'
 import {ex} from '../testutil/testHelpers'
+//import {loadApp} from './loadAppHelper'
 
 // Expects test server such as Parcel dev server running on port 1234
 const pageUrl = '/run'
 
-test('formulas using inputs update as the input changes', async ({page}) => {
+test.skip('formulas using inputs update as the input changes', async ({page}) => {
     await page.goto(pageUrl + '/editorPreview')
 
     const app = new App('app1', 'App One', {}, [
@@ -28,7 +28,7 @@ test('formulas using inputs update as the input changes', async ({page}) => {
     expect(await page.textContent('p >> nth=0')).toBe('Davy - Whassup?')
 })
 
-test('actions can refer to other controls', async ({page}) => {
+test.skip('actions can refer to other controls', async ({page}) => {
     await page.goto(pageUrl + '/editorPreview')
 
     const app = new App('app1', 'App One', {}, [

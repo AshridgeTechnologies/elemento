@@ -3,7 +3,7 @@ import {waitUntil} from '../testutil/testHelpers'
 
 const getAppFrame = (page: Page): Promise<Frame> => waitUntil(() => page.frame('appFrame') as Frame)
 
-test('test', async ({ page }) => {
+test.skip('test', async ({ page }) => {
 
     // Go to http://localhost:1234/studio
     await page.goto('http://localhost:1234/studio');

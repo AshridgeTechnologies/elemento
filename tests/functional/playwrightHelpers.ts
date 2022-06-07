@@ -1,10 +1,8 @@
 import {Page as PWPage} from 'playwright-core'
-import {App, Project} from '../../src/model/index'
+import {Project} from '../../src/model/index'
 import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
-import {generate} from '../../src/generator/Generator'
 import {Page} from '@playwright/test'
 
-export const loadApp = (page: PWPage, appToLoad: App) => page.evaluate((appCode: string) => window.setAppCode(appCode), generate(appToLoad).code)
 export const loadProject = (page: PWPage, projectToLoad: Project) => page.evaluate((project: string) => window.setProject(project), JSON.stringify(projectToLoad))
 export const treeItem = (n: number) => `${treeItemSelector} >> nth=${n}`
 export const treeItemText = (text: string) => `${treeItemSelector}:has-text("${text}")`

@@ -114,7 +114,7 @@ test.describe('Controls can be used', () => {
         await page.click('#display')
         await page.click(yesOption)
         const appFrame = await getAppFrame(page)
-        expect(await appFrame.textContent('div[id="AppOne.ControlTestPage.Data1"] code')).toBe(`'Some data'`)
+        expect(await appFrame.textContent('div[id="app.ControlTestPage.Data1"] code')).toBe(`'Some data'`)
     })
 
     test('collection', async ({ page }) => {
@@ -132,7 +132,7 @@ test.describe('Controls can be used', () => {
         await page.click('#display')
         await page.click(yesOption)
         const appFrame = await getAppFrame(page)
-        expect(await appFrame.textContent('div[id="AppOne.ControlTestPage.Collection1"] code')).toBe(`{green: 'green', blue: 'blue'}`)
+        expect(await appFrame.textContent('div[id="app.ControlTestPage.Collection1"] code')).toBe(`{green: 'green', blue: 'blue'}`)
     })
 
     test('new page', async ({ page }) => {
