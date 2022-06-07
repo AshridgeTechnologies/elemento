@@ -61,6 +61,10 @@ export default function EditorRunner() {
         updateProject()
         return newId
     }
+    const onMove = (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => {
+        projectHandler.move(insertPosition, targetElementId, movedElementIds)
+        updateProject()
+    }
 
     const onAction = (id: ElementId, action: AppElementAction) => {
         projectHandler.elementAction(id, action)
@@ -102,7 +106,7 @@ export default function EditorRunner() {
 
     return <ThemeProvider theme={theme}>
             {alertMessage}
-            <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction}
+            <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
                 onOpen={onOpen}
                 onSave={onSave} onPublish={onPublish}/>
         </ThemeProvider>

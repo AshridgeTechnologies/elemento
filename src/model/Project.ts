@@ -24,8 +24,16 @@ export default class Project extends BaseElement<Properties> implements Element 
         return Boolean(this.findParent(targetItemId)?.canContain(elementType))
     }
 
-    insert(insertPosition: InsertPosition, selectedItemId: ElementId, elementType: ElementType): [Project, Element] {
-        return this.doInsert(insertPosition, selectedItemId, elementType) as [Project, Element]
+    insert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [Project, Element] {
+        return this.doInsert(insertPosition, targetItemId, elementType) as [Project, Element]
+    }
+
+    move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
+        const movedElements = movedElementIds.map(id => this.findElement(id)).filter( el => !!el) as Element[]
+        const thisWithoutElements = movedElementIds.reduce((prev: Project, id)=> prev.delete(id), this)
+        const newProject = thisWithoutElements.doMove(insertPosition, targetElementId, movedElements)
+        const moveSucceeded = newProject !== thisWithoutElements
+        return moveSucceeded ? newProject : this
     }
 
     get pathSegment() {

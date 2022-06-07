@@ -7,6 +7,7 @@ General usability Part 2
 - Show a Page in the Preview
 - File permissions only requested once
 - Copy/paste/cut before/after on context menu
+- Reset function can take multiple arguments
 - Reset function acts on whole page or layout
 - Highlight elements with errors
 - Review and update Help

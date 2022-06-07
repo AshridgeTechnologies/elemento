@@ -138,7 +138,7 @@ describe('ModelTreeItem', () => {
 })
 
 test("renders tree with all types of model elements",  async () => {
-    ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>))
+    ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>))
     await clickExpandControl(0, 1)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar'])
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
@@ -149,7 +149,7 @@ test("renders tree with all types of model elements",  async () => {
 })
 
 test("can expand and collapse branches and show",  async () => {
-    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
+    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
 
     await clickExpandControl(0, 1, 2)
     expect(itemLabels()).toContain('First Text')
@@ -158,27 +158,50 @@ test("can expand and collapse branches and show",  async () => {
     expect(itemLabels()).not.toContain('First Text')
 })
 
-test('notifies selected item id', async () => {
-    const storeSelectedId = jest.fn()
+test('notifies replacement selected item id in array', async () => {
+    const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={storeSelectedId} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
-    await clickExpandControl(0, 1)
-    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
-    expect(storeSelectedId).toHaveBeenCalledWith('page_1')
-
-    await clickExpandControl(2)
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
-    expect(storeSelectedId).toHaveBeenCalledWith('textInput1_2')
+    expect(storeSelectedIds).toHaveBeenCalledWith(['textInput1_2'])
+})
+
+test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array with %s', async (keyName) => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {[keyName]: true}))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['page_1', 'textInput1_2'])
+})
+
+test('unselects all items if click already selected item', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith([])
+})
+
+test('unselects already selected item id in array with ctrl key', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {ctrlKey: true}))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['page_1'])
 })
 
 test('shows selected item highlighted', async () => {
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'project_1'} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['project_1']} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
     expect(itemLabels()).toContain('Project One')
     expect(selectedItemLabel()).toBe('Project One')
 })
 
 test('expands to show selected item highlighted', async () => {
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
 })
@@ -186,20 +209,20 @@ test('expands to show selected item highlighted', async () => {
 test('selects collapsed item if it contained the selected item', async () => {
     const onSelect = jest.fn()
     await actWait(() => {
-        return ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemId={'textInput1_2'}
-                                                       onSelect={onSelect} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp}/>))
+        return ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']}
+                                                       onSelect={onSelect} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>))
     })
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
     await clickExpandControl(1)
-    expect(onSelect).toHaveBeenCalledWith('app1')
+    expect(onSelect).toHaveBeenCalledWith(['app1'])
 })
 
 test.each(['before', 'after', 'inside'])('notifies insert %s with position, item id, element type then closes menu', async (position) => {
     const onInsert = jest.fn()
     const itemsFn = jest.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={jest.fn()} onInsert={onInsert} insertMenuItemFn={itemsFn}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={jest.fn()} onInsert={onInsert} insertMenuItemFn={itemsFn} onMove={noOp}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     await actWait(() => fireEvent.click(screen.getByText(`Insert ${position}`)))
@@ -216,7 +239,7 @@ test('only shows insert menu item if there are items to insert in that position'
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()}
                                                                          onAction={jest.fn()} onInsert={onInsert}
-                                                                         insertMenuItemFn={itemsFn}/>)))
+                                                                         insertMenuItemFn={itemsFn} onMove={noOp}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     expect(screen.queryByText(`Insert before`)).not.toBeNull()
@@ -227,7 +250,7 @@ test('only shows insert menu item if there are items to insert in that position'
 test('notifies delete with item id', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -244,7 +267,7 @@ test('notifies delete with item id', async () => {
 test('abandons delete if do not confirm', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 

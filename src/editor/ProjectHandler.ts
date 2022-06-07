@@ -46,6 +46,10 @@ export default class ProjectHandler {
         return newElement.id
     }
 
+    move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
+        console.log('move', targetElementId, movedElementIds)
+        this.project = this.project.move(insertPosition, targetElementId, movedElementIds)
+    }
 
     elementAction(elementId: ElementId, action: AppElementAction) {
         const doAction = (): Project => {
@@ -76,12 +80,12 @@ export default class ProjectHandler {
         }
     }
 
+
     private async writeProjectToFile (fileHandle: any) {
         const writable = await fileHandle.createWritable()
         await writable.write(JSON.stringify(this.project, null, 2))
         await writable.close()
     }
-
 
     async saveFileAs() {
         const options = {

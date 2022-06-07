@@ -8,7 +8,7 @@ import {
     AppElementAction,
     OnActionFn,
     OnChangeFn,
-    OnInsertWithSelectedFn,
+    OnInsertWithSelectedFn, OnMoveFn,
     OnOpenFn,
     OnPublishFn,
     OnSaveFn
@@ -46,21 +46,23 @@ export default function Editor({
     project,
     onChange,
     onInsert,
+    onMove,
     onAction,
     onOpen,
     onSave,
     onPublish
-}: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onAction: OnActionFn,
+}: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
                                     onOpen?: OnOpenFn, onSave?: OnSaveFn, onPublish?: OnPublishFn }) {
-    const [selectedItemId, setSelectedItemId] = useState('')
+    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
 
     const app = project.elementArray()[0] as App
     const {errors} = new Generator(app).output()
 
     const propertyArea = () => {
-        if (selectedItemId) {
-            const element = project.findElement(selectedItemId)
+        if (firstSelectedItemId) {
+            const element = project.findElement(firstSelectedItemId)
             if (element) {
                 return <PropertyEditor element={element} onChange={onChange} errors={errors[element.id]}/>
             }
@@ -74,13 +76,13 @@ export default function Editor({
     }
 
     const onMenuInsert = (elementType: ElementType) => {
-        const newElementId = onInsert('after', selectedItemId, elementType)
-        setSelectedItemId(newElementId)
+        const newElementId = onInsert('after', firstSelectedItemId, elementType)
+        setSelectedItemIds([newElementId])
     }
 
     const onContextMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
         const newElementId = onInsert(insertPosition, targetElementId, elementType)
-        setSelectedItemId(newElementId)
+        setSelectedItemIds([newElementId])
     }
 
     const onHelp = () => setHelpVisible(!helpVisible)
@@ -97,7 +99,7 @@ export default function Editor({
 
         const element = app.findElementByPath(idWithoutIndexes)
         if (element) {
-            setSelectedItemId(element.id)
+            setSelectedItemIds([element.id])
         }
     }
 
@@ -141,7 +143,7 @@ export default function Editor({
     }, [])
 
     setAppInAppFrame()
-    highlightElementInAppFrame(app.findElementPath(selectedItemId))
+    highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
 
     const signedIn = useSignedInState()
 
@@ -155,7 +157,7 @@ export default function Editor({
 
     const EditorMenuBar = () => <MenuBar>
         <FileMenu onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
-        <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', selectedItemId)}/>
+        <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
 
@@ -180,8 +182,10 @@ export default function Editor({
                         <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
-                                    <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemId}
-                                        selectedItemId={selectedItemId} onAction={onTreeAction} onInsert={onContextMenuInsert} insertMenuItemFn={insertMenuItems}/>
+                                    <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemIds}
+                                        selectedItemIds={selectedItemIds} onAction={onTreeAction} onInsert={onContextMenuInsert} insertMenuItemFn={insertMenuItems}
+                                        onMove={onMove}
+                                    />
                                 </Grid>
                                 <Grid item xs={8} height='100%' overflow='scroll'>
                                     <Box id='propertyPanel' width='100%'>

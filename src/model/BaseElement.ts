@@ -158,13 +158,13 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return new ctor(id, name, properties, elements)
     }
 
-    doInsert(insertPosition: InsertPosition, selectedItemId: ElementId, elementType: ElementType, optNewIdSeq?: number): [this, (Element | null)] {
+    doInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType, optNewIdSeq?: number): [this, (Element | null)] {
         const newIdSeq = optNewIdSeq ?? this.findMaxId(elementType) + 1
 
         const insertIndexInThisElement = () => {
             if (this.canContain(elementType)) {
                 if ((insertPosition === 'before' || insertPosition === 'after')) {
-                    const selectedItemIndex = this.elementArray().findIndex(it => it.id === selectedItemId)
+                    const selectedItemIndex = this.elementArray().findIndex(it => it.id === targetItemId)
                     if (selectedItemIndex >= 0) {
                         const insertOffset = insertPosition === 'before' ? 0 : 1
                         return selectedItemIndex + insertOffset
@@ -172,7 +172,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
                 }
 
                 if (insertPosition === 'inside') {
-                    if (selectedItemId === this.id) {
+                    if (targetItemId === this.id) {
                         return this.elementArray().length
                     }
                 }
@@ -189,7 +189,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
             return [this.create(this.id, this.name, this.properties, newElements), newElement]
         }
 
-        const insertResults = this.elementArray().map(p => p.doInsert(insertPosition, selectedItemId, elementType, newIdSeq))
+        const insertResults = this.elementArray().map(p => p.doInsert(insertPosition, targetItemId, elementType, newIdSeq))
         const newChildElements = insertResults.map(r => r[0])
         const newElement = insertResults.map(r => r[1]).find(el => el) as Element
 
@@ -206,5 +206,42 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     canContain(elementType: ElementType) {
         return false
+    }
+
+    doMove(insertPosition: InsertPosition, targetItemId: ElementId, movedElements: Element[]): this {
+        // - If drop node can contain all the elements, and insertPosition is 'inside', insert at start
+        // - If parent of drop node can contain all the elements, and insertPosition is 'after', insert after the element
+        // - If neither can contain all the elements, do not allow the drop
+        const insertIndexInThisElement = () => {
+            const canContainAll = (container: Element, movedElements: Element[]) => movedElements.every(el => container.canContain(el.kind))
+
+            if (insertPosition === 'inside' && this.id === targetItemId && canContainAll(this, movedElements)) {
+                return 0
+            }
+
+            if (insertPosition === 'after') {
+                const selectedItemIndex = this.elementArray().findIndex(it => it.id === targetItemId)
+                if (selectedItemIndex >= 0) {
+                    return selectedItemIndex + 1
+                }
+            }
+
+            return null
+        }
+
+        const insertIndex = insertIndexInThisElement()
+        if (insertIndex !== null) {
+            const newElements = [...this.elementArray()]
+            newElements.splice(insertIndex, 0, ...movedElements)
+            return this.create(this.id, this.name, this.properties, newElements)
+        }
+
+        const newChildElements = this.elementArray().map(p => p.doMove(insertPosition, targetItemId, movedElements))
+
+        if (!equalArrays(newChildElements, this.elementArray())) {
+            return this.create(this.id, this.name, this.properties, newChildElements)
+        }
+
+        return this
     }
 }

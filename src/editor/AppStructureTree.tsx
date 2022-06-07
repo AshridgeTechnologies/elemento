@@ -14,7 +14,7 @@ import WebAssetIcon from '@mui/icons-material/WebAsset';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-import {union} from 'ramda'
+import {union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
 
 export class ModelTreeItem implements DataNode {
@@ -75,10 +75,12 @@ type Insertion = {
     id: ElementId
 }
 
-export default function AppStructureTree({treeData, onSelect, selectedItemId, onAction, onInsert, insertMenuItemFn}: {
-    treeData: ModelTreeItem, onSelect?: (id: string) => void, selectedItemId?: string, onAction: (action: Action) => void,
+export default function AppStructureTree({treeData, onSelect, selectedItemIds = [], onAction, onInsert, insertMenuItemFn, onMove}: {
+    treeData: ModelTreeItem, onSelect?: (ids: string[]) => void, selectedItemIds?: string[], onAction: (action: Action) => void,
     insertMenuItemFn: (insertPosition: InsertPosition, targetElementId: ElementId) => ElementType[],
-    onInsert: (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => void}) {
+    onInsert: (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => void,
+    onMove: (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => void,
+}) {
 
     const theme = useTheme()
     const [actionEl, setActionEl] = useState<null | HTMLElement>(null)
@@ -125,19 +127,30 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
         setActionToConfirm(null)
     }
 
-    function itemSelected(selectedKeys: Key[]) {
-        const key = selectedKeys[0]?.toString()
-        onSelect && key && onSelect(key)
+    function itemSelected(selectedKeys: Key[], info: any) {
+        const selectedIds = selectedKeys.map(k => k.toString())
+        const addToSelect = info.nativeEvent.metaKey || info.nativeEvent.ctrlKey
+        const newSelectedIds = addToSelect ? selectedIds : without(selectedItemIds, selectedIds)
+        onSelect?.(newSelectedIds)
     }
 
     const onExpand = (newExpandedKeys: Key[], {expanded, node}: {expanded: boolean, node: DataNode}) => {
         setExpandedKeys(newExpandedKeys)
-        if (!expanded && (node as ModelTreeItem).containsKey(selectedItemId)) {
-            onSelect && onSelect(node.key.toString())
+        if (!expanded && (node as ModelTreeItem).containsKey(selectedItemIds[0])) {
+            onSelect?.([node.key.toString()])
         }
     }
 
-    const allExpandedKeys = union(expandedKeys, treeData.ancestorKeysOf(selectedItemId))
+    const onDrop = ({node: dropNode, dragNode}: {node: EventDataNode, dragNode: EventDataNode}) => {
+        console.log('drop', dragNode, dropNode)
+        const insertPosition: InsertPosition = dropNode.expanded ? 'inside' : 'after'
+        const dragNodeIds = dragNode.selected ? selectedItemIds : [dragNode.key.toString()]
+        onMove(insertPosition, dropNode.key.toString(), dragNodeIds)
+    }
+
+    const canDrag = (node: DataNode) => (node as ModelTreeItem).kind !== 'Project'
+
+    const allExpandedKeys = union(expandedKeys, treeData.ancestorKeysOf(selectedItemIds[0]))
     if (allExpandedKeys.length > expandedKeys.length) {
         setExpandedKeys(allExpandedKeys)
     }
@@ -192,12 +205,15 @@ export default function AppStructureTree({treeData, onSelect, selectedItemId, on
 
     return <>
         <Tree treeData={[treeData] as BasicDataNode[]}
-            draggable
+            draggable={canDrag}
+            multiple
             icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
-            selectedKeys={selectedItemId ? [selectedItemId] : []}
+            selectedKeys={selectedItemIds}
             expandedKeys={expandedKeys}
             onSelect={itemSelected}
             onExpand={onExpand}
+            // @ts-ignore
+            onDrop={onDrop}
             onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
                 showContextMenu(event, node.key, 'this item')
             }}
