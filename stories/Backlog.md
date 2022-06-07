@@ -10,6 +10,7 @@ Stories
 
 ### Priority 1
 - General usability Part 2
+- Drag and drop
 
 
 ### Priority for Pro apps
