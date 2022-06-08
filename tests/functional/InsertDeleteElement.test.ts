@@ -43,7 +43,7 @@ test('can add element after selected element', async ({ page }) => {
     expect(await page.textContent(treeItem(4))).toBe('Text 5')
     expect(await page.textContent(treeItem(5))).toBe('Second Text')
 
-    expect(await page.locator('input#id').inputValue()).toBe('text_5')
+    expect(await page.locator('[data-testid="elementId"]').textContent()).toBe('text_5')
 })
 
 test('can delete element', async ({ page }) => {

@@ -131,7 +131,6 @@ export default function Editor({
         }
 
         return false
-
     }
 
     useEffect(() => {
@@ -181,14 +180,13 @@ export default function Editor({
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
                         <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
                             <Grid container columns={10} spacing={0} height='100%'>
-                                <Grid item xs={2} id='navigationPanel' height='100%' overflow='scroll'>
+                                <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemIds}
                                         selectedItemIds={selectedItemIds} onAction={onTreeAction} onInsert={onContextMenuInsert} insertMenuItemFn={insertMenuItems}
-                                        onMove={onMove}
-                                    />
+                                        onMove={onMove}/>
                                 </Grid>
-                                <Grid item xs={8} height='100%' overflow='scroll'>
-                                    <Box id='propertyPanel' width='100%'>
+                                <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}}>
+                                    <Box id='propertyPanel' width='100%' paddingLeft={1}>
                                         {propertyArea()}
                                     </Box>
                                 </Grid>

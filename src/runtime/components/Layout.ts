@@ -13,7 +13,8 @@ export default function Layout({children, path, horizontal = false, wrap = false
         overflow: horizontal ? 'visible' : 'scroll',
         maxHeight: '100%',
         boxSizing: 'border-box',
-        alignItems: horizontal ? 'baseline' : 'flex-start'
+        alignItems: horizontal ? 'baseline' : 'flex-start',
+        padding: horizontal ? 0 : 1,
     }
     return React.createElement(Stack, {
         id: path,

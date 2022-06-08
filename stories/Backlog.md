@@ -24,7 +24,7 @@ Stories
 - Formula improvements Part 3
 - Info website update
 - Read-only calculations
-- State debugging
+- Debugger Part 1
 
 ### The Rest
 - Tutorial Hello World

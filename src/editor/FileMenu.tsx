@@ -10,10 +10,13 @@ export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
 
-    const menuItem = (label: string, action: () => void) => <MenuItem onClick={action}>{label}</MenuItem>
+    const menuItem = (label: string, action: () => void) => {
+        const onClick = () => { action(); handleClose() }
+        return <MenuItem onClick={onClick}>{label}</MenuItem>
+    }
 
     const signedInMenuItem = (label: string, action: () => void) => signedIn ?
-        <MenuItem onClick={action}>{label}</MenuItem> :
+        menuItem(label, action) :
         <MenuItem disabled>{`${label} - please Login` }</MenuItem>
 
     return (

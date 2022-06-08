@@ -74,7 +74,7 @@ test('shows Text element selected in tree in property editor', async () => {
 
     fireEvent.click(screen.getByText('Second Text'))
 
-    const nameInput = screen.getByLabelText('Name') as HTMLInputElement
+    const nameInput = container.querySelector('#name') as HTMLInputElement
     expect(nameInput.value).toBe('Second Text')
 })
 
@@ -103,7 +103,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
 
     fireEvent.click(screen.getByText('Another Text Input'))
 
-    const nameInput = screen.getByLabelText('Name') as HTMLInputElement
+    const nameInput = container.querySelector('#name') as HTMLInputElement
     expect(nameInput.value).toBe('Another Text Input')
 
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
@@ -181,8 +181,8 @@ test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', '
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
     expect(onInsert).toHaveBeenCalledWith('after', 'text_2', elementType)
-    const idInput = screen.getByLabelText('Id') as HTMLInputElement
-    expect(idInput.value).toBe(notionalNewElementId)
+    const idText = screen.getByTestId('elementId') as HTMLElement
+    expect(idText.textContent).toBe(notionalNewElementId)
 })
 
 test.each([['Text', 'before'], ['TextInput', 'after']])
@@ -198,8 +198,8 @@ test.each([['Text', 'before'], ['TextInput', 'after']])
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
     expect(onInsert).toHaveBeenCalledWith(position, 'text_2', elementType)
-    const idInput = screen.getByLabelText('Id') as HTMLInputElement
-    expect(idInput.value).toBe(notionalNewElementId)
+    const idText = screen.getByTestId('elementId') as HTMLElement
+    expect(idText.textContent).toBe(notionalNewElementId)
 })
 
 test.each([['NumberInput', 'inside']])
@@ -215,8 +215,8 @@ test.each([['NumberInput', 'inside']])
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
     expect(onInsert).toHaveBeenCalledWith(position, 'page_1', elementType)
-    const idInput = screen.getByLabelText('Id') as HTMLInputElement
-    expect(idInput.value).toBe(notionalNewElementId)
+    const idText = screen.getByTestId('elementId') as HTMLElement
+    expect(idText.textContent).toBe(notionalNewElementId)
 })
 
 test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
@@ -259,16 +259,20 @@ test(`notifies insert of DataStore under the App and selects new item`, async ()
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Memory Data Store'))
 
     expect(onInsert).toHaveBeenCalledWith('after', 'page_2', 'MemoryDataStore')
-    // const idInput = screen.getByLabelText('Id') as HTMLInputElement
-    // expect(idInput.value).toBe(notionalNewElementId)
 })
 
-test('notifies open request', async () => {
+test('notifies open request and closes menu', async () => {
     let opened: boolean = false
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onOpen={() => opened = true}/>)))
-    fireEvent.click(screen.getByText('File'))
-    fireEvent.click(screen.getByText('Open'))
+    act(() => {
+        fireEvent.click(screen.getByText('File'))
+    })
+    act(() => {
+        fireEvent.click(screen.getByText('Open'))
+    })
     expect(opened).toBe(true)
+    await wait(10)
+    expect(screen.queryByText('Open')).toBeNull()
 })
 
 test('notifies save request', async () => {

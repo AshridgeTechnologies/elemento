@@ -142,7 +142,6 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
     }
 
     const onDrop = ({node: dropNode, dragNode}: {node: EventDataNode, dragNode: EventDataNode}) => {
-        console.log('drop', dragNode, dropNode)
         const insertPosition: InsertPosition = dropNode.expanded ? 'inside' : 'after'
         const dragNodeIds = dragNode.selected ? selectedItemIds : [dragNode.key.toString()]
         onMove(insertPosition, dropNode.key.toString(), dragNodeIds)

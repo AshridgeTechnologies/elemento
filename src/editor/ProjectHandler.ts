@@ -47,7 +47,6 @@ export default class ProjectHandler {
     }
 
     move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
-        console.log('move', targetElementId, movedElementIds)
         this.project = this.project.move(insertPosition, targetElementId, movedElementIds)
     }
 

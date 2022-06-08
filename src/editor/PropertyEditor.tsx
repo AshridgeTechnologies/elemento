@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from 'react'
 import Element from '../model/Element'
 import Text from '../model/Text'
-import {Box, Stack, TextField} from '@mui/material'
+import {Box, Stack, TextField, Typography} from '@mui/material'
 import {OnChangeFn} from './Types'
 import Page from '../model/Page'
 import TextInput from '../model/TextInput'
@@ -18,6 +18,7 @@ import Project from '../model/Project'
 import {Collection, List} from '../model/index'
 import Layout from '../model/Layout'
 import AppBar from '../model/AppBar'
+import {startCase} from 'lodash'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -158,11 +159,15 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
             noValidate
             autoComplete="off"
         >
-            <TextField id="id" label="Id" variant='filled' size='small' value={element.id} inputProps={{readOnly: true}}/>
             <Stack direction='row' spacing={2}>
-                <TextField id='name' label="Name" variant='filled' size='small' value={element.name}
-                    onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)} sx={{flexGrow: 0.5}}/>
-                <TextField id="formulaName" label="Formula Name" variant='filled' size='small' value={element.codeName} inputProps={{readOnly: true}} sx={{flexGrow: 0.5}}/>
+                <TextField id='name' variant='outlined' size='small' value={element.name}
+                           onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)}
+                           sx={{flexGrow: 0.7 }} InputProps={{sx: {fontSize: 20}}}/>
+                <TextField id="formulaName" label="Formula Name" variant='filled' size='small' value={element.codeName} inputProps={{readOnly: true}} sx={{flexGrow: 0.3}}/>
+            </Stack>
+            <Stack direction='row' spacing={2} alignItems='baseline'>
+                <Typography data-testid="elementType" variant='body1'>{startCase(element.kind)}</Typography>
+                <Typography data-testid="elementId" variant='body2' title='Elemento internal id for this element'>{element.id}</Typography>
             </Stack>
             {children}
         </Box>

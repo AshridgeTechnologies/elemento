@@ -1,5 +1,6 @@
 import {parse, print} from 'recast'
 import {visit,} from 'ast-types'
+import Topo from '@hapi/topo'
 
 import App from '../model/App'
 import Page from '../model/Page'
@@ -70,6 +71,16 @@ const valueLiteral = function (propertyValue: any): string {
     } else {
         return String(propertyValue)
     }
+}
+
+type StateEntry = [name: string, code: string, dependencies: string[]]
+const topoSort = (entries: StateEntry[]): StateEntry[] => {
+    const sorter = new Topo.Sorter<StateEntry>()
+    entries.forEach( entry => {
+        const [name, code, dependencies] = entry
+        sorter.add([entry], {after: dependencies, group: name})  // if add plain tuple, sorter treats it as an array
+    })
+    return sorter.nodes
 }
 
 export function generate(app: App) {
@@ -166,13 +177,22 @@ ${children}
         const elementoDeclarations = [componentDeclarations, globalDeclarations, appFunctionDeclarations, appLevelDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
-        const stateEntries = statefulComponents.map( el => [el.codeName, Generator.initialStateEntry(el, isKnown)] ).filter( ([,entry]) => !!entry )
-        const statePathExpr = (name: string) => componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
-        const stateBlock = stateEntries.map( ([name, entry]) =>
-            `    const ${name} = Elemento.useObjectStateWithDefaults(${statePathExpr(name)}, ${entry})`).join('\n')
+        const isStatefulComponentName = (name: string) => statefulComponents.find(comp => comp.codeName === name)
+        const stateEntries = statefulComponents.map( (el): StateEntry => {
+            const [entry, identifiers] = Generator.initialStateEntry(el, isKnown)
+            const stateComponentIdentifiersUsed = identifiers.filter(isStatefulComponentName)
+            return [el.codeName, entry, stateComponentIdentifiersUsed]
+        }).filter( ([,entry]) => !!entry )
+        const stateBlock = topoSort(stateEntries).map( ([name, entry]) => {
+            const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
+            return `    const ${name} = Elemento.useObjectStateWithDefaults(${pathExpr}, ${entry})`
+        }).join('\n')
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
-        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => `    const [${comp.codeName}] = React.useState(${Generator.initialStateEntry(comp, isKnown)})`).join('\n')
+        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => {
+            const [entry] = Generator.initialStateEntry(comp, isKnown)
+            return `    const [${comp.codeName}] = React.useState(${entry})`
+        }).join('\n')
         const pages = componentIsApp ? `    const pages = {${app.pages.map(p => p.codeName).join(', ')}}` : ''
 
         const localDeclarations = [pages].filter( d => d !== '').join('\n').trimEnd()
@@ -373,58 +393,64 @@ ${children}
         }
     }
 
-    private static initialStateEntry(element: Element, isKnown: (name: string) => boolean): string {
+    private static initialStateEntry(element: Element, isKnown: (name: string) => boolean): [code: string, identifiers: string[]] {
+        const identifiers = new Set<string>()
+
         function ifDefined(name: string, expr: string | boolean | undefined) {
             return expr ? name + ': ' + expr + ', ' : ''
         }
-        function valueAndTypeEntry<T extends TextInput | NumberInput | SelectInput | TrueFalseInput>(element: Element) {
-            const input = element as T
-            const [valueExpr] = Generator.getExpr(input.initialValue, isKnown)
-            return `{${ifDefined('value', valueExpr)}_type: ${input.kind}.State},`
+
+        function stateEntryCode(): string {
+
+            switch (element.kind) {
+                case 'Project':
+                    throw new Error('Cannot generate code for Project')
+                case 'App':
+                case 'Page':
+                case 'Layout':
+                case 'AppBar':
+                case 'Text':
+                case 'Button':
+                    return ''
+
+                case 'TextInput':
+                case 'SelectInput':
+                case 'TrueFalseInput':
+                case 'NumberInput':
+                case 'Data': {
+                    const input = element as TextInput | NumberInput | SelectInput | TrueFalseInput
+                    const [valueExpr] = Generator.getExpr(input.initialValue, identifiers, isKnown)
+                    return `{${ifDefined('value', valueExpr)}_type: ${input.kind}.State},`
+                }
+
+                case 'Collection': {
+                    const collection = element as Collection
+                    const [valueExpr] = Generator.getExpr(collection.initialValue, identifiers, isKnown)
+                    const [dataStoreExpr] = Generator.getExpr(collection.dataStore, identifiers, isKnown)
+                    const [collectionNameExpr] = Generator.getExpr(collection.collectionName, identifiers, isKnown)
+                    return `{${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}_type: ${collection.kind}.State},`
+                }
+                case 'List': {
+                    const list = element as List
+                    const [itemsExpr] = Generator.getExpr(list.items, identifiers, isKnown)
+                    return `{${ifDefined('value', itemsExpr)}_type: ListElement.State},`
+                }
+                case 'MemoryDataStore':
+                    const store = element as MemoryDataStore
+                    const [valueExpr] = Generator.getExpr(store.initialValue, identifiers, isKnown)
+                    return `new MemoryDataStore({${valueExpr ? 'value: ' + valueExpr : ''}})`
+
+                case 'FileDataStore':
+                    const fileStore = element as FileDataStore
+                    return `{_type: ${fileStore.kind}.State}`
+
+                default:
+                    throw new UnsupportedValueError(element.kind)
+            }
         }
 
-        switch (element.kind) {
-            case 'Project':
-                throw new Error('Cannot generate code for Project')
-            case 'App':
-            case 'Page':
-            case 'Layout':
-            case 'AppBar':
-            case 'Text':
-            case 'Button':
-                return ''
+        return [stateEntryCode(), Array.from(identifiers.values())]
 
-            case 'TextInput':
-            case 'SelectInput':
-            case 'TrueFalseInput':
-            case 'NumberInput':
-            case 'Data':
-                return valueAndTypeEntry(element)
-
-            case 'Collection': {
-                const collection = element as Collection
-                const [valueExpr] = Generator.getExpr(collection.initialValue, isKnown)
-                const [dataStoreExpr] = Generator.getExpr(collection.dataStore, isKnown)
-                const [collectionNameExpr] = Generator.getExpr(collection.collectionName, isKnown)
-                return `{${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}_type: ${collection.kind}.State},`
-            }
-            case 'List': {
-                const list = element as List
-                const [itemsExpr] = Generator.getExpr(list.items, isKnown)
-                return `{${ifDefined('value', itemsExpr)}_type: ListElement.State},`
-            }
-            case 'MemoryDataStore':
-                const store = element as MemoryDataStore
-                const [valueExpr] = Generator.getExpr(store.initialValue, isKnown)
-                return `new MemoryDataStore({${valueExpr ? 'value: ' + valueExpr : ''}})`
-
-            case 'FileDataStore':
-                const fileStore = element as FileDataStore
-                return `{_type: ${fileStore.kind}.State}`
-
-            default:
-                throw new UnsupportedValueError(element.kind)
-        }
     }
 
     private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,
@@ -525,8 +551,7 @@ ${children}
         }
     }
 
-    private static getExpr(propertyValue: PropertyValue | undefined, isKnown: (name: string) => boolean) {
-        const identifiers = new Set()
+    private static getExpr(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean) {
         const errors = []
         const onError = (err: string) => errors.push(err)
         const expr = trimParens(Generator.getExprAndIdentifiers(propertyValue, identifiers, isKnown, onError))

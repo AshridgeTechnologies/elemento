@@ -350,6 +350,55 @@ test('generates Collection elements with initial value and no errors on object e
     expect(output.errors).toStrictEqual({})
 })
 
+test('sorts state entries into dependency order', () => {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
+            new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
+            new Data('id2', 'Widget Id', {initialValue: ex`WidgetList.selectedItem && WidgetList.selectedItem.Id`}),
+            new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+            new List('id4', 'Widget List', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})]),
+            ]
+        ),
+        new FileDataStore('fds1', 'Store1', {})
+    ])
+
+    const output = new Generator(app).output()
+
+    expect(output.files[0].content).toBe(`function WidgetListItem(props) {
+    const pathWith = name => props.path + '.' + name
+    const {$item} = props
+    const {TextElement} = Elemento.components
+
+    return React.createElement(React.Fragment, null,
+        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+    )
+}
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextInput, Data, Collection, ListElement} = Elemento.components
+    const {Get} = Elemento.appFunctions()
+    const Store1 = Elemento.useObjectStateWithDefaults('app.Store1')
+    const Widgets = Elemento.useObjectStateWithDefaults(pathWith('Widgets'), {dataStore: Store1, collectionName: 'Widgets', _type: Collection.State},)
+    const WidgetList = Elemento.useObjectStateWithDefaults(pathWith('WidgetList'), {value: Widgets.Query({}), _type: ListElement.State},)
+    const WidgetId = Elemento.useObjectStateWithDefaults(pathWith('WidgetId'), {value: WidgetList.selectedItem && WidgetList.selectedItem.Id, _type: Data.State},)
+    const TheWidget = Elemento.useObjectStateWithDefaults(pathWith('TheWidget'), {value: WidgetId.value && Get(Widgets, WidgetId.value), _type: Data.State},)
+    const Description = Elemento.useObjectStateWithDefaults(pathWith('Description'), {value: TheWidget.Description, _type: TextInput.State},)
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextInput, {state: Description, label: 'Description'}),
+        React.createElement(Data, {state: TheWidget, display: false}),
+        React.createElement(Data, {state: WidgetId, display: false}),
+        React.createElement(Collection, {state: Widgets, display: false}),
+        React.createElement(ListElement, {state: WidgetList, items: Widgets.Query({}), itemContentComponent: WidgetListItem}),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+
+})
+
 test('generates elements under App used in Page', ()=> {
     const app = new App('t1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [

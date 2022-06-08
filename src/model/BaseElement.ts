@@ -221,7 +221,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
             if (insertPosition === 'after') {
                 const selectedItemIndex = this.elementArray().findIndex(it => it.id === targetItemId)
-                if (selectedItemIndex >= 0) {
+                if (selectedItemIndex >= 0 && canContainAll(this, movedElements)) {
                     return selectedItemIndex + 1
                 }
             }

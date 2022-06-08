@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Box, IconButton, Link, Popover, Typography} from '@mui/material'
+import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
 import {AccountCircle} from '@mui/icons-material'
 import {AuthDialog, currentUser, signOut, useSignedInState} from './authentication'
 
@@ -30,8 +30,9 @@ export default function UserMenu() {
     const isSignedIn = useSignedInState()
 
     return (
-        <div>
-            <IconButton
+        <div>{
+            isSignedIn
+                ? <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="userMenu"
@@ -42,6 +43,14 @@ export default function UserMenu() {
             >
                 <AccountCircle />
             </IconButton>
+                : <Button variant='contained' disableElevation={true}
+                          aria-label="account of current user"
+                          aria-controls="userMenu"
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                          onClick={handleButtonClick}>Login
+                </Button>
+        }
 
             <Popover
                 id='userPanel'

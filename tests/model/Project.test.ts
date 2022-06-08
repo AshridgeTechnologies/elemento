@@ -240,6 +240,56 @@ describe('Insert element', () => {
     })
 })
 
+
+describe('Move element', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('text_4', 'Text 4', {content: ex`"Some text 4"`})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1])
+    const app2 = new App('a2', 'App 2', {}, [page2])
+    const project = new Project('pr1', 'proj1', {}, [app, app2])
+
+    test('moves single element after another in the same page', () => {
+        const originalPage1 = project.findElement('page_1')
+        const updatedProject = project.move('after', 'text_4', ['text_3'])
+        expect(updatedProject.findElement('page_1')).toBe(originalPage1)
+        expect(updatedProject.findElement('page_2')?.elements).toStrictEqual([text4, text3])
+    })
+
+    test('moves single element after another in a different page', () => {
+        const updatedProject = project.move('after', 'text_3', ['text_1'])
+        expect(updatedProject.findElement('page_1')?.elements).toStrictEqual([text2])
+        expect(updatedProject.findElement('page_2')?.elements).toStrictEqual([text3, text1, text4])
+    })
+
+    test('moves single element inside another at the start', () => {
+        const updatedProject = project.move('inside', 'page_2', ['text_2'])
+        expect(updatedProject.findElement('page_1')?.elements).toStrictEqual([text1])
+        expect(updatedProject.findElement('page_2')?.elements).toStrictEqual([text2, text3, text4])
+    })
+
+    test('moves multiple elements element inside another at the start', () => {
+        const updatedProject = project.move('inside', 'page_2', ['text_1', 'text_2'])
+        expect(updatedProject.findElement('page_1')?.elements).toStrictEqual([])
+        expect(updatedProject.findElement('page_2')?.elements).toStrictEqual([text1, text2, text3, text4])
+    })
+
+    test('moves multiple elements element after another', () => {
+        const updatedProject = project.move('after', 'text_3', ['text_1', 'text_2'])
+        expect(updatedProject.findElement('page_1')?.elements).toStrictEqual([])
+        expect(updatedProject.findElement('page_2')?.elements).toStrictEqual([text3, text1, text2, text4])
+    })
+
+    test('ignores an illegal move', () => {
+        expect(project.move('inside', 'text_3', ['text_2'])).toBe(project)
+        expect(project.move('after', 'app', ['page_2'])).toBe(project)
+        expect(project.move('inside', 'page_2', ['text_2', 'page_1'])).toBe(project)
+    })
+})
+
 test('creates an updated object on delete element on a page and preserves unchanged objects', ()=> {
     const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
     const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
@@ -271,6 +321,8 @@ test('finds max id for element type', ()=> {
     expect(project.findMaxId('Page')).toBe(2)
     expect(project.findMaxId('TextInput')).toBe(0)
 })
+
+
 
 test('can contain App, not other types', () => {
     const project = new Project('id1', 'Project 1', {}, [])
