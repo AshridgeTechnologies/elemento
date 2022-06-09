@@ -30,6 +30,7 @@ import './splitPane.css'
 import Generator, {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
+import TabbedPanel from './TabbedPanel'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -58,6 +59,7 @@ export default function Editor({
     const [helpVisible, setHelpVisible] = useState(false)
 
     const app = project.elementArray()[0] as App
+    const appCode = generate(app).code
     const {errors} = new Generator(app).output()
 
     const propertyArea = () => {
@@ -103,12 +105,12 @@ export default function Editor({
         }
     }
 
-    function setAppInAppFrame(): boolean {
+    function setAppInAppFrame(appCode: string): boolean {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
             const setAppCode = appWindow['setAppCode' as keyof Window]
             if (setAppCode) {
-                setAppCode(generate(app).code)
+                setAppCode(appCode)
                 const setEventListenerFn = appWindow['setComponentSelectedListener' as keyof Window]
                 if (setEventListenerFn) {
                     setEventListenerFn(handleComponentSelected)
@@ -135,13 +137,13 @@ export default function Editor({
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (setAppInAppFrame()) {
+            if (setAppInAppFrame(appCode)) {
                 clearInterval(interval)
             }
         }, 200)
     }, [])
 
-    setAppInAppFrame()
+    setAppInAppFrame(appCode)
     highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
 
     const signedIn = useSignedInState()
@@ -169,14 +171,19 @@ export default function Editor({
         <FunctionReference/>
     </HelpPanel>
 
+    const OverallAppBar = <Box flex='0'>
+        <AppBar title='Elemento Studio'/>
+    </Box>
+    const EditorHeader = <Box flex='0'>
+        <EditorMenuBar/>
+    </Box>
+
     return <Box display='flex' flexDirection='column' height='100%' width='100%'>
-        <Box flex='0'>
-            <AppBar title='Elemento Studio'/>
-            <EditorMenuBar/>
-        </Box>
+        {OverallAppBar}
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
                 <Grid item xs={10} height='100%'>
+                    {EditorHeader}
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
                         <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
                             <Grid container columns={10} spacing={0} height='100%'>
@@ -200,10 +207,19 @@ export default function Editor({
                     </Box>
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
-                    <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
+                    <TabbedPanel preview={
+                        <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
                         <iframe name='appFrame' src="/run/editorPreview" ref={appFrameRef}
-                            style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
-                    </Box>
+                                                      style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
+                        </Box>}
+                                 code={<pre style={{
+                                     fontSize: 12,
+                                     lineHeight: 1.5,
+                                     fontFamily: 'Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New'
+                                 }}>{appCode}
+                                    </pre>} />
+
+
                 </Grid>
             </Grid>
         </Box>

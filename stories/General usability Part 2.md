@@ -9,7 +9,7 @@ General usability Part 2
 - Reset function can take multiple arguments
 - Review and update Help
 - Welcome project has examples of everything and explains what to do
-- Generated code tab
+- ✅ Generated code tab
 - New project menu item
 - Reset function acts on whole page or layout
 - ~~Show a Page in the Preview~~ => Debugger Part 1.md (for now, just add buttons to App Bar if needed)

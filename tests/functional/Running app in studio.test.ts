@@ -13,6 +13,18 @@ let openMainPage = async (page: Page) => {
 
 const getAppFrame = (page: Page): Promise<Frame> => waitUntil(() => page.frame('appFrame') as Frame)
 
+test('app shown in preview frame', async ({ page }) => {
+    await page.goto(pageUrl)
+    const appFrame = await getAppFrame(page)
+    expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
+})
+
+test('code shown in code tab', async ({ page }) => {
+    await page.goto(pageUrl)
+    await page.click('text=Code');
+    expect(await page.locator('[data-testid="codeTab"]').textContent()).toMatch(`function MainPage`)
+})
+
 test('Selecting list element in editor or running app highlights in the running app', async ({ page }) => {
     test.skip(true, 'Only works when run headed for some reason');
     const item1para1 = 'li >> nth=0 >> p >> nth=0'
@@ -39,12 +51,6 @@ test('Selecting list element in editor or running app highlights in the running 
     expect(await getOutlineStyle(item1para1)).toBe('none')
     expect(await getOutlineStyle(item1para2)).not.toBe('none')
 } )
-
-test('app shown in frame', async ({ page }) => {
-    await page.goto(pageUrl)
-    const appFrame = await getAppFrame(page)
-    expect(await appFrame.textContent('p >> nth=2')).toBe('Start your program here...')
-})
 
 test('Selecting element in editor or running app highlights in the running app', async ({ page }) => {
     await page.goto(pageUrl)
