@@ -176,7 +176,7 @@
                               "expr": "!WidgetId.value"
                             },
                             "action": {
-                              "expr": "let newWidget = Record('Id', 'w' + Timestamp(), 'Description', Description, 'Length', Length, 'Shiny', Shiny);\nAdd(Widgets, newWidget);\nReset(Description) ;  Reset(Length);  Reset(Shiny)\nSet(WidgetList, newWidget)"
+                              "expr": "let newWidget = Record('Id', 'w' + Timestamp(), 'Description', Description, 'Length', Length, 'Shiny', Shiny);\nAdd(Widgets, newWidget);\nReset(Description, Length, Shiny)\nSet(WidgetList, newWidget)"
                             }
                           }
                         },
@@ -190,7 +190,7 @@
                               "expr": "!!WidgetId.value"
                             },
                             "action": {
-                              "expr": "Update(Widgets, WidgetId, Record('Description', Description, 'Length', Length, 'Shiny', Shiny))\nReset(Description) , Reset(Length), Reset(Shiny)"
+                              "expr": "Update(Widgets, WidgetId, Record('Description', Description, 'Length', Length, 'Shiny', Shiny))\nReset(Description, Length, Shiny)"
                             }
                           }
                         },
@@ -201,7 +201,7 @@
                           "properties": {
                             "content": "Discard Changes",
                             "action": {
-                              "expr": "Reset(Description) , Reset(Length), Reset(Shiny)"
+                              "expr": "Reset(Description, Length, Shiny)"
                             }
                           }
                         },
@@ -212,7 +212,7 @@
                           "properties": {
                             "content": "Delete",
                             "action": {
-                              "expr": "Remove(Widgets, WidgetId)\nReset(WidgetList)\nReset(Description) , Reset(Length), Reset(Shiny)"
+                              "expr": "Remove(Widgets, WidgetId)\nReset(WidgetList)\nReset(Description, Length, Shiny)"
                             },
                             "display": {
                               "expr": "!!WidgetId.value"

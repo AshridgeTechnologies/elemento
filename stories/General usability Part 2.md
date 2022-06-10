@@ -6,7 +6,7 @@ General usability Part 2
 - ✅ Sort elements into the order they reference each other
 - Copy/paste/cut/duplicate before/after on context menu
 - Highlight elements with errors
-- Reset function can take multiple arguments
+- ✅ Reset function can take multiple arguments
 - Review and update Help
 - Welcome project has examples of everything and explains what to do
 - ✅ Generated code tab

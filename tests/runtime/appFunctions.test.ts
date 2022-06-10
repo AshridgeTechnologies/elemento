@@ -32,10 +32,14 @@ test('ShowPage _updates current page app state with name of a function', () => {
     expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
 })
 
-test('Reset calls Reset on the target state', () => {
-    const elementState = {value: 42, Reset: mockFn}
-    Reset(elementState)
-    expect(elementState.Reset).toBeCalledWith()
+test('Reset calls Reset on the target state of all arguments', () => {
+    const elementState1 = {value: 42, Reset: jest.fn()}
+    const elementState2 = {value: 43, Reset: jest.fn()}
+    const elementState3 = {value: 44, Reset: jest.fn()}
+    Reset(elementState1, elementState2, elementState3)
+    expect(elementState1.Reset).toBeCalledWith()
+    expect(elementState2.Reset).toBeCalledWith()
+    expect(elementState3.Reset).toBeCalledWith()
 })
 
 describe('Set', () => {

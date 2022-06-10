@@ -21,8 +21,8 @@ const appFunctions = (init: boolean = true) => {
             appData._update( {currentPage: pageName})
         },
 
-        Reset(component: {Reset: () => void}) {
-            component.Reset()
+        Reset(...components: {Reset: () => void}[]) {
+            components.forEach(comp => comp.Reset())
         },
 
         Set(component: {Set: (value: any) => void}, value: any) {
