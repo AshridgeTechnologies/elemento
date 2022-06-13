@@ -48,17 +48,23 @@ Possibilities
 
 - State objects return a new version of themselves and their children, ready to insert into the app state
 - State object base class and/or mixin
-- State object can update itself and queue the update
+- State object can update the current state instance _and_ queue the update
 - State objects have a ref to the state (or an interface to part of it) so they can get associated components and update themselves
 - Code may be clearer (and faster?) without proxies
 - Could have proxy for Data - only case where need/(want?) to elide the 'value' and go straight to a sub-property
 - Could arrange for state updates to be queued
-- Maybe update the current state instance _and_ queue the update
 - How much is a proxy really needed?  Could a state superclass do the same job?
 - Could get own state in the component
 - Consider where state needed and not needed
 - Could use AppState to update things like Collection state and then replace whole thing in the main app state
 - The path id could just be used in a map, fast to copy, fast to access
 - Path as id allows to get sections of hierarchy if needed
-- A state object could update itself AND queue a new copy to go into the app state
 
+Decision 13 Jun 22
+------------------
+
+- Store app state by id, not in a hierarchy
+- Store actual state objects, not just their props
+- Provide a mechanism for a state object to update itself
+- Move functionality into the class itself, try to remove proxies
+- 

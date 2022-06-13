@@ -50,6 +50,10 @@ Epics
 Tech debt
 ---------
 
+- State management 
+- Code generator
+- Introducing new components
+- DOM Testing
 - Script environment creation
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent
