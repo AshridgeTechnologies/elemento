@@ -1,4 +1,4 @@
-import { PlaywrightTestConfig } from '@playwright/test'
+import type { PlaywrightTestConfig } from '@playwright/test'
 
 const baseURL = process.env.PW_BASE_URL ?? 'http://localhost:1234/'
 console.log('baseUrl: ', baseURL)
