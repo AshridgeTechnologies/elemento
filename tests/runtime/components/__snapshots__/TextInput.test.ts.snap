@@ -44,7 +44,7 @@ exports[`TextInput element produces output with multiline 1`] = `"<div class=\\"
 
 exports[`TextInput element produces output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-e7xw0c-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-1jaqk4a-MuiFormControl-root-MuiTextField-root"
 >
   <label
     className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -64,7 +64,7 @@ exports[`TextInput element produces output with properties supplied 1`] = `
       className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.width"
-      maxLength={10}
+      maxLength={11}
       onAnimationStart={[Function]}
       onBlur={[Function]}
       onChange={[Function]}

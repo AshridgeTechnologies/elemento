@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import {Button} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, stateVal} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, valueObj} from '../../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {testContainer, wait} from '../../testutil/rtlHelpers'
@@ -25,7 +25,7 @@ test('Button element produces output with display false',
 )
 
 test('Button element produces output with properties supplied as state values', async () => {
-        const element = createElement(Button, {path: 'app.page1.save', content: stateVal('Click me!'), action: () => {doIt()}, display: stateVal(false)})
+        const element = createElement(Button, {path: 'app.page1.save', content: valueObj('Click me!'), action: () => {doIt()}, display: valueObj(false)})
         await wait(10)
         expect(componentJSON(element)).toMatchSnapshot()
     }

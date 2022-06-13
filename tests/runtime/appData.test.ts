@@ -1,122 +1,177 @@
 import {createElement} from 'react'
 import renderer, {act} from 'react-test-renderer'
-import {StoreProvider, useObjectStateWithDefaults} from '../../src/runtime/appData'
-import {update} from '../../src/runtime/stateProxy'
+import {StoreProvider, useGetObjectState, useObjectState} from '../../src/runtime/appData'
+import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
+import {wait} from '../testutil/rtlHelpers'
 
-const runInProvider = function (testFn: () => void) {
-    function TestComponent() {
-        testFn()
-        return null
+const runInProvider = function (testFn: () => void, childTestFn?: () => void) {
+    function TestComponent(props: any) {
+        props.testFn()
+        return props.children ?? null
     }
 
     act(() => {
-        renderer.create(createElement(StoreProvider, {children: createElement(TestComponent)}))
+        renderer.create(createElement(StoreProvider, {
+            children:
+                createElement(TestComponent, {testFn, children: childTestFn && createElement(TestComponent, {testFn: childTestFn})
+                })
+        }))
     })
+
 }
 
-const testInProvider = (testFn: () => void) => () => runInProvider(testFn)
 
-const stateFor = (path: string = '', defaults: object = {}) => useObjectStateWithDefaults(path, defaults)
+class StateObject extends BaseComponentState<object> implements ComponentState<StateObject> {
 
-const updateStateFor = (path: string, updates: object, replace: boolean = false) => stateFor(path)._update(updates, replace)
+    constructor(props: object) {
+        super(props)
+    }
+    get color() { // @ts-ignore
+        return this.state.color ?? this.props.color
+    }
 
-test('get initial app state', testInProvider(() => {
-    expect(stateFor('app')).toStrictEqual({})
+    get length() {
+        // @ts-ignore
+        return this.state.length ?? this.props.length
+    }
+
+    setColor(color: string) {
+        this.updateState({color})
+    }
+
+    increaseLength(amount: number) {
+        this.updateState({length: this.length + amount})
+    }
+
+}
+
+const stateObj = (props: object) => new StateObject(props)
+
+test('get initial app state', () => runInProvider(() => {
+    expect(useGetObjectState('app')).toStrictEqual({})
 }))
 
-test('get initial state at app level sets initial values if supplied', testInProvider(() => {
-    expect(stateFor('app', {widgets: {color: 'red', length: 23}})).toStrictEqual({widgets: {color: 'red', length: 23}})
-    expect(stateFor('app')).toStrictEqual({widgets: {color: 'red', length: 23}})
-}))
-
-test.skip('get initial state at app level updates initial values if supplied', testInProvider(() => {
-    expect(stateFor('app', {widgets: {color: 'red', length: 23}})).toStrictEqual({widgets: {color: 'red', length: 23}})
-    expect(stateFor('app')).toStrictEqual({widgets: {color: 'red', length: 23}})
-    expect(stateFor('app', {widgets: {color: 'blue', length: 23}, sprockets: {height: 27}})).toStrictEqual({widgets: {color: 'blue', length: 23}, sprockets: {height: 27}})
-    expect(stateFor('app')).toStrictEqual({widgets: {color: 'blue', length: 23}, sprockets: {height: 27}})
-}))
-
-test('get initial state below app level is empty object if no initial values supplied', testInProvider(() => {
-    expect(stateFor('app.page1.description')).toStrictEqual({})
-}))
-
-test('get initial state below app level sets initial values if supplied', testInProvider(() => {
-    expect(stateFor('app.page1.description', {color: 'red', length: 23})).toStrictEqual({color: 'red', length: 23})
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-}))
-
-test('can set app state and get it again', testInProvider(() => {
-    updateStateFor('app', {foo: 27})
-    expect(stateFor('app')).toStrictEqual({foo: 27})
-}))
-
-test('can set state below app level and get it again', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red', length: 23})
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-}))
-
-test('can get state with an element path and normalise first part to "app"', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red', length: 23})
-    expect(stateFor('BigApp.page1.description')).toStrictEqual({color: 'red', length: 23})
-}))
-
-test('can use non-existent state below app level and set initial values', testInProvider(() => {
-    const newState = stateFor('app.page1', {description: {value: 'Fiddle'}})
-    expect(newState).toMatchObject({description: {value: 'Fiddle'}})
-    expect(newState._path).toBe('app.page1')
-    expect(newState.description._path).toBe('app.page1.description')
-    expect(stateFor('app.page1')).toStrictEqual({description: {value: 'Fiddle'}})
-}))
-
-test('can use partially existing state below app level and update with initial values', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red'})
-    stateFor('app.page1', {title: 'foo'})
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red'})
-    expect(stateFor('app.page1')).toStrictEqual({title: 'foo'})
-}))
-
-test('state with defaults does not add properties to the base store', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red'})
-    stateFor('app.page1', {description: {color: 'blue', length: 1}})
-    updateStateFor('app.page1.color', {value: 'red'})
-    stateFor('app.page1', {color: {value: 'blue', length: 1}})
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red'})
-    expect(stateFor('app.page1.color')).toStrictEqual({value: 'red'})
-}))
-
-test('can set an item in state below app level to undefined and get it again and use defaults', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red', length: undefined})
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: undefined})
-    const newState = stateFor('app.page1', {title: 'foo'})
-    expect(newState).toMatchObject({title: 'foo'})
-}))
-
-test('can replace state below app level and get it again', testInProvider(() => {
-    updateStateFor('app.page1.description', {color: 'red', length: 23}, true)
-    expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-    updateStateFor('app.page1', {title: 'foo'}, true)
-    expect(stateFor('app.page1')).toStrictEqual({title: 'foo'})
-}))
-
-test('calls init function on state object if found and applies updates', testInProvider(() => {
-    stateFor('app.page1.description', {
-        init() {
-            return update({color: 'red', length: 23})
-        }
+test('get initial state using initialiser supplied', () => {
+    const state = stateObj({widgets: {color: 'red', length: 23}})
+    runInProvider(() => {
+        expect(useObjectState('app.foo', state)).toBe(state)
     })
-    //!!! this behaves really strangely
-    // const initColor = objectState1.color.valueOf()
-    // expect(initColor).toBeUndefined()
-    const stateFor1 = stateFor('app.page1.description')
-    expect(stateFor1.color).toBe('red')
+})
+
+test('get initial state immediately without initialiser', () => {
+    const state = stateObj({widgets: {color: 'red', length: 23}})
+    runInProvider(() => {
+        useObjectState('app.foo', state)
+        expect(useGetObjectState('app.foo')).toBe(state)
+    })
+})
+
+test('updates initial state object from initialiser supplied so it is available in child', async () => {
+    let length = 1
+    let renderCount = 0
+    const state = () => stateObj({color: 'red', length: length === 1 ? length++ : length})
+    const parentTestFn = () => {
+        ++renderCount
+        const fooState = useObjectState<StateObject>('app.foo', state())
+        if (renderCount === 1) {
+            expect(fooState.props).toStrictEqual({color: 'red', length: 1})
+        } else {
+            expect(fooState.props).toStrictEqual({color: 'red', length: 2})
+        }
+    }
+    const childTestFn = () => {
+        const fooState = useGetObjectState<StateObject>('app.foo')
+        if (renderCount === 1) {
+            expect(fooState.props).toStrictEqual({color: 'red', length: 1})
+        } else {
+            expect(fooState.props).toStrictEqual({color: 'red', length: 2})
+        }
+    }
+
+    runInProvider(parentTestFn, childTestFn)
+    await wait(0)
+    expect(renderCount).toBe(2)
+})
+
+test('keeps same state object if initialiser supplied has same properties', () => {
+    const anObj = {a: 10}
+    const state = stateObj({color: 'red', length: 23, thing: anObj})
+    const state2 = stateObj({color: 'red', length: 23, thing: anObj})
+    runInProvider(() => {
+        expect(useObjectState('app.foo', state)).toBe(state)
+        expect(useObjectState('app.foo', state2)).toBe(state)
+    })
+})
+
+test('initial state is empty object if no initial values supplied', () => runInProvider(() => {
+    expect(useObjectState<StateObject>('app.page1.description', stateObj({})).props).toStrictEqual({})
 }))
 
-test('calls init function on state object with updateFn', testInProvider(() => {
-    stateFor('app.page1.description', {
-        init(updateFn: any) {
-            updateFn({color: 'red', length: 23})
-        }
+test('can get state with an element path and normalise first part to "app"', () => {
+    const state = stateObj({color: 'red', length: 23})
+    runInProvider(() => {
+        useObjectState('app.page1.description', state)
+        expect(useGetObjectState('BigApp.page1.description')).toBe(state)
     })
-    const stateFor1 = stateFor('app.page1.description')
-    expect(stateFor1.color).toBe('red')
-}))
+})
+
+test('state object can update its own state immediately', async () => {
+    const state = stateObj({color: 'red', length: 23})
+    let renderCount = 0
+    let fooState: any
+    runInProvider(() => {
+        renderCount++
+        fooState = useObjectState<StateObject>('app.foo', state)
+        fooState.setColor('blue')
+    })
+    await wait(0)
+    expect(fooState.color).toBe('blue')
+})
+
+
+test('state object can update its own state asynchronously', async () => {
+    const state = stateObj({color: 'red', length: 23})
+    let renderCount = 0
+    let fooState: any
+    runInProvider(() => {
+        renderCount++
+        fooState = useObjectState('app.foo', state)
+    })
+    await wait(0)
+
+    expect(fooState.color).toBe('red')
+    act(() => fooState.setColor('blue'))
+    expect(fooState.color).toBe('blue')
+    expect(renderCount).toBe(3)
+})
+
+test('BaseComponentState keeps same state if properties change', async () => {
+    const state = stateObj({color: 'red', length: 23})._withStateForTest({color: 'blue'})
+    const stateWithNewProps = state.updateFrom(stateObj({color: 'red', length: 55}))
+    expect(stateWithNewProps.color).toBe('blue')
+    expect(stateWithNewProps.length).toBe(55)
+})
+
+test('state object can get latest to update its own state', async () => {
+    const state = stateObj({color: 'red', length: 20})
+    let renderCount = 0
+    let fooState: StateObject
+    runInProvider(() => {
+        renderCount++
+        fooState = useObjectState('app.foo', state)
+    })
+    await wait(0)
+
+    expect(fooState!.length).toBe(20)
+
+    act(() => fooState.latest().increaseLength(5))
+    await wait(0)
+
+    expect(fooState!.length).toBe(25)
+    act(() => fooState.latest().increaseLength(7))
+    await wait(0)
+
+    expect(fooState!.length).toBe(32)
+
+    expect(renderCount).toBe(4)
+})

@@ -43,6 +43,7 @@ Forces
 - Delegating direct to a value sub-property could be difficult without a proxy
 
 
+
 Possibilities
 -------------
 
@@ -60,6 +61,7 @@ Possibilities
 - The path id could just be used in a map, fast to copy, fast to access
 - Path as id allows to get sections of hierarchy if needed
 
+
 Decision 13 Jun 22
 ------------------
 
@@ -67,4 +69,57 @@ Decision 13 Jun 22
 - Store actual state objects, not just their props
 - Provide a mechanism for a state object to update itself
 - Move functionality into the class itself, try to remove proxies
-- 
+
+Async updates
+=============
+
+Forces
+--------------
+
+- ! Many updates are async and need to act on the latest state, not the state at the time the handler was created
+- Want to write code in handlers as if it was acting on the current instance
+
+Possibilities
+-------------
+
+- Inject a function that allows to get the latest from the store
+- Pass a function to the updateFn
+- Convention to call the function with this set to the latest
+- Mark an instance as outdated and warn if anything called on it
+- updateState automatically gets the latest and applies the changes to it
+
+Extra decision 15 Jun 22
+------------------------
+
+- Provide an appState interface
+- Have update and getLatest functions
+- updateState would always call getLatest to apply changes to
+
+Deferred updates
+================
+
+Forces
+------
+
+- The new execution relies on higher level components setting up state that is retrieved by their children 
+- The state is retrieved _within the same render_
+- If the updates to set up this state are passed to setState via Zustand, React logs a warning (although it still works)
+- Even if it works, there may be efficiency issues, and it is untidy and looks bad
+- The updates do not need to be notified to others during the render
+- Complications and difficult bugs could arise with this sort of unusual behaviour
+- We want to have undo in the future - need to avoid saving many intermediate states
+
+Possibilities
+-------------
+
+- Find a new execution model
+- Ensure the updates are visible to children if requested
+- Delay updating the app state until after the render
+- Treat updates from different sources differently
+- Could have a pending AppState which is updated several times before being committed
+
+Extra decision 23 Jun 22
+------------------------
+
+- Spike a delayed update mechanism
+- Done Within appData.ts

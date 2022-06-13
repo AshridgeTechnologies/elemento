@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import {TextElement} from '../../../src/runtime/components/index'
-import {snapshot, stateVal} from '../../testutil/testHelpers'
+import {snapshot, valueObj} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 
 const {Sum} = globalFunctions
@@ -35,8 +35,7 @@ test('TextElement element produces output containing ReactElement children', () 
 )
 
 test('TextElement element produces output containing valueOf  object', () => {
-        const obj = stateVal('where are you')
-        snapshot(createElement(TextElement, {path: 'page1.para1'}, obj))()
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, valueObj('where are you')))()
     }
 )
 
@@ -47,8 +46,8 @@ test('TextElement adds line break before line ends', () => {
 test('TextElement gets property values supplied as state objects', () => {
     const para = createElement('p', null, 'where are you')
     snapshot(createElement(TextElement, {path: 'page1.para1',
-        fontSize: stateVal(32), fontFamily: stateVal('Courier'), color: stateVal('red'),
-        backgroundColor: stateVal('green'), border: stateVal(10), borderColor: stateVal('black'),
-        width: stateVal(100), height: stateVal(200)}, 'Hello', para))()
+        fontSize: valueObj(32), fontFamily: valueObj('Courier'), color: valueObj('red'),
+        backgroundColor: valueObj('green'), border: valueObj(10), borderColor: valueObj('black'),
+        width: valueObj(100), height: valueObj(200)}, 'Hello', para))()
 
 })

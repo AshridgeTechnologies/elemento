@@ -115,16 +115,24 @@ exports[`App element produces output containing page and additional components w
   <div
     className="MuiBox-root css-72fd9l"
   >
-    <div>
-      <div />
+    <div
+      id="app1.coll1"
+    >
+      <div>
+        app1.coll1
+      </div>
       <code>
-        undefined
+        {}
       </code>
     </div>
-    <div>
-      <div />
+    <div
+      id="app1.coll2"
+    >
+      <div>
+        app1.coll2
+      </div>
       <code>
-        undefined
+        {}
       </code>
     </div>
   </div>

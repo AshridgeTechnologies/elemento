@@ -1,23 +1,23 @@
 import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {valueOfProps} from '../runtimeFunctions'
-import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import {PropVal, valueOfProps} from '../runtimeFunctions'
+import InputComponentState from './InputComponentState'
+import {useGetObjectState} from '../appData'
 
-type Properties = {state: {value?: number, _path: string, _controlValue: number | null, _update: proxyUpdateFnType}, label?: string}
+type Properties = {path: string, label?: PropVal<string>, }
 
-export default function NumberInput({state, ...props}: Properties) {
+export default function NumberInput({path, ...props}: Properties) {
     const {label} = valueOfProps(props)
 
     const optionalProps = definedPropertiesOf({label})
     const numericProps = {type: 'number', sx: { minWidth: 120, flex: 0 }}
-    const {_path: path} = state
+    const state = useGetObjectState<NumberInputState>(path)
     const value = state._controlValue ?? ''
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
         const updateValue = controlValue !== '' ? Number(controlValue) : null
-        state._update({value: updateValue})
+        state._setValue(updateValue)
     }
 
     return React.createElement(TextField, {
@@ -31,6 +31,8 @@ export default function NumberInput({state, ...props}: Properties) {
     })
 }
 
-NumberInput.State = class State extends InputComponentState<number> {
+export class NumberInputState extends InputComponentState<number>  {
     defaultValue = 0
 }
+
+NumberInput.State = NumberInputState

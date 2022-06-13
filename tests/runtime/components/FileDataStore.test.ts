@@ -17,7 +17,8 @@ let state: any
 
 beforeEach(() => {
     dataStore = mockDataStore()
-    state = new FileDataStore.State({dataStore})
+    state = new FileDataStore.State()
+    state.state.dataStore = dataStore
 } )
 
 
@@ -35,21 +36,19 @@ const mockDataStore = (): FileDataStoreImpl => ({
     observable: jest.fn().mockReturnValue(mockObservable),
 }) as unknown as FileDataStoreImpl
 
-test('produces output with record values',
-    snapshot(createElement(FileDataStore, {
-        state: {
-            _path: 'app.page1.collection2'
-        }, display: true
-    }))
+test('produces output with name',
+    snapshot(createElement(FileDataStore, {path: 'app.page1.collection2', display: true}))
 )
 
 test('produces empty output with default value for display', () => {
-    const {container} = render(createElement(FileDataStore, {
-        state: {
-            _path: 'app.page1.collection3'
-        }
-    }))
+    const {container} = render(createElement(FileDataStore, {path: 'app.page1.collection3'}))
     expect(container.innerHTML).toBe('')
+})
+
+test('creates its own data store if not supplied', () => {
+    const state = new FileDataStore.State()
+    const result = state.Open()
+    expect(result).toBeUndefined()
 })
 
 test('delegates Open to data store', () => {
@@ -106,21 +105,6 @@ test('delegates query to data store', () => {
     expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 33})
 })
 
-test('inits itself with new data store if not provided', () => {
-    const state = new FileDataStore.State({})
-    const update = state.init()
-    // @ts-ignore
-    expect(update.changes.dataStore).toBeInstanceOf(FileDataStoreImpl)
-})
-
-test('init returns same data store when provided', () => {
-    let dataStore = new FileDataStoreImpl()
-    const state = new FileDataStore.State({dataStore})
-    const update = state.init()
-    // @ts-ignore
-    expect(update.changes.dataStore).toBe(dataStore)
-})
-
 test('delegates observable to data store', () => {
     const result = state.observable('Widgets')
     expect(result).toBe(mockObservable)
@@ -146,7 +130,8 @@ describe('handles errors', () => {
     beforeEach(() => {
         NotifyError.mockReset()
         dataStore = errorDataStore()
-        state = new FileDataStore.State({dataStore})
+        state = new FileDataStore.State()
+        state.state.dataStore = dataStore
     } )
 
     test('notifies error from Open', async () => {

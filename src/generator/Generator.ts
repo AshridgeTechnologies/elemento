@@ -172,7 +172,7 @@ ${children}
         let appLevelDeclarations
         if (!componentIsApp) {
             const appLevelIdentifiers = identifiers.filter(isAppElement)
-            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = Elemento.useObjectStateWithDefaults('app.${ident}')`).join('\n')
+            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState('app.${ident}')`).join('\n')
         }
         const elementoDeclarations = [componentDeclarations, globalDeclarations, appFunctionDeclarations, appLevelDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
@@ -185,7 +185,7 @@ ${children}
         }).filter( ([,entry]) => !!entry )
         const stateBlock = topoSort(stateEntries).map( ([name, entry]) => {
             const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
-            return `    const ${name} = Elemento.useObjectStateWithDefaults(${pathExpr}, ${entry})`
+            return `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
         }).join('\n')
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
@@ -291,21 +291,21 @@ ${children}
             const textInput = element as TextInput
             identifiers.add('TextInput')
             const initialValue = Generator.getExprAndIdentifiers(textInput.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = textInput.codeName
+            const path = pathWith(textInput.codeName)
             const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
             const width = Generator.getExprAndIdentifiers(textInput.width, identifiers, isKnown, onError('width'))
             const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
             const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
-            const reactProperties = definedPropertiesOf({state, maxLength, multiline, label, width})
+            const reactProperties = definedPropertiesOf({path, maxLength, multiline, label, width})
             return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
         case 'NumberInput': {
             const numberInput = element as NumberInput
             identifiers.add('NumberInput')
             const initialValue = Generator.getExprAndIdentifiers(numberInput.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = numberInput.codeName
+            const path = pathWith(numberInput.codeName)
             const label = Generator.getExprAndIdentifiers(numberInput.label, identifiers, isKnown, onError('label'))
-            const reactProperties = definedPropertiesOf({state, label})
+            const reactProperties = definedPropertiesOf({path, label})
             return `React.createElement(NumberInput, ${objectLiteral(reactProperties)})`
         }
 
@@ -314,9 +314,9 @@ ${children}
             identifiers.add('SelectInput')
             const values = Generator.getExprAndIdentifiers(selectInput.values, identifiers, isKnown, onError('values'))
             const initialValue = Generator.getExprAndIdentifiers(selectInput.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = selectInput.codeName
+            const path = pathWith(selectInput.codeName)
             const label = Generator.getExprAndIdentifiers(selectInput.label, identifiers, isKnown, onError('label'))
-            const reactProperties = definedPropertiesOf({state, values, label})
+            const reactProperties = definedPropertiesOf({path, values, label})
             return `React.createElement(SelectInput, ${objectLiteral(reactProperties)})`
         }
 
@@ -324,9 +324,9 @@ ${children}
             const trueFalseInput = element as TrueFalseInput
             identifiers.add('TrueFalseInput')
             const initialValue = Generator.getExprAndIdentifiers(trueFalseInput.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = trueFalseInput.codeName
+            const path = pathWith(trueFalseInput.codeName)
             const label = Generator.getExprAndIdentifiers(trueFalseInput.label, identifiers, isKnown, onError('label'))
-            const reactProperties = definedPropertiesOf({state, label})
+            const reactProperties = definedPropertiesOf({path, label})
             return `React.createElement(TrueFalseInput, ${objectLiteral(reactProperties)})`
         }
 
@@ -346,13 +346,13 @@ ${children}
             const list = element as List
             identifiers.add('ListElement')
             const items = Generator.getExprAndIdentifiers(list.items, identifiers, isKnown, onError('items')) ?? '[]'
-            const state = list.codeName
+            const path = pathWith(list.codeName)
             const [itemContentComponent, listItemCode] = Generator.listItemComponent(list, errors)
             const width = Generator.getExprAndIdentifiers(list.width, identifiers, isKnown, onError('width'))
             const style = Generator.getExprAndIdentifiers(list.style, identifiers, isKnown, onError('style'))
 
             topLevelFunctions.add(listItemCode)
-            const reactProperties = definedPropertiesOf({state, items, itemContentComponent, width, style})
+            const reactProperties = definedPropertiesOf({path, items, itemContentComponent, width, style})
             return `React.createElement(ListElement, ${objectLiteral(reactProperties)})`
         }
 
@@ -360,9 +360,9 @@ ${children}
             const data = element as Data
             identifiers.add('Data')
             const initialValue = Generator.getExprAndIdentifiers(data.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = data.codeName
+            const path = pathWith(data.codeName)
             const display = Generator.getExprAndIdentifiers(data.display, identifiers, isKnown, onError('display'))
-            const reactProperties = definedPropertiesOf({state, display})
+            const reactProperties = definedPropertiesOf({path, display})
             return `React.createElement(Data, ${objectLiteral(reactProperties)})`
         }
 
@@ -370,11 +370,11 @@ ${children}
             const collection = element as Collection
             identifiers.add(element.kind)
             const initialValue = Generator.getExprAndIdentifiers(collection.initialValue, identifiers, isKnown, onError('initialValue'))
-            const state = collection.codeName
+            const path = pathWith(collection.codeName)
             const display = Generator.getExprAndIdentifiers(collection.display, identifiers, isKnown, onError('display'))
             const dataStore = Generator.getExprAndIdentifiers(collection.dataStore, identifiers, isKnown, onError('dataStore'))
             const collectionName = Generator.getExprAndIdentifiers(collection.collectionName, identifiers, isKnown, onError('collectionName'))
-            const reactProperties = definedPropertiesOf({state, display/*, dataStore, collectionName*/})
+            const reactProperties = definedPropertiesOf({path, display/*, dataStore, collectionName*/})
             return `React.createElement(Collection, ${objectLiteral(reactProperties)})`
         }
 
@@ -414,13 +414,13 @@ ${children}
                     return ''
 
                 case 'TextInput':
+                case 'NumberInput':
                 case 'SelectInput':
                 case 'TrueFalseInput':
-                case 'NumberInput':
                 case 'Data': {
-                    const input = element as TextInput | NumberInput | SelectInput | TrueFalseInput
+                    const input = element as TextInput | NumberInput | SelectInput | TrueFalseInput | Data
                     const [valueExpr] = Generator.getExpr(input.initialValue, identifiers, isKnown)
-                    return `{${ifDefined('value', valueExpr)}_type: ${input.kind}.State},`
+                    return `new ${input.kind}.State({${ifDefined('value', valueExpr)}})`
                 }
 
                 case 'Collection': {
@@ -428,12 +428,12 @@ ${children}
                     const [valueExpr] = Generator.getExpr(collection.initialValue, identifiers, isKnown)
                     const [dataStoreExpr] = Generator.getExpr(collection.dataStore, identifiers, isKnown)
                     const [collectionNameExpr] = Generator.getExpr(collection.collectionName, identifiers, isKnown)
-                    return `{${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}_type: ${collection.kind}.State},`
+                    return `new ${collection.kind}.State({${ifDefined('value', valueExpr)}${ifDefined('dataStore', dataStoreExpr)}${ifDefined('collectionName', collectionNameExpr)}}),`
                 }
                 case 'List': {
                     const list = element as List
                     const [itemsExpr] = Generator.getExpr(list.items, identifiers, isKnown)
-                    return `{${ifDefined('value', itemsExpr)}_type: ListElement.State},`
+                    return `new ListElement.State({})`
                 }
                 case 'MemoryDataStore':
                     const store = element as MemoryDataStore
@@ -442,7 +442,7 @@ ${children}
 
                 case 'FileDataStore':
                     const fileStore = element as FileDataStore
-                    return `{_type: ${fileStore.kind}.State}`
+                    return `new ${fileStore.kind}.State()`
 
                 default:
                     throw new UnsupportedValueError(element.kind)

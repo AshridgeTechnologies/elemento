@@ -64,9 +64,7 @@ import Elemento from 'elemento-runtime'
 
 function MainPage(props) {
     const pathWith = (name) => props.path + '.' + name
-    // const state = Elemento.useObjectStateWithDefaults(props.path, {})
     const {Page, TextElement} = Elemento.components
-    // @ts-ignore
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('FirstText')}, "This is App One from ${url}"),
     )
@@ -75,7 +73,7 @@ function MainPage(props) {
 export default function AppOne(props) {
 
     const appPages = {MainPage}
-    // const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    // const appState = Elemento.useObjectState('app._data', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = {currentPage: 'MainPage'} //appState
     return React.createElement('div', {id: 'AppOne'},
         React.createElement(appPages[currentPage], {path: \`AppOne.\${currentPage}\`})

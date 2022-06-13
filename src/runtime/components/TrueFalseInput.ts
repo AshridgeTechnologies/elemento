@@ -1,16 +1,20 @@
 import {ChangeEvent, createElement} from 'react'
 import {FormControlLabel, Switch} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import InputComponentState from './InputComponentState'
+import {useGetObjectState} from '../appData'
 
-type Properties = {state: {value?: boolean, _path: string, _controlValue: boolean | null, _update: proxyUpdateFnType}, label?: string}
+type Properties = {path: string, label?: string}
 
-export default function TrueFalseInput({state, ...props}: Properties) {
-    const {_path: path} = state
+export default function TrueFalseInput({path, ...props}: Properties) {
+    const state = useGetObjectState<TrueFalseInputState>(path)
     const value = state._controlValue ?? false
     const {label = ''} = valueOfProps(props)
-    const onChange = (event: ChangeEvent) => state._update({value: (event.target as any).checked})
+    const onChange = (event: ChangeEvent) => {
+        const controlValue = (event.target as any).checked
+        const updateValue = controlValue !== '' ? controlValue : null
+        state._setValue(updateValue)
+    }
 
     return createElement(FormControlLabel, {
         label,
@@ -25,7 +29,8 @@ export default function TrueFalseInput({state, ...props}: Properties) {
     })
 }
 
-
-TrueFalseInput.State = class State extends InputComponentState<boolean> {
+export class TrueFalseInputState extends InputComponentState<boolean> {
     defaultValue = false
 }
+
+TrueFalseInput.State = TrueFalseInputState

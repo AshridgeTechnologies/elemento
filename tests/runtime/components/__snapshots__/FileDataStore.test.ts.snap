@@ -1,5 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`produces output with name 1`] = `
+<div
+  id="app.page1.collection2"
+>
+  <div>
+    app.page1.collection2
+  </div>
+  <code
+    0="F"
+    1="i"
+    10="S"
+    11="t"
+    12="o"
+    13="r"
+    14="e"
+    15=" "
+    16="a"
+    17="p"
+    18="p"
+    19="."
+    2="l"
+    20="p"
+    21="a"
+    22="g"
+    23="e"
+    24="1"
+    25="."
+    26="c"
+    27="o"
+    28="l"
+    29="l"
+    3="e"
+    30="e"
+    31="c"
+    32="t"
+    33="i"
+    34="o"
+    35="n"
+    36="2"
+    4=" "
+    5="D"
+    6="a"
+    7="t"
+    8="a"
+    9=" "
+  />
+</div>
+`;
+
 exports[`produces output with record values 1`] = `
 <div
   id="app.page1.collection2"

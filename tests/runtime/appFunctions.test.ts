@@ -4,7 +4,7 @@ import {valObj} from '../testutil/testHelpers'
 import * as appData from '../../src/runtime/appData'
 jest.mock('../../src/runtime/appData')
 
-const _update = jest.fn()
+const ShowPage = jest.fn()
 const mockFn = jest.fn()
 const {Reset, Set, Update, Add, Remove, Get, GetAll} = appFunctions( )
 
@@ -15,21 +15,21 @@ test('can get app functions names', () => {
     expect(appFunctionsNames()).toStrictEqual(['ShowPage', 'Reset', 'Set', 'Update', 'Add', 'Remove', 'Get', 'GetAll', 'NotifyError'])
 })
 
-test('ShowPage _updates current page app state', () => {
-    const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
-    mock_useObjectStateWithDefaults.mockReturnValue({_update})
+test('ShowPage calls ShowPage on current app state', () => {
+    const mock_useGetObjectState = appData.useGetObjectState as jest.MockedFunction<any>
+    mock_useGetObjectState.mockReturnValue({ShowPage})
     appFunctions().ShowPage('Other')
-    expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
-    expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
+    expect(mock_useGetObjectState).toHaveBeenCalledWith('app._data')
+    expect(ShowPage).toHaveBeenCalledWith('Other')
 })
 
-test('ShowPage _updates current page app state with name of a function', () => {
-    const mock_useObjectStateWithDefaults = appData.useObjectStateWithDefaults as jest.MockedFunction<any>
-    mock_useObjectStateWithDefaults.mockReturnValue({_update})
+test('ShowPage calls ShowPage on current app state with name of a function', () => {
+    const mock_useGetObjectState = appData.useGetObjectState as jest.MockedFunction<any>
+    mock_useGetObjectState.mockReturnValue({ShowPage})
     const Other = function Other() {}
     appFunctions().ShowPage(Other)
-    expect(mock_useObjectStateWithDefaults).toHaveBeenCalledWith('app._data')
-    expect(_update).toHaveBeenCalledWith({currentPage: 'Other'})
+    expect(mock_useGetObjectState).toHaveBeenCalledWith('app._data')
+    expect(ShowPage).toHaveBeenCalledWith('Other')
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {

@@ -15,7 +15,6 @@ import Elemento from 'elemento-runtime'
 
 function MainPage(props) {
     const pathWith = (name) => props.path + '.' + name
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
     const {ShowPage} = Elemento.appFunctions()

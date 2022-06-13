@@ -1,16 +1,19 @@
 import {createElement as el} from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import InputComponentState from './InputComponentState'
+import {useGetObjectState} from '../appData'
 
-type Properties = { label?: string, values?: string[], state: { value?: string, _path: string, _update: proxyUpdateFnType } }
+type Properties = {path: string,  label?: string, values?: string[]}
 
-export default function SelectInput({state, ...props}: Properties) {
-    const {value = '', _path: path} = state
+export default function SelectInput({path, ...props}: Properties) {
     const {values = [], label} = valueOfProps(props)
+    const state = useGetObjectState<SelectInputState>(path)
+    const value = state._controlValue ?? ''
     const onChange = (event: SelectChangeEvent) => {
-        state._update({value: (event.target as any).value || null})
+        const controlValue = (event.target as any).value
+        const updateValue = controlValue !== '' ? controlValue : null
+        state._setValue(updateValue)
     }
 
     const labelId = path + '_label'
@@ -29,6 +32,8 @@ export default function SelectInput({state, ...props}: Properties) {
     )
 }
 
-SelectInput.State = class State extends InputComponentState<string> {
+export class SelectInputState extends InputComponentState<string> {
     defaultValue = ''
 }
+
+SelectInput.State = SelectInputState

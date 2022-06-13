@@ -20,7 +20,7 @@ exports[`NumberInput element produces output with default values where propertie
       onFocus={[Function]}
       required={false}
       type="number"
-      value={0}
+      value=""
     />
     <fieldset
       aria-hidden={true}

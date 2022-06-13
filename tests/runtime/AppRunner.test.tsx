@@ -9,6 +9,7 @@ import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
 import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 import {addContainer, } from '../testutil/elementHelpers'
+import {wait} from '../testutil/rtlHelpers'
 
 const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'), selectedComponentId?: string) => createElement(AppRunner, {appFunction, onComponentSelected, selectedComponentId})
 
@@ -16,12 +17,12 @@ const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput} = Elemento.components
-        const input1 = Elemento.useObjectStateWithDefaults(pathWith('input1'), {_type: TextInput.State},)
+        const input1 = Elemento.useObjectState(pathWith('input1'), new TextInput.State({value: undefined}),)
 
         // @ts-ignore
         return React.createElement(Page, {id: props.path},
             React.createElement(TextElement, {path: pathWith('FirstText')}, `This is App ${version}`),
-            React.createElement(TextInput, {state: input1, label: 'input1'}),
+            React.createElement(TextInput, {path: pathWith('input1'), label: 'input1'}),
             // @ts-ignore
             React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
         )
@@ -39,10 +40,11 @@ const testApp = (version: string) => {
 let onComponentSelected: (id: string) => void
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = addContainer()
-beforeEach(() => {
+beforeEach(async () => {
     ({click, elIn, enter, expectEl, renderThe} = container = addContainer())
     onComponentSelected = jest.fn()
     renderThe(appRunner())
+    await wait(0)
 })
 
 test('shows app on page', () => {
@@ -55,8 +57,9 @@ test('updates app on page', () => {
     expectEl('FirstText').toHaveTextContent('This is App Two')
 })
 
-test('app can set state', function () {
+test('app can set state', async () => {
     enter('input1', 'cool')
+    await wait(20)
     expectEl('SecondText').toHaveTextContent('Input is cool')
 })
 
@@ -67,9 +70,10 @@ test('app can keep state when app is updated', () => {
     expectEl('SecondText').toHaveTextContent('Input is cool')
 })
 
-test('can run multiple apps with independent state', () => {
+test('can run multiple apps with independent state', async () => {
     const container2 = addContainer()
     container2.renderThe(appRunner(testApp('Two')))
+    await wait(20)
 
     container.enter('input1', 'cool')
     container.expectEl('SecondText').toHaveTextContent('Input is cool')

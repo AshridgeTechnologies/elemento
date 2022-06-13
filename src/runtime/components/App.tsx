@@ -1,6 +1,7 @@
 import React, {createElement} from 'react'
-import * as Elemento from '../index'
+import {useObjectState} from '../appData'
 import {Box, Container} from '@mui/material'
+import {BaseComponentState, ComponentState} from './ComponentState'
 
 type Properties = {id: string, maxWidth?: string | number, pages: { [key: string]: React.FunctionComponent<any> },
     children?: any, topChildren?: any}
@@ -16,7 +17,7 @@ const containerBoxCss = {
 }
 
 export default function App({id, maxWidth, pages, children, topChildren}: Properties) {
-    const state = Elemento.useObjectStateWithDefaults(`app._data`, {currentPage: Object.keys(pages)[0]})
+    const state = useObjectState<AppData>('app._data', new App.State({currentPage: Object.keys(pages)[0]}))
     const {currentPage} = state
     const pagePath = id + '.' + currentPage
     const sx = {maxWidth, ...containerBoxCss}
@@ -36,3 +37,16 @@ export default function App({id, maxWidth, pages, children, topChildren}: Proper
     </Box>
 
 }
+type StateProps = {
+    currentPage: string
+}
+
+export class AppData extends BaseComponentState<StateProps> implements ComponentState<AppData> {
+
+    get currentPage() { return this.state.currentPage ?? this.props.currentPage }
+    ShowPage(page: string) {
+        this.updateState({currentPage: page})
+    }
+}
+
+App.State = AppData

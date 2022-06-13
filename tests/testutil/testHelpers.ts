@@ -1,7 +1,8 @@
 import renderer from 'react-test-renderer'
-import React from 'react'
-import {stateProxy} from '../../src/runtime/stateProxy'
+import React, {createElement, FunctionComponent} from 'react'
 import {treeItemSelector} from '../editor/Selectors'
+import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
+import {StoreApi} from 'zustand'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -14,18 +15,6 @@ export const snapshotTest = (element: JSX.Element) => test(`${element.type.name}
 export const componentProps = (domElement: any) => {
     const propsKey = Object.keys(domElement).find(k => k.startsWith("__reactProps$"))
     return propsKey !== undefined ? domElement[propsKey as string] : null
-}
-
-export const stateVal = (value: any, path = 'path.x') => testProxy(path, {value})
-
-const dummyUpdateFn = () => {
-    throw new Error('Dummy update fn called')
-}
-export const testProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => stateProxy(path, storedState, initialValues, dummyUpdateFn)
-export const testUpdatableProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => {
-    const updateFn = jest.fn()
-    const proxy = stateProxy(path, storedState, initialValues, updateFn)
-    return [proxy, updateFn]
 }
 
 let suppressionReported = false
@@ -145,3 +134,63 @@ export function filePickerReturning(returnedData: object, fileHandleName?: strin
 
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
+
+export const testAppInterface = (initialVersion: any = null): AppStateForObject => {
+    let _latest:any = initialVersion
+
+    const appInterface = {
+        latest() {
+            return _latest
+        },
+        updateVersion: jest.fn().mockImplementation((newVersion: any) => {
+            _latest = newVersion
+            _latest.init(appInterface)
+        })
+    }
+    return appInterface
+}
+
+export function testAppStoreHook() {
+    return {
+        storeApi: null,
+        setAppStore(sa: StoreApi<AppStore>) {
+            // @ts-ignore
+            this.storeApi = sa
+        },
+        stateAt (path: string) {
+            const storeApi = this.storeApi as unknown as StoreApi<AppStore>
+            return storeApi.getState().store.select(path)
+        }
+    }
+}
+
+export const TestWrapper = <State extends object>({
+                                                      path,
+                                                      state,
+                                                      children
+                                                  }: { path: string, state: any, children?: any }) => {
+    useObjectState(path, state)
+    return children
+}
+export type Class<T> = new (...args: any[]) => T
+
+export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>): [any, any] => {
+
+    const appStoreHook0 = testAppStoreHook()
+
+    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}) => {
+        const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
+        const component = createElement(componentClass as any, {path, ...componentProps})
+        return createElement(StoreProvider, {
+            appStoreHook: appStoreHook0,
+            children: createElement(TestWrapper, {path, state}, component)
+        })
+    }
+    return [testElementCreatorFn, appStoreHook0]
+}
+
+export const valueObj = (val: any): any => ({
+    valueOf() {
+        return val
+    }
+})

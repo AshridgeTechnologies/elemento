@@ -1,7 +1,8 @@
 import {Value, valueOf} from './runtimeFunctions'
 import DataStore, {Id} from './DataStore'
 import MemoryDataStore from './components/MemoryDataStore'
-import {useObjectStateWithDefaults} from './appData'
+import {useGetObjectState, useObjectState} from './appData'
+import {AppData} from './components/App'
 
 let defaultDataStoreInstance: DataStore | null = null
 
@@ -14,11 +15,11 @@ export function defaultDataStore(): DataStore {
 }
 
 const appFunctions = (init: boolean = true) => {
-    const appData = init && useObjectStateWithDefaults('app._data')
+    const appData = init && useGetObjectState<AppData>('app._data')
     return ({
         ShowPage(page: string | Function) {
             const pageName = typeof page === 'function' ? page.name : valueOf(page)
-            appData._update( {currentPage: pageName})
+            appData && appData.ShowPage(pageName)
         },
 
         Reset(...components: {Reset: () => void}[]) {

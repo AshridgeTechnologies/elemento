@@ -1,24 +1,26 @@
 import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {valueOfProps} from '../runtimeFunctions'
-import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import {PropVal, valueOfProps} from '../runtimeFunctions'
+import InputComponentState from './InputComponentState'
+import {useGetObjectState} from '../appData'
 
-type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _update: proxyUpdateFnType}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
 
-export default function TextInput({state, ...props}: Properties) {
+type Properties = {path: string, label?: PropVal<string>, maxLength?: PropVal<number>, width?: PropVal<string | number>, multiline?: PropVal<boolean>}
+
+export default function TextInput({path, ...props}: Properties) {
     const {maxLength, label, multiline, width} = valueOfProps(props)
     const inputProps = maxLength !== undefined ? {inputProps: {maxLength}} : {}
     const widthProp = width !== undefined ? {width} : {}
     const sxProps = {sx: {...widthProp}}
     const optionalProps = definedPropertiesOf({label, multiline})
-    const {_path: path} = state
+
+    const state = useGetObjectState<TextInputState>(path)
     const value = state._controlValue ?? ''
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
         const updateValue = controlValue !== '' ? controlValue : null
-        state._update({value: updateValue })
+        state._setValue(updateValue)
     }
 
     return React.createElement(TextField, {
@@ -34,6 +36,8 @@ export default function TextInput({state, ...props}: Properties) {
     })
 }
 
-TextInput.State = class State extends InputComponentState<string> {
+export class TextInputState extends InputComponentState<string> {
     defaultValue = ''
 }
+
+TextInput.State = TextInputState

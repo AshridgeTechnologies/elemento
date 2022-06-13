@@ -3,6 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Select does not respond to alt-click to highlight
 
 
 Stories

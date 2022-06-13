@@ -70,6 +70,8 @@ export const highlightElement = (id: string | null) => {
 }
 
 export type Value<T> = T | { valueOf: () => T }
+export type PropVal<T> = T | { valueOf: () => T }
+
 export function valueOf<T>(x: Value<T>): T {
     return isObject(x) ? x.valueOf() : x
 }
@@ -109,3 +111,4 @@ export function asArray(value: any[] | object | any) {
 }
 
 export const _DELETE = '_DELETE'
+export const isClassObject = (obj: any) => isObject(obj) && !isPlainObject(obj)

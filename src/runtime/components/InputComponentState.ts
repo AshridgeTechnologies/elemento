@@ -1,16 +1,34 @@
-import {update} from '../stateProxy'
+import {BaseComponentState, ComponentState} from './ComponentState'
 
-export abstract class InputComponentState<T> {
-    constructor(private props: { value: T | null | undefined }) {
-    }
+type InputProps<T> = {value?: T | null}
+
+export default abstract class InputComponentState<T>
+    extends BaseComponentState<InputProps<T>>
+    implements ComponentState<InputComponentState<T>> {
 
     abstract defaultValue: T
 
     get value() {
-        return this.props.value
+        return this.propsOrStateValue ?? this.defaultValue
+    }
+
+    get _controlValue() {
+        return this.propsOrStateValue
+    }
+
+    private get propsOrStateValue() {
+        return this.state.value !== undefined ? this.state.value : this.props.value
+    }
+
+    _setValue(value: T | null) {
+        this.updateState({value})
+    }
+
+    valueOf() {
+        return this.value
     }
 
     Reset() {
-        return update({value: undefined})
+        this.updateState({value: undefined})
     }
 }

@@ -2,78 +2,91 @@
  * @jest-environment jsdom
  */
 
-import {createElement} from 'react'
-import {NumberInput} from '../../../src/runtime/components/index'
-import {snapshot, testProxy} from '../../testutil/testHelpers'
+import {NumberInput, TextInput} from '../../../src/runtime/components/index'
+import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
-import {stateProxy, update} from '../../../src/runtime/stateProxy'
-import {testContainer} from '../../testutil/rtlHelpers'
+import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {TextInputState} from '../../../src/runtime/components/TextInput'
+import {NumberInputState} from '../../../src/runtime/components/NumberInput'
+
+const [numberInput, appStoreHook] = wrappedTestElement(NumberInput, NumberInputState)
+
+const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('NumberInput element produces output with properties supplied',
-    snapshot(createElement(NumberInput, {state: testProxy('app.page1.width', {value: 27}), label: 'Width'}))
+    snapshot(numberInput('app.page1.width', {value: 27}, {label: 'Width'}))
 )
 
 test('NumberInput element produces output with default values where properties omitted',
-    snapshot(createElement(NumberInput, {state: testProxy('app.page1.height', {value: 0})}))
+    snapshot(numberInput('app.page1.height'))
 )
 
 test('NumberInput shows value from the state supplied', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: 27})}))
+    let container = testContainer(numberInput('app.page1.widget1', {value: 27}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('27')
 })
 
 test('NumberInput element produces output with properties supplied as state objects', () => {
-    let container = testContainer(createElement(NumberInput, {
-        state: testProxy('app.page1.widget1', {value: 27}),
-        label: testProxy('path.x', {value: 'Item Number'})
-    }))
+    let container = testContainer(numberInput('app.page1.widget1', {value: 27},
+        {label: new TextInputState({value: 'Item Number'})}))
     expect(container.querySelector('label[for="app.page1.widget1"]').innerHTML).toBe('Item Number')
 })
 
 test('NumberInput shows empty value when state value is absent', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {}, {_type: NumberInput.State})}))
+    let container = testContainer(numberInput('app.page1.widget1', {}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('NumberInput shows empty value when state value is set to undefined', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: NumberInput.State})}))
+    let container = testContainer(numberInput('app.page1.widget1', {value: undefined}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
-test('NumberInput shows initial value when state value is set to undefined and initial value exists', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: NumberInput.State, value: 99})}))
+test('NumberInput shows initial value when state value  exists', () => {
+    let container = testContainer(numberInput('app.page1.widget1', {value: 99}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('99')
 })
 
 test('NumberInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: null}, {_type: NumberInput.State, value: 99})}))
+    let container = testContainer(numberInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('NumberInput stores updated values in the app store section for its path', async () => {
-    const updateFn = jest.fn()
-    const proxy = stateProxy('app.page1.sprocket', {value: 27}, {_type: NumberInput.State}, updateFn)
-    let container = testContainer(createElement(NumberInput, {state: proxy}))
+    let container = testContainer(numberInput('app.page1.sprocket', {value: 27}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.type(inputEl, '6')
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: 276}, false)
+    expect(stateAt('app.page1.sprocket').value).toBe(276)
 } )
 
 test('NumberInput stores null value in the app store when cleared', async () => {
-    const updateFn = jest.fn()
-    const proxy = stateProxy('app.page1.sprocket', {value: 27}, {_type: NumberInput.State}, updateFn)
-    let container = testContainer(createElement(NumberInput, {state: proxy}))
+    let container = testContainer(numberInput('app.page1.sprocket', {value: 27}))
+    await wait(5)
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.clear(inputEl)
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: null}, false)
+    expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
 } )
 
 test('State class has correct properties', () => {
+    const emptyState = new NumberInput.State({})
+    expect(emptyState.value).toBe(0)
+    expect(emptyState._controlValue).toBe(undefined)
+    expect(emptyState.defaultValue).toBe(0)
+
     const state = new NumberInput.State({value: 77})
+    const appInterface = testAppInterface(); state.init(appInterface)
     expect(state.value).toBe(77)
     expect(state.defaultValue).toBe(0)
 
-    expect(state.Reset()).toStrictEqual(update({value: undefined}))
+    state.Reset()
+    const resetState = state._withStateForTest({value: undefined})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
+    expect(resetState.value).toBe(77)
+    expect(resetState._controlValue).toBe(77)
+
+    const clearedState = state._withStateForTest({value: null})
+    expect(clearedState.value).toBe(0)
+    expect(clearedState._controlValue).toBe(null)
 })

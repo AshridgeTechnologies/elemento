@@ -2,20 +2,24 @@ import React from 'react'
 import {asArray, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import ListItem from './ListItem'
-import {update, proxyUpdateFnType} from '../stateProxy'
+import {useGetObjectState} from '../appData'
+import {BaseComponentState, ComponentState} from './ComponentState'
 
 type Properties = {
+    path: string,
     items?: any[],
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
-    state: { selectedItem?: string, _path: string, _update: proxyUpdateFnType },
     width?: string | number,
     style?: string
 }
+type StateProperties = {selectedItem?: any}
 
-export default function ListElement({state, itemContentComponent, ...props}: Properties) {
-    const {selectedItem = undefined, _path: path} = state
+export default function ListElement({path, itemContentComponent, ...props}: Properties) {
+    const state = useGetObjectState<ListElementState>(path)
+
+    const {selectedItem = undefined} = state
     const {items = [], width, style} = valueOfProps(props)
-    const handleClick = (index: number) => state._update({selectedItem: items[index]})
+    const handleClick = (index: number) => state._setSelectedItem(items[index])
     const children = asArray(items).map((item, index) => {
             const itemPath = `${path}.${index}`
             const selected = Boolean(item === selectedItem || (item.Id && item.Id === (selectedItem as any)?.Id) )
@@ -28,18 +32,24 @@ export default function ListElement({state, itemContentComponent, ...props}: Pro
     return React.createElement(List, {id: path, sx:{width, overflow: 'scroll', maxHeight: '100%', py: 0}, style}, children)
 }
 
-ListElement.State = class State {
-    constructor(private props: { selectedItem: any }) {
-    }
+export class ListElementState extends BaseComponentState<StateProperties>
+    implements ComponentState<ListElementState>{
+
     get selectedItem() {
-        return this.props.selectedItem
+        return this.state.selectedItem !== undefined ? this.state.selectedItem : this.props.selectedItem
+    }
+
+    _setSelectedItem(selectedItem: any) {
+        this.updateState({selectedItem})
     }
 
     Reset() {
-        return update({selectedItem: undefined})
+        this._setSelectedItem(undefined)
     }
 
     Set(selectedItem: any) {
-        return update({selectedItem})
+        this._setSelectedItem(selectedItem)
     }
 }
+
+ListElement.State = ListElementState

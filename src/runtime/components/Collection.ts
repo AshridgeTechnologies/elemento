@@ -1,19 +1,23 @@
 import {createElement} from 'react'
-import {_DELETE, valueLiteral} from '../runtimeFunctions'
-import {clone, isArray, isNumber, isObject, isPlainObject, isString} from 'lodash'
-import {omit} from 'ramda'
-import {ResultWithUpdates, update, Update} from '../stateProxy'
+import {valueLiteral} from '../runtimeFunctions'
+import {clone, isArray, isNumber, isObject, isString} from 'lodash'
+import {equals, mergeRight, omit} from 'ramda'
 import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
+import {AppStateForObject, useGetObjectState} from '../appData'
+import {BaseComponentState, ComponentState} from './ComponentState'
+import shallow from 'zustand/shallow'
 
-type Properties = {state: any, display?: boolean}
+type Properties = {path: string, display?: boolean}
+type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
+type StateProperties = {value?: object, queries?: object, subscription?: any}
 
 let nextId = 1
 
-const Collection = function Collection({state, display = false}: Properties) {
-    const {_path: path, value} = state
+export default function Collection({path, display = false}: Properties) {
+    const state = useGetObjectState<CollectionState>(path)
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
-        createElement('code', null, valueLiteral(value))) : null
+        createElement('code', null, valueLiteral(state.value))) : null
 }
 
 
@@ -37,73 +41,97 @@ const initialValue = (value?: any): object => {
     return {}
 }
 
-Collection.State = class State {
-    private props: { value: object, queries: object, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }
+export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
+    implements ComponentState<CollectionState>{
     private immediatePendingGets = new Set()
 
-    constructor({value, queries, collectionName, dataStore, subscription }: { value?: any, queries?: any, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }) {
-        this.props = {
-            value: initialValue(value),
-            queries: queries ?? {},
-            dataStore,
-            collectionName,
-            subscription
-        }
+    constructor({value, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
+        super({value: initialValue(value), collectionName, dataStore})
     }
 
-    init(updateFn: (changes: object, replace?: boolean)=> void) {
-        const {dataStore, collectionName, subscription} = this.props
+    private updateValue(id: Id, data: any) {
+        const newValue = mergeRight(this.value, {[id]: data})
+        this.updateState({value: newValue})
+    }
+
+    private updateQueries(key: string, data: any) {
+        const newQueries = mergeRight(this.queries, {[key]: data})
+        this.updateState({queries: newQueries})
+    }
+
+    private localUpdateQueries(key: string, data: any) {
+        this.state.queries = mergeRight(this.queries, {[key]: data})
+    }
+
+    _withStateChanges(changes: StateProperties): CollectionState {
+        const newVersion = new CollectionState(this.props)
+        newVersion.state = Object.assign({}, this.state, changes) as StateProperties
+        newVersion._appStateInterface = this._appStateInterface
+        return newVersion
+    }
+
+    init(asi: AppStateForObject): void {
+        super.init(asi)
+        const {dataStore, collectionName} = this.props
+        const {subscription} = this.state
+
         if (dataStore && collectionName && !subscription) {
-            const newSubscription = dataStore.observable(collectionName).subscribe((update) => {
+            this.state.subscription = dataStore.observable(collectionName).subscribe((update) => {
                 if (update.type === InvalidateAll) {
-                    updateFn({value: _DELETE, queries: _DELETE})
+                    this.latest().updateState({value: {}, queries: {}})
                 }
                 if (update.type === InvalidateAllQueries) {
-                    updateFn({queries: _DELETE})
+                    this.latest().updateState({queries: {}})
                 }
             })
-            updateFn({subscription: newSubscription})
         }
     }
 
-    get value() { return this.props.value }
-    get dataStore() { return this.props.dataStore }
+    updateFrom(newObj: CollectionState): this {
+        const thisSimpleProps = omit(['value'], this.props)
+        const newSimpleProps = omit(['value'], newObj.props)
+        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
+        const fullMatch = simplePropsMatch && equals(this.props.value, newObj.props.value)
+        return fullMatch ? this : new CollectionState(newObj.props).withState(this.state) as this
+    }
 
-    Update(id: Id, changes: object): Update | ResultWithUpdates {
+    get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
+    get dataStore() { return this.props.dataStore }
+    private get queries() { return this.state.queries ?? {} }
+
+    Update(id: Id, changes: object) {
         const safeChanges = omit(['id', 'Id'], changes)
-        const cacheUpdate = update({value: {[id]: safeChanges}})
+        const storedItem = this.storedValue(id)
+        if(storedItem) {
+            const newItem = mergeRight(storedItem, safeChanges)
+            this.updateValue(id, newItem)
+        }
 
         if (this.dataStore) {
             this.dataStore.update(this.props.collectionName!, id, safeChanges)
-            const localUpdate = this.storedValue(id) && cacheUpdate
-            return new ResultWithUpdates(undefined, localUpdate, undefined)
         }
-
-        return cacheUpdate
     }
 
-    Add(item: object | string | number): Update | ResultWithUpdates {
+    Add(item: object | string | number) {
         const [key, value] = toEntry(item)
         const id = key.toString()
-        const cacheUpdate = update({value: {[id]: value}})
+        this.updateValue(id, item)
 
         if (this.dataStore) {
             this.dataStore.add(this.props.collectionName!, id, value)
-            return new ResultWithUpdates(undefined, cacheUpdate, undefined)
         }
-
-        return cacheUpdate
     }
 
-    Remove(id: Id): Update | ResultWithUpdates{
-        const cacheUpdate = update({value: {[id]: _DELETE}})
-        if (this.dataStore) {
-            this.dataStore.remove(this.props.collectionName!, id)
-            const localUpdate = this.storedValue(id) && cacheUpdate
-            return new ResultWithUpdates(undefined, localUpdate, undefined)
+    Remove(id: Id){
+        if(this.storedValue(id)) {
+            const newValue = omit([id.toString()], this.value)
+            this.updateState({value: newValue})
         }
 
-        return cacheUpdate
+
+        if (this.dataStore) {
+            this.dataStore.remove(this.props.collectionName!, id)
+        }
     }
 
     Get(id: Id) {
@@ -112,17 +140,17 @@ Collection.State = class State {
             return storedValue
         }
         if (this.immediatePendingGets.has(id)) {
-            return {_type: Pending}
+            return new Pending()
         }
         if (this.dataStore) {
-            const result = {_type: Pending}
-            const syncUpdate = update({value: {[id]: result}})
-            const asyncUpdate = this.dataStore.getById(this.props.collectionName!, id).then( data => {
-                const _type = isObject(data) && !isPlainObject(data) ? data.constructor : _DELETE
-                return update({value: {[id]: {_type, ...data}}})
+            const result = new Pending()
+            this.updateValue(id, result)
+
+            this.dataStore.getById(this.props.collectionName!, id).then( data => {
+                this.latest().updateValue(id, data)
             })
             this.immediatePendingGets.add(id)
-            return new ResultWithUpdates(result, syncUpdate, asyncUpdate)
+            return result
         }
 
         return null
@@ -132,21 +160,21 @@ Collection.State = class State {
         if (this.dataStore) {
 
             const criteriaKey = valueLiteral(criteria)
-            const storedResult = this.props.queries[criteriaKey as keyof object]
+            const storedResult = this.queries[criteriaKey as keyof object]
             if (storedResult) {
                 return storedResult
             }
 
             if (this.immediatePendingGets.has(criteriaKey)) {
-                return {_type: Pending}
+                return new Pending()
             }
-            const result = {_type: Pending}
-            const syncUpdate = update({queries: {[criteriaKey]: result}})
-            const asyncUpdate = this.dataStore.query(this.props.collectionName!, criteria).then(data => {
-                return update({queries: {[criteriaKey]: data}})
+            const result = new Pending()
+            this.localUpdateQueries(criteriaKey, result)
+            this.dataStore.query(this.props.collectionName!, criteria).then(data => {
+                this.latest().updateQueries(criteriaKey, data)
             })
             this.immediatePendingGets.add(criteriaKey)
-            return new ResultWithUpdates(result, syncUpdate, asyncUpdate)
+            return result
         }
 
         return null
@@ -163,4 +191,4 @@ Collection.State = class State {
 
 }
 
-export default Collection
+Collection.State = CollectionState

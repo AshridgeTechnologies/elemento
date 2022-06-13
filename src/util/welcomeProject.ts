@@ -31,7 +31,6 @@ import Elemento from 'elemento-runtime'
 
 function MainPage(props) {
     const pathWith = name => props.path + '.' + name
-    const state = Elemento.useObjectStateWithDefaults(props.path, {})
     const {Page, TextElement} = Elemento.components
     
     return React.createElement(Page, {id: props.path},
@@ -41,12 +40,10 @@ function MainPage(props) {
 }
 
 export default function WelcomeApp(props) {
+    const pathWith = name => 'WelcometoElemento' + '.' + name
+    const {App} = Elemento.components
 
-    const appPages = {MainPage}
-    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
-    const {currentPage} = appState
-    return React.createElement('div', {id: 'WelcometoElemento'},
-        React.createElement(appPages[currentPage], {path: \`WelcometoElemento.\${currentPage}\`})
-    )
+    const pages = {MainPage}
+    return React.createElement(App, {id: 'WelcometoElemento', pages,},)
 }
 `

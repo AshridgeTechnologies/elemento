@@ -1,28 +1,32 @@
 import {createElement} from 'react'
 import FileDataStoreImpl from './FileDataStoreImpl'
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../DataStore'
-import { update } from '../stateProxy'
 import appFunctions from '../appFunctions'
+import {BaseComponentState, ComponentState} from './ComponentState'
 
-type Properties = {state: {_path: string}, display?: boolean}
+type Properties = {path: string, display?: boolean}
+type ExternalProperties = {}
+type StateProperties = {dataStore?: FileDataStoreImpl}
 
-const FileDataStore = function FileDataStore({state, display = false}: Properties) {
-    const {_path: path} = state
+export default function FileDataStore({path, display = false}: Properties) {
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
-        createElement('code', null)) : null
+        createElement('code', 'File Data Store ' + path)) : null
 }
 
-FileDataStore.State = class State implements DataStore {
-    constructor(props: {dataStore?: FileDataStoreImpl}) {
-        this.props = {dataStore: props.dataStore ?? new FileDataStoreImpl()}
+export class FileDataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
+    implements DataStore, ComponentState<FileDataStoreState> {
+
+    constructor(props: ExternalProperties = {}) {
+        super(props)
     }
 
-    private props: {dataStore: FileDataStoreImpl}
-    private get dataStore() { return this.props.dataStore }
+    private get dataStore() {
+        if (!this.state.dataStore) {
+            this.state.dataStore = new FileDataStoreImpl()
+        }
 
-    init() {
-        return update({dataStore: this.dataStore})
+        return this.state.dataStore!
     }
 
     Open() {
@@ -72,4 +76,5 @@ FileDataStore.State = class State implements DataStore {
     }
 }
 
-export default FileDataStore
+FileDataStore.State = FileDataStoreState
+

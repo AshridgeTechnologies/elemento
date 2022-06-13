@@ -8,7 +8,7 @@ exports[`produces output with record values 1`] = `
     app.page1.collection2
   </div>
   <code>
-    [{a: 10, b: 'Bee1', c: true}, {a: 11}]
+    {1: {a: 10, b: 'Bee1', c: true}, 2: {a: 11}}
   </code>
 </div>
 `;
@@ -21,7 +21,7 @@ exports[`produces output with simple values 1`] = `
     app.page1.collection1
   </div>
   <code>
-    ['green', 'blue']
+    {green: 'green', blue: 'blue'}
   </code>
 </div>
 `;

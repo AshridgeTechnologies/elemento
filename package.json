@@ -3,6 +3,7 @@
   "license": "MIT",
   "scripts": {
     "compile": "tsc && cp src/appswebsite/studio/index.html build/src/studio/index.html && cp src/appswebsite/run/index.html build/src/run/index.html",
+    "clean": "rm -rf .parcel-cache devDist",
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
