@@ -1,8 +1,7 @@
-import React from 'react'
-import create from 'zustand'
+import React, { createContext, useContext, useRef } from 'react'
+import { createStore, useStore } from 'zustand'
 import {stateProxy} from './stateProxy'
 import AppState, {Changes} from './AppState'
-import createContext from 'zustand/context'
 
 type StoreType = {
     store: AppState,
@@ -26,20 +25,22 @@ const baseStore = (set: (updater: (state: StoreType) => object) => void): StoreT
     }
 })
 
-const { Provider, useStore } = createContext<StoreType>()
-
-const createStore = () => create(baseStore)
+const StoreContext = createContext(createStore(baseStore))
 
 const useObjectStateWithDefaults = <T>(elementPath: string, initialValues?: object) => {
     const path = fixPath(elementPath)
     const selectState = (state: any) => [state.store.select(path), state.update]
     const compareOnlyState = (a: any[], b: any[]) => a[0] === b[0]
-    const [existingStateAtPath, updateFn] = useStore(selectState, compareOnlyState)
+    const store = useContext(StoreContext)
+    const [existingStateAtPath, updateFn] = useStore(store, selectState, compareOnlyState)
     if ((!existingStateAtPath || path === 'app') && initialValues) {
         updateFn(path, initialValues)
     }
     return stateProxy(path, existingStateAtPath, initialValues, updateFn)
 }
 
-const StoreProvider = ({children}: {children: React.ReactNode}) => React.createElement(Provider, {createStore, children})
+const StoreProvider = ({children}: {children: React.ReactNode}) => {
+    const store = useRef(createStore(baseStore))
+    return React.createElement(StoreContext.Provider, {value: store.current, children})
+}
 export {StoreProvider, useObjectStateWithDefaults}

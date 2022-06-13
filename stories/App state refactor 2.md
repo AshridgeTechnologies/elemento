@@ -11,8 +11,8 @@ Aims
 Steps
 -----
 
-- Upgrade Zustand
-- Rework context to new recommendations
+- ✅ Upgrade Zustand
+- ✅ Rework context to new recommendations
 - Store state by id, not in a hierarchy
 - Store the state objects, not just the properties
 - State object updates itself and returns new instance
