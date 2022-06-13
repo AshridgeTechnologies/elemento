@@ -33,20 +33,20 @@ export default function TextInput({state, ...props}: Properties) {
 }
 
 TextInput.State = class State  {
-    constructor(private props: { value: string | null | undefined }) {
+    constructor(private props: { initialValue: string | null | undefined }, private currentValue?: string | null) {
     }
 
     defaultValue = ''
 
     get value() {
-        return this.props.value
+        return this.currentValue !== undefined ? this.currentValue : this.props.initialValue
     }
 
     _setValue(value: string) {
-        return new TextInput.State({value})
+        return new TextInput.State(this.props, value)
     }
 
     Reset() {
-        return new TextInput.State({value: undefined})
+        return new TextInput.State(this.props)
     }
 }

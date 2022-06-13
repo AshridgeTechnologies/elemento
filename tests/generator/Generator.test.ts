@@ -155,8 +155,8 @@ test('generates TextInput elements with initial value', ()=> {
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
-    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), new TextInput.State({value: 'Hi there!', }))
-    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), new TextInput.State({value: "Some" + " things", }))
+    const t1 = Elemento.useObjectStateWithDefaults(pathWith('t1'), new TextInput.State({initialValue: 'Hi there!', }))
+    const t2 = Elemento.useObjectStateWithDefaults(pathWith('t2'), new TextInput.State({initialValue: "Some" + " things", }))
     const t3 = Elemento.useObjectStateWithDefaults(pathWith('t3'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -384,7 +384,7 @@ function Page1(props) {
     const WidgetList = Elemento.useObjectStateWithDefaults(pathWith('WidgetList'), {value: Widgets.Query({}), _type: ListElement.State},)
     const WidgetId = Elemento.useObjectStateWithDefaults(pathWith('WidgetId'), {value: WidgetList.selectedItem && WidgetList.selectedItem.Id, _type: Data.State},)
     const TheWidget = Elemento.useObjectStateWithDefaults(pathWith('TheWidget'), {value: WidgetId.value && Get(Widgets, WidgetId.value), _type: Data.State},)
-    const Description = Elemento.useObjectStateWithDefaults(pathWith('Description'), new TextInput.State({value: TheWidget.Description, }))
+    const Description = Elemento.useObjectStateWithDefaults(pathWith('Description'), new TextInput.State({initialValue: TheWidget.Description, }))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {state: Description, label: 'Description'}),
@@ -759,7 +759,7 @@ test('syntax error statement in initialValue generates error into state defaults
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
-    const NameInput = Elemento.useObjectStateWithDefaults(pathWith('NameInput'), new TextInput.State({value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), }))
+    const NameInput = Elemento.useObjectStateWithDefaults(pathWith('NameInput'), new TextInput.State({initialValue: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )'), }))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {state: NameInput, label: 'Name Input'}),
