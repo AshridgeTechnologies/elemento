@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useRef } from 'react'
-import { createStore, useStore } from 'zustand'
+import React, {createContext, useContext, useRef} from 'react'
+import {createStore, useStore} from 'zustand'
 import {stateProxy} from './stateProxy'
 import AppState, {Changes} from './AppState'
+import {isClassObject} from './runtimeFunctions'
 
 type StoreType = {
     store: AppState,
@@ -34,7 +35,11 @@ const useObjectStateWithDefaults = <T>(elementPath: string, initialValues?: obje
     const store = useContext(StoreContext)
     const [existingStateAtPath, updateFn] = useStore(store, selectState, compareOnlyState)
     if ((!existingStateAtPath || path === 'app') && initialValues) {
-        updateFn(path, initialValues)
+        if (isClassObject(initialValues)) {
+            updateFn(path, initialValues, true)
+        } else {
+            updateFn(path, initialValues)
+        }
     }
     return stateProxy(path, existingStateAtPath, initialValues, updateFn)
 }

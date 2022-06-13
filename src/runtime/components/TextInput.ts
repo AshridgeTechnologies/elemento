@@ -2,10 +2,8 @@ import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
-import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
 
-type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _update: proxyUpdateFnType}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
+type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _setValue: (val: string) => typeof TextInput.State}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
 
 export default function TextInput({state, ...props}: Properties) {
     const {maxLength, label, multiline, width} = valueOfProps(props)
@@ -18,7 +16,7 @@ export default function TextInput({state, ...props}: Properties) {
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
         const updateValue = controlValue !== '' ? controlValue : null
-        state._update({value: updateValue })
+        state._setValue(updateValue)
     }
 
     return React.createElement(TextField, {
@@ -34,6 +32,21 @@ export default function TextInput({state, ...props}: Properties) {
     })
 }
 
-TextInput.State = class State extends InputComponentState<string> {
+TextInput.State = class State  {
+    constructor(private props: { value: string | null | undefined }) {
+    }
+
     defaultValue = ''
+
+    get value() {
+        return this.props.value
+    }
+
+    _setValue(value: string) {
+        return new TextInput.State({value})
+    }
+
+    Reset() {
+        return new TextInput.State({value: undefined})
+    }
 }

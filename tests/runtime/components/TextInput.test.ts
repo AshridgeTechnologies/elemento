@@ -7,7 +7,7 @@ import {TextInput} from '../../../src/runtime/components/index'
 import {snapshot, testProxy} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {stateProxy, update} from '../../../src/runtime/stateProxy'
+import {stateProxy} from '../../../src/runtime/stateProxy'
 import {testContainer, wait} from '../../testutil/rtlHelpers'
 
 test('TextInput element produces output with properties supplied',
@@ -60,22 +60,22 @@ test('TextInput shows empty value when state value is set to null and initial va
 
 test('TextInput stores updated values in the app store section for its path', async () => {
     const updateFn = jest.fn()
-    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', {value: 'Hi'}, {_type: TextInput.State}, updateFn)}))
+    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', new TextInput.State({value: 'Hi'}), new TextInput.State({value: undefined}), updateFn)}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.type(inputEl, '!')
     await wait(10)
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: 'Hi!'}, false)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', new TextInput.State({value: 'Hi!'}), true)
 } )
 
-test('TextInput stores undefined value in the app store when cleared', async () => {
+test('TextInput stores null value in the app store when cleared', async () => {
     const updateFn = jest.fn()
-    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', {value: 'Hi'}, {}, updateFn)}))
+    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', new TextInput.State({value: 'Hi'}), new TextInput.State({value: undefined}), updateFn)}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.clear(inputEl)
     await wait(10)
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', {value: null}, false)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', new TextInput.State({value: null}), true)
 } )
 
 test('State class has correct properties and functions', () => {
@@ -83,5 +83,5 @@ test('State class has correct properties and functions', () => {
     expect(state.value).toBe('car')
     expect(state.defaultValue).toBe('')
 
-    expect(state.Reset()).toStrictEqual(update({value: undefined}))
+    expect(state.Reset()).toStrictEqual(new TextInput.State({value: undefined}))
 })

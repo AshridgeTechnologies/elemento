@@ -16,7 +16,7 @@ const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput} = Elemento.components
-        const input1 = Elemento.useObjectStateWithDefaults(pathWith('input1'), {_type: TextInput.State},)
+        const input1 = Elemento.useObjectStateWithDefaults(pathWith('input1'), new TextInput.State({value: undefined}),)
 
         // @ts-ignore
         return React.createElement(Page, {id: props.path},

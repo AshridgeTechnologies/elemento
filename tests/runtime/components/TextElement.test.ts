@@ -6,6 +6,7 @@ import {createElement} from 'react'
 import {TextElement} from '../../../src/runtime/components/index'
 import {snapshot, stateVal} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
+import {stateProxy} from '../../../src/runtime/stateProxy'
 
 const {Sum} = globalFunctions
 
@@ -34,8 +35,8 @@ test('TextElement element produces output containing ReactElement children', () 
     }
 )
 
-test('TextElement element produces output containing valueOf  object', () => {
-        const obj = stateVal('where are you')
+test.skip('TextElement element produces output containing valueOf  object', () => {
+        const obj = stateProxy('path.x', {value: 'where are you'}, {}, jest.fn())
         snapshot(createElement(TextElement, {path: 'page1.para1'}, obj))()
     }
 )
