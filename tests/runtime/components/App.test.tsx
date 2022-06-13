@@ -41,12 +41,12 @@ test('App element produces output containing page and additional components with
 test('App shows first page initially and other page when state changes', () => {
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1'}, 'this is page ' + pageName)
     function MainPage(props: {path: string}) {
-        const state = Elemento.useObjectStateWithDefaults('app1', {})
+        const state = Elemento.useObjectStateWithDefaults('app1._data', {})
         // @ts-ignore
         return React.createElement(Page, {id: props.path},
             text('Main'),
             React.createElement('button', {onClick: () => {
-                    state._update({_data: {currentPage: 'OtherPage'}})
+                    state._update({currentPage: 'OtherPage'})
                 }}),
         )
     }

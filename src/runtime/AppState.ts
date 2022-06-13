@@ -1,5 +1,5 @@
 import {isObject, isPlainObject} from 'lodash'
-import {equals, lensPath, mergeDeepRight, set, view} from 'ramda'
+import {equals, lensPath, mergeDeepRight} from 'ramda'
 import {_DELETE, valueLiteral} from './runtimeFunctions'
 
 const isIntegerString = (s: string) => s.match(/^\d+$/)
@@ -24,20 +24,19 @@ const removeDeleted = (obj: object) => {
 }
 
 export default class AppState {
-    constructor(initialData: object) {
-        this.state = initialData
+    constructor(initialData: object | Map<string, any>) {
+        const initialEntries = initialData instanceof Map ? initialData.entries() : Object.entries(initialData)
+        this.state = new Map(initialEntries)
     }
 
-    state: object
+    private state: Map<string, any>
 
     select(path: string) {
-        return view(lensFor(path), this.state)
+        return this.state.get(path)
     }
 
     update(path: string, changes: Changes, replace = false): AppState {
-        const lens = lensFor(path)
-        const existingState = this.state
-        const existingStateAtPath = view(lens, existingState)
+        const existingStateAtPath = this.select(path)
         if (!replace && existingStateAtPath !== undefined && !isObject(existingStateAtPath)) {
             throw new Error(`${path}: cannot update existing value ${valueLiteral(existingStateAtPath)} with ${valueLiteral(changes)}`)
         }
@@ -47,7 +46,8 @@ export default class AppState {
             throw new Error(`${path}: cannot update existing value ${valueLiteral(existingStateAtPath)} with ${valueLiteral(changes)}`)
         }
         if (!equals(newStateAtPath, existingStateAtPath)) {
-            const newState = set(lens, newStateAtPath, existingState)
+            const newState = new Map(this.state.entries())
+            newState.set(path, newStateAtPath)
             return new AppState(newState)
         }
 

@@ -1,11 +1,6 @@
 import AppState from '../../src/runtime/AppState'
 import {_DELETE} from '../../src/runtime/runtimeFunctions'
 
-test('sets store to initial state', ()=> {
-    const initialState = {app: {}}
-    expect(new AppState(initialState).state).toBe(initialState)
-})
-
 test('get initial app state', ()=> {
     const store = new AppState({app: {}})
     expect(store.select('app')).toStrictEqual({})
@@ -22,14 +17,10 @@ test('can set app state and get it again', ()=> {
 test('can set and get lower level state', ()=> {
     const store = new AppState({app: {}})
     const newStore = store.update('app.page1.description', {color: 'red', length: 23})
-    expect(store.select('app')).toStrictEqual({})
-    expect(newStore.select('app.page1.description.color')).toBe('red')
-    expect(newStore.select('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-    expect(newStore.select('app.page1')).toStrictEqual({description: {color: 'red', length: 23}})
-    expect(newStore.select('app')).toStrictEqual({page1: {description: {color: 'red', length: 23}}})
-    expect(newStore.select('')).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
-    expect(store.select('')).toStrictEqual({app: {}})
     expect(newStore).not.toBe(store)
+    expect(newStore.select('app')).toStrictEqual({})
+    expect(newStore.select('app.page1.description').color).toBe('red')
+    expect(newStore.select('app.page1.description')).toStrictEqual({color: 'red', length: 23})
 })
 
 test('can update an item in state below app level', ()=> {
@@ -59,15 +50,11 @@ test('can update value in state below app level to null', ()=> {
 test('can update state below app level and keep existing objects', ()=> {
     let store = new AppState({app: {}})
     store = store.update('app.page1.description', {color: 'red', length: 23})
+    store = store.update('app.page1', {title: 'foo'})
     const page1State = store.select('app.page1')
     store = store.update('app.page2.description', {color: 'blue', length: 499})
     const page1StateAfter = store.select('app.page1')
     expect(page1StateAfter).toBe(page1State)
-
-    expect(store.select('')).toStrictEqual({app: {
-        page1: {description: {color: 'red', length: 23}},
-        page2: {description: {color: 'blue', length: 499}},
-        }})
 })
 
 test('can update state below app level and keep existing objects below the part changed', ()=> {
@@ -78,12 +65,9 @@ test('can update state below app level and keep existing objects below the part 
     const page1DescriptionStateAfter = store.select('app.page1.description')
     expect(page1DescriptionStateAfter).toBe(page1DescriptionState)
 
-    expect(store.select('')).toStrictEqual({app: {
-        page1: {route: 66, description: {color: 'red', length: 23}},
-        }})
 })
 
-test('can remove elements in state below app level and keep existing objects below the part changed', ()=> {
+test('can remove elements in a level within a state object', ()=> {
     let store = new AppState({app: {}})
     store = store.update('app.page1.description', {
         value: {
@@ -93,24 +77,7 @@ test('can remove elements in state below app level and keep existing objects bel
     })
     store = store.update('app.page1.description', {value: {id2: _DELETE}})
 
-    expect(store.select('')).toStrictEqual({app: {
-        page1: {description: {value: {
-                    id1: {a: 10},
-                }}},
-        }})
-})
-
-test('can update element in an array below app level and keep other existing objects', ()=> {
-    let store = new AppState({app: {}})
-    store = store.update('app.page1.parts', [{color: 'red', length: 23}, {color: 'blue', length: 34}], true)
-    const page1Parts0State = store.select('app.page1.parts.0')
-    store = store.update('app.page1.parts.1', {length: 44})
-    const page1Parts0StateAfter = store.select('app.page1.parts[0]')  // test alternative index notation
-    expect(page1Parts0StateAfter).toBe(page1Parts0State)
-
-    expect(store.select('')).toStrictEqual({app: {
-        page1: {parts: [{color: 'red', length: 23}, {color: 'blue', length: 44}]},
-        }})
+    expect(store.select('app.page1.description')).toStrictEqual({value: {id1: {a: 10},}})
 })
 
 test('can set state below app level to a primitive', ()=> {
@@ -147,41 +114,23 @@ describe('updateState with replace', () => {
         let store = new AppState({app: {}})
         store = store.update('app.page1.description', {color: 'red', length: 23}, true)
         expect(store.select('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-        expect(store.select('')).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
     })
 
     test('can set state with array and get it again', ()=> {
         let store = new AppState({app: {}})
         store = store.update('app.page1.description', ['red', 'green', 'blue'], true)
         expect(store.select('app.page1.description')).toStrictEqual(['red', 'green', 'blue'])
-        expect(store.select('app.page1')).toStrictEqual({description: ['red', 'green', 'blue']})
-        expect(store.select('app')).toStrictEqual({page1: {description: ['red', 'green', 'blue']}})
-        expect(store.select('')).toStrictEqual({app: {page1: {description: ['red', 'green', 'blue']}}})
     })
 
     test('can set state below app level and keep existing objects', ()=> {
         let store = new AppState({app: {}})
         store = store.update('app.page1.description', {color: 'red', length: 23}, true)
+        store = store.update('app.page1', {title: 'stuff'}, true)
         const page1State = store.select('app.page1')
-        store = store.update('app.page2.description', {color: 'blue', length: 499}, true)
+        store = store.update('app.page1.description', {color: 'blue', length: 499}, true)
 
         const page1StateAfter = store.select('app.page1')
         expect(page1StateAfter).toBe(page1State)
-
-        expect(store.select('')).toStrictEqual({app: {
-                page1: {description: {color: 'red', length: 23}},
-                page2: {description: {color: 'blue', length: 499}},
-            }})
-    })
-
-    test('can set state below app level and remove existing objects below the part changed', ()=> {
-        let store = new AppState({app: {}})
-        store = store.update('app.page1.description', {color: 'red', length: 23}, true)
-        store = store.update('app.page1', {route: 66}, true)
-
-        expect(store.select('')).toStrictEqual({app: {
-                page1: {route: 66},
-            }})
     })
 
     test('can set state below app level and whole store is the same if nothing changed', ()=> {

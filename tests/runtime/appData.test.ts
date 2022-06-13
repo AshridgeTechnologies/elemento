@@ -20,10 +20,6 @@ const stateFor = (path: string = '', defaults: object = {}) => useObjectStateWit
 
 const updateStateFor = (path: string, updates: object, replace: boolean = false) => stateFor(path)._update(updates, replace)
 
-test('get whole initial state', testInProvider(() => {
-    expect(stateFor('')).toStrictEqual({app: {}})
-}))
-
 test('get initial app state', testInProvider(() => {
     expect(stateFor('app')).toStrictEqual({})
 }))
@@ -57,15 +53,11 @@ test('can set app state and get it again', testInProvider(() => {
 test('can set state below app level and get it again', testInProvider(() => {
     updateStateFor('app.page1.description', {color: 'red', length: 23})
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-    expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red', length: 23}})
-    expect(stateFor('app')).toStrictEqual({page1: {description: {color: 'red', length: 23}}})
-    expect(stateFor()).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
 }))
 
 test('can get state with an element path and normalise first part to "app"', testInProvider(() => {
     updateStateFor('app.page1.description', {color: 'red', length: 23})
     expect(stateFor('BigApp.page1.description')).toStrictEqual({color: 'red', length: 23})
-    expect(stateFor()).toStrictEqual({app: {page1: {description: {color: 'red', length: 23}}}})
 }))
 
 test('can use non-existent state below app level and set initial values', testInProvider(() => {
@@ -78,11 +70,9 @@ test('can use non-existent state below app level and set initial values', testIn
 
 test('can use partially existing state below app level and update with initial values', testInProvider(() => {
     updateStateFor('app.page1.description', {color: 'red'})
-    const newState = stateFor('app.page1', {description: {color: 'blue', length: 1}})
-    expect(newState).toMatchObject({description: {color: 'red', length: 1,}})
+    stateFor('app.page1', {title: 'foo'})
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red'})
-    expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red'}})
-    expect(stateFor()).toStrictEqual({app: {page1: {description: {color: 'red'}}}})
+    expect(stateFor('app.page1')).toStrictEqual({title: 'foo'})
 }))
 
 test('state with defaults does not add properties to the base store', testInProvider(() => {
@@ -97,15 +87,15 @@ test('state with defaults does not add properties to the base store', testInProv
 test('can set an item in state below app level to undefined and get it again and use defaults', testInProvider(() => {
     updateStateFor('app.page1.description', {color: 'red', length: undefined})
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: undefined})
-    const newState = stateFor('app.page1', {description: {color: 'blue', length: 111}})
-    expect(newState).toMatchObject({description: {color: 'red', length: 111}})
+    const newState = stateFor('app.page1', {title: 'foo'})
+    expect(newState).toMatchObject({title: 'foo'})
 }))
 
 test('can replace state below app level and get it again', testInProvider(() => {
     updateStateFor('app.page1.description', {color: 'red', length: 23}, true)
     expect(stateFor('app.page1.description')).toStrictEqual({color: 'red', length: 23})
-    expect(stateFor('app.page1')).toStrictEqual({description: {color: 'red', length: 23}})
-    expect(stateFor('app')).toStrictEqual({page1: {description: {color: 'red', length: 23}}})
+    updateStateFor('app.page1', {title: 'foo'}, true)
+    expect(stateFor('app.page1')).toStrictEqual({title: 'foo'})
 }))
 
 test('calls init function on state object if found and applies updates', testInProvider(() => {
