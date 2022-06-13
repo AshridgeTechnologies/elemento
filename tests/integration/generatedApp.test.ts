@@ -13,6 +13,14 @@ import '@testing-library/jest-dom'
 import {act} from '@testing-library/react'
 import {wait} from '../testutil/rtlHelpers'
 
+// Hack to get Jest 28 to work with ESM firebase
+jest.mock("firebase/storage", () => ({
+    getStorage: jest.fn(),
+}))
+jest.mock("firebase/app", () => ({
+    initializeApp: jest.fn(),
+}))
+
 afterEach(() => {
     // @ts-ignore
     global.fetch = undefined

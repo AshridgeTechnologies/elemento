@@ -17,6 +17,17 @@ import {generate} from '../../src/generator/Generator'
 
 import * as authentication from '../../src/shared/authentication'
 
+// Hack to get Jest 28 to work with ESM firebase
+jest.mock("firebase/storage", () => ({
+    getStorage: jest.fn(),
+}))
+jest.mock("firebase/auth", () => ({
+    getAuth: jest.fn(),
+}))
+jest.mock("firebase/app", () => ({
+    initializeApp: jest.fn(),
+}))
+
 jest.mock('../../src/shared/authentication')
 
 let container: any = null, unmount: any

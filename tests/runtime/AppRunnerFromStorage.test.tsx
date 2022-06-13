@@ -12,6 +12,13 @@ import {wait} from '../testutil/rtlHelpers'
 import {getTextFromStorage} from '../../src/shared/storage'
 import {appCode1} from '../testutil/projectFixtures'
 
+jest.mock("firebase/storage", () => ({
+    getStorage: jest.fn(),
+}))
+jest.mock("firebase/app", () => ({
+    initializeApp: jest.fn(),
+}))
+
 jest.mock('../../src/shared/storage')
 
 export function mock_getTextFromStorage(path: string) {

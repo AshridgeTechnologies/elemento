@@ -11,6 +11,14 @@ import {wait} from '../testutil/rtlHelpers'
 import {appCode1} from '../testutil/projectFixtures'
 import {getTextFromStorage} from '../../src/shared/storage'
 
+// Hack to get Jest 28 to work with ESM firebase
+jest.mock("firebase/storage", () => ({
+    getStorage: jest.fn(),
+}))
+jest.mock("firebase/app", () => ({
+    initializeApp: jest.fn(),
+}))
+
 jest.mock('../../src/shared/storage')
 
 function mock_getTextFromStorage(path: string) {

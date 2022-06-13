@@ -13,6 +13,17 @@ import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {act, render} from '@testing-library/react/pure'
 
+// Hack to get Jest 28 to work with ESM firebase
+jest.mock("firebase/storage", () => ({
+    getStorage: jest.fn(),
+}))
+jest.mock("firebase/auth", () => ({
+    getAuth: jest.fn(),
+}))
+jest.mock("firebase/app", () => ({
+    initializeApp: jest.fn(),
+}))
+
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
 
