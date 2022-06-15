@@ -21,9 +21,13 @@ FileDataStore.State = class State implements DataStore {
     private props: {dataStore: FileDataStoreImpl}
     private get dataStore() { return this.props.dataStore }
 
-    init() {
-        return update({dataStore: this.dataStore})
+    mergeProps(newState: typeof this) {
+        return this  // not expected to change collection name or data store at runtime AND comparing proxies for DataStore does not work
     }
+
+    // init() {
+    //     return update({dataStore: this.dataStore})
+    // }
 
     Open() {
         this.dataStore.Open().catch( e => appFunctions().NotifyError('Could not open file', e) )

@@ -1,7 +1,7 @@
 import {createElement} from 'react'
 import {_DELETE, valueLiteral} from '../runtimeFunctions'
 import {clone, isArray, isNumber, isObject, isPlainObject, isString} from 'lodash'
-import {omit} from 'ramda'
+import {mergeRight, omit} from 'ramda'
 import {ResultWithUpdates, update, Update} from '../stateProxy'
 import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
 
@@ -38,35 +38,60 @@ const initialValue = (value?: any): object => {
 }
 
 Collection.State = class State {
-    private props: { value: object, queries: object, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }
+    private props: {  dataStore?: DataStore, collectionName?: CollectionName }
     private immediatePendingGets = new Set()
+    private state: {value: object , queries: object, subscription?: any, updateFn: (changes: object, replace?: boolean)=> void}
 
-    constructor({value, queries, collectionName, dataStore, subscription }: { value?: any, queries?: any, dataStore?: DataStore, collectionName?: CollectionName, subscription?: any }) {
+    constructor({value, collectionName, dataStore }: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         this.props = {
-            value: initialValue(value),
-            queries: queries ?? {},
             dataStore,
             collectionName,
-            subscription
         }
+
+        this.state = {
+            value: initialValue(value),
+            queries: {},
+            updateFn: () => { throw new Error('updateFn called before injected')}
+        }
+    }
+
+    setState(changes: { value?: object, queries?: object}) {
+        const result = new Collection.State(this.props)
+        result.state = mergeRight(this.state, changes)
+        return result
+    }
+
+    private updateState(changes: { value?: object, queries?: object }) {
+        this.state.updateFn(this.setState(changes), true)
+    }
+
+    private updateValue(id: Id, data: any) {
+        const newValue = mergeRight(this.value, {[id]: data})
+        this.updateState({value: newValue})
+    }
+
+    mergeProps(newState: typeof this) {
+        return this  // not expected to change collection name or data store at runtime AND comparing proxies for DataStore does not work
     }
 
     init(updateFn: (changes: object, replace?: boolean)=> void) {
-        const {dataStore, collectionName, subscription} = this.props
+        const {dataStore, collectionName} = this.props
+        const {subscription} = this.state
+        this.state.updateFn = updateFn  // no effect on external view so no need to update
+
         if (dataStore && collectionName && !subscription) {
-            const newSubscription = dataStore.observable(collectionName).subscribe((update) => {
+            this.state.subscription = dataStore.observable(collectionName).subscribe((update) => {
                 if (update.type === InvalidateAll) {
-                    updateFn({value: _DELETE, queries: _DELETE})
+                    this.updateState({value: {}, queries: {}})
                 }
                 if (update.type === InvalidateAllQueries) {
-                    updateFn({queries: _DELETE})
+                    this.updateState({queries: {}})
                 }
             })
-            updateFn({subscription: newSubscription})
         }
     }
 
-    get value() { return this.props.value }
+    get value() { return this.state.value }
     get dataStore() { return this.props.dataStore }
 
     Update(id: Id, changes: object): Update | ResultWithUpdates {
@@ -112,17 +137,17 @@ Collection.State = class State {
             return storedValue
         }
         if (this.immediatePendingGets.has(id)) {
-            return {_type: Pending}
+            return new Pending()
         }
         if (this.dataStore) {
-            const result = {_type: Pending}
-            const syncUpdate = update({value: {[id]: result}})
-            const asyncUpdate = this.dataStore.getById(this.props.collectionName!, id).then( data => {
-                const _type = isObject(data) && !isPlainObject(data) ? data.constructor : _DELETE
-                return update({value: {[id]: {_type, ...data}}})
+            const result = new Pending()
+            this.updateValue(id, result)
+
+            this.dataStore.getById(this.props.collectionName!, id).then( data => {
+                this.updateValue(id, data)
             })
             this.immediatePendingGets.add(id)
-            return new ResultWithUpdates(result, syncUpdate, asyncUpdate)
+            return result
         }
 
         return null
@@ -132,21 +157,23 @@ Collection.State = class State {
         if (this.dataStore) {
 
             const criteriaKey = valueLiteral(criteria)
-            const storedResult = this.props.queries[criteriaKey as keyof object]
+            const storedResult = this.state.queries[criteriaKey as keyof object]
             if (storedResult) {
                 return storedResult
             }
 
             if (this.immediatePendingGets.has(criteriaKey)) {
-                return {_type: Pending}
+                return new Pending()
             }
-            const result = {_type: Pending}
-            const syncUpdate = update({queries: {[criteriaKey]: result}})
-            const asyncUpdate = this.dataStore.query(this.props.collectionName!, criteria).then(data => {
-                return update({queries: {[criteriaKey]: data}})
+            const result = new Pending()
+            // const syncUpdate = update({queries: {[criteriaKey]: result}})
+            this.updateState({queries: {[criteriaKey]: result}})
+            this.dataStore.query(this.props.collectionName!, criteria).then(data => {
+                // return update({queries: {[criteriaKey]: data}})
+                this.updateState({queries: {[criteriaKey]: data}})
             })
             this.immediatePendingGets.add(criteriaKey)
-            return new ResultWithUpdates(result, syncUpdate, asyncUpdate)
+            return result
         }
 
         return null

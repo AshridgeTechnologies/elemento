@@ -2,7 +2,7 @@ import {createElement as el} from 'react'
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
 import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import InputComponentState from './NewInputComponentState'
 
 type Properties = { label?: string, values?: string[], state: { value?: string, _path: string, _update: proxyUpdateFnType } }
 

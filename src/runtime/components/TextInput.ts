@@ -2,6 +2,7 @@ import React, {ChangeEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
+import InputComponentState from './NewInputComponentState'
 
 type Properties = {state: {value?: string, _path: string, _controlValue: string | null, _setValue: (val: string) => typeof TextInput.State}, label?: string, maxLength?: number, width?: string | number, multiline?: boolean}
 
@@ -32,21 +33,6 @@ export default function TextInput({state, ...props}: Properties) {
     })
 }
 
-TextInput.State = class State  {
-    constructor(private props: { initialValue: string | null | undefined }, private currentValue?: string | null) {
-    }
-
+TextInput.State = class State extends InputComponentState<string> {
     defaultValue = ''
-
-    get value() {
-        return this.currentValue !== undefined ? this.currentValue : this.props.initialValue
-    }
-
-    _setValue(value: string) {
-        return new TextInput.State(this.props, value)
-    }
-
-    Reset() {
-        return new TextInput.State(this.props)
-    }
 }

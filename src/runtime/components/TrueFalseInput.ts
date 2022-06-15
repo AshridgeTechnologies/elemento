@@ -2,7 +2,7 @@ import {ChangeEvent, createElement} from 'react'
 import {FormControlLabel, Switch} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
 import {proxyUpdateFnType} from '../stateProxy'
-import {InputComponentState} from './InputComponentState'
+import InputComponentState from './NewInputComponentState'
 
 type Properties = {state: {value?: boolean, _path: string, _controlValue: boolean | null, _update: proxyUpdateFnType}, label?: string}
 
@@ -24,7 +24,6 @@ export default function TrueFalseInput({state, ...props}: Properties) {
         })
     })
 }
-
 
 TrueFalseInput.State = class State extends InputComponentState<boolean> {
     defaultValue = false

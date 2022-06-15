@@ -39,43 +39,44 @@ test('TextInput shows value from the state supplied', () => {
 })
 
 test('TextInput shows empty value when state value is absent', () => {
-    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', {}, new TextInput.State({initialValue: 'Hi there!'}))}))
+    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', {})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('TextInput shows empty value when state value is set to undefined', () => {
-    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: undefined}), new TextInput.State({initialValue: undefined}))}))
+    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: undefined}))}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('TextInput shows initial value when state value is set to undefined and initial value exists', () => {
-    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: 'Axe'}), new TextInput.State({initialValue: 'Axe'}))}))
+    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: 'Axe'}))}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('Axe')
 })
 
 test('TextInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: 'Axe'}, null), new TextInput.State({initialValue: 'Axe'}))}))
+    let container = testContainer(createElement(TextInput, {state: testProxy('app.page1.widget1', new TextInput.State({initialValue: 'Axe'}).setState({value: null}))}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('TextInput stores updated values in the app store section for its path', async () => {
     const updateFn = jest.fn()
-    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', new TextInput.State({initialValue: undefined}, 'Hi'), new TextInput.State({initialValue: undefined}), updateFn)}))
+    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', new TextInput.State({initialValue: undefined}).setState({value: 'Hi'}), updateFn)}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.type(inputEl, '!')
     await wait(10)
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', new TextInput.State({initialValue: undefined}, 'Hi!'), true)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', new TextInput.State({initialValue: undefined}).setState({value: 'Hi!'}), true)
 } )
 
 test('TextInput stores null value in the app store when cleared', async () => {
     const updateFn = jest.fn()
-    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', new TextInput.State({initialValue: 'Hi'}), new TextInput.State({initialValue: undefined}), updateFn)}))
+    const originalState = new TextInput.State({initialValue: 'Hi'})
+    let container = testContainer(createElement(TextInput, {state: stateProxy('app.page1.sprocket', originalState, updateFn)}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.clear(inputEl)
     await wait(10)
-    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', new TextInput.State({initialValue: 'Hi'}, null), true)
+    expect(updateFn).toHaveBeenCalledWith('app.page1.sprocket', originalState.setState({value: null}), true)
 } )
 
 test('State class has correct properties and functions', () => {
@@ -83,5 +84,5 @@ test('State class has correct properties and functions', () => {
     expect(state.value).toBe('car')
     expect(state.defaultValue).toBe('')
 
-    expect(state.Reset()).toStrictEqual(new TextInput.State({initialValue: 'car'}, undefined))
+    expect(state.Reset()).toStrictEqual(state.setState({value: undefined}))
 })

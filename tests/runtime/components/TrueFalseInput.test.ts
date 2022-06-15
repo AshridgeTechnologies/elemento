@@ -18,38 +18,38 @@ test('TrueFalseInput element produces output with default values where propertie
 )
 
 test('TrueFalseInput shows false if that value is in the state', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: false}, {_type: TrueFalseInput.State})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: false})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(false)
 })
 
 test('TrueFalseInput shows true if that value is in the state', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: true}, {_type: TrueFalseInput.State})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: true})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(true)
 })
 
 test('TrueFalseInput shows false if no value is in the state', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {}, {_type: TrueFalseInput.State})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(false)
 })
 
 test('TrueFalseInput shows false if an undefined value is in the state', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: TrueFalseInput.State})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: undefined})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(false)
 })
 
 test('TrueFalseInput shows initial value when state value is set to undefined and initial value exists', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: TrueFalseInput.State, value: true})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: undefined})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(true)
 })
 
 test('TrueFalseInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: null}, {_type: TrueFalseInput.State, value: true})}))
+    let container = testContainer(createElement(TrueFalseInput, {state: testProxy('app.page1.widget1', {value: null})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').checked).toBe(false)
 })
 
 test('TrueFalseInput element produces output with other properties supplied as state objects', () => {
     let container = testContainer(createElement(TrueFalseInput, {
-        state: testProxy('app.page1.widget1', {value: true}, {_type: TrueFalseInput.State}),
+        state: testProxy('app.page1.widget1', {value: true}),
         label: testProxy('path.x', {value: 'Is it OK'})
     }))
     expect(container.querySelector('label').textContent).toBe('Is it OK')

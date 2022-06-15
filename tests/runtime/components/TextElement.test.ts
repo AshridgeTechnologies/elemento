@@ -36,8 +36,8 @@ test('TextElement element produces output containing ReactElement children', () 
 )
 
 test.skip('TextElement element produces output containing valueOf  object', () => {
-        const obj = stateProxy('path.x', {value: 'where are you'}, {}, jest.fn())
-        snapshot(createElement(TextElement, {path: 'page1.para1'}, obj))()
+        const obj = stateProxy('path.x', {value: 'where are you'}, jest.fn())
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, obj))()
     }
 )
 

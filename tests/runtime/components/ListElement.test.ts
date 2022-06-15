@@ -25,7 +25,7 @@ test('ListElement shows selectedItem as selected', () => {
 
 test('ListElement updates its selectedItem in the app state', async () => {
     const updateFn = jest.fn()
-    const proxy = stateProxy('app.page1.list1', {selectedItem: listData[1]}, {_type: ListElement.State}, updateFn)
+    const proxy = stateProxy('app.page1.list1', {selectedItem: listData[1]}, updateFn)
     let container = testContainer(createElement(ListElement, {state: proxy, itemContentComponent: ListItem1, items: listData}))
     const listItem0El = container.querySelector('[id="app.page1.list1.0.Text99"]')
     const user = userEvent.setup()

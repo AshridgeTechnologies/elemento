@@ -16,5 +16,5 @@ Steps
 - ✅ Store state by id, not in a hierarchy
 - Store the state objects, not just the properties
 - State object updates itself and returns new instance
-- 
+- State object calls the app state update itself - especially for async results
 - Move proxy functionality into the class

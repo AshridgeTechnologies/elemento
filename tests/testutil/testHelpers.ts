@@ -21,10 +21,10 @@ export const stateVal = (value: any, path = 'path.x') => testProxy(path, {value}
 const dummyUpdateFn = () => {
     throw new Error('Dummy update fn called')
 }
-export const testProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => stateProxy(path, storedState, initialValues, dummyUpdateFn)
+export const testProxy = (path: string, storedState: object | undefined) => stateProxy(path, storedState, dummyUpdateFn)
 export const testUpdatableProxy = (path: string, storedState: object | undefined, initialValues: object = {}) => {
     const updateFn = jest.fn()
-    const proxy = stateProxy(path, storedState, initialValues, updateFn)
+    const proxy = stateProxy(path, storedState, updateFn)
     return [proxy, updateFn]
 }
 

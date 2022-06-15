@@ -1,6 +1,7 @@
 import {mergeDeepWith} from 'ramda'
-import {isFunction, isPlainObject} from 'lodash'
+import {isFunction, isObject, isPlainObject} from 'lodash'
 import {isClassObject} from './runtimeFunctions'
+import {Pending} from './DataStore'
 
 export type updateFnType = (path: string, changes: object, replace?: boolean) => void
 export type proxyUpdateFnType = (changes: object) => void
@@ -17,6 +18,7 @@ export function update(changes: object, replace = false) {
     return new Update(changes, replace)
 }
 
+const isStateObject = (val: any) => isObject(val) && (val.constructor.name.endsWith('State'))
 
 const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 
@@ -64,31 +66,20 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
                     return returnVal.result
                 } else if (returnVal instanceof Update) {
                     updateFn(path, returnVal.changes, returnVal.replace)
-                } else if (isClassObject(returnVal)) {
+                } else if (isStateObject(returnVal)) {
                     updateFn(path, returnVal, true)
                 } else {
                     return returnVal
                 }
             }
         }
-        return isPlainObject(result) ? stateProxy(`${path}.${prop}`, result, {}, updateFn) : result
+        return isPlainObject(result) ? stateProxy(`${path}.${prop}`, result, updateFn) : result
     }
 
 })
 
-const useRightIfDefined = (left: any, right: any) => right !== undefined ? right : left
-
-export function stateProxy(path: string, storedState: object | undefined, initialValues: object | undefined, updateFn: updateFnType) {
-    const proxyTarget = () => {
-        if (isClassObject(storedState)) {
-            return storedState
-        }
-
-        const mergedState = mergeDeepWith(useRightIfDefined, initialValues || {}, storedState || {})
-        const {_type, ...proxyState} = mergedState
-        return _type ? new _type(proxyState) : proxyState
-    }
-    const proxy = new Proxy(proxyTarget(), stateProxyHandler(path, updateFn))
+export function stateProxy(path: string, state: object | undefined, updateFn: updateFnType) {
+    const proxy = new Proxy(state, stateProxyHandler(path, updateFn))
     proxy.init?.((changes: object, replace?: boolean) => updateFn(path, changes, replace))
     return proxy
 }

@@ -31,28 +31,28 @@ test('NumberInput element produces output with properties supplied as state obje
 })
 
 test('NumberInput shows empty value when state value is absent', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {}, {_type: NumberInput.State})}))
+    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('NumberInput shows empty value when state value is set to undefined', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: NumberInput.State})}))
+    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('NumberInput shows initial value when state value is set to undefined and initial value exists', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined}, {_type: NumberInput.State, value: 99})}))
+    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: undefined})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('99')
 })
 
 test('NumberInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: null}, {_type: NumberInput.State, value: 99})}))
+    let container = testContainer(createElement(NumberInput, {state: testProxy('app.page1.widget1', {value: null})}))
     expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
 })
 
 test('NumberInput stores updated values in the app store section for its path', async () => {
     const updateFn = jest.fn()
-    const proxy = stateProxy('app.page1.sprocket', {value: 27}, {_type: NumberInput.State}, updateFn)
+    const proxy = stateProxy('app.page1.sprocket', {value: 27}, updateFn)
     let container = testContainer(createElement(NumberInput, {state: proxy}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
@@ -62,7 +62,7 @@ test('NumberInput stores updated values in the app store section for its path', 
 
 test('NumberInput stores null value in the app store when cleared', async () => {
     const updateFn = jest.fn()
-    const proxy = stateProxy('app.page1.sprocket', {value: 27}, {_type: NumberInput.State}, updateFn)
+    const proxy = stateProxy('app.page1.sprocket', {value: 27}, updateFn)
     let container = testContainer(createElement(NumberInput, {state: proxy}))
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()

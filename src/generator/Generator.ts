@@ -416,7 +416,7 @@ ${children}
                 case 'TextInput': {
                     const input = element as TextInput
                     const [valueExpr] = Generator.getExpr(input.initialValue, identifiers, isKnown)
-                    return `new ${input.kind}.State({${ifDefined('initialValue', valueExpr)}})`
+                    return `new ${input.kind}.State({${ifDefined('value', valueExpr)}})`
                 }
 
                 case 'SelectInput':
