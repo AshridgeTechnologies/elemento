@@ -54,9 +54,9 @@ const useObjectStateWithDefaults = <T>(elementPath: string, initialState?: objec
             mergedState = _type ? new _type(props) : props
         }
 
-        if (!equals(mergedState, storedState)) {
-            updateFn(path, mergedState, true)
-        }
+        // if (!equals(mergedState, storedState)) {
+        //     updateFn(path, mergedState, true)
+        // }
 
     }
     else if (storedState) {

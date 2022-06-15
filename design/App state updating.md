@@ -43,6 +43,7 @@ Forces
 - Delegating direct to a value sub-property could be difficult without a proxy
 
 
+
 Possibilities
 -------------
 
@@ -60,6 +61,7 @@ Possibilities
 - The path id could just be used in a map, fast to copy, fast to access
 - Path as id allows to get sections of hierarchy if needed
 
+
 Decision 13 Jun 22
 ------------------
 
@@ -67,4 +69,28 @@ Decision 13 Jun 22
 - Store actual state objects, not just their props
 - Provide a mechanism for a state object to update itself
 - Move functionality into the class itself, try to remove proxies
-- 
+
+Async updates
+=============
+
+Forces
+--------------
+
+- ! Many updates are async and need to act on the latest state, not the state at the time the handler was created
+- Want to write code in handlers as if it was acting on the current instance
+
+Possibilities
+-------------
+
+- Inject a function that allows to get the latest from the store
+- Pass a function to the updateFn
+- Convention to call the function with this set to the latest
+- Mark an instance as outdated and warn if anything called on it
+- updateState automatically gets the latest and applies the changes to it
+
+Extra decision 15 Jun 22
+------------------------
+
+- Provide an appState interface
+- Have update and getLatest functions
+- updateState would always call getLatest to apply changes to

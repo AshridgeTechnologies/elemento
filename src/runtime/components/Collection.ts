@@ -94,17 +94,15 @@ Collection.State = class State {
     get value() { return this.state.value }
     get dataStore() { return this.props.dataStore }
 
-    Update(id: Id, changes: object): Update | ResultWithUpdates {
+    Update(id: Id, changes: object) {
         const safeChanges = omit(['id', 'Id'], changes)
-        const cacheUpdate = update({value: {[id]: safeChanges}})
+        if(this.storedValue(id)) {
+            this.updateValue(id, safeChanges)
+        }
 
         if (this.dataStore) {
             this.dataStore.update(this.props.collectionName!, id, safeChanges)
-            const localUpdate = this.storedValue(id) && cacheUpdate
-            return new ResultWithUpdates(undefined, localUpdate, undefined)
         }
-
-        return cacheUpdate
     }
 
     Add(item: object | string | number): Update | ResultWithUpdates {
