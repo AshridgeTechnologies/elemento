@@ -1,6 +1,7 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
 import {equals, mergeRight} from 'ramda'
+import {AppStateForObject} from '../stateProxy'
 
 type Properties = {state: any, display?: boolean}
 
@@ -12,14 +13,21 @@ export default function Data({state, display = false}: Properties) {
 }
 
 Data.State = class State {
-    private state: { value?: any | null, updateFn: (changes: object, replace?: boolean)=> void }
+    private state: { value?: any | null, appStateInterface: AppStateForObject }
 
     constructor(private props: { value: any | null | undefined }) {
-        this.state = {updateFn: () => {throw new Error('updateFn called before injected')}}
+        this.state = {appStateInterface: {
+                latest() {
+                    throw new Error('latest called before injected')
+                },
+                update() {
+                    throw new Error('update called before injected')
+                },
+            }}
     }
 
-    init(updateFn: (changes: object, replace?: boolean)=> void) {
-        this.state.updateFn = updateFn  // no effect on external view so no need to update
+    init(appStateInterface: AppStateForObject) {
+        this.state.appStateInterface = appStateInterface  // no effect on external view so no need to update
     }
 
     setState(changes: {value?: any | null}) {
@@ -29,8 +37,8 @@ Data.State = class State {
     }
 
     private updateState(changes: { value?: object, queries?: object }) {
-        this.state.updateFn(this.setState(changes), true)
-    }
+        const newVersion = this.state.appStateInterface.latest().setState(changes)
+        this.state.appStateInterface.update(newVersion)    }
 
     mergeProps(newState: typeof this) {
         return equals(this.props, newState.props) ? this : new Data.State(newState.props).setState(this.state)

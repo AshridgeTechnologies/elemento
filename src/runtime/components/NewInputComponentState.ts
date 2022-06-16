@@ -1,14 +1,22 @@
 import {equals, mergeRight} from 'ramda'
+import {AppStateForObject} from '../stateProxy'
 
 export default abstract class InputComponentState<T>  {
-    private state: { value?: T | null, updateFn: (changes: object, replace?: boolean)=> void }
+    private state: { value?: T | null, appStateInterface: AppStateForObject }
 
     constructor(private props: { value: T | null | undefined }) {
-        this.state = {updateFn: () => {throw new Error('updateFn called before injected')}}
+        this.state = {appStateInterface: {
+                latest() {
+                    throw new Error('latest called before injected')
+                },
+                update() {
+                    throw new Error('update called before injected')
+                },
+            }}
     }
 
-    init(updateFn: (changes: object, replace?: boolean)=> void) {
-        this.state.updateFn = updateFn  // no effect on external view so no need to update
+    init(appStateInterface: AppStateForObject) {
+        this.state.appStateInterface = appStateInterface  // no effect on external view so no need to update
     }
 
     private get thisConstructor(): any { return this.constructor as any }
@@ -20,7 +28,8 @@ export default abstract class InputComponentState<T>  {
     }
 
     private updateState(changes: { value?: string | null }) {
-        this.state.updateFn(this.setState(changes), true)
+        const newVersion = this.state.appStateInterface.latest().setState(changes)
+        this.state.appStateInterface.update(newVersion)
     }
 
     mergeProps(newState: typeof this) {

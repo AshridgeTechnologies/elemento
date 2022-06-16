@@ -2,7 +2,7 @@ import {createElement} from 'react'
 import {_DELETE, valueLiteral} from '../runtimeFunctions'
 import {clone, isArray, isNumber, isObject, isPlainObject, isString} from 'lodash'
 import {mergeRight, omit} from 'ramda'
-import {ResultWithUpdates, update, Update} from '../stateProxy'
+import {AppStateForObject, ResultWithUpdates, update, Update} from '../stateProxy'
 import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
 
 type Properties = {state: any, display?: boolean}
@@ -40,7 +40,7 @@ const initialValue = (value?: any): object => {
 Collection.State = class State {
     private props: {  dataStore?: DataStore, collectionName?: CollectionName }
     private immediatePendingGets = new Set()
-    private state: {value: object , queries: object, subscription?: any, updateFn: (changes: object, replace?: boolean)=> void}
+    private state: {value: object , queries: object, subscription?: any, appStateInterface: AppStateForObject}
 
     constructor({value, collectionName, dataStore }: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         this.props = {
@@ -51,9 +51,15 @@ Collection.State = class State {
         this.state = {
             value: initialValue(value),
             queries: {},
-            updateFn: () => { throw new Error('updateFn called before injected')}
+            appStateInterface: {
+                latest() {
+                    throw new Error('latest called before injected')
+                },
+                update() {
+                    throw new Error('update called before injected')
+                },
+            }}
         }
-    }
 
     setState(changes: { value?: object, queries?: object}) {
         const result = new Collection.State(this.props)
@@ -62,7 +68,8 @@ Collection.State = class State {
     }
 
     private updateState(changes: { value?: object, queries?: object }) {
-        this.state.updateFn(this.setState(changes), true)
+        const newVersion = this.state.appStateInterface.latest().setState(changes)
+        this.state.appStateInterface.update(newVersion)
     }
 
     private updateValue(id: Id, data: any) {
@@ -74,10 +81,10 @@ Collection.State = class State {
         return this  // not expected to change collection name or data store at runtime AND comparing proxies for DataStore does not work
     }
 
-    init(updateFn: (changes: object, replace?: boolean)=> void) {
+    init(appStateInterface: AppStateForObject) {
         const {dataStore, collectionName} = this.props
         const {subscription} = this.state
-        this.state.updateFn = updateFn  // no effect on external view so no need to update
+        this.state.appStateInterface = appStateInterface  // no effect on external view so no need to update
 
         if (dataStore && collectionName && !subscription) {
             this.state.subscription = dataStore.observable(collectionName).subscribe((update) => {

@@ -5,6 +5,10 @@ import {Pending} from './DataStore'
 
 export type updateFnType = (path: string, changes: object, replace?: boolean) => void
 export type proxyUpdateFnType = (changes: object) => void
+export interface AppStateForObject {
+    latest: () => any
+    update: (newVersion: any) => void
+}
 
 export class Update {
     constructor(public changes: object, public replace: boolean) {}
@@ -80,6 +84,10 @@ const stateProxyHandler = (path: string, updateFn: updateFnType) => ({
 
 export function stateProxy(path: string, state: object | undefined, updateFn: updateFnType) {
     const proxy = new Proxy(state, stateProxyHandler(path, updateFn))
-    proxy.init?.((changes: object, replace?: boolean) => updateFn(path, changes, replace))
+    const appStateInterface: AppStateForObject = {
+        latest: () => null,
+        update: (changes: object) => updateFn(path, changes, true)
+    }
+    proxy.init?.(appStateInterface)
     return proxy
 }
