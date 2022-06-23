@@ -22,7 +22,7 @@ Requirements
 - ✅ State objects can replace themselves in the store with a new version
 - ✅ State objects can get the latest version of themselves
 - ✅ Should always call the update function on the latest version, as it may use current state to calculate the next
-- No updates applied to app state store during rendering of a component
+- ✅ No updates applied to app state store during rendering of a component
 - Desirable: throw or warn if update (or even access?) an old version  BUT allow for going back to old states for debugging or undo
 
 

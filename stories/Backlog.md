@@ -11,7 +11,6 @@ Stories
 
 ### Priority 1
 - General usability Part 2
-- Drag and drop
 
 
 ### Priority for Pro apps
@@ -51,7 +50,6 @@ Epics
 Tech debt
 ---------
 
-- State management 
 - Code generator
 - Introducing new components
 - DOM Testing
@@ -101,3 +99,5 @@ Done
 - Fix selection and highlighting
 - App frame and Nav bar-menu
 - Simple Database example app
+- App state refactor 2 
+- Drag and drop
