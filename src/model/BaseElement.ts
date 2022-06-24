@@ -29,10 +29,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return this.elements || []
     }
 
-    allElements(): Element[] {
-        return flatten(this.elementArray().map( el => [el, el.allElements()]))
-    }
-
     findElement(id: ElementId): Element | null {
         if (id === this.id) {
             return this as unknown as Element

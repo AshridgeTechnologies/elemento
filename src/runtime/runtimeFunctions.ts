@@ -19,6 +19,12 @@ export const valueLiteral = function (propertyValue: any): string {
     }
 }
 
+
+export function parentPath(path: string) {
+    const pathWithoutTrailingIndex = path.replace(/\.\d+$/, '')
+    return pathWithoutTrailingIndex.replace(/\.\w+$/, '')
+}
+
 export const showAppCode = () => {
     // @ts-ignore
     const code = document.querySelector('script#appMainCode').innerHTML

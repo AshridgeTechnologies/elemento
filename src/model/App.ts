@@ -27,10 +27,6 @@ export default class App extends BaseElement<Properties> implements Element {
     get author() { return this.properties.author}
     get maxWidth() { return this.properties.maxWidth}
 
-    allElements() {
-        return flatten(this.otherComponents.map( el => [el, el.allElements()]))
-    }
-
     createElement(elementType: ElementType, newIdSeq: number): Element {
         return createElement(elementType, newIdSeq)
     }

@@ -17,7 +17,7 @@ const containerBoxCss = {
 }
 
 export default function App({id, maxWidth, pages, children, topChildren}: Properties) {
-    const state = useObjectState<AppData>('app._data', new App.State({currentPage: Object.keys(pages)[0]}))
+    const state = useObjectState<AppData>('app._data', new AppData({currentPage: Object.keys(pages)[0]}))
     const {currentPage} = state
     const pagePath = id + '.' + currentPage
     const sx = {maxWidth, ...containerBoxCss}
@@ -45,7 +45,7 @@ export class AppData extends BaseComponentState<StateProps> implements Component
 
     get currentPage() { return this.state.currentPage ?? this.props.currentPage }
     ShowPage(page: string) {
-        this.updateState({currentPage: page})
+        this.latest().updateState({currentPage: page})
     }
 }
 

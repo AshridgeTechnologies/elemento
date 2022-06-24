@@ -3,7 +3,10 @@ Elemento Backlog
 
 Bugs
 ----
+- Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
+- Same List name in two pages creates duplicate list item
+- Escape quotes in Javascript string literals
 
 
 Stories
@@ -14,7 +17,6 @@ Stories
 
 
 ### Priority for Pro apps
-- List component - updates and actions
 - Server side functions
 - Types
 - Validation
@@ -27,6 +29,7 @@ Stories
 - Debugger Part 1
 
 ### The Rest
+- CSV file datastore
 - Tutorial Hello World
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
@@ -101,3 +104,10 @@ Done
 - Simple Database example app
 - App state refactor 2 
 - Drag and drop
+- List component - updates and actions
+
+
+Bugs fixed
+----------
+
+- Frequent failure with app._data 

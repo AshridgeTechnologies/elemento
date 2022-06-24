@@ -65,14 +65,6 @@ let testProject = function () {
     return {text1, text2, page1, text3, text4, layout1, page2, app, appBar, button1, project}
 }
 
-test('can find all elements below an element excluding pages', () => {
-    const {text1, text2, page1, text3, text4, layout1, page2, app, appBar, button1, project} = testProject()
-    expect(project.allElements()).toStrictEqual([app, appBar, button1])
-    expect(app.allElements()).toStrictEqual([appBar, button1])
-    expect(page1.allElements()).toStrictEqual([text1, layout1, text2])
-    expect(page2.allElements()).toStrictEqual([text3, text4])
-})
-
 test('can find element by id', ()=> {
     const {text4, project} = testProject()
     expect(project.findElement('t4')).toBe(text4)

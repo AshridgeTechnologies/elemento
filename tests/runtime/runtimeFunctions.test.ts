@@ -1,5 +1,6 @@
 import {asArray} from '../../src/runtime'
 import {valObj} from '../testutil/testHelpers'
+import {parentPath} from '../../src/runtime/runtimeFunctions'
 
 test('gets values of object', () => {
     const obj = {x1: {a:10}, x2: {a: 20}}
@@ -25,3 +26,16 @@ test('gets value of objects', () => {
     const obj = {x1: {a:10}, x2: {a: 20}}
     expect(asArray(valObj(obj))).toStrictEqual([{a: 10}, {a: 20}])
 })
+
+test('parentPath finds parent path', () => {
+    expect(parentPath('app.thing.widget')).toBe('app.thing')
+})
+
+test('parentPath finds parent path above index at end', () => {
+    expect(parentPath('app.mainpage.foolist.4')).toBe('app.mainpage')
+})
+
+test('parentPath finds parent path above index at end with nested indexes', () => {
+    expect(parentPath('app.mainpage.toplist.3.foolist.4')).toBe('app.mainpage.toplist.3')
+})
+

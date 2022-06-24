@@ -34,7 +34,9 @@ Features needed
 ---------------
 
 - AddOrUpdate
-- DateFunctions
+- Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
+- DateFunctions - today, difference
+- Date storage
 - Select(List, expression)
 - ForEach(List, expression)
 - User-defined functions

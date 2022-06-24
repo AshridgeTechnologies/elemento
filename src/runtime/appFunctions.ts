@@ -15,7 +15,9 @@ export function defaultDataStore(): DataStore {
 }
 
 const appFunctions = (init: boolean = true) => {
-    const appData = init && useGetObjectState<AppData>('app._data')
+    // Have to init appData to get a reference to it as this runs before the App
+    const appData = init && useObjectState<AppData>('app._data', new AppData({currentPage: ''}))
+
     return ({
         ShowPage(page: string | Function) {
             const pageName = typeof page === 'function' ? page.name : valueOf(page)

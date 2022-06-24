@@ -79,7 +79,7 @@ test('App.State has correct props and functions', () => {
     const updatedState = state._withStateForTest({currentPage: 'Page2'})
     expect(updatedState.currentPage).toBe('Page2')
 
-    const appInterface = testAppInterface(); state.init(appInterface)
+    const appInterface = testAppInterface(state); state.init(appInterface)
     state.ShowPage('Page3')
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({currentPage: 'Page3'}))
 
