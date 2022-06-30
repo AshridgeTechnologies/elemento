@@ -32,7 +32,10 @@ const testApp = (version: string) => {
 
         const pages = {MainPage}
         const {App} = Elemento.components
-        return React.createElement(App, {id: 'AppOne', pages})
+        // @ts-ignore
+        const app = Elemento.useObjectState('app', new App.State({pages}))
+
+        return React.createElement(App, {path: 'AppOne'})
     }
 
     return AppOne
@@ -76,10 +79,12 @@ test('can run multiple apps with independent state', async () => {
     await wait(20)
 
     container.enter('input1', 'cool')
+    await wait(20)
     container.expectEl('SecondText').toHaveTextContent('Input is cool')
     container2.expectEl('SecondText').toHaveTextContent('Input is')
 
     container2.enter('input1', 'hot')
+    await wait(20)
     container.expectEl('SecondText').toHaveTextContent('Input is cool')
     container2.expectEl('SecondText').toHaveTextContent('Input is hot')
 })

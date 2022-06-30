@@ -40,10 +40,11 @@ function MainPage(props) {
 }
 
 export default function WelcomeApp(props) {
-    const pathWith = name => 'WelcometoElemento' + '.' + name
-    const {App} = Elemento.components
-
     const pages = {MainPage}
-    return React.createElement(App, {id: 'WelcometoElemento', pages,},)
+    const {App} = Elemento.components
+    const app = Elemento.useObjectState('app', new App.State({pages}))
+
+    return React.createElement(App, {path: 'WelcometoElemento'})
+
 }
 `

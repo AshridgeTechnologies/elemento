@@ -110,4 +110,5 @@ Done
 Bugs fixed
 ----------
 
-- Frequent failure with app._data 
+- Frequent failure with app._data
+- Rendering/update loop between different sites of initialising app state

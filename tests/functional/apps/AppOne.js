@@ -27,7 +27,7 @@ function OtherPage(props) {
 export default function AppMain(props) {
 
     const appPages = {MainPage, OtherPage}
-    const appState = Elemento.useObjectStateWithDefaults('app._data', {currentPage: Object.keys(appPages)[0]})
+    const appState = Elemento.useObjectStateWithDefaults('app', {currentPage: Object.keys(appPages)[0]})
     const {currentPage} = appState
     return React.createElement('div', {id: 'AppOne'},
         React.createElement(appPages[currentPage], {path: `AppOne.${currentPage}`})

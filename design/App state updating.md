@@ -123,4 +123,46 @@ Extra decision 23 Jun 22
 
 - Spike a delayed update mechanism
 - Done Within appData.ts
+- Result: This appears to work well, although it requires tests to allow for it
+
+Design detail: Global app functions
+===================================
+
+Aims
+----
+- Allow global functions that update app state
+- Overcome technical problems in doing so
+- Tidy up weird naming and store initialisation
+
+Forces
+------
+
+- Global app Functions like ShowPage need to change app state
+- So they need access to the app state when called
+- The app state is only available during rendering, like all component state
+- The functions are normally called outside rendering in response to a button click
+- State can only be initialised in one place, or get a rendering loop
+- App component initialises its own state, unlike most components, which are done in generated container
+- Global functions should not be needed before the App is first rendered
+- ShowPage does not have the app component in its arguments
+- ShowPage often referenced in the generated App code, passed in to child elements of the App
+- SO ShowPage must be initialised before the App first renders
+
+Possibilities
+-------------
+
+- Init the app state in the generated container around the standard app
+- App reads the state set up for it like other components
+- App functions have to be taken from the app state so they are bound to it
+
+Solution
+--------
+
+- App state has pages as an input property
+- App.currentPage defaults to first page or as set by ShowPage
+- App state has ShowPage bound to it
+- Generated app inits app state always, near the top
+- Generated app gets ShowPage from the app
+- App component just gets the App state
+- App component does not need pages as a property
 

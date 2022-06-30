@@ -15,7 +15,6 @@ function MainPage(props) {
     const pathWith = (name) => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
-    const {ShowPage} = Elemento.appFunctions()
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('FirstText')}, "This is App " + ${num}),
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')),
@@ -25,7 +24,9 @@ function MainPage(props) {
 export default function AppOne(props) {
     const pages = {MainPage}
     const {App} = Elemento.components
-    return React.createElement(App, {id: 'AppOne', pages})
+    const app = Elemento.useObjectState('app', new App.State({pages}))
+
+    return React.createElement(App, {path: 'AppOne'})
 }
 
 

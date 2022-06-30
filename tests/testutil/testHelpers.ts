@@ -176,17 +176,17 @@ export type Class<T> = new (...args: any[]) => T
 
 export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>): [any, any] => {
 
-    const appStoreHook0 = testAppStoreHook()
+    const appStoreHook = testAppStoreHook()
 
-    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}) => {
+    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, children?: React.ReactNode) => {
         const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
-        const component = createElement(componentClass as any, {path, ...componentProps})
+        const component = createElement(componentClass as any, {path, ...componentProps}, children)
         return createElement(StoreProvider, {
-            appStoreHook: appStoreHook0,
+            appStoreHook,
             children: createElement(TestWrapper, {path, state}, component)
         })
     }
-    return [testElementCreatorFn, appStoreHook0]
+    return [testElementCreatorFn, appStoreHook]
 }
 
 export const valueObj = (val: any): any => ({

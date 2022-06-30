@@ -47,10 +47,6 @@ class StateObject extends BaseComponentState<object> implements ComponentState<S
 
 const stateObj = (props: object) => new StateObject(props)
 
-test('get initial app state', () => runInProvider(() => {
-    expect(useGetObjectState('app')).toStrictEqual({})
-}))
-
 test('get initial state using initialiser supplied', () => {
     const state = stateObj({widgets: {color: 'red', length: 23}})
     runInProvider(() => {

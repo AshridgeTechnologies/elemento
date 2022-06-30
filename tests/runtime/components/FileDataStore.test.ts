@@ -10,6 +10,7 @@ import {render} from '@testing-library/react'
 import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/runtime/DataStore'
 import Observable from 'zen-observable'
+
 jest.mock('../../../src/runtime/appFunctions')
 
 let dataStore: FileDataStoreImpl
@@ -20,7 +21,6 @@ beforeEach(() => {
     state = new FileDataStore.State()
     state.state.dataStore = dataStore
 } )
-
 
 const mockObservable = new Observable(() => {})
 const mockDataStore = (): FileDataStoreImpl => ({
@@ -111,9 +111,9 @@ test('delegates observable to data store', () => {
 })
 
 describe('handles errors', () => {
-    const NotifyError = jest.fn()
-    const mock_appFunctions = appFunctions as jest.MockedFunction<any>
-    mock_appFunctions.mockReturnValue({NotifyError})
+    // const NotifyError = jest.fn()
+    const mock_appFunctions = appFunctions as jest.MockedObject<any>
+    // mock_appFunctions.NotifyError = NotifyError
 
     const errorDataStore = (): FileDataStoreImpl => ({
         Open: jest.fn().mockRejectedValue(new Error('Bad open')),
@@ -128,7 +128,7 @@ describe('handles errors', () => {
     }) as unknown as FileDataStoreImpl
 
     beforeEach(() => {
-        NotifyError.mockReset()
+        (appFunctions.NotifyError as jest.MockedFunction<any>).mockReset()
         dataStore = errorDataStore()
         state = new FileDataStore.State()
         state.state.dataStore = dataStore
@@ -137,54 +137,54 @@ describe('handles errors', () => {
     test('notifies error from Open', async () => {
         const result = await state.Open()
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not open file', new Error('Bad open'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not open file', new Error('Bad open'))
     })
 
     test('notifies error from SaveAs', async () => {
         const result = await state.SaveAs()
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not save to file', new Error('Bad save as'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not save to file', new Error('Bad save as'))
     })
 
     test('notifies error from Save', async () => {
         const result = await state.Save()
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not save to file', new Error('Bad save'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not save to file', new Error('Bad save'))
     })
 
     test('notifies error from New', async () => {
         const result = await state.New()
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not reset to new file', new Error('Bad new'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not reset to new file', new Error('Bad new'))
     })
 
     test('notifies error from add', async () => {
         const result = await state.add('Widgets', 'x1', {a:1})
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not add item to data store', new Error('Bad add'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not add item to data store', new Error('Bad add'))
     })
 
     test('notifies error from update', async () => {
         const result = await state.update('Widgets', 'x1', {a:1})
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not update item in data store', new Error('Bad update'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not update item in data store', new Error('Bad update'))
     })
 
     test('notifies error from remove', async () => {
         const result = await state.remove('Widgets', 'x1')
         expect(result).toBeUndefined()
-        expect(NotifyError).toHaveBeenCalledWith('Could not remove item from data store', new Error('Bad remove'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not remove item from data store', new Error('Bad remove'))
     })
 
     test('notifies and returns error from getById', async () => {
         const result = await state.getById('Widgets', 'x1')
         expect(result).toStrictEqual(new ErrorResult('Could not get item from data store', 'Bad getById'))
-        expect(NotifyError).toHaveBeenCalledWith('Could not get item from data store', new Error('Bad getById'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not get item from data store', new Error('Bad getById'))
     })
 
     test('notifies error from query and returns empty result', async () => {
         const result = await state.query('Widgets', {a: 33})
         expect(result).toStrictEqual([])
-        expect(NotifyError).toHaveBeenCalledWith('Could not query items in data store', new Error('Bad query'))
+        expect(appFunctions.NotifyError).toHaveBeenCalledWith('Could not query items in data store', new Error('Bad query'))
     })
 })

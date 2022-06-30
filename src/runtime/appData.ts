@@ -80,7 +80,7 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
     }
 
     return {
-        store: new AppState({app: {}}),
+        store: new AppState({}),
         select(path) {
             return deferredUpdates.get(path) ?? this.store.select(path)
         },

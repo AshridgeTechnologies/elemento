@@ -58,8 +58,9 @@ test('generates app and all page output files', ()=> {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
 
-    return React.createElement(App, {id: 'App1', pages, maxWidth: '60%',},)
+    return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
 }
 `)
 
@@ -106,8 +107,9 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
 
-    return React.createElement(App, {id: 'App1', pages, },)
+    return React.createElement(App, {path: 'App1', },)
 }
 `)
 })
@@ -129,8 +131,9 @@ test('generates App Bar elements with contents', ()=> {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
 
-    return React.createElement(App, {id: 'Test1', pages, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
+    return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
             React.createElement(TextElement, {path: pathWith('Text0'), width: 200}, 'Welcome!'),
     ))
     },)
@@ -374,7 +377,7 @@ test('sorts state entries into dependency order', () => {
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput, Data, Collection, ListElement} = Elemento.components
-    const {Get} = Elemento.appFunctions()
+    const {Get} = Elemento.appFunctions
     const Store1 = Elemento.useGetObjectState('app.Store1')
     const Widgets = Elemento.useObjectState(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets', }),)
     const WidgetList = Elemento.useObjectState(pathWith('WidgetList'), new ListElement.State({}))
@@ -411,7 +414,7 @@ test('generates elements under App used in Page', ()=> {
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, NumberInput} = Elemento.components
-    const {Get} = Elemento.appFunctions()
+    const {Get} = Elemento.appFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const WidgetValue = Elemento.useObjectState(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a, }))
 
@@ -425,12 +428,13 @@ test('generates elements under App used in Page', ()=> {
     expect(output.files[1].content).toBe(`export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore, FileDataStore} = Elemento.components
+    const pages = {Page1}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
     const [Store1] = React.useState(new MemoryDataStore({value: { Widgets: { x1: {a: 10}}}}))
     const Widgets = Elemento.useObjectState('app.Widgets', new Collection.State({dataStore: Store1, collectionName: 'Widgets', }),)
     const Store2 = Elemento.useObjectState('app.Store2', new FileDataStore.State())
-    const pages = {Page1}
 
-    return React.createElement(App, {id: 'App1', pages, },
+    return React.createElement(App, {path: 'App1', },
         React.createElement(Collection, {path: pathWith('Widgets'), display: false})
     )
 }
@@ -454,7 +458,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, NumberInput} = Elemento.components
-    const {Get} = Elemento.appFunctions()
+    const {Get} = Elemento.appFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const WidgetValue = Elemento.useObjectState(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a, }))
 
@@ -468,11 +472,12 @@ test('generates codeGenerationError for unknown names in elements under App used
     expect(output.files[1].content).toBe(`export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore} = Elemento.components
+    const pages = {Page1}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
     const [Store1] = React.useState(new MemoryDataStore({value: { Widgets: { x1: {a: 10}}}}))
     const Widgets = Elemento.useObjectState('app.Widgets', new Collection.State({dataStore: Elemento.codeGenerationError(\`StoreX\`, 'Unknown names: StoreX'), collectionName: 'Widgets', }),)
-    const pages = {Page1}
 
-    return React.createElement(App, {id: 'App1', pages, },
+    return React.createElement(App, {path: 'App1', },
         React.createElement(Collection, {path: pathWith('Widgets'), display: false})
     )
 }
@@ -506,7 +511,7 @@ test('generates List element with separate child component and global functions'
     const {$item} = props
     const {TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
-    const {Update} = Elemento.appFunctions()
+    const {Update} = Elemento.appFunctions
     const TextInput1 = Elemento.useGetObjectState(parentPathWith('TextInput1'))
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: "from " + Left($item, 3), }))
 
@@ -650,7 +655,7 @@ test('global functions available in content expression', ()=> {
 `)
 })
 
-test('app functions and Page names available in expression', ()=> {
+test('app state functions and Page names available in expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Button('id1', 'b1', {content: 'Change Page', action: ex`ShowPage(Page2)`}),
@@ -665,7 +670,8 @@ test('app functions and Page names available in expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
-    const {ShowPage} = Elemento.appFunctions()
+    const app = Elemento.useGetObjectState('app')
+    const {ShowPage} = app
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),

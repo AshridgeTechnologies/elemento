@@ -8,6 +8,8 @@ type Properties = {path: string, display?: boolean}
 type ExternalProperties = {}
 type StateProperties = {dataStore?: FileDataStoreImpl}
 
+const {NotifyError} = appFunctions
+
 export default function FileDataStore({path, display = false}: Properties) {
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
@@ -30,43 +32,43 @@ export class FileDataStoreState extends BaseComponentState<ExternalProperties, S
     }
 
     Open() {
-        this.dataStore.Open().catch( e => appFunctions().NotifyError('Could not open file', e) )
+        this.dataStore.Open().catch( e => NotifyError('Could not open file', e) )
     }
 
     SaveAs() {
-        this.dataStore.SaveAs().catch( e => appFunctions().NotifyError('Could not save to file', e) )
+        this.dataStore.SaveAs().catch( e => NotifyError('Could not save to file', e) )
     }
 
     Save() {
-        this.dataStore.Save().catch( e => appFunctions().NotifyError('Could not save to file', e) )
+        this.dataStore.Save().catch( e => NotifyError('Could not save to file', e) )
     }
 
     New() {
-        this.dataStore.New().catch( e => appFunctions().NotifyError('Could not reset to new file', e) )
+        this.dataStore.New().catch( e => NotifyError('Could not reset to new file', e) )
     }
 
     add(collection: CollectionName, id: Id, item: DataStoreObject) {
-        return this.dataStore.add(collection, id, item).catch( e => appFunctions().NotifyError('Could not add item to data store', e) )
+        return this.dataStore.add(collection, id, item).catch( e => NotifyError('Could not add item to data store', e) )
     }
 
     update(collection: CollectionName, id: Id, changes: object) {
-        return this.dataStore.update(collection, id, changes).catch( e => appFunctions().NotifyError('Could not update item in data store', e) )
+        return this.dataStore.update(collection, id, changes).catch( e => NotifyError('Could not update item in data store', e) )
     }
 
     remove(collection: CollectionName, id: Id) {
-        return this.dataStore.remove(collection, id).catch( e => appFunctions().NotifyError('Could not remove item from data store', e) )
+        return this.dataStore.remove(collection, id).catch( e => NotifyError('Could not remove item from data store', e) )
     }
 
     getById(collection: CollectionName, id: Id) {
         return this.dataStore.getById(collection, id).catch( e => {
-            appFunctions().NotifyError('Could not get item from data store', e)
+            NotifyError('Could not get item from data store', e)
             return new ErrorResult('Could not get item from data store', e.message)
         })
     }
 
     query(collection: CollectionName, criteria: Criteria) {
         return this.dataStore.query(collection, criteria).catch( e => {
-            appFunctions().NotifyError('Could not query items in data store', e)
+            NotifyError('Could not query items in data store', e)
             return []
         })
     }

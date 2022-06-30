@@ -72,12 +72,11 @@ function MainPage(props) {
 
 export default function AppOne(props) {
 
-    const appPages = {MainPage}
-    // const appState = Elemento.useObjectState('app._data', {currentPage: Object.keys(appPages)[0]})
-    const {currentPage} = {currentPage: 'MainPage'} //appState
-    return React.createElement('div', {id: 'AppOne'},
-        React.createElement(appPages[currentPage], {path: \`AppOne.\${currentPage}\`})
-    )
+    const pages = {MainPage}
+    const {App} = Elemento.components
+    const app = Elemento.useObjectState('app', new App.State({pages}))
+
+    return React.createElement(App, {path: 'AppOne'})
 }
 
 `
