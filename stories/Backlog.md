@@ -13,6 +13,7 @@ Stories
 -------
 
 ### Priority 1
+- Date functions and storage
 - General usability Part 2
 
 
