@@ -280,7 +280,7 @@ ${children}
             const layout = element as Layout
             const path = pathWith(layout.codeName)
             identifiers.add('Layout')
-            const children = layout.elementArray().map(p => `            ${Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
+            const children = layout.elementArray().map(p => `            ${Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors, containingComponent)},`).join('\n')
             const horizontal = Generator.getExprAndIdentifiers(layout.horizontal, identifiers, isKnown, onError('horizontal'))
             const width = Generator.getExprAndIdentifiers(layout.width, identifiers, isKnown, onError('width'))
             const wrap = Generator.getExprAndIdentifiers(layout.wrap, identifiers, isKnown, onError('wrap'))
@@ -382,7 +382,7 @@ ${children}
 
             const items = Generator.getExprAndIdentifiers(list.items, identifiers, isKnown, onError('items')) ?? '[]'
             const path = pathWith(list.codeName)
-            const itemContentComponent = list.codeName + 'Item'
+            const itemContentComponent = containingComponent!.codeName + '_' + list.codeName + 'Item'
             const width = Generator.getExprAndIdentifiers(list.width, identifiers, isKnown, onError('width'))
             const style = Generator.getExprAndIdentifiers(list.style, identifiers, isKnown, onError('style'))
 

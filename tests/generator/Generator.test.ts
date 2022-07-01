@@ -390,7 +390,7 @@ function Page1(props) {
         React.createElement(Data, {path: pathWith('TheWidget'), display: false}),
         React.createElement(Data, {path: pathWith('WidgetId'), display: false}),
         React.createElement(Collection, {path: pathWith('Widgets'), display: false}),
-        React.createElement(ListElement, {path: pathWith('WidgetList'), items: Widgets.Query({}), itemContentComponent: WidgetListItem}),
+        React.createElement(ListElement, {path: pathWith('WidgetList'), items: Widgets.Query({}), itemContentComponent: Page1_WidgetListItem}),
     )
 }
 `)
@@ -494,10 +494,12 @@ test('generates List element with separate child component and global functions'
     const app = new App('t1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
-            new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200}, [
-                new Text('id1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
-                new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
-                new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
+            new Layout('la1', 'Layout 1', {}, [
+                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200}, [
+                    new Text('id1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
+                    new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
+                    new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
+                ])
             ])
             ]
         ),
@@ -525,13 +527,15 @@ test('generates List element with separate child component and global functions'
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextInput, ListElement} = Elemento.components
+    const {Page, TextInput, Layout, ListElement} = Elemento.components
     const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
-        React.createElement(ListElement, {path: pathWith('List1'), items: [{a: 10}, {a: 20}], itemContentComponent: List1Item, width: 200, style: 'color: red'}),
+        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
+            React.createElement(ListElement, {path: pathWith('List1'), items: [{a: 10}, {a: 20}], itemContentComponent: Page1_List1Item, width: 200, style: 'color: red'}),
+    ),
     )
 }
 `)
@@ -568,7 +572,7 @@ function Page2(props) {
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1'), items: [], itemContentComponent: List1Item}),
+        React.createElement(ListElement, {path: pathWith('List1'), items: [], itemContentComponent: Page2_List1Item}),
     )
 }
 `)
