@@ -1,7 +1,7 @@
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Timestamp} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -165,4 +165,115 @@ describe('Timestamp', function () {
         expect(timeNow).toBeGreaterThanOrEqual(timestamp)
         expect(timeNow - timestamp).toBeLessThan(5)
     })
-});
+})
+
+describe('Now', function () {
+    test('is close to current time', () => {
+        const now = Now()
+        expect(now).toBeInstanceOf(Date)
+        const timeNow = Date.now()
+        expect(timeNow).toBeGreaterThanOrEqual(now.getTime())
+        expect(timeNow - now.getTime()).toBeLessThan(5)
+    })
+})
+
+describe('Today', function () {
+    test('is the UTC date for the year,month,day of the previous midnight from current time in current time zone', () => {
+        const currentDate = new Date()
+        const today = Today() as unknown as Date
+        expect(today).toBeInstanceOf(Date)
+
+        expect(today.getUTCFullYear()).toBe(currentDate.getFullYear())
+        expect(today.getUTCMonth()).toBe(currentDate.getMonth())
+        expect(today.getUTCDay()).toBe(currentDate.getDay())
+        expect(today.getUTCHours()).toBe(0)
+        expect(today.getUTCMinutes()).toBe(0)
+        expect(today.getUTCSeconds()).toBe(0)
+    })
+
+    test.each([
+        [2022, 6, 1, 0, 0, 0],
+        [2022, 6, 1, 23, 59, 59],
+    ])('is the UTC date for the year,month,day of the previous midnight from a date in current time zone', (year, month, date, hour, minute, second) => {
+        const currentDate = new Date(year, month, date, hour, minute, second)
+        const today = Today(currentDate) as unknown as Date
+        expect(today).toBeInstanceOf(Date)
+
+        expect(today.getUTCFullYear()).toBe(year)
+        expect(today.getUTCMonth()).toBe(month)
+        expect(today.getUTCDate()).toBe(date)
+        expect(today.getUTCHours()).toBe(0)
+        expect(today.getUTCMinutes()).toBe(0)
+        expect(today.getUTCSeconds()).toBe(0)
+    })
+})
+
+describe('TimeBetween', () => {
+
+    const date = new Date(2021, 6, 1, 10, 10, 10)
+    const datePlus10secs = new Date(2021, 6, 1, 10, 10, 20)
+    const datePlus1Hour10secs = new Date(2021, 6, 1, 11, 10, 20)
+    const datePlus2Days1Minute = new Date(2021, 6, 3, 10, 11, 10)
+    const datePlus2Years1Day = new Date(2023, 6, 2, 10, 10, 10)
+
+    test('two dates in seconds', () => {
+        expect(TimeBetween(date, datePlus1Hour10secs, 'seconds')).toBe(3610)
+        expect(TimeBetween(datePlus1Hour10secs, date, 'seconds')).toBe(-3610)
+    })
+
+    test('two dates in minutes', () => {
+        expect(TimeBetween(date, datePlus1Hour10secs, 'minutes')).toBe(60)
+        expect(TimeBetween(datePlus1Hour10secs, date, 'minutes')).toBe(-60)
+    })
+
+    test('two dates in hours', () => {
+        expect(TimeBetween(date, datePlus10secs, 'hours')).toBe(0)
+        expect(TimeBetween(date, datePlus1Hour10secs, 'hours')).toBe(1)
+        expect(TimeBetween(datePlus1Hour10secs, date, 'hours')).toBe(-1)
+        expect(TimeBetween(date, datePlus2Days1Minute, 'hours')).toBe(48)
+        expect(TimeBetween(datePlus2Days1Minute, date, 'hours')).toBe(-48)
+    })
+
+    test('two dates in days', () => {
+        expect(TimeBetween(date, datePlus10secs, 'days')).toBe(0)
+        expect(TimeBetween(date, datePlus1Hour10secs, 'days')).toBe(0)
+        expect(TimeBetween(date, datePlus2Days1Minute, 'days')).toBe(2)
+        expect(TimeBetween(datePlus2Days1Minute, date, 'days')).toBe(-2)
+    })
+
+    test('two dates in months', () => {
+        expect(TimeBetween(date, datePlus2Days1Minute, 'months')).toBe(0)
+        expect(TimeBetween(date, datePlus2Years1Day, 'months')).toBe(24)
+        expect(TimeBetween(datePlus2Years1Day, date, 'months')).toBe(-24)
+    })
+
+    test('two dates in years', () => {
+        expect(TimeBetween(date, datePlus2Days1Minute, 'years')).toBe(0)
+        expect(TimeBetween(date, datePlus2Years1Day, 'years')).toBe(2)
+        expect(TimeBetween(datePlus2Years1Day, date, 'years')).toBe(-2)
+    })
+
+    test('exception for invalid unit', () => {
+        expect(()=> TimeBetween(new Date(), new Date(), 'millis' as any)).toThrow('Unknown unit millis.  Should be one of seconds, minutes, hours, days, months, years')
+    })
+})
+
+describe('DaysBetween', () => {
+
+    const day1_midnight = new Date(2021, 6, 1, 0, 0, 0)
+    const day1_0100 = new Date(2021, 6, 1, 1, 0, 0)
+    const day1_2300 = new Date(2021, 6, 1, 23, 0, 0)
+    const day3_midnight = new Date(2021, 6, 3, 0, 0, 0)
+    const day3_0100 = new Date(2021, 6, 3, 1, 0, 0)
+
+    test('days between is calendar days', () => {
+        expect(DaysBetween(day1_midnight, day1_midnight)).toBe(0)
+        expect(DaysBetween(day1_midnight, day1_2300)).toBe(0)
+        expect(DaysBetween(day1_0100, day1_2300)).toBe(0)
+        expect(DaysBetween(day1_midnight, day3_midnight)).toBe(2)
+        expect(DaysBetween(day1_midnight, day3_0100)).toBe(2)
+        expect(DaysBetween(day1_2300, day3_0100)).toBe(2)
+        expect(DaysBetween(day3_0100, day1_0100)).toBe(-2)
+    })
+
+})

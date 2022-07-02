@@ -1,6 +1,7 @@
 import {FileDataStoreImpl} from '../../../src/runtime/components/index'
 import {
-    filePickerCancelling, filePickerErroring,
+    filePickerCancelling,
+    filePickerErroring,
     filePickerReturning,
     resetSaveFileCallData,
     saveFileData,
@@ -206,6 +207,47 @@ test('can query', async () => {
     await store.add('Widgets', 'w3', {a: 20, b: 'Bee3', c: false})
     expect(await store.query('Widgets', {a: 20})).toStrictEqual([{a: 20, b: 'Bee2', c: true}, {a: 20, b: 'Bee3', c: false}])
 
+})
+
+test('stores dates in ISO format', async () => {
+    const store = new FileDataStoreImpl({
+        showOpenFilePicker: jest.fn(),
+        showSaveFilePicker: saveFilePicker('file.json')
+    })
+
+    const hour = 10
+    const theDate = new Date(2022, 6, 2, hour, 11, 12)
+    await store.add('Widgets', 'w1', {a: 10, b: theDate})
+    await store.SaveAs()
+    const timezoneOffsetHours = theDate.getTimezoneOffset() / 60
+    const expectedHour = hour + timezoneOffsetHours
+    const expectedHourStr = expectedHour.toString().padStart(2, '0')
+    const expectedDate = `2022-07-02T${expectedHourStr}:11:12.000Z`
+    expect(saveFileData).toStrictEqual(JSON.stringify({Widgets: {w1: {a: 10, b: expectedDate}}}))
+})
+
+test('retrieves dates in ISO format', async () => {
+    const hour = 15
+    const data = {Widgets: { w1: {a: 10, b: `2022-06-29T${hour}:47:21.968Z`}}}
+    const showSaveFilePicker = jest.fn()
+    const showOpenFilePicker = filePickerReturning(data, 'file.json')
+    const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
+    await store.Open()
+
+    const timezoneOffsetHours = new Date().getTimezoneOffset() / 60
+    const expectedHour = hour - timezoneOffsetHours
+
+    expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: new Date(2022, 5, 29, expectedHour, 47, 21, 968)})
+})
+
+test('retrieves invalid dates as strings', async () => {
+    const data = {Widgets: { w1: {a: 10, b: '2022-02-29T15:47:21.968Z'}}}
+    const showSaveFilePicker = jest.fn()
+    const showOpenFilePicker = filePickerReturning(data, 'file.json')
+    const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
+    await store.Open()
+
+    expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: '2022-02-29T15:47:21.968Z'})
 })
 
 describe('subscribe', () => {

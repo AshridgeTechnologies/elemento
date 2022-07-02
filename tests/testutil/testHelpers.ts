@@ -97,10 +97,10 @@ export function resetSaveFileCallData() {
     saveFilePickerOptions = undefined
 }
 
-export function mockFileHandle(returnedData?: object, name?: string) {
+export function mockFileHandle(returnedData?: object | string, name?: string) {
     const file = {
         async text() {
-            return JSON.stringify(returnedData)
+            return typeof returnedData === 'string' ? returnedData : JSON.stringify(returnedData)
         }
     }
 
@@ -128,7 +128,7 @@ export const saveFilePicker = (fileHandleName?: string) => async (options: any) 
     return mockFileHandle(undefined, fileHandleName)
 }
 
-export function filePickerReturning(returnedData: object, fileHandleName?: string) {
+export function filePickerReturning(returnedData: object | string, fileHandleName?: string) {
     return () => Promise.resolve([mockFileHandle(returnedData, fileHandleName)])
 }
 

@@ -1,4 +1,11 @@
 import {fromPairs, splitEvery} from 'ramda'
+import {
+    differenceInDays,
+    differenceInHours,
+    differenceInMinutes,
+    differenceInMonths,
+    differenceInSeconds, differenceInYears, differenceInCalendarDays
+} from 'date-fns'
 import {Value, valueOf} from './runtimeFunctions'
 
 export const globalFunctions = {
@@ -73,5 +80,31 @@ export const globalFunctions = {
 
     Timestamp() {
         return Date.now()
+    },
+
+    Now() {
+        return new Date()
+    },
+
+    Today(date = new Date()) {
+        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
+    },
+
+    TimeBetween(date1: Date, date2: Date, unit: 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'): number {
+        const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
+        switch(unit) {
+            case 'seconds': return differenceInSeconds(date2, date1)
+            case 'minutes': return differenceInMinutes(date2, date1)
+            case 'hours': return differenceInHours(date2, date1)
+            case 'days': return differenceInDays(date2, date1)
+            case 'months': return differenceInMonths(date2, date1)
+            case 'years': return differenceInYears(date2, date1)
+            default: throw new Error(`Unknown unit ${unit}.  Should be one of ${unitTypes.join(', ')}`)
+        }
+
+    },
+
+    DaysBetween(date1: Date, date2: Date) {
+        return differenceInCalendarDays(date2, date1)
     }
 }
