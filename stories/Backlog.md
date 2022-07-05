@@ -13,7 +13,7 @@ Stories
 -------
 
 ### Priority 1
-- Date functions and storage
+- List filter and map
 - General usability Part 2
 
 
@@ -106,6 +106,7 @@ Done
 - App state refactor 2 
 - Drag and drop
 - List component - updates and actions
+- Date functions and storage
 
 
 Bugs fixed
