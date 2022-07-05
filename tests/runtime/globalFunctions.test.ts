@@ -1,7 +1,8 @@
+import { Pending } from '../../src/runtime/DataStore'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Select, ForEach, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -135,7 +136,6 @@ describe('Max', () => {
     test('returns the argument for single argument', () => expect(Max(3)).toBe(3))
     test('returns the max argument for multiple arguments', () => expect(Max(3, -1, 4, 0)).toBe(4))
     test('Gets value of objects', ()=> expect(Max(valObj(3), valObj(2))).toBe(3))
-
 })
 
 describe('Min', () => {
@@ -156,6 +156,24 @@ describe('List', () => {
     test('returns an empty list for no arguments', ()=> expect(List()).toStrictEqual([]))
     test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee')).toStrictEqual(['a', 10, true, 'Bee']))
     test('gets value of objects', ()=> expect(List(valObj('c'), valObj(2))).toStrictEqual(['c', 2]))
+})
+
+describe('Select', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Select()).toThrow('Wrong number of arguments to Select. Expected list, expression.'))
+    test('returns the selected items', () => expect(Select([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual([3, 4]))
+    test('Gets value of object for the list', ()=> expect(Select(valObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
+    // @ts-ignore
+    test('Pending value gives empty list', ()=> expect(Select(new Pending(), (it: any) => it <= 0)).toStrictEqual([]))
+})
+
+describe('ForEach', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ForEach()).toThrow('Wrong number of arguments to ForEach. Expected list, expression.'))
+    test('returns the selected items', () => expect(ForEach([3, -1, 4, 0], (it: any) => it * 10)).toStrictEqual([30, -10, 40, 0]))
+    test('Gets value of object for the list', ()=> expect(ForEach(valObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
+    // @ts-ignore
+    test('Pending value gives empty list', ()=> expect(ForEach(new Pending(), (it: any) => it + 10)).toStrictEqual([]))
 })
 
 describe('Timestamp', function () {

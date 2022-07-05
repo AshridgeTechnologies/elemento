@@ -78,6 +78,18 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
+    Select(list: Value<any[]>, condition: (item: any) => boolean) {
+        const listVal = valueOf(list) ?? []
+        if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
+        return listVal.filter(condition)
+    },
+
+    ForEach(list: Value<any[]>, transform: (item: any) => any) {
+        const listVal = valueOf(list) ?? []
+        if (transform === undefined) throw new Error('Wrong number of arguments to ForEach. Expected list, expression.')
+        return listVal.map(transform)
+    },
+
     Timestamp() {
         return Date.now()
     },
@@ -106,5 +118,10 @@ export const globalFunctions = {
 
     DaysBetween(date1: Date, date2: Date) {
         return differenceInCalendarDays(date2, date1)
-    }
+    },
+}
+
+export const functionArgIndexes = {
+    Select: [1],
+    ForEach: [1],
 }

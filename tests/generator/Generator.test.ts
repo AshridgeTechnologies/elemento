@@ -613,6 +613,34 @@ test('generates Layout element with properties and children', ()=> {
 `)
 })
 
+test('transforms expressions to functions where needed', () => {
+    const app = new App('t1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), \$item.height > 10)`}),
+                new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), \$item.height + 10)`}),
+            ]
+        ),
+        new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+        new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
+    ])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Data} = Elemento.components
+    const {Select, ForEach} = Elemento.globalFunctions
+    const Widgets = Elemento.useGetObjectState('app.Widgets')
+    const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => \$item.height > 10), }))
+    const TallerWidgets = Elemento.useObjectState(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), \$item => \$item.height + 10), }))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
+        React.createElement(Data, {path: pathWith('TallerWidgets'), display: false}),
+    )
+}
+`)
+})
+
 test('generates error on correct line for syntax error in multiline content expression', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [

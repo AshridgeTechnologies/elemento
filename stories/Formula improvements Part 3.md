@@ -12,3 +12,4 @@ Formula improvements Part 3
 - Data at app level
 - Live calculations at app level
 - If() has expressions transformed to functions so they are not evaluated unless needed
+- Only allow $item in List item and list predicate/transform expressions

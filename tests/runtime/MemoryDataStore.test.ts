@@ -1,4 +1,12 @@
 import MemoryDataStore from '../../src/runtime/components/MemoryDataStore'
+import { Pending } from '../../src/runtime/DataStore'
+import {valueOf} from '../../src/runtime/runtimeFunctions'
+
+describe('Pending', () => {
+    test('has null valueOf', () => {
+        expect(valueOf(new Pending())).toBeNull()
+    })
+})
 
 describe('getById', () => {
     const store = new MemoryDataStore({

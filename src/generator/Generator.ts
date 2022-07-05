@@ -1,4 +1,4 @@
-import {parse, print} from 'recast'
+import {parse, print, types} from 'recast'
 import {visit,} from 'ast-types'
 import Topo from '@hapi/topo'
 
@@ -7,7 +7,7 @@ import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
 import TextInput from '../model/TextInput'
-import {globalFunctions} from '../runtime/globalFunctions'
+import {functionArgIndexes, globalFunctions} from '../runtime/globalFunctions'
 import * as components from '../runtime/components'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
@@ -166,7 +166,7 @@ export default class Generator {
             || isAppStateFunction(name)
             || isComponentElement(name)
             || isPageName(name)
-            || (componentIsListItem && isItemVar(name))
+            || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
             || isAppElement(name)
             || isContainerElement(name)
             || isBuiltIn(name)
@@ -488,8 +488,7 @@ ${children}
     }
 
     private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,
-        isKnown: (name: string) => boolean,
-        onError: (err: string) => void, isAction = false) {
+        isKnown: (name: string) => boolean, onError: (err: string) => void, isAction = false) {
         if (propertyValue === undefined) {
             return undefined
         }
@@ -515,6 +514,11 @@ ${children}
 
         function isShorthandProperty(node: any) {
             return node.shorthand
+        }
+
+        function isFunctionArg(functionName: string, argIndex: number) {
+            const argIndexes = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
+            return argIndexes.includes(argIndex)
         }
 
         if (isExpr(propertyValue)) {
@@ -557,6 +561,19 @@ ${children}
                             const errorMessage = `Incomplete item: ${node.key.name}`
                             onError(errorMessage)
                         }
+                        this.traverse(path)
+                    },
+
+                    visitCallExpression(path) {
+                        const node = path.value
+                        const functionName = node.callee.name
+                        const argsToTransform = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
+                        argsToTransform?.forEach( index => {
+                            const bodyExpr = node.arguments[index]
+                            const b = types.builders
+                            const functionExpr = b.arrowFunctionExpression([b.identifier('$item')], bodyExpr)
+                            node.arguments[index] = functionExpr
+                        })
                         this.traverse(path)
                     }
                 })

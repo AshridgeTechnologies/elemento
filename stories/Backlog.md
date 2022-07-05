@@ -13,7 +13,6 @@ Stories
 -------
 
 ### Priority 1
-- List filter and map
 - General usability Part 2
 
 
@@ -107,6 +106,7 @@ Done
 - Drag and drop
 - List component - updates and actions
 - Date functions and storage
+- List filter and map
 
 
 Bugs fixed

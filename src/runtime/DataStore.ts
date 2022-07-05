@@ -14,6 +14,7 @@ export type UpdateNotification = {
     changes?: object
 }
 export class Pending {
+    valueOf() { return null }
 }
 
 export class ErrorResult {
