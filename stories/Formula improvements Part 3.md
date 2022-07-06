@@ -11,5 +11,7 @@ Formula improvements Part 3
 - Everything under the app, is available in the app bar
 - Data at app level
 - Live calculations at app level
+- User-defined functions at app level
 - If() has expressions transformed to functions so they are not evaluated unless needed
 - Only allow $item in List item and list predicate/transform expressions
+- 
