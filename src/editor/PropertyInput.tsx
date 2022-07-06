@@ -6,8 +6,8 @@ import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 
-export default function PropertyInput({ elementId, name, type, value, onChange, error}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
-    onChange: OnChangeFn, error?: string }) {
+export default function PropertyInput({ elementId, name, type, value, onChange, fixedOnly = false,  error}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
+    onChange: OnChangeFn, fixedOnly?: boolean, error?: string }) {
     const exprOnlyProperty = type === 'action' || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
     const [expr, setExpr] = useState(valueIsExpr)
@@ -72,14 +72,24 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
     const errorProps = error ? {error: true, helperText: error} : {}
 
-    const button = exprOnlyProperty
-        ? <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
-            color={exprButtonColor} disabled title={'Expression required'}>{exprButtonLabel}</Button>
-        : <Button variant='outlined' disableElevation size='small' sx={{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}}
-            color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
+    const button = () => {
+        const commonProps = {
+            variant: 'outlined', disableElevation: true, size: 'small', sx:{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}
+        } as any
+
+        if (exprOnlyProperty) {
+            return <Button {...commonProps} color={exprButtonColor} disabled title={'Expression required'}>{exprButtonLabel}</Button>
+        }
+
+        if (fixedOnly) {
+            return <Button {...commonProps} color={buttonColor} disabled title={'Fixed value required'}>{buttonLabel}</Button>
+        }
+
+        return <Button {...commonProps} color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
+    }
 
     return <div style={{display: 'inline-flex'}} className='property-input'>
-        {button}
+        {button()}
         {type === 'boolean' && !expr ?
             <FormControl variant="filled" size='small' sx={{ minWidth: 120 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>

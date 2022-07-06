@@ -107,6 +107,7 @@ Done
 - List component - updates and actions
 - Date functions and storage
 - List filter and map
+- User-defined functions
 
 
 Bugs fixed

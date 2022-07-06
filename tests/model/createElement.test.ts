@@ -9,7 +9,7 @@ import {createElement} from '../../src/model/createElement'
 import Data from '../../src/model/Data'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import {Collection} from '../../src/model/index'
+import {Collection, FunctionDef} from '../../src/model/index'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
@@ -31,6 +31,7 @@ test('creates elements of correct type', () => {
     expect(createElement('Collection', 4)).toBeInstanceOf(Collection)
     expect(createElement('MemoryDataStore', 5)).toBeInstanceOf(MemoryDataStore)
     expect(createElement('FileDataStore', 5)).toBeInstanceOf(FileDataStore)
+    expect(createElement('Function', 5)).toBeInstanceOf(FunctionDef)
 })
 
 test('cannot create a Project', () => {

@@ -69,6 +69,17 @@ test('shows expression-only control for expr property if current value is empty'
     expect(label().textContent).toBe('The Items')
 })
 
+test('shows fixed-only control for string fixed-only property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={undefined} fixedOnly onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('abc')
+    expect(kindButton().disabled).toBe(true)
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('length')
+    expect(input().value).toBe('')
+    expect(componentProps(input()).value).toBe('')
+    expect(label().textContent).toBe('Length')
+})
+
 test('shows fixed value control for string property if current value is a string', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Hi there!'} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('abc')

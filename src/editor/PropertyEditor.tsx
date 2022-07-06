@@ -22,11 +22,11 @@ import {startCase} from 'lodash'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
-    function propertyField<T extends Element>(name: string, type: PropertyType = 'string') {
+    function propertyField<T extends Element>(name: string, type: PropertyType = 'string', fixedOnly = false) {
         const propertyValue = (element.properties)[name as keyof object] as unknown as PropertyValue
         const error = errors[name as keyof object]
         const errorProps = error ? {error} : {}
-        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} {...errorProps}/>
+        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} fixedOnly={fixedOnly} {...errorProps}/>
     }
 
     function propertyFields() {
@@ -141,12 +141,19 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
             return <>
             </>
 
+        case 'Function':
+            return <>
+                {propertyField<Collection>('input1', 'string', true)}
+                {propertyField<Collection>('input2', 'string', true)}
+                {propertyField<Collection>('input3', 'string', true)}
+                {propertyField<Collection>('input4', 'string', true)}
+                {propertyField<Collection>('input5', 'string', true)}
+                {propertyField<Collection>('calculation', 'expr')}
+            </>
+
         default:
             throw new UnsupportedValueError(element.kind)
         }
-
-
-
     }
 
     const children = propertyFields()

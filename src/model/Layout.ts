@@ -20,7 +20,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
         return element.constructor.name === this.name
     }
 
-    type(): ComponentType { return 'statefulUI' }
+    type(): ComponentType { return 'statelessUI' }
 
     isLayoutOnly() { return true }
 

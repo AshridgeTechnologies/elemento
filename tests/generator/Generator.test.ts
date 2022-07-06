@@ -10,7 +10,7 @@ import SelectInput from '../../src/model/SelectInput'
 import List from '../../src/model/List'
 import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
-import {Collection} from '../../src/model/index'
+import {Collection, FunctionDef} from '../../src/model/index'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
@@ -636,6 +636,114 @@ test('transforms expressions to functions where needed', () => {
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
         React.createElement(Data, {path: pathWith('TallerWidgets'), display: false}),
+    )
+}
+`)
+})
+
+test('generates local user defined functions in a page', () => {
+    const app = new App('t1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
+            new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
+            new NumberInput('n1', 'Min Height', {}),
+            ]
+        ),
+        new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+        new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
+    ])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Data, NumberInput} = Elemento.components
+    const {Or, Select} = Elemento.globalFunctions
+    const Widgets = Elemento.useGetObjectState('app.Widgets')
+    const MinHeight = Elemento.useObjectState(pathWith('MinHeight'), new NumberInput.State({}))
+    const IsTallWidget = (widget) => Or(widget.height > MinHeight, widget.shiny)
+    const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item)), }))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
+        React.createElement(NumberInput, {path: pathWith('MinHeight'), label: 'Min Height'}),
+    )
+}
+`)
+})
+
+test('generates local user defined functions in the app', () => {
+    const app = new App('t1', 'Test1', {}, [
+        new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
+            new Text('id0', 'Text 0', {content: ex`AppBarText('Welcome to ')`})
+        ]),
+        new FunctionDef('f1', 'AppBarText', {input1: 'greeting', calculation: ex`greeting + 'our new app'`}),
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: 'Hi there!'}),
+            ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.output().files[1].content).toBe(`export default function Test1(props) {
+    const pathWith = name => 'Test1' + '.' + name
+    const {App, AppBar, TextElement} = Elemento.components
+    const pages = {Page1}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const AppBarText = (greeting) => greeting + 'our new app'
+
+    return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
+            React.createElement(TextElement, {path: pathWith('Text0')}, AppBarText('Welcome to ')),
+    ))
+    },)
+}
+`)
+})
+
+test('generates local user defined functions in a list item that use a page item', () => {
+    const app = new App('t1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
+            new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
+            new NumberInput('n1', 'Min Height', {}),
+            new List('id4', 'Widget List', {items: ex`Widgets.Query({})`}, [
+                new Text('lt1', 'Desc', {content: 'Hi!'}),
+                new FunctionDef('f2', 'ExtraHeight', {calculation: ex`\$item.height - MinHeight`}),
+            ]),
+
+            ]
+        ),
+        new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+        new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
+    ])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1_WidgetListItem(props) {
+    const pathWith = name => props.path + '.' + name
+    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
+    const {$item} = props
+    const {TextElement} = Elemento.components
+    const MinHeight = Elemento.useGetObjectState(parentPathWith('MinHeight'))
+    const ExtraHeight = () => \$item.height - MinHeight
+
+    return React.createElement(React.Fragment, null,
+        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+    )
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Data, NumberInput, ListElement} = Elemento.components
+    const {Or, Select} = Elemento.globalFunctions
+    const Widgets = Elemento.useGetObjectState('app.Widgets')
+    const MinHeight = Elemento.useObjectState(pathWith('MinHeight'), new NumberInput.State({}))
+    const IsTallWidget = (widget) => Or(widget.height > MinHeight, widget.shiny)
+    const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item)), }))
+    const WidgetList = Elemento.useObjectState(pathWith('WidgetList'), new ListElement.State({}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
+        React.createElement(NumberInput, {path: pathWith('MinHeight'), label: 'Min Height'}),
+        React.createElement(ListElement, {path: pathWith('WidgetList'), items: Widgets.Query({}), itemContentComponent: Page1_WidgetListItem}),
     )
 }
 `)

@@ -104,6 +104,7 @@ test('can contain types apart from Project, App, Page', () => {
     expect(page.canContain('FileDataStore')).toBe(false)
     expect(page.canContain('Text')).toBe(true)
     expect(page.canContain('Button')).toBe(true)
+    expect(page.canContain('Function')).toBe(true)
 })
 
 test('converts to JSON', ()=> {

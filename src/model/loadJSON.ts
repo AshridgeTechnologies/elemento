@@ -17,6 +17,7 @@ import MemoryDataStore from './MemoryDataStore'
 import FileDataStore from './FileDataStore'
 import Layout from './Layout'
 import AppBar from './AppBar'
+import FunctionDef from './FunctionDef'
 
 export function loadJSON({id, kind, name, properties, elements}:
                              { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
@@ -56,10 +57,11 @@ export function loadJSON({id, kind, name, properties, elements}:
         return new MemoryDataStore(id, name, properties)
     case 'FileDataStore':
         return new FileDataStore(id, name, properties)
+    case 'Function':
+        return new FunctionDef(id, name, properties)
     default:
         throw new UnsupportedValueError(kind)
     }
-
 }
 
 export function loadJSONFromString(json: string): Project {

@@ -16,6 +16,7 @@ import MemoryDataStore from './MemoryDataStore'
 import FileDataStore from './FileDataStore'
 import Layout from './Layout'
 import AppBar from './AppBar'
+import FunctionDef from './FunctionDef'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = `${elementType.toLowerCase()}_${newIdSeq}`
@@ -54,6 +55,8 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         return new MemoryDataStore(id, name, {})
     case 'FileDataStore':
         return new FileDataStore(id, name, {})
+    case 'Function':
+        return new FunctionDef(id, name, {})
     default:
         throw new UnsupportedValueError(elementType)
     }

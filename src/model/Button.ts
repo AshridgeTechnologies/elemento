@@ -1,10 +1,10 @@
-import {ComponentType, ElementId, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
 type Properties = {
     readonly content?: PropertyValueType<string>,
-    readonly action?: PropertyValueType<string>,
+    readonly action?: PropertyExpr,
     readonly filled?: PropertyValueType<boolean>,
     readonly style?: PropertyValueType<string>,
     readonly display?: PropertyValueType<boolean>,

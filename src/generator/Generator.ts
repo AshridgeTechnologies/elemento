@@ -20,7 +20,7 @@ import TrueFalseInput from '../model/TrueFalseInput'
 import List from '../model/List'
 import {isArray, isPlainObject} from 'lodash'
 import Data from '../model/Data'
-import {Collection} from '../model/index'
+import {Collection, FunctionDef} from '../model/index'
 import MemoryDataStore from '../model/MemoryDataStore'
 import FileDataStore from '../model/FileDataStore'
 import Layout from '../model/Layout'
@@ -62,6 +62,10 @@ class Ref {
     ) {}
 }
 
+class DefinedFunction {
+    constructor(public functionDef: string) {}
+}
+
 const valueLiteral = function (propertyValue: any): string {
     if (isPlainObject(propertyValue)) {
         return `{${Object.entries(propertyValue).map(([name, val]) => `${name}: ${valueLiteral(val)}`).join(', ')}}`
@@ -76,7 +80,7 @@ const valueLiteral = function (propertyValue: any): string {
     }
 }
 
-type StateEntry = [name: string, code: string, dependencies: string[]]
+type StateEntry = [name: string, code: string | DefinedFunction, dependencies: string[]]
 const topoSort = (entries: StateEntry[]): StateEntry[] => {
     const sorter = new Topo.Sorter<StateEntry>()
     entries.forEach( entry => {
@@ -207,7 +211,9 @@ export default class Generator {
         }).filter( ([,entry]) => !!entry )
         const stateBlock = topoSort(stateEntries).map( ([name, entry]) => {
             const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
-            return `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
+            return entry instanceof DefinedFunction
+                ? `    const ${name} = ${entry.functionDef}`
+                : `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
         }).join('\n')
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
@@ -242,11 +248,18 @@ ${declarations}
 
         const pathWith = (name: string) => `pathWith('${name}')`
 
-         if (element instanceof ListItem) {
+        const generateChildren = (element: Element, indent: string = '        ', containingComponent?: Page) => {
+            const elementArray = element.elements ?? []
+            const generatedUiElements = elementArray.map(p => Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors, containingComponent))
+            const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
+            return generatedUiElementLines.join('\n')
+        }
+
+        if (element instanceof ListItem) {
              const children = element.list.elementArray().map(p => `        ${Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors)},`).join('\n')
 
              return `React.createElement(React.Fragment, null,
-${children}
+${generateChildren(element.list, '        ')}
     )`
          }
 
@@ -270,9 +283,8 @@ ${children}
         case 'Page': {
             const page = element as Page
             identifiers.add('Page')
-            const children = page.elementArray().map(p => `        ${Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors, page)},`).join('\n')
             return `React.createElement(Page, {id: props.path},
-${children}
+${generateChildren(page, '        ', page)}
     )`
         }
 
@@ -286,7 +298,7 @@ ${children}
             const wrap = Generator.getExprAndIdentifiers(layout.wrap, identifiers, isKnown, onError('wrap'))
             const reactProperties = definedPropertiesOf({path, horizontal, width, wrap})
             return `React.createElement(Layout, ${objectLiteral(reactProperties)},
-${children}
+${generateChildren(layout, '            ', containingComponent)}
     )`
         }
 
@@ -298,7 +310,7 @@ ${children}
             const title = Generator.getExprAndIdentifiers(appBar.title, identifiers, isKnown, onError('title'))
             const reactProperties = definedPropertiesOf({path, title})
             return `React.createElement(AppBar, ${objectLiteral(reactProperties)},
-${children}
+${generateChildren(appBar, '            ')}
     )`
         }
 
@@ -422,19 +434,32 @@ ${children}
             return ''
         }
 
+        case 'Function': {
+            const functionDef = element as FunctionDef
+            const input1 = functionDef.input1
+            const input2 = functionDef.input2
+            const input3 = functionDef.input3
+            const input4 = functionDef.input4
+            const input5 = functionDef.input5
+            const params = [input1, input2, input3, input4, input5].filter( p => !!p)
+            const isKnownOrParam = (identifier: string) => isKnown(identifier) || params.includes(identifier)
+            const calculation = Generator.getExprAndIdentifiers(functionDef.calculation, identifiers, isKnownOrParam, onError('calculation'))
+            return ''
+        }
+
         default:
             throw new UnsupportedValueError(element.kind)
         }
     }
 
-    private static initialStateEntry(element: Element, isKnown: (name: string) => boolean): [code: string, identifiers: string[]] {
+    private static initialStateEntry(element: Element, isKnown: (name: string) => boolean): [(string | DefinedFunction), string[]] {
         const identifiers = new Set<string>()
 
         function ifDefined(name: string, expr: string | boolean | undefined) {
             return expr ? name + ': ' + expr + ', ' : ''
         }
 
-        function stateEntryCode(): string {
+        function stateEntryCode(): string | DefinedFunction{
 
             switch (element.kind) {
                 case 'Project':
@@ -477,6 +502,19 @@ ${children}
                 case 'FileDataStore':
                     const fileStore = element as FileDataStore
                     return `new ${fileStore.kind}.State()`
+
+                case 'Function': {
+                    const functionDef = element as FunctionDef
+                    const input1 = functionDef.input1
+                    const input2 = functionDef.input2
+                    const input3 = functionDef.input3
+                    const input4 = functionDef.input4
+                    const input5 = functionDef.input5
+                    const params = [input1, input2, input3, input4, input5].filter( p => !!p)
+                    const isKnownOrParam = (identifier: string) => isKnown(identifier) || params.includes(identifier)
+                    const [calculation] = Generator.getExpr(functionDef.calculation, identifiers, isKnownOrParam)
+                    return new DefinedFunction(`(${params.join(', ')}) => ${calculation}`)
+                }
 
                 default:
                     throw new UnsupportedValueError(element.kind)

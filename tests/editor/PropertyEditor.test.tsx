@@ -17,7 +17,7 @@ import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
 import Project from '../../src/model/Project'
-import { Collection } from '../../src/model'
+import {Collection, FunctionDef} from '../../src/model'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
@@ -301,6 +301,21 @@ test('has fields for MemoryDataStore', () => {
     expect(kindButton(0).textContent).toBe('fx=')
     expect(kindButton(0).disabled).toBe(true)
     expect(selectValue('Display')).toBe('')
+})
+
+test('has fields for FunctionDef', () => {
+    const element = new FunctionDef('id1', 'Function 1', {input1: 'foo', input5: 'bar', calculation: ex`42`})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(nameInputValue()).toBe('Function 1')
+    expect(inputValue('Input 1')).toBe('foo')
+    expect(inputValue('Input 2')).toBe('')
+    expect(inputValue('Input 5')).toBe('bar')
+    expect(kindButton(0).textContent).toBe('abc')
+    expect(kindButton(0).disabled).toBe(true)
+    expect(kindButton(4).textContent).toBe('abc')
+    expect(kindButton(4).disabled).toBe(true)
+    expect(kindButton(5).textContent).toBe('fx=')
+    expect(kindButton(5).disabled).toBe(true)
 })
 
 test('has fields for FileDataStore', () => {

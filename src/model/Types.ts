@@ -1,5 +1,5 @@
 export type ElementType = 'Project' | 'App' | 'Page' | 'Layout' | 'AppBar' | 'Text' | 'TextInput'| 'NumberInput'| 'SelectInput'| 'TrueFalseInput' | 'Button' | 'List' | 'Data' | 'Collection'
-                            | 'MemoryDataStore' | 'FileDataStore'
+                            | 'MemoryDataStore' | 'FileDataStore' | 'Function'
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app'
 export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr'

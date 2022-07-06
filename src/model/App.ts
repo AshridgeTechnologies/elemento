@@ -36,6 +36,6 @@ export default class App extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return ['Page', 'AppBar', 'MemoryDataStore', 'FileDataStore', 'Collection'].includes(elementType)
+        return ['Page', 'AppBar', 'MemoryDataStore', 'FileDataStore', 'Collection', 'Function'].includes(elementType)
     }
 }

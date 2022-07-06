@@ -40,7 +40,7 @@ const treeData = (project: Project): ModelTreeItem => {
     return treeNodeFromElement(project)
 }
 
-const allElementTypes = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data',
+const allElementTypes = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'List', 'Data', 'Function',
     'Collection', 'Layout', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'] as ElementType[]
 
 export default function Editor({
