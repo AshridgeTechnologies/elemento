@@ -42,7 +42,7 @@ type StateExternalProps = {
 }
 
 type StateInternalProps = {
-    currentPage?: string
+    currentPage?: React.FunctionComponent
 }
 
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
@@ -56,13 +56,13 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     }
 
     get currentPage() {
-        const pages = this.props.pages
-        const pageKey = this.state.currentPage ?? Object.keys(pages)[0]
-        return pages[pageKey]
+        return this.state.currentPage ?? Object.values(this.props.pages)[0]
     }
 
-    ShowPage = (page: string) => {
-        this.latest().updateState({currentPage: page})
+    ShowPage = (page: string | React.FunctionComponent) => {
+        const latest = this.latest()
+        const pageToShow = typeof page === 'string' ? latest.props.pages[page] : page
+        latest.updateState({currentPage: pageToShow})
     }
 }
 

@@ -78,19 +78,24 @@ test('App shows first page initially and other page when state changes', async (
     expect(container.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Other')
 })
 
-test('App.State gets current page and can be updated by ShowPage not called as an object method', () => {
+test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name of functions', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null
     const pages = {Page1, Page2}
     const state = new App.State({pages})
     expect(state.currentPage).toBe(Page1)
-    const updatedState = state._withStateForTest({currentPage: 'Page2'})
+    const updatedState = state._withStateForTest({currentPage: Page2})
     expect(updatedState.currentPage).toBe(Page2)
 
     const appInterface = testAppInterface(state); state.init(appInterface)
     const {ShowPage} = state
-    ShowPage('Page2');
-    const newVersion = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
-    expect(newVersion.currentPage).toBe(Page2)
+
+    ShowPage('Page2')
+    const newVersion1 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
+    expect(newVersion1.currentPage).toBe(Page2)
+
+    ShowPage(Page2)
+    const newVersion2 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
+    expect(newVersion2.currentPage).toBe(Page2)
 })
 
 test('App.State does next level compare on pages', () => {

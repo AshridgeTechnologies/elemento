@@ -15,6 +15,8 @@ Requirements
 - Fact entity: Id, Question, Answer, Date Learned, Recall data
 - Recall data: Last revised, Success, Times revised, Times succeeded, Previous attempts
 - Fact list page: List with Show/Add/Update/Delete
+- Bulk add facility from CSV
+- Learning page: Facts not yet learned
 - Revision page: List with Selection in priority order
 - Selection is by time intervals after date learned and no successful revision
 - Ordering is by date learned descending, random within date
@@ -40,3 +42,4 @@ Features needed
 - Select(List, expression)
 - ForEach(List, expression)
 - User-defined functions
+- Empty message in List

@@ -13,6 +13,7 @@ Stories
 -------
 
 ### Priority 1
+- Copy-paste
 - General usability Part 2
 
 
