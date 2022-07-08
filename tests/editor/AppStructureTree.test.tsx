@@ -9,6 +9,8 @@ import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
+import userEvent from '@testing-library/user-event'
+import {startCase} from 'lodash'
 
 let container: any, unmount: any
 
@@ -79,36 +81,9 @@ afterEach( async () => await act(() => {
 }))
 
 describe('ModelTreeItem', () => {
-    test('finds ancestor keys of the item with a given key', () => {
-        const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
-            new ModelTreeItem('app1', 'App One', 'App', [
-                new ModelTreeItem('page_1', 'Main Page', 'Page', [
-                    new ModelTreeItem('text1_1', 'First Text', 'Text'),
-                    new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput', [
-                        new ModelTreeItem('id1', 'An item', 'Text', [
-                            new ModelTreeItem('id2', 'A deeper item', 'Text')
-                        ])
-                    ]),
-                ]),
-                new ModelTreeItem('page_2', 'Other Page', 'Page', [
-                    new ModelTreeItem('text2_1', 'Some Text', 'Text'),
-                ])
-            ])])
-
-        expect(deepTree.ancestorKeysOf('project_1')).toStrictEqual([])
-        expect(deepTree.ancestorKeysOf('app1')).toStrictEqual(['project_1'])
-        expect(deepTree.ancestorKeysOf('page_2')).toStrictEqual(['project_1', 'app1'])
-        expect(deepTree.ancestorKeysOf('text1_1')).toStrictEqual(['project_1', 'app1', 'page_1'])
-        expect(deepTree.ancestorKeysOf('id1')).toStrictEqual(['project_1', 'app1', 'page_1', 'textInput1_2'])
-        expect(deepTree.ancestorKeysOf('id2')).toStrictEqual(['project_1', 'app1', 'page_1', 'textInput1_2', 'id1'])
-        expect(deepTree.ancestorKeysOf('non_existent')).toStrictEqual([])
-        expect(deepTree.ancestorKeysOf(undefined)).toStrictEqual([])
-    })
-
-    test('knows whether it contains the item with a given key', () => {
-        let item_id2, item_textInput1
-        const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
-            new ModelTreeItem('app1', 'App One', 'App', [
+    let item_id2: ModelTreeItem, item_textInput1: ModelTreeItem
+    const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
+        new ModelTreeItem('app1', 'App One', 'App', [
             new ModelTreeItem('page1','Main Page', 'Page', [
                 new ModelTreeItem('text1', 'First Text', 'Text'),
                 item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', [
@@ -121,6 +96,20 @@ describe('ModelTreeItem', () => {
                 new ModelTreeItem('text2_1', 'Some Text', 'Text'),
             ])
         ])])
+
+    test('finds ancestor keys of the item with a given key', () => {
+
+        expect(deepTree.ancestorKeysOf('project_1')).toStrictEqual([])
+        expect(deepTree.ancestorKeysOf('app1')).toStrictEqual(['project_1'])
+        expect(deepTree.ancestorKeysOf('page_2')).toStrictEqual(['project_1', 'app1'])
+        expect(deepTree.ancestorKeysOf('text1')).toStrictEqual(['project_1', 'app1', 'page1'])
+        expect(deepTree.ancestorKeysOf('id1')).toStrictEqual(['project_1', 'app1', 'page1', 'textInput1'])
+        expect(deepTree.ancestorKeysOf('id2')).toStrictEqual(['project_1', 'app1', 'page1', 'textInput1', 'id1'])
+        expect(deepTree.ancestorKeysOf('non_existent')).toStrictEqual([])
+        expect(deepTree.ancestorKeysOf(undefined)).toStrictEqual([])
+    })
+
+    test('knows whether it contains the item with a given key', () => {
 
         expect(deepTree.containsKey('project_1')).toBe(false)
         expect(deepTree.containsKey('app1')).toBe(true)
@@ -135,6 +124,14 @@ describe('ModelTreeItem', () => {
         expect(item_textInput1.containsKey('page1')).toBe(false)
         expect(item_textInput1.containsKey('id1')).toBe(true)
         expect(item_textInput1.containsKey('id2')).toBe(true)
+    })
+
+    test('finds the item with a given key', () => {
+        expect(deepTree.findItem('project_1')).toHaveProperty('title', 'Project One')
+        expect(deepTree.findItem('app1')).toHaveProperty('title', 'App One')
+        expect(deepTree.findItem('page_2')).toHaveProperty('title', 'Other Page')
+        expect(deepTree.findItem('id2')).toHaveProperty('title', 'A deeper item')
+        expect(deepTree.findItem('xxx')).toBe(null)
     })
 })
 
@@ -248,7 +245,46 @@ test('only shows insert menu item if there are items to insert in that position'
     expect(screen.queryByText(`Insert inside`)).not.toBeNull()
 })
 
-test('notifies delete with item id', async () => {
+test('notifies copy with clicked item id if not selected', async () => {
+    const onAction = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await clickExpandControl(2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
+    await actWait(() => fireEvent.click(screen.getByText('Copy')))
+    expect(onAction).toHaveBeenCalledWith({action: 'copy', ids: ['textInput1_2'], itemNames: ['The Text Input']})
+})
+
+test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item ids', async (action) => {
+    const onAction = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'page_2']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Main Page')))
+    await actWait(() => fireEvent.click(screen.getByText(startCase(action))))
+    expect(onAction).toHaveBeenCalledWith({action: action, ids: ['page_1', 'page_2'], itemNames: ['Main Page', 'Other Page']})
+})
+
+test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['pasteInside', 'Paste Inside'],])
+        ('notifies %s with id of clicked item', async (action, actionLabel) => {
+    const onAction = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await clickExpandControl(2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
+    await actWait(() => fireEvent.click(screen.getByText(actionLabel)))
+    expect(onAction).toHaveBeenCalledWith({action: action, ids: ['textInput1_2'], itemNames: ['The Text Input']})
+})
+
+test('notifies delete with clicked item id', async () => {
     const onAction = jest.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
@@ -261,7 +297,26 @@ test('notifies delete with item id', async () => {
     expect(onAction).not.toHaveBeenCalled()
 
     await actWait(() => fireEvent.click(screen.getByText('Yes', {exact: false})))
-    expect(onAction).toHaveBeenCalledWith({action: 'delete', id: 'textInput1_2', itemName: 'this item'})
+    expect(onAction).toHaveBeenCalledWith({action: 'delete', ids: ['textInput1_2'], itemNames: ['The Text Input']})
+    expect(screen.queryByText('Delete')).toBeNull()
+})
+
+test('notifies delete with all selected item ids if one is clicked', async () => {
+    const onAction = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}  selectedItemIds={['textInput1_2', 'numberInput1_2']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await clickExpandControl(2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
+    await actWait(() => fireEvent.click(screen.getByText('Delete')))
+    expect(onAction).not.toHaveBeenCalled()
+
+    const yesOption = screen.getByText('Yes', {exact: false})
+    expect(yesOption.textContent).toBe('Yes - delete The Text Input, The Number Input')
+    await actWait(() => fireEvent.click(yesOption))
+    expect(onAction).toHaveBeenCalledWith({action: 'delete', ids: ['textInput1_2', 'numberInput1_2'], itemNames: ['The Text Input', 'The Number Input']})
     expect(screen.queryByText('Delete')).toBeNull()
 })
 

@@ -15,7 +15,7 @@ export default interface Element {
     set(id: ElementId, propertyName: string, value: any): Element
     delete(itemId: ElementId): Element
 
-    doInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType, newIdSeq?: number): [Element, (Element | null)]
+    doInsert(insertPosition: InsertPosition, targetItemId: ElementId, element: Element | Element[]): Element
     doMove(insertPosition: InsertPosition, targetItemId: ElementId, movedElements: Element[]): Element
 
     canContain(elementType: ElementType): boolean

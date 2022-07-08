@@ -89,8 +89,8 @@ export default function Editor({
 
     const onHelp = () => setHelpVisible(!helpVisible)
 
-    const onTreeAction = ({action, id}: { action: AppElementAction, id: string | number }) => {
-        onAction(id.toString(), action)
+    const onTreeAction = ({action, ids}: { action: AppElementAction, ids: (string | number)[] }) => {
+        onAction(ids.map( id => id.toString()), action)
     }
 
     const appFrameRef = useRef<HTMLIFrameElement>(null)

@@ -1,6 +1,8 @@
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
-import BaseElement from './BaseElement'
+import BaseElement, {newIdTransformer} from './BaseElement'
 import Element from './Element'
+import {createElement} from './createElement'
+import {toArray} from '../util/helpers'
 
 type Properties = { author?: PropertyValue }
 
@@ -24,8 +26,18 @@ export default class Project extends BaseElement<Properties> implements Element 
         return Boolean(this.findParent(targetItemId)?.canContain(elementType))
     }
 
-    insert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [Project, Element] {
-        return this.doInsert(insertPosition, targetItemId, elementType) as [Project, Element]
+    insertNew(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [Project, Element] {
+        const newIdSeq = this.findMaxId(elementType) + 1
+        const newElement = createElement(elementType, newIdSeq)
+
+        return [this.doInsert(insertPosition, targetItemId, [newElement]), newElement]
+    }
+
+    insert(insertPosition: InsertPosition, targetItemId: ElementId, element: Element | Element[]): [Project, Element[]] {
+        const transformer = newIdTransformer(this)
+        const insertedElements = toArray(element).map(el => el.transform(transformer))
+
+        return [this.doInsert(insertPosition, targetItemId, insertedElements), insertedElements]
     }
 
     move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {

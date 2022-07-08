@@ -44,7 +44,7 @@ export default function EditorRunner() {
 
     useEffect( () => {
         window.setProject = (project: string|Project) => {
-            const proj = typeof project === 'string' ? loadJSONFromString(project) : project
+            const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
             projectHandler.setProject(proj)
             updateProject()
         }
@@ -57,20 +57,21 @@ export default function EditorRunner() {
     }
 
     const onInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType)=> {
-        const newId = projectHandler.insertElement(insertPosition, targetElementId, elementType)
+        const newId = projectHandler.insertNewElement(insertPosition, targetElementId, elementType)
         updateProject()
         return newId
     }
+
     const onMove = (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => {
         projectHandler.move(insertPosition, targetElementId, movedElementIds)
         updateProject()
     }
 
-    const onAction = (id: ElementId, action: AppElementAction) => {
-        projectHandler.elementAction(id, action)
-        updateProject()
+    const onAction = (ids: ElementId[], action: AppElementAction) => {
+        projectHandler.elementAction(ids, action).then(updateProject).catch( error => {
+            alert(error.message)
+        })
     }
-
 
     const onOpen = async () => {
         try {

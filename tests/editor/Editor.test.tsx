@@ -75,14 +75,14 @@ test("renders tree with app elements",  async () => {
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onMove={onMove}/>)))
     await clickExpandControl(0, 1, 2)
     expect(container.querySelector('.MuiTypography-h6').textContent).toBe("Elemento Studio")
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 })
 
 test('shows Text element selected in tree in property editor', async () => {
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onMove={onMove}/>)))
     await clickExpandControl(0, 1, 2)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 
     fireEvent.click(screen.getByText('Second Text'))
 
@@ -94,7 +94,7 @@ test('property kind button state does not leak into other properties', async () 
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onAction={onAction} onMove={onMove}/>)))
     await clickExpandControl(0, 1, 2)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 
     fireEvent.click(screen.getByText('Second Text'))
 
@@ -325,7 +325,7 @@ test(`notifies tree action with item selected in tree`, async () => {
     await actWait(() => fireEvent.click(screen.getByText('Delete')))
     await actWait(() => fireEvent.click(screen.getByText('Yes', {exact: false})))
 
-    expect(onAction).toHaveBeenCalledWith('text_2', 'delete')
+    expect(onAction).toHaveBeenCalledWith(['text_2'], 'delete')
 })
 
 test('has iframe for running app', async () => {

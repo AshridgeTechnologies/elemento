@@ -12,6 +12,9 @@ const config: PlaywrightTestConfig = {
         viewport: { width: 1280, height: 720 },
         ignoreHTTPSErrors: true,
         video: 'on-first-retry',
+        contextOptions: {
+            permissions: ['clipboard-read', 'clipboard-write']
+        },
     },
 }
 

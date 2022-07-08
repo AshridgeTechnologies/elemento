@@ -16,7 +16,6 @@ Stories
 -------
 
 ### Priority 1
-- Copy-paste
 - General usability Part 2
 
 
@@ -112,6 +111,7 @@ Done
 - Date functions and storage
 - List filter and map
 - User-defined functions
+- Copy-paste
 
 
 Bugs fixed

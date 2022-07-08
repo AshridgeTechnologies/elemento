@@ -38,18 +38,6 @@ test('can contain types apart from Project, App, Page, DataStore', () => {
     expect(list.canContain('Function')).toBe(true)
 })
 
-test('creates an updated object on insert', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const list = new List('l1', 'List 1', {items: []}, [text1, text2])
-    const [updatedList] = list.doInsert('inside', 'l1', 'Text', 5)
-    expect(updatedList.name).toBe('List 1')
-    expect(updatedList.elementArray().length).toBe(3)
-    expect(updatedList.elementArray()[0]).toBe(text1)
-    expect(updatedList.elementArray()[1]).toBe(text2)
-    expect(updatedList.elementArray()[2].name).toBe('Text 5')
-})
-
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})

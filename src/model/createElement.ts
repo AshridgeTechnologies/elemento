@@ -17,9 +17,10 @@ import FileDataStore from './FileDataStore'
 import Layout from './Layout'
 import AppBar from './AppBar'
 import FunctionDef from './FunctionDef'
+import {elementId} from '../util/helpers'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
-    const id = `${elementType.toLowerCase()}_${newIdSeq}`
+    const id = elementId(elementType, newIdSeq)
     const name = `${startCase(elementType)} ${newIdSeq}`
 
     switch (elementType) {

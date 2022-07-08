@@ -26,10 +26,6 @@ export default class List extends BaseElement<Properties> implements Element {
     get items() { return this.properties.items }
     get width() { return this.properties.width }
 
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        return createElement(elementType, newIdSeq)
-    }
-
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore'].includes(elementType)
     }

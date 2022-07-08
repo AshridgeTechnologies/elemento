@@ -171,7 +171,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect((updatedProject.elements![1] as App).pages[0].elementArray()[0]).toBe(text3)
 })
 
-describe('Insert element', () => {
+describe('Insert new element', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
@@ -184,7 +184,7 @@ describe('Insert element', () => {
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', ()=> {
 
-        const [updatedProject, newElement] = project.insert('before', text1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('before', text1.id, 'Text')
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement!.id).toBe('text_8')
@@ -193,9 +193,9 @@ describe('Insert element', () => {
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
-    test('creates an updated object on insert  element in a page and preserves unchanged objects', ()=> {
+    test('creates an updated object on insert element in a page and preserves unchanged objects', ()=> {
 
-        const [updatedProject, newElement] = project.insert('after', text1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('after', text1.id, 'Text')
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
         expect(newElement!.id).toBe('text_8')
@@ -205,7 +205,7 @@ describe('Insert element', () => {
     })
 
     test('creates an updated object on insert element inside a page and preserves unchanged objects', ()=> {
-        const [updatedProject, newElement] = project.insert('inside', page1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('inside', page1.id, 'Text')
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![2])
         expect(newElement!.id).toBe('text_8')
@@ -216,7 +216,7 @@ describe('Insert element', () => {
     })
 
     test('creates an updated object on insert page and preserves unchanged objects', () => {
-        const [updatedProject, newElement] = project.insert('after', page1.id, 'Page')
+        const [updatedProject, newElement] = project.insertNew('after', page1.id, 'Page')
         expect((updatedProject.elements![0] as App).pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[1])
         expect(newElement!.id).toBe('page_3')
@@ -225,13 +225,36 @@ describe('Insert element', () => {
         expect((updatedProject.elements![1] as App).pages[0]).toBe(app2.pages[0])
     })
 
-    test('returns an unchanged object on illegal insert page inside page', () => {
-        const [updatedProject, newElement] = project.insert('inside', page1.id, 'Page')
-        expect(updatedProject).toBe(project)
-        expect(newElement).toBe(null)
+    test('exception on illegal insert page inside page', () => {
+        expect( ()=> project.insertNew('inside', page1.id, 'App')).toThrow(/Cannot insert elements of types App inside Page/)
     })
 })
 
+describe('Insert element', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
+    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
+    const app = new App('app', 'App 1', {}, [page1])
+    const app2 = new App('a2', 'App 2', {}, [page2])
+    const project = new Project('pr1', 'proj1', {}, [app, app2])
+
+    test('creates an updated object on insert before element in a page and preserves unchanged objects', () => {
+
+        const insertedElement = new Text('originalId', 'Text 99', {content: 'Hi!'})
+        const [updatedProject, newElements] = project.insert('before', text1.id, insertedElement)
+        const newElement = newElements[0]
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map(el => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
+        expect(newElement).not.toBe(insertedElement)
+        expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
+        expect(newElement.id).toBe('text_8')
+        expect(newElement.name).toBe('Text 99')
+        expect((newElement as Text).content).toBe('Hi!')
+        expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
+    })
+})
 
 describe('Move element', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})

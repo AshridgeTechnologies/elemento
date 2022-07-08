@@ -1,7 +1,8 @@
 import Element from './Element'
 import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
 import UnsupportedOperationError from '../util/UnsupportedOperationError'
-import {flatten} from 'ramda'
+import {elementId} from '../util/helpers'
+import {uniq} from 'ramda'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
@@ -146,7 +147,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return this.codeName
     }
 
-    protected create(id: ElementId,
+    create(id: ElementId,
                      name: string,
                      properties: PropertiesType,
                      elements: ReadonlyArray<Element> | undefined) {
@@ -154,54 +155,57 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return new ctor(id, name, properties, elements)
     }
 
-    doInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType, optNewIdSeq?: number): [this, (Element | null)] {
-        const newIdSeq = optNewIdSeq ?? this.findMaxId(elementType) + 1
-
+    doInsert(insertPosition: InsertPosition, targetItemId: ElementId, elements: Element[]): this {
         const insertIndexInThisElement = () => {
-            if (this.canContain(elementType)) {
-                if ((insertPosition === 'before' || insertPosition === 'after')) {
-                    const selectedItemIndex = this.elementArray().findIndex(it => it.id === targetItemId)
-                    if (selectedItemIndex >= 0) {
-                        const insertOffset = insertPosition === 'before' ? 0 : 1
-                        return selectedItemIndex + insertOffset
-                    }
+            if ((insertPosition === 'before' || insertPosition === 'after')) {
+                const selectedItemIndex = this.elementArray().findIndex(it => it.id === targetItemId)
+                if (selectedItemIndex >= 0) {
+                    const insertOffset = insertPosition === 'before' ? 0 : 1
+                    return selectedItemIndex + insertOffset
                 }
+            }
 
-                if (insertPosition === 'inside') {
-                    if (targetItemId === this.id) {
-                        return this.elementArray().length
-                    }
+            if (insertPosition === 'inside') {
+                if (targetItemId === this.id) {
+                    return this.elementArray().length
                 }
             }
 
             return null
         }
 
+        const checkLegal = () => {
+            const illegalInserts = elements.filter( el => !this.canContain(el.kind))
+            if (illegalInserts.length) {
+                const illegalElementTypes = uniq(illegalInserts.map( el => el.kind )).join(', ')
+                throw new Error(`Cannot insert elements of types ${illegalElementTypes} inside ${this.kind}`)
+            }
+        }
+
         const insertIndex = insertIndexInThisElement()
         if (insertIndex !== null) {
+            checkLegal()
             const newElements = [...this.elementArray()]
-            const newElement = this.createElement(elementType, newIdSeq)
-            newElements.splice(insertIndex, 0, newElement)
-            return [this.create(this.id, this.name, this.properties, newElements), newElement]
+            newElements.splice(insertIndex, 0, ...elements)
+            return this.create(this.id, this.name, this.properties, newElements)
         }
 
-        const insertResults = this.elementArray().map(p => p.doInsert(insertPosition, targetItemId, elementType, newIdSeq))
-        const newChildElements = insertResults.map(r => r[0])
-        const newElement = insertResults.map(r => r[1]).find(el => el) as Element
+        const newChildElements = this.elementArray().map(p => p.doInsert(insertPosition, targetItemId, elements))
 
         if (!equalArrays(newChildElements, this.elementArray())) {
-            return [this.create(this.id, this.name, this.properties, newChildElements), newElement]
+            return this.create(this.id, this.name, this.properties, newChildElements)
         }
 
-        return [this, null]
-    }
-
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        throw new UnsupportedOperationError()
+        return this
     }
 
     canContain(elementType: ElementType) {
         return false
+    }
+
+    transform(transformFn: (element: BaseElement<PropertiesType>, transformedChildElements: BaseElement<PropertiesType>[]) => Element): this {
+        const newChildElements = this.elementArray().map( el => (el as this).transform(transformFn))
+        return transformFn(this as BaseElement<PropertiesType>, newChildElements) as this
     }
 
     doMove(insertPosition: InsertPosition, targetItemId: ElementId, movedElements: Element[]): this {
@@ -239,5 +243,19 @@ export default abstract class BaseElement<PropertiesType extends object> {
         }
 
         return this
+    }
+}
+
+export const newIdTransformer = (existingElement: Element) => {
+    const maxIds = {}
+    const nextId = (kind: ElementType) => {
+        const newId = (maxIds[kind as keyof object] ?? existingElement.findMaxId(kind)) + 1
+        // @ts-ignore
+        maxIds[kind as keyof object] = newId
+        return newId
+    }
+    return (element: BaseElement<any>, transformedChildElements: BaseElement<any>[]): Element => {
+        const id = elementId(element.kind, nextId(element.kind))
+        return element.create(id, element.name, element.properties, transformedChildElements)
     }
 }

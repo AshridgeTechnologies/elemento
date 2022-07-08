@@ -19,10 +19,19 @@ import Layout from './Layout'
 import AppBar from './AppBar'
 import FunctionDef from './FunctionDef'
 
-export function loadJSON({id, kind, name, properties, elements}:
-                             { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }): Element {
+type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
 
-    const loadElements = () => (elements || []).map(el => loadJSON(el))
+export function loadJSON(json: ElementJson | ElementJson[]): Element | Element[] {
+    if (Array.isArray(json)) {
+        return json.map(loadJSONElement)
+    }
+
+    return loadJSONElement(json)
+}
+
+export function loadJSONElement({id, kind, name, properties, elements}: ElementJson): Element {
+
+    const loadElements = () => (elements || []).map(el => loadJSONElement(el))
 
     switch(kind) {
     case 'Project':
@@ -64,6 +73,6 @@ export function loadJSON({id, kind, name, properties, elements}:
     }
 }
 
-export function loadJSONFromString(json: string): Project {
-    return loadJSON(JSON.parse(json)) as Project
+export function loadJSONFromString(json: string): Element | Element[] {
+    return loadJSON(JSON.parse(json))
 }

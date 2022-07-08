@@ -6,12 +6,17 @@ import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
 import List from '../../src/model/List'
+import Layout from '../../src/model/Layout'
+import NumberInput from '../../src/model/NumberInput'
 
 export function projectFixture1() {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
         new Text('text_1', 'First Text', {content: ex`"The first bit of text"`}),
         new Text('text_2', 'Second Text', {content: ex`"The second bit of text"`}),
+        new Layout('layout_1', 'A Layout', {}, [
+            new NumberInput('numberInput_15', 'Nested Text', {}),
+        ])
     ])
     const page2 = new Page('page_2', 'Other Page', {}, [
         new Text('text_3', 'Some Text', {content: ex`"Some text here"`}),

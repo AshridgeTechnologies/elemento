@@ -65,61 +65,6 @@ test('ignores the set and returns itself if the id does not match', ()=> {
     expect(updatedLayout).toBe(layout1)
 })
 
-test('creates an updated object if a property in a contained object is changed and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout 1', {}, [text1, text2])
-    const updatedLayout1 = layout.set('t2', 'content', '"Further text"')
-    expect(updatedLayout1.name).toBe('Layout 1')
-    expect(updatedLayout1.elementArray().length).toBe(2)
-    expect(updatedLayout1.elementArray()[0]).toBe(text1)
-    expect(updatedLayout1.elementArray()[1]).toStrictEqual(text2.set('t2', 'content', '"Further text"'))
-    expect(layout.elements).toStrictEqual([text1, text2])
-})
-
-test('creates an updated object on insert at start of elements and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout 1', {}, [text1, text2])
-    const [updatedLayout] = layout.doInsert('before', 't1', 'Text', 5)
-    expect(updatedLayout.name).toBe('Layout 1')
-    expect(updatedLayout.elementArray().length).toBe(3)
-    expect(updatedLayout.elementArray()[0].name).toBe('Text 5')
-    expect(updatedLayout.elementArray()[1]).toBe(text1)
-    expect(updatedLayout.elementArray()[2]).toBe(text2)
-})
-
-test('creates an updated object on insert at end of elements and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout 1', {}, [text1, text2])
-    const [updatedLayout] = layout.doInsert('after', 't2', 'Text', 5)
-    expect(updatedLayout.name).toBe('Layout 1')
-    expect(updatedLayout.elementArray().length).toBe(3)
-    expect(updatedLayout.elementArray()[0]).toBe(text1)
-    expect(updatedLayout.elementArray()[1]).toBe(text2)
-    expect(updatedLayout.elementArray()[2].name).toBe('Text 5')
-})
-
-test('creates an updated object on insert inside and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout 1', {}, [text1, text2])
-    const [updatedLayout] = layout.doInsert('inside', 'lay1', 'Text', 2)
-    expect(updatedLayout.name).toBe('Layout 1')
-    expect(updatedLayout.elementArray().length).toBe(3)
-    expect(updatedLayout.elementArray()[0]).toBe(text1)
-    expect(updatedLayout.elementArray()[1]).toBe(text2)
-    expect(updatedLayout.elementArray()[2].name).toBe('Text 2')
-})
-
-test('ignores the insert and returns itself if the id is not matched', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const layout1 = new Layout('lay1', 'Layout 1', {}, [text1])
-    const [updatedLayout] = layout1.doInsert('after', 'x1', 'Text')
-    expect(updatedLayout).toBe(layout1)
-})
-
 test('can contain types apart from Project, App, Page', () => {
     const layout = new Layout('lay1', 'Layout 1', {}, [])
     expect(layout.canContain('Project')).toBe(false)

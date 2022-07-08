@@ -52,49 +52,6 @@ test('creates an updated object if a property in a contained object is changed a
     expect(page.elements).toStrictEqual([text1, text2])
 })
 
-test('creates an updated object on insert at start of elements and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const page = new Page('p1', 'Page 1', {}, [text1, text2])
-    const [updatedPage] = page.doInsert('before', 't1', 'Text', 5)
-    expect(updatedPage.name).toBe('Page 1')
-    expect(updatedPage.elementArray().length).toBe(3)
-    expect(updatedPage.elementArray()[0].name).toBe('Text 5')
-    expect(updatedPage.elementArray()[1]).toBe(text1)
-    expect(updatedPage.elementArray()[2]).toBe(text2)
-})
-
-test('creates an updated object on insert at end of elements and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const page = new Page('p1', 'Page 1', {}, [text1, text2])
-    const [updatedPage] = page.doInsert('after', 't2', 'Text', 5)
-    expect(updatedPage.name).toBe('Page 1')
-    expect(updatedPage.elementArray().length).toBe(3)
-    expect(updatedPage.elementArray()[0]).toBe(text1)
-    expect(updatedPage.elementArray()[1]).toBe(text2)
-    expect(updatedPage.elementArray()[2].name).toBe('Text 5')
-})
-
-test('creates an updated object on insert inside page and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const page = new Page('p1', 'Page 1', {}, [text1, text2])
-    const [updatedPage] = page.doInsert('inside', 'p1', 'Text', 2)
-    expect(updatedPage.name).toBe('Page 1')
-    expect(updatedPage.elementArray().length).toBe(3)
-    expect(updatedPage.elementArray()[0]).toBe(text1)
-    expect(updatedPage.elementArray()[1]).toBe(text2)
-    expect(updatedPage.elementArray()[2].name).toBe('Text 2')
-})
-
-test('ignores the insert and returns itself if the id is not matched', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const [updatedPage] = page1.doInsert('after', 'x1', 'Text')
-    expect(updatedPage).toBe(page1)
-})
-
 test('can contain types apart from Project, App, Page', () => {
     const page = new Page('p1', 'Page 1', {}, [])
     expect(page.canContain('Project')).toBe(false)

@@ -27,10 +27,6 @@ export default class AppBar extends BaseElement<Properties> implements Element {
 
     get title() { return this.properties.title }
 
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        return createElement(elementType, newIdSeq)
-    }
-
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }

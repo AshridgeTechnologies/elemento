@@ -28,10 +28,6 @@ export default class Layout extends BaseElement<Properties> implements Element {
     get width() { return this.properties.width }
     get wrap() { return this.properties.wrap ?? false }
 
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        return createElement(elementType, newIdSeq)
-    }
-
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }

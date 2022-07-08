@@ -3,7 +3,7 @@ import Element from './Element'
 import BaseElement from './BaseElement'
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyValueType} from './Types'
 import {createElement} from './createElement'
-import {flatten, without} from 'ramda'
+import {without} from 'ramda'
 
 type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValueType<string | number> }
 
@@ -26,14 +26,6 @@ export default class App extends BaseElement<Properties> implements Element {
 
     get author() { return this.properties.author}
     get maxWidth() { return this.properties.maxWidth}
-
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        return createElement(elementType, newIdSeq)
-    }
-
-    insert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [App, Element] {
-        return this.doInsert(insertPosition, targetItemId, elementType) as [App, Element]
-    }
 
     canContain(elementType: ElementType) {
         return ['Page', 'AppBar', 'MemoryDataStore', 'FileDataStore', 'Collection', 'Function'].includes(elementType)

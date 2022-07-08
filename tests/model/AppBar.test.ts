@@ -41,18 +41,6 @@ test('can contain types apart from Project, App, Page, DataStore, Collection', (
     expect(appBar.canContain('Button')).toBe(true)
 })
 
-test('creates an updated object on insert', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const appBar = new AppBar('ab1', 'AppBar 1', {}, [text1, text2])
-    const [updatedAppBar] = appBar.doInsert('inside', 'ab1', 'Text', 5)
-    expect(updatedAppBar.name).toBe('AppBar 1')
-    expect(updatedAppBar.elementArray().length).toBe(3)
-    expect(updatedAppBar.elementArray()[0]).toBe(text1)
-    expect(updatedAppBar.elementArray()[1]).toBe(text2)
-    expect(updatedAppBar.elementArray()[2].name).toBe('Text 5')
-})
-
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})

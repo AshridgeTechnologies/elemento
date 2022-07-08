@@ -24,10 +24,6 @@ export default class Page extends BaseElement<Properties> implements Element {
 
     get style() { return this.properties.style }
 
-    createElement(elementType: ElementType, newIdSeq: number): Element {
-        return createElement(elementType, newIdSeq)
-    }
-
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
     }

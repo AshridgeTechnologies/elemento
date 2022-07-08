@@ -1,7 +1,7 @@
 General usability Part 3
 ========================
 
-- Duplicate names are highlighted and handled sensibly
+- Duplicate names are highlighted and handled sensibly without losing state (eg add a suffix to one name)
 - Data store has type and enforces it
 - Alt-hover over running app highlights the elements
 - Input adornment of = in Fx mode
