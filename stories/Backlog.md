@@ -3,6 +3,9 @@ Elemento Backlog
 
 Bugs
 ----
+- Dates being stored as timestamps
+- Select in copied page selects the corresponding element in the page copied from
+- Refresh page after change to ensure all changes picked up
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
 - Same List name in two pages creates duplicate list item

@@ -78,8 +78,8 @@ export const highlightElement = (id: string | null) => {
 export type Value<T> = T | { valueOf: () => T }
 export type PropVal<T> = T | { valueOf: () => T }
 
-export function valueOf<T>(x: Value<T>): T {
-    return isObject(x) ? x.valueOf() : x
+export function valueOf<T>(x: Value<T>): T | Date {
+    return (x instanceof Date) ? x : isObject(x) ? x.valueOf() : x
 }
 
 export const valueOfProps = (props: object): any => map(valueOf, props)

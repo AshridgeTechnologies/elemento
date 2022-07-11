@@ -31,15 +31,31 @@ Desirable
 
 - CSV import or use directly as datastore
 
+Finishing touches
+-----------------
+
+- Nav buttons highlight the current page
+- Show All/HideAll buttons
+- Show name of open data file
+- Forms can be entered with enter
+- Focus field - maybe auto after reset form
+
 
 Features needed
 ---------------
+
+- Constants in all calculations
+- First/Last of list (to get highest date less than age) and/or FindFirst/FindLast
+- Readonly property on text input
 
 - AddOrUpdate
 - Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
 - DateFunctions - today, difference
 - Date storage
+- Date formatting
+- Date entry
 - Select(List, expression)
 - ForEach(List, expression)
 - User-defined functions
 - Empty message in List
+- Way to keep local state things like Learn list Show with the item, not the index

@@ -1,6 +1,13 @@
 import {asArray} from '../../src/runtime'
 import {valObj} from '../testutil/testHelpers'
-import {parentPath} from '../../src/runtime/runtimeFunctions'
+import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
+
+test('gets correct valueOf for date, object, primitive', () => {
+    expect(valueOf({valueOf() { return 42}})).toBe(42)
+    const date = new Date(2022, 6, 1)
+    expect(valueOf(date)).toBe(date)
+    expect(valueOf('Hi!')).toBe('Hi!')
+})
 
 test('gets values of object', () => {
     const obj = {x1: {a:10}, x2: {a: 20}}
