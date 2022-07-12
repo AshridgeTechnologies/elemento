@@ -28,7 +28,7 @@ test('can add element inside when right click on Page', async ({ page }) => {
     await page.click(insertInsideMenu)
     await page.click(insertMenu_Text)
     expect(await page.textContent(treeItem(3))).toBe('First Text')
-    expect(await page.textContent(treeItem(5))).toBe('Text 5')
+    expect(await page.textContent(treeItem(6))).toBe('Text 5')
 })
 
 test('can add element after selected element', async ({ page }) => {

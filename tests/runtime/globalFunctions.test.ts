@@ -2,7 +2,7 @@ import { Pending } from '../../src/runtime/DataStore'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Select, ForEach, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Select, ForEach, First, Last, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -174,6 +174,26 @@ describe('ForEach', () => {
     test('Gets value of object for the list', ()=> expect(ForEach(valObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(ForEach(new Pending(), (it: any) => it + 10)).toStrictEqual([]))
+})
+
+describe('First', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => First()).toThrow('Wrong number of arguments to First. Expected list, optional expression.'))
+    test('returns the first in the list without a condition', () => expect(First([3, -1, 4, 0])).toStrictEqual(3))
+    test('returns the first selected item with a condition', () => expect(First([3, -1, 4, 0], (it: any) => it < 0)).toStrictEqual(-1))
+    test('Gets value of object for the list', ()=> expect(First(valObj([3, -1, 4, 0]), (it: any) => it === 0)).toStrictEqual(0))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(First(new Pending(), (it: any) => it <= 0)).toStrictEqual(null))
+})
+
+describe('Last', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Last()).toThrow('Wrong number of arguments to Last. Expected list, optional expression.'))
+    test('returns the last in the list without a condition', () => expect(Last([3, -1, 4, 0])).toStrictEqual(0))
+    test('returns the last selected item with a condition', () => expect(Last([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual(4))
+    test('Gets value of object for the list', ()=> expect(Last(valObj([3, -1, 4, 0]), (it: any) => it > 3)).toStrictEqual(4))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(Last(new Pending(), (it: any) => it <= 0)).toStrictEqual(null))
 })
 
 describe('Timestamp', function () {
