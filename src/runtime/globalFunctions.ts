@@ -1,4 +1,4 @@
-import {fromPairs, splitEvery} from 'ramda'
+import {fromPairs, last, splitEvery} from 'ramda'
 import {
     differenceInDays,
     differenceInHours,
@@ -88,6 +88,18 @@ export const globalFunctions = {
         const listVal = valueOf(list) ?? []
         if (transform === undefined) throw new Error('Wrong number of arguments to ForEach. Expected list, expression.')
         return listVal.map(transform)
+    },
+
+    First(list: Value<any[]>, condition: (item: any) => boolean = x => true) {
+        const listVal = valueOf(list) ?? []
+        if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
+        return listVal.filter(condition)[0] ?? null
+    },
+
+    Last(list: Value<any[]>, condition: (item: any) => boolean = x => true) {
+        const listVal = valueOf(list) ?? []
+        if (list === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
+        return last(listVal.filter(condition)) ?? null
     },
 
     Timestamp() {
