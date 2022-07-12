@@ -2,7 +2,9 @@ import { Pending } from '../../src/runtime/DataStore'
 import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min, Record, List, Select, ForEach, First, Last, Timestamp, Now, Today, TimeBetween, DaysBetween} = globalFunctions
+const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
+    Record, List, Select, ForEach, First, Last,
+    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -314,4 +316,12 @@ describe('DaysBetween', () => {
         expect(DaysBetween(day3_0100, day1_0100)).toBe(-2)
     })
 
+})
+
+describe('DateFormat', () => {
+    const date = new Date(2021, 6, 1, 20, 5, 11)
+
+    test('formats date with custom string', () => {
+        expect(DateFormat(date, 'HH:mm:ss')).toBe('20:05:11')
+    })
 })

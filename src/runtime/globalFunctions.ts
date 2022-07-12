@@ -4,7 +4,8 @@ import {
     differenceInHours,
     differenceInMinutes,
     differenceInMonths,
-    differenceInSeconds, differenceInYears, differenceInCalendarDays
+    differenceInSeconds, differenceInYears, differenceInCalendarDays,
+    format
 } from 'date-fns'
 import {Value, valueOf} from './runtimeFunctions'
 
@@ -131,6 +132,10 @@ export const globalFunctions = {
     DaysBetween(date1: Date, date2: Date) {
         return differenceInCalendarDays(date2, date1)
     },
+
+    DateFormat(date: Date, pattern: string) {
+        return format(date, pattern)
+    }
 }
 
 export const functionArgIndexes = {

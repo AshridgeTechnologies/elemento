@@ -51,7 +51,7 @@ Features needed
 - ✅ Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
 - ✅ DateFunctions - today, difference
 - ✅ Date storage in database
-- Date formatting
+- ✅ Date formatting
 - ✅ Select(List, expression)
 - ✅ ForEach(List, expression)
 - ✅ User-defined functions
