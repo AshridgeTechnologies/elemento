@@ -44,18 +44,18 @@ Finishing touches
 Features needed
 ---------------
 
-- Constants in all calculations
-- First/Last of list (to get highest date less than age) and/or FindFirst/FindLast
+- ✅ Constants in function calculations
+- ✅ First/Last of list (to get highest date less than age) and/or FindFirst/FindLast
 - Readonly property on text input
 
-- AddOrUpdate
-- Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
-- DateFunctions - today, difference
-- Date storage
+- ✅ Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
+- ✅ DateFunctions - today, difference
+- ✅ Date storage in database
 - Date formatting
-- Date entry
-- Select(List, expression)
-- ForEach(List, expression)
-- User-defined functions
+- ✅ Select(List, expression)
+- ✅ ForEach(List, expression)
+- ✅ User-defined functions
+- Way to keep local state things in lists, like the Show button on Learn list, with the item, not the index
 - Empty message in List
-- Way to keep local state things like Learn list Show with the item, not the index
+- Date entry
+- AddOrUpdate

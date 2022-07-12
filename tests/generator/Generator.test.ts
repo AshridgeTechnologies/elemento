@@ -644,7 +644,7 @@ test('transforms expressions to functions where needed', () => {
 test('generates local user defined functions in a page', () => {
     const app = new App('t1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
+            new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`let heightAllowed = MinHeight\nlet isShiny = widget.shiny\nOr(widget.height > heightAllowed, isShiny)`}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
             ]
@@ -660,7 +660,11 @@ test('generates local user defined functions in a page', () => {
     const {Or, Select} = Elemento.globalFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const MinHeight = Elemento.useObjectState(pathWith('MinHeight'), new NumberInput.State({}))
-    const IsTallWidget = (widget) => Or(widget.height > MinHeight, widget.shiny)
+    const IsTallWidget = (widget) => {
+        let heightAllowed = MinHeight
+        let isShiny = widget.shiny
+        return Or(widget.height > heightAllowed, isShiny)
+    }
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item)), }))
 
     return React.createElement(Page, {id: props.path},
@@ -688,7 +692,9 @@ test('generates local user defined functions in the app', () => {
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
     const app = Elemento.useObjectState('app', new App.State({pages}))
-    const AppBarText = (greeting) => greeting + 'our new app'
+    const AppBarText = (greeting) => {
+        return greeting + 'our new app'
+    }
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
             React.createElement(TextElement, {path: pathWith('Text0')}, AppBarText('Welcome to ')),
@@ -722,7 +728,9 @@ test('generates local user defined functions in a list item that use a page item
     const {$item} = props
     const {TextElement} = Elemento.components
     const MinHeight = Elemento.useGetObjectState(parentPathWith('MinHeight'))
-    const ExtraHeight = () => \$item.height - MinHeight
+    const ExtraHeight = () => {
+        return \$item.height - MinHeight
+    }
 
     return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
@@ -736,7 +744,9 @@ function Page1(props) {
     const {Or, Select} = Elemento.globalFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const MinHeight = Elemento.useObjectState(pathWith('MinHeight'), new NumberInput.State({}))
-    const IsTallWidget = (widget) => Or(widget.height > MinHeight, widget.shiny)
+    const IsTallWidget = (widget) => {
+        return Or(widget.height > MinHeight, widget.shiny)
+    }
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item)), }))
     const WidgetList = Elemento.useObjectState(pathWith('WidgetList'), new ListElement.State({}))
 

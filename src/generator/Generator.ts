@@ -25,11 +25,12 @@ import MemoryDataStore from '../model/MemoryDataStore'
 import FileDataStore from '../model/FileDataStore'
 import Layout from '../model/Layout'
 import AppBar from '../model/AppBar'
-import {flatten, without} from 'ramda'
+import {flatten, last, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
+type ExprType = 'singleExpression' | 'action' | 'multilineExpression'
 interface ErrorCollector {
     add(elementId: ElementId, propertyName: string, error: string): void
 }
@@ -47,7 +48,6 @@ function objectLiteral(obj: object) {
 
 const appFunctions = appFunctionsNames()
 const appStateFunctions = Object.keys(new AppData({pages:{}})).filter( fnName => !['props', 'state'].includes(fnName))
-const isAction = true
 const isComponent = (name: string) => name in components
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)
@@ -55,6 +55,7 @@ const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
+const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 
 class Ref {
     constructor(
@@ -379,7 +380,7 @@ ${generateChildren(appBar, '            ')}
             identifiers.add('Button')
             const path = pathWith(button.codeName)
             const content = Generator.getExprAndIdentifiers(button.content, identifiers, isKnown, onError('content'))
-            const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), isAction)
+            const action = Generator.getExprAndIdentifiers(button.action, identifiers, isKnown, onError('action'), 'action')
             const filled = Generator.getExprAndIdentifiers(button.filled, identifiers, isKnown, onError('filled'))
             const display = Generator.getExprAndIdentifiers(button.display, identifiers, isKnown, onError('display'))
             const reactProperties = definedPropertiesOf({path, content, filled, display, action})
@@ -443,7 +444,7 @@ ${generateChildren(appBar, '            ')}
             const input5 = functionDef.input5
             const params = [input1, input2, input3, input4, input5].filter( p => !!p)
             const isKnownOrParam = (identifier: string) => isKnown(identifier) || params.includes(identifier)
-            const calculation = Generator.getExprAndIdentifiers(functionDef.calculation, identifiers, isKnownOrParam, onError('calculation'))
+            const calculation = Generator.getExprAndIdentifiers(functionDef.calculation, identifiers, isKnownOrParam, onError('calculation'), 'multilineExpression')
             return ''
         }
 
@@ -512,7 +513,7 @@ ${generateChildren(appBar, '            ')}
                     const input5 = functionDef.input5
                     const params = [input1, input2, input3, input4, input5].filter( p => !!p)
                     const isKnownOrParam = (identifier: string) => isKnown(identifier) || params.includes(identifier)
-                    const [calculation] = Generator.getExpr(functionDef.calculation, identifiers, isKnownOrParam)
+                    const [calculation] = Generator.getExpr(functionDef.calculation, identifiers, isKnownOrParam, 'multilineExpression')
                     return new DefinedFunction(`(${params.join(', ')}) => ${calculation}`)
                 }
 
@@ -526,19 +527,26 @@ ${generateChildren(appBar, '            ')}
     }
 
     private static getExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,
-        isKnown: (name: string) => boolean, onError: (err: string) => void, isAction = false) {
+        isKnown: (name: string) => boolean, onError: (err: string) => void, exprType: ExprType = 'singleExpression') {
         if (propertyValue === undefined) {
             return undefined
         }
 
         function checkIsExpression(ast: any) {
-            if (!isAction) {
-                const bodyStatements = ast.program.body as any[]
+            const bodyStatements = ast.program.body as any[]
+            if (exprType === 'singleExpression') {
                 if (bodyStatements.length !== 1) {
                     throw new Error('Must be a single expression')
                 }
                 const mainStatement = bodyStatements[0]
                 if (mainStatement.type !== 'ExpressionStatement') {
+                    throw new Error('Invalid expression')
+                }
+            }
+
+            if (exprType === 'multilineExpression') {
+                const lastStatement = last(bodyStatements)
+                if (lastStatement.type !== 'ExpressionStatement') {
                     throw new Error('Invalid expression')
                 }
             }
@@ -557,6 +565,14 @@ ${generateChildren(appBar, '            ')}
         function isFunctionArg(functionName: string, argIndex: number) {
             const argIndexes = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
             return argIndexes.includes(argIndex)
+        }
+
+        function addReturnStatement(ast: any) {
+            const bodyStatements = ast.program.body as any[]
+            const lastStatement = last(bodyStatements)
+            const b = types.builders
+            const returnStmt = b.returnStatement(lastStatement.expression)
+            ast.program.body[bodyStatements.length - 1] = returnStmt
         }
 
         if (isExpr(propertyValue)) {
@@ -616,6 +632,10 @@ ${generateChildren(appBar, '            ')}
                     }
                 })
 
+                if (exprType === 'multilineExpression') {
+                    addReturnStatement(ast)
+                }
+
                 const identifierNames = Array.from(thisIdentifiers.values())
                 const isLocal = (id: string) => variableIdentifiers.has(id)
                 const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id))
@@ -628,8 +648,14 @@ ${generateChildren(appBar, '            ')}
                 const externalIdentifiers = without(Array.from(variableIdentifiers), identifierNames)
                 externalIdentifiers.forEach(name => identifiers.add(name))
 
-                const exprCode = print(ast).code
-                return isAction ? `() => {${exprCode}}` : exprCode
+                const exprCode = print(ast).code.replace(/;$/, '')
+                switch (exprType) {
+                    case 'singleExpression': return exprCode
+                    case 'action': return `() => {${exprCode}}`
+                    case 'multilineExpression': {
+                        return `{\n${indent(exprCode, '        ')}\n    }`
+                    }
+                }
             } catch(e: any) {
                 const errorMessage = `${e.constructor.name}: ${e.message}`
                 onError(errorMessage)
@@ -640,10 +666,10 @@ ${generateChildren(appBar, '            ')}
         }
     }
 
-    private static getExpr(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean) {
+    private static getExpr(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector, isKnown: (name: string) => boolean, exprType: ExprType = 'singleExpression') {
         const errors = []
         const onError = (err: string) => errors.push(err)
-        const expr = trimParens(Generator.getExprAndIdentifiers(propertyValue, identifiers, isKnown, onError))
+        const expr = trimParens(Generator.getExprAndIdentifiers(propertyValue, identifiers, isKnown, onError, exprType))
         const isError = !!errors.length
 
         return [expr, isError]

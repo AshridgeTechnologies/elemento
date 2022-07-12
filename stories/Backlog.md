@@ -3,12 +3,9 @@ Elemento Backlog
 
 Bugs
 ----
-- Dates being stored as timestamps
 - Select in copied page selects the corresponding element in the page copied from
-- Refresh page after change to ensure all changes picked up
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
-- Same List name in two pages creates duplicate list item
 - Escape quotes in Javascript string literals
 
 
@@ -119,3 +116,6 @@ Bugs fixed
 
 - Frequent failure with app._data
 - Rendering/update loop between different sites of initialising app state
+- Dates being stored as timestamps
+- Refresh page after change to ensure all changes picked up
+- Same List name in two pages creates duplicate list item
