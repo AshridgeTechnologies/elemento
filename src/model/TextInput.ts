@@ -7,6 +7,7 @@ export type Properties = {
     readonly maxLength?: PropertyValueType<number>,
     readonly multiline?: PropertyValueType<boolean>,
     readonly width?: PropertyValueType<string|number>,
+    readonly readOnly?: PropertyValueType<boolean>,
     readonly label?: PropertyValueType<string>
 }
 
@@ -26,4 +27,5 @@ export default class TextInput extends BaseInputElement<Properties> implements E
     get maxLength() { return this.properties.maxLength }
     get multiline() { return this.properties.multiline }
     get width() { return this.properties.width }
+    get readOnly() { return this.properties.readOnly }
 }

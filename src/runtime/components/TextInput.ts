@@ -6,11 +6,12 @@ import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 
 
-type Properties = {path: string, label?: PropVal<string>, maxLength?: PropVal<number>, width?: PropVal<string | number>, multiline?: PropVal<boolean>}
+type Properties = {path: string, label?: PropVal<string>, maxLength?: PropVal<number>, width?: PropVal<string | number>, multiline?: PropVal<boolean>, readOnly?: PropVal<boolean>}
 
 export default function TextInput({path, ...props}: Properties) {
-    const {maxLength, label, multiline, width} = valueOfProps(props)
-    const inputProps = maxLength !== undefined ? {inputProps: {maxLength}} : {}
+    const {maxLength, label, multiline, width, readOnly} = valueOfProps(props)
+    const inputPropsValues = definedPropertiesOf({maxLength, readOnly})
+    const inputProps = Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
     const widthProp = width !== undefined ? {width} : {}
     const sxProps = {sx: {...widthProp}}
     const optionalProps = definedPropertiesOf({label, multiline})

@@ -340,8 +340,9 @@ ${generateChildren(appBar, '            ')}
             const maxLength = Generator.getExprAndIdentifiers(textInput.maxLength, identifiers, isKnown, onError('maxLength'))
             const width = Generator.getExprAndIdentifiers(textInput.width, identifiers, isKnown, onError('width'))
             const multiline = Generator.getExprAndIdentifiers(textInput.multiline, identifiers, isKnown, onError('multiline'))
+            const readOnly = Generator.getExprAndIdentifiers(textInput.readOnly, identifiers, isKnown, onError('readOnly'))
             const label = Generator.getExprAndIdentifiers(textInput.label, identifiers, isKnown, onError('label'))
-            const reactProperties = definedPropertiesOf({path, maxLength, multiline, label, width})
+            const reactProperties = definedPropertiesOf({path, maxLength, multiline, readOnly, label, width})
             return `React.createElement(TextInput, ${objectLiteral(reactProperties)})`
 
         case 'NumberInput': {

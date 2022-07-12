@@ -46,7 +46,7 @@ Features needed
 
 - ✅ Constants in function calculations
 - ✅ First/Last of list (to get highest date less than age) and/or FindFirst/FindLast
-- Readonly property on text input
+- ✅ Readonly property on text input
 
 - ✅ Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
 - ✅ DateFunctions - today, difference

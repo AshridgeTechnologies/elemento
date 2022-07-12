@@ -8,6 +8,7 @@ import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {testContainer, wait} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
+import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
@@ -18,6 +19,7 @@ test('TextInput element produces output with properties supplied', () => {
         const component = textInput('app.page1.width', {value: 'Hi there!'}, {
             maxLength: 11,
             width: 23,
+            readOnly: true,
             label: 'Item Description'
         })
         expect(componentJSON(component)).toMatchSnapshot()
@@ -26,9 +28,11 @@ test('TextInput element produces output with properties supplied', () => {
 test('TextInput element produces output with properties supplied as state objects', () => {
     let container = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {
         maxLength: new NumberInput.State({value: 10}),
-        label: new TextInputState({value: 'Item Description'})
+        label: new TextInputState({value: 'Item Description'}),
+        readOnly: new TrueFalseInputState({value: true})
     }))
     expect(container.querySelector('input[id="app.page1.widget1"]').maxLength).toBe(10)
+    expect(container.querySelector('input[id="app.page1.widget1"]').readOnly).toBe(true)
     expect(container.querySelector('label[for="app.page1.widget1"]').innerHTML).toBe('Item Description')
 })
 

@@ -80,6 +80,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                 {propertyField<TextInput>('maxLength', 'number')}
                 {propertyField<TextInput>('width', 'string|number')}
                 {propertyField<TextInput>('multiline', 'boolean')}
+                {propertyField<TextInput>('readOnly', 'boolean')}
                 {propertyField<TextInput>('label')}
             </>
 

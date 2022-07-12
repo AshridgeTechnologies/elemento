@@ -199,6 +199,7 @@ test('has fields for TextInput with default values', () => {
     expect(inputValue('Max Length')).toBe('')
     expect(inputValue('Width')).toBe('')
     expect(inputValue('Multiline')).toBe(undefined)
+    expect(inputValue('Read Only')).toBe(undefined)
 })
 
 test('has fields for NumberInput', () => {

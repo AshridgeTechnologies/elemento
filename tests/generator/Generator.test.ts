@@ -144,7 +144,7 @@ test('generates App Bar elements with contents', ()=> {
 test('generates TextInput elements with initial value', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, multiline: true, label: "Text Input One", width: 150}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, multiline: true, label: "Text Input One", width: 150, readOnly: true}),
             new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, maxLength: ex`5 + 5`}),
             new TextInput('id2', 't3', {}),
     ]
@@ -159,7 +159,7 @@ test('generates TextInput elements with initial value', ()=> {
     const t3 = Elemento.useObjectState(pathWith('t3'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), maxLength: 10, multiline: true, label: 'Text Input One', width: 150}),
+        React.createElement(TextInput, {path: pathWith('t1'), maxLength: 10, multiline: true, readOnly: true, label: 'Text Input One', width: 150}),
         React.createElement(TextInput, {path: pathWith('t2'), maxLength: 5 + 5, label: 't2'}),
         React.createElement(TextInput, {path: pathWith('t3'), label: 't3'}),
     )

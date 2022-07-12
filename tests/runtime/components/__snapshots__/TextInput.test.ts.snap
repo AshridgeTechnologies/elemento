@@ -69,6 +69,7 @@ exports[`TextInput element produces output with properties supplied 1`] = `
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
+      readOnly={true}
       required={false}
       type="text"
       value="Hi there!"
