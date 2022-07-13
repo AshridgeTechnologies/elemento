@@ -30,7 +30,7 @@ test('TextElement element produces output containing string version of function 
 test('TextElement element produces output containing ReactElement children', () => {
         const para = createElement('p', null, 'where are you')
         snapshot(createElement(TextElement, {path: 'page1.para1',
-            fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}, 'Hello', para))()
+            fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 44}, 'Hello', para))()
     }
 )
 
@@ -48,6 +48,6 @@ test('TextElement gets property values supplied as state objects', () => {
     snapshot(createElement(TextElement, {path: 'page1.para1',
         fontSize: valueObj(32), fontFamily: valueObj('Courier'), color: valueObj('red'),
         backgroundColor: valueObj('green'), border: valueObj(10), borderColor: valueObj('black'),
-        width: valueObj(100), height: valueObj(200)}, 'Hello', para))()
+        width: valueObj(100), height: valueObj(200), marginBottom: valueObj(55)}, 'Hello', para))()
 
 })

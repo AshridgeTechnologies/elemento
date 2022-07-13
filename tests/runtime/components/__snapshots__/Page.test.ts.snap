@@ -6,7 +6,7 @@ exports[`Page element produces output containing children 1`] = `
   id="page1"
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
     id="page1.para1"
   >
     Hello

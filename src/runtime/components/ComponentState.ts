@@ -1,6 +1,6 @@
 import {AppStateForObject} from '../appData'
 import shallow from 'zustand/shallow'
-import {mergeRight} from 'ramda'
+import {equals, omit} from 'ramda'
 
 export interface ComponentState<T> {
     init(asi: AppStateForObject): void
@@ -46,5 +46,12 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected updateState(changes: object) {
         const newState = Object.assign({}, this.state, changes) as StateProps
         this._appStateInterface!.updateVersion(this.withState(newState))
+    }
+
+    protected propsMatchValueEqual(thisProps: { value: any }, newProps: { value: any }) {
+        const thisSimpleProps = omit(['value'], thisProps)
+        const newSimpleProps = omit(['value'], newProps)
+        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
+        return simplePropsMatch && equals(thisProps.value, newProps.value)
     }
 }

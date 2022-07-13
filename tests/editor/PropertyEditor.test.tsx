@@ -9,6 +9,8 @@ import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
+import Menu from '../../src/model/Menu'
+import MenuItem from '../../src/model/MenuItem'
 import {componentProps, ex} from '../testutil/testHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
@@ -134,6 +136,7 @@ test('has fields for Text', () => {
         borderColor: 'black',
         width: 100,
         height: 200,
+        marginBottom: 33,
         display: true
     })
     render(<PropertyEditor element={element} onChange={onChange}/>)
@@ -147,6 +150,7 @@ test('has fields for Text', () => {
     expect(inputValue('Border Color')).toBe('black')
     expect(inputValue('Width')).toBe('100')
     expect(inputValue('Height')).toBe('200')
+    expect(inputValue('Margin Bottom')).toBe('33')
     expect(selectValue('Display')).toBe('true')
 })
 
@@ -253,6 +257,25 @@ test('has fields for Button', () => {
     expect(nameInputValue()).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Filled')).toBe('true')
+    expect(inputValue('Action')).toBe('doIt()')
+    expect(kindButton(1).textContent).toBe('fx=')
+    expect(kindButton(1).disabled).toBe(true)
+    expect(selectValue('Display')).toBe('false')
+})
+
+test('has fields for Menu', () => {
+    const element = new Menu('id1', 'Menu 1', {label: ex`"Hi!"`, filled: true}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(nameInputValue()).toBe('Menu 1')
+    expect(inputValue('Label')).toBe('"Hi!"')
+    expect(selectValue('Filled')).toBe('true')
+})
+
+test('has fields for MenuItem', () => {
+    const element = new MenuItem('id1', 'Menu Item 1', {label: ex`"Hi!"`, action: ex`doIt()`, display: false})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(nameInputValue()).toBe('Menu Item 1')
+    expect(inputValue('Label')).toBe('"Hi!"')
     expect(inputValue('Action')).toBe('doIt()')
     expect(kindButton(1).textContent).toBe('fx=')
     expect(kindButton(1).disabled).toBe(true)

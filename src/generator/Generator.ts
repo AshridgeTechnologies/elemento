@@ -27,6 +27,8 @@ import Layout from '../model/Layout'
 import AppBar from '../model/AppBar'
 import {flatten, last, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
+import Menu from '../model/Menu'
+import MenuItem from '../model/MenuItem'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -293,7 +295,6 @@ ${generateChildren(page, '        ', page)}
             const layout = element as Layout
             const path = pathWith(layout.codeName)
             identifiers.add('Layout')
-            const children = layout.elementArray().map(p => `            ${Generator.generateElement(p, app, identifiers, topLevelFunctions, isKnown, errors, containingComponent)},`).join('\n')
             const horizontal = Generator.getExprAndIdentifiers(layout.horizontal, identifiers, isKnown, onError('horizontal'))
             const width = Generator.getExprAndIdentifiers(layout.width, identifiers, isKnown, onError('width'))
             const wrap = Generator.getExprAndIdentifiers(layout.wrap, identifiers, isKnown, onError('wrap'))
@@ -328,7 +329,8 @@ ${generateChildren(appBar, '            ')}
             const borderColor = Generator.getExprAndIdentifiers(text.borderColor, identifiers, isKnown, onError('borderColor'))
             const width = Generator.getExprAndIdentifiers(text.width, identifiers, isKnown, onError('width'))
             const height = Generator.getExprAndIdentifiers(text.height, identifiers, isKnown, onError('height'))
-            const reactProperties = definedPropertiesOf({path, fontSize, fontFamily, color, backgroundColor, border, borderColor, width, height})
+            const marginBottom = Generator.getExprAndIdentifiers(text.marginBottom, identifiers, isKnown, onError('marginBottom'))
+            const reactProperties = definedPropertiesOf({path, fontSize, fontFamily, color, backgroundColor, border, borderColor, width, height, marginBottom})
             return `React.createElement(TextElement, ${objectLiteral(reactProperties)}, ${content})`
         }
 
@@ -388,7 +390,30 @@ ${generateChildren(appBar, '            ')}
             return `React.createElement(Button, ${objectLiteral(reactProperties)})`
         }
 
-        case 'List': {
+            case 'Menu': {
+                const menu = element as Menu
+                const path = pathWith(menu.codeName)
+                identifiers.add('Menu')
+                const label = Generator.getExprAndIdentifiers(menu.label, identifiers, isKnown, onError('label'))
+                const filled = Generator.getExprAndIdentifiers(menu.filled, identifiers, isKnown, onError('filled'))
+                const reactProperties = definedPropertiesOf({path, label, filled})
+                return `React.createElement(Menu, ${objectLiteral(reactProperties)},
+${generateChildren(menu, '            ', containingComponent)}
+    )`
+            }
+
+            case 'MenuItem': {
+                const menuItem = element as MenuItem
+                identifiers.add('MenuItem')
+                const path = pathWith(menuItem.codeName)
+                const label = Generator.getExprAndIdentifiers(menuItem.label, identifiers, isKnown, onError('label'))
+                const action = Generator.getExprAndIdentifiers(menuItem.action, identifiers, isKnown, onError('action'), 'action')
+                const display = Generator.getExprAndIdentifiers(menuItem.display, identifiers, isKnown, onError('display'))
+                const reactProperties = definedPropertiesOf({path, label, display, action})
+                return `React.createElement(MenuItem, ${objectLiteral(reactProperties)})`
+            }
+
+            case 'List': {
             const list = element as List
             identifiers.add('ListElement')
             const listItemCode = Generator.generateComponent(app, new ListItem(list), errors, containingComponent)
@@ -472,6 +497,8 @@ ${generateChildren(appBar, '            ')}
                 case 'AppBar':
                 case 'Text':
                 case 'Button':
+                case 'Menu':
+                case 'MenuItem':
                     return ''
 
                 case 'TextInput':

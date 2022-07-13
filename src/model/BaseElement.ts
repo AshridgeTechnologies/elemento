@@ -1,7 +1,6 @@
 import Element from './Element'
 import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
-import UnsupportedOperationError from '../util/UnsupportedOperationError'
-import {elementId} from '../util/helpers'
+import {elementId, noSpaces} from '../util/helpers'
 import {uniq} from 'ramda'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
@@ -139,7 +138,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     get codeName() {
-        const noSpaceName = this.name.replace(/ /g, '')
+        const noSpaceName = noSpaces(this.name)
         return noSpaceName === this.constructor.name ? `${noSpaceName}_${this.id}` : noSpaceName
     }
 

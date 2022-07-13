@@ -2,6 +2,7 @@ Formula improvements Part 3
 ===========================
 
 - Runtime errors reported in the editor, with link to control
+- Stop spell check errors in formulas
 - Functions without brackets give error
 - Error for reference to unknown property eg Data1.valu
 - Wrap primitive results in a Proxy, so could do Set(data.x.y.z, 99)

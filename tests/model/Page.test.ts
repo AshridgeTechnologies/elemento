@@ -52,13 +52,14 @@ test('creates an updated object if a property in a contained object is changed a
     expect(page.elements).toStrictEqual([text1, text2])
 })
 
-test('can contain types apart from Project, App, Page', () => {
+test('can contain types apart from Project, App, Page, etc', () => {
     const page = new Page('p1', 'Page 1', {}, [])
     expect(page.canContain('Project')).toBe(false)
     expect(page.canContain('App')).toBe(false)
     expect(page.canContain('Page')).toBe(false)
     expect(page.canContain('MemoryDataStore')).toBe(false)
     expect(page.canContain('FileDataStore')).toBe(false)
+    expect(page.canContain('MenuItem')).toBe(false)
     expect(page.canContain('Text')).toBe(true)
     expect(page.canContain('Button')).toBe(true)
     expect(page.canContain('Function')).toBe(true)

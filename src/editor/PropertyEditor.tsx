@@ -19,6 +19,7 @@ import {Collection, List} from '../model/index'
 import Layout from '../model/Layout'
 import AppBar from '../model/AppBar'
 import {startCase} from 'lodash'
+import MenuItem from '../model/MenuItem'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -72,6 +73,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                 {propertyField<Text>('display', 'boolean')}
                 {propertyField<Text>('width', 'string|number')}
                 {propertyField<Text>('height', 'string|number')}
+                {propertyField<Text>('marginBottom', 'string|number')}
             </>
 
         case 'TextInput':
@@ -109,6 +111,19 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                 {propertyField<Button>('action', 'action')}
                 {propertyField<Button>('filled', 'boolean')}
                 {propertyField<Button>('display', 'boolean')}
+            </>
+
+        case 'Menu':
+            return <>
+                {propertyField<MenuItem>('label')}
+                {propertyField<MenuItem>('filled', 'boolean')}
+            </>
+
+        case 'MenuItem':
+            return <>
+                {propertyField<MenuItem>('label')}
+                {propertyField<MenuItem>('action', 'action')}
+                {propertyField<MenuItem>('display', 'boolean')}
             </>
 
         case 'List':

@@ -18,6 +18,8 @@ import FileDataStore from './FileDataStore'
 import Layout from './Layout'
 import AppBar from './AppBar'
 import FunctionDef from './FunctionDef'
+import Menu from './Menu'
+import MenuItem from './MenuItem'
 
 type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
 
@@ -56,6 +58,10 @@ export function loadJSONElement({id, kind, name, properties, elements}: ElementJ
         return new TrueFalseInput(id, name, properties)
     case 'Button':
         return new Button(id, name, properties)
+    case 'Menu':
+        return new Menu(id, name, properties, loadElements())
+    case 'MenuItem':
+        return new MenuItem(id, name, properties)
     case 'List':
         return new List(id, name, properties, loadElements())
     case 'Data':

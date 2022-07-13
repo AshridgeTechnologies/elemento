@@ -3,7 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
-- Performance: deferred updates repeatedly update store in a loop
+- Clear preview and state when load new app
 - Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
@@ -14,6 +14,7 @@ Stories
 -------
 
 ### Priority 1
+- Runtime error and notification handling
 - General usability Part 2
 
 
@@ -121,3 +122,5 @@ Bugs fixed
 - Dates being stored as timestamps
 - Refresh page after change to ensure all changes picked up
 - Same List name in two pages creates duplicate list item
+- Stops updating preview sometimes
+- Performance: deferred updates repeatedly update store in a loop

@@ -51,6 +51,10 @@ export class FileDataStoreState extends BaseComponentState<ExternalProperties, S
         return this.dataStore.add(collection, id, item).catch( e => NotifyError('Could not add item to data store', e) )
     }
 
+    addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }) {
+        return this.dataStore.addAll(collection, items).catch( e => NotifyError('Could not add items to data store', e) )
+    }
+
     update(collection: CollectionName, id: Id, changes: object) {
         return this.dataStore.update(collection, id, changes).catch( e => NotifyError('Could not update item in data store', e) )
     }

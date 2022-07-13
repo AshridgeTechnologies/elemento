@@ -14,7 +14,8 @@ export default function TextInput({path, ...props}: Properties) {
     const inputProps = Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
     const widthProp = width !== undefined ? {width} : {}
     const sxProps = {sx: {...widthProp}}
-    const optionalProps = definedPropertiesOf({label, multiline})
+    const multilineProps = multiline ? {minRows: 2, maxRows: 10} : {}
+    const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})
 
     const state = useGetObjectState<TextInputState>(path)
     const value = state._controlValue ?? ''

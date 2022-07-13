@@ -78,6 +78,7 @@ export function valueOf<T>(x: Value<T>): T {
     return isObject(x) ? x.valueOf() : x
 }
 
+export const valuesOf = (...values: Value<any>[]): any[] => values.map(valueOf)
 export const valueOfProps = (props: object): any => map(valueOf, props)
 
 export function asText(content: any) {

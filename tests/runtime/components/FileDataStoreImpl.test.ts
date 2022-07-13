@@ -23,6 +23,9 @@ test('can add, update and remove before Save', async () => {
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
+    await store.addAll('Widgets', {w2: {a: 50, b: 'Bee50', c: true}, w3: {a: 60, b: 'Bee60', c: false}})
+    expect(await store.getById('Widgets', 'w3')).toStrictEqual({a: 60, b: 'Bee60', c: false})
+
     await store.update('Widgets', 'w1', {a: 20, b: 'Bee1', c: true})
     expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 20, b: 'Bee1', c: true})
 

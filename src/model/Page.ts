@@ -25,7 +25,7 @@ export default class Page extends BaseElement<Properties> implements Element {
     get style() { return this.properties.style }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
+        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore', 'MenuItem'].includes(elementType)
     }
 
 }

@@ -35,6 +35,7 @@ test('can contain types apart from Project, App, Page, DataStore, Collection', (
     expect(appBar.canContain('Project')).toBe(false)
     expect(appBar.canContain('App')).toBe(false)
     expect(appBar.canContain('AppBar')).toBe(false)
+    expect(appBar.canContain('MenuItem')).toBe(false)
     expect(appBar.canContain('Page')).toBe(false)
     expect(appBar.canContain('MemoryDataStore')).toBe(false)
     expect(appBar.canContain('Text')).toBe(true)

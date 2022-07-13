@@ -1,6 +1,13 @@
 Design decisions
 ================
 
+Collection object ids - 14 Jul 22
+---------------------
+When adding an object without an id to a collection, generate an id and use it in the collection AND add it to the object
+- without an id in the object, it is difficult to retrieve it from the collection again
+- it is inconvenient to generate Ids in the formula
+- the Id can still be overridden if needed
+
 Element paths/ids - 13 Jul 22
 -------------
 Use list item id in element path

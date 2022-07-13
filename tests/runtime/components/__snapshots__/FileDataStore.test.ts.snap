@@ -48,14 +48,3 @@ exports[`produces output with name 1`] = `
   />
 </div>
 `;
-
-exports[`produces output with record values 1`] = `
-<div
-  id="app.page1.collection2"
->
-  <div>
-    app.page1.collection2
-  </div>
-  <code />
-</div>
-`;

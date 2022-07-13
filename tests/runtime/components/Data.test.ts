@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Data} from '../../../src/runtime/components/index'
+import {Collection, Data} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {DataState} from '../../../src/runtime/components/Data'
@@ -71,6 +71,24 @@ test('no properties are copied onto the Data instance for a primitive value', ()
     expect(state.value).toBe(42)
     const propNamesWith42 = Object.getOwnPropertyNames(state)
     expect(propNamesWith42).toStrictEqual(propNamesWithNull)
+})
+
+test('does deep compare on value in props', () => {
+    {
+        const state1 = new Data.State({value: {}})
+        const state2 = new Data.State({value: {}})
+        expect(state1.updateFrom(state2)).toBe(state1)
+    }
+    {
+        const state1 = new Data.State({value: {a: 10}})
+        const state2 = new Data.State({value: {a: 10}})
+        expect(state1.updateFrom(state2)).toBe(state1)
+    }
+    {
+        const state1 = new Data.State({value: {a: 10}})
+        const state2 = new Data.State({value: {a: 10, b: 20}})
+        expect(state1.updateFrom(state2)).not.toBe(state1)
+    }
 })
 
 test('properties of the value are copied onto the Data instance after an update', () => {

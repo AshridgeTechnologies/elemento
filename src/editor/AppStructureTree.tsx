@@ -8,6 +8,8 @@ import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ViewListIcon from '@mui/icons-material/ViewList'
 import MemoryIcon from '@mui/icons-material/Memory'
+import MenuIcon from '@mui/icons-material/Menu'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import WebAssetIcon from '@mui/icons-material/WebAsset';
@@ -63,6 +65,8 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     case 'SelectInput': return <DensitySmall {...{sx}}/>
     case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
     case 'Button': return <Crop75 {...{sx}}/>
+    case 'Menu': return <MenuIcon {...{sx}}/>
+    case 'MenuItem': return <MenuOpenIcon {...{sx}}/>
     case 'List': return <ViewListIcon {...{sx}}/>
     case 'Data': return <Note {...{sx}}/>
     case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>

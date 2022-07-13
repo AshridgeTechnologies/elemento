@@ -12,11 +12,12 @@ test('Text has correct properties with default values', ()=> {
     expect(text1.style).toBe(undefined)
     expect(text1.display).toBe(true)
     expect(text1.fontSize).toBe(undefined)
+    expect(text1.marginBottom).toBe(undefined)
 })
 
 test('Text has correct properties with specified values', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`, style: 'cool', display: false,
-        fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200})
+        fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 20})
 
     expect(text1.id).toBe('t1')
     expect(text1.name).toBe('Text 1')
@@ -31,6 +32,7 @@ test('Text has correct properties with specified values', ()=> {
     expect(text1.borderColor).toBe('black')
     expect(text1.width).toBe(100)
     expect(text1.height).toBe(200)
+    expect(text1.marginBottom).toBe(20)
 })
 
 test('tests if an object is this type', ()=> {
@@ -74,7 +76,7 @@ test('converts to JSON without optional proerties', ()=> {
 
 test('converts to JSON with optional properties', ()=> {
     const text = new Text('t1', 'Text 1', {content: ex`"Some text"`, style: ex`red`, display: ex`false`,
-        fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200})
+        fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
         id: 't1',
@@ -90,7 +92,7 @@ test('converts from plain object', ()=> {
     expect(newText).toStrictEqual<Text>(text)
 
     const text2 = new Text('t1', 'Text 2', {content: `Some text`, style: `red`, display: false,
-        fontSize: 44, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200})
+        fontSize: 44, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40})
     const plainObj2 = asJSON(text2)
     const newText2 = loadJSON(plainObj2)
     expect(newText2).toStrictEqual<Text>(text2)

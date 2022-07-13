@@ -11,18 +11,20 @@ Aims
 Requirements
 ------------
 
-- File datastore: Open, New, Save As on Menu under icon
-- Fact entity: Id, Question, Answer, Date Learned, Recall data
+- ✅ File datastore: Open, New, Save As on Menu under icon
+- ✅ Fact entity: Id, Question, Answer, Date Learned, Recall data
 - Recall data: Last revised, Success, Times revised, Times succeeded
-- Fact list page: List with Show/Add/Update/Delete
-- Bulk add facility from CSV
-- Learning page: Facts not yet learned
+- ✅ Fact list page: List with Show/Add/Update/Delete
+- ✅ Bulk add facility from CSV
+- ✅ Learning page: Facts not yet learned
 - Revision page: List with Selection in priority order
-- Selection is by time intervals after date learned and no successful revision
+- ✅ Selection is by time intervals after date learned and no successful revision
 - Ordering is by date learned descending, random within date
 - Revision row hides answer until click one of two buttons - tick or cross
 - Update revised data according to answer
 - Can change answer on the same day
+- Can search for a word in the question or translation
+- Help page
 
 
 
@@ -36,12 +38,15 @@ Desirable
 Finishing touches
 -----------------
 
+- ✅ Import Learned, Last Revised
 - Nav buttons highlight the current page
+- Grey out today's revision if already answered
 - Show All/HideAll buttons
 - Show name of open data file
 - Forms can be entered with enter
 - Focus field - maybe auto after reset form
 - Readonly inputs keep title in border
+- Links to word entry from lists
 
 
 Features needed
@@ -58,14 +63,21 @@ Features needed
 - ✅ ForEach(List, expression)
 - ✅ User-defined functions
 - ✅ Way to keep local state things in lists, like the Show button on Learn list, with the item, not the index
-- Date functions give sensible output with undefined dates
-- Sort
-- Menu
+- ✅ CSV to Object function
+- ✅ Bulk Add on collection and data store
+- ✅ Text area preset size and fix typing behaviour
+- ✅ Date functions give sensible output with undefined dates
+- ✅ Date functions get values of args
+- ✅ Sort
+- Styling for buttons
+- ✅ Menu
+- Confirmation and error messages
 - Empty message in List
 - Date entry
 - AddOrUpdate
 - Get current page
 - Highlight button
+- ✅ Tabs in CSV
 
 Revision conditions
 -------------------

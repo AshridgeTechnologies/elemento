@@ -1,0 +1,645 @@
+{
+  "id": "project_1",
+  "name": "Vocabulary Revision",
+  "kind": "Project",
+  "properties": {},
+  "elements": [
+    {
+      "id": "app1",
+      "name": "Vocabulary Revision App",
+      "kind": "App",
+      "properties": {
+        "author": "PB"
+      },
+      "elements": [
+        {
+          "id": "appbar_1",
+          "name": "App Bar",
+          "kind": "AppBar",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_13",
+              "name": "App Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Vocabulary Revision",
+                "fontSize": 20
+              }
+            },
+            {
+              "id": "menu_1",
+              "name": "Menu 1",
+              "kind": "Menu",
+              "properties": {
+                "label": "File",
+                "filled": true
+              },
+              "elements": [
+                {
+                  "id": "menuitem_1",
+                  "name": "Open File",
+                  "kind": "MenuItem",
+                  "properties": {
+                    "label": "Open",
+                    "action": {
+                      "expr": "FileDataStore1.Open()"
+                    }
+                  }
+                },
+                {
+                  "id": "menuitem_2",
+                  "name": "New File",
+                  "kind": "MenuItem",
+                  "properties": {
+                    "label": "New",
+                    "action": {
+                      "expr": "FileDataStore1.New()"
+                    }
+                  }
+                },
+                {
+                  "id": "menuitem_3",
+                  "name": "Save File",
+                  "kind": "MenuItem",
+                  "properties": {
+                    "label": "Save As",
+                    "action": {
+                      "expr": "FileDataStore1.SaveAs()"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "button_18",
+              "name": "Learn Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Learn",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(LearnPage)"
+                }
+              }
+            },
+            {
+              "id": "button_14",
+              "name": "Revision Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Revision",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(RevisionPage)"
+                }
+              }
+            },
+            {
+              "id": "button_15",
+              "name": "Words Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Words",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(WordDetailsPage)"
+                }
+              }
+            },
+            {
+              "id": "button_20",
+              "name": "Import Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Import",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(ImportPage)"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "page_1",
+          "name": "Word Details Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "layout_1",
+              "name": "Page Layout ",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              },
+              "elements": [
+                {
+                  "id": "list_3",
+                  "name": "WordList",
+                  "kind": "List",
+                  "properties": {
+                    "items": {
+                      "expr": "Sort(Words.Query({}), $item.Word)"
+                    }
+                  },
+                  "elements": [
+                    {
+                      "id": "text_8",
+                      "name": "ListWord",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Word"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "layout_2",
+                  "name": "Widget Form",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": false,
+                    "width": 500
+                  },
+                  "elements": [
+                    {
+                      "id": "data_1",
+                      "name": "WordId",
+                      "kind": "Data",
+                      "properties": {
+                        "display": false,
+                        "initialValue": {
+                          "expr": "WordList.selectedItem && WordList.selectedItem.Id"
+                        }
+                      }
+                    },
+                    {
+                      "id": "data_3",
+                      "name": "TheWord",
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "WordId.value && Get(Words, WordId.value)"
+                        },
+                        "display": false
+                      }
+                    },
+                    {
+                      "id": "layout_4",
+                      "name": "Layout 4",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true
+                      },
+                      "elements": [
+                        {
+                          "id": "text_3",
+                          "name": "Page name",
+                          "kind": "Text",
+                          "properties": {
+                            "content": "Word details",
+                            "fontSize": 21
+                          }
+                        },
+                        {
+                          "id": "button_12",
+                          "name": "New Word Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "New Word",
+                            "action": {
+                              "expr": "Reset(Word, Translation, WordList)"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "textinput_1",
+                      "name": "Word",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheWord.Word"
+                        }
+                      }
+                    },
+                    {
+                      "id": "textinput_2",
+                      "name": "Translation",
+                      "kind": "TextInput",
+                      "properties": {
+                        "multiline": true,
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheWord.Translation"
+                        }
+                      }
+                    },
+                    {
+                      "id": "textinput_3",
+                      "name": "Date Learned",
+                      "kind": "TextInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheWord.DateLearned && DateFormat(TheWord.DateLearned, \"dd MMM yyyy\")"
+                        },
+                        "readOnly": true
+                      }
+                    },
+                    {
+                      "id": "textinput_4",
+                      "name": "Last Revised",
+                      "kind": "TextInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheWord.LastRevised && DateFormat(TheWord.LastRevised, \"dd MMM yyyy\")"
+                        },
+                        "readOnly": true
+                      }
+                    },
+                    {
+                      "id": "textinput_5",
+                      "name": "Last Revised Ok",
+                      "kind": "TextInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheWord.LastRevisedOk"
+                        },
+                        "readOnly": true
+                      }
+                    },
+                    {
+                      "id": "layout_3",
+                      "name": "Page Buttons",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "button_8",
+                          "name": "Add Word Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Add Word",
+                            "display": {
+                              "expr": "!WordId.value"
+                            },
+                            "action": {
+                              "expr": "let newWord = Record('Id', 'w' + Timestamp(), 'Word', Word, 'Translation', Translation);\nAdd(Words, newWord);\nReset(Word, Translation);\nSet(WordList, newWord)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_9",
+                          "name": "Update Widget Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Save Changes",
+                            "display": {
+                              "expr": "!!WordId.value"
+                            },
+                            "action": {
+                              "expr": "Update(Words, WordId, Record('Word', Word, 'Translation', Translation))\nReset(Word, Translation)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_10",
+                          "name": "Cancel Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Abandon Changes",
+                            "action": {
+                              "expr": "Reset(Word, Translation)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_11",
+                          "name": "Delete Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Delete",
+                            "action": {
+                              "expr": "Remove(Words, WordId)\nReset(WordList)\nReset(Word, Translation)"
+                            },
+                            "display": {
+                              "expr": "!!WordId.value"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "text_4",
+                      "name": "IdDisplay",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "WordId"
+                        },
+                        "display": false,
+                        "color": "gray",
+                        "width": 160,
+                        "fontSize": 12
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_2",
+          "name": "Revision Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "data_6",
+              "name": "Revision Periods",
+              "kind": "Data",
+              "properties": {
+                "initialValue": {
+                  "expr": "List(1, 7, 30, 180)"
+                }
+              }
+            },
+            {
+              "id": "text_5",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Revision",
+                "fontSize": 20
+              }
+            },
+            {
+              "id": "function_1",
+              "name": "UpToDate",
+              "kind": "Function",
+              "properties": {
+                "input1": "word",
+                "calculation": {
+                  "expr": "let sinceLearned = If(word.DateLearned, DaysBetween(word.DateLearned, Today()), 0)\nlet latestRevisionTime = Last(RevisionPeriods, $item <= sinceLearned)\nlet latestRevisionDate = DateAdd(word.DateLearned, latestRevisionTime, 'days')\nlet revisedToday = DaysBetween(word.LastRevised, Today()) == 0\nlet latestRevisionDone = word.LastRevised && DaysBetween(latestRevisionDate, word.LastRevised) >= 0\nOr(Not(word.DateLearned), Not(latestRevisionTime), revisedToday, And(latestRevisionDone, word.LastRevisedOk))"
+                }
+              }
+            },
+            {
+              "id": "data_4",
+              "name": "WordsToRevise",
+              "kind": "Data",
+              "properties": {
+                "initialValue": {
+                  "expr": "Select(Words.Query({}), Not(UpToDate($item)))"
+                }
+              }
+            },
+            {
+              "id": "list_2",
+              "name": "WordList",
+              "kind": "List",
+              "properties": {
+                "items": {
+                  "expr": "Sort(WordsToRevise, $item.LastRevised)"
+                },
+                "width": "100%"
+              },
+              "elements": [
+                {
+                  "id": "layout_5",
+                  "name": "Item Layout",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true,
+                    "width": "100%"
+                  },
+                  "elements": [
+                    {
+                      "id": "text_6",
+                      "name": "Word",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Word"
+                        },
+                        "width": "30%"
+                      }
+                    },
+                    {
+                      "id": "text_7",
+                      "name": "Translation",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Translation"
+                        },
+                        "width": "30%",
+                        "color": {
+                          "expr": "If(ShowItem, 'inherit', 'transparent')"
+                        }
+                      }
+                    },
+                    {
+                      "id": "truefalseinput_1",
+                      "name": "Show Item",
+                      "kind": "TrueFalseInput",
+                      "properties": {
+                        "initialValue": false,
+                        "label": "Show"
+                      }
+                    },
+                    {
+                      "id": "button_16",
+                      "name": "Yes Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Y",
+                        "action": {
+                          "expr": "Words.Update($item.Id, Record('LastRevised', Today(), 'LastRevisedOk', true))"
+                        }
+                      }
+                    },
+                    {
+                      "id": "button_19",
+                      "name": "No Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "N",
+                        "action": {
+                          "expr": "Words.Update($item.Id, Record('LastRevised', Today(), 'LastRevisedOk', false))"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_3",
+          "name": "Learn Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_9",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Words to Learn",
+                "fontSize": 20
+              }
+            },
+            {
+              "id": "data_5",
+              "name": "WordsToLearn",
+              "kind": "Data",
+              "properties": {
+                "initialValue": {
+                  "expr": "Select(Words.Query({}), Not($item.DateLearned))"
+                },
+                "display": false
+              }
+            },
+            {
+              "id": "list_4",
+              "name": "WordList",
+              "kind": "List",
+              "properties": {
+                "items": {
+                  "expr": "WordsToLearn"
+                },
+                "width": "100%"
+              },
+              "elements": [
+                {
+                  "id": "layout_6",
+                  "name": "Item Layout",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true,
+                    "width": "100%"
+                  },
+                  "elements": [
+                    {
+                      "id": "text_10",
+                      "name": "Word",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Word"
+                        },
+                        "width": "30%"
+                      }
+                    },
+                    {
+                      "id": "text_11",
+                      "name": "Translation",
+                      "kind": "Text",
+                      "properties": {
+                        "content": {
+                          "expr": "$item.Translation"
+                        },
+                        "width": "30%",
+                        "color": {
+                          "expr": "If(ShowItem, 'inherit', 'transparent')"
+                        }
+                      }
+                    },
+                    {
+                      "id": "truefalseinput_2",
+                      "name": "Show Item",
+                      "kind": "TrueFalseInput",
+                      "properties": {
+                        "initialValue": true,
+                        "label": "Show"
+                      }
+                    },
+                    {
+                      "id": "button_17",
+                      "name": "Yes Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Learned",
+                        "action": {
+                          "expr": "Words.Update($item.Id, Record('DateLearned', Today()))"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_4",
+          "name": "Import Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_12",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Words to Learn",
+                "fontSize": 20
+              }
+            },
+            {
+              "id": "textinput_6",
+              "name": "Csv Text",
+              "kind": "TextInput",
+              "properties": {
+                "multiline": true,
+                "width": "100%",
+                "label": "Type or paste CSV data here"
+              }
+            },
+            {
+              "id": "button_21",
+              "name": "Import Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Import",
+                "action": {
+                  "expr": "let columns = List('Word', 'Translation', 'Date Learned', 'Last Revised', 'Last Revised Ok')\nlet newItems =  CsvToRecords(CsvText.value, columns)\nLog(newItems)\nAdd(Words, newItems)"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "filedatastore_1",
+          "name": "File Data Store 1",
+          "kind": "FileDataStore",
+          "properties": {}
+        },
+        {
+          "id": "collection_1",
+          "name": "Words",
+          "kind": "Collection",
+          "properties": {
+            "collectionName": "Words",
+            "dataStore": {
+              "expr": "FileDataStore1"
+            },
+            "display": false
+          }
+        }
+      ]
+    }
+  ]
+}

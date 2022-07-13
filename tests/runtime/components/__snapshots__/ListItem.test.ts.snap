@@ -21,12 +21,12 @@ exports[`ListItem produces output containing ReactElement children 1`] = `
   tabIndex={0}
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   >
     where are you?
   </p>
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   >
     over here!
   </p>

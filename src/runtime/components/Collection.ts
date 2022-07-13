@@ -1,17 +1,17 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
 import {clone, isArray, isNumber, isObject, isString} from 'lodash'
-import {equals, mergeRight, omit} from 'ramda'
+import {mergeRight, omit} from 'ramda'
 import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
 import {AppStateForObject, useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import shallow from 'zustand/shallow'
+import {toArray} from '../../util/helpers'
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
 type StateProperties = {value?: object, queries?: object, subscription?: any}
 
-let nextId = 1
+let lastGeneratedId = 1
 
 export default function Collection({path, display = false}: Properties) {
     const state = useGetObjectState<CollectionState>(path)
@@ -25,8 +25,17 @@ export const toEntry = (value: any): [PropertyKey, any] => {
     if (isString(value) || isNumber(value)) {
         return [value, value]
     }
-    const id = value.id ?? value.Id ?? nextId++
-    return [id, value]
+
+    const id = value.id ?? value.Id
+    if (id) {
+        return [id, value]
+    }
+
+    const nextId = Math.max(lastGeneratedId+1, Date.now())
+    const generatedId = nextId.toString()
+    const valueWithId = {...value, Id: generatedId}
+    lastGeneratedId = nextId
+    return [generatedId, valueWithId]
 }
 
 const initialValue = (value?: any): object => {
@@ -40,6 +49,8 @@ const initialValue = (value?: any): object => {
 
     return {}
 }
+
+type AddItem = object | string | number
 
 export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
     implements ComponentState<CollectionState>{
@@ -88,11 +99,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     }
 
     updateFrom(newObj: CollectionState): this {
-        const thisSimpleProps = omit(['value'], this.props)
-        const newSimpleProps = omit(['value'], newObj.props)
-        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
-        const fullMatch = simplePropsMatch && equals(this.props.value, newObj.props.value)
-        return fullMatch ? this : new CollectionState(newObj.props).withState(this.state) as this
+        return this.propsMatchValueEqual(this.props, newObj.props) ? this : new CollectionState(newObj.props).withState(this.state) as this
     }
 
     get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
@@ -112,13 +119,20 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
     }
 
-    Add(item: object | string | number) {
-        const [key, value] = toEntry(item)
-        const id = key.toString()
-        this.updateValue(id, item)
+    Add(item: AddItem | AddItem[]) {
+        const items = toArray(item)
+        const addItems = {} as {[id: Id]: any}
+        items.forEach( item => {
+            const [key, value] = toEntry(item)
+            const id = key.toString()
+            addItems[id] = value
+        })
+
+        const newValue = mergeRight(this.value, addItems)
+        this.updateState({value: newValue})
 
         if (this.dataStore) {
-            this.dataStore.add(this.props.collectionName!, id, value)
+            this.dataStore.addAll(this.props.collectionName!, addItems)
         }
     }
 

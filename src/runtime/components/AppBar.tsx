@@ -10,15 +10,6 @@ export default function AppBar({children, path, ...props}: Properties) {
     const {title} = propVals
     return <MuiAppBar position="static" id={path}>
             <Toolbar variant="dense">
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{mr: 2}}
-                >
-                    <MenuIcon/>
-                </IconButton>
                 <Stack
                     direction="row"
                     justifyContent="flex-start"

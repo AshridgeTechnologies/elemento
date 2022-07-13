@@ -30,6 +30,7 @@ const mockDataStore = (): FileDataStoreImpl => ({
     New: jest.fn().mockResolvedValue(undefined),
     getById: jest.fn().mockResolvedValue({a:77}),
     add: jest.fn().mockResolvedValue(undefined),
+    addAll: jest.fn().mockResolvedValue(undefined),
     update: jest.fn().mockResolvedValue(undefined),
     remove: jest.fn().mockResolvedValue(undefined),
     query: jest.fn().mockResolvedValue([{a:77}]),
@@ -79,6 +80,12 @@ test('delegates add to data store', () => {
     const result = state.add('Widgets', 'w1', {a: 99})
     expect(result).resolves.toBeUndefined()
     expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'w1', {a: 99})
+})
+
+test('delegates addAll to data store', () => {
+    const result = state.addAll('Widgets', {w1: {a: 99}, w2: {a:100}})
+    expect(result).resolves.toBeUndefined()
+    expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {w1: {a: 99}, w2: {a:100}})
 })
 
 test('delegates update to data store', () => {

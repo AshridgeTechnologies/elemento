@@ -2,7 +2,7 @@
 
 exports[`TextElement adds line break before line ends 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   Hello
@@ -16,7 +16,7 @@ exports[`TextElement adds line break before line ends 1`] = `
 
 exports[`TextElement element produces output containing ReactElement children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-13hpn8e-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-d7cqv5-MuiTypography-root"
   id="page1.para1"
 >
   Hello
@@ -28,7 +28,7 @@ exports[`TextElement element produces output containing ReactElement children 1`
 
 exports[`TextElement element produces output containing string children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   Hello
@@ -38,7 +38,7 @@ exports[`TextElement element produces output containing string children 1`] = `
 
 exports[`TextElement element produces output containing string version of function children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   function Sum
@@ -47,7 +47,7 @@ exports[`TextElement element produces output containing string version of functi
 
 exports[`TextElement element produces output containing string version of object children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   {a: 10}
@@ -57,14 +57,14 @@ exports[`TextElement element produces output containing string version of object
 
 exports[`TextElement element produces output containing undefined children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 />
 `;
 
 exports[`TextElement element produces output containing valueOf  object 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   where are you
@@ -73,7 +73,7 @@ exports[`TextElement element produces output containing valueOf  object 1`] = `
 
 exports[`TextElement gets property values supplied as state objects 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-13hpn8e-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-1yr004l-MuiTypography-root"
   id="page1.para1"
 >
   Hello

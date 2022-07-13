@@ -19,7 +19,7 @@ exports[`App element produces output containing page 1`] = `
         id="app1.page1"
       >
         <p
-          className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello
@@ -49,37 +49,6 @@ exports[`App element produces output containing page and additional components w
       <div
         className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
       >
-        <button
-          aria-label="menu"
-          className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-edgeStart MuiIconButton-sizeLarge css-ancrnh-MuiButtonBase-root-MuiIconButton-root"
-          disabled={false}
-          onBlur={[Function]}
-          onContextMenu={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={0}
-          type="button"
-        >
-          <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-            data-testid="MenuIcon"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
-            />
-          </svg>
-        </button>
         <div
           className="css-y5np4p-MuiStack-root"
         >
@@ -103,7 +72,7 @@ exports[`App element produces output containing page and additional components w
         id="app1.page1"
       >
         <p
-          className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello
@@ -158,7 +127,7 @@ exports[`App element produces output with max width 1`] = `
         id="app1.page1"
       >
         <p
-          className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-d3wcwz-MuiTypography-root"
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello

@@ -14,7 +14,11 @@ export default function AppRunnerForPreview() {
     const [selectedComponentId, setSelectedComponentId] = useState<string|undefined>()
 
     useEffect( ()=> {
-        window.setAppCode = (appCode: string) => setAppCode(appCode)
+        window.setAppCode = (newAppCode: string) => {
+            if (newAppCode !== appCode) {
+                setAppCode(newAppCode)
+            }
+        }
         window.getAppCode = () => appCode
         window.setComponentSelectedListener = (callback: (id: string) => void) => setOnComponentSelected(() => callback)
         window.highlightElement = (id: string) => setSelectedComponentId(id)

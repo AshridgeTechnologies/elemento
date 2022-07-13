@@ -1,6 +1,8 @@
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
+import Menu from '../../src/model/Menu'
+import MenuItem from '../../src/model/MenuItem'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
@@ -26,6 +28,8 @@ test('creates elements of correct type', () => {
     expect(createElement('SelectInput', 2)).toBeInstanceOf(SelectInput)
     expect(createElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
     expect(createElement('Button', 3)).toBeInstanceOf(Button)
+    expect(createElement('Menu', 3)).toBeInstanceOf(Menu)
+    expect(createElement('MenuItem', 3)).toBeInstanceOf(MenuItem)
     expect(createElement('List', 3)).toBeInstanceOf(List)
     expect(createElement('Data', 4)).toBeInstanceOf(Data)
     expect(createElement('Collection', 4)).toBeInstanceOf(Collection)

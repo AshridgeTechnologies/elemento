@@ -3,9 +3,13 @@ import {globalFunctions} from '../../src/runtime/globalFunctions'
 import {valObj} from '../testutil/testHelpers'
 
 const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
-    Record, List, Select, ForEach, First, Last,
-    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat, DateAdd} = globalFunctions
+    Record, List, Select, ForEach, First, Last, Sort,
+    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat, DateAdd,
+    CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
+
+const undefinedDate = undefined as unknown as Date
+const nullDate = null as unknown as Date
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valObj(10))).toBe(10))
@@ -198,6 +202,79 @@ describe('Last', () => {
     test('Pending value gives null', ()=> expect(Last(new Pending(), (it: any) => it <= 0)).toStrictEqual(null))
 })
 
+describe('Sort', () => {
+    test('sorts objects by a function that returns a single sort key', () => {
+        const objects = [
+            {id: 'id1', a: 'Sun', b: 30},
+            {id: 'id2', a: 'Moon', b: 20},
+            {id: 'id3', a: 'Stars', b: 100},
+        ]
+        const [obj1, obj2, obj3] = objects
+        expect(Sort(objects, (item: any) => item.a)).toStrictEqual([obj2, obj3, obj1])
+        expect(Sort(objects, (item: any) => item.b)).toStrictEqual([obj2, obj1, obj3])
+    })
+
+    test('sorts objects by a function that returns an array of sort keys', () => {
+        const objects = [
+            {id: 'id1', a: 'Sun', b: 30},
+            {id: 'id2', a: 'Moon', b: 20},
+            {id: 'id3', a: 'Sun', b: 100},
+        ]
+        const [obj1, obj2, obj3] = objects
+        expect(Sort(objects, (item: any) => [item.a, item.b])).toStrictEqual([obj2, obj1, obj3])
+    })
+
+    test('sorts objects by dates and booleans', () => {
+        const objects = [
+            {id: 'id1', a: new Date(2022, 6, 2), b: true},
+            {id: 'id2', a: new Date(2022, 6, 1), b: true},
+            {id: 'id3', a: new Date(2022, 6, 2), b: false},
+        ]
+        const [obj1, obj2, obj3] = objects
+        expect(Sort(objects, (item: any) => [item.a, item.b])).toStrictEqual([obj2, obj3, obj1])
+    })
+
+    test('sorts objects with undefined values', () => {
+        const objects = [
+            {id: 'id1', a: new Date(2022, 6, 2), b: true},
+            {id: 'id2', a: undefined, b: true},
+            {id: 'id3', a: new Date(2022, 6, 2), b: undefined},
+            {id: 'id4', a: undefined, b: undefined},
+        ]
+        const [obj1, obj2, obj3, obj4] = objects
+        const sortResult = Sort(objects, (item: any) => [item.a, item.b])
+        expect(sortResult).toStrictEqual([obj4, obj2, obj3, obj1])
+    })
+
+    test('sorts objects with null values', () => {
+        const objects = [
+            {id: 'id1', a: -3, b: true},
+            {id: 'id2', a: null, b: true},
+            {id: 'id3', a: -3, b: null},
+            {id: 'id4', a: null, b: null},
+        ]
+        const [obj1, obj2, obj3, obj4] = objects
+        const sortResult = Sort(objects, (item: any) => [item.a, item.b])
+        expect(sortResult).toStrictEqual([obj4, obj2, obj3, obj1])
+    })
+
+    test('uses valueOf the list argument', () => {
+        const objects = [
+            {id: 'id1', a: 'Sun', b: 30},
+            {id: 'id2', a: 'Moon', b: 20},
+            {id: 'id3', a: 'Stars', b: 10},
+        ]
+        const [obj1, obj2, obj3] = objects
+        expect(Sort(valObj(objects), (item: any) => item.a)).toStrictEqual([obj2, obj3, obj1])
+    })
+
+    test('returns undefined or null list as is', () => {
+        expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toBe(undefined)
+        expect(Sort(null as unknown as any[], (item: any) => item.a)).toBe(null)
+
+    })
+})
+
 describe('Timestamp', function () {
     test('is close to current time', () => {
         const timestamp = Timestamp()
@@ -296,6 +373,18 @@ describe('TimeBetween', () => {
     test('exception for invalid unit', () => {
         expect(()=> TimeBetween(new Date(), new Date(), 'millis' as any)).toThrow('Unknown unit millis.  Should be one of seconds, minutes, hours, days, months, years')
     })
+
+    test('undefined result if either date is undefined or null', () => {
+        expect(TimeBetween(date, undefinedDate, 'years')).toBe(undefined)
+        expect(TimeBetween(date, nullDate, 'years')).toBe(undefined)
+        expect(TimeBetween(undefinedDate, date, 'years')).toBe(undefined)
+        expect(TimeBetween(nullDate, date, 'years')).toBe(undefined)
+    })
+
+    test('uses valueOf arguments', () => {
+        expect(TimeBetween(valObj(datePlus2Years1Day), valObj(date), valObj('years'))).toBe(-2)
+
+    })
 })
 
 describe('DaysBetween', () => {
@@ -316,6 +405,16 @@ describe('DaysBetween', () => {
         expect(DaysBetween(day3_0100, day1_0100)).toBe(-2)
     })
 
+    test('undefined result if either date is undefined or null', () => {
+        expect(DaysBetween(day1_midnight, undefinedDate)).toBe(undefined)
+        expect(DaysBetween(day1_midnight, nullDate)).toBe(undefined)
+        expect(DaysBetween(undefinedDate, day1_midnight)).toBe(undefined)
+        expect(DaysBetween(nullDate, day1_midnight)).toBe(undefined)
+    })
+
+    test('uses valueOf arguments', () => {
+        expect(DaysBetween(valObj(day1_midnight), valObj(day3_midnight))).toBe(2)
+    })
 })
 
 describe('DateAdd', () => {
@@ -328,6 +427,18 @@ describe('DateAdd', () => {
     expect(DateAdd(date, -3, 'years')).toStrictEqual(new Date(2018, 6, 1, 10, 11, 12))
 
     expect(() => DateAdd(date, 42, 'lightyears' as any)).toThrow()
+
+    test('undefined or null arguments give undefined', () => {
+        expect(DateAdd(undefinedDate, -3, 'years')).toBeUndefined()
+        expect(DateAdd(nullDate, -3, 'years')).toBeUndefined()
+        expect(DateAdd(date, undefined as unknown as number, 'years')).toBeUndefined()
+        expect(DateAdd(date, null as unknown as number, 'years')).toBeUndefined()
+
+    })
+
+    test('uses valueOf arguments', () => {
+        expect(DateAdd(valObj(date), valObj(-3), valObj('years'))).toStrictEqual(new Date(2018, 6, 1, 10, 11, 12))
+    })
 })
 
 describe('DateFormat', () => {
@@ -336,4 +447,94 @@ describe('DateFormat', () => {
     test('formats date with custom string', () => {
         expect(DateFormat(date, 'HH:mm:ss')).toBe('20:05:11')
     })
+
+    test('formats date from object value', () => {
+        expect(DateFormat(valObj(date), 'HH:mm:ss')).toBe('20:05:11')
+    })
+
+    test('formats null or undefined as empty string', () => {
+        expect(DateFormat(undefinedDate, 'HH:mm:ss')).toBe('')
+        expect(DateFormat(nullDate, 'HH:mm:ss')).toBe('')
+    })
+})
+
+describe('CsvToRecords', () => {
+    test('converts csv to records using given column names converted to start case', () => {
+        const csvText = `id1,First Widget,27\n`
+                        + `id2,"Widget, again",32`
+        const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height'])
+        expect(records).toStrictEqual([
+            {Id: 'id1', Description: 'First Widget', OverallHeight: 27},
+            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32},
+        ])
+    })
+
+    test('converts csv to records using start case column names from first line and ignores blank lines or all empty lines', () => {
+        const csvText = `Id,Description,Overall Height\n`
+                        + '\n'
+                        + `id1,First Widget,27\n`
+                        + `\n`
+                        + `,,,,,,,,,,\n`
+                        + `id2,"Widget, again",32`
+        const records = CsvToRecords(csvText)
+        expect(records).toStrictEqual([
+            {Id: 'id1', Description: 'First Widget', OverallHeight: 27},
+            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32},
+        ])
+    })
+
+    test('converts csv to records using appropriate field types and allows quotes in fields and trims unquoted fields', () => {
+        const csvText = `Id,Description,Height,IsShiny,FirstUsed\n`
+                        + `id1,First "Widget"'s Description,27,true,2022-07-14T08:15:35.607Z\n`
+                        + `id2,"Widget, again","32",false,2022-07-14\n`
+                        + `id3,  Widget three  , 32 ,"true", 2022-07-32 \n` // invalid date
+                        + `id4," Widget 2 ","32","false","2022-07-14T08:15:35.607Z"\n`
+                        + `id5," Widget 5",45.67,TRUE,2022-07-14 08:15:35\n`
+        const records = CsvToRecords(csvText)
+        expect(records).toStrictEqual([
+            {Id: 'id1', Description: 'First "Widget"\'s Description', Height: 27, IsShiny: true, FirstUsed: new Date(Date.parse('2022-07-14T08:15:35.607Z'))},
+            {Id: 'id2', Description: 'Widget, again', Height: "32", IsShiny: false, FirstUsed: new Date(2022, 6, 14)},
+            {Id: 'id3', Description: 'Widget three', Height: 32, IsShiny: 'true', FirstUsed: '2022-07-32'},
+            {Id: 'id4', Description: ' Widget 2 ', Height: "32", IsShiny: 'false', FirstUsed: '2022-07-14T08:15:35.607Z'},
+            {Id: 'id5', Description: ' Widget 5', Height: 45.67, IsShiny: true, FirstUsed: new Date(2022, 6, 14, 8, 15, 35)},
+        ])
+    })
+
+    test('allows short lines long lines and empty column values', () => {
+        const csvText = `id1,First Widget,27,,34\n`
+            + `id2,"Widget, again",32,66\n`
+            + `id3,"Widget 3",,,,,,,,,`
+        const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
+        expect(records).toStrictEqual([
+            {Id: 'id1', Description: 'First Widget', OverallHeight: 27, MaxDepth: 34},
+            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
+            {Id: 'id3', Description: 'Widget 3'},
+        ])
+
+    })
+
+    test('uses Tabs if found in all the lines', () => {
+        const csvText = `id1\t"First\tWidget"\t27\t\t34\n`
+            + `id2\tWidget, again\t32\t66\n`
+            + `id3\t"Widget 3"`
+        const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
+        expect(records).toStrictEqual([
+            {Id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
+            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
+            {Id: 'id3', Description: 'Widget 3'},
+        ])
+
+        const csvTextWithTabNotAsDelimiter = `id1,First\tWidget,27,,34\n`
+            + `id2,"Widget\tagain",32,66\r\n`
+            + `id3,"Widget 3 no tab in this line"`
+
+        const records2 = CsvToRecords(csvTextWithTabNotAsDelimiter, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
+        expect(records2).toStrictEqual([
+            {Id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
+            {Id: 'id2', Description: 'Widget\tagain', OverallHeight: 32, MinWidth: 66},
+            {Id: 'id3', Description: 'Widget 3 no tab in this line'},
+        ])
+
+    })
+
 })

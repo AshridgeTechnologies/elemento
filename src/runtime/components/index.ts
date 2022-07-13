@@ -1,5 +1,7 @@
 export {default as App} from './App'
 export {default as Button} from './Button'
+export {default as Menu} from './Menu'
+export {default as MenuItem} from './MenuItem'
 export {default as NumberInput} from './NumberInput'
 export {default as TrueFalseInput} from './TrueFalseInput'
 export {default as Data} from './Data'

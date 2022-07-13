@@ -1,14 +1,20 @@
-import {fromPairs, last, splitEvery} from 'ramda'
+import {fromPairs, isNil, last, sort, sortBy, splitEvery} from 'ramda'
 import {
     add,
+    differenceInCalendarDays,
     differenceInDays,
     differenceInHours,
     differenceInMinutes,
     differenceInMonths,
-    differenceInSeconds, differenceInYears, differenceInCalendarDays,
-    format
+    differenceInSeconds,
+    differenceInYears,
+    format,
+    parseISO
 } from 'date-fns'
-import {Value, valueOf} from './runtimeFunctions'
+import * as csv from 'csv-parse/sync'
+import {Value, valueOf, valuesOf} from './runtimeFunctions'
+import {isNumeric, noSpaces} from '../util/helpers'
+import {CastingContext} from 'csv-parse/lib'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -95,16 +101,53 @@ export const globalFunctions = {
         return listVal.map(transform)
     },
 
-    First(list: Value<any[]>, condition: (item: any) => boolean = x => true) {
+    First(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
         const listVal = valueOf(list) ?? []
         if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
         return listVal.filter(condition)[0] ?? null
     },
 
-    Last(list: Value<any[]>, condition: (item: any) => boolean = x => true) {
+    Last(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
         const listVal = valueOf(list) ?? []
         if (list === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
         return last(listVal.filter(condition)) ?? null
+    },
+
+    Sort(list: Value<any[]>, sortKeyFn: (item: any) => any | any[]): any[] {
+        const compareItems = (a: any, b: any): -1 | 0 | 1 => {
+            const aa = sortKeyFn(a), bb = sortKeyFn(b)
+            return compareValues(aa, bb)
+        }
+
+        const compareValues = (a: any, b: any): -1 | 0 | 1 => {
+            if (isNil(a) && isNil(b)) {
+                return 0
+            } else if (isNil(a)) {
+                return -1
+            } else if (isNil(b)) {
+                return 1
+            }
+            if (Array.isArray(a) && Array.isArray(b)) {
+                return compareArrays(a, b)
+            }
+            return a < b ? -1 : a > b ? 1 : 0
+        }
+
+        const compareArrays = (a: any[], b: any[]) => {
+            for (let i = 0; i < a.length; i++) {
+                const compareVal = compareValues(a[i], b[i])
+                if (compareVal !== 0) {
+                    return compareVal
+                }
+            }
+            return 0
+        }
+
+        const listVal = valueOf(list)
+        if (isNil(listVal)) {
+            return listVal
+        }
+        return sort(compareItems, listVal)
     },
 
     Timestamp() {
@@ -119,7 +162,9 @@ export const globalFunctions = {
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
     },
 
-    TimeBetween(date1: Date, date2: Date, unit: TimeUnit): number {
+    TimeBetween(date1Val: Value<Date>, date2Val: Value<Date>, unitVal: Value<TimeUnit>) {
+        const [date1, date2, unit] = valuesOf(date1Val, date2Val, unitVal)
+        if (!date1 || !date2) return undefined
         const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
         switch(unit) {
             case 'seconds': return differenceInSeconds(date2, date1)
@@ -133,20 +178,58 @@ export const globalFunctions = {
 
     },
 
-    DaysBetween(date1: Date, date2: Date) {
+    DaysBetween(date1Val: Value<Date>, date2Val: Value<Date>) {
+        const [date1, date2] = valuesOf(date1Val, date2Val)
+        if (!date1 || !date2) return undefined
         return differenceInCalendarDays(date2, date1)
     },
 
-    DateAdd(date: Date, change: number, unit: TimeUnit): Date {
+    DateAdd(dateVal: Value<Date>, changeVal: Value<number>, unitVal: Value<TimeUnit>) {
+        const [date, change, unit] = valuesOf(dateVal, changeVal, unitVal)
         if (!unitTypes.includes(unit)) {
             throw new Error(`Unknown unit ${unit}.  Should be one of ${unitTypes.join(', ')}`)
         }
+        if (!date || change === undefined || change === null) return undefined
+
         return add(date, {[unit]: change})
     },
 
-    DateFormat(date: Date, pattern: string) {
-        return format(date, pattern)
+    DateFormat(date: Value<Date>, pattern: string) {
+        if (!date) return ''
+        return format(valueOf(date), pattern)
     },
+
+    CsvToRecords(csvText: string, columnNames?: string[]) {
+        const cast = (field: string, context: CastingContext) => {
+            if (context.quoting) return field
+            if (field === '') return undefined
+            if (isNumeric(field)) return Number(field)
+            if (field.toLowerCase() === 'true') return true
+            if (field.toLowerCase() === 'false') return false
+            const date = parseISO(field)
+            if (!Number.isNaN(date.getTime())) {
+                return date
+            }
+            return field
+        }
+        const convertColumnNames = (names: string[]) => names.map( noSpaces )
+        const removeUndefinedFields = (obj: object) => {
+            const definedEntries = Object.entries(obj).filter( ([, value]) => value !== undefined)
+            return Object.fromEntries(definedEntries)
+        }
+        const lines = csvText.split(/[\r\n]+/)
+        const tabDelimiters = lines.every( line => line.includes('\t'))
+        return csv.parse(csvText, {
+            columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
+            delimiter: tabDelimiters ? '\t' : ',',
+            cast,
+            skip_empty_lines: true,
+            skip_records_with_empty_values: true,
+            relax_quotes: true,
+            relax_column_count: true,
+            trim: true
+        }).map(removeUndefinedFields)
+    }
 }
 
 export const functionArgIndexes = {
@@ -154,4 +237,5 @@ export const functionArgIndexes = {
     ForEach: [1],
     First: [1],
     Last: [1],
+    Sort: [1],
 }

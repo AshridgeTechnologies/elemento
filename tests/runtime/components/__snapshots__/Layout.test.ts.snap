@@ -6,13 +6,13 @@ exports[`Layout element produces output containing children horizontal 1`] = `
   id="app.page1.things"
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
     id="app.page1.things.text1"
   >
     First text
   </p>
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
     id="app.page1.things.text2"
   >
     Second text
@@ -26,13 +26,13 @@ exports[`Layout element produces output containing children horizontal and wrapp
   id="app.page1.things"
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
     id="app.page1.things.text1"
   >
     First text
   </p>
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
     id="app.page1.things.text2"
   >
     Second text
@@ -46,13 +46,13 @@ exports[`Layout element produces output containing children vertical 1`] = `
   id="app.page1.things"
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-sd262e-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
     id="app.page1.things.text1"
   >
     First text
   </p>
   <p
-    className="MuiTypography-root MuiTypography-body1 MuiTypography-gutterBottom css-gpafu9-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
     id="app.page1.things.text2"
   >
     Second text

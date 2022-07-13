@@ -14,6 +14,7 @@ type Properties = {
     readonly borderColor?: PropertyValueType<string>,
     readonly width?: PropertyValueType<string | number>,
     readonly height?: PropertyValueType<string | number>,
+    readonly marginBottom?: PropertyValueType<string | number>,
 }
 
 export default class Text extends BaseElement<Properties> implements Element {
@@ -42,4 +43,5 @@ export default class Text extends BaseElement<Properties> implements Element {
     get borderColor() {return this.properties.borderColor}
     get width() {return this.properties.width}
     get height() {return this.properties.height}
+    get marginBottom() {return this.properties.marginBottom}
 }

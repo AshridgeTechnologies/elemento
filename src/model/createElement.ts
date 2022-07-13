@@ -8,6 +8,8 @@ import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Button from './Button'
+import Menu from './Menu'
+import MenuItem from './MenuItem'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import Data from './Data'
 import Collection from './Collection'
@@ -46,6 +48,10 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
         return new TrueFalseInput(id, name, {})
     case 'Button':
         return new Button(id, name, {content: 'Do something'})
+    case 'Menu':
+        return new Menu(id, name, {})
+    case 'MenuItem':
+        return new MenuItem(id, name, {})
     case 'List':
         return new List(id, name, {items: []}, [])
     case 'Data':

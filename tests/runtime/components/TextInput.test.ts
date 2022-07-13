@@ -10,7 +10,6 @@ import {testContainer, wait} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 
-
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)

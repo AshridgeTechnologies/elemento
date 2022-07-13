@@ -33,6 +33,17 @@ export default class MemoryDataStore implements DataStore {
         (collection[id as keyof object] as any) = item
     }
 
+    async addAll(collectionName: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
+        const collection = this.getCollection(collectionName, true)
+        Object.keys(items).forEach( id => {
+            if (id in collection) {
+                throw new Error(`Object with id '${id}' already exists in collection '${collectionName}'`)
+            }
+        })
+
+        Object.assign(collection, items)
+    }
+
     async update(collectionName: CollectionName, id: Id, changes: object): Promise<void> {
         const collection = this.getCollection(collectionName)
         const existingObject = (collection)[id as keyof object];

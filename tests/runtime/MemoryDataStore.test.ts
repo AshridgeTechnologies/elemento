@@ -105,6 +105,31 @@ describe('add', () => {
 
 })
 
+describe('addAll', () => {
+    const store = new MemoryDataStore({
+        Widgets: {
+            w1: {height: 10, width: 20}
+        }
+    })
+
+    test('adds new items to the store', async () => {
+        await store.addAll('Widgets', {w2: {height: 77, width: 66}, w3: {height: 44, width: 55}})
+        expect(await store.getById('Widgets', 'w3')).toStrictEqual({height: 44, width: 55})
+        expect(await store.getById('Widgets', 'w2')).toStrictEqual({height: 77, width: 66})
+        expect(await store.getById('Widgets', 'w1')).toStrictEqual({height: 10, width: 20})
+    })
+
+    test('returns rejected promise if any id already exists', async () => {
+        await expect(store.addAll('Widgets', {w4: {height: 77, width: 66}, w1: {height: 44, width: 55}})).rejects.toHaveProperty('message', `Object with id 'w1' already exists in collection 'Widgets'`)
+    })
+
+    test('creates collection if not found', async () => {
+        await expect(store.addAll('Snowballs', {w1: {height: 77, width: 66}})).resolves.toBe(undefined)
+        expect(await store.getById('Snowballs', 'w1')).toStrictEqual({height: 77, width: 66})
+    })
+
+})
+
 describe('update', () => {
     const store = new MemoryDataStore({
         Widgets: {

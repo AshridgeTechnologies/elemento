@@ -23,6 +23,7 @@ let testObservable: SendObservable<UpdateNotification>
 const mockDataStore = (): DataStore => ({
     getById: jest.fn(),
     add: jest.fn(),
+    addAll: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
     observable: jest.fn().mockImplementation( () => testObservable ),
@@ -50,7 +51,7 @@ test('produces output with simple values',
 )
 
 test('produces output with record values',
-    snapshot(collection('app.page1.collection2', {value: [{a: 10, b: 'Bee1', c: true}, {a: 11}]}, {display: true}))
+    snapshot(collection('app.page1.collection2', {value: [{id: 'a1', a: 10, b: 'Bee1', c: true}, {Id: 'a2', a: 11}]}, {display: true}))
 )
 
 test('produces empty output with default value for display', () => {
@@ -68,8 +69,9 @@ test('gets initial values from array using id property', () => {
 
 test('gets initial values from array using generated id if not present in object', () => {
     const state = new CollectionState({value: [{a: 10}, {a: 20}]})
-    Object.keys(state.value).forEach( key => expect(key).toMatch(/\d+/) )
-    expect(Object.values(state.value)).toStrictEqual([{a: 10}, {a: 20},])
+    const keys = Object.keys(state.value)
+    keys.forEach(key => expect(key).toMatch(/\d+/) )
+    expect(Object.values(state.value)).toStrictEqual([{Id: keys[0], a: 10}, {Id: keys[1], a: 20},])
 })
 
 test('gets initial values from array using simple value as id', () => {
@@ -180,7 +182,7 @@ describe('Add', () => {
         }))
     })
 
-    test('inserts a new item without id into a collection', () => {
+    test('inserts a new item without id into a collection and adds the id', () => {
         const state = new Collection.State({value: {}})
         const appInterface = testAppInterface(); state.init(appInterface)
         state.Add({a: 30})
@@ -189,7 +191,7 @@ describe('Add', () => {
         expect(entries.length).toBe(1)
         const [key, value] = entries[0]
         expect(Number(key)).toBeGreaterThan(0)
-        expect(value).toStrictEqual({a: 30})
+        expect(value).toStrictEqual({Id: key, a: 30})
     })
 
     test('inserts a new simple value into a collection', () => {
@@ -204,6 +206,51 @@ describe('Add', () => {
             }
         }))
     })
+
+    test('inserts multiple objects into a collection', () => {
+        const state = new CollectionState({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface)
+        state.Add([{id: 'x3', a: 30}, {id: 'x4', a: 40}])
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+            value: {
+                x1: {id: 'x1', a: 10},
+                x2: {id: 'x2', a: 20},
+                x3: {id: 'x3', a: 30},
+                x4: {id: 'x4', a: 40},
+            }
+        }))
+    })
+
+    test('inserts multiple objects without ids into a collection', () => {
+        const state = new CollectionState({})
+        const appInterface = testAppInterface(); state.init(appInterface)
+        state.Add([{a: 30}, {a: 40}, {a: 50}])
+        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        const entries = Object.entries(newState.value)
+        expect(entries.length).toBe(3)
+        const [key0, value0] = entries[0]
+        const [key1, value1] = entries[1]
+        const [key2, value2] = entries[2]
+        expect(Number(key0)).toBeGreaterThan(0)
+        expect(Number(key1)).toBeGreaterThan(Number(key0))
+        expect(Number(key2)).toBeGreaterThan(Number(key1))
+        expect(value2).toStrictEqual({Id: key2, a: 50})
+    })
+
+    test('inserts multiple simple values into a collection', () => {
+        const state = new Collection.State({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface)
+        state.Add(['green', 'blue'])
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+            value: {
+                x1: {id: 'x1', a: 10},
+                x2: {id: 'x2', a: 20},
+                green: 'green',
+                blue: 'blue',
+            }
+        }))
+    })
+
 
 })
 
@@ -258,7 +305,7 @@ describe('Get', () => {
 
 describe('Add with external datastore', () => {
 
-    test('returns correct update when not in cache', () => {
+    test('makes correct update when not in cache', () => {
         const [state, appInterface] = initState({});
 
         state.Add({id: 'x1', a:20, b:'Cee'})
@@ -268,38 +315,57 @@ describe('Add with external datastore', () => {
             }
         }))
 
-        expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'x1', {id: 'x1', a:20, b:'Cee'})
+        expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {'x1': {id: 'x1', a:20, b:'Cee'}})
     })
 
-    test('returns correct update for item without id', () => {
+    test('makes correct update for item without id', () => {
         const [state, appInterface] = initState({});
 
         state.Add({a:20, b:'Cee'})
-        expect(dataStore.add).toHaveBeenCalled()
-        const mock = (dataStore.add as jest.MockedFunction<any>).mock
+        expect(dataStore.addAll).toHaveBeenCalled()
+        const mock = (dataStore.addAll as jest.MockedFunction<any>).mock
 
-        const newId = mock.calls[0][1]
-        const dataStoreUpdate = mock.calls[0][2]
+        const itemsPassedToAddAll = mock.calls[0][1]
+        const newId = Object.keys(itemsPassedToAddAll)[0]
+        const dataStoreUpdate = Object.values(itemsPassedToAddAll)[0] as {id: string}
         expect(dataStoreUpdate.id).toBeUndefined()
         expect(Number(newId)).toBeGreaterThan(0)
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
-                [newId]: {a: 20, b: 'Cee'},
+                [newId]: {Id: newId, a: 20, b: 'Cee'},
             }
         }))
     })
 
-    test('returns correct update for simple value', () => {
+    test('makes correct update for simple value', () => {
         const [state, appInterface] = initState({});
 
         state.Add('green')
-        expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'green', 'green')
+        expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {'green':'green'})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 green: 'green',
             }
         }))
     })
+
+    test('makes correct update for multiple items when not in cache', () => {
+        const [state, appInterface] = initState({});
+
+        state.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+            value: {
+                x1: {id: 'x1', a: 20, b: 'Cee'},
+                x2: {id: 'x2', a: 30, b: 'Dee'},
+            }
+        }))
+
+        expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {
+                x1: {id: 'x1', a:20, b:'Cee'},
+                x2: {id: 'x2', a:30, b:'Dee'},
+        })
+    })
+
 
 })
 

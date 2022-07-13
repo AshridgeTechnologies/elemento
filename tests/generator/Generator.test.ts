@@ -1,7 +1,9 @@
 import Generator, {generate} from '../../src/generator/Generator'
 import App from '../../src/model/App';
 import Text from '../../src/model/Text';
-import Button from '../../src/model/Button';
+import Button from '../../src/model/Button'
+import Menu from '../../src/model/Menu'
+import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import NumberInput from '../../src/model/NumberInput'
@@ -171,7 +173,7 @@ test('generates Text elements with multiline content', ()=> {
     const app = new App('t1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday',
-                    fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}),
+                    fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}),
             ]
         )])
 
@@ -181,7 +183,7 @@ test('generates Text elements with multiline content', ()=> {
     const {Page, TextElement} = Elemento.components
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200}, \`Hi there!
+        React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}, \`Hi there!
 How are you?
 Today\`),
     )
@@ -285,6 +287,31 @@ test('generates Button elements with properties', ()=> {
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', filled: 22 || 33, display: false, action: () => {const message = "You clicked me!"; Log(message)
     Log("Didn't you?")}}),
+    )
+}
+`)
+})
+
+test('generates Menu element with items', () => {
+    const app = new App('t1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Menu('id1', 'Menu 1', {label: 'Stuff to do', filled: true}, [
+                    new MenuItem('it1', 'Item 1', {label: 'Do it'}),
+                    new MenuItem('it2', 'Item 2', {label: 'Say it'}),
+                ]),
+            ]
+        )])
+
+    const output = generate(app)
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Menu, MenuItem} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Menu, {path: pathWith('Menu1'), label: 'Stuff to do', filled: true},
+            React.createElement(MenuItem, {path: pathWith('Item1'), label: 'Do it'}),
+            React.createElement(MenuItem, {path: pathWith('Item2'), label: 'Say it'}),
+    ),
     )
 }
 `)

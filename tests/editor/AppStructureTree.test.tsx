@@ -51,6 +51,8 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
             new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput'),
             new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput'),
             new ModelTreeItem('button2_1', 'Some Button', 'Button'),
+            new ModelTreeItem('menu_1', 'Some Menu', 'Menu'),
+            new ModelTreeItem('menuItem_1', 'Some Menu Item', 'MenuItem'),
             new ModelTreeItem('list1_1', 'The List', 'List'),
             new ModelTreeItem('data_1_1', 'Some Data', 'Data'),
             new ModelTreeItem('collection_1_1', 'A Collection', 'Collection'),
@@ -65,7 +67,6 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
         new ModelTreeItem('appBar1', 'The App Bar', 'AppBar')
     ])
 ])
-
 
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
@@ -142,8 +143,8 @@ test("renders tree with all types of model elements",  async () => {
     expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
 
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'FunctionsIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'MenuIcon', 'MenuOpenIcon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'FunctionsIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
 })
 
 test("can expand and collapse branches and show",  async () => {

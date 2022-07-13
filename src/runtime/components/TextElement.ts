@@ -5,11 +5,11 @@ import {asText, valueOfProps} from '../runtimeFunctions'
 
 type Properties = {path: string, children?: any
     fontSize?: string | number, fontFamily?: string, color?: string, backgroundColor?: string,
-    border?: number, borderColor?: string, width?: number, height?: number
+    border?: number, borderColor?: string, width?: number, height?: number, marginBottom?: string | number
     }
 
 export default function TextElement({children, path, ...props}: Properties) {
     const childArray = isArray(children) ? children : [children]
     const propVals = valueOfProps(props)
-    return React.createElement(Typography, {id: path, gutterBottom: true, ...propVals}, ...childArray.map(asText))
+    return React.createElement(Typography, {id: path, ...propVals}, ...childArray.map(asText))
 }

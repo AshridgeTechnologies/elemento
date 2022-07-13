@@ -107,6 +107,14 @@ export default class FileDataStoreImpl implements DataStore {
         }
     }
 
+    async addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
+        await this.inMemoryStore.addAll(collection, items)
+        this.invalidateCollectionQueries(collection)
+        if (this.fileHandle) {
+            await this.Save()
+        }
+    }
+
     async update(collection: CollectionName, id: Id, changes: object) {
         await this.inMemoryStore.update(collection, id, changes)
         this.invalidateCollectionQueries(collection)

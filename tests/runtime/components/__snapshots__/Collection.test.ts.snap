@@ -8,7 +8,7 @@ exports[`produces output with record values 1`] = `
     app.page1.collection2
   </div>
   <code>
-    {1: {a: 10, b: 'Bee1', c: true}, 2: {a: 11}}
+    {a1: {id: 'a1', a: 10, b: 'Bee1', c: true}, a2: {Id: 'a2', a: 11}}
   </code>
 </div>
 `;

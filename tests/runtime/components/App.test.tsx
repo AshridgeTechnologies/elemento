@@ -83,7 +83,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const pages = {Page1, Page2}
     const state = new App.State({pages})
     expect(state.currentPage).toBe(Page1)
-    const updatedState = state._withStateForTest({currentPage: Page2})
+    const updatedState = state._withStateForTest({currentPage: 'Page2'})
     expect(updatedState.currentPage).toBe(Page2)
 
     const appInterface = testAppInterface(state); state.init(appInterface)
@@ -96,6 +96,26 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     ShowPage(Page2)
     const newVersion2 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
     expect(newVersion2.currentPage).toBe(Page2)
+})
+
+test('App.State uses latest default page version if it changes', () => {
+    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page1updated = (props: any) => null, Page2updated = (props: any) => null
+    const pages = {Page1, Page2}
+    const state = new App.State({pages})
+    expect(state.currentPage).toBe(Page1)
+
+    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2}}))
+    expect(updatedState.currentPage).toBe(Page1updated)
+})
+
+test('App.State uses latest set page version if it changes ', () => {
+    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page1updated = (props: any) => null, Page2updated = (props: any) => null
+    const pages = {Page1, Page2}
+    const state = new App.State({pages})._withStateForTest({currentPage: 'Page2'})
+    expect(state.currentPage).toBe(Page2)
+
+    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2: Page2updated}}))
+    expect(updatedState.currentPage).toBe(Page2updated)
 })
 
 test('App.State does next level compare on pages', () => {

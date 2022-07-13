@@ -45,6 +45,10 @@ export class DataState extends BaseComponentState<StateProperties>
         return this.value
     }
 
+    updateFrom(newObj: DataState): this {
+        return this.propsMatchValueEqual(this.props, newObj.props) ? this : new DataState(newObj.props).withState(this.state) as this
+    }
+
     Set(value: any) {
         this.updateState({value})
     }

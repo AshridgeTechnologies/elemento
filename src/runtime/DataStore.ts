@@ -26,6 +26,7 @@ export default interface DataStore {
     query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>>
 
     add(collection: CollectionName, id: Id, item: DataStoreObject): Promise<void>
+    addAll(collection: CollectionName, items: {[id: Id]: DataStoreObject}): Promise<void>
     update(collection: CollectionName, id: Id, changes: object): Promise<void>
     remove(collection: CollectionName, id: Id): Promise<void>
 
