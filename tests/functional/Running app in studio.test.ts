@@ -2,6 +2,7 @@ import {expect, Frame, Page, test} from '@playwright/test';
 import {loadProject, treeExpand, treeItem, treeItemText} from './playwrightHelpers'
 import {waitUntil} from '../testutil/testHelpers'
 import {projectFixtureWithList} from '../testutil/projectFixtures'
+import {wait} from '../testutil/rtlHelpers'
 
 const pageUrl = '/studio'
 
@@ -35,8 +36,8 @@ test('Selecting list element in editor or running app highlights in the running 
 
     const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))
 
-    expect(await (await getAppFrame(page)).textContent(item1para1)).toBe('Hi there!')
     const appFrame = await getAppFrame(page)
+    expect(await appFrame.textContent(item1para1)).toBe('Hi there!')
     expect(await appFrame.textContent(item1para2)).toBe('This is gre')
 
     await openMainPage(page)

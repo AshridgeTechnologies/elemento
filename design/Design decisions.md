@@ -1,6 +1,12 @@
 Design decisions
 ================
 
+Element paths/ids - 13 Jul 22
+-------------
+Use list item id in element path
+- this allows transient state set on an item to stay with that item when the list changes 
+- eg in Vocabulary Trainer: The Show button in the Learning list stays with its item as you set things to learned and the list changes
+
 Tree controls
 -------------
 Use rc-tree for the editor tree as it is versatile and allows drag-drop

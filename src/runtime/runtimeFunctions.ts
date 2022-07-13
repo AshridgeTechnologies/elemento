@@ -56,22 +56,17 @@ export const highlightElement = (id: string | null) => {
     const oldHighlightedElements = document.querySelectorAll('.' + highlightClassName)
     oldHighlightedElements.forEach( el => el.classList.remove(highlightClassName))
 
-    const addHighlightClass = (idToHighlight: string) => {
-        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${idToHighlight}']`)
+    if (id) {
+        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${id}']`)
         if (matchingElements.length === 0) {
-            const indexRegExp = /\.\d+/g
+            const listItemIdRegExp = /\.#[^.]+/g
             const allElementsWithId = document.querySelectorAll(`[id]`) as NodeList
-            matchingElements = Array.from(allElementsWithId).filter((node) => (<Element>node).id.replace(indexRegExp, '') === idToHighlight) as Element[]
+            matchingElements = Array.from(allElementsWithId).filter((node) => (<Element>node).id.replace(listItemIdRegExp, '') === id) as Element[]
         }
         matchingElements.forEach(el => {
             const elToHighlight = findInputParentLabel(el) ?? el
             elToHighlight.classList.add(highlightClassName)
         })
-    }
-
-    if (id) {
-        addHighlightClass(id)
-        addHighlightClass(id.replace(/^\w+/, 'app'))  //TODO hack to get round wrong ids on input elements
     }
 }
 

@@ -7,7 +7,7 @@ import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
 import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
-import {highlightClassName} from '../../src/runtime/runtimeFunctions'
+import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {addContainer, } from '../testutil/elementHelpers'
 import {wait} from '../testutil/rtlHelpers'
 
@@ -101,6 +101,20 @@ test('does not notify id when component clicked normally', () => {
 
 test('highlights selected component', function () {
     renderThe(appRunner(testApp('One'), 'AppOne.MainPage.SecondText'))
+    expectEl('SecondText').toHaveClass(highlightClassName)
+    const styleEl = document.getElementById('elementoEditorHighlight')
+    expect(styleEl!.innerHTML).toMatch(`.${highlightClassName}`)
+})
+
+test('can change to highlight a different component', function () {
+    renderThe(appRunner(testApp('One')))
+
+    highlightElement('AppOne.MainPage.FirstText')
+    expectEl('FirstText').toHaveClass(highlightClassName)
+    expectEl('SecondText').not.toHaveClass(highlightClassName)
+
+    highlightElement('AppOne.MainPage.SecondText')
+    expectEl('FirstText').not.toHaveClass(highlightClassName)
     expectEl('SecondText').toHaveClass(highlightClassName)
 })
 
