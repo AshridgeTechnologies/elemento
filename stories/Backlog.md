@@ -3,6 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Performance: deferred updates repeatedly update store in a loop
 - Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
@@ -26,6 +27,7 @@ Stories
 - Formula improvements Part 3
 - Info website update
 - Read-only calculations
+- Complex calculation entry
 - Debugger Part 1
 
 ### The Rest

@@ -4,7 +4,7 @@ import {valObj} from '../testutil/testHelpers'
 
 const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Record, List, Select, ForEach, First, Last,
-    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat} = globalFunctions
+    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat, DateAdd} = globalFunctions
 const {valueOf} = globalFunctions
 
 describe('valueOf', () => {
@@ -316,6 +316,18 @@ describe('DaysBetween', () => {
         expect(DaysBetween(day3_0100, day1_0100)).toBe(-2)
     })
 
+})
+
+describe('DateAdd', () => {
+    const date = new Date(2021, 6, 1, 10, 11, 12)
+    expect(DateAdd(date, 3, 'seconds')).toStrictEqual(new Date(2021, 6, 1, 10, 11, 15))
+    expect(DateAdd(date, -3, 'minutes')).toStrictEqual(new Date(2021, 6, 1, 10, 8, 12))
+    expect(DateAdd(date, 3, 'hours')).toStrictEqual(new Date(2021, 6, 1, 13, 11, 12))
+    expect(DateAdd(date, -3, 'days')).toStrictEqual(new Date(2021, 5, 28, 10, 11, 12))
+    expect(DateAdd(date, 3, 'months')).toStrictEqual(new Date(2021, 9, 1, 10, 11, 12))
+    expect(DateAdd(date, -3, 'years')).toStrictEqual(new Date(2018, 6, 1, 10, 11, 12))
+
+    expect(() => DateAdd(date, 42, 'lightyears' as any)).toThrow()
 })
 
 describe('DateFormat', () => {

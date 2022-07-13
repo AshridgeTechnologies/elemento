@@ -1,5 +1,6 @@
 import {fromPairs, last, splitEvery} from 'ramda'
 import {
+    add,
     differenceInDays,
     differenceInHours,
     differenceInMinutes,
@@ -8,6 +9,9 @@ import {
     format
 } from 'date-fns'
 import {Value, valueOf} from './runtimeFunctions'
+
+type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
+const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
 
 export const globalFunctions = {
     valueOf,
@@ -115,7 +119,7 @@ export const globalFunctions = {
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
     },
 
-    TimeBetween(date1: Date, date2: Date, unit: 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'): number {
+    TimeBetween(date1: Date, date2: Date, unit: TimeUnit): number {
         const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
         switch(unit) {
             case 'seconds': return differenceInSeconds(date2, date1)
@@ -133,12 +137,21 @@ export const globalFunctions = {
         return differenceInCalendarDays(date2, date1)
     },
 
+    DateAdd(date: Date, change: number, unit: TimeUnit): Date {
+        if (!unitTypes.includes(unit)) {
+            throw new Error(`Unknown unit ${unit}.  Should be one of ${unitTypes.join(', ')}`)
+        }
+        return add(date, {[unit]: change})
+    },
+
     DateFormat(date: Date, pattern: string) {
         return format(date, pattern)
-    }
+    },
 }
 
 export const functionArgIndexes = {
     Select: [1],
     ForEach: [1],
+    First: [1],
+    Last: [1],
 }

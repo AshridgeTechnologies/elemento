@@ -11,9 +11,9 @@ Aims
 Requirements
 ------------
 
-- File datastore: Open, New, Save As on File Menu
+- File datastore: Open, New, Save As on Menu under icon
 - Fact entity: Id, Question, Answer, Date Learned, Recall data
-- Recall data: Last revised, Success, Times revised, Times succeeded, Previous attempts
+- Recall data: Last revised, Success, Times revised, Times succeeded
 - Fact list page: List with Show/Add/Update/Delete
 - Bulk add facility from CSV
 - Learning page: Facts not yet learned
@@ -30,6 +30,8 @@ Desirable
 ---------
 
 - CSV import or use directly as datastore
+- Google Drive data store
+- Previous attempts
 
 Finishing touches
 -----------------
@@ -39,6 +41,7 @@ Finishing touches
 - Show name of open data file
 - Forms can be entered with enter
 - Focus field - maybe auto after reset form
+- Readonly inputs keep title in border
 
 
 Features needed
@@ -47,7 +50,6 @@ Features needed
 - ✅ Constants in function calculations
 - ✅ First/Last of list (to get highest date less than age) and/or FindFirst/FindLast
 - ✅ Readonly property on text input
-
 - ✅ Date storage in program - consider valueOf to allow subtraction? Prob not because addition not work
 - ✅ DateFunctions - today, difference
 - ✅ Date storage in database
@@ -55,7 +57,16 @@ Features needed
 - ✅ Select(List, expression)
 - ✅ ForEach(List, expression)
 - ✅ User-defined functions
-- Way to keep local state things in lists, like the Show button on Learn list, with the item, not the index
+- ✅ Way to keep local state things in lists, like the Show button on Learn list, with the item, not the index
+- Sort
+- Menu
 - Empty message in List
 - Date entry
 - AddOrUpdate
+- Get current page
+- Highlight button
+
+Revision conditions
+-------------------
+
+- Taking the latest revision date on or before the current date, the last revision is not successful and on or after the revision date  
