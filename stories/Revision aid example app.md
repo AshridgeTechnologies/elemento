@@ -58,6 +58,7 @@ Features needed
 - ✅ ForEach(List, expression)
 - ✅ User-defined functions
 - ✅ Way to keep local state things in lists, like the Show button on Learn list, with the item, not the index
+- Date functions give sensible output with undefined dates
 - Sort
 - Menu
 - Empty message in List

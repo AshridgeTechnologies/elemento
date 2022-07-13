@@ -22,7 +22,7 @@ const fixPath = (path: string) => {
     return ['app', ...remainingSegments].join('.')
 }
 
-const loggingOn = false
+let loggingOn = false
 const log = (...args: any[]) => loggingOn && console.log(...args)
 
 const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=> AppStore): AppStore => {
@@ -47,13 +47,15 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         if (!deferringUpdates) {
             log('deferUpdates')
             deferringUpdates = true
-            timeout = setTimeout(commitDeferredUpdates, 0)
         }
     }
 
     const storeDeferredUpdate = (path: string, newObject: StoredState) => {
         log('storeDeferredUpdate', path)
         deferredUpdates.set(path, newObject)
+        if (!timeout) {
+            timeout = setTimeout(commitDeferredUpdates, 0)
+        }
     }
 
     const update = (path: string, newObject: StoredState) => {
