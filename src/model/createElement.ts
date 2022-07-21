@@ -49,7 +49,7 @@ export function createElement(elementType: ElementType, newIdSeq: number) {
     case 'Button':
         return new Button(id, name, {content: 'Do something'})
     case 'Menu':
-        return new Menu(id, name, {})
+        return new Menu(id, name, {}, [])
     case 'MenuItem':
         return new MenuItem(id, name, {})
     case 'List':
