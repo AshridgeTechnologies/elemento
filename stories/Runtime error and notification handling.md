@@ -23,4 +23,21 @@ Requirements
 Implementation notes
 --------------------
 
+- Refactor Generator
 - 
+From design note _Error and info notifications_
+- Mark all standard functions with async keyword or async property
+- Detect async functions by AsyncFunction constructor or async property
+- Transform call expressions using these functions to await expressions while parsing the AST
+- Make user defined functions async if they include any awaits
+- Make action functions async if they call any awaits
+- Wrap actions in handleResult function, which:
+    - shows working indicator if gets a promise
+    - shows success indicator when the promise resolves
+    - shows error message when the promise rejects
+    - shows success indicator if gets immediate result
+    - shows error message if catches error
+- App has a notification slot in its state, with message and type
+- Use Snackbars at bottom left, containing Alerts, to show messages
+
+

@@ -38,6 +38,7 @@ Desirable
 Finishing touches
 -----------------
 
+- Handle errors in import
 - ✅ Import Learned, Last Revised
 - Nav buttons highlight the current page
 - Grey out today's revision if already answered
