@@ -2,11 +2,12 @@ import Element from './Element'
 import {ElementId, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
-export type Properties = {
-    readonly values: PropertyValueType<string[]>,
-    readonly initialValue?: PropertyValueType<string>,
-    readonly label?: PropertyValueType<string>
-}
+export type Properties = Readonly<{
+    values: PropertyValueType<string[]>,
+    initialValue?: PropertyValueType<string>,
+    label?: PropertyValueType<string>
+}>
+
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 
     constructor(

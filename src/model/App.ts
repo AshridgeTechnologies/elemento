@@ -26,6 +26,7 @@ export default class App extends BaseElement<Properties> implements Element {
 
     get author() { return this.properties.author}
     get maxWidth() { return this.properties.maxWidth}
+    get propertyNames() { return ['author', 'maxWidth']}
 
     canContain(elementType: ElementType) {
         return ['Page', 'AppBar', 'MemoryDataStore', 'FileDataStore', 'Collection', 'Function'].includes(elementType)

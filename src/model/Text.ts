@@ -34,7 +34,7 @@ export default class Text extends BaseElement<Properties> implements Element {
 
     get content() {return this.properties.content}
     get style() {return this.properties.style}
-    get display() {return this.properties.display ?? true}
+    get display() {return this.properties.display}
     get fontSize() {return this.properties.fontSize}
     get fontFamily() {return this.properties.fontFamily}
     get color() {return this.properties.color}

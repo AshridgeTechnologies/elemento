@@ -24,14 +24,15 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
         return element.constructor.name === this.name
     }
 
-    type(): ComponentType {
-        return 'background';
-    }
+    type(): ComponentType { return 'background' }
+    get statePropertyNames(): string[] { return ['calculation']}
+
 
     get input1() { return this.properties.input1}
     get input2() { return this.properties.input2}
     get input3() { return this.properties.input3}
     get input4() { return this.properties.input4}
     get input5() { return this.properties.input5}
+    get inputs() { return [this.input1, this.input2, this.input3, this.input4, this.input5].filter( p => !!p)}
     get calculation() { return this.properties.calculation}
 }

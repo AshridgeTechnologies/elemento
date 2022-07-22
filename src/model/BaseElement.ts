@@ -1,7 +1,7 @@
 import Element from './Element'
 import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
-import {uniq} from 'ramda'
+import {pickBy, uniq} from 'ramda'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
@@ -24,6 +24,20 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     abstract type(): ComponentType
     isLayoutOnly() { return false }
+
+    get propertyNames(): string[] {
+        let names = [] as string[]
+        let obj = this
+        while( (obj = Object.getPrototypeOf(obj)) !== BaseElement.prototype) {
+            const descriptors = Object.getOwnPropertyDescriptors(obj)
+            const getDescriptors = pickBy((val: any) => !!val.get, descriptors) as object
+            const objNames = Object.keys(getDescriptors)
+            names = objNames.concat(names)
+        }
+        return names.filter(name => !['constructor', 'type', 'canContain', 'isLayoutOnly', 'propertyNames', 'statePropertyNames'].includes(name))
+    }
+
+    get statePropertyNames(): string[] { return []}
 
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []

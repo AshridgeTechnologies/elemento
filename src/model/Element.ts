@@ -7,6 +7,8 @@ export default interface Element {
     properties: object
     elements: ReadonlyArray<Element> | undefined
     type() : ComponentType
+    get propertyNames() : string[]
+    get statePropertyNames() : string[]
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

@@ -20,8 +20,8 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
     }
 
     type(): ComponentType { return 'statefulUI' }
-
+    get statePropertyNames(): string[] { return ['initialValue']}
 
     get initialValue() { return this.properties.initialValue }
-    get label() { return this.properties.label ?? this.name }
+    get label(): PropertyValueType<string> | undefined { return this.properties.label ?? this.name }
 }

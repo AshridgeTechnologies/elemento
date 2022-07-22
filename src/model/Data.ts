@@ -21,6 +21,7 @@ export default class Data extends BaseElement<Properties> implements Element {
     }
 
     type(): ComponentType { return 'statefulUI' }
+    get statePropertyNames(): string[] { return ['initialValue']}
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

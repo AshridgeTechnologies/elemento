@@ -32,6 +32,10 @@ test('tests if an object is this type', ()=> {
     expect(SelectInput.is(page)).toBe(false)
 })
 
+test('has correct property names', () => {
+    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyNames).toStrictEqual(['initialValue', 'label', 'values'])
+})
+
 test('creates an updated object with a property set to a new value', ()=> {
     const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`})
     const updated = selectInput.set('t1', 'name', 'Select 1A')

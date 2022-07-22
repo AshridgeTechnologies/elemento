@@ -26,8 +26,8 @@ export default class Button extends BaseElement<Properties> implements Element {
     type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}
-    get action() {return this.properties.action}
     get filled() {return this.properties.filled}
     get style() {return this.properties.style}
     get display() {return this.properties.display}
+    get action() {return this.properties.action}
 }

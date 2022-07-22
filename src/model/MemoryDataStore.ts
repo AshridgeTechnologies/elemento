@@ -21,6 +21,7 @@ export default class MemoryDataStore extends BaseElement<Properties> implements 
     }
 
     type(): ComponentType { return 'backgroundFixed' }
+    get statePropertyNames(): string[] { return ['initialValue']}
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

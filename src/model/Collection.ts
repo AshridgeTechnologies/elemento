@@ -23,6 +23,7 @@ export default class Collection extends BaseElement<Properties> implements Eleme
     }
 
     type(): ComponentType { return 'statefulUI' }
+    get statePropertyNames() { return ['initialValue', 'dataStore', 'collectionName',]}
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

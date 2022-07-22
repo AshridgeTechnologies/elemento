@@ -10,7 +10,7 @@ test('Text has correct properties with default values', ()=> {
     expect(text1.name).toBe('Text 1')
     expect(text1.content).toStrictEqual(ex`"Some text"`)
     expect(text1.style).toBe(undefined)
-    expect(text1.display).toBe(true)
+    expect(text1.display).toBe(undefined)
     expect(text1.fontSize).toBe(undefined)
     expect(text1.marginBottom).toBe(undefined)
 })
