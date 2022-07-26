@@ -25,6 +25,7 @@ Stories
 - Model-driven components
 
 ### Priority 2
+- Google Sheets datastore
 - Formula improvements Part 3
 - Info website update
 - Read-only calculations
