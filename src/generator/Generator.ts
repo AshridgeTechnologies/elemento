@@ -180,7 +180,8 @@ ${generateChildren(element.list)}
         const modelProperties = () => {
             const propertyNames = without(element.statePropertyNames, element.propertyNames)
             const propertyExprs = propertyNames.map(prop => {
-                const expr = this.getExpr(element, prop)
+                const exprType: ExprType = prop === 'action' ? 'action': 'singleExpression'
+                const expr = this.getExpr(element, prop, exprType)
                 return [prop, expr]
             }).filter(([, expr]) => !!expr)
             return Object.fromEntries(propertyExprs)
@@ -222,20 +223,11 @@ ${generateChildren(page, indentLevel2, page)}
             case 'NumberInput':
             case 'SelectInput':
             case 'TrueFalseInput':
+            case 'Button':
             case 'MenuItem':
             case 'Data':
             case 'Collection':
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())})`
-
-            case 'Button': {
-                const button = element as Button
-                const content = this.getExpr(button, 'content')
-                const action = this.getExpr(button, 'action', 'action')
-                const filled = this.getExpr(button, 'filled')
-                const display = this.getExpr(button, 'display')
-                const reactProperties = definedPropertiesOf({path, content, filled, display, action})
-                return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(reactProperties)})`
-            }
 
             case 'Menu':
             case 'AppBar':

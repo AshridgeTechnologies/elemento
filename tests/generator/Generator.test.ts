@@ -296,7 +296,7 @@ test('generates Menu element with items', () => {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Menu('id1', 'Menu 1', {label: 'Stuff to do', filled: true}, [
-                    new MenuItem('it1', 'Item 1', {label: 'Do it'}),
+                    new MenuItem('it1', 'Item 1', {label: 'Do it', action: ex`Log('I am Item One')`}),
                     new MenuItem('it2', 'Item 2', {label: 'Say it'}),
                 ]),
             ]
@@ -306,10 +306,11 @@ test('generates Menu element with items', () => {
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Menu, MenuItem} = Elemento.components
+    const {Log} = Elemento.globalFunctions
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Menu, {path: pathWith('Menu1'), label: 'Stuff to do', filled: true},
-            React.createElement(MenuItem, {path: pathWith('Item1'), label: 'Do it'}),
+            React.createElement(MenuItem, {path: pathWith('Item1'), label: 'Do it', action: () => {Log('I am Item One')}}),
             React.createElement(MenuItem, {path: pathWith('Item2'), label: 'Say it'}),
     ),
     )
