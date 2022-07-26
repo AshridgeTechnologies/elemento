@@ -1,8 +1,8 @@
 import Element from './Element'
-import BaseElement from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
+import BaseElement, {propDef} from './BaseElement'
+import {ComponentType, ElementId, ElementType, PropertyDef, PropertyValueType} from './Types'
 
-type Properties = { items: PropertyValueType<any[]>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
+type Properties = { items: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
 
 export default class List extends BaseElement<Properties> implements Element {
 
@@ -20,11 +20,20 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     type(): ComponentType { return 'statefulUI' }
-    get statePropertyNames(): string[] { return ['selectedItem']}
 
     get items() { return this.properties.items }
+    get selectedItem() { return this.properties.selectedItem }
     get width() { return this.properties.width }
     get style() { return this.properties.style }
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('items', 'expr'),
+            propDef('selectedItem', 'expr', {state: true}),
+            propDef('width', 'string|number'),
+            propDef('style', 'string'),
+        ]
+    }
 
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore'].includes(elementType)

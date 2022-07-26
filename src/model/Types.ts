@@ -9,3 +9,11 @@ export type PropertyValue = string | number | boolean | string[] | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr
 
 export type InsertPosition = 'before' | 'after' | 'inside'
+
+export type PropertyDef = {
+    name: string,
+    type: PropertyType,
+    multilineExpr?: boolean,
+    state?: boolean,
+    fixedOnly?: boolean
+}

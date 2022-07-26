@@ -1,9 +1,8 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyValue} from './Types'
-import {createElement} from './createElement'
+import {ComponentType, ElementId, ElementType, PropertyDef} from './Types'
 
-type Properties = { style?: PropertyValue }
+type Properties = {}
 
 export default class Page extends BaseElement<Properties> implements Element {
 
@@ -22,10 +21,10 @@ export default class Page extends BaseElement<Properties> implements Element {
 
     type(): ComponentType { return 'statefulUI' }
 
-    get style() { return this.properties.style }
-
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore', 'MenuItem'].includes(elementType)
     }
+
+    get propertyDefs(): PropertyDef[] { return [] }
 
 }

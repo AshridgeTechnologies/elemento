@@ -1,6 +1,6 @@
-import {ComponentType, ElementId, ElementType, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementId, ElementType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 
 type Properties = {
     readonly label?: PropertyValueType<string>,
@@ -26,9 +26,15 @@ export default class Menu extends BaseElement<Properties> implements Element {
     get label() {return this.properties.label ?? this.name}
     get filled() {return this.properties.filled}
 
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('label', 'string'),
+            propDef('filled', 'boolean'),
+        ]
+    }
+
     canContain(elementType: ElementType) {
         return ['MenuItem'].includes(elementType)
     }
-
 
 }

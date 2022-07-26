@@ -1,4 +1,4 @@
-import {ComponentType, ElementId, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 
@@ -24,6 +24,14 @@ export default class MenuItem extends BaseElement<Properties> implements Element
     type(): ComponentType { return 'statelessUI' }
 
     get label() {return this.properties.label ?? this.name}
-    get action() {return this.properties.action}
     get display() {return this.properties.display}
+    get action() {return this.properties.action}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            {name: 'label', type: 'string'},
+            {name: 'display', type: 'boolean'},
+            {name: 'action', type: 'action'},
+        ]
+    }
 }

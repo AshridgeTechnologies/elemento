@@ -33,3 +33,4 @@ const runtimeNames = {
     List: 'ListElement',
 }
 export const runtimeElementName = (element: Element) => runtimeNames[element.kind as keyof typeof runtimeNames] ?? element.kind
+export type ExprType = 'singleExpression' | 'action' | 'multilineExpression'

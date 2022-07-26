@@ -1,7 +1,6 @@
 import Element from './Element'
-import BaseElement from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
-import {createElement} from './createElement'
+import BaseElement, {propDef} from './BaseElement'
+import {ComponentType, ElementId, ElementType, PropertyDef, PropertyValueType} from './Types'
 
 type Properties = { title?: PropertyValueType<string> }
 
@@ -30,5 +29,12 @@ export default class AppBar extends BaseElement<Properties> implements Element {
     canContain(elementType: ElementType) {
         return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore', 'MenuItem'].includes(elementType)
     }
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('title')
+        ]
+    }
+
 
 }

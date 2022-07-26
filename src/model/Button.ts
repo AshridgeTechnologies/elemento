@@ -1,6 +1,6 @@
-import {ComponentType, ElementId, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 
 type Properties = {
     readonly content?: PropertyValueType<string>,
@@ -27,7 +27,15 @@ export default class Button extends BaseElement<Properties> implements Element {
 
     get content() {return this.properties.content ?? this.name}
     get filled() {return this.properties.filled}
-    get style() {return this.properties.style}
     get display() {return this.properties.display}
     get action() {return this.properties.action}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('content', 'string'),
+            propDef('filled', 'boolean'),
+            propDef('display', 'boolean'),
+            propDef('action', 'action'),
+        ]
+    }
 }

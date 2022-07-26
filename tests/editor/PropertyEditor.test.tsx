@@ -71,10 +71,10 @@ test('updates name', () => {
 })
 
 test('updates other properties', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Text('id1', 'Text 1', {content: 'x', color: ex`funky`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
-    expect(inputValue('Style')).toBe('funky')
-    fireEvent.input(input('Style'), {target: {value: 'cool'}})
+    expect(inputValue('Color')).toBe('funky')
+    fireEvent.input(input('Color'), {target: {value: 'cool'}})
     expect(changedValue).toStrictEqual({expr: 'cool'})
 })
 
@@ -100,29 +100,26 @@ test('has fields for App', () => {
 })
 
 test('has fields for Page', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Page 1')
     expect(inputValue('Formula Name')).toBe('Page1')
-    expect(inputValue('Style')).toBe('funky')
-    expect(kindButton(0).textContent).toBe('fx=')
 })
 
-test('has fields for Page with literal value', () => {
-    const element = new Page('id1', 'Page 1', {style: `clear`}, [])
+test('has fields for Text with literal value', () => {
+    const element = new Text('id1', 'Text 1', {content: '', color: `clear`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
-    expect(nameInputValue()).toBe('Page 1')
-    expect(inputValue('Style')).toBe('clear')
-    expect(kindButton(0).textContent).toBe('abc')
+    expect(nameInputValue()).toBe('Text 1')
+    expect(inputValue('Color')).toBe('clear')
 })
 
-test('shows controlled component for optional fields for Page', () => {
-    const element = new Page('id1', 'Page 1', {}, [])
+test('shows controlled component for optional fields for Text', () => {
+    const element = new Text('id1', 'Text 1', {content: ''})
     render(<PropertyEditor element={element} onChange={onChange}/>)
-    expect(inputValue('Style')).toBe('')
-    const styleInput = screen.getByLabelText('Style') as HTMLInputElement
-    expect(componentProps(styleInput).value).toBe('')
+    expect(inputValue('Color')).toBe('')
+    const colorInput = screen.getByLabelText('Color') as HTMLInputElement
+    expect(componentProps(colorInput).value).toBe('')
 })
 
 test('has fields for Text', () => {
@@ -258,8 +255,8 @@ test('has fields for Button', () => {
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Filled')).toBe('true')
     expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(1).textContent).toBe('fx=')
-    expect(kindButton(1).disabled).toBe(true)
+    expect(kindButton(3).textContent).toBe('fx=')
+    expect(kindButton(3).disabled).toBe(true)
     expect(selectValue('Display')).toBe('false')
 })
 
@@ -276,10 +273,10 @@ test('has fields for MenuItem', () => {
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Menu Item 1')
     expect(inputValue('Label')).toBe('"Hi!"')
-    expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(1).textContent).toBe('fx=')
-    expect(kindButton(1).disabled).toBe(true)
     expect(selectValue('Display')).toBe('false')
+    expect(inputValue('Action')).toBe('doIt()')
+    expect(kindButton(2).textContent).toBe('fx=')
+    expect(kindButton(2).disabled).toBe(true)
 })
 
 test('has fields for List', () => {

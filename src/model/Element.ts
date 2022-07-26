@@ -1,4 +1,4 @@
-import {ComponentType, ElementId, ElementType, InsertPosition} from './Types'
+import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef} from './Types'
 
 export default interface Element {
     kind: ElementType
@@ -7,8 +7,7 @@ export default interface Element {
     properties: object
     elements: ReadonlyArray<Element> | undefined
     type() : ComponentType
-    get propertyNames() : string[]
-    get statePropertyNames() : string[]
+    get propertyDefs() : PropertyDef[]
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

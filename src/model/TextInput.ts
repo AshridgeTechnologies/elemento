@@ -1,6 +1,7 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ElementId, PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
+import {propDef} from './BaseElement'
 
 export type Properties = {
     readonly initialValue?: PropertyValueType<string>,
@@ -24,8 +25,20 @@ export default class TextInput extends BaseInputElement<Properties> implements E
         return element.constructor.name === this.name
     }
 
+    get valueType():PropertyType { return 'string' }
+
     get maxLength() { return this.properties.maxLength }
     get multiline() { return this.properties.multiline }
     get width() { return this.properties.width }
     get readOnly() { return this.properties.readOnly }
+
+    get propertyDefs() {
+        return [
+            ...super.propertyDefs,
+            propDef('maxLength', 'number'),
+            propDef('width', 'string|number'),
+            propDef('multiline', 'boolean'),
+            propDef('readOnly', 'boolean'),
+        ]
+    }
 }

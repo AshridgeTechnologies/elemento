@@ -1,5 +1,5 @@
-import {ComponentType, ElementId, ElementType, InsertPosition, PropertyValue} from './Types'
-import BaseElement, {newIdTransformer} from './BaseElement'
+import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
+import BaseElement, {newIdTransformer, propDef} from './BaseElement'
 import Element from './Element'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
@@ -17,6 +17,12 @@ export default class Project extends BaseElement<Properties> implements Element 
     }
 
     type(): ComponentType { return 'app' }
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('author'),
+        ]
+    }
 
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {

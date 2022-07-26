@@ -33,7 +33,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyNames).toStrictEqual(['initialValue', 'label', 'values'])
+    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'values'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

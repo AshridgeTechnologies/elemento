@@ -8,16 +8,14 @@ import Text from '../model/Text'
 import Element from '../model/Element'
 import {functionArgIndexes} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-import {definedPropertiesOf} from '../util/helpers'
-import Button from '../model/Button'
 import List from '../model/List'
 import {FunctionDef} from '../model/index'
-import {last, omit, without} from 'ramda'
+import {last, omit} from 'ramda'
 import Parser from './Parser'
-import {allElements, ListItem, runtimeElementName} from './Types'
+import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
+import {PropertyDef} from '../model/Types'
 
 type FunctionCollector = {add(s: string): void}
-type ExprType = 'singleExpression' | 'action' | 'multilineExpression'
 type StateEntry = [name: string, code: string | DefinedFunction, dependencies: string[]]
 
 class DefinedFunction {
@@ -178,13 +176,14 @@ ${generateChildren(element.list)}
         const path = `pathWith('${(element.codeName)}')`
 
         const modelProperties = () => {
-            const propertyNames = without(element.statePropertyNames, element.propertyNames)
-            const propertyExprs = propertyNames.map(prop => {
-                const exprType: ExprType = prop === 'action' ? 'action': 'singleExpression'
-                const expr = this.getExpr(element, prop, exprType)
-                return [prop, expr]
-            }).filter(([, expr]) => !!expr)
-            return Object.fromEntries(propertyExprs)
+            const propertyDefs = element.propertyDefs.filter(def => !def.state )
+            const propertyExprs = propertyDefs.map(def => {
+                const exprType: ExprType = def.type === 'action' ? 'action': 'singleExpression'
+                const expr = this.getExpr(element, def.name, exprType)
+                return [def.name, expr]
+            })
+
+            return Object.fromEntries(propertyExprs.filter(([, expr]) => !!expr))
         }
 
         const getReactProperties = () => {
@@ -261,10 +260,9 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     private initialStateEntry(element: Element): string | DefinedFunction {
 
         const modelProperties = () => {
-            const propertyNames = element.statePropertyNames
-            const propertyExprs = propertyNames.map(prop => {
-                const expr = this.getExpr(element, prop)
-                return [prop, expr]
+            const propertyExprs = element.propertyDefs.filter( ({state}) => state ).map(def => {
+                const expr = this.getExpr(element, def.name)
+                return [def.name, expr]
             }).filter(([, expr]) => !!expr)
                 .map(([prop, expr]) => [prop === 'initialValue' ? 'value' : prop, expr])
             return Object.fromEntries(propertyExprs)

@@ -12,7 +12,6 @@ test('Button has correct properties with default values', ()=> {
     expect(button1.content).toBe('Button 1')
     expect(button1.action).toBe(undefined)
     expect(button1.filled).toBe(undefined)
-    expect(button1.style).toBe(undefined)
     expect(button1.display).toBe(undefined)
 })
 
@@ -24,7 +23,6 @@ test('Button has correct properties with specified values', ()=> {
     expect(button1.content).toStrictEqual(ex`"Some button"`)
     expect(button1.action).toStrictEqual(ex`doIt()`)
     expect(button1.filled).toBe(true)
-    expect(button1.style).toBe('cool')
     expect(button1.display).toBe(false)
 })
 

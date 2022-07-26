@@ -1,6 +1,6 @@
-import {ComponentType, ElementId, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementId, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,
@@ -23,10 +23,20 @@ export default class Collection extends BaseElement<Properties> implements Eleme
     }
 
     type(): ComponentType { return 'statefulUI' }
-    get statePropertyNames() { return ['initialValue', 'dataStore', 'collectionName',]}
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}
     get dataStore() {return this.properties.dataStore}
     get collectionName() {return this.properties.collectionName}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('initialValue', 'expr', {state: true}),
+            propDef('dataStore', 'expr', {state: true}),
+            propDef('collectionName', 'string', {state: true}),
+            propDef('display', 'boolean'),
+        ]
+    }
+
 }
+

@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ElementId, PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 
 export type Properties = {
@@ -14,6 +14,8 @@ export default class NumberInput extends BaseInputElement<Properties> implements
         properties: Properties) {
         super(id, name, 'NumberInput', properties)
     }
+
+    get valueType(): PropertyType { return 'number' }
 
     static is(element: Element): element is NumberInput {
         return element.constructor.name === this.name

@@ -1,6 +1,7 @@
 import Element from './Element'
-import {ElementId, PropertyValueType} from './Types'
+import {ElementId, PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
+import {propDef} from './BaseElement'
 
 export type Properties = Readonly<{
     values: PropertyValueType<string[]>,
@@ -21,5 +22,14 @@ export default class SelectInput extends BaseInputElement<Properties> implements
         return element.constructor.name === this.name
     }
 
+    get valueType(): PropertyType { return 'string list'}
     get values() { return this.properties.values }
+
+    get propertyDefs() {
+        return [
+            ...super.propertyDefs,
+            propDef('values', 'string list'),
+        ]
+    }
+
 }

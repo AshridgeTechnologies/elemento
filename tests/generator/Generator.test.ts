@@ -161,7 +161,7 @@ test('generates TextInput elements with initial value', ()=> {
     const t3 = Elemento.useObjectState(pathWith('t3'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', maxLength: 10, multiline: true, width: 150, readOnly: true}),
+        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', maxLength: 10, width: 150, multiline: true, readOnly: true}),
         React.createElement(TextInput, {path: pathWith('t2'), label: 't2', maxLength: 5 + 5}),
         React.createElement(TextInput, {path: pathWith('t3'), label: 't3'}),
     )

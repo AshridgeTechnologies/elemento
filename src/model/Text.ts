@@ -1,6 +1,6 @@
 import Element from './Element'
-import BaseElement from './BaseElement'
-import {ComponentType, ElementId, PropertyValue, PropertyValueType} from './Types'
+import BaseElement, {propDef} from './BaseElement'
+import {ComponentType, ElementId, PropertyDef, PropertyValue, PropertyValueType} from './Types'
 
 type Properties = {
     readonly content: PropertyValue,
@@ -44,4 +44,21 @@ export default class Text extends BaseElement<Properties> implements Element {
     get width() {return this.properties.width}
     get height() {return this.properties.height}
     get marginBottom() {return this.properties.marginBottom}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('content', 'string multiline'),
+            propDef('display', 'boolean'),
+            propDef('fontSize', 'number'),
+            propDef('fontFamily'),
+            propDef('color'),
+            propDef('backgroundColor'),
+            propDef('border', 'number'),
+            propDef('borderColor'),
+            propDef('width', 'string|number'),
+            propDef('height', 'string|number'),
+            propDef('marginBottom', 'string|number'),
+        ]
+    }
+
 }

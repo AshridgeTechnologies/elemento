@@ -12,7 +12,6 @@ test('Page has correct properties', ()=> {
     expect(page.id).toBe('p1')
     expect(page.name).toBe('Page the First')
     expect(page.codeName).toBe('PagetheFirst')
-    expect(page.style).toStrictEqual(ex`color: blue`)
     expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
 
@@ -23,7 +22,6 @@ test('creates an updated object with a property set to a new value', ()=> {
     const updatedPage1 = page.set('p1', 'name', 'Page 1A')
     expect(updatedPage1.name).toBe('Page 1A')
     expect(updatedPage1.elements).toBe(page.elements)
-    expect(updatedPage1.style).toBe(`color: blue`)
     expect(page.name).toBe('Page 1')
 
     const updatedPage2 = updatedPage1.set('p1', 'elements', [text1, text2])

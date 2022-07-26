@@ -29,3 +29,10 @@ Initial spike 22 Jul 22
   - Identifiers used in a component property, or a component at any level
   - Errors for a component property, or a component at any level
   - Identifiers of each type in a component at any level
+
+Further work
+------------
+
+- Model objects have metadata on each property, not just names
+- Metadata used by Property editor
+- Metadata used by Generator

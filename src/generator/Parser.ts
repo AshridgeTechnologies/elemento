@@ -8,18 +8,16 @@ import * as components from '../runtime/components'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {ElementId, PropertyValue} from '../model/Types'
-import Button from '../model/Button'
+import {ElementId, PropertyDef, PropertyValue} from '../model/Types'
 import List from '../model/List'
 import {isArray, isPlainObject} from 'lodash'
 import {FunctionDef} from '../model/index'
 import {last, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
-import {allElements, ListItem, runtimeElementName} from './Types'
+import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
-type ExprType = 'singleExpression' | 'action' | 'multilineExpression'
 type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -159,7 +157,10 @@ export default class Parser {
         }
 
         const parseProperties = (element: Element) => {
-            element.propertyNames.forEach( prop => this.parseExprAndIdentifiers(element, prop, identifiers, isKnown))
+            element.propertyDefs.forEach(def => {
+                const exprType: ExprType = def.type === 'action' ? 'action': 'singleExpression'
+                this.parseExprAndIdentifiers(element, def.name, identifiers, isKnown, exprType)
+            })
         }
 
         if (element instanceof ListItem) {
@@ -186,16 +187,6 @@ export default class Parser {
                 parseChildren(page, page)
                 return
             }
-
-            case 'Button': {
-                const button = element as Button
-                this.parseExprAndIdentifiers(button, 'content', identifiers, isKnown)
-                this.parseExprAndIdentifiers(button, 'action', identifiers, isKnown, 'action')
-                this.parseExprAndIdentifiers(button, 'filled', identifiers, isKnown)
-                this.parseExprAndIdentifiers(button, 'display', identifiers, isKnown)
-                return
-            }
-
 
             case 'List': {
                 const list = element as List
@@ -229,8 +220,9 @@ export default class Parser {
                 break
             }
 
-            default:
-                element.statePropertyNames.forEach(prop => this.parseExprAndIdentifiers(element, prop, identifiers, isKnown))
+            default: {
+                element.propertyDefs.filter( ({state}) => state).forEach(def => this.parseExprAndIdentifiers(element, def.name, identifiers, isKnown))
+            }
         }
 
         this.stateEntryIdentifiers[element.id] = Array.from(identifiers.values())

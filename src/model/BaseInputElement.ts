@@ -1,6 +1,6 @@
 import Element from './Element'
-import {ComponentType, ElementId, ElementType, PropertyValueType} from './Types'
-import BaseElement from './BaseElement'
+import {ComponentType, ElementId, ElementType, PropertyDef, PropertyType, PropertyValueType} from './Types'
+import BaseElement, {propDef} from './BaseElement'
 
 
 export type BaseInputProperties = {
@@ -20,8 +20,16 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
     }
 
     type(): ComponentType { return 'statefulUI' }
-    get statePropertyNames(): string[] { return ['initialValue']}
+    abstract get valueType(): PropertyType
 
     get initialValue() { return this.properties.initialValue }
     get label(): PropertyValueType<string> | undefined { return this.properties.label ?? this.name }
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('initialValue', this.valueType, {state: true}),
+            propDef('label', 'string'),
+        ]
+    }
+
 }

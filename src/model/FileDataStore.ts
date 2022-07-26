@@ -1,6 +1,6 @@
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementId} from './Types'
+import {ComponentType, ElementId, PropertyDef} from './Types'
 
 type Properties = {
 }
@@ -19,5 +19,9 @@ export default class FileDataStore extends BaseElement<Properties> implements El
     }
 
     type(): ComponentType { return 'statefulUI' }
+
+    get propertyDefs(): PropertyDef[] {
+        return []
+    }
 
 }

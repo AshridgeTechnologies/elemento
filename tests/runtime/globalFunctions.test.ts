@@ -290,7 +290,7 @@ describe('Now', function () {
         expect(now).toBeInstanceOf(Date)
         const timeNow = Date.now()
         expect(timeNow).toBeGreaterThanOrEqual(now.getTime())
-        expect(timeNow - now.getTime()).toBeLessThan(5)
+        expect(timeNow - now.getTime()).toBeLessThan(100)
     })
 })
 

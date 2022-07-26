@@ -1,5 +1,5 @@
-import {ComponentType, ElementId, PropertyExpr} from './Types'
-import BaseElement from './BaseElement'
+import {ComponentType, ElementId, PropertyDef, PropertyExpr} from './Types'
+import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
 
 type Properties = {
@@ -25,8 +25,6 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
     }
 
     type(): ComponentType { return 'background' }
-    get statePropertyNames(): string[] { return ['calculation']}
-
 
     get input1() { return this.properties.input1}
     get input2() { return this.properties.input2}
@@ -35,4 +33,16 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
     get input5() { return this.properties.input5}
     get inputs() { return [this.input1, this.input2, this.input3, this.input4, this.input5].filter( p => !!p)}
     get calculation() { return this.properties.calculation}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('input1', 'string', {fixedOnly: true}),
+            propDef('input2', 'string', {fixedOnly: true}),
+            propDef('input3', 'string', {fixedOnly: true}),
+            propDef('input4', 'string', {fixedOnly: true}),
+            propDef('input5', 'string', {fixedOnly: true}),
+            propDef('calculation', 'expr', {state: true, multilineExpr: true}),
+        ]
+    }
+
 }
