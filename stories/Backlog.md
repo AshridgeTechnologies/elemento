@@ -8,6 +8,7 @@ Bugs
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
 - Escape quotes in Javascript string literals
+- Editor height styles allow property panel to be larger than container, so page scrolls up
 
 
 Stories

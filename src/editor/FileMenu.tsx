@@ -2,9 +2,9 @@ import * as React from 'react'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import {MenuItemFn} from './Types'
+import {MenuItemFn, OnNewFn} from './Types'
 
-export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?: MenuItemFn, onSave?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
+export default function FileMenu({onNew, onOpen, onSave, onPublish, signedIn}: {onNew?: OnNewFn, onOpen?: MenuItemFn, onSave?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
@@ -40,6 +40,7 @@ export default function FileMenu({onOpen, onSave, onPublish, signedIn}: {onOpen?
                     'aria-labelledby': 'fileButton',
                 }}
             >
+                {onNew ? menuItem('New', onNew): null}
                 {onOpen ? menuItem('Open', onOpen): null}
                 {onSave ? menuItem('Save', onSave): null}
                 {onPublish ? signedInMenuItem('Publish', onPublish): null}

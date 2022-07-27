@@ -1,3 +1,3 @@
 import {run} from '../../shared/renderInPage'
-import thePage from './HomePage'
+import thePage from './LearnPage'
 run(thePage)

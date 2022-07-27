@@ -11,9 +11,20 @@ Requirements
 ------------
 
 ### Home Page clearer
-- Learn-Create-Run 3-column design
-- Title and hero graphic
-- Graphic and summary for each section
+- ✅ Learn-Create-Run 3-column design
+- ✅ Title and graphic
+- ✅ Graphic and summary for each section
+- Favicon
+- Footer and links
+- Logo in app bar with link to main site
+
+### Published on main URL
+- Link project to apps.elemento.software
+
+### Marketing site updated
+- Revise text
+- Check dates
+- Links to apps site
 
 
 ### Welcome app more informative
@@ -47,7 +58,7 @@ Requirements
 
 
 ### Basic tutorial
-- Building Hello World
+- ✅ Building Hello World
 
 
 ### Example apps
@@ -56,3 +67,6 @@ Requirements
 - Revision app
 
 ### Bug fixes and small improvements
+- ✅ Expand app to page level by default
+- Show column titles in Elemento Studio
+- ✅ Published app link => new tab

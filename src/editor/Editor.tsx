@@ -8,7 +8,7 @@ import {
     AppElementAction,
     OnActionFn,
     OnChangeFn,
-    OnInsertWithSelectedFn, OnMoveFn,
+    OnInsertWithSelectedFn, OnMoveFn, OnNewFn,
     OnOpenFn,
     OnPublishFn,
     OnSaveFn
@@ -49,11 +49,12 @@ export default function Editor({
     onInsert,
     onMove,
     onAction,
+    onNew,
     onOpen,
     onSave,
     onPublish
 }: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
-                                    onOpen?: OnOpenFn, onSave?: OnSaveFn, onPublish?: OnPublishFn }) {
+                                    onOpen?: OnOpenFn, onSave?: OnSaveFn, onNew?: OnNewFn, onPublish?: OnPublishFn }) {
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
@@ -157,7 +158,7 @@ export default function Editor({
     }
 
     const EditorMenuBar = () => <MenuBar>
-        <FileMenu onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
+        <FileMenu onNew={onNew} onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
         <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>

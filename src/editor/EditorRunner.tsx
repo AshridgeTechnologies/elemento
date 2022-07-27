@@ -1,39 +1,19 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {createTheme, ThemeProvider} from '@mui/material/styles'
+import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {AppElementAction} from './Types'
 import {Alert, AlertColor, AlertTitle, Link} from '@mui/material'
 import {camelCase} from 'lodash'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
+import {theme} from '../shared/styling'
 
 declare global {
     var getProject: () => Project
     var setProject: (project: string|Project) => void
 }
-
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#0098a0',
-        },
-        secondary: {
-            main: '#7e28ff',
-        },
-    },
-
-    components: {
-        MuiInputBase: {
-            styleOverrides: {
-                root: {
-                    fontSize: '0.85rem',
-                },
-            },
-        },
-    }
-})
 
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
@@ -73,6 +53,11 @@ export default function EditorRunner() {
         })
     }
 
+    const onNew = () => {
+        projectHandler.newProject()
+        updateProject()
+    }
+
     const onOpen = async () => {
         try {
             await projectHandler.openFile()
@@ -91,7 +76,7 @@ export default function EditorRunner() {
         const publishName = camelCase(name) + '.js'
         const runUrl = await projectHandler.publish(publishName, code)
         updateProject()
-        const runLink = <Link href={runUrl}>{runUrl}</Link>
+        const runLink = <Link href={runUrl} target={camelCase(name)}>{runUrl}</Link>
         showAlert(`Published ${name}`, 'You can run the app with the link below', runLink, 'success')
     }
 
@@ -108,7 +93,7 @@ export default function EditorRunner() {
     return <ThemeProvider theme={theme}>
             {alertMessage}
             <Editor project={project} onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
-                onOpen={onOpen}
+                onNew={onNew} onOpen={onOpen}
                 onSave={onSave} onPublish={onPublish}/>
         </ThemeProvider>
 }

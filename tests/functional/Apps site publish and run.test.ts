@@ -16,7 +16,7 @@ const firstText = 'p[id="WelcometoElemento.MainPage.FirstText"]'
 
 const testAccountFile = 'private/testAccount.json'
 
-test('can publish to apps site and run the app', async ({ page }, testInfo: TestInfo) => {
+test('can publish to apps site and run the app', async ({ page , context}, testInfo: TestInfo) => {
     if (!fs.existsSync(testAccountFile)) {
         testInfo.skip(true, `test account details file not found: ${testAccountFile}`)
     }
@@ -54,9 +54,14 @@ test('can publish to apps site and run the app', async ({ page }, testInfo: Test
 
     await click(publishMenuItem)
 
-    await click(`text=${runUrlRegex.toString()}`)
+    const [newPage] = await Promise.all([
+        context.waitForEvent('page'),
+        await click(`text=${runUrlRegex.toString()}`) // Opens a new tab
+    ])
+    await newPage.waitForLoadState();
+    console.log(await newPage.title())
 
-    await expect(page).toHaveURL(runUrlRegex)
+    await expect(newPage).toHaveURL(runUrlRegex)
 
-    await expect(await textContent(firstText)).toBe('Welcome to Elemento!')
+    await expect(await newPage.textContent(firstText)).toBe('Welcome to Elemento!')
 })

@@ -1,7 +1,7 @@
 import Project from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {editorInitialProject} from '../util/welcomeProject'
+import {editorEmptyProject, editorInitialProject} from '../util/initialProjects'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -107,6 +107,11 @@ export default class ProjectHandler {
             console.error(`Could not do ${action} on element(s) ${elementIds.join(', ')}`, e)
             throw e
         }
+    }
+
+    newProject() {
+        this.project = editorEmptyProject()
+        this.loadedFileHandle = null
     }
 
     private userCancelledFilePick = (e:any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'

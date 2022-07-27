@@ -2,7 +2,7 @@ import React, {createElement} from 'react'
 import {createRoot} from 'react-dom/client'
 import AppRunnerFromUrl from './AppRunnerFromUrl'
 import AppRunnerFromCode from './AppRunnerFromCode'
-import {welcomeAppCode} from '../util/welcomeProject'
+import {welcomeAppCode} from '../util/initialProjects'
 import AppRunnerForPreview from './AppRunnerForPreview'
 import AppRunnerFromStorage from './AppRunnerFromStorage'
 

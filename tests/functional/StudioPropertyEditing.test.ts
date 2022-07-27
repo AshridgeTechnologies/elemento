@@ -29,7 +29,8 @@ test('can edit element properties', async ({ page }) => {
     expect(await page.locator('textarea#content').textContent()).toBe('"This is more text"')
 })
 
-test('can edit page properties', async ({ page }) => {
+// redo this test when Page has some properties
+test.skip('can edit page properties', async ({ page }) => {
     await page.goto(pageUrl)
     await loadProject(page, projectFixture1())
     await page.click(treeExpand(0))

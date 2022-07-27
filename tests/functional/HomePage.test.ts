@@ -3,15 +3,19 @@ import {pageFunctions} from './playwrightHelpers'
 
 const homePageUrl = '/'
 
-test('can log in and log out', async ({ page }) => {
+test('can access pages from home page', async ({ page }) => {
 
     const {goto, click} = pageFunctions(page)
 
     await goto(homePageUrl);
-    await click('text=Create Apps');
+    await click('text="Learn"');
+    await expect(page).toHaveURL(/.*\/learn\/?$/);
+
+    await goto(homePageUrl);
+    await click('text="Create"');
     await expect(page).toHaveURL(/.*\/studio\/?$/);
 
     await goto(homePageUrl);
-    await click('text=Run Apps');
+    await click('text="Use"');
     await expect(page).toHaveURL(/.*\/run\/?$/);
 })

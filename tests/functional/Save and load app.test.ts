@@ -40,6 +40,7 @@ const installMockFilePickers = (app: any) => {
 }
 
 const fileMenu = 'text=File'
+const fileMenu_New = 'ul[role="menu"] :text("New")'
 const fileMenu_Open = 'ul[role="menu"] :text("Open")'
 const fileMenu_Save = 'ul[role="menu"] :text("Save")'
 
@@ -115,6 +116,20 @@ test('save new app to file', async ({page}) => {
     const updatedProjectText = (await page.textContent('#_testFile')) as string
     const updatedProject = loadJSONFromString(updatedProjectText) as Project
     expect(((updatedProject.elementArray()[0] as App).pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
+})
+
+test('start new app', async ({page}) => {
+    await page.goto(pageUrl)
+
+    // expect editorInitialApp to be loaded
+
+    await openMainPage(page)
+    expect(await page.textContent(treeItem(4))).toBe('Second Text')
+
+    await page.click(fileMenu)
+    await page.click(fileMenu_New)
+
+    expect(await page.textContent(treeItem(0))).toBe('New Project')
 })
 
 test('error message if cannot read app from file', async ({page}) => {

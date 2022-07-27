@@ -17,7 +17,7 @@ import FunctionsIcon from '@mui/icons-material/Functions';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-import {union, without} from 'ramda'
+import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
 
 export class ModelTreeItem implements DataNode {
@@ -174,7 +174,8 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
 
     const canDrag = (node: DataNode) => (node as ModelTreeItem).kind !== 'Project'
 
-    const allExpandedKeys = union(expandedKeys, treeData.ancestorKeysOf(selectedItemIds[0]))
+    const alwaysShownKeys = flatten([treeData.ancestorKeysOf(selectedItemIds[0]), treeData.key, (treeData.children?? []).map( child => child.key )])
+    const allExpandedKeys = union(expandedKeys, alwaysShownKeys)
     if (allExpandedKeys.length > expandedKeys.length) {
         setExpandedKeys(allExpandedKeys)
     }

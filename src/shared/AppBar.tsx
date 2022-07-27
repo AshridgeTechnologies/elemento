@@ -7,8 +7,8 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import UserMenu from './UserMenu'
 
-type Properties = {title: string}
-export default function AppBar({title}: Properties) {
+type Properties = {title: string, userMenu?: boolean}
+export default function AppBar({title, userMenu = true}: Properties) {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Mui_AppBar position="sticky">
@@ -25,7 +25,7 @@ export default function AppBar({title}: Properties) {
                     <Typography variant="h6" component="div" sx={{ fontSize: 16, flexGrow: 1 }}>
                         {title}
                     </Typography>
-                    <UserMenu/>
+                    {userMenu && <UserMenu/>}
                 </Toolbar>
             </Mui_AppBar>
         </Box>

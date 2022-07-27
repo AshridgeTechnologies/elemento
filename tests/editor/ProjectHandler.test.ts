@@ -1,22 +1,22 @@
 import ProjectHandler from '../../src/editor/ProjectHandler'
-import {projectFixture1} from '../testutil/projectFixtures'
+import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
 import {Button, Text, TextInput} from '../../src/model/index'
 import {AppElementAction} from '../../src/editor/Types'
-import welcomeProject from '../../src/util/welcomeProject'
 import {currentUser} from '../../src/shared/authentication'
 import {uploadTextToStorage} from '../../src/shared/storage'
 import {
     filePickerCancelling,
     filePickerErroring,
-    filePickerReturning, resetSaveFileCallData,
+    filePickerReturning,
+    resetSaveFileCallData,
     saveFileData,
     saveFilePicker,
     saveFilePickerOptions
 } from '../testutil/testHelpers'
-import { wait } from '../testutil/rtlHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
+import {editorEmptyProject} from '../../src/util/initialProjects'
 
 jest.mock('../../src/shared/authentication')
 jest.mock('../../src/shared/storage')
@@ -188,6 +188,12 @@ test('unknown action leaves the project unchanged', async () => {
     } finally {
         console.error = originalErrorFn
     }
+})
+
+test('can start a new project', () => {
+    const handler = new ProjectHandler(welcomeProject(), {showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn(), baseUrl})
+    handler.newProject()
+    expect(handler.current).toStrictEqual(editorEmptyProject())
 })
 
 test('can open project from JSON file', async () => {

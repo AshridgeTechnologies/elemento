@@ -157,6 +157,18 @@ test("can expand and collapse branches and show",  async () => {
     expect(itemLabels()).not.toContain('First Text')
 })
 
+test("always shows Project and App expanded",  async () => {
+    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+
+    expect(itemLabels()).toContain('Main Page')
+
+    await clickExpandControl(0)
+    expect(itemLabels()).toContain('Main Page')
+
+    await clickExpandControl(1)
+    expect(itemLabels()).toContain('Main Page')
+})
+
 test('notifies replacement selected item id in array', async () => {
     const storeSelectedIds = jest.fn()
 

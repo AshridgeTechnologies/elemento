@@ -4,8 +4,8 @@ export const helpElementId = (helpId: string) => 'help-' + helpId
 const idIfPresent = (helpId?: string) => helpId ? {id: helpElementId(helpId)} : {}
 export const Section = ({helpId, children}: {helpId: string, children: any}) => <section id={helpElementId(helpId)}>{children}</section>
 export const SubSection = ({helpId, children}: {helpId: string, children: any}) => <article id={helpElementId(helpId)}>{children}</article>
-export const Heading = ({children}: {children: any }) => <Typography variant="h4" fontSize='1.75rem' mt='1.5rem'>{children}</Typography>
-export const SubHeading = ({children}: {children: any }) => <Typography variant="h5" fontSize='1.4rem' mt='1rem'>{children}</Typography>
+export const Heading = ({children}: {children: any }) => <Typography variant="h4" fontSize='1.75rem' mt='1.5rem' mb='0.8rem'>{children}</Typography>
+export const SubHeading = ({children}: {children: any }) => <Typography variant="h5" fontSize='1.4rem' mt='1rem' mb='0.8rem'>{children}</Typography>
 export const MinorHeading = ({children}: {children: any }) => <Typography variant="h6">{children}</Typography>
 export const Para = ({helpId, children}: {helpId?: string, children: any }) => <Typography {...idIfPresent(helpId)} variant="body1" gutterBottom>{children}</Typography>
 export const BulletList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ul>{children}</ul></Typography>

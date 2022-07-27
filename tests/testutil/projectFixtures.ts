@@ -1,6 +1,5 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
-import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
@@ -8,6 +7,7 @@ import {ex} from './testHelpers'
 import List from '../../src/model/List'
 import Layout from '../../src/model/Layout'
 import NumberInput from '../../src/model/NumberInput'
+import {Text} from '../../src/model/index'
 
 export function projectFixture1() {
 
@@ -61,6 +61,17 @@ export function projectFixtureWithList() {
     ])
 
     return new Project('project_1', 'Project One', {}, [app])
+}
+
+export function welcomeProject() {
+    return new Project('project_1', 'Welcome to Elemento', {}, [
+        new App('app1', 'Welcome App', {}, [
+            new Page('page_1', 'Main Page', {}, [
+                new Text('text1_1', 'First Text', {content: {'expr': '"Welcome to Elemento!"'}}),
+                new Text('text1_2', 'Second Text', {content: {'expr': '"The future of low code programming"'}}),
+            ])
+        ])])
+
 }
 
 export const appCode1 = (url: string) => `
