@@ -14,6 +14,7 @@ Stories
 -------
 
 ### Priority 1
+- Demo Experience Part 1
 - Runtime error and notification handling
 - General usability Part 2
 
@@ -113,6 +114,7 @@ Done
 - List filter and map
 - User-defined functions
 - Copy-paste
+- Menu component
 
 
 Bugs fixed
