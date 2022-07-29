@@ -60,6 +60,13 @@ Requirements
 ### Basic tutorial
 - ✅ Building Hello World
 
+### Further Tutorials
+- Contents page
+- Back and forward
+- References between tutorials
+- Include help
+- Explain when to use Help and guides (cf instruction manuals)
+
 
 ### Example apps
 - Hello world

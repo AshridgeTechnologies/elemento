@@ -6,9 +6,13 @@ General usability Part 3
 - Alt-hover over running app highlights the elements
 - Input adornment of = in Fx mode
 - Change to formula if type = at the start
+- Action formulas indicated by special button - update Help
 - Nav tree like power apps:  full width, menu at right, highlight and menu on hover
 - Have fixed kind buttons non-disables but warn if try to change
 - Icons on Insert Menu
+- Search in Help
+- Search in Navigator
+- Popup help by each control, property on menu and properties panel
 
 Help
 ----

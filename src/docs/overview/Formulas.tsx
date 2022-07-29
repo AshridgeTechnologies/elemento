@@ -6,24 +6,24 @@ export default () =>
     <Section helpId='formulas'>
         <Heading>Formulas</Heading>
         <Para>
-            Formulas are short snippets of code that tell your program what to do.  They can calculate values, or perform actions.
+            Formulas are short snippets of code that tell your app what to do.  They can calculate values, or perform actions.
             They look rather like the formulas in cells of a spreadsheet.
-            They also act in a similar way - as a value changes in one part of the program, any formulas that use it automatically update their result.
+            They also act in a similar way - as a value changes in one part of the app, any formulas that use it automatically update their result.
         </Para>
         <Para>
             Here are some examples (we will explain what they mean below):
         </Para>
         <BulletList>
             <li>Length + 10</li>
-            <li>"Hello " + FirstName</li>
+            <li>"Hello, " + Name</li>
             <li>Sum(ItemTotal, Delivery, ExtraChargeForOrdersOnTuesday)</li>
             <li>Save(OrderData, CurrentOrderFile)</li>
         </BulletList>
 
         <MinorHeading>Names in formulas</MinorHeading>
         <Para>
-            The names in these examples, like <code>Length</code> or <code>ItemTotal</code> are the names of controls in the program.
-            The program uses the current value of the control in the formula.
+            The names in these examples, like <code>Length</code> or <code>ItemTotal</code> are the names of controls in the app.
+            The app uses the current value of the control in the formula.
         </Para>
         <Para>So if you had a Text Input control where someone could enter their name, and you gave it the name "First Name",
             you can use <code>FirstName</code> in a formula to get the current value of the control - what the user has entered as their first name.</Para>
@@ -40,16 +40,15 @@ export default () =>
         <BulletList>
             <li><b>Text values</b> need to have quotes around them eg <code>"Hello "</code></li>
             <li><b>Numbers</b> are written just as you normally would eg <code>10</code></li>
-            <li><b>Lists of values</b> have square brackets around them, and commas between the items eg <code>["Yes", "No", "Maybe"]</code></li>
         </BulletList>
 
         <MinorHeading>Where you use formulas</MinorHeading>
         <Para>
-            You enter a formula in the property of a control.
+            You enter a formula in a property of a control.
             Take this example from the Hello World tutorial, where we want to set the content of a Text control to a formula
-            that joins together the word "Hello " and the current value of a Text Input called FirstName
+            that joins together the word "Hello, " and the current value of a Text Input called Name.
         </Para>
-        <TextField label="Content" variant='outlined' size='small' value={'"Hello " + FirstName'}/>
+        <TextField label="Content" variant='outlined' size='small' value={'"Hello, " + Name'}/>
         <Para>
             This sets the Content property of a Text element
         </Para>
@@ -66,7 +65,7 @@ export default () =>
             <SubHeading>Calculation Formulas</SubHeading>
             <Para>
                 Most formulas are calculations.  They are used to work out the values of a control's properties.
-                Each time something in the program changes, they are recalculated automatically to update the value, like cells in a spreadsheet.
+                Each time something in the app changes, they are recalculated automatically to update the value, like cells in a spreadsheet.
             </Para>
             <Para>
                 There are two basic types of calculation, simple and functions.  You can also mix these types together.
@@ -76,7 +75,7 @@ export default () =>
             <Para>These are like the basic maths expressions you learned at school, and they follow the same rules. Some things to look out for:</Para>
             <BulletList>
                 <li>You use * instead of x to multiply values, to avoid confusion with something called "x"</li>
-                <li>Remember that multiplication and division are done before addition and subtraction, so you may need brackets</li>
+                <li>Multiplication and division are done before addition and subtraction, so you may need brackets.</li>
                 <li>You can also use + to join text with another value</li>
             </BulletList>
             <Para>Here are some examples, with the steps you would take to work them out on a calculator:</Para>
@@ -117,6 +116,8 @@ export default () =>
                 <li>a right bracket )</li>
             </NumberedList>
 
+
+
             <Para>Here are some examples, with a short explanation of what they do:</Para>
             <BulletList>
                 <li>Sum(Goods, Delivery, Tax)<br/>
@@ -148,7 +149,7 @@ export default () =>
                 Action formulas change something or make something happen, such as:
             </Para>
             <BulletList>
-                <li>setting a value in the program</li>
+                <li>setting a value in the app</li>
                 <li>saving data to a file or a database</li>
                 <li>displaying an alert on the screen</li>
             </BulletList>
@@ -157,11 +158,12 @@ export default () =>
                 The action only happens once when it is triggered - it is not continuously updated like a calculation formula.</Para>
 
             <MinorHeading>Where action formulas are used</MinorHeading>
-            <Para>There are certain properties of controls that need an action formula instead of a calculation.
-                Their names all start with "On", and when the thing after the "On" happens, the action formula runs.</Para>
-            <Para>For example, a Button control has an <code>OnClick</code> property.
-                When the user clicks the button, the action formula in the On Click property runs.  A button to save the data entered on a page might have an On Click like this:</Para>
-            <TextField label="On Click" variant='outlined' size='small' value={'Save(OrderData, CurrentOrderFile)'} fullWidth/>
+            <Para>There are some properties of controls that need an action formula instead of a calculation.
+                The reference section for that control tells you which they are.</Para>
+            <Para>For example, a Button control has an <code>Action</code> property.
+                When the user clicks the button on the page, the formula in the Action property runs.
+                A button to save the data entered on a page might have an Action like this:</Para>
+            <TextField label="Action" variant='filled' size='small' value={'Update(Orders, OrderId, OrderData)'} fullWidth/>
 
         </SubSection>
 

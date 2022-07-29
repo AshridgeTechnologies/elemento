@@ -12,7 +12,7 @@ export default () =>
         <SubSection helpId='about-properties'>
             <SubHeading>About Properties</SubHeading>
             <Para>The most important thing to know about a control is what properties it has.
-                You set the properties using fixed values or formulas to make your program do what you want.
+                You set the properties using fixed values or formulas to make your app do what you want.
             </Para>
             <Para>
                 Some properties are <b>required</b> - the control will not work unless you set them.  Properties may have a <b>default</b> value -
@@ -23,8 +23,8 @@ export default () =>
             </Para>
             <Para>
                 <b>Id</b><br/>
-                A name given to the control by the Elemento editor when this control is added to the program.
-                It cannot be changed, and it will be unique among the controls in the program.
+                A name given to the control by the Elemento editor when this control is added to the app.
+                It cannot be changed, and it will be unique among the controls in the app.
             </Para>
             <Para>
                 <b>Name</b><br/>
@@ -34,9 +34,9 @@ export default () =>
         </SubSection>
 
         <ControlSection name='App' helpId='app'
-            description='The top-level of a program that contains other controls.
-            It contains the Pages displayed bt the program, and it may contain an AppBar shown for every Page.
-            It can also contain background controls like Data Stores and Collections.  These can be accessed anywhere in the program.'
+            description='The top-level of a app that contains other controls.
+            It contains the Pages displayed by the app, and it may contain an AppBar shown for every Page.
+            It can also contain background controls like Data Stores and Collections.  These can be accessed anywhere in the app.'
             properties={<>
                 <PropertyEntry name='Content' type='text' helpId='app-maxWidth'>The maximum width in pixels that this App will display.
                     If empty, the App will take up as much room as is available</PropertyEntry>
@@ -79,9 +79,9 @@ export default () =>
                         You can use the Get function to look up an item by its id, or the GetAll function to get all the items.
                         The Remove function takes an item out of the collection
                         A Collection control would normally be kept hidden, with Display set to No, but you can set Display to Yes to
-                        show the current data in order to understand more about what the program is doing.
+                        show the current data in order to understand more about what the app is doing.
                         A collection may be attached to a Data Store.
-                        If it is, it will load any data already in the Data Store when the program starts, and any changes will be saved to the Data Store.'
+                        If it is, it will load any data already in the Data Store when the app starts, and any changes will be saved to the Data Store.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='any' helpId='data-initialValue'>The pre-filled data in the control when the app starts running.</PropertyEntry>
                             <PropertyEntry name='Display' type='true-false' helpId='data-display'>Whether the current data is shown on the screen.  Normally set to No.</PropertyEntry>
@@ -97,7 +97,7 @@ export default () =>
                         You use the Set and Update functions to put data into a Data control and change it afterwards.
                         You can use the data in the control simply by using its name in a formula.
                         A data control would normally be kept hidden, with Display set to No, but you can set Display to Yes to
-                        show the current data in order to understand more about what the program is doing.'
+                        show the current data in order to understand more about what the app is doing.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='any' helpId='data-initialValue'>The pre-filled data in the control when the app starts running.</PropertyEntry>
                             <PropertyEntry name='Display' type='true-false' helpId='data-display'>Whether the current data is shown on the screen.  Normally set to No.</PropertyEntry>
@@ -107,8 +107,8 @@ export default () =>
 
         <ControlSection name='File Data Store' helpId='fileDataStore'
                         description='Stores the data for one or more Collections in a disk file. The data is available to the Collections only when the Data Store is attached to a file.
-                        To attach it to a file, the program needs to either open an existing file or save to a new or existing file.
-                        To do this, the program needs to call either the Open, Save or SaveAs actions on the store, in response to a user clicking a button or a menu item.
+                        To attach it to a file, the app needs to either open an existing file or save to a new or existing file.
+                        To do this, the app needs to call either the Open, Save or SaveAs actions on the store, in response to a user clicking a button or a menu item.
                           For a store called MyFileDataStore you would include one of the following in the action: MyFileDataStore.Open(), MyFileDataStore.Save() or MyFileDataStore.SaveAs().
                           To the user, these look like the actions of opening or saving a file found in many programs.'
                         properties={<>
@@ -131,7 +131,7 @@ export default () =>
         />
 
         <ControlSection name='List' helpId='list'
-                        description='Shows a list of similar items.  The user can select one of the items, and the program can use the selected item to control something else.
+                        description='Shows a list of similar items.  The user can select one of the items, and the app can use the selected item to control something else.
                         A common use of this is to show a list of names of items on one side of a page, and show full details of the item selected in the other side.
                         The List needs a list of items to show.  This could be just a fixed list like ["red", "green", "blue"], but it is usually a Collection.
                         The controls contained by the List control determine what is shown for each item - they are repeated for each item.
@@ -146,7 +146,7 @@ export default () =>
 
         <ControlSection name='Memory Data Store' helpId='memoryDataStore'
                         description='Stores the data for one or more Collections in the computer memory. The data will not be saved when the ptrogram stops running.
-                        It can be given some initial data when the program starts.'
+                        It can be given some initial data when the app starts.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='any' helpId='memoryDataStore-initialValue'>The pre-filled data in the store when the app starts running.</PropertyEntry>
                         </>}

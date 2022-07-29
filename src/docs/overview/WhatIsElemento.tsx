@@ -11,7 +11,7 @@ export default () =>
         <Para>
             You connect the components together with small snippets of code called <b>formulas</b>.
             These are quite similar to spreadsheet formulas, but even easier to understand.  
-            They use names that you have given to other things in the program, like <code>FirstName</code>, instead of cell locations like <code>C2</code>.
+            They use names that you have given to other things in the app, like <code>FirstName</code>, instead of cell locations like <code>C2</code>.
         </Para>
         <Para>
             For example, if you are calculating the final total of a sales invoice, you might write a formula like this:<br/>

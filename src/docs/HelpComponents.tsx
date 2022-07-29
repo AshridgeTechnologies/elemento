@@ -10,6 +10,7 @@ export const MinorHeading = ({children}: {children: any }) => <Typography varian
 export const Para = ({helpId, children}: {helpId?: string, children: any }) => <Typography {...idIfPresent(helpId)} variant="body1" gutterBottom>{children}</Typography>
 export const BulletList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ul>{children}</ul></Typography>
 export const NumberedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ol>{children}</ol></Typography>
+export const NamedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><dl>{children}</dl></Typography>
 
 export const PropertyEntry = ({name, type, helpId, children}: {name: string, type: string, helpId: string, children: any}) =>
     <Para helpId={helpId}> <b>{name}</b>&nbsp;&nbsp;&nbsp;&nbsp;<i>Type: {type}</i><br/>{children}</Para>

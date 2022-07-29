@@ -1,6 +1,8 @@
 Formula improvements Part 3
 ===========================
 
+- Click on a control in Navigator to add it to a formula
+- Auto-complete to give a selection of possible names
 - Runtime errors reported in the editor, with link to control
 - Stop spell check errors in formulas
 - Functions without brackets give error
@@ -15,4 +17,4 @@ Formula improvements Part 3
 - User-defined functions at app level
 - If() has expressions transformed to functions so they are not evaluated unless needed
 - Only allow $item in List item and list predicate/transform expressions
-- 
+- Template vars in text content

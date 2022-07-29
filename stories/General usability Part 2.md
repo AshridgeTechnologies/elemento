@@ -9,8 +9,9 @@ General usability Part 2
 - Review and update Help
 - Welcome project has examples of everything and explains what to do
 - ✅ Generated code tab
-- New project menu item
+- ✅ New project menu item
 - Reset function acts on whole page or layout
+- Can show page from Navigator
 - ~~Show a Page in the Preview~~ => Debugger Part 1.md (for now, just add buttons to App Bar if needed)
 - ~~File permissions only requested once~~  'Save changes' message on opening file very confusing
 - ~~Drag and drop items in list~~  => Drag and drop.md
