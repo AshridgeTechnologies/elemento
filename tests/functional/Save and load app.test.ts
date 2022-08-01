@@ -1,5 +1,5 @@
 import {expect, Page, test} from '@playwright/test'
-import {App, Project, Text} from '../../src/model/index'
+import {App, Project, Text} from '../../src/model/elements'
 import {treeExpand, treeItem} from './playwrightHelpers'
 import {loadJSONFromString} from '../../src/model/loadJSON'
 import {projectFixture1} from '../testutil/projectFixtures'

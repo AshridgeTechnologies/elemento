@@ -1,7 +1,7 @@
 import Element from './Element'
-import {ElementId, PropertyType, PropertyValueType} from './Types'
+import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
-import {propDef} from './BaseElement'
+import ToggleOn from '@mui/icons-material/ToggleOn'
 
 export type Properties = {
     readonly initialValue?: PropertyValueType<boolean>,
@@ -9,16 +9,6 @@ export type Properties = {
 }
 export default class TrueFalseInput extends BaseInputElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties) {
-        super(id, name, 'TrueFalseInput', properties)
-    }
-
-
-    static is(element: Element): element is TrueFalseInput {
-        return element.constructor.name === this.name
-    }
+    static get iconClass() { return ToggleOn }
     get valueType(): PropertyType { return 'boolean' }
 }

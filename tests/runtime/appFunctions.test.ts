@@ -1,16 +1,18 @@
 import appFunctions, {appFunctionsNames} from '../../src/runtime/appFunctions'
 import {valObj} from '../testutil/testHelpers'
+import * as authentication from '../../src/shared/authentication'
 
 jest.mock('../../src/runtime/appData')
+jest.mock('../../src/shared/authentication')
 
 const mockFn = jest.fn()
-const {Reset, Set, Update, Add, Remove, Get, GetAll} = appFunctions
+const {Reset, Set, Update, Add, Remove, Get, GetAll, CurrentUser} = appFunctions
 
 
 beforeEach( ()=> jest.resetAllMocks() )
 
 test('can get app functions names', () => {
-    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'Update', 'Add', 'Remove', 'Get', 'GetAll', 'NotifyError'])
+    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'Update', 'Add', 'Remove', 'Get', 'GetAll', 'NotifyError', 'CurrentUser'])
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {
@@ -129,5 +131,21 @@ describe('GetAll', () => {
         const result = GetAll(elementState)
         expect(result).toStrictEqual([{a: 50, b: 'Bee'}, {c: 30}])
         expect(elementState.GetAll).toBeCalledWith()
+    })
+})
+
+describe('CurrentUser', () => {
+
+    test('returns current user if logged on', () => {
+        const mock_currentUser = authentication.currentUser as jest.MockedFunction<any>
+        mock_currentUser.mockReturnValue({ displayName: 'Franko'})
+        expect(CurrentUser()!.Name).toBe('Franko')
+    })
+
+    test('returns null if not logged on', () => {
+        const mock_currentUser = authentication.currentUser as jest.MockedFunction<any>
+        mock_currentUser.mockReturnValue(null)
+        expect(CurrentUser()).toBe(null)
+
     })
 })

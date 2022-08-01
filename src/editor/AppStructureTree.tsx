@@ -1,22 +1,12 @@
 import Tree, {TreeNodeProps} from 'rc-tree'
-import React, {useState} from 'react'
+import React, {createElement, useState} from 'react'
 import {BasicDataNode, DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
-import {Crop75, DensitySmall, MoneyOutlined, Note, RectangleOutlined, Subject, ToggleOn, Web} from '@mui/icons-material'
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import ViewListIcon from '@mui/icons-material/ViewList'
-import MemoryIcon from '@mui/icons-material/Memory'
-import MenuIcon from '@mui/icons-material/Menu'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import WebAssetIcon from '@mui/icons-material/WebAsset';
-import FunctionsIcon from '@mui/icons-material/Functions';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
+import * as theElements from '../model/elements'
 import {AppElementAction} from './Types'
-import UnsupportedValueError from '../util/UnsupportedValueError'
 import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
 
@@ -53,28 +43,9 @@ export class ModelTreeItem implements DataNode {
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const kind = (props.data as ModelTreeItem)!.kind
     const sx = { fontSize: 16, color }
-    switch (kind) {
-    case 'Project': return <Web {...{sx}} />
-    case 'App': return <Web {...{sx}} />
-    case 'Page': return <Web {...{sx}} />
-    case 'Layout': return <ViewModuleIcon {...{sx}} />
-    case 'AppBar': return <WebAssetIcon {...{sx}} />
-    case 'Text': return <Subject {...{sx}}/>
-    case 'TextInput': return <RectangleOutlined {...{sx}}/>
-    case 'NumberInput': return <MoneyOutlined {...{sx}}/>
-    case 'SelectInput': return <DensitySmall {...{sx}}/>
-    case 'TrueFalseInput': return <ToggleOn {...{sx}}/>
-    case 'Button': return <Crop75 {...{sx}}/>
-    case 'Menu': return <MenuIcon {...{sx}}/>
-    case 'MenuItem': return <MenuOpenIcon {...{sx}}/>
-    case 'List': return <ViewListIcon {...{sx}}/>
-    case 'Data': return <Note {...{sx}}/>
-    case 'Collection': return <AutoAwesomeMotionIcon {...{sx}}/>
-    case 'Function': return <FunctionsIcon {...{sx}}/>
-    case 'MemoryDataStore': return <MemoryIcon {...{sx}}/>
-    case 'FileDataStore': return <InsertDriveFileIcon {...{sx}}/>
-    default: throw new UnsupportedValueError(kind)
-    }
+    const elementClass = theElements[kind]
+    const {iconClass} = elementClass
+    return createElement(iconClass, {sx})
 }
 
 type Action = {

@@ -1,6 +1,9 @@
 General usability Part 3
 ========================
 
+- Remove animation on list so things change quickly
+- Retain position in list when content changes
+- Get Text area editing to accept characters with accents typed by holding down key
 - Duplicate names are highlighted and handled sensibly without losing state (eg add a suffix to one name)
 - Data store has type and enforces it
 - Alt-hover over running app highlights the elements
@@ -13,6 +16,9 @@ General usability Part 3
 - Search in Help
 - Search in Navigator
 - Popup help by each control, property on menu and properties panel
+- Some way of getting snippets (eg a File Menu) - maybe from an Examples project that you open in another window
+- Record editor
+- Function to make record from values of a list of controls - use their names, if available in the state object
 
 Help
 ----

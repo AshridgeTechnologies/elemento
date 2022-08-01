@@ -6,6 +6,7 @@ module.exports = {
     roots:                  ['tests'],
     testMatch:              ["**/*.test.ts", "**/*.test.tsx"],
     testPathIgnorePatterns: ["<rootDir>/tests/functional"],
+    resolver: '<rootDir>/jest.resolver.cjs',
     moduleNameMapper: {"^.+\\.(css|less)$": "<rootDir>/tests/cssStub.cjs"},
     coverageProvider: 'v8',
     collectCoverageFrom: [

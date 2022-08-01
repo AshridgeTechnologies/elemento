@@ -1,7 +1,8 @@
 import Element from './Element'
-import {ElementId, PropertyType, PropertyValueType} from './Types'
+import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 import {propDef} from './BaseElement'
+import RectangleOutlined from '@mui/icons-material/RectangleOutlined'
 
 export type Properties = {
     readonly initialValue?: PropertyValueType<string>,
@@ -14,17 +15,7 @@ export type Properties = {
 
 export default class TextInput extends BaseInputElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties) {
-        super(id, name, 'TextInput', properties)
-    }
-
-    static is(element: Element): element is TextInput {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return RectangleOutlined }
     get valueType():PropertyType { return 'string' }
 
     get maxLength() { return this.properties.maxLength }

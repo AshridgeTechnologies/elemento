@@ -1,6 +1,7 @@
-import {ComponentType, ElementId, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 type Properties = {
     readonly label?: PropertyValueType<string>,
@@ -9,18 +10,8 @@ type Properties = {
 }
 
 export default class MenuItem extends BaseElement<Properties> implements Element {
-    constructor(
-        id:  ElementId,
-        name: string,
-        properties: Properties
-    ) {
-        super(id, name, 'MenuItem', properties)
-    }
 
-    static is(element: Element): element is MenuItem {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return MenuOpenIcon }
     type(): ComponentType { return 'statelessUI' }
 
     get label() {return this.properties.label ?? this.name}

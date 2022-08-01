@@ -20,6 +20,7 @@ import AppBar from './AppBar'
 import FunctionDef from './FunctionDef'
 import Menu from './Menu'
 import MenuItem from './MenuItem'
+import UserLogon from './UserLogon'
 
 type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
 
@@ -58,6 +59,8 @@ export function loadJSONElement({id, kind, name, properties, elements}: ElementJ
         return new TrueFalseInput(id, name, properties)
     case 'Button':
         return new Button(id, name, properties)
+    case 'UserLogon':
+        return new UserLogon(id, name, properties)
     case 'Menu':
         return new Menu(id, name, properties, loadElements())
     case 'MenuItem':

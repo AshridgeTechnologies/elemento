@@ -1,5 +1,4 @@
-import Element from './Element'
-import {ComponentType, ElementId, ElementType, PropertyDef, PropertyType, PropertyValueType} from './Types'
+import {ComponentType, PropertyDef, PropertyType, PropertyValueType} from './Types'
 import BaseElement, {propDef} from './BaseElement'
 
 
@@ -9,15 +8,6 @@ export type BaseInputProperties = {
 }
 
 export default abstract class BaseInputElement<PropertiesType extends BaseInputProperties> extends BaseElement<PropertiesType> {
-    constructor(
-        id: ElementId,
-        name: string,
-        kind: ElementType,
-        properties: PropertiesType,
-        elements: ReadonlyArray<Element> | undefined = undefined,
-    ) {
-        super(id, name, kind, properties, elements)
-    }
 
     type(): ComponentType { return 'statefulUI' }
     abstract get valueType(): PropertyType
@@ -31,5 +21,4 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
             propDef('label', 'string'),
         ]
     }
-
 }

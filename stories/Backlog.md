@@ -15,6 +15,9 @@ Stories
 -------
 
 ### Priority 1
+- User Logon
+- Google Sheets datastore
+- Revision aid example
 - Demo Experience Part 1
 - Runtime error and notification handling
 - General usability Part 2

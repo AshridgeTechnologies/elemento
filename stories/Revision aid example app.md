@@ -12,6 +12,7 @@ Requirements
 ------------
 
 - ✅ File datastore: Open, New, Save As on Menu under icon
+- Google Sheets data store
 - ✅ Fact entity: Id, Question, Answer, Date Learned, Recall data
 - Recall data: Last revised, Success, Times revised, Times succeeded
 - ✅ Fact list page: List with Show/Add/Update/Delete
@@ -32,7 +33,6 @@ Desirable
 ---------
 
 - CSV import or use directly as datastore
-- Google Drive data store
 - Previous attempts
 
 Finishing touches
@@ -48,6 +48,7 @@ Finishing touches
 - Focus field - maybe auto after reset form
 - Readonly inputs keep title in border
 - Links to word entry from lists
+- Keep Learn words visible on day learned
 
 
 Features needed

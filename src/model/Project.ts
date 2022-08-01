@@ -3,19 +3,13 @@ import BaseElement, {newIdTransformer, propDef} from './BaseElement'
 import Element from './Element'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
+import {Web} from '@mui/icons-material'
 
 type Properties = { author?: PropertyValue }
 
 export default class Project extends BaseElement<Properties> implements Element {
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties,
-        elements: ReadonlyArray<Element>
-    ) {
-        super(id, name, 'Project', properties, elements)
-    }
 
+    static get iconClass() { return Web }
     type(): ComponentType { return 'app' }
 
     get propertyDefs(): PropertyDef[] {

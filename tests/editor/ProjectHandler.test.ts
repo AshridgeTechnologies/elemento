@@ -1,6 +1,6 @@
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
-import {Button, Text, TextInput} from '../../src/model/index'
+import {Button, Text, TextInput} from '../../src/model/elements'
 import {AppElementAction} from '../../src/editor/Types'
 import {currentUser} from '../../src/shared/authentication'
 import {uploadTextToStorage} from '../../src/shared/storage'

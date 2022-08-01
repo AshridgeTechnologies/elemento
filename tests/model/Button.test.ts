@@ -9,7 +9,7 @@ test('Button has correct properties with default values', ()=> {
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
     expect(button1.type()).toBe('statelessUI')
-    expect(button1.content).toBe('Button 1')
+    expect(button1.content).toBe('Do something')
     expect(button1.action).toBe(undefined)
     expect(button1.filled).toBe(undefined)
     expect(button1.display).toBe(undefined)

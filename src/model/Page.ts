@@ -1,24 +1,13 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyDef} from './Types'
+import {ComponentType, ElementType, PropertyDef} from './Types'
+import {Web} from '@mui/icons-material'
 
 type Properties = {}
 
 export default class Page extends BaseElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties,
-        elements: ReadonlyArray<Element>
-    ) {
-        super(id, name, 'Page', properties, elements)
-    }
-
-    static is(element: Element): element is Page {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return Web }
     type(): ComponentType { return 'statefulUI' }
 
     canContain(elementType: ElementType) {

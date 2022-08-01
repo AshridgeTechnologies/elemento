@@ -46,7 +46,7 @@ test('can publish to apps site and run the app', async ({ page , context}, testI
 
     await press(passwordInput, 'Enter')
 
-    await expect(locator('text=Signed in as Tester One')).toBeVisible()
+    await expect(locator('text=Logged in as Tester One')).toBeVisible()
 
     await click(outsideUserPanel)
 

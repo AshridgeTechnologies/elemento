@@ -1,6 +1,7 @@
 import {Value, valueOf} from './runtimeFunctions'
 import DataStore, {Id} from './DataStore'
 import MemoryDataStore from './components/MemoryDataStore'
+import {currentUser} from '../shared/authentication'
 
 let defaultDataStoreInstance: DataStore | null = null
 
@@ -52,7 +53,13 @@ const appFunctions = {
         //temporary implementation
         console.error(description, error)
         alert(`${description}\n${error.message}`)
-    }
+    },
+
+    CurrentUser() {
+        const user = currentUser()
+        return user ? {...user, Name: user.displayName} : null
+    },
+
 }
 
 export const appFunctionsNames = () => {

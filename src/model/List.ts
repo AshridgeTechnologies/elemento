@@ -1,24 +1,13 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementId, ElementType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import ViewListIcon from '@mui/icons-material/ViewList'
 
-type Properties = { items: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
+type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
 
 export default class List extends BaseElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties,
-        elements: ReadonlyArray<Element>
-    ) {
-        super(id, name, 'List', properties, elements)
-    }
-
-    static is(element: Element): element is List {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return ViewListIcon }
     type(): ComponentType { return 'statefulUI' }
 
     get items() { return this.properties.items }

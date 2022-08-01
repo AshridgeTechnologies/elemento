@@ -12,11 +12,13 @@ import SelectInput from '../../src/model/SelectInput'
 import List from '../../src/model/List'
 import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
-import {Collection, FunctionDef} from '../../src/model/index'
+import Collection from '../../src/model/Collection'
+import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
+import UserLogon from '../../src/model/UserLogon'
 
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
@@ -287,6 +289,25 @@ test('generates Button elements with properties', ()=> {
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', filled: 22 || 33, display: false, action: () => {const message = "You clicked me!"; Log(message)
     Log("Didn't you?")}}),
+    )
+}
+`)
+})
+
+test('generates User Logon elements with properties', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new UserLogon('id1', 'b1', {}),
+    ]
+        )])
+
+    const gen = new Generator(app)
+    expect(gen.output().files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, UserLogon} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(UserLogon, {path: pathWith('b1')}),
     )
 }
 `)

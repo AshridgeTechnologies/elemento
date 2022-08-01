@@ -1,6 +1,7 @@
-import {ComponentType, ElementId, PropertyDef, PropertyExpr} from './Types'
+import {ComponentType, ElementType, PropertyDef, PropertyExpr} from './Types'
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
+import FunctionsIcon from '@mui/icons-material/Functions';
 
 type Properties = {
     readonly input1?: string,
@@ -12,18 +13,9 @@ type Properties = {
 }
 
 export default class FunctionDef extends BaseElement<Properties> implements Element {
-    constructor(
-        id:  ElementId,
-        name: string,
-        properties: Properties
-) {
-        super(id, name, 'Function', properties)
-    }
 
-    static is(element: Element): element is FunctionDef {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return FunctionsIcon }
+    kind: ElementType = 'Function'
     type(): ComponentType { return 'background' }
 
     get input1() { return this.properties.input1}

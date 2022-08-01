@@ -8,7 +8,9 @@ import {
     AppElementAction,
     OnActionFn,
     OnChangeFn,
-    OnInsertWithSelectedFn, OnMoveFn, OnNewFn,
+    OnInsertWithSelectedFn,
+    OnMoveFn,
+    OnNewFn,
     OnOpenFn,
     OnPublishFn,
     OnSaveFn
@@ -17,6 +19,8 @@ import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
 import InsertMenuWithButton from './InsertMenuWithButton'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
+import * as theElements from '../model/elements'
+
 import {Box, Button, Grid} from '@mui/material'
 import HelpPanel from './HelpPanel'
 import WhatIsElemento from '../docs/overview/WhatIsElemento'
@@ -40,8 +44,7 @@ const treeData = (project: Project): ModelTreeItem => {
     return treeNodeFromElement(project)
 }
 
-const allElementTypes = ['Text', 'TextInput', 'NumberInput', 'SelectInput', 'TrueFalseInput', 'Button', 'Menu', 'MenuItem', 'List', 'Data', 'Function',
-    'Collection', 'Layout', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'] as ElementType[]
+const allElementTypes = Object.keys(theElements) as ElementType[]
 
 export default function Editor({
     project,

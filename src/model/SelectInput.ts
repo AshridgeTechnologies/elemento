@@ -1,27 +1,18 @@
 import Element from './Element'
-import {ElementId, PropertyType, PropertyValueType} from './Types'
+import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
 import {propDef} from './BaseElement'
+import DensitySmall from '@mui/icons-material/DensitySmall'
 
 export type Properties = Readonly<{
-    values: PropertyValueType<string[]>,
+    values?: PropertyValueType<string[]>,
     initialValue?: PropertyValueType<string>,
     label?: PropertyValueType<string>
 }>
 
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties) {
-        super(id, name, 'SelectInput', properties)
-    }
-
-    static is(element: Element): element is SelectInput {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return DensitySmall }
     get valueType(): PropertyType { return 'string list'}
     get values() { return this.properties.values }
 

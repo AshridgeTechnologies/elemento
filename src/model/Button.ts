@@ -1,6 +1,7 @@
-import {ComponentType, ElementId, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
+import Crop75 from '@mui/icons-material/Crop75'
 
 type Properties = {
     readonly content?: PropertyValueType<string>,
@@ -11,18 +12,9 @@ type Properties = {
 }
 
 export default class Button extends BaseElement<Properties> implements Element {
-    constructor(
-        id:  ElementId,
-        name: string,
-        properties: Properties
-    ) {
-        super(id, name, 'Button', properties)
-    }
 
-    static is(element: Element): element is Button {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return Crop75 }
+    static get initialProperties() { return {content: 'Do something'} }
     type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}

@@ -31,7 +31,6 @@ test('assigns new ids to a tree of elements', () => {
     expect(app.findElement('text_3')).toBe(text3)
 })
 
-
 describe('Insert element with new ids', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})

@@ -1,6 +1,7 @@
 import Element from './Element'
-import {ElementId, PropertyType, PropertyValueType} from './Types'
+import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
+import MoneyOutlined from '@mui/icons-material/MoneyOutlined'
 
 export type Properties = {
     readonly initialValue?: PropertyValueType<number>,
@@ -8,16 +9,6 @@ export type Properties = {
 }
 export default class NumberInput extends BaseInputElement<Properties> implements Element {
 
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties) {
-        super(id, name, 'NumberInput', properties)
-    }
-
+    static get iconClass() { return MoneyOutlined }
     get valueType(): PropertyType { return 'number' }
-
-    static is(element: Element): element is NumberInput {
-        return element.constructor.name === this.name
-    }
 }

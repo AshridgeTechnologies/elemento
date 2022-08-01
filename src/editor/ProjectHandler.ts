@@ -8,7 +8,7 @@ import {loadJSONFromString} from '../model/loadJSON'
 import {currentUser} from '../shared/authentication'
 import {uploadTextToStorage} from '../shared/storage'
 import {elementToJSON} from '../util/helpers'
-import {last, project} from 'ramda'
+import {last} from 'ramda'
 
 declare global {
     var showOpenFilePicker: (options: object) => any

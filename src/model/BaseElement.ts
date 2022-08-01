@@ -1,7 +1,7 @@
 import Element from './Element'
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyType} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
-import {pickBy, uniq} from 'ramda'
+import {uniq} from 'ramda'
 
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
@@ -18,16 +18,28 @@ export function propDef(name: string, type: PropertyType = 'string', options: Pr
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
+    readonly kind: ElementType
+    readonly properties: PropertiesType
+
     constructor(
         public readonly id: ElementId,
         public readonly name: string,
-        public readonly kind: ElementType,
-        public readonly properties: PropertiesType,
+        properties: PropertiesType,
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
+        this.kind = this.constructor.name as ElementType
+        const thisClass = this.constructor as typeof BaseElement
+        this.properties = {...thisClass.initialProperties, ...properties}
     }
 
     abstract type(): ComponentType
+
+    static get initialProperties() { return {} }
+
+    static is<T extends Element>(element: Element): element is T {
+        return element.constructor.name === this.name
+    }
+
     isLayoutOnly() { return false }
     abstract get propertyDefs(): PropertyDef[]
 
@@ -208,8 +220,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return false
     }
 
-    transform(transformFn: (element: BaseElement<PropertiesType>, transformedChildElements: BaseElement<PropertiesType>[]) => Element): this {
-        const newChildElements = this.elementArray().map( el => (el as this).transform(transformFn))
+    transform(transformFn: (element: BaseElement<PropertiesType>, transformedChildElements: BaseElement<PropertiesType>[] | undefined) => Element): this {
+        const newChildElements = this.elements && this.elementArray().map( el => (el as this).transform(transformFn))
         return transformFn(this as BaseElement<PropertiesType>, newChildElements) as this
     }
 
@@ -259,7 +271,7 @@ export const newIdTransformer = (existingElement: Element) => {
         maxIds[kind as keyof object] = newId
         return newId
     }
-    return (element: BaseElement<any>, transformedChildElements: BaseElement<any>[]): Element => {
+    return (element: BaseElement<any>, transformedChildElements: BaseElement<any>[] | undefined): Element => {
         const id = elementId(element.kind, nextId(element.kind))
         return element.create(id, element.name, element.properties, transformedChildElements)
     }

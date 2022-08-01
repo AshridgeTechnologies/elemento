@@ -35,7 +35,7 @@ test('can log in and log out', async ({page}: { page: Page }, testInfo: TestInfo
 
     await press(passwordInput, 'Enter')
 
-    await expect(locator('text=Signed in as Tester One')).toBeVisible()
+    await expect(locator('text=Logged in as Tester One')).toBeVisible()
 
     // Log out
     await click(outsideUserPanel)
@@ -47,6 +47,6 @@ test('can log in and log out', async ({page}: { page: Page }, testInfo: TestInfo
     // check logged out
     await click(userButton)
 
-    await expect(locator('text=Please sign-in')).toBeVisible()
+    await expect(locator('text=Please log in')).toBeVisible()
 
 })

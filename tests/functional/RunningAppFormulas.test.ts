@@ -1,5 +1,5 @@
 import {expect, test} from '@playwright/test';
-import {App, Button, Page, Text, TextInput} from '../../src/model/index'
+import {App, Button, Page, Text, TextInput} from '../../src/model/elements'
 import {ex} from '../testutil/testHelpers'
 //import {loadApp} from './loadAppHelper'
 

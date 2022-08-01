@@ -18,3 +18,6 @@ Formula improvements Part 3
 - If() has expressions transformed to functions so they are not evaluated unless needed
 - Only allow $item in List item and list predicate/transform expressions
 - Template vars in text content
+- Avoiding floating point errors
+- More argument checking at design time eg in Record Function
+- Full type checking!

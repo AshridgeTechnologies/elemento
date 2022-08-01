@@ -7,12 +7,12 @@ function UserPanel({isSignedIn, handleLogout}: {isSignedIn: boolean, handleLogou
 
     if (!isSignedIn) {
         return <Box minWidth={400} margin={2}>
-            <Typography variant='body1'>Please sign-in</Typography>
+            <Typography variant='body1'>Please log in</Typography>
             <AuthDialog />
         </Box>
     }
     return <Box minWidth={300} margin={2}>
-        <Typography variant='body1'>Signed in as {currentUser()!.displayName}</Typography>
+        <Typography variant='body1'>Logged in as {currentUser()!.displayName}</Typography>
         <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1} onClick={handleLogout}>Logout</Link>
     </Box>
 

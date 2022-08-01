@@ -1,6 +1,7 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementId, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, PropertyDef, PropertyValueType} from './Types'
+import MemoryIcon from '@mui/icons-material/Memory'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,
@@ -8,18 +9,8 @@ type Properties = {
 }
 
 export default class MemoryDataStore extends BaseElement<Properties> implements Element {
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties
-    ) {
-        super(id, name, 'MemoryDataStore', properties)
-    }
 
-    static is(element: Element): element is MemoryDataStore {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return MemoryIcon }
     type(): ComponentType { return 'backgroundFixed' }
 
     get initialValue() {return this.properties.initialValue}

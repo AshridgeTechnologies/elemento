@@ -1,23 +1,14 @@
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementId, PropertyDef} from './Types'
+import {ComponentType, PropertyDef} from './Types'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 
 type Properties = {
 }
 
 export default class FileDataStore extends BaseElement<Properties> implements Element {
-    constructor(
-        id: ElementId,
-        name: string,
-        properties: Properties
-    ) {
-        super(id, name, 'FileDataStore', properties)
-    }
 
-    static is(element: Element): element is FileDataStore {
-        return element.constructor.name === this.name
-    }
-
+    static get iconClass() { return InsertDriveFileIcon }
     type(): ComponentType { return 'statefulUI' }
 
     get propertyDefs(): PropertyDef[] {

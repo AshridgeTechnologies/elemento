@@ -9,11 +9,10 @@ import Element from '../model/Element'
 import {functionArgIndexes} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import List from '../model/List'
-import {FunctionDef} from '../model/index'
+import FunctionDef from '../model/FunctionDef'
 import {last, omit} from 'ramda'
 import Parser from './Parser'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
-import {PropertyDef} from '../model/Types'
 
 type FunctionCollector = {add(s: string): void}
 type StateEntry = [name: string, code: string | DefinedFunction, dependencies: string[]]
@@ -223,6 +222,7 @@ ${generateChildren(page, indentLevel2, page)}
             case 'SelectInput':
             case 'TrueFalseInput':
             case 'Button':
+            case 'UserLogon':
             case 'MenuItem':
             case 'Data':
             case 'Collection':
@@ -277,6 +277,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'AppBar':
             case 'Text':
             case 'Button':
+            case 'UserLogon':
             case 'Menu':
             case 'MenuItem':
                 return ''
