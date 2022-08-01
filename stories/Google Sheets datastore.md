@@ -19,7 +19,7 @@ Requirements
 - Open a sheet from Drive
 - Save changes immediately
 - Save As a new sheet in Drive
-- Clear to start a new file
+- New to start a new file
 - Each collection stored in a sheet with that name
 - Header row in each sheet with names
 - Read data items in the same format as CSV reader for numbers, dates and booleans

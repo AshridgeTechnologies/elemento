@@ -15,7 +15,6 @@ Stories
 -------
 
 ### Priority 1
-- User Logon
 - Google Sheets datastore
 - Revision aid example
 - Demo Experience Part 1
@@ -119,6 +118,7 @@ Done
 - User-defined functions
 - Copy-paste
 - Menu component
+- User Logon
 
 
 Bugs fixed
