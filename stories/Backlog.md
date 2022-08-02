@@ -20,6 +20,7 @@ Stories
 - Demo Experience Part 1
 - Runtime error and notification handling
 - General usability Part 2
+- Security review
 
 
 ### Priority for Pro apps
