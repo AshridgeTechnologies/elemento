@@ -189,10 +189,11 @@ ${generateChildren(element.list)}
             return {path, ...(modelProperties())}
         }
 
-        switch (element.kind) {
-            case 'Project':
-                throw new Error('Cannot generate code for Project')
+        if (element.kind === 'Project') {
+            throw new Error('Cannot generate code for Project')
+        }
 
+        switch (element.kind) {
             case 'App': {
                 const app = element as App
                 const topChildrenElements = app.topChildren.map(p => `${this.generateElement(p, app, topLevelFunctions)}`).filter(line => !!line.trim()).join(',\n')
@@ -249,6 +250,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
             case 'MemoryDataStore':
             case 'FileDataStore':
+            case 'BrowserDataStore':
             case 'Function':
                 return ''
 
@@ -268,42 +270,25 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             return Object.fromEntries(propertyExprs)
         }
 
-        switch (element.kind) {
-            case 'Project':
-                throw new Error('Cannot generate code for Project')
-            case 'App':
-            case 'Page':
-            case 'Layout':
-            case 'AppBar':
-            case 'Text':
-            case 'Button':
-            case 'UserLogon':
-            case 'Menu':
-            case 'MenuItem':
-                return ''
-
-            case 'TextInput':
-            case 'NumberInput':
-            case 'SelectInput':
-            case 'TrueFalseInput':
-            case 'Data':
-            case 'Collection':
-            case 'List' :
-            case 'FileDataStore' :
-                return `new ${runtimeElementName(element)}.State(${objectLiteral(modelProperties())})`
-
-            case 'MemoryDataStore':
-                return `new ${runtimeElementName(element)}(${objectLiteral(modelProperties())})`
-
-            case 'Function': {
-                const functionDef = element as FunctionDef
-                const calculation = this.getExprWithoutParens(functionDef, 'calculation', 'multilineExpression')
-                return new DefinedFunction(`(${functionDef.inputs.join(', ')}) => ${calculation}`)
-            }
-
-            default:
-                throw new UnsupportedValueError(element.kind)
+        if (element.kind === 'Project') {
+            throw new Error('Cannot generate code for Project')
         }
+
+        if (element.kind === 'Function') {
+            const functionDef = element as FunctionDef
+            const calculation = this.getExprWithoutParens(functionDef, 'calculation', 'multilineExpression')
+            return new DefinedFunction(`(${functionDef.inputs.join(', ')}) => ${calculation}`)
+        }
+
+        if (element.type() === 'statefulUI') {
+            return `new ${runtimeElementName(element)}.State(${objectLiteral(modelProperties())})`
+        }
+
+        if (element.type() === 'backgroundFixed') {
+            return `new ${runtimeElementName(element)}(${objectLiteral(modelProperties())})`
+        }
+
+        return ''
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {

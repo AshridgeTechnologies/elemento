@@ -19,6 +19,7 @@ import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
 import UserLogon from '../../src/model/UserLogon'
+import {BrowserDataStore} from '../../src/model/elements'
 
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
@@ -457,6 +458,7 @@ test('generates elements under App used in Page', ()=> {
         new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
         new FileDataStore('fds1', 'Store 2', {}),
+        new BrowserDataStore('bds1', 'Store 3', {databaseName: 'Accounts', collectionNames: ['Cheques', 'Postings']}),
     ])
 
     const output = new Generator(app).output()
@@ -476,12 +478,13 @@ test('generates elements under App used in Page', ()=> {
 
     expect(output.files[1].content).toBe(`export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
-    const {App, Collection, MemoryDataStore, FileDataStore} = Elemento.components
+    const {App, Collection, MemoryDataStore, FileDataStore, BrowserDataStore} = Elemento.components
     const pages = {Page1}
     const app = Elemento.useObjectState('app', new App.State({pages}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
     const Widgets = Elemento.useObjectState('app.Widgets', new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const Store2 = Elemento.useObjectState('app.Store2', new FileDataStore.State({}))
+    const Store3 = Elemento.useObjectState('app.Store3', new BrowserDataStore.State({databaseName: 'Accounts', collectionNames: ['Cheques', 'Postings']}))
 
     return React.createElement(App, {path: 'App1', },
         React.createElement(Collection, {path: pathWith('Widgets'), display: false})

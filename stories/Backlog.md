@@ -15,7 +15,7 @@ Stories
 -------
 
 ### Priority 1
-- Google Sheets datastore
+- IndexedDB datastore
 - Revision aid example
 - Demo Experience Part 1
 - Runtime error and notification handling

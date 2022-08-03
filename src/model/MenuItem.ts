@@ -1,4 +1,4 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
@@ -25,4 +25,7 @@ export default class MenuItem extends BaseElement<Properties> implements Element
             {name: 'action', type: 'action'},
         ]
     }
+
+    static get parentType(): ElementType | 'any' | null { return 'Menu' }
+
 }

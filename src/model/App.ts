@@ -2,8 +2,10 @@ import Page from './Page'
 import Element from './Element'
 import BaseElement from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import * as theElements from './elements'
 import {without} from 'ramda'
 import {Web} from '@mui/icons-material'
+
 
 type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValueType<string | number> }
 
@@ -27,6 +29,9 @@ export default class App extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return ['Page', 'AppBar', 'MemoryDataStore', 'FileDataStore', 'Collection', 'Function'].includes(elementType)
+        return theElements[elementType].parentType === this.kind || ['Collection', 'Function'].includes(elementType)
     }
+
+    static get parentType(): ElementType | 'any' | null { return 'Project' }
+
 }

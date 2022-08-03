@@ -1,4 +1,4 @@
-import {Value, valueOf} from './runtimeFunctions'
+import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import DataStore, {Id} from './DataStore'
 import MemoryDataStore from './components/MemoryDataStore'
 import {currentUser} from '../shared/authentication'
@@ -35,6 +35,10 @@ const appFunctions = {
 
     Add(component: { Add: (item: object) => void }, item: any) {
         component.Add(valueOf(item))
+    },
+
+    AddAll(component: { AddAll: (items: object[]) => void }, items: any[]) {
+        component.AddAll(valuesOf(...items))
     },
 
     Remove(component: { Remove: (id: Id) => void }, id: Value<Id>) {

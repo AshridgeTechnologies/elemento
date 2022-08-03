@@ -14,6 +14,7 @@ export {default as MenuItem} from './MenuItem'
 export {default as List} from './List'
 export {default as Data} from './Data'
 export {default as FileDataStore} from './FileDataStore'
+export {default as BrowserDataStore} from './BrowserDataStore'
 export {default as MemoryDataStore} from './MemoryDataStore'
 // Note: use ElementType name for Function
 export {default as Function} from './FunctionDef'

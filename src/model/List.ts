@@ -2,6 +2,7 @@ import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
 import ViewListIcon from '@mui/icons-material/ViewList'
+import * as theElements from './elements'
 
 type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
 
@@ -25,7 +26,12 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore'].includes(elementType)
+        return this.elementHasParentTypeOfThis(elementType)
     }
 
+
+    private elementHasParentTypeOfThis(elementType: ElementType) {
+        const parentType = theElements[elementType].parentType
+        return parentType === this.kind || parentType === 'any'
+    }
 }

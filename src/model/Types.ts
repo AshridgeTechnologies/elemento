@@ -1,6 +1,6 @@
-export type ElementType = 'Project' | 'App' | 'Page' | 'Layout' | 'AppBar' | 'Text' | 'TextInput'| 'NumberInput'| 'SelectInput'| 'TrueFalseInput'
-    | 'Button' | 'UserLogon' | 'Menu' | 'MenuItem' | 'List' | 'Data' | 'Collection'
-    | 'MemoryDataStore' | 'FileDataStore' | 'Function'
+import * as theElements from './elements'
+
+export type ElementType = keyof typeof theElements
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app'
 export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr'

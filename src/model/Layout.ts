@@ -2,6 +2,7 @@ import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import * as theElements from './elements'
 
 type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>, wrap?: PropertyValueType<boolean> }
 
@@ -25,7 +26,8 @@ export default class Layout extends BaseElement<Properties> implements Element {
 
 
     canContain(elementType: ElementType) {
-        return !['Project', 'App', 'AppBar', 'Page', 'MemoryDataStore', 'FileDataStore'].includes(elementType)
+        const parentType = theElements[elementType].parentType
+        return parentType === this.kind || parentType === 'any'
     }
 
 }

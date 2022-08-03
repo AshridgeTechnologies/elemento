@@ -19,6 +19,7 @@ module.exports = (path, options) => {
                 '@firebase/messaging',
                 '@firebase/util',
                 'firebase',
+                'dexie',
             ]);
 
             if (pkgNamesToTarget.has(pkg.name)) {

@@ -18,4 +18,6 @@ export {default as TextInput} from './TextInput'
 export {default as MemoryDataStore} from './MemoryDataStore'
 export {default as FileDataStore} from './FileDataStore'
 export {default as FileDataStoreImpl} from './FileDataStoreImpl'
+export {default as IdbDataStoreImpl} from './IdbDataStoreImpl'
+export {default as BrowserDataStore} from './BrowserDataStore'
 

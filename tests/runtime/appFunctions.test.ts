@@ -6,13 +6,13 @@ jest.mock('../../src/runtime/appData')
 jest.mock('../../src/shared/authentication')
 
 const mockFn = jest.fn()
-const {Reset, Set, Update, Add, Remove, Get, GetAll, CurrentUser} = appFunctions
+const {Reset, Set, Update, Add, AddAll, Remove, Get, GetAll, CurrentUser} = appFunctions
 
 
 beforeEach( ()=> jest.resetAllMocks() )
 
 test('can get app functions names', () => {
-    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'Update', 'Add', 'Remove', 'Get', 'GetAll', 'NotifyError', 'CurrentUser'])
+    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetAll', 'NotifyError', 'CurrentUser'])
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {
@@ -73,6 +73,21 @@ describe('Add', () => {
         const elementState = {value: {}, Add: mockFn}
         Add(elementState, valObj('green'))
         expect(elementState.Add).toBeCalledWith('green')
+    })
+})
+
+describe('AddAll', () => {
+
+    test('adds many objects with ids', () => {
+        const elementState = {value: {}, AddAll: mockFn}
+        AddAll(elementState, [{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
+        expect(elementState.AddAll).toBeCalledWith([{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
+    })
+
+    test('uses object value for id', () => {
+        const elementState = {value: {}, AddAll: mockFn}
+        AddAll(elementState, [valObj('green'), valObj('blue')])
+        expect(elementState.AddAll).toBeCalledWith(['green', 'blue'])
     })
 })
 

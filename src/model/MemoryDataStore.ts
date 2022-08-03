@@ -1,6 +1,6 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
 import MemoryIcon from '@mui/icons-material/Memory'
 
 type Properties = {
@@ -22,5 +22,7 @@ export default class MemoryDataStore extends BaseElement<Properties> implements 
             propDef('display', 'boolean'),
         ]
     }
+
+    static get parentType(): ElementType | 'any' | null { return 'App' }
 
 }

@@ -155,6 +155,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return Math.max(ownMax(), ...this.elementArray().map(el => el.findMaxId(elementType)))
     }
 
+    static get parentType(): ElementType | 'any' | null { return 'any' }
+
     get codeName() {
         const noSpaceName = noSpaces(this.name)
         return noSpaceName === this.constructor.name ? `${noSpaceName}_${this.id}` : noSpaceName
