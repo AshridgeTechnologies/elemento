@@ -1,7 +1,6 @@
 import React from 'react';
 import {valueOfProps} from '../runtimeFunctions'
-import {AppBar as MuiAppBar, IconButton, Stack, Toolbar, Typography} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
+import {AppBar as MuiAppBar, Stack, Toolbar, Typography} from '@mui/material'
 
 type Properties = { path: string, title?: string, children?: any }
 

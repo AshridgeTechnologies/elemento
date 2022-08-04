@@ -15,6 +15,7 @@ export type Properties = {
 
 export default class TextInput extends BaseInputElement<Properties> implements Element {
 
+    readonly kind = 'TextInput'
     static get iconClass() { return RectangleOutlined }
     get valueType():PropertyType { return 'string' }
 

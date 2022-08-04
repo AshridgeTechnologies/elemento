@@ -33,7 +33,7 @@ export const toEntry = (value: any): [PropertyKey, any] => {
 
     const nextId = Math.max(lastGeneratedId+1, Date.now())
     const generatedId = nextId.toString()
-    const valueWithId = {...value, Id: generatedId}
+    const valueWithId = {...value, id: generatedId}
     lastGeneratedId = nextId
     return [generatedId, valueWithId]
 }

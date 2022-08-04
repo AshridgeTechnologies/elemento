@@ -8,6 +8,7 @@ type Properties = {
 
 export default class FileDataStore extends BaseElement<Properties> implements Element {
 
+    readonly kind = 'FileDataStore'
     static get iconClass() { return InsertDriveFileIcon }
     type(): ComponentType { return 'statefulUI' }
 

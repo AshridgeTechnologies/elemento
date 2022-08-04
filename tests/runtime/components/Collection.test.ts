@@ -71,7 +71,7 @@ test('gets initial values from array using generated id if not present in object
     const state = new CollectionState({value: [{a: 10}, {a: 20}]})
     const keys = Object.keys(state.value)
     keys.forEach(key => expect(key).toMatch(/\d+/) )
-    expect(Object.values(state.value)).toStrictEqual([{Id: keys[0], a: 10}, {Id: keys[1], a: 20},])
+    expect(Object.values(state.value)).toStrictEqual([{id: keys[0], a: 10}, {id: keys[1], a: 20},])
 })
 
 test('gets initial values from array using simple value as id', () => {
@@ -191,7 +191,7 @@ describe('Add', () => {
         expect(entries.length).toBe(1)
         const [key, value] = entries[0]
         expect(Number(key)).toBeGreaterThan(0)
-        expect(value).toStrictEqual({Id: key, a: 30})
+        expect(value).toStrictEqual({id: key, a: 30})
     })
 
     test('inserts a new simple value into a collection', () => {
@@ -234,7 +234,7 @@ describe('Add', () => {
         expect(Number(key0)).toBeGreaterThan(0)
         expect(Number(key1)).toBeGreaterThan(Number(key0))
         expect(Number(key2)).toBeGreaterThan(Number(key1))
-        expect(value2).toStrictEqual({Id: key2, a: 50})
+        expect(value2).toStrictEqual({id: key2, a: 50})
     })
 
     test('inserts multiple simple values into a collection', () => {
@@ -328,11 +328,11 @@ describe('Add with external datastore', () => {
         const itemsPassedToAddAll = mock.calls[0][1]
         const newId = Object.keys(itemsPassedToAddAll)[0]
         const dataStoreUpdate = Object.values(itemsPassedToAddAll)[0] as {id: string}
-        expect(dataStoreUpdate.id).toBeUndefined()
+        expect(dataStoreUpdate.id).toBe(newId)
         expect(Number(newId)).toBeGreaterThan(0)
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
-                [newId]: {Id: newId, a: 20, b: 'Cee'},
+                [newId]: {id: newId, a: 20, b: 'Cee'},
             }
         }))
     })

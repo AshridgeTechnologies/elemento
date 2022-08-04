@@ -1,5 +1,8 @@
 import {expect, Frame, Page as PWPage, test} from '@playwright/test';
-import {App, Page, Project, Text} from '../../src/model/elements'
+import App from '../../src/model/App'
+import Page from '../../src/model/Page'
+import Project from '../../src/model/Project'
+import Text from '../../src/model/Text'
 import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
 
 const pageUrl = '/studio'

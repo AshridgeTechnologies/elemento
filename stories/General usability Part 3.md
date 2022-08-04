@@ -1,6 +1,7 @@
 General usability Part 3
 ========================
 
+- Auto-save in editor
 - Remove animation on list so things change quickly
 - Retain position in list when content changes
 - Get Text area editing to accept characters with accents typed by holding down key

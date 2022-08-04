@@ -2,6 +2,7 @@ import IdbDataStoreImpl from './IdbDataStoreImpl'
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
+import shallow from 'zustand/shallow'
 
 type Properties = {path: string}
 type ExternalProperties = {databaseName: string, collectionNames: string[]}
@@ -18,6 +19,11 @@ export class BrowserDataStoreState extends BaseComponentState<ExternalProperties
 
     constructor(props: ExternalProperties = {databaseName: 'AppDatabase', collectionNames: []}) {
         super(props)
+    }
+
+    updateFrom(newObj: BrowserDataStoreState): this {
+        const equal = this.props.databaseName === newObj.props.databaseName && shallow(this.props.collectionNames, newObj.props.collectionNames)
+        return equal ? this : new BrowserDataStoreState(newObj.props).withState(this.state) as this
     }
 
     private get dataStore() {

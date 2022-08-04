@@ -37,6 +37,12 @@ test('produces empty output', () => {
     expect(container.innerHTML).toBe('')
 })
 
+test('compares state props correctly', () => {
+    const state = new BrowserDataStore.State({databaseName: 'db1', collectionNames:['Gadgets', 'Widgets']})
+    const newState = new BrowserDataStore.State({databaseName: 'db1', collectionNames:['Gadgets', 'Widgets']})
+    expect(state.updateFrom(newState)).toBe(state)
+})
+
 test('creates its own data store if not supplied', () => {
     const state = new BrowserDataStore.State()
     const result = state.add('Widgets', 'w1', {a: 99})

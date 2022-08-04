@@ -19,7 +19,7 @@ import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
 import UserLogon from '../../src/model/UserLogon'
-import {BrowserDataStore} from '../../src/model/elements'
+import BrowserDataStore from '../../src/model/BrowserDataStore'
 
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [

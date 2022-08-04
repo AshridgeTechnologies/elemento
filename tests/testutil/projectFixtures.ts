@@ -7,7 +7,7 @@ import {ex} from './testHelpers'
 import List from '../../src/model/List'
 import Layout from '../../src/model/Layout'
 import NumberInput from '../../src/model/NumberInput'
-import {Text} from '../../src/model/elements'
+import Text from '../../src/model/Text'
 
 export function projectFixture1() {
 

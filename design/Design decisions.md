@@ -1,12 +1,20 @@
 Design decisions
 ================
 
+Icons and Icon buttons - 4 Aug 22
+---------------------------------
+Have one general Icon component, render as IconButton if it has an Action, plain Icon if not
+- reduce the number of components devs need to learn
+- avoid the need to either compose Icons within buttons, OR duplicate some props on both
+
 Collection object ids - 14 Jul 22
 ---------------------
 When adding an object without an id to a collection, generate an id and use it in the collection AND add it to the object
 - without an id in the object, it is difficult to retrieve it from the collection again
 - it is inconvenient to generate Ids in the formula
 - the Id can still be overridden if needed
+## Update 4 Aug 22
+- Use lowercase id, not Id, and also use this in IdbDataStoreImpl as the primary key of the tables
 
 Element paths/ids - 13 Jul 22
 -------------

@@ -10,6 +10,7 @@ type Properties = {
 
 export default class Data extends BaseElement<Properties> implements Element {
 
+    readonly kind = 'Data'
     static get iconClass() { return NoteIcon }
     type(): ComponentType { return 'statefulUI' }
 

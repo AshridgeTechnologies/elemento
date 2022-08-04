@@ -15,7 +15,6 @@ Stories
 -------
 
 ### Priority 1
-- IndexedDB datastore
 - Revision aid example
 - Demo Experience Part 1
 - Runtime error and notification handling
@@ -36,6 +35,7 @@ Stories
 - Read-only calculations
 - Complex calculation entry
 - Debugger Part 1
+- Preview improvements - screen size, scrolling, etc
 
 ### The Rest
 - CSV file datastore
@@ -120,6 +120,7 @@ Done
 - Copy-paste
 - Menu component
 - User Logon
+- IndexedDB datastore
 
 
 Bugs fixed

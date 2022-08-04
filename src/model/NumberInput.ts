@@ -9,6 +9,7 @@ export type Properties = {
 }
 export default class NumberInput extends BaseInputElement<Properties> implements Element {
 
+    readonly kind = 'NumberInput'
     static get iconClass() { return MoneyOutlined }
     get valueType(): PropertyType { return 'number' }
 }

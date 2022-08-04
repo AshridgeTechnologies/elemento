@@ -19,7 +19,7 @@ import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
 import InsertMenuWithButton from './InsertMenuWithButton'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import * as theElements from '../model/elements'
+import {elementTypes} from '../model/elements'
 
 import {Box, Button, Grid} from '@mui/material'
 import HelpPanel from './HelpPanel'
@@ -44,8 +44,7 @@ const treeData = (project: Project): ModelTreeItem => {
     return treeNodeFromElement(project)
 }
 
-const allElementTypes = Object.keys(theElements) as ElementType[]
-
+const allElementTypes = Object.keys(elementTypes()) as ElementType[]
 export default function Editor({
     project,
     onChange,

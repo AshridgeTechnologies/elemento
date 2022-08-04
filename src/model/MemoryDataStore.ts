@@ -10,6 +10,7 @@ type Properties = {
 
 export default class MemoryDataStore extends BaseElement<Properties> implements Element {
 
+    readonly kind = 'MemoryDataStore'
     static get iconClass() { return MemoryIcon }
     type(): ComponentType { return 'backgroundFixed' }
 

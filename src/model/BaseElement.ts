@@ -18,7 +18,7 @@ export function propDef(name: string, type: PropertyType = 'string', options: Pr
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
-    readonly kind: ElementType
+    abstract readonly kind: ElementType
     readonly properties: PropertiesType
 
     constructor(
@@ -27,7 +27,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
         properties: PropertiesType,
         public readonly elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
-        this.kind = this.constructor.name as ElementType
         const thisClass = this.constructor as typeof BaseElement
         this.properties = {...thisClass.initialProperties, ...properties}
     }

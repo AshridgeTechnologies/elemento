@@ -1,6 +1,6 @@
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
-import {Button, Text, TextInput} from '../../src/model/elements'
+import Button from '../../src/model/Button'
 import {AppElementAction} from '../../src/editor/Types'
 import {currentUser} from '../../src/shared/authentication'
 import {uploadTextToStorage} from '../../src/shared/storage'
@@ -17,6 +17,8 @@ import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
 import {editorEmptyProject} from '../../src/util/initialProjects'
+import TextInput from '../../src/model/TextInput'
+import Text from '../../src/model/Text'
 
 jest.mock('../../src/shared/authentication')
 jest.mock('../../src/shared/storage')

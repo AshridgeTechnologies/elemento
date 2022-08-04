@@ -1,9 +1,9 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
 import {OnInsertFn} from './Types'
-import {ElementType} from '../model/Types'
 import {Alert, Popover} from '@mui/material'
 import {InsertMenu} from './InsertMenu'
+import {ElementType} from '../model/Types'
 
 export default function InsertMenuWithButton({onInsert, items}: {onInsert: OnInsertFn, items: ElementType[]}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)

@@ -10,7 +10,6 @@ import {
     SubHeading,
     SubSection
 } from '../HelpComponents'
-import controlReference from '../reference/ControlReference'
 
 export default () =>
     <Section helpId='controls'>

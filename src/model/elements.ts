@@ -1,22 +1,53 @@
-export {default as Project} from './Project'
-export {default as App} from './App'
-export {default as AppBar} from './AppBar'
-export {default as Page} from './Page'
-export {default as Text} from './Text'
-export {default as TextInput} from './TextInput'
-export {default as NumberInput} from './NumberInput'
-export {default as SelectInput} from './SelectInput'
-export {default as TrueFalseInput} from './TrueFalseInput'
-export {default as Button} from './Button'
-export {default as UserLogon} from './UserLogon'
-export {default as Menu} from './Menu'
-export {default as MenuItem} from './MenuItem'
-export {default as List} from './List'
-export {default as Data} from './Data'
-export {default as FileDataStore} from './FileDataStore'
-export {default as BrowserDataStore} from './BrowserDataStore'
-export {default as MemoryDataStore} from './MemoryDataStore'
+import Project from './Project'
+import App from './App'
+import AppBar from './AppBar'
+import Page from './Page'
+import Text from './Text'
+import TextInput from './TextInput'
+import NumberInput from './NumberInput'
+import SelectInput from './SelectInput'
+import TrueFalseInput from './TrueFalseInput'
+import Button from './Button'
+import Icon from './Icon'
+import UserLogon from './UserLogon'
+import Menu from './Menu'
+import MenuItem from './MenuItem'
+import List from './List'
+import Data from './Data'
+import FileDataStore from './FileDataStore'
+import BrowserDataStore from './BrowserDataStore'
+import MemoryDataStore from './MemoryDataStore'
 // Note: use ElementType name for Function
-export {default as Function} from './FunctionDef'
-export {default as Collection} from './Collection'
-export {default as Layout} from './Layout'
+import Function from './FunctionDef'
+import Collection from './Collection'
+import Layout from './Layout'
+import {ElementType} from './Types'
+
+export const elementTypes = () => {
+    return {
+        Project: Project,
+        App: App,
+        AppBar: AppBar,
+        Page: Page,
+        Text: Text,
+        TextInput: TextInput,
+        NumberInput: NumberInput,
+        SelectInput: SelectInput,
+        TrueFalseInput: TrueFalseInput,
+        Button: Button,
+        Icon: Icon,
+        UserLogon: UserLogon,
+        Menu: Menu,
+        MenuItem: MenuItem,
+        List: List,
+        Data: Data,
+        FileDataStore: FileDataStore,
+        BrowserDataStore: BrowserDataStore,
+        MemoryDataStore: MemoryDataStore,
+        Function: Function,
+        Collection: Collection,
+        Layout: Layout,
+    }
+}
+
+export const elementOfType = (elementType: ElementType) => elementTypes()[elementType]

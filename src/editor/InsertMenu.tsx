@@ -1,9 +1,9 @@
-import {ElementType} from '../model/Types'
 import MenuItem from '@mui/material/MenuItem'
 import {startCase} from 'lodash'
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
 import {PopoverOrigin} from '@mui/material'
+import {ElementType} from '../model/Types'
 
 export function InsertMenu({anchorEl, anchorOrigin, open, items, onClose, onInsert, labelledBy}: {
     anchorEl: Element | null, labelledBy?: string, open: boolean,

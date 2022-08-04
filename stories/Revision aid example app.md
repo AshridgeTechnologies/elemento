@@ -12,7 +12,7 @@ Requirements
 ------------
 
 - ✅ File datastore: Open, New, Save As on Menu under icon
-- Google Sheets data store
+- ✅ Browser (indexed db) data store
 - ✅ Fact entity: Id, Question, Answer, Date Learned, Recall data
 - Recall data: Last revised, Success, Times revised, Times succeeded
 - ✅ Fact list page: List with Show/Add/Update/Delete
@@ -25,6 +25,7 @@ Requirements
 - Update revised data according to answer
 - Can change answer on the same day
 - Can search for a word in the question or translation
+- Format works on a phone
 - Help page
 
 
@@ -32,7 +33,7 @@ Requirements
 Desirable
 ---------
 
-- CSV import or use directly as datastore
+- ✅ CSV import or use directly as datastore
 - Previous attempts
 
 Finishing touches
@@ -49,6 +50,13 @@ Finishing touches
 - Readonly inputs keep title in border
 - Links to word entry from lists
 - Keep Learn words visible on day learned
+- Import uses AddAll 
+
+Problems
+--------
+
+- ✅ Dual id/Id
+- Message and clear after import
 
 
 Features needed
@@ -71,6 +79,7 @@ Features needed
 - ✅ Date functions give sensible output with undefined dates
 - ✅ Date functions get values of args
 - ✅ Sort
+- ✅ Icon buttons
 - Styling for buttons
 - ✅ Menu
 - Confirmation and error messages

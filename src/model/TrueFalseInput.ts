@@ -9,6 +9,7 @@ export type Properties = {
 }
 export default class TrueFalseInput extends BaseInputElement<Properties> implements Element {
 
+    readonly kind = 'TrueFalseInput'
     static get iconClass() { return ToggleOn }
     get valueType(): PropertyType { return 'boolean' }
 }

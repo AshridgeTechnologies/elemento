@@ -1,14 +1,14 @@
-import {ElementType} from './Types'
 import {startCase} from 'lodash'
 import {elementId} from '../util/helpers'
 
-import * as theElements from './elements'
+import {elementOfType} from './elements'
+import {ElementType} from './Types'
 
 export function createElement(elementType: ElementType, newIdSeq: number) {
     const id = elementId(elementType, newIdSeq)
     const name = `${startCase(elementType)} ${newIdSeq}`
 
-    const elementClass = theElements[elementType]
+    const elementClass = elementOfType(elementType)
 
     if (elementType === 'Project') {
         throw new Error('Cannot create new Project')

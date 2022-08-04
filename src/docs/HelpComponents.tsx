@@ -1,5 +1,6 @@
 import React, {ReactNode} from 'react'
 import {Typography} from '@mui/material'
+
 export const helpElementId = (helpId: string) => 'help-' + helpId
 const idIfPresent = (helpId?: string) => helpId ? {id: helpElementId(helpId)} : {}
 export const Section = ({helpId, children}: {helpId: string, children: any}) => <section id={helpElementId(helpId)}>{children}</section>

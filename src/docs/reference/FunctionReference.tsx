@@ -1,6 +1,7 @@
 import React from 'react'
 import {
-    FunctionExample, FunctionInput,
+    FunctionExample,
+    FunctionInput,
     FunctionSection,
     Heading,
     Para,

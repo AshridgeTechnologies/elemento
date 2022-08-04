@@ -5,7 +5,7 @@ import 'rc-tree/assets/index.less'
 import {ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import * as theElements from '../model/elements'
+import {elementOfType} from '../model/elements'
 import {AppElementAction} from './Types'
 import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
@@ -43,7 +43,7 @@ export class ModelTreeItem implements DataNode {
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const kind = (props.data as ModelTreeItem)!.kind
     const sx = { fontSize: 16, color }
-    const elementClass = theElements[kind]
+    const elementClass = elementOfType(kind)
     const {iconClass} = elementClass
     return createElement(iconClass, {sx})
 }

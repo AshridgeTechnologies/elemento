@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import AutoRun from './AutoRun'
 import {editorAutorunFixture1} from '../../tests/testutil/autorunFixtures'
 

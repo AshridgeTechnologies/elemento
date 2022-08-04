@@ -10,6 +10,7 @@ type Properties = {
 
 export default class BrowserDataStore extends BaseElement<Properties> implements Element {
 
+    readonly kind = 'BrowserDataStore'
     static get iconClass() { return SdStorageIcon }
     type(): ComponentType { return 'statefulUI' }
 

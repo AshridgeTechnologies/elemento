@@ -59,7 +59,6 @@ test('can publish to apps site and run the app', async ({ page , context}, testI
         await click(`text=${runUrlRegex.toString()}`) // Opens a new tab
     ])
     await newPage.waitForLoadState();
-    console.log(await newPage.title())
 
     await expect(newPage).toHaveURL(runUrlRegex)
 

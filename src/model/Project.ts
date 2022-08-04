@@ -4,12 +4,13 @@ import Element from './Element'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
 import {Web} from '@mui/icons-material'
-import * as theElements from './elements'
+import {elementOfType} from './elements'
 
 type Properties = { author?: PropertyValue }
 
 export default class Project extends BaseElement<Properties> implements Element {
 
+    readonly kind = 'Project'
     static get iconClass() { return Web }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
@@ -57,7 +58,7 @@ export default class Project extends BaseElement<Properties> implements Element 
 
 
     canContain(elementType: ElementType) {
-        const parentType = theElements[elementType].parentType
+        const parentType = elementOfType(elementType).parentType
         return parentType === this.kind
     }
 

@@ -1,22 +1,14 @@
 {
   "id": "project_1",
   "name": "Vocabulary Revision",
-  "kind": "Project",
-  "properties": {},
   "elements": [
     {
       "id": "app1",
       "name": "Vocabulary Revision App",
-      "kind": "App",
-      "properties": {
-        "author": "PB"
-      },
       "elements": [
         {
           "id": "appbar_1",
           "name": "App Bar",
-          "kind": "AppBar",
-          "properties": {},
           "elements": [
             {
               "id": "text_13",
@@ -26,50 +18,6 @@
                 "content": "Vocabulary Revision",
                 "fontSize": 20
               }
-            },
-            {
-              "id": "menu_1",
-              "name": "Menu 1",
-              "kind": "Menu",
-              "properties": {
-                "label": "File",
-                "filled": true
-              },
-              "elements": [
-                {
-                  "id": "menuitem_1",
-                  "name": "Open File",
-                  "kind": "MenuItem",
-                  "properties": {
-                    "label": "Open",
-                    "action": {
-                      "expr": "FileDataStore1.Open()"
-                    }
-                  }
-                },
-                {
-                  "id": "menuitem_2",
-                  "name": "New File",
-                  "kind": "MenuItem",
-                  "properties": {
-                    "label": "New",
-                    "action": {
-                      "expr": "FileDataStore1.New()"
-                    }
-                  }
-                },
-                {
-                  "id": "menuitem_3",
-                  "name": "Save File",
-                  "kind": "MenuItem",
-                  "properties": {
-                    "label": "Save As",
-                    "action": {
-                      "expr": "FileDataStore1.SaveAs()"
-                    }
-                  }
-                }
-              ]
             },
             {
               "id": "button_18",
@@ -119,31 +67,21 @@
                 }
               }
             }
-          ]
+          ],
+          "kind": "AppBar",
+          "properties": {}
         },
         {
           "id": "page_1",
           "name": "Word Details Page",
-          "kind": "Page",
-          "properties": {},
           "elements": [
             {
               "id": "layout_1",
               "name": "Page Layout ",
-              "kind": "Layout",
-              "properties": {
-                "horizontal": true
-              },
               "elements": [
                 {
                   "id": "list_3",
                   "name": "WordList",
-                  "kind": "List",
-                  "properties": {
-                    "items": {
-                      "expr": "Sort(Words.Query({}), $item.Word)"
-                    }
-                  },
                   "elements": [
                     {
                       "id": "text_8",
@@ -155,16 +93,17 @@
                         }
                       }
                     }
-                  ]
+                  ],
+                  "kind": "List",
+                  "properties": {
+                    "items": {
+                      "expr": "Sort(Words.Query({}), $item.Word)"
+                    }
+                  }
                 },
                 {
                   "id": "layout_2",
                   "name": "Widget Form",
-                  "kind": "Layout",
-                  "properties": {
-                    "horizontal": false,
-                    "width": 500
-                  },
                   "elements": [
                     {
                       "id": "data_1",
@@ -173,7 +112,7 @@
                       "properties": {
                         "display": false,
                         "initialValue": {
-                          "expr": "WordList.selectedItem && WordList.selectedItem.Id"
+                          "expr": "WordList.selectedItem && WordList.selectedItem.id"
                         }
                       }
                     },
@@ -191,10 +130,6 @@
                     {
                       "id": "layout_4",
                       "name": "Layout 4",
-                      "kind": "Layout",
-                      "properties": {
-                        "horizontal": true
-                      },
                       "elements": [
                         {
                           "id": "text_3",
@@ -216,7 +151,11 @@
                             }
                           }
                         }
-                      ]
+                      ],
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true
+                      }
                     },
                     {
                       "id": "textinput_1",
@@ -277,11 +216,6 @@
                     {
                       "id": "layout_3",
                       "name": "Page Buttons",
-                      "kind": "Layout",
-                      "properties": {
-                        "horizontal": true,
-                        "wrap": true
-                      },
                       "elements": [
                         {
                           "id": "button_8",
@@ -336,7 +270,13 @@
                             }
                           }
                         }
-                      ]
+                      ],
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "wrap": true,
+                        "width": "100%"
+                      }
                     },
                     {
                       "id": "text_4",
@@ -352,17 +292,25 @@
                         "fontSize": 12
                       }
                     }
-                  ]
+                  ],
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": false
+                  }
                 }
-              ]
+              ],
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              }
             }
-          ]
+          ],
+          "kind": "Page",
+          "properties": {}
         },
         {
           "id": "page_2",
           "name": "Revision Page",
-          "kind": "Page",
-          "properties": {},
           "elements": [
             {
               "id": "data_6",
@@ -407,22 +355,10 @@
             {
               "id": "list_2",
               "name": "WordList",
-              "kind": "List",
-              "properties": {
-                "items": {
-                  "expr": "Sort(WordsToRevise, $item.LastRevised)"
-                },
-                "width": "100%"
-              },
               "elements": [
                 {
                   "id": "layout_5",
                   "name": "Item Layout",
-                  "kind": "Layout",
-                  "properties": {
-                    "horizontal": true,
-                    "width": "100%"
-                  },
                   "elements": [
                     {
                       "id": "text_6",
@@ -432,7 +368,7 @@
                         "content": {
                           "expr": "$item.Word"
                         },
-                        "width": "30%"
+                        "width": "40%"
                       }
                     },
                     {
@@ -443,54 +379,95 @@
                         "content": {
                           "expr": "$item.Translation"
                         },
-                        "width": "30%",
+                        "width": "40%",
                         "color": {
-                          "expr": "If(ShowItem, 'inherit', 'transparent')"
+                          "expr": "If(ShowTranslation, 'inherit', 'transparent')"
                         }
                       }
                     },
                     {
-                      "id": "truefalseinput_1",
-                      "name": "Show Item",
-                      "kind": "TrueFalseInput",
+                      "id": "data_9",
+                      "name": "Show Translation",
+                      "elements": [],
+                      "kind": "Data",
                       "properties": {
-                        "initialValue": false,
-                        "label": "Show"
+                        "initialValue": "false"
                       }
                     },
                     {
-                      "id": "button_16",
-                      "name": "Yes Button",
-                      "kind": "Button",
+                      "id": "icon_7",
+                      "name": "Visible Icon",
+                      "elements": [],
+                      "kind": "Icon",
                       "properties": {
-                        "content": "Y",
+                        "iconName": {
+                          "expr": "If(ShowTranslation, 'visibility', 'disabled_visible')"
+                        },
+                        "fontSize": 24,
+                        "color": {
+                          "expr": "If(ShowTranslation, 'blue', 'gray')"
+                        },
                         "action": {
-                          "expr": "Words.Update($item.Id, Record('LastRevised', Today(), 'LastRevisedOk', true))"
+                          "expr": "Set(ShowTranslation, Not(ShowTranslation))"
+                        },
+                        "label": {
+                          "expr": "If(ShowTranslation, 'Click to hide', 'Click to show')"
                         }
                       }
                     },
                     {
-                      "id": "button_19",
-                      "name": "No Button",
-                      "kind": "Button",
+                      "id": "icon_5",
+                      "name": "Revised Ok Icon",
+                      "elements": [],
+                      "kind": "Icon",
                       "properties": {
-                        "content": "N",
+                        "iconName": "check",
+                        "display": true,
+                        "color": "green",
+                        "fontSize": 24,
                         "action": {
-                          "expr": "Words.Update($item.Id, Record('LastRevised', Today(), 'LastRevisedOk', false))"
+                          "expr": "Words.Update($item.id, Record('LastRevised', Today(), 'LastRevisedOk', true))"
+                        }
+                      }
+                    },
+                    {
+                      "id": "icon_6",
+                      "name": "Not Revised Ok Icon",
+                      "elements": [],
+                      "kind": "Icon",
+                      "properties": {
+                        "iconName": "close",
+                        "display": true,
+                        "color": "red",
+                        "fontSize": 24,
+                        "action": {
+                          "expr": "Words.Update($item.id, Record('LastRevised', Today(), 'LastRevisedOk', false))"
                         }
                       }
                     }
-                  ]
+                  ],
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true,
+                    "width": "100%"
+                  }
                 }
-              ]
+              ],
+              "kind": "List",
+              "properties": {
+                "items": {
+                  "expr": "Sort(WordsToRevise, $item.LastRevised)"
+                },
+                "width": "100%"
+              }
             }
-          ]
+          ],
+          "kind": "Page",
+          "properties": {}
         },
         {
           "id": "page_3",
           "name": "Learn Page",
-          "kind": "Page",
-          "properties": {},
           "elements": [
             {
               "id": "text_9",
@@ -507,7 +484,7 @@
               "kind": "Data",
               "properties": {
                 "initialValue": {
-                  "expr": "Select(Words.Query({}), Not($item.DateLearned))"
+                  "expr": "Select(Words.Query({}), Or(Not($item.DateLearned), DaysBetween($item.DateLearned, Today()) == 0))"
                 },
                 "display": false
               }
@@ -515,22 +492,10 @@
             {
               "id": "list_4",
               "name": "WordList",
-              "kind": "List",
-              "properties": {
-                "items": {
-                  "expr": "WordsToLearn"
-                },
-                "width": "100%"
-              },
               "elements": [
                 {
                   "id": "layout_6",
                   "name": "Item Layout",
-                  "kind": "Layout",
-                  "properties": {
-                    "horizontal": true,
-                    "width": "100%"
-                  },
                   "elements": [
                     {
                       "id": "text_10",
@@ -540,7 +505,7 @@
                         "content": {
                           "expr": "$item.Word"
                         },
-                        "width": "30%"
+                        "width": "40%"
                       }
                     },
                     {
@@ -551,51 +516,128 @@
                         "content": {
                           "expr": "$item.Translation"
                         },
-                        "width": "30%",
+                        "width": "40%",
                         "color": {
-                          "expr": "If(ShowItem, 'inherit', 'transparent')"
+                          "expr": "If(ShowTranslation, 'inherit', 'transparent')"
                         }
                       }
                     },
                     {
-                      "id": "truefalseinput_2",
-                      "name": "Show Item",
-                      "kind": "TrueFalseInput",
+                      "id": "icon_2",
+                      "name": "Visible Icon",
+                      "elements": [],
+                      "kind": "Icon",
                       "properties": {
-                        "initialValue": true,
-                        "label": "Show"
-                      }
-                    },
-                    {
-                      "id": "button_17",
-                      "name": "Yes Button",
-                      "kind": "Button",
-                      "properties": {
-                        "content": "Learned",
+                        "iconName": {
+                          "expr": "If(ShowTranslation, 'visibility', 'disabled_visible')"
+                        },
+                        "fontSize": 24,
+                        "color": {
+                          "expr": "If(ShowTranslation, 'blue', 'gray')"
+                        },
                         "action": {
-                          "expr": "Words.Update($item.Id, Record('DateLearned', Today()))"
+                          "expr": "Set(ShowTranslation, Not(ShowTranslation))"
+                        },
+                        "label": {
+                          "expr": "If(ShowTranslation, 'Click to hide', 'Click to show')"
                         }
+                      }
+                    },
+                    {
+                      "id": "data_8",
+                      "name": "Learned",
+                      "elements": [],
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "!!$item.DateLearned"
+                        }
+                      }
+                    },
+                    {
+                      "id": "icon_3",
+                      "name": "Not Learned Icon",
+                      "elements": [],
+                      "kind": "Icon",
+                      "properties": {
+                        "iconName": "close",
+                        "display": {
+                          "expr": "Not(Learned)"
+                        },
+                        "color": "red",
+                        "fontSize": 24,
+                        "action": {
+                          "expr": "Words.Update($item.id, Record('DateLearned', Today()))"
+                        }
+                      }
+                    },
+                    {
+                      "id": "icon_4",
+                      "name": "Learned Icon",
+                      "elements": [],
+                      "kind": "Icon",
+                      "properties": {
+                        "iconName": "check",
+                        "display": {
+                          "expr": "Learned"
+                        },
+                        "color": "green",
+                        "fontSize": 24,
+                        "action": {
+                          "expr": "Words.Update($item.id, Record('DateLearned', null))"
+                        }
+                      }
+                    },
+                    {
+                      "id": "data_7",
+                      "name": "Show Translation",
+                      "elements": [],
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": "true"
                       }
                     }
-                  ]
+                  ],
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true,
+                    "width": "100%"
+                  }
                 }
-              ]
+              ],
+              "kind": "List",
+              "properties": {
+                "items": {
+                  "expr": "WordsToLearn"
+                },
+                "width": "100%"
+              }
             }
-          ]
+          ],
+          "kind": "Page",
+          "properties": {}
         },
         {
           "id": "page_4",
           "name": "Import Page",
-          "kind": "Page",
-          "properties": {},
           "elements": [
             {
               "id": "text_12",
               "name": "Title",
               "kind": "Text",
               "properties": {
-                "content": "Words to Learn",
+                "content": "Import  words",
                 "fontSize": 20
+              }
+            },
+            {
+              "id": "text_14",
+              "name": "Text 14",
+              "elements": [],
+              "kind": "Text",
+              "properties": {
+                "content": "Data columns are:\nWord, Translation, Date Learned, Last Revised, Last Revised Ok",
+                "fontSize": 14
               }
             },
             {
@@ -605,7 +647,7 @@
               "properties": {
                 "multiline": true,
                 "width": "100%",
-                "label": "Type or paste CSV data here"
+                "label": "Type or paste comma-separated value rows here"
               }
             },
             {
@@ -619,13 +661,21 @@
                 }
               }
             }
-          ]
+          ],
+          "kind": "Page",
+          "properties": {}
         },
         {
-          "id": "filedatastore_1",
-          "name": "File Data Store 1",
-          "kind": "FileDataStore",
-          "properties": {}
+          "id": "browserdatastore_1",
+          "name": "Browser Data Store 1",
+          "elements": [],
+          "kind": "BrowserDataStore",
+          "properties": {
+            "databaseName": "VocabularyRevision",
+            "collectionNames": [
+              "Words"
+            ]
+          }
         },
         {
           "id": "collection_1",
@@ -634,12 +684,18 @@
           "properties": {
             "collectionName": "Words",
             "dataStore": {
-              "expr": "FileDataStore1"
+              "expr": "BrowserDataStore1"
             },
             "display": false
           }
         }
-      ]
+      ],
+      "kind": "App",
+      "properties": {
+        "author": "PB"
+      }
     }
-  ]
+  ],
+  "kind": "Project",
+  "properties": {}
 }

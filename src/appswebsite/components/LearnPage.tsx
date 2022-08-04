@@ -1,6 +1,5 @@
 import React from 'react'
-import Toolbar from '@mui/material/Toolbar'
-import {Box, Link, Stack, Typography} from '@mui/material'
+import {Box} from '@mui/material'
 import AppBar from '../../shared/AppBar'
 import {theme} from '../../shared/styling'
 import {ThemeProvider} from '@mui/material/styles'

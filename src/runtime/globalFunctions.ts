@@ -1,4 +1,4 @@
-import {fromPairs, isNil, last, sort, sortBy, splitEvery} from 'ramda'
+import {fromPairs, isNil, last, sort, splitEvery} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -14,7 +14,6 @@ import {
 import * as csv from 'csv-parse/sync'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
-import {CastingContext} from 'csv-parse/lib'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -200,7 +199,7 @@ export const globalFunctions = {
     },
 
     CsvToRecords(csvText: string, columnNames?: string[]) {
-        const cast = (field: string, context: CastingContext) => {
+        const cast = (field: string, context: any) => {
             if (context.quoting) return field
             if (field === '') return undefined
             if (isNumeric(field)) return Number(field)

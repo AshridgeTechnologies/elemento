@@ -1,5 +1,5 @@
 import {Page as PWPage} from 'playwright-core'
-import {Project} from '../../src/model/elements'
+import Project from '../../src/model/Project'
 import {treeExpandControlSelector, treeItemSelector} from '../editor/Selectors'
 import {Page} from '@playwright/test'
 

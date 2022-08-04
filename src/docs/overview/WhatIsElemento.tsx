@@ -1,5 +1,5 @@
 import React from 'react'
-import {Para, Heading, Section} from '../HelpComponents'
+import {Heading, Para, Section} from '../HelpComponents'
 
 export default () =>
     <Section helpId='what-is-elemento'>

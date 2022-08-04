@@ -12,6 +12,7 @@ export type Properties = Readonly<{
 
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 
+    readonly kind = 'SelectInput'
     static get iconClass() { return DensitySmall }
     get valueType(): PropertyType { return 'string list'}
     get values() { return this.properties.values }
