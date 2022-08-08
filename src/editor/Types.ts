@@ -1,4 +1,5 @@
-import {ElementId, ElementType, InsertPosition} from '../model/Types'
+import {ElementId, InsertPosition} from '../model/Types'
+import {ElementType} from '../model/elements'
 
 export type AppElementAction = 'delete' | 'copy' | 'cut' | 'pasteAfter' | 'pasteBefore' | 'pasteInside' | 'duplicate'
 export type OnOpenFn = () => void

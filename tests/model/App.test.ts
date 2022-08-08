@@ -6,7 +6,7 @@ import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ElementType} from '../../src/model/Types'
+import {ElementType} from '../../src/model/elements'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])

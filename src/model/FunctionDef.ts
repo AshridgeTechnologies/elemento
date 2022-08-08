@@ -1,7 +1,8 @@
-import {ComponentType, ElementType, PropertyDef, PropertyExpr} from './Types'
+import {ComponentType, PropertyDef, PropertyExpr} from './Types'
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
 import FunctionsIcon from '@mui/icons-material/Functions';
+import {ElementType} from './elements'
 
 type Properties = {
     readonly input1?: string,
