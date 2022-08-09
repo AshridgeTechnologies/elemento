@@ -1,6 +1,6 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useState} from 'react'
-import {ElementId, InsertPosition} from '../model/Types'
+import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {AppElementAction} from './Types'
@@ -9,7 +9,6 @@ import {camelCase} from 'lodash'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
-import {ElementType} from '../model/elements'
 
 declare global {
     var getProject: () => Project

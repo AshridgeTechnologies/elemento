@@ -1,4 +1,4 @@
-import {PropertyExpr, PropertyValue} from '../model/Types'
+import {ElementType, PropertyExpr, PropertyValue} from '../model/Types'
 import {isObject} from 'lodash'
 import Element from '../model/Element'
 import {ElementType} from '../model/elements'
