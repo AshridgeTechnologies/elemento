@@ -11,7 +11,7 @@ type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValue
 
 export default class App extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'App'
+    static kind = 'App'
     static get iconClass() { return Web }
     type(): ComponentType { return 'app' }
 

@@ -20,7 +20,7 @@ type Properties = {
 
 export default class Text extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Text'
+    static kind = 'Text'
     static get initialProperties() { return {content: 'Your text here'} }
     static get iconClass() { return Subject }
 

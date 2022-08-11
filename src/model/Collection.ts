@@ -12,7 +12,7 @@ type Properties = {
 
 export default class Collection extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Collection'
+    static kind = 'Collection'
     static get iconClass() { return AutoAwesomeMotionIcon }
     type(): ComponentType { return 'statefulUI' }
 

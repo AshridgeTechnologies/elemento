@@ -10,7 +10,7 @@ type Properties = { author?: PropertyValue }
 
 export default class Project extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Project'
+    static kind = 'Project'
     static get iconClass() { return Web }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }

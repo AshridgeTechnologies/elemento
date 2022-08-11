@@ -13,7 +13,7 @@ type Properties = {
 
 export default class Button extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Button'
+    static kind = 'Button'
     static get iconClass() { return Crop75 }
     static get initialProperties() { return {content: 'Do something'} }
     type(): ComponentType { return 'statelessUI' }

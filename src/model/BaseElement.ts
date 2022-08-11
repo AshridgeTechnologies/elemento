@@ -18,21 +18,29 @@ export function propDef(name: string, type: PropertyType = 'string', options: Pr
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
-    abstract readonly kind: ElementType
+    readonly id: ElementId
+    readonly name: string
+    readonly kind: ElementType
     readonly properties: PropertiesType
+    readonly elements: ReadonlyArray<Element> | undefined
 
     constructor(
-        public readonly id: ElementId,
-        public readonly name: string,
+        id: ElementId,
+        name: string,
         properties: PropertiesType,
-        public readonly elements: ReadonlyArray<Element> | undefined = undefined,
+        elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
         const thisClass = this.constructor as typeof BaseElement
+        this.id = id
+        this.name = name
+        this.kind = thisClass.kind as ElementType
         this.properties = {...thisClass.initialProperties, ...properties}
+        this.elements = elements
     }
 
     abstract type(): ComponentType
 
+    static kind = 'unknown'
     static get initialProperties() { return {} }
 
     static is<T extends Element>(element: Element): element is T {

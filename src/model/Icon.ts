@@ -14,7 +14,7 @@ type Properties = {
 
 export default class Icon extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Icon'
+    static kind = 'Icon'
     static get iconClass() { return SentimentSatisfied }
     static get initialProperties() { return {iconName: 'sentiment_satisfied'} }
     type(): ComponentType { return 'statelessUI' }

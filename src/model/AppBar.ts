@@ -8,7 +8,7 @@ type Properties = { title?: PropertyValueType<string> }
 
 export default class AppBar extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'AppBar'
+    static kind = 'AppBar'
     static get iconClass() { return WebAssetIcon }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }

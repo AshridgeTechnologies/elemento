@@ -8,7 +8,7 @@ type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyVal
 
 export default class Layout extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Layout'
+    static kind = 'Layout'
     static get iconClass() { return ViewModuleIcon }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }

@@ -8,7 +8,7 @@ type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyVal
 
 export default class List extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'List'
+    static kind = 'List'
     static get iconClass() { return ViewListIcon }
     type(): ComponentType { return 'statefulUI' }
 

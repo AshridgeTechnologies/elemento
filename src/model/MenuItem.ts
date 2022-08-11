@@ -11,7 +11,7 @@ type Properties = {
 
 export default class MenuItem extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'MenuItem'
+    static kind = 'MenuItem'
     static get iconClass() { return MenuOpenIcon }
     type(): ComponentType { return 'statelessUI' }
 

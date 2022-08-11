@@ -8,7 +8,7 @@ type Properties = {}
 
 export default class Page extends BaseElement<Properties> implements Element {
 
-    readonly kind = 'Page'
+    static kind = 'Page'
     static get iconClass() { return Web }
     type(): ComponentType { return 'statefulUI' }
 
