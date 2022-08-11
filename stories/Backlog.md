@@ -15,7 +15,10 @@ Stories
 -------
 
 ### Priority 1
+- Firebase deploy
+- Firestore data storage
 - Revision aid example
+- New publishing
 - Demo Experience Part 1
 - Runtime error and notification handling
 - General usability Part 2
