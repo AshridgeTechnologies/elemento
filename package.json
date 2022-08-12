@@ -11,7 +11,8 @@
     "build": "NODE_OPTIONS=--no-experimental-fetch parcel build ",
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
-    "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test"
+    "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test",
+    "esbuild": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js"
   },
   "devDependencies": {
     "@parcel/transformer-less": "2.6.0",
@@ -32,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "assert": "^2.0.0",
+    "esbuild": "^0.15.1",
     "eslint": "^8.14.0",
     "eslint-plugin-react": "^7.29.4",
     "fake-indexeddb": "^4.0.0",

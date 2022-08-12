@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Runtime Library spike</title>
+</head>
+<body>
+
+<div id="main"></div>
+
+<script type="module">
+    import React from "https://esm.sh/react"
+    import ReactDOM from "https://esm.sh/react-dom"
+    const container = document.getElementById('main')
+    const root = ReactDOM.createRoot(container)
+    root.render(React.createElement('div', null, 'Hi this is a React div'))
+</script>
+
+</body>
+</html>
