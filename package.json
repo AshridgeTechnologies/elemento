@@ -8,7 +8,7 @@
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
-    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build 'src/appswebsite/**/index.html'",
+    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build ",
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test"
@@ -71,5 +71,24 @@
   },
   "alias": {
     "csv-parse/sync": "./node_modules/csv-parse/lib/sync.js"
+  },
+  "targets": {
+    "site": {
+      "source": [
+        "src/appswebsite/index.html",
+        "src/appswebsite/learn/index.html",
+        "src/appswebsite/studio/index.html",
+        "src/appswebsite/run/index.html",
+        "src/appswebsite/terms/index.html",
+        "src/appswebsite/privacy/index.html"
+      ]
+    },
+    "runtime": {
+      "source": "src/runtime/index.ts",
+      "context": "browser",
+      "isLibrary": true,
+      "includeNodeModules": true,
+      "outputFormat": "esmodule"
+    }
   }
 }
