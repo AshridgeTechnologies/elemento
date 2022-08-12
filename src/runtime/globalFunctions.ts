@@ -11,7 +11,7 @@ import {
     format,
     parseISO
 } from 'date-fns'
-import * as csv from 'csv-parse/sync'
+// import * as csv from 'csv-parse/sync'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 
@@ -199,35 +199,36 @@ export const globalFunctions = {
     },
 
     CsvToRecords(csvText: string, columnNames?: string[]) {
-        const cast = (field: string, context: any) => {
-            if (context.quoting) return field
-            if (field === '') return undefined
-            if (isNumeric(field)) return Number(field)
-            if (field.toLowerCase() === 'true') return true
-            if (field.toLowerCase() === 'false') return false
-            const date = parseISO(field)
-            if (!Number.isNaN(date.getTime())) {
-                return date
-            }
-            return field
-        }
-        const convertColumnNames = (names: string[]) => names.map( noSpaces )
-        const removeUndefinedFields = (obj: object) => {
-            const definedEntries = Object.entries(obj).filter( ([, value]) => value !== undefined)
-            return Object.fromEntries(definedEntries)
-        }
-        const lines = csvText.split(/[\r\n]+/)
-        const tabDelimiters = lines.every( line => line.includes('\t'))
-        return csv.parse(csvText, {
-            columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
-            delimiter: tabDelimiters ? '\t' : ',',
-            cast,
-            skip_empty_lines: true,
-            skip_records_with_empty_values: true,
-            relax_quotes: true,
-            relax_column_count: true,
-            trim: true
-        }).map(removeUndefinedFields)
+        // const cast = (field: string, context: any) => {
+        //     if (context.quoting) return field
+        //     if (field === '') return undefined
+        //     if (isNumeric(field)) return Number(field)
+        //     if (field.toLowerCase() === 'true') return true
+        //     if (field.toLowerCase() === 'false') return false
+        //     const date = parseISO(field)
+        //     if (!Number.isNaN(date.getTime())) {
+        //         return date
+        //     }
+        //     return field
+        // }
+        // const convertColumnNames = (names: string[]) => names.map( noSpaces )
+        // const removeUndefinedFields = (obj: object) => {
+        //     const definedEntries = Object.entries(obj).filter( ([, value]) => value !== undefined)
+        //     return Object.fromEntries(definedEntries)
+        // }
+        // const lines = csvText.split(/[\r\n]+/)
+        // const tabDelimiters = lines.every( line => line.includes('\t'))
+        // return csv.parse(csvText, {
+        //     columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
+        //     delimiter: tabDelimiters ? '\t' : ',',
+        //     cast,
+        //     skip_empty_lines: true,
+        //     skip_records_with_empty_values: true,
+        //     relax_quotes: true,
+        //     relax_column_count: true,
+        //     trim: true
+        // }).map(removeUndefinedFields)
+        return []
     }
 }
 

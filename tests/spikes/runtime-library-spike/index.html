@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Runtime Library spike</title>
+</head>
+<body>
+
+<div id="main"></div>
+
+<script type="module">
+    import * as Elemento from "http://localhost:8001/runtime/index.js"
+    const {React, ReactDOM} = Elemento
+
+    // import React from 'react'
+    // import Elemento from 'elemento-runtime'
+
+    // MainPage.js
+    function MainPage(props) {
+        const pathWith = name => props.path + '.' + name
+        const {Page, TextElement} = Elemento.components
+
+        return React.createElement(Page, {id: props.path},
+            React.createElement(TextElement, {path: pathWith('FirstText')}, "Welcome to Elemento!"),
+            React.createElement(TextElement, {path: pathWith('SecondText')}, "The future of low code programming"),
+            React.createElement(TextElement, {path: pathWith('ThirdText')}, "Start your program here..."),
+        )
+    }
+
+    // appMain.js
+    /*export default */function WelcometoElemento(props) {
+        const pathWith = name => 'WelcometoElemento' + '.' + name
+        const {App} = Elemento.components
+        const pages = {MainPage}
+        const app = Elemento.useObjectState('app', new App.State({pages}))
+
+        return React.createElement(App, {path: 'WelcometoElemento', },)
+    }
+
+    const {AppRunner} = Elemento
+    const container = document.getElementById('main')
+    const root = ReactDOM.createRoot(container)
+    root.render(React.createElement(AppRunner, {appFunction: WelcometoElemento, onComponentSelected: () => {}}))
+</script>
+
+</body>
+</html>
