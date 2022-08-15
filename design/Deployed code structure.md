@@ -30,7 +30,16 @@ Spike 1
 -------
 
 - Get bundler to create separate Elemento runtime
-- Get React, material UI from CDN, exclude from bundle
+- ~~Get React, material UI from CDN, exclude from bundle~~ - See below
 - Put generated code in inline script
 - Put generated code in module with src
 
+Notes
+-----
+
+- Attempted to exclude React from bundle - could not get to work
+- Many packages need to resolve "react"
+- Tried import maps shim, which did work
+- BUT esbuild cannot handle dynamic require of react, which happens in many packages
+- Started a whack-a-mole session, externalising the packages that did this, but could go on a long time
+- SO: accept having one bundle for runtime - still under 1Mb minified
