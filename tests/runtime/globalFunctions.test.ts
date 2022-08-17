@@ -459,17 +459,17 @@ describe('DateFormat', () => {
 })
 
 describe('CsvToRecords', () => {
-    test('converts csv to records using given column names converted to start case', () => {
+    test('converts csv to records using given column names converted to start case and using lower-case id', () => {
         const csvText = `id1,First Widget,27\n`
                         + `id2,"Widget, again",32`
         const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height'])
         expect(records).toStrictEqual([
-            {Id: 'id1', Description: 'First Widget', OverallHeight: 27},
-            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32},
+            {id: 'id1', Description: 'First Widget', OverallHeight: 27},
+            {id: 'id2', Description: 'Widget, again', OverallHeight: 32},
         ])
     })
 
-    test('converts csv to records using start case column names from first line and ignores blank lines or all empty lines', () => {
+    test('converts csv to records using start case column names from first line and ignores blank lines or all empty lines and uses lower case id', () => {
         const csvText = `Id,Description,Overall Height\n`
                         + '\n'
                         + `id1,First Widget,27\n`
@@ -478,13 +478,13 @@ describe('CsvToRecords', () => {
                         + `id2,"Widget, again",32`
         const records = CsvToRecords(csvText)
         expect(records).toStrictEqual([
-            {Id: 'id1', Description: 'First Widget', OverallHeight: 27},
-            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32},
+            {id: 'id1', Description: 'First Widget', OverallHeight: 27},
+            {id: 'id2', Description: 'Widget, again', OverallHeight: 32},
         ])
     })
 
     test('converts csv to records using appropriate field types and allows quotes in fields and trims unquoted fields', () => {
-        const csvText = `Id,Description,Height,IsShiny,FirstUsed\n`
+        const csvText = `id,Description,Height,IsShiny,FirstUsed\n`
                         + `id1,First "Widget"'s Description,27,true,2022-07-14T08:15:35.607Z\n`
                         + `id2,"Widget, again","32",false,2022-07-14\n`
                         + `id3,  Widget three  , 32 ,"true", 2022-07-32 \n` // invalid date
@@ -492,11 +492,11 @@ describe('CsvToRecords', () => {
                         + `id5," Widget 5",45.67,TRUE,2022-07-14 08:15:35\n`
         const records = CsvToRecords(csvText)
         expect(records).toStrictEqual([
-            {Id: 'id1', Description: 'First "Widget"\'s Description', Height: 27, IsShiny: true, FirstUsed: new Date(Date.parse('2022-07-14T08:15:35.607Z'))},
-            {Id: 'id2', Description: 'Widget, again', Height: "32", IsShiny: false, FirstUsed: new Date(2022, 6, 14)},
-            {Id: 'id3', Description: 'Widget three', Height: 32, IsShiny: 'true', FirstUsed: '2022-07-32'},
-            {Id: 'id4', Description: ' Widget 2 ', Height: "32", IsShiny: 'false', FirstUsed: '2022-07-14T08:15:35.607Z'},
-            {Id: 'id5', Description: ' Widget 5', Height: 45.67, IsShiny: true, FirstUsed: new Date(2022, 6, 14, 8, 15, 35)},
+            {id: 'id1', Description: 'First "Widget"\'s Description', Height: 27, IsShiny: true, FirstUsed: new Date(Date.parse('2022-07-14T08:15:35.607Z'))},
+            {id: 'id2', Description: 'Widget, again', Height: "32", IsShiny: false, FirstUsed: new Date(2022, 6, 14)},
+            {id: 'id3', Description: 'Widget three', Height: 32, IsShiny: 'true', FirstUsed: '2022-07-32'},
+            {id: 'id4', Description: ' Widget 2 ', Height: "32", IsShiny: 'false', FirstUsed: '2022-07-14T08:15:35.607Z'},
+            {id: 'id5', Description: ' Widget 5', Height: 45.67, IsShiny: true, FirstUsed: new Date(2022, 6, 14, 8, 15, 35)},
         ])
     })
 
@@ -504,11 +504,11 @@ describe('CsvToRecords', () => {
         const csvText = `id1,First Widget,27,,34\n`
             + `id2,"Widget, again",32,66\n`
             + `id3,"Widget 3",,,,,,,,,`
-        const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
+        const records = CsvToRecords(csvText, ['id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
         expect(records).toStrictEqual([
-            {Id: 'id1', Description: 'First Widget', OverallHeight: 27, MaxDepth: 34},
-            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
-            {Id: 'id3', Description: 'Widget 3'},
+            {id: 'id1', Description: 'First Widget', OverallHeight: 27, MaxDepth: 34},
+            {id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
+            {id: 'id3', Description: 'Widget 3'},
         ])
 
     })
@@ -519,9 +519,9 @@ describe('CsvToRecords', () => {
             + `id3\t"Widget 3"`
         const records = CsvToRecords(csvText, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
         expect(records).toStrictEqual([
-            {Id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
-            {Id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
-            {Id: 'id3', Description: 'Widget 3'},
+            {id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
+            {id: 'id2', Description: 'Widget, again', OverallHeight: 32, MinWidth: 66},
+            {id: 'id3', Description: 'Widget 3'},
         ])
 
         const csvTextWithTabNotAsDelimiter = `id1,First\tWidget,27,,34\n`
@@ -530,9 +530,9 @@ describe('CsvToRecords', () => {
 
         const records2 = CsvToRecords(csvTextWithTabNotAsDelimiter, ['Id', 'Description', 'Overall Height', 'Min Width', 'Max Depth'])
         expect(records2).toStrictEqual([
-            {Id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
-            {Id: 'id2', Description: 'Widget\tagain', OverallHeight: 32, MinWidth: 66},
-            {Id: 'id3', Description: 'Widget 3 no tab in this line'},
+            {id: 'id1', Description: 'First\tWidget', OverallHeight: 27, MaxDepth: 34},
+            {id: 'id2', Description: 'Widget\tagain', OverallHeight: 32, MinWidth: 66},
+            {id: 'id3', Description: 'Widget 3 no tab in this line'},
         ])
 
     })

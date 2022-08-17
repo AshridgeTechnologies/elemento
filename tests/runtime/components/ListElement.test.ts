@@ -15,7 +15,7 @@ function ListItem1(props: {path: string, $item: {text: string}}) {
     return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text) )
 }
 
-const listData = [{Id: 'id1', text: 'where are you?'}, {Id: 'id2', text: 'over here!'}]
+const listData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
 const listDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
 
 const [listElement, appStoreHook] = wrappedTestElement(ListElement, ListElementState)

@@ -19,6 +19,7 @@ export const valueLiteral = function (propertyValue: any): string {
     }
 }
 
+export const idOf = (val: any) => val?.id
 
 export function parentPath(path: string) {
     const pathWithoutTrailingIndex = path.replace(/\.\d+$/, '')

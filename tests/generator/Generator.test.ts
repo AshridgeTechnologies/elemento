@@ -402,7 +402,7 @@ test('sorts state entries into dependency order', () => {
         new Page('p1', 'Page 1', {}, [
             new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
             new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
-            new Data('id2', 'Widget Id', {initialValue: ex`WidgetList.selectedItem && WidgetList.selectedItem.Id`}),
+            new Data('id2', 'Widget Id', {initialValue: ex`WidgetList.selectedItem && WidgetList.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
             new List('id4', 'Widget List', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})]),
             ]
@@ -431,7 +431,7 @@ function Page1(props) {
     const Store1 = Elemento.useGetObjectState('app.Store1')
     const Widgets = Elemento.useObjectState(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const WidgetList = Elemento.useObjectState(pathWith('WidgetList'), new ListElement.State({}))
-    const WidgetId = Elemento.useObjectState(pathWith('WidgetId'), new Data.State({value: WidgetList.selectedItem && WidgetList.selectedItem.Id}))
+    const WidgetId = Elemento.useObjectState(pathWith('WidgetId'), new Data.State({value: WidgetList.selectedItem && WidgetList.selectedItem.id}))
     const TheWidget = Elemento.useObjectState(pathWith('TheWidget'), new Data.State({value: WidgetId.value && Get(Widgets, WidgetId.value)}))
     const Description = Elemento.useObjectState(pathWith('Description'), new TextInput.State({value: TheWidget.Description}))
 

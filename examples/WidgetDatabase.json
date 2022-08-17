@@ -65,7 +65,7 @@
                       "properties": {
                         "display": false,
                         "initialValue": {
-                          "expr": "WidgetList.selectedItem && WidgetList.selectedItem.Id"
+                          "expr": "WidgetList.selectedItem && WidgetList.selectedItem.id"
                         }
                       }
                     },
@@ -176,7 +176,7 @@
                               "expr": "!WidgetId.value"
                             },
                             "action": {
-                              "expr": "let newWidget = Record('Id', 'w' + Timestamp(), 'Description', Description, 'Length', Length, 'Shiny', Shiny);\nAdd(Widgets, newWidget);\nReset(Description, Length, Shiny)\nSet(WidgetList, newWidget)"
+                              "expr": "let newWidget = Record('id', 'w' + Timestamp(), 'Description', Description, 'Length', Length, 'Shiny', Shiny);\nAdd(Widgets, newWidget);\nReset(Description, Length, Shiny)\nSet(WidgetList, newWidget)"
                             }
                           }
                         },

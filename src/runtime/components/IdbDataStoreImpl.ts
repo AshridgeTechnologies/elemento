@@ -1,10 +1,14 @@
 import DataStore, {
+    Add,
     CollectionName,
     Criteria,
     DataStoreObject,
     Id,
-    InvalidateAllQueries,
-    UpdateNotification
+    MultipleChanges,
+    Remove,
+    Update,
+    UpdateNotification,
+    UpdateType
 } from '../DataStore'
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
@@ -22,7 +26,6 @@ export default class IdbDataStoreImpl implements DataStore {
         this.db.version(1).stores(collectionDefs)
     }
 
-    // private inMemoryStore: MemoryDataStore = new MemoryDataStore()
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
 
     private table(collection: CollectionName) {
@@ -45,24 +48,24 @@ export default class IdbDataStoreImpl implements DataStore {
     async add(collection: CollectionName, id: Id, item: DataStoreObject) {
         const itemWithId = {...item, id}
         await this.table(collection).put(itemWithId)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Add, id, item)
     }
 
     async addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
         const addIdToItem = (item: DataStoreObject, id: Id) => ({...item, id})
         const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items))
         await this.table(collection).bulkAdd(itemsWithIds)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, MultipleChanges)
     }
 
     async update(collection: CollectionName, id: Id, changes: object) {
         await this.table(collection).update(id, changes)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Update, id, changes)
     }
 
     async remove(collection: CollectionName, id: Id) {
         await this.table(collection).delete(id)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Remove, id)
     }
 
     async query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
@@ -80,10 +83,9 @@ export default class IdbDataStoreImpl implements DataStore {
 
     // Dexie has liveQuery(), but it doesn't appear to offer more than this basic method
     // It would still end up re-running the query every time something changed in the db
-    private invalidateCollectionQueries(collection: CollectionName) {
-        let observable = this.collectionObservables.get(collection)
-        if (observable) {
-            observable.send({collection, type: InvalidateAllQueries})
-        }
+    private notify(collection: CollectionName, type: UpdateType, id?: Id, changes?: DataStoreObject ) {
+        const observable = this.collectionObservables.get(collection)
+        observable?.send({collection, type, id, changes})
     }
+
 }

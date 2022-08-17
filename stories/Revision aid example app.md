@@ -57,6 +57,7 @@ Problems
 
 - ✅ Dual id/Id
 - Message and clear after import
+- If change a word, don't save. move to another, the changed data sticks in the field
 
 
 Features needed

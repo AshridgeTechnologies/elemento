@@ -1,11 +1,15 @@
 import DataStore, {
+    Add,
     CollectionName,
     Criteria,
     DataStoreObject,
     Id,
     InvalidateAll,
-    InvalidateAllQueries,
-    UpdateNotification
+    MultipleChanges,
+    Update,
+    Remove,
+    UpdateNotification,
+    UpdateType
 } from '../DataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Observable from 'zen-observable'
@@ -101,7 +105,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async add(collection: CollectionName, id: Id, item: DataStoreObject) {
         await this.inMemoryStore.add(collection, id, item)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Add, id, item)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -109,7 +113,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
         await this.inMemoryStore.addAll(collection, items)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, MultipleChanges)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -117,7 +121,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async update(collection: CollectionName, id: Id, changes: object) {
         await this.inMemoryStore.update(collection, id, changes)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Update, id, changes)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -125,7 +129,7 @@ export default class FileDataStoreImpl implements DataStore {
 
     async remove(collection: CollectionName, id: Id) {
         await this.inMemoryStore.remove(collection, id)
-        this.invalidateCollectionQueries(collection)
+        this.notify(collection, Remove, id)
         if (this.fileHandle) {
             await this.Save()
         }
@@ -148,11 +152,9 @@ export default class FileDataStoreImpl implements DataStore {
         this.collectionObservables.forEach((obs, collection) => obs.send({collection, type: InvalidateAll}))
     }
 
-    private invalidateCollectionQueries(collection: CollectionName) {
-        let observable = this.collectionObservables.get(collection)
-        if (observable) {
-            observable.send({collection, type: InvalidateAllQueries})
-        }
+    private notify(collection: CollectionName, type: UpdateType, id?: Id, changes?: DataStoreObject ) {
+        const observable = this.collectionObservables.get(collection)
+        observable?.send({collection, type, id, changes})
     }
 
     private async writeDataToFile (fileHandle: any) {
