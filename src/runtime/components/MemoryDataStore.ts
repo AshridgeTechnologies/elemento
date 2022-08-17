@@ -1,5 +1,5 @@
-import DataStore, {CollectionName, Criteria, DataStoreObject, Id, UpdateNotification} from '../DataStore'
-import {clone, matches} from 'lodash'
+import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, UpdateNotification} from '../DataStore'
+import {clone} from 'lodash'
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'
 
@@ -22,7 +22,7 @@ export default class MemoryDataStore implements DataStore {
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<DataStoreObject[]> {
         const collection = this.getCollection(collectionName, true)
-        return Object.values(collection).filter( matches(criteria))
+        return Object.values(collection).filter( queryMatcher(criteria))
     }
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject): Promise<void> {

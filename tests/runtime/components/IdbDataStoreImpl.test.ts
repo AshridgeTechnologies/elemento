@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto'
-import {IdbDataStoreImpl} from '../../../src/runtime/components/index'
-import {InvalidateAllQueries} from '../../../src/runtime/DataStore'
+import {FileDataStoreImpl, IdbDataStoreImpl} from '../../../src/runtime/components/index'
+import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 
 let store: IdbDataStoreImpl
 
@@ -58,17 +58,27 @@ test('stores dates', async () => {
 
 describe('subscribe', () => {
 
-    test('sends InvalidateAllQueries on Add to subscriptions for that collection', async () => {
+    test('sends changes on Add to subscriptions for that collection', async () => {
         const onNextWidgets = jest.fn()
         const onNextGadgets = jest.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {a: 10, b: 'Bee1', c: true}})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
-    test('sends InvalidateAllQueries on Update to subscriptions for that collection', async () => {
+    test('sends multiple changes on Add all to subscriptions for that collection', async () => {
+        const onNextWidgets = jest.fn()
+        const onNextSprockets = jest.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Sprockets').subscribe(onNextSprockets)
+        await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: MultipleChanges, })
+        expect(onNextSprockets).not.toHaveBeenCalled()
+    })
+
+    test('sends changes on Update to subscriptions for that collection', async () => {
         const onNextWidgets = jest.fn()
         const onNextGadgets = jest.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
@@ -76,11 +86,11 @@ describe('subscribe', () => {
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
         onNextWidgets.mockReset()
         await store.update('Widgets', 'w1', {c: true})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Update, id: 'w1', changes: {c: true}})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
-    test('sends InvalidateAllQueries on Remove to subscriptions for that collection', async () => {
+    test('sends changes on Remove to subscriptions for that collection', async () => {
         const onNextWidgets = jest.fn()
         const onNextGadgets = jest.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
@@ -88,7 +98,7 @@ describe('subscribe', () => {
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
         onNextWidgets.mockReset()
         await store.remove('Widgets', 'w1')
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAllQueries})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Remove, id: 'w1'})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 

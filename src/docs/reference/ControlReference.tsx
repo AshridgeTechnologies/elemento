@@ -73,7 +73,7 @@ export default () =>
                         When the browser page is closed, the data is deleted, unless the Collection is attached to a Data Store (see below).
                         It can be used like a set of pages in a notepad to hold data needed temporarily.  Each item in a Collection control can be a simple value, a record or a list.
                         Each item is associated with an id.  For a simple value, the id is the same as the value.
-                        For a record with a property called "id" or "Id" the value of the property is used as the id.
+                        For a record with a property called "id" (lower case) the value of the property is used as the id.
                         For any other data item, a unique id is given when the item is added to the collection.
                         You use the Add and Update functions to put an item into a Collection control and change it afterwards.
                         You can use the Get function to look up an item by its id, or the GetAll function to get all the items.

@@ -21,9 +21,9 @@ export default function ListElement({path, itemContentComponent, ...props}: Prop
     const {items = [], width, style} = valueOfProps(props)
     const handleClick = (index: number) => state._setSelectedItem(items[index])
     const children = asArray(items).map((item, index) => {
-            const itemId = item.id ?? item.Id ?? index
+            const itemId = item.id ?? index
             const itemPath = `${path}.#${itemId}`
-            const selected = Boolean(item === selectedItem || (item.Id && item.Id === (selectedItem as any)?.Id) )
+            const selected = Boolean(item === selectedItem || (item.id && item.id === (selectedItem as any)?.id) )
             const onClick = () => handleClick(index)
             return React.createElement(ListItem, {path: itemPath, selected, onClick, key: itemId},
                 React.createElement(itemContentComponent, {path: itemPath, $item: item}))

@@ -1,4 +1,5 @@
 import Observable from 'zen-observable'
+import {matches} from 'lodash'
 
 export type Criteria = object
 
@@ -7,10 +8,15 @@ export type DataStoreObject = object
 export type Id = string | number
 
 export const InvalidateAll = 'InvalidateAll'
-export const InvalidateAllQueries = 'InvalidateAllQueries'
+export const Add = 'Add'
+export const Update = 'Update'
+export const Remove = 'Remove'
+export const MultipleChanges = 'MultipleChanges'
+export type UpdateType = typeof InvalidateAll | typeof MultipleChanges | typeof Add | typeof Update | typeof Remove
 export type UpdateNotification = {
     collection: CollectionName,
-    type: 'Change' | typeof InvalidateAll | typeof InvalidateAllQueries,
+    type: UpdateType,
+    id?: Id
     changes?: object
 }
 export class Pending {
@@ -19,6 +25,10 @@ export class Pending {
 
 export class ErrorResult {
     constructor(public description: string, public errorMessage: string) {}
+}
+
+export function queryMatcher(criteria: Criteria) {
+    return matches(criteria)
 }
 
 export default interface DataStore {

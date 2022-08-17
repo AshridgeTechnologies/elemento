@@ -19,6 +19,4 @@ export function elementId(elementType: ElementType, idSeq: number) {
 
 export const toArray = (value: any) => Array.isArray(value) ? value : [value]
 
-export function noSpaces(s: string) {
-    return s.replace(/ /g, '')
-}
+export const noSpaces = (s: string) => s.replace(/ /g, '')

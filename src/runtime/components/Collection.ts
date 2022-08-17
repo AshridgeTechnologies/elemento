@@ -1,8 +1,18 @@
 import {createElement} from 'react'
-import {valueLiteral} from '../runtimeFunctions'
+import {idOf, valueLiteral} from '../runtimeFunctions'
 import {clone, isArray, isNumber, isObject, isString} from 'lodash'
-import {mergeRight, omit} from 'ramda'
-import DataStore, {CollectionName, Criteria, Id, InvalidateAll, InvalidateAllQueries, Pending} from '../DataStore'
+import {map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
+import DataStore, {
+    CollectionName,
+    Criteria,
+    Id,
+    InvalidateAll,
+    MultipleChanges,
+    Pending, queryMatcher,
+    Add, Remove,
+    Update,
+    UpdateNotification
+} from '../DataStore'
 import {AppStateForObject, useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {toArray} from '../../util/helpers'
@@ -26,7 +36,7 @@ export const toEntry = (value: any): [PropertyKey, any] => {
         return [value, value]
     }
 
-    const id = value.id ?? value.Id
+    const id = value.id
     if (id) {
         return [id, value]
     }
@@ -87,12 +97,11 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         const {subscription} = this.state
 
         if (dataStore && collectionName && !subscription) {
-            this.state.subscription = dataStore.observable(collectionName).subscribe((update) => {
-                if (update.type === InvalidateAll) {
-                    this.latest().updateState({value: {}, queries: {}})
-                }
-                if (update.type === InvalidateAllQueries) {
-                    this.latest().updateState({queries: {}})
+            this.state.subscription = dataStore.observable(collectionName).subscribe((update: UpdateNotification) => {
+                try {
+                    this.onDataUpdate(update)
+                } catch (e) {
+                    console.error('Error updating collection', e)
                 }
             })
         }
@@ -107,7 +116,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     private get queries() { return this.state.queries ?? {} }
 
     Update(id: Id, changes: object) {
-        const safeChanges = omit(['id', 'Id'], changes)
+        const safeChanges = omit(['id'], changes)
         const storedItem = this.storedValue(id)
         if(storedItem) {
             const newItem = mergeRight(storedItem, safeChanges)
@@ -120,19 +129,28 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     }
 
     Add(item: AddItem | AddItem[]) {
-        const items = toArray(item)
-        const addItems = {} as {[id: Id]: any}
-        items.forEach( item => {
-            const [key, value] = toEntry(item)
-            const id = key.toString()
-            addItems[id] = value
-        })
+        if (Array.isArray(item)) {
+            const items = toArray(item)
+            const addItems = {} as {[id: Id]: any}
+            items.forEach( item => {
+                const [key, value] = toEntry(item)
+                const id = key.toString()
+                addItems[id] = value
+            })
 
-        const newValue = mergeRight(this.value, addItems)
-        this.updateState({value: newValue})
+            const newValue = mergeRight(this.value, addItems)
+            this.updateState({value: newValue})
 
-        if (this.dataStore) {
-            this.dataStore.addAll(this.props.collectionName!, addItems)
+            if (this.dataStore) {
+                this.dataStore.addAll(this.props.collectionName!, addItems)
+            }
+        } else {
+            const [id, itemWithId] = toEntry(item)
+            this.updateValue(id as Id, itemWithId)
+
+            if (this.dataStore) {
+                this.dataStore.add(this.props.collectionName!, id as Id, itemWithId as object)
+            }
         }
     }
 
@@ -173,7 +191,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     Query(criteria: Criteria) {
         if (this.dataStore) {
 
-            const criteriaKey = valueLiteral(criteria)
+            const criteriaKey = JSON.stringify(criteria)
             const storedResult = this.queries[criteriaKey as keyof object]
             if (storedResult) {
                 return storedResult
@@ -195,12 +213,96 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     }
 
+    GetAll() {
+        return Object.values(this.value)
+    }
+
     private storedValue(id: Id) {
         return this.value[id as keyof object]
     }
 
-    GetAll() {
-        return Object.values(this.value)
+    private onDataUpdate(update: UpdateNotification) {
+        if (update.type === InvalidateAll) {
+            this.latest().updateState({value: {}, queries: {}})
+        }
+        if (update.type === MultipleChanges) {
+            this.latest().updateState({queries: {}})
+        }
+
+        if (update.type === Add) {
+            const {id, changes: newItem} = update
+            const {value, queries} = this.latest()
+
+            const addToQueryResults = (results: object[], queryKey: string) => {
+                const criteria = JSON.parse(queryKey) as Criteria
+                const shouldBeInResults = queryMatcher(criteria)(newItem)
+                if (shouldBeInResults){
+                    return results.concat(newItem!)
+                }
+
+                return results
+            }
+
+            const existingQueries = queries as {[key:string] : object[]}
+            // @ts-ignore
+            const adjustedQueries = mapObjIndexed(addToQueryResults, existingQueries)
+            this.latest().updateState({queries: adjustedQueries})
+        }
+
+        if (update.type === Update) {
+            const {id, changes} = update
+            const {value, queries} = this.latest()
+            const isTheUpdatedObj = (obj: any) => idOf(obj) === id
+            const updatedValue = (id! in value) ? mergeDeepRight(value, {[id as string]: changes}) : value
+            const updateQueryResults = (results: object[]) => {
+                if (results.find(isTheUpdatedObj)) {
+                    return results.map( r => isTheUpdatedObj(r) ? mergeRight(r, changes!) : r)
+                } else {
+                    return results
+                }
+            }
+
+            const addOrRemoveFromQueryResults = (results: object[], queryKey: string) => {
+                const isInResults = results.find(isTheUpdatedObj)
+                const criteria = JSON.parse(queryKey) as Criteria
+                const updatedItem = updatedValue[id as keyof object]
+                const shouldBeInResults = queryMatcher(criteria)(updatedItem)
+                if (isInResults && !shouldBeInResults) {
+                    return results.filter( r => !isTheUpdatedObj(r) )
+                }
+
+                if (!isInResults && shouldBeInResults){
+                    return results.concat(updatedItem)
+                }
+
+                return results
+            }
+
+            const existingQueries = queries as {[key:string] : object[]}
+            // @ts-ignore
+            const updatedQueries = mapObjIndexed(updateQueryResults, existingQueries)
+            const adjustedQueries = (id! in updatedValue) ? mapObjIndexed(addOrRemoveFromQueryResults, updatedQueries) : updatedQueries;
+            this.latest().updateState({value: updatedValue, queries: adjustedQueries})
+        }
+
+        if (update.type === Remove) {
+            const {id} = update
+            const {value, queries} = this.latest()
+            const isTheDeletedObj = (obj: any) => idOf(obj) === id
+            const updatedValue = (id! in value) ? omit([id as string], value) : value
+            const updateQueryResults = (results: object[]) => {
+                if (results.find(isTheDeletedObj)) {
+                    return results.filter( r => !isTheDeletedObj(r) )
+                } else {
+                    return results
+                }
+            }
+
+            const existingQueries = queries as {[key:string] : object[]}
+            // @ts-ignore
+            const updatedQueries = map(updateQueryResults, existingQueries)
+            this.latest().updateState({value: updatedValue, queries: updatedQueries})
+        }
     }
 
 }
