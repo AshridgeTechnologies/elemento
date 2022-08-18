@@ -32,6 +32,7 @@ Stories
 - Model-driven components
 
 ### Priority 2
+- Firebase deploy Part 2
 - Google Sheets datastore
 - Formula improvements Part 3
 - Info website update

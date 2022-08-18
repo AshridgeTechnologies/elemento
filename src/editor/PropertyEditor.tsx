@@ -1,12 +1,16 @@
-import React, {ChangeEvent} from 'react'
+import React, {ChangeEvent, useContext} from 'react'
 import Element from '../model/Element'
-import {Box, Stack, TextField, Typography} from '@mui/material'
+import {Box, Button, Stack, TextField, Typography} from '@mui/material'
 import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
 import {startCase} from 'lodash'
+import Project from '../model/Project'
+import {ProjectContext} from './Editor'
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
+
+    const project = useContext(ProjectContext) as Project
 
     function propertyField<T extends Element>(name: string, type: PropertyType = 'string', fixedOnly = false) {
         const propertyValue = (element.properties)[name as keyof object] as unknown as PropertyValue
@@ -15,14 +19,21 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
         return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} fixedOnly={fixedOnly} {...errorProps}/>
     }
 
-    function propertyFields() {
+    function actionButton<T extends Element>(name: string) {
+        const onClick = () => (element[name as keyof object] as (proj: Project) => void)(project)
+        return <Button key={`${element.id}.${name}.kind`} variant='outlined' onClick={onClick}>{startCase(name)}</Button>
+    }
+
+    function propertyFieldsAndActions() {
         const fields = element.propertyDefs.map(({name, type, fixedOnly}) => propertyField(name, type, fixedOnly))
+        const actions = element.actionDefs.map(({name}) => actionButton(name))
         return <>
                 {fields}
+                {actions}
             </>
     }
 
-    const children = propertyFields()
+    const children = propertyFieldsAndActions()
     if (children) {
         return <Box
             component="form"

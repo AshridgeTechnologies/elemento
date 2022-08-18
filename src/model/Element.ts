@@ -1,4 +1,4 @@
-import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef} from './Types'
+import {ActionDef, ComponentType, ElementId, ElementType, InsertPosition, PropertyDef} from './Types'
 
 export default interface Element {
     kind: ElementType
@@ -8,6 +8,7 @@ export default interface Element {
     elements: ReadonlyArray<Element> | undefined
     type() : ComponentType
     get propertyDefs() : PropertyDef[]
+    get actionDefs() : ActionDef[]
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

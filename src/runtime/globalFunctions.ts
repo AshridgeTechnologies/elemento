@@ -11,7 +11,7 @@ import {
     format,
     parseISO
 } from 'date-fns'
-// import * as csv from 'csv-parse/sync'
+import * as csv from 'csv-parse/sync'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 

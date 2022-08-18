@@ -1,5 +1,14 @@
 import Element from './Element'
-import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyType} from './Types'
+import {
+    ActionDef,
+    ComponentType,
+    ElementId,
+    ElementType,
+    InsertPosition,
+    ParentType,
+    PropertyDef,
+    PropertyType
+} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
 import {uniq} from 'ramda'
 
@@ -15,6 +24,10 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
 type PropOptions = {multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean}
 export function propDef(name: string, type: PropertyType = 'string', options: PropOptions = {} ): PropertyDef {
     return {name, type, ...options}
+}
+
+export function actionDef(name: string): ActionDef {
+    return {name}
 }
 
 export default abstract class BaseElement<PropertiesType extends object> {
@@ -49,6 +62,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     isLayoutOnly() { return false }
     abstract get propertyDefs(): PropertyDef[]
+    get actionDefs(): ActionDef[] { return []}
 
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
@@ -162,7 +176,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return Math.max(ownMax(), ...this.elementArray().map(el => el.findMaxId(elementType)))
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'any' }
+    static get parentType(): ParentType { return 'any' }
 
     get codeName() {
         const noSpaceName = noSpaces(this.name)

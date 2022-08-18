@@ -21,6 +21,9 @@ export default class Project extends BaseElement<Properties> implements Element 
         ]
     }
 
+    get pathSegment() {
+        return ''
+    }
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
         if (insertPosition === 'inside') {
@@ -51,15 +54,8 @@ export default class Project extends BaseElement<Properties> implements Element 
         return moveSucceeded ? newProject : this
     }
 
-    get pathSegment() {
-        return ''
-    }
-
-
-
     canContain(elementType: ElementType) {
         const parentType = elementOfType(elementType).parentType
         return parentType === this.kind
     }
-
 }
