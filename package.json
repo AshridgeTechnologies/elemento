@@ -8,11 +8,11 @@
     "tscheck": "tsc --noEmit",
     "test": "jest",
     "testcoverage": "yarn test --coverage",
-    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build ",
+    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build 'src/appswebsite/**/index.html'",
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test",
-    "esbuild": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js"
+    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js"
   },
   "devDependencies": {
     "@parcel/transformer-less": "2.6.0",
@@ -39,6 +39,7 @@
     "fake-indexeddb": "^4.0.0",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
+    "local-web-server": "^5.2.1",
     "os-browserify": "^0.3.0",
     "parcel": "2.6.0",
     "process": "^0.11.10",
@@ -73,24 +74,5 @@
   },
   "alias": {
     "csv-parse/sync": "./node_modules/csv-parse/lib/sync.js"
-  },
-  "targets": {
-    "site": {
-      "source": [
-        "src/appswebsite/index.html",
-        "src/appswebsite/learn/index.html",
-        "src/appswebsite/studio/index.html",
-        "src/appswebsite/run/index.html",
-        "src/appswebsite/terms/index.html",
-        "src/appswebsite/privacy/index.html"
-      ]
-    },
-    "runtime": {
-      "source": "src/runtime/index.ts",
-      "context": "browser",
-      "isLibrary": true,
-      "includeNodeModules": true,
-      "outputFormat": "esmodule"
-    }
   }
 }
