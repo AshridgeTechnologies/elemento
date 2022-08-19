@@ -25,6 +25,8 @@ import FunctionDef from '../../src/model/FunctionDef'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
+import FirebasePublish from '../../src/model/FirebasePublish'
+import {ProjectContext} from '../../src/editor/Editor'
 
 let container: any
 let changedValue: any
@@ -344,6 +346,21 @@ test('has fields for FileDataStore', () => {
     const element = new FileDataStore('id1', 'File Data Store 1', {})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('File Data Store 1')
+})
+
+test('has fields and actions for FirebasePublish', () => {
+    const element = new FirebasePublish('id1', 'Firebase Publish 1', {firebaseProject: 'project-one'})
+    element.publish = jest.fn()
+    const project = new Project('id1', 'proj1', {})
+    render(<ProjectContext.Provider value={project}>
+        <PropertyEditor element={element} onChange={onChange}/>
+    </ProjectContext.Provider>)
+    expect(nameInputValue()).toBe('Firebase Publish 1')
+    expect(inputValue('Firebase Project')).toBe('project-one')
+
+    const publishButton = screen.getByText('Publish')
+    fireEvent.click(publishButton)
+    expect(element.publish).toHaveBeenCalledWith(project)
 })
 
 test('shows errors for each property', () => {

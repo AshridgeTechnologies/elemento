@@ -17,11 +17,11 @@ import Data from './Data'
 import FileDataStore from './FileDataStore'
 import BrowserDataStore from './BrowserDataStore'
 import MemoryDataStore from './MemoryDataStore'
-// Note: use ElementType name for Function
-import Function from './FunctionDef'
+import Function from './FunctionDef' // Note: use ElementType name for Function
 import Collection from './Collection'
 import Layout from './Layout'
 import {ElementType} from './Types'
+import FirebasePublish from './FirebasePublish'
 
 export const elementTypes = () => {
     return {
@@ -47,6 +47,7 @@ export const elementTypes = () => {
         Function: Function,
         Collection: Collection,
         Layout: Layout,
+        FirebasePublish: FirebasePublish,
     }
 }
 

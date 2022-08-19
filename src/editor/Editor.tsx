@@ -45,6 +45,8 @@ const treeData = (project: Project): ModelTreeItem => {
 }
 
 const allElementTypes = Object.keys(elementTypes()) as ElementType[]
+export const ProjectContext = React.createContext<Project | null>(null)
+
 export default function Editor({
     project,
     onChange,
@@ -181,7 +183,8 @@ export default function Editor({
         <EditorMenuBar/>
     </Box>
 
-    return <Box display='flex' flexDirection='column' height='100%' width='100%'>
+    return <ProjectContext.Provider value={project}>
+    <Box display='flex' flexDirection='column' height='100%' width='100%'>
         {OverallAppBar}
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
@@ -227,5 +230,6 @@ export default function Editor({
             </Grid>
         </Box>
     </Box>
+    </ProjectContext.Provider>
 
 }

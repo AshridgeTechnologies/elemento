@@ -1,5 +1,5 @@
 export type ElementId = string
-export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app'
+export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility'
 export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr'
 export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | PropertyExpr
@@ -13,6 +13,9 @@ export type PropertyDef = {
     multilineExpr?: boolean,
     state?: boolean,
     fixedOnly?: boolean
+}
+export type ActionDef = {
+    name: string,
 }
 
 export type ElementType =
@@ -37,4 +40,7 @@ export type ElementType =
     'MemoryDataStore' |
     'Function' |
     'Collection' |
-    'Layout'
+    'Layout' |
+    'FirebasePublish'
+
+export type ParentType = ElementType | 'any' | null
