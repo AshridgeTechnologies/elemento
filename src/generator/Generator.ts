@@ -47,14 +47,20 @@ const topoSort = (entries: StateEntry[]): StateEntry[] => {
 }
 
 
-export function generate(app: App) {
-    return new Generator(app).output()
+export const DEFAULT_IMPORTS = [
+    `import React from 'react'`,
+    `import Elemento from 'elemento-runtime'`
+]
+
+export function generate(app: App, imports: string[] = DEFAULT_IMPORTS) {
+    return new Generator(app, imports).output()
+
 }
 
 export default class Generator {
     private parser
     
-    constructor(public app: App) {
+    constructor(public app: App, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app)
     }
 
@@ -68,7 +74,7 @@ export default class Generator {
             content: 'export default ' + this.generateComponent(this.app, this.app)
         }
 
-        const imports = 'import React from \'react\'\nimport Elemento from \'elemento-runtime\'\n\n'
+        const imports = this.imports.join('\n') + '\n\n'
         return {
             files: [...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
