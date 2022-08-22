@@ -258,6 +258,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'MemoryDataStore':
             case 'FileDataStore':
             case 'BrowserDataStore':
+            case 'FirestoreDataStore':
             case 'Function':
             case 'FirebasePublish':
                 return ''

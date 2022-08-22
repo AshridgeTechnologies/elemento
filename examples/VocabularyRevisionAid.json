@@ -74,6 +74,13 @@
                   "expr": "ShowPage(ImportPage)"
                 }
               }
+            },
+            {
+              "id": "userlogon_1",
+              "name": "User Logon 1",
+              "kind": "UserLogon",
+              "properties": {},
+              "elements": []
             }
           ]
         },
@@ -672,14 +679,11 @@
           ]
         },
         {
-          "id": "browserdatastore_1",
-          "name": "Browser Data Store 1",
-          "kind": "BrowserDataStore",
+          "id": "firestoredatastore_1",
+          "name": "Firestore Data Store 1",
+          "kind": "FirestoreDataStore",
           "properties": {
-            "databaseName": "VocabularyRevision",
-            "collectionNames": [
-              "Words"
-            ]
+            "collections": "Words: user-private"
           },
           "elements": []
         },
@@ -690,12 +694,21 @@
           "properties": {
             "collectionName": "Words",
             "dataStore": {
-              "expr": "BrowserDataStore1"
+              "expr": "FirestoreDataStore1"
             },
             "display": false
           }
         }
       ]
+    },
+    {
+      "id": "firebasepublish_1",
+      "name": "Firebase Publisher",
+      "kind": "FirebasePublish",
+      "properties": {
+        "firebaseProject": "revision-zoo"
+      },
+      "elements": []
     }
   ]
 }

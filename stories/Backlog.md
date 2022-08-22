@@ -29,6 +29,7 @@ Stories
 - Types
 - Validation
 - Model-driven components
+- Firestore access rules
 
 ### Priority 2
 - Firebase deploy Part 2
@@ -65,6 +66,7 @@ Epics
 Tech debt
 ---------
 
+- Fix all uses of constructor.name
 - Code generator
 - Introducing new components
 - DOM Testing

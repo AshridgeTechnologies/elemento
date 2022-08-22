@@ -2,11 +2,12 @@ declare global {
     var google: any
 }
 
-// TODO(developer): Set to client ID and API key from the Developer Console
 const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
 const API_KEY = 'AIzaSyBt5DsD6YG2naMDe2tsaZcOjL8G81dR8-c'
 
-const DISCOVERY_DOC = 'https://firebasehosting.googleapis.com/$discovery/rest?version=v1beta1'
+const DISCOVERY_DOCS = ['https://firebasehosting.googleapis.com/$discovery/rest?version=v1beta1',
+                        'https://firebase.googleapis.com/$discovery/rest?version=v1beta1',
+]
 
 const SCOPES = [
     'https://www.googleapis.com/auth/firebase',
@@ -23,7 +24,7 @@ function gapiLoaded() {
     gapi.load('client', async function () {
         await gapi.client.init({
             apiKey: API_KEY,
-            discoveryDocs: [DISCOVERY_DOC],
+            discoveryDocs: DISCOVERY_DOCS,
         })
         gapiInited = true
     })

@@ -11,7 +11,7 @@ import {
     format,
     parseISO
 } from 'date-fns'
-import * as csv from 'csv-parse/sync'
+import Papa, {ParseConfig} from 'papaparse'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 
@@ -199,8 +199,8 @@ export const globalFunctions = {
     },
 
     CsvToRecords(csvText: string, columnNames?: string[]) {
-        const cast = (field: string, context: any) => {
-            if (context.quoting) return field
+        const transform = (fieldRaw: string) => {
+            const field = fieldRaw.trim()
             if (field === '') return undefined
             if (isNumeric(field)) return Number(field)
             if (field.toLowerCase() === 'true') return true
@@ -212,23 +212,23 @@ export const globalFunctions = {
             return field
         }
         const lowerCaseId = (s: string) => s === 'Id' ? 'id' : s
-        const convertColumnNames = (names: string[]) => names.map( noSpaces ).map(lowerCaseId)
+        const transformHeader = (s: string) => noSpaces(lowerCaseId(s))
         const removeUndefinedFields = (obj: object) => {
-            const definedEntries = Object.entries(obj).filter( ([, value]) => value !== undefined)
+            const definedEntries = Object.entries(obj).filter( ([key, value]) => value !== undefined && key !== '__parsed_extra')
             return Object.fromEntries(definedEntries)
         }
         const lines = csvText.split(/[\r\n]+/)
         const tabDelimiters = lines.every( line => line.includes('\t'))
-        return csv.parse(csvText, {
-            columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
-            delimiter: tabDelimiters ? '\t' : ',',
-            cast,
-            skip_empty_lines: true,
-            skip_records_with_empty_values: true,
-            relax_quotes: true,
-            relax_column_count: true,
-            trim: true
-        }).map(removeUndefinedFields)
+        const delim = tabDelimiters ? '\t' : ','
+        const textWithHeaders = columnNames ? columnNames.join(delim) + '\n' + csvText : csvText
+        const config: ParseConfig = {
+            header: true,
+            skipEmptyLines: 'greedy',
+            transformHeader,
+            transform
+        }
+        const result = Papa.parse(textWithHeaders, config) as any
+        return result.data.map(removeUndefinedFields)
     }
 }
 

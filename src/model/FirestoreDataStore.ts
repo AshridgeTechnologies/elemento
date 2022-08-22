@@ -1,0 +1,70 @@
+import {ActionDef, ComponentType, ParentType, PropertyDef} from './Types'
+import Element from './Element'
+import BaseElement, {actionDef, propDef} from './BaseElement'
+import FireplaceIcon from '@mui/icons-material/Fireplace'
+import {parseCollections} from '../shared/CollectionConfig'
+import Project from './Project'
+
+type Properties = {
+    readonly collections?: string,
+}
+
+function generateSecurityRules(collections: string) {
+    const collectionConfigs = parseCollections(collections)
+    const rules = collectionConfigs.map( coll => {
+        if (coll.isUserPrivate()) {
+            return `
+    match /users/{userId}/${coll.name}/{record} {
+      allow read: if request.auth.uid == userId;
+      allow write: if request.auth.uid == userId;
+    }`
+        } else {
+            return `
+    match /${coll.name}/{record} {
+      allow read: if request.auth.uid != null;
+      allow write: if request.auth.uid != null;
+    }`
+        }
+    })
+
+    const ruleText = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+${rules.join('\n')} 
+  }       
+}`
+
+    return ruleText
+}
+
+export default class FirestoreDataStore extends BaseElement<Properties> implements Element {
+
+    static kind = 'FirestoreDataStore'
+    static get iconClass() { return FireplaceIcon }
+    static get parentType() { return 'App' as ParentType }
+    type(): ComponentType { return 'statefulUI' }
+
+    get collections() {return this.properties.collections}
+
+    get securityRules() { return generateSecurityRules(this.properties.collections ?? '')}
+
+    get propertyDefs(): PropertyDef[] {
+        return [
+            propDef('collections', 'string multiline', {state: true, fixedOnly: true}),
+        ]
+    }
+
+    get actionDefs(): ActionDef[] {
+        return [
+            actionDef('publishSecurityRules')
+        ]
+    }
+
+
+    async publishSecurityRules(project: Project) {
+        console.log('Security Rules')
+        console.log(this.securityRules)
+    }
+
+}
+

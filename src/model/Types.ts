@@ -41,6 +41,7 @@ export type ElementType =
     'Function' |
     'Collection' |
     'Layout' |
-    'FirebasePublish'
+    'FirebasePublish' |
+    'FirestoreDataStore'
 
 export type ParentType = ElementType | 'any' | null
