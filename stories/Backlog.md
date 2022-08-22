@@ -15,7 +15,6 @@ Stories
 -------
 
 ### Priority 1
-- Firebase deploy
 - Firestore data storage
 - Revision aid example
 - New publishing
@@ -125,6 +124,7 @@ Done
 - Menu component
 - User Logon
 - IndexedDB datastore
+- Firebase deploy Part 1
 
 
 Bugs fixed
