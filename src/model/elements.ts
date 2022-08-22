@@ -22,6 +22,7 @@ import Collection from './Collection'
 import Layout from './Layout'
 import {ElementType} from './Types'
 import FirebasePublish from './FirebasePublish'
+import FirestoreDataStore from './FirestoreDataStore'
 
 export const elementTypes = () => {
     return {
@@ -48,6 +49,7 @@ export const elementTypes = () => {
         Collection: Collection,
         Layout: Layout,
         FirebasePublish: FirebasePublish,
+        FirestoreDataStore: FirestoreDataStore,
     }
 }
 
