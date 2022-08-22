@@ -17,11 +17,11 @@ Requirements
 - ✅ Ask for permissions only when publish to Google
 - ✅ Publish to Google Firebase action on the model component
 - ✅ All necessary files loaded to FB hosting
-- Display progress and errors
-- Display link to open on success
+- Display progress and errors --> Part 2
+- Display link to the deployed site --> Part 2
 - ✅ Site serves HTML page which loads libraries and generated code
 - ✅ Use modern techniques like imports and modules where possible
-- Use hashes on file names and caching headers to improve performance
+- Use hashes on file names and caching headers to improve performance --> Part 2
 
 Implementation notes
 --------------------
