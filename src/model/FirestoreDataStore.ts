@@ -4,7 +4,7 @@ import BaseElement, {propDef} from './BaseElement'
 import FireplaceIcon from '@mui/icons-material/Fireplace'
 
 type Properties = {
-    readonly collectionSecurity?: string,
+    readonly collections?: string,
 }
 
 export default class FirestoreDataStore extends BaseElement<Properties> implements Element {
@@ -14,11 +14,11 @@ export default class FirestoreDataStore extends BaseElement<Properties> implemen
     static get parentType() { return 'App' as ParentType }
     type(): ComponentType { return 'statefulUI' }
 
-    get collectionSecurity() {return this.properties.collectionSecurity}
+    get collections() {return this.properties.collections}
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('collectionSecurity', 'string multiline', {fixedOnly: true}),
+            propDef('collections', 'string multiline', {state: true, fixedOnly: true}),
         ]
     }
 

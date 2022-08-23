@@ -3,6 +3,7 @@ import React, {createElement, FunctionComponent} from 'react'
 import {treeItemSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
+import fs from 'fs'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
