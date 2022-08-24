@@ -22,10 +22,12 @@ Requirements
 - ✅ Google account required for developer to set up database
 - ✅ Model object in the editor
 - Can add in editor and use as a store
-- Configuration data needed is held in model object
+- Configuration data needed is loaded from deployed app
+- Dev configuration data is available in dev preview
 - ✅ Do not assume Firebase hosting
 - ✅ Security is enforced to keep users' data separate
 - Update security rules action in the model object
+- Can select project to update from a list
 
 Security requirements
 ---------------------
@@ -36,9 +38,8 @@ Security requirements
   - ✅ An unrestricted query just gets that user's records
   - ✅ User has full read-write access
 - Otherwise shared
-- Read: public, signed-in, roles
-- Write: roles, creator
-- One record per user
+- Permissions: signed in can read and write
+
 
 
 Implementation notes

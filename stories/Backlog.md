@@ -29,6 +29,7 @@ Stories
 - Types
 - Validation
 - Model-driven components
+- Firestore access rules
 
 ### Priority 2
 - Firebase deploy Part 2
