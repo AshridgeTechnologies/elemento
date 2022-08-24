@@ -19,6 +19,7 @@ async function hashData(data: BufferSource) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
+type GapiResponse = {status: number, result: any}
 async function uploadFile(uploadUrl: string, filePath: string, hash: string, data: BufferSource) {
     const token = gapi.client.getToken()
     const options = {
@@ -47,27 +48,18 @@ export default class FirebaseDeploy {
         console.log('Deploying')
         const gapi = await getGapi()
 
-        type GapiResponse = {status: number, result: any}
-        const checkError = (response: GapiResponse): any => {
-            if (response.status !== 200) {
-                const {message} = response.result.error
-                throw new Error(`Error deploying to ${this.deployment.firebaseProject}: ${message}`)
-            }
-
-            return response.result
-        }
-        const sites = checkError(await gapi.client.firebasehosting.projects.sites.list({parent:`projects/${this.deployment.firebaseProject}`})).sites
+        const sites = this.checkError(await gapi.client.firebasehosting.projects.sites.list({parent:`projects/${this.deployment.firebaseProject}`})).sites
         console.log('sites', sites)
 
         const site = sites.find((s: any) => s.type === 'DEFAULT_SITE')
-        const version = checkError(await gapi.client.firebasehosting.sites.versions.create({parent: site.name}))
+        const version = this.checkError(await gapi.client.firebasehosting.sites.versions.create({parent: site.name}))
         console.log('version', version)
 
         const files = await this.files()
         console.log(files)
 
         const filesToPopulate = mapObjIndexed( ({hash}) => hash, files )
-        const populateFilesResult = checkError(await gapi.client.firebasehosting.sites.versions.populateFiles({
+        const populateFilesResult = this.checkError(await gapi.client.firebasehosting.sites.versions.populateFiles({
             parent: version.name,
             files: filesToPopulate
         }))
@@ -90,26 +82,47 @@ export default class FirebaseDeploy {
 
         await Promise.all(uploadPromises)
 
-        const patchResult = checkError(await gapi.client.firebasehosting.sites.versions.patch({
+        const patchResult = this.checkError(await gapi.client.firebasehosting.sites.versions.patch({
             name: version.name,
             updateMask: 'status',
             status: 'FINALIZED'
         }))
         console.log('patch', patchResult)
 
-        const releaseResult = checkError(await gapi.client.firebasehosting.sites.releases.create({
+        const releaseResult = this.checkError(await gapi.client.firebasehosting.sites.releases.create({
             parent: site.name,
             versionName: version.name,
         }))
         console.log('release', releaseResult)
+    }
+
+    private checkError(response: GapiResponse): any{
+        if (response.status !== 200) {
+            const {message} = response.result.error
+            throw new Error(`Error deploying to ${this.deployment.firebaseProject}: ${message}`)
+        }
+
+        return response.result
+    }
 
 
+    private async webApp() {
+        // @ts-ignore
+        const webApps = this.checkError(await gapi.client.firebase.projects.webApps.list({parent:`projects/${this.deployment.firebaseProject}`})).apps
+        console.log('webapps', webApps)
+
+        const webApp = webApps.find((s: any) => s.state === 'ACTIVE')
+        console.log('webapp', webApp)
+        return webApp
     }
 
     private async files(): Promise<{[path: string] : {filePath: string, text: string, hash: string, gzip: Uint8Array}}> {
         const files = {
             '/index.html': {
                 text: this.indexFile()
+            },
+            '/firebaseConfig.json': {
+                text: await this.configFile()
             },
             [`/${this.codeFileName}`]: {
                 text: this.codeFile()
@@ -140,6 +153,14 @@ export default class FirebaseDeploy {
 
     private runtimeLibFile() {
         return fetch(runtimeFileSourceUrl).then(resp => resp.text())
+    }
+
+    private async configFile() {
+        const webApp = await this.webApp()
+        // @ts-ignore
+        const config = this.checkError(await gapi.client.firebase.projects.webApps.getConfig({name:`projects/${this.deployment.firebaseProject}/webApps/${webApp.appId}/config`}))
+        console.log('config', config)
+        return JSON.stringify(config, null, 2)
     }
 
     private indexFile() {

@@ -40,6 +40,12 @@ Security requirements
 - Otherwise shared
 - Permissions: signed in can read and write
 
+Config management
+-----------------
+
+- Deploy creates config and uploads
+- App gets config when it runs
+
 
 
 Implementation notes
