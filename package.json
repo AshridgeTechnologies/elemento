@@ -12,7 +12,7 @@
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test",
-    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js"
+    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js && cp -r dist/runtime devDist"
   },
   "devDependencies": {
     "@parcel/transformer-less": "2.6.0",

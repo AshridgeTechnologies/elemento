@@ -21,8 +21,8 @@ Requirements
 - ✅ Needs a Firebase project
 - ✅ Google account required for developer to set up database
 - ✅ Model object in the editor
-- Can add in editor and use as a store
-- Configuration data needed is loaded from deployed app
+- ✅ Can add in editor and use as a store
+- ✅ Configuration data needed is loaded from deployed app
 - Dev configuration data is available in dev preview
 - ✅ Do not assume Firebase hosting
 - ✅ Security is enforced to keep users' data separate
@@ -43,8 +43,8 @@ Security requirements
 Config management
 -----------------
 
-- Deploy creates config and uploads
-- App gets config when it runs
+- ✅ Deploy creates config and uploads
+- ✅ App gets config when it runs
 
 
 

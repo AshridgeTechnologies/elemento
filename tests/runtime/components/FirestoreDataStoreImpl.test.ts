@@ -1,20 +1,20 @@
 import 'fake-indexeddb/auto'
 import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import {FirestoreDataStoreImpl} from '../../../src/runtime/components/index'
-import {setConfig, getApp} from '../../../src/runtime/components/FirestoreDataStoreImpl'
 
 import * as auth from 'firebase/auth'
 import fs from 'fs'
+import {getApp, setConfig} from '../../../src/runtime/components/firebaseApp'
 
 let store: FirestoreDataStoreImpl
 
 async function signInAs(testAccountFile: string) {
     const {name, password} = JSON.parse(fs.readFileSync(testAccountFile, 'utf8'))
-    await auth.signInWithEmailAndPassword(auth.getAuth(getApp()), name, password)
+    await auth.signInWithEmailAndPassword(auth.getAuth(await getApp()), name, password)
 }
 
-function signOut() {
-    return auth.signOut(auth.getAuth(getApp()))
+async function signOut() {
+    return auth.signOut(auth.getAuth(await getApp()))
 }
 
 beforeAll(async () => {

@@ -11,7 +11,7 @@ import {
     format,
     parseISO
 } from 'date-fns'
-import * as csv from 'csv-parse/sync'
+// import * as csv from 'csv-parse/sync'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 
@@ -219,16 +219,17 @@ export const globalFunctions = {
         }
         const lines = csvText.split(/[\r\n]+/)
         const tabDelimiters = lines.every( line => line.includes('\t'))
-        return csv.parse(csvText, {
-            columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
-            delimiter: tabDelimiters ? '\t' : ',',
-            cast,
-            skip_empty_lines: true,
-            skip_records_with_empty_values: true,
-            relax_quotes: true,
-            relax_column_count: true,
-            trim: true
-        }).map(removeUndefinedFields)
+        return []
+        // return csv.parse(csvText, {
+        //     columns: columnNames ? convertColumnNames(columnNames): convertColumnNames,
+        //     delimiter: tabDelimiters ? '\t' : ',',
+        //     cast,
+        //     skip_empty_lines: true,
+        //     skip_records_with_empty_values: true,
+        //     relax_quotes: true,
+        //     relax_column_count: true,
+        //     trim: true
+        // }).map(removeUndefinedFields)
     }
 }
 
