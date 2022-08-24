@@ -24,6 +24,7 @@ import {
     where,
     writeBatch
 } from 'firebase/firestore'
+import * as auth from 'firebase/auth'
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
 import {mapObjIndexed} from 'ramda'
@@ -33,17 +34,29 @@ import firebase from 'firebase/compat'
 import DocumentData = firebase.firestore.DocumentData
 import Timestamp = firebase.firestore.Timestamp
 
-let firebaseConfig = {}
+class FirebaseAppManager {
+    private app: FirebaseApp | null = null
+    private firebaseConfig: any = {}
 
-let app: FirebaseApp | null
+    getApp() {
+        this.app = this.app ?? initializeApp(this.firebaseConfig, this.firebaseConfig.projectId)
+        return this.app
+    }
+
+    setConfig(config: any) {
+        this.firebaseConfig = config
+        this.app = null
+    }
+}
+
+const appManager = new FirebaseAppManager()
+
 export const getApp = () => {
-    app = app ?? initializeApp(firebaseConfig)
-    return app
+    return appManager.getApp()
 }
 
 export const setConfig = (config: any) => {
-    firebaseConfig = config
-    app = null
+    appManager.setConfig(config)
 }
 
 const convertValue = (value: any) => value instanceof Timestamp ? value.toDate() : value
@@ -66,8 +79,8 @@ const parseCollections = (config: string) => {
 
 type Properties = {collections: string}
 export default class FirestoreDataStoreImpl implements DataStore {
-    private db: Firestore
-    private collections: CollectionConfig[]
+    private readonly db: Firestore
+    private readonly collections: CollectionConfig[]
     constructor(private props: Properties) {
         this.collections = parseCollections(props.collections ?? '')
         this.db = getFirestore(getApp())
@@ -75,14 +88,29 @@ export default class FirestoreDataStoreImpl implements DataStore {
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
 
-    async getById(collectionName: CollectionName, id: Id) {
+    private collectionRef(collectionName: CollectionName) {
         const collectionConfig = this.collections.find( coll => coll.name === collectionName)
         if (!collectionConfig) {
             throw new Error(`Collection '${collectionName}' not found`)
         }
 
-        const docRef = doc(this.db, collectionName, id.toString());
-        const docSnap = await getDoc(docRef);
+        if (collectionConfig.isUserPrivate()) {
+            const user = auth.getAuth(getApp()).currentUser
+            if (!user) {
+                throw new Error(`Cannot access user-private collection '${collectionName}' if not logged in`)
+            }
+            return collection(this.db, 'users', user.uid, collectionName)
+        }
+
+        return collection(this.db, collectionName)
+    }
+
+    private docRef(collectionName: CollectionName, id: Id) {
+        return doc(this.collectionRef(collectionName), id.toString())
+    }
+
+    async getById(collectionName: CollectionName, id: Id) {
+        const docSnap = await getDoc(this.docRef(collectionName, id))
         if (!docSnap.exists()) {
             throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
         }
@@ -92,9 +120,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
         const itemWithId = {id, ...item}
-        const collRef = collection(this.db, collectionName);
-
-        await setDoc(doc(collRef, id.toString()), itemWithId);
+        await setDoc(this.docRef(collectionName, id), itemWithId);
         this.notify(collectionName, Add, id, item)
     }
 
@@ -105,31 +131,26 @@ export default class FirestoreDataStoreImpl implements DataStore {
         const batch = writeBatch(this.db);
 
         Object.values(itemsWithIds).forEach(item => {
-            const ref = doc(this.db, collectionName, item.id.toString())
-            batch.set(ref, item)
+            batch.set(this.docRef(collectionName, item.id), item)
         })
         await batch.commit()
         this.notify(collectionName, MultipleChanges)
     }
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
-        const docRef = doc(this.db, collectionName, id.toString())
-        await updateDoc(docRef, changes)
+        await updateDoc(this.docRef(collectionName, id), changes)
         this.notify(collectionName, Update, id, changes)
     }
 
-    async remove(collection: CollectionName, id: Id) {
-        const docRef = doc(this.db, collection, id.toString())
-        await deleteDoc(docRef)
-        this.notify(collection, Remove, id)
+    async remove(collectionName: CollectionName, id: Id) {
+        await deleteDoc(this.docRef(collectionName, id))
+        this.notify(collectionName, Remove, id)
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        const collRef = collection(this.db, collectionName)
-
         const asConstraint = ([name, value]: [name: string, value: any]) => where(name, '==', value)
         const constraints = Object.entries(criteria).map(asConstraint)
-        const q = query(collRef, ...constraints)
+        const q = query(this.collectionRef(collectionName), ...constraints)
 
         return (await getDocs(q)).docs.map(d => convertDocumentData(d.data()))
     }
