@@ -23,11 +23,8 @@ Requirements
 - ✅ Model object in the editor
 - ✅ Can add in editor and use as a store
 - ✅ Configuration data needed is loaded from deployed app
-- Dev configuration data is available in dev preview
 - ✅ Do not assume Firebase hosting
 - ✅ Security is enforced to keep users' data separate
-- Update security rules action in the model object
-- Can select project to update from a list
 
 Security requirements
 ---------------------
@@ -37,8 +34,8 @@ Security requirements
   - ✅ Each user sees their own collection
   - ✅ An unrestricted query just gets that user's records
   - ✅ User has full read-write access
-- Otherwise shared
-- Permissions: signed in can read and write
+- ✅ Otherwise shared
+- ✅ Permissions: signed in can read and write
 
 Config management
 -----------------

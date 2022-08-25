@@ -44,12 +44,12 @@ export const elementTypes = () => {
         Data: Data,
         FileDataStore: FileDataStore,
         BrowserDataStore: BrowserDataStore,
+        FirestoreDataStore: FirestoreDataStore,
         MemoryDataStore: MemoryDataStore,
         Function: Function,
         Collection: Collection,
         Layout: Layout,
         FirebasePublish: FirebasePublish,
-        FirestoreDataStore: FirestoreDataStore,
     }
 }
 

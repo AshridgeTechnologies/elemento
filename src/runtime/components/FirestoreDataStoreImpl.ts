@@ -30,24 +30,10 @@ import SendObservable from '../SendObservable'
 import {mapObjIndexed} from 'ramda'
 import {getApp} from './firebaseApp'
 import {FirebaseApp} from 'firebase/app'
+import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 
 const convertValue = (value: any) => value.constructor.name === 'Timestamp' ? value.toDate() : value
 const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
-
-class CollectionConfig {
-    constructor(public name: string, public roles: string[]) {}
-    isUserPrivate() { return this.roles.includes('user-private')}
-}
-
-const parseLine = (line: string) => {
-    const [name, roleList = ''] = line.trim().split(/ *: */)
-    const roles = roleList.trim().split(/ *, */)
-    return new CollectionConfig(name, roles)
-}
-const parseCollections = (config: string) => {
-    const lines = config.split(/\n+/)
-    return lines.map(parseLine)
-}
 
 type Properties = {collections: string}
 export default class FirestoreDataStoreImpl implements DataStore {

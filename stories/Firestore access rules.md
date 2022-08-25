@@ -9,6 +9,13 @@ Aim
 Requirements
 ------------
 
+### Development and deploy
+
+- Update security rules action in the model object
+- Can select Firebase project to update from a list
+- Can select Firebase project for the preview config
+
+### Rules capabilities
 - Each collection can have several security rules applied
 - If any rule allows the operation, it is allowed
 - Rules are of the form: <role>-<permission>
