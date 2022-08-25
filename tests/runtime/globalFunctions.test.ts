@@ -483,7 +483,7 @@ describe('CsvToRecords', () => {
         ])
     })
 
-    test('converts csv to records using appropriate field types and allows quotes in fields and trims unquoted fields', () => {
+    test('converts csv to records using appropriate field types and allows quotes in fields and trims all fields', () => {
         const csvText = `id,Description,Height,IsShiny,FirstUsed\n`
                         + `id1,First "Widget"'s Description,27,true,2022-07-14T08:15:35.607Z\n`
                         + `id2,"Widget, again","32",false,2022-07-14\n`
@@ -493,10 +493,10 @@ describe('CsvToRecords', () => {
         const records = CsvToRecords(csvText)
         expect(records).toStrictEqual([
             {id: 'id1', Description: 'First "Widget"\'s Description', Height: 27, IsShiny: true, FirstUsed: new Date(Date.parse('2022-07-14T08:15:35.607Z'))},
-            {id: 'id2', Description: 'Widget, again', Height: "32", IsShiny: false, FirstUsed: new Date(2022, 6, 14)},
-            {id: 'id3', Description: 'Widget three', Height: 32, IsShiny: 'true', FirstUsed: '2022-07-32'},
-            {id: 'id4', Description: ' Widget 2 ', Height: "32", IsShiny: 'false', FirstUsed: '2022-07-14T08:15:35.607Z'},
-            {id: 'id5', Description: ' Widget 5', Height: 45.67, IsShiny: true, FirstUsed: new Date(2022, 6, 14, 8, 15, 35)},
+            {id: 'id2', Description: 'Widget, again', Height: 32, IsShiny: false, FirstUsed: new Date(2022, 6, 14)},
+            {id: 'id3', Description: 'Widget three', Height: 32, IsShiny: true, FirstUsed: '2022-07-32'},
+            {id: 'id4', Description: 'Widget 2', Height: 32, IsShiny: false, FirstUsed: new Date(Date.parse('2022-07-14T08:15:35.607Z'))},
+            {id: 'id5', Description: 'Widget 5', Height: 45.67, IsShiny: true, FirstUsed: new Date(2022, 6, 14, 8, 15, 35)},
         ])
     })
 
