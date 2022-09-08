@@ -12,7 +12,8 @@ export type PropertyDef = {
     type: PropertyType,
     multilineExpr?: boolean,
     state?: boolean,
-    fixedOnly?: boolean
+    fixedOnly?: boolean,
+    readOnly?: boolean
 }
 export type ActionDef = {
     name: string,

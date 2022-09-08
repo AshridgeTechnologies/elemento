@@ -22,6 +22,16 @@ beforeEach(() => {
     newValue = 'not set'
 })
 
+test('shows read only control for string property', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='description' type='string' readOnly={true} value='This is what it is' onChange={() => {} }/>))
+    expect(kindButton()).toBe(null)
+    expect(input().type).toBe('text')
+    expect(input().id).toBe('description')
+    expect(input().value).toBe('This is what it is')
+    expect(input().readOnly).toBe(true)
+    expect(label().textContent).toBe('Description')
+})
+
 test('shows fixed value control for string property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('abc')

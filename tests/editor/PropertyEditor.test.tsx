@@ -27,6 +27,7 @@ import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
 import FirebasePublish from '../../src/model/FirebasePublish'
 import {ProjectContext} from '../../src/editor/Editor'
+import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 
 let container: any
 let changedValue: any
@@ -346,6 +347,25 @@ test('has fields for FileDataStore', () => {
     const element = new FileDataStore('id1', 'File Data Store 1', {})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('File Data Store 1')
+})
+
+test('has fields and actions for FirestoreDataStore', () => {
+    const expectedSecurityRules = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId}/Things/{record} {
+      allow read: if request.auth.uid == userId;
+      allow write: if request.auth.uid == userId;
+    } 
+  }       
+}`
+    const element = new FirestoreDataStore('id1', 'Firestore Data Store 1', {collections: 'Things: user-private'})
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(nameInputValue()).toBe('Firestore Data Store 1')
+    expect(inputValue('Collections')).toBe('Things: user-private')
+    expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
+    expect(input('Security Rules').readOnly).toBe(true)
 })
 
 test('has fields and actions for FirebasePublish', () => {

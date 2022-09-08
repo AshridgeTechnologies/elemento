@@ -51,12 +51,13 @@ export default class FirestoreDataStore extends BaseElement<Properties> implemen
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('collections', 'string multiline', {state: true, fixedOnly: true}),
+            propDef('securityRules', 'string multiline', {readOnly: true}),
         ]
     }
 
     get actionDefs(): ActionDef[] {
         return [
-            actionDef('publishSecurityRules')
+            //actionDef('publishSecurityRules')
         ]
     }
 

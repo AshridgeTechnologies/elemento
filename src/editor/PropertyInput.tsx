@@ -6,8 +6,12 @@ import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 
-export default function PropertyInput({ elementId, name, type, value, onChange, fixedOnly = false,  error}: { elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
-    onChange: OnChangeFn, fixedOnly?: boolean, error?: string }) {
+
+type PropertyInputProps = {
+    elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
+    onChange: OnChangeFn, fixedOnly?: boolean, readOnly?: boolean, error?: string
+}
+export default function PropertyInput({ elementId, name, type, value, onChange, fixedOnly = false, readOnly = false,  error}: PropertyInputProps) {
     const exprOnlyProperty = type === 'action' || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
     const [expr, setExpr] = useState(valueIsExpr)
@@ -76,6 +80,9 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
         const commonProps = {
             variant: 'outlined', disableElevation: true, size: 'small', sx:{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}
         } as any
+        if (readOnly) {
+            return null
+        }
 
         if (exprOnlyProperty) {
             return <Button {...commonProps} color={exprButtonColor} disabled title={'Expression required'}>{exprButtonLabel}</Button>
@@ -108,6 +115,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                 value={initialInputValue()}
                 multiline={type === 'string multiline' || expr}
+                inputProps={{readOnly}}
                 {...numericProps}
                 {...errorProps}
                 onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>

@@ -1,3 +1,5 @@
+set -e
+
 releaseName=$1
 scriptDir=`dirname $0`
 yarn run cleanBuild

@@ -12,11 +12,13 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
 
     const project = useContext(ProjectContext) as Project
 
-    function propertyField<T extends Element>(name: string, type: PropertyType = 'string', fixedOnly = false) {
-        const propertyValue = (element.properties)[name as keyof object] as unknown as PropertyValue
+    function propertyField<T extends Element>(name: string, type: PropertyType = 'string', fixedOnly: boolean, readOnly: boolean) {
+        const valueFromElement = element[name as keyof object] as unknown as PropertyValue
+        const valueFromProps = (element.properties)[name as keyof object] as unknown as PropertyValue
+        const propertyValue = readOnly ? valueFromElement : valueFromProps
         const error = errors[name as keyof object]
         const errorProps = error ? {error} : {}
-        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} fixedOnly={fixedOnly} {...errorProps}/>
+        return <PropertyInput key={`${element.id}.${name}.kind`} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} fixedOnly={fixedOnly} readOnly={readOnly} {...errorProps}/>
     }
 
     function actionButton<T extends Element>(name: string) {
@@ -25,7 +27,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
     }
 
     function propertyFieldsAndActions() {
-        const fields = element.propertyDefs.map(({name, type, fixedOnly}) => propertyField(name, type, fixedOnly))
+        const fields = element.propertyDefs.map(({name, type, fixedOnly, readOnly}) => propertyField(name, type, fixedOnly ?? false, readOnly ?? false))
         const actions = element.actionDefs.map(({name}) => actionButton(name))
         return <>
                 {fields}

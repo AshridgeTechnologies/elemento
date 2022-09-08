@@ -21,7 +21,7 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     return true
 }
 
-type PropOptions = {multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean}
+type PropOptions = {multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean, readOnly?: boolean}
 export function propDef(name: string, type: PropertyType = 'string', options: PropOptions = {} ): PropertyDef {
     return {name, type, ...options}
 }
