@@ -23,8 +23,19 @@ Stories
 - General usability Part 2
 - Security review
 
+### Priority for customer-facing apps
+- Server apps
+- JavaScript functions
+- Payments
+- API calls from browser
+- External API calls (eg for webhook)
+- Styling
+- Email
+- Images
+- Assets - eg image files
+- Web file datastores
 
-### Priority for Pro apps
+### Priority for internal apps
 - Server side functions
 - Types
 - Validation
@@ -66,6 +77,7 @@ Epics
 Tech debt
 ---------
 
+- Investigate Signals https://github.com/preactjs/signals
 - Fix all uses of constructor.name
 - Code generator
 - Introducing new components
