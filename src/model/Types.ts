@@ -43,6 +43,7 @@ export type ElementType =
     'Collection' |
     'Layout' |
     'FirebasePublish' |
-    'FirestoreDataStore'
+    'FirestoreDataStore' |
+    'ServerApp'
 
 export type ParentType = ElementType | 'any' | null

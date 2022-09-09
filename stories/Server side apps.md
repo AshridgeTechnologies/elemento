@@ -9,9 +9,9 @@ Aims
 Requirements
 ------------
 
-- Server side app model object
-- Can contain function definitions
-- Functions are marked as get or action
+- ✅ Server side app model object
+- ✅ Can contain function definitions
+- ✅ Functions are marked as get or action
 - Generates server side app code in a separate file
 - Deploys server side app as a Firebase cloud function
 - App connector model object

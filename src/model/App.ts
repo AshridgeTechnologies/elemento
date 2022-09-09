@@ -1,7 +1,7 @@
 import Page from './Page'
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
 import {without} from 'ramda'
 import {Web} from '@mui/icons-material'
@@ -33,6 +33,6 @@ export default class App extends BaseElement<Properties> implements Element {
         return elementOfType(elementType).parentType === this.kind || ['Collection', 'Function'].includes(elementType)
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'Project' }
+    static get parentType(): ParentType { return 'Project' }
 
 }
