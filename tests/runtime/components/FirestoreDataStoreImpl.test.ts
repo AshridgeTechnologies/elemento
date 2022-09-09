@@ -1,4 +1,3 @@
-import 'fake-indexeddb/auto'
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import {FirestoreDataStoreImpl} from '../../../src/runtime/components/index'
 

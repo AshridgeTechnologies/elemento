@@ -31,7 +31,7 @@ export function queryMatcher(criteria: Criteria) {
     return matches(criteria)
 }
 
-export default interface DataStore {
+export interface BasicDataStore {
     getById(collection: CollectionName, id: Id): Promise<DataStoreObject | void>
     query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>>
 
@@ -39,6 +39,8 @@ export default interface DataStore {
     addAll(collection: CollectionName, items: {[id: Id]: DataStoreObject}): Promise<void>
     update(collection: CollectionName, id: Id, changes: object): Promise<void>
     remove(collection: CollectionName, id: Id): Promise<void>
+}
 
+export default interface DataStore extends BasicDataStore {
     observable(collection: CollectionName): Observable<UpdateNotification>
 }

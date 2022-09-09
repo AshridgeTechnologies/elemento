@@ -1,6 +1,5 @@
-import {isArray, isFunction, isObject, isPlainObject, isString} from 'lodash'
-import {flatten, map} from 'ramda'
-import React from 'react'
+import {isArray, isObject, isPlainObject} from 'lodash'
+import {map} from 'ramda'
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined
@@ -81,21 +80,6 @@ export function valueOf<T>(x: Value<T>): T {
 
 export const valuesOf = (...values: Value<any>[]): any[] => values.map(valueOf)
 export const valueOfProps = (props: object): any => map(valueOf, props)
-
-export function asText(content: any) {
-    if (React.isValidElement(content)) return content
-    const contentValue = content?.valueOf()
-    if (isString(contentValue) && contentValue.includes('\n')) {
-        return flatten(contentValue.split('\n').map((line: string, index: number) => [line, React.createElement('br', {key: index})]))
-    }
-    if (isPlainObject(contentValue)) {
-        return valueLiteral(contentValue)
-    }
-    if (isFunction(contentValue)) {
-        return 'function ' + contentValue.name
-    }
-    return contentValue
-}
 
 export function asArray(value: any[] | object | any) {
     const val = valueOf(value)

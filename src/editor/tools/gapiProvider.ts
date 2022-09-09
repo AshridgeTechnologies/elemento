@@ -7,10 +7,12 @@ const API_KEY = 'AIzaSyBt5DsD6YG2naMDe2tsaZcOjL8G81dR8-c'
 
 const DISCOVERY_DOCS = ['https://firebasehosting.googleapis.com/$discovery/rest?version=v1beta1',
                         'https://firebase.googleapis.com/$discovery/rest?version=v1beta1',
+                        'https://cloudfunctions.googleapis.com/$discovery/rest?version=v2'
 ]
 
 const SCOPES = [
     'https://www.googleapis.com/auth/firebase',
+    'https://www.googleapis.com/auth/cloud-platform'
 ].join(' ')
 
 let tokenClient: any

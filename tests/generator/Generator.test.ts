@@ -22,7 +22,7 @@ import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 
-test('generates app and all page output files', ()=> {
+test('generates main app and server app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),

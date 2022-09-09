@@ -31,7 +31,7 @@ import ControlReference from '../docs/reference/ControlReference'
 import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import Generator, {generate} from '../generator/Generator'
+import {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 import TabbedPanel from './TabbedPanel'
@@ -63,9 +63,8 @@ export default function Editor({
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
 
-    const app = project.elementArray()[0] as App
-    const appCode = generate(app).code
-    const {errors} = new Generator(app).output()
+    const app = project.elementArray().find( el => el.kind === 'App') as App
+    const {errors, code: appCode} = generate(app)
 
     const propertyArea = () => {
         if (firstSelectedItemId) {

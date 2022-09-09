@@ -1,6 +1,5 @@
 import {print, types} from 'recast'
 import {visit,} from 'ast-types'
-import Topo from '@hapi/topo'
 
 import App from '../model/App'
 import Page from '../model/Page'
@@ -13,38 +12,14 @@ import FunctionDef from '../model/FunctionDef'
 import {last, omit} from 'ramda'
 import Parser from './Parser'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
+import {trimParens} from '../util/helpers'
+import {DefinedFunction, objectLiteral, objectLiteralEntries, StateEntry, topoSort} from './generatorHelpers'
 
 type FunctionCollector = {add(s: string): void}
-type StateEntry = [name: string, code: string | DefinedFunction, dependencies: string[]]
 
-class DefinedFunction {
-    constructor(public functionDef: string) {}
-}
-
-function safeKey(name: string) { return name.match(/\W/) ? `'${name}'` : name}
-
-function objectLiteralEntries(obj: object, suffixIfNotEmpty: string = '') {
-    const entries = Object.entries(obj)
-    return entries.length ? entries.map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ') + suffixIfNotEmpty : ''
-}
-
-function objectLiteral(obj: object) {
-    return `{${objectLiteralEntries(obj)}}`
-}
-
-const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel2 = '        '
 const indentLevel3 = '            '
-
-const topoSort = (entries: StateEntry[]): StateEntry[] => {
-    const sorter = new Topo.Sorter<StateEntry>()
-    entries.forEach( entry => {
-        const [name, , dependencies] = entry
-        sorter.add([entry], {after: dependencies, group: name})  // if add plain tuple, sorter treats it as an array
-    })
-    return sorter.nodes
-}
 
 
 export const DEFAULT_IMPORTS = [
@@ -261,6 +236,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'FirestoreDataStore':
             case 'Function':
             case 'FirebasePublish':
+            case 'ServerApp':
                 return ''
 
             default:

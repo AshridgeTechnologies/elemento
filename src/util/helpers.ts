@@ -11,6 +11,7 @@ export const isExpr = function (propertyValue: PropertyValue): propertyValue is 
 }
 
 export const isNumeric = (s: string) : boolean => s!== '' && s.match(/^\d*\.?\d*$/) !== null
+export const isBooleanString = (s: string) : boolean => s.match(/true|false/) !== null
 export const elementToJSON = (value: Element | Element[]) => JSON.stringify(value, null, 2)
 
 export function elementId(elementType: ElementType, idSeq: number) {
@@ -20,3 +21,6 @@ export function elementId(elementType: ElementType, idSeq: number) {
 export const toArray = (value: any) => Array.isArray(value) ? value : [value]
 
 export const noSpaces = (s: string) => s.replace(/ /g, '')
+
+export const isTruthy = (x: any) => !!x
+export const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
