@@ -10,7 +10,7 @@ export default function LearnPage() {
     return <ThemeProvider theme={theme}>
         <Box display='flex' flexDirection='column' height='100%' width='100%'>
             <Box flex='0'>
-                <AppBar title='Elemento Apps - Learn' userMenu={false}/>
+                <AppBar title='Elemento Online - Learn' userMenu={false}/>
             </Box>
             <Box flex='1' minHeight={0}>
                 <TutorialRunner/>

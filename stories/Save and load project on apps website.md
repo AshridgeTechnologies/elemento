@@ -10,9 +10,9 @@ Aims
 Requirements
 ------------
 - New File menu item: Save As...
-- Save As... has sub-menu to choose Elemento Apps or File
-- Save As->Elemento Apps is disabled if not logged in 
-- Save As->Elemento Apps shows dialog to confirm name, default to Project name, with Save and Cancel
+- Save As... has sub-menu to choose Elemento Online or File
+- Save As->Elemento Online is disabled if not logged in 
+- Save As->Elemento Online shows dialog to confirm name, default to Project name, with Save and Cancel
 - Save on dialog writes to projects/{userId}/{project name}
 - File->Save is disabled if not saved yet
 - File->Save always saves to existing cloud file immediately
@@ -23,4 +23,4 @@ Requirements
 Not included
 ------------
 
-- Open from Elemento Apps - use List files page instead
+- Open from Elemento Online - use List files page instead

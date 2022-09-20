@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
         </Box>
         <Box flex='1' minHeight={0}>
             <Stack spacing={2}>
-                <Typography variant='h4'>Elemento Apps - Privacy Policy</Typography>
+                <Typography variant='h4'>Elemento Online - Privacy Policy</Typography>
                 <Typography variant='body1'>Coming soon</Typography>
             </Stack>
         </Box>

@@ -10,7 +10,7 @@ export default function TermsOfServicePage() {
         </Box>
         <Box flex='1' minHeight={0}>
             <Stack spacing={2}>
-                <Typography variant='h4'>Elemento Apps - Terms of Service</Typography>
+                <Typography variant='h4'>Elemento Online - Terms of Service</Typography>
                 <Typography variant='body1'>Coming soon</Typography>
             </Stack>
         </Box>

@@ -39,7 +39,7 @@ export default function HomePage() {
     return <ThemeProvider theme={theme}>
         <Box display='flex' flexDirection='column' height='100%' width='100%'>
             <Box flex='0'>
-                <AppBar title='Elemento Apps - Home'/>
+                <AppBar title='Elemento Online - Home'/>
             </Box>
             <Box flex='1' minHeight={0} mt={2}>
                 <Container maxWidth="lg">
