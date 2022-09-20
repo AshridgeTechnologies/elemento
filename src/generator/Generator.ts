@@ -261,6 +261,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'FirestoreDataStore':
             case 'Function':
             case 'FirebasePublish':
+            case 'ServerApp':
                 return ''
 
             default:

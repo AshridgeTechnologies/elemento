@@ -36,11 +36,12 @@ Possibilities
 - If Firebase Publish objects exist, show a select with their names in preview bar
 - Don't show preview until selected a project
 - Ask for permission when select project
+- Use top-level await in gapiProvider to fetch config if it exists, or log a warning and leave empty if not
 
 Spike 1
 -------
 
 - Collect the names of all Firebase Publish objects in the Elemento Project
-- If they exist, put a bar with a select ofthe names above the preview frame
+- If they exist, put a bar with a select of the names above the preview frame
 - When select, ask the Firebase Publish to get its config
 - Inject the config into the preview

@@ -18,7 +18,8 @@ Needs
 - Can provide external APIs
 - Can call third party APIs
 - Calls from the browser similar to calling external APIs
-- Async handled automatically
+- Async calls handled automatically in the server code, even if written as plain calls
+- Async result handled automatically on client
 - Get calls are cached automatically
 - Update calls are like actions
 - Errors are handled automatically
@@ -30,6 +31,8 @@ Forces
 
 - Similarity between API calls and database calls
 - Server apps only have functions
+- Dev should not have to worry about async in the formula code
+- Generated code should be in a normal style
 - Need to do GET or POST calls depending on whether calc or action
 - Having id in path may be useful and fit with REST, but could be many other params
 - Get expects params in query string
@@ -57,6 +60,9 @@ Possibilities
 - App connector (or similar idea) also used for third party APIs
 - App connector could hold the cache and adjust call details if needed, make fetch call
 - Return Pending from each call until it resolves, as with Collection and db
+- On server side, prefix all calls with await
+- Detect which functions are async by inspecting them BUT can return promise from non async function
+- Mark functions as sync to avoid using await
 
 Decisions 9 Sep 22
 ------------------
@@ -66,4 +72,5 @@ Decisions 9 Sep 22
 - Standard client App connector adds auth token to cloud function requests
 - Client app must include app connector explicitly
 - App connector configures itself from the server app definition
+- Add await to all function calls - can optimize later
 
