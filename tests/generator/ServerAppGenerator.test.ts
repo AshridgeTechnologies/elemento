@@ -12,7 +12,7 @@ describe('generates files', () => {
     ])
     const gen = new ServerAppGenerator(app)
     const {files} = gen.output()
-    const [serverAppFile, expressAppFile, packageFile] = files
+    const [serverAppFile, expressAppFile, functionFile, packageFile] = files
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('ServerApp1.js')
@@ -40,7 +40,7 @@ export default ServerApp1`)
     test('express app file', () => {
         expect(expressAppFile.name).toBe('ServerApp1Express.js')
         expect(expressAppFile.content).toBe(`import express from 'express'
-import baseApp from './ServerApp1'
+import baseApp from './ServerApp1.js'
 
 const app = express()
 
@@ -49,23 +49,31 @@ app.get('/Plus', async (req, res) => {
     try {
         res.send(await baseApp.Plus(a, b))
     } catch(err) { next(err) }
-}
+})
 
 app.get('/Mult', async (req, res) => {
     const {c, d} = req.query
     try {
         res.send(await baseApp.Mult(c, d))
     } catch(err) { next(err) }
-}
+})
 
 app.get('/Total', async (req, res) => {
     const {x, y, z} = req.query
     try {
         res.send(await baseApp.Total(x, y, z))
     } catch(err) { next(err) }
-}
+})
 
 export default app`)
+    })
+
+    test('function file', () => {
+        expect(functionFile.name).toBe('index.js')
+        expect(functionFile.content).toBe(`import {onRequest} from 'firebase-functions/v2/https'
+import app from './ServerApp1Express.js'
+
+export const serverapp1 = onRequest(app)`)
     })
 
     test('package json file', () => {
@@ -73,7 +81,8 @@ export default app`)
         expect(packageFile.content).toBe(`{
     "type": "module",
     "dependencies": {
-      "express": "^4.18.1"
+      "express": "^4.18.1",
+      "firebase-functions": "^3.23.0"
     }
 }`)
 

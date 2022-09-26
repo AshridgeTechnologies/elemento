@@ -33,7 +33,7 @@ export default class FirebasePublish extends BaseElement<Properties> implements 
             await deployer.deploy()
             console.log('Publish complete')
         } catch (e: any) {
-            console.error(e.message)
+            console.error('Publish failed', e)
         }
     }
 

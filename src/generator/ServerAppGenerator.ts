@@ -19,10 +19,11 @@ export default class ServerAppGenerator {
     output() {
         const serverApp = this.serverApp()
         const expressApp = this.expressApp()
+        const cloudFunction = this.cloudFunction()
         const packageJson = this.packageJson()
 
         return {
-            files: [serverApp, expressApp, packageJson]
+            files: [serverApp, expressApp, cloudFunction, packageJson]
         }
     }
     private functions() {
@@ -56,25 +57,37 @@ export default ${this.app.codeName}`
     try {
         res.send(await baseApp.${fn.name}(${paramList}))
     } catch(err) { next(err) }
-}`
+})`
         }
 
-        const imports = `import express from 'express'\nimport baseApp from './${this.app.codeName}'`
+        const imports = `import express from 'express'\nimport baseApp from './${this.app.codeName}.js'`
         const appDeclaration = `const app = express()`
         const appConfigurations = this.functions().map(generateRoute)
         const theExports = `export default app`
-        const expressAppCode = [
+        const code = [
             imports, appDeclaration, ...appConfigurations, theExports
         ].join('\n\n')
 
-        return {name: `${this.app.codeName}Express.js`, content: expressAppCode}
+        return {name: `${this.app.codeName}Express.js`, content: code}
+    }
+
+    private cloudFunction() {
+        const imports = `import {onRequest} from 'firebase-functions/v2/https'\nimport app from './${this.app.codeName}Express.js'`
+        const theExports = `export const ${this.app.codeName.toLowerCase()} = onRequest(app)`
+        const code = [
+            imports, theExports
+        ].join('\n\n')
+
+        return {name: `index.js`, content: code}
+
     }
 
     private packageJson() {
         return {name: `package.json`, content: `{
     "type": "module",
     "dependencies": {
-      "express": "^4.18.1"
+      "express": "^4.18.1",
+      "firebase-functions": "^3.23.0"
     }
 }`}
 

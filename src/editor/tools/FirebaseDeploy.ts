@@ -2,8 +2,14 @@ import Project from '../../model/Project'
 import App from '../../model/App'
 import {generate} from '../../generator/Generator'
 import {gzipSync} from 'fflate'
+import JSZip from 'jszip'
 import getGapi from './gapiProvider'
 import {mapObjIndexed} from 'ramda'
+import ServerApp from '../../model/ServerApp'
+import ServerAppGenerator from '../../generator/ServerAppGenerator'
+import axios from 'axios'
+import {currentUser} from '../../shared/authentication'
+import {TEMP_STORAGE_BUCKET, uploadDataToTempStorage, uploadTextToStorage} from '../../shared/storage'
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourceUrl = '/runtime/index.js'
@@ -11,6 +17,16 @@ const runtimeFileSourceUrl = '/runtime/index.js'
 function zipText(text: string) {
     const uint8array = new TextEncoder().encode(text)
     return gzipSync(uint8array)
+}
+
+const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
+
+type FileInfo = { name: string, content: string }
+
+function zipFiles(files: FileInfo[]) {
+    const zip = new JSZip()
+    files.forEach( f => zip.file(f.name, f.content))
+    return zip.generateAsync({type: 'uint8array'})
 }
 
 async function hashData(data: BufferSource) {
@@ -42,11 +58,18 @@ export default class FirebaseDeploy {
         return this.project.elementArray().find( el => el.kind === 'App') as App
     }
 
+    get serverApp() {
+        return this.project.elementArray().find( el => el.kind === 'ServerApp') as ServerApp
+    }
+
     get codeFileName() { return `${this.app.codeName}.js` }
 
     async deploy() {
         console.log('Deploying')
         const gapi = await getGapi()
+
+        await this.deployFunctions(gapi)
+        return
 
         const sites = this.checkError(await gapi.client.firebasehosting.projects.sites.list({parent:`projects/${this.deployment.firebaseProject}`})).sites
         console.log('sites', sites)
@@ -94,6 +117,92 @@ export default class FirebaseDeploy {
             versionName: version.name,
         }))
         console.log('release', releaseResult)
+    }
+
+    async deployFunctions(gapi: any) {
+        console.log('Deploying functions')
+        const gen = new ServerAppGenerator(this.serverApp)
+        const {files} = gen.output()
+        const sourceZipData = await zipFiles(files)
+
+        const project = this.checkError(await gapi.client.firebase.projects.get({name: `projects/${this.deployment.firebaseProject}`}))
+        const {locationId} = project.resources
+        const functionName = this.serverApp.codeName.toLowerCase()
+        const name = `projects/${this.deployment.firebaseProject}/locations/${locationId}/functions/${functionName}`
+        let existingFunction
+        try {
+            const response = await gapi.client.cloudfunctions.projects.locations.functions.get({name})
+            existingFunction = this.checkError(response)
+        } catch (err: any) {
+            existingFunction = err.status === 404 ? null : this.checkError(err)
+        }
+        console.log('existingFunction', existingFunction)
+
+        const uploadUrlInfo = this.checkError(await gapi.client.cloudfunctions.projects.locations.functions.generateUploadUrl({
+            parent: `projects/${this.deployment.firebaseProject}/locations/${locationId}`,
+        }))
+        console.log('uploadUrlInfo', uploadUrlInfo)
+        console.log('uploadUrl', uploadUrlInfo.uploadUrl)
+
+        await fetch(`${location.origin}/uploadfunctioncontent?url=${uploadUrlInfo.uploadUrl}`, {
+            method: 'PUT',
+            // mode: 'cors',
+            credentials: 'omit',
+            headers: {
+                'Content-Type': 'application/zip'
+            },
+            body: sourceZipData
+        })
+
+        const functionInfo = {
+            name,
+            description: 'Elemento Server App',
+            buildConfig: {
+                runtime: 'nodejs16',
+                source: {
+                    storageSource: uploadUrlInfo.storageSource
+                }
+            }
+        }
+
+        let functionResponse
+        if (!existingFunction) {
+            functionResponse = await gapi.client.cloudfunctions.projects.locations.functions.create({
+                parent: `projects/${this.deployment.firebaseProject}/locations/${locationId}`,
+                functionId: functionName,
+                resource: functionInfo
+            })
+        } else {
+            functionResponse = await gapi.client.cloudfunctions.projects.locations.functions.patch({
+                name: existingFunction.name,
+                resource: functionInfo
+            })
+        }
+
+        console.log('function response', functionResponse)
+
+        let operation = this.checkError(functionResponse)
+
+        console.log('Waiting for function deployment...')
+        let attempts = 0
+        while (!operation.done && ++attempts < 20) {
+            await wait(5000)
+            const opName = operation.name
+            console.log('polling operation result', attempts)
+            operation = this.checkError(await gapi.client.cloudfunctions.projects.locations.operations.get({name: opName}))
+        }
+
+        console.log('operation result', operation)
+        if (!operation.done) {
+            throw new Error('Timed out waiting for function deployment')
+        }
+
+        if (operation.error) {
+            throw operation.error
+        }
+
+        console.log('Function deployment complete')
+
     }
 
     private checkError(response: GapiResponse): any{

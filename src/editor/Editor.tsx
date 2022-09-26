@@ -63,7 +63,7 @@ export default function Editor({
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
 
-    const app = project.elementArray()[0] as App
+    const app = project.elementArray().find( el => el.kind === 'App') as App
     const {errors, code: appCode} = generate(app)
 
     const propertyArea = () => {
