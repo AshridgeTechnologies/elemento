@@ -14,6 +14,9 @@ Requirements
 - ✅ Functions are marked as get or action
 - ✅ Generates server side app code in a separate file
 - Can use global and appropriate app functions in server side code
+- Actions are sent as post
+- Queries are sent as get
+- Query parameters are parsed as if they were string values (numeric strings to numbers, etc)
 - Deploys server side app as a Firebase cloud function
 - Updates server side app as a Firebase cloud function
 - App connector model object

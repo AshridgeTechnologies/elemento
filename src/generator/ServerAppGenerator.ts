@@ -52,20 +52,25 @@ export default ${this.app.codeName}`
         const generateRoute = (fn: FunctionDef) => {
             const paramList = fn.inputs.join(', ')
             const expr = this.getExpr(fn, 'calculation')
-            return `app.get('/${fn.name}', async (req, res) => {
+            const pathPrefix = this.app.codeName.toLowerCase()
+            return `app.get('/${pathPrefix}/${fn.name}', async (req, res, next) => {
     const {${paramList}} = req.query
     try {
-        res.send(await baseApp.${fn.name}(${paramList}))
+        res.json(await baseApp.${fn.name}(${paramList}))
     } catch(err) { next(err) }
 })`
         }
 
         const imports = `import express from 'express'\nimport baseApp from './${this.app.codeName}.js'`
         const appDeclaration = `const app = express()`
+        const useTrace = `app.use( (req, res, next) => {
+    console.log(req.method, req.url)
+    next()
+})`
         const appConfigurations = this.functions().map(generateRoute)
         const theExports = `export default app`
         const code = [
-            imports, appDeclaration, ...appConfigurations, theExports
+            imports, appDeclaration, useTrace, ...appConfigurations, theExports
         ].join('\n\n')
 
         return {name: `${this.app.codeName}Express.js`, content: code}

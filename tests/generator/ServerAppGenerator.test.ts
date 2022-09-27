@@ -44,24 +44,29 @@ import baseApp from './ServerApp1.js'
 
 const app = express()
 
-app.get('/Plus', async (req, res) => {
+app.use( (req, res, next) => {
+    console.log(req.method, req.url)
+    next()
+})
+
+app.get('/serverapp1/Plus', async (req, res, next) => {
     const {a, b} = req.query
     try {
-        res.send(await baseApp.Plus(a, b))
+        res.json(await baseApp.Plus(a, b))
     } catch(err) { next(err) }
 })
 
-app.get('/Mult', async (req, res) => {
+app.get('/serverapp1/Mult', async (req, res, next) => {
     const {c, d} = req.query
     try {
-        res.send(await baseApp.Mult(c, d))
+        res.json(await baseApp.Mult(c, d))
     } catch(err) { next(err) }
 })
 
-app.get('/Total', async (req, res) => {
+app.get('/serverapp1/Total', async (req, res, next) => {
     const {x, y, z} = req.query
     try {
-        res.send(await baseApp.Total(x, y, z))
+        res.json(await baseApp.Total(x, y, z))
     } catch(err) { next(err) }
 })
 

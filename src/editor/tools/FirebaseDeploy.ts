@@ -7,9 +7,6 @@ import getGapi from './gapiProvider'
 import {mapObjIndexed} from 'ramda'
 import ServerApp from '../../model/ServerApp'
 import ServerAppGenerator from '../../generator/ServerAppGenerator'
-import axios from 'axios'
-import {currentUser} from '../../shared/authentication'
-import {TEMP_STORAGE_BUCKET, uploadDataToTempStorage, uploadTextToStorage} from '../../shared/storage'
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourceUrl = '/runtime/index.js'
@@ -68,8 +65,9 @@ export default class FirebaseDeploy {
         console.log('Deploying')
         const gapi = await getGapi()
 
-        await this.deployFunctions(gapi)
-        return
+        if (this.serverApp) {
+           await this.deployFunctions(gapi)
+        }
 
         const sites = this.checkError(await gapi.client.firebasehosting.projects.sites.list({parent:`projects/${this.deployment.firebaseProject}`})).sites
         console.log('sites', sites)
@@ -105,10 +103,18 @@ export default class FirebaseDeploy {
 
         await Promise.all(uploadPromises)
 
+        const serverAppName = this.serverApp?.codeName?.toLowerCase()
+        const rewrites = serverAppName ? [{
+            glob: `/${serverAppName}/**`,
+            run: {serviceId: 'serverapp1', region: 'europe-west2'}}
+        ] : []
         const patchResult = this.checkError(await gapi.client.firebasehosting.sites.versions.patch({
             name: version.name,
-            updateMask: 'status',
-            status: 'FINALIZED'
+            updateMask: 'status,config',
+            status: 'FINALIZED',
+            config: {
+                rewrites
+            }
         }))
         console.log('patch', patchResult)
 
@@ -142,11 +148,12 @@ export default class FirebaseDeploy {
             parent: `projects/${this.deployment.firebaseProject}/locations/${locationId}`,
         }))
         console.log('uploadUrlInfo', uploadUrlInfo)
-        console.log('uploadUrl', uploadUrlInfo.uploadUrl)
+        const uploadUrl = new URL(uploadUrlInfo.uploadUrl)
+        console.log('uploadUrl', uploadUrl)
 
-        await fetch(`${location.origin}/uploadfunctioncontent?url=${uploadUrlInfo.uploadUrl}`, {
+        const uploadProxyUrl = `${location.origin}/uploadfunctioncontent?path=${uploadUrl.pathname}&${uploadUrl.search.substring(1)}`
+        await fetch(uploadProxyUrl, {
             method: 'PUT',
-            // mode: 'cors',
             credentials: 'omit',
             headers: {
                 'Content-Type': 'application/zip'
@@ -202,7 +209,6 @@ export default class FirebaseDeploy {
         }
 
         console.log('Function deployment complete')
-
     }
 
     private checkError(response: GapiResponse): any{
