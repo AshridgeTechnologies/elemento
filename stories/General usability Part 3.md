@@ -20,6 +20,7 @@ General usability Part 3
 - Some way of getting snippets (eg a File Menu) - maybe from an Examples project that you open in another window
 - Record editor
 - Function to make record from values of a list of controls - use their names, if available in the state object
+- Way of debugging functions and complex expressions eg the word up to date function in revision app
 
 Help
 ----

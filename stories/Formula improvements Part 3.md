@@ -21,3 +21,4 @@ Formula improvements Part 3
 - Avoiding floating point errors
 - More argument checking at design time eg in Record Function
 - Full type checking!
+- Find a way to ensure that fixed values are the correct types (esp booleans)  

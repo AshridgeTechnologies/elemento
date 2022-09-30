@@ -22,6 +22,7 @@ Stories
 - Runtime error and notification handling
 - General usability Part 2
 - Security review
+- Embedded apps
 
 
 ### Priority for Pro apps
