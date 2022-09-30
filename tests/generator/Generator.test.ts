@@ -195,6 +195,26 @@ Today\`),
 `)
 })
 
+test('generates Text elements with escaped quotes', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: 'Hi there \'Doctor\' How are you?'}),
+            ]
+        )])
+
+    const gen = new Generator(app)
+    const output = gen.output()
+//     expect(output.files[0].content).toBe(`function Page1(props) {
+//     const pathWith = name => props.path + '.' + name
+//     const {Page, TextElement} = Elemento.components
+//
+//     return React.createElement(Page, {id: props.path},
+//         React.createElement(TextElement, {path: pathWith('Text1'), }, 'Hi there \'Doctor\' How are you?'),
+//     )
+// }
+// `)
+})
+
 test('generates NumberInput elements with initial value', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -813,6 +833,31 @@ function Page1(props) {
     )
 }
 `)
+})
+
+test('generates error for syntax error in expression', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`'Hello 'Doctor' how are you?'`}),
+            ]
+        )])
+
+    const output = new Generator(app).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Line 1: Unexpected identifier')),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({
+        id1: {
+            content: "Error: Line 1: Unexpected identifier"
+        }
+    })
+
 })
 
 test('generates error on correct line for syntax error in multiline content expression', ()=> {

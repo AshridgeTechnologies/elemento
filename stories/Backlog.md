@@ -7,7 +7,6 @@ Bugs
 - Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
 - Select does not respond to alt-click to highlight
-- Escape quotes in Javascript string literals
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 
 
@@ -140,3 +139,4 @@ Bugs fixed
 - Same List name in two pages creates duplicate list item
 - Stops updating preview sometimes
 - Performance: deferred updates repeatedly update store in a loop
+- Escape quotes in Javascript string literals

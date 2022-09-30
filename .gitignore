@@ -9,3 +9,4 @@ coverage
 /tempTestFiles/
 /.firebase/
 
+/functions/lib/
