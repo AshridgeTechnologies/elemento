@@ -353,7 +353,18 @@
               "properties": {
                 "input1": "word",
                 "calculation": {
-                  "expr": "let sinceLearned = If(word.DateLearned, DaysBetween(word.DateLearned, Today()), 0)\nlet latestRevisionTime = Last(RevisionPeriods, $item <= sinceLearned)\nlet latestRevisionDate = DateAdd(word.DateLearned, latestRevisionTime, 'days')\nlet revisedToday = DaysBetween(word.LastRevised, Today()) == 0\nlet latestRevisionDone = word.LastRevised && DaysBetween(latestRevisionDate, word.LastRevised) >= 0\nOr(Not(word.DateLearned), Not(latestRevisionTime), revisedToday, And(latestRevisionDone, word.LastRevisedOk))"
+                  "expr": "let sinceLearned = If(word.DateLearned, DaysBetween(word.DateLearned, Today()), 0)\nlet latestRevisionTime = Last(RevisionPeriods, $item <= sinceLearned)\nlet latestRevisionDate = DateAdd(word.DateLearned, latestRevisionTime, 'days')\nlet latestRevisionDone = word.LastRevised && DaysBetween(latestRevisionDate, word.LastRevised) >= 0\nOr(Not(word.DateLearned), Not(latestRevisionTime), And(latestRevisionDone, word.LastRevisedOk))"
+                }
+              }
+            },
+            {
+              "id": "function_2",
+              "name": "ShouldShow",
+              "kind": "Function",
+              "properties": {
+                "input1": "word",
+                "calculation": {
+                  "expr": "let revisedToday = DaysBetween(word.LastRevised, Today()) == 0\nOr(Not(UpToDate(word)), revisedToday)"
                 }
               }
             },
@@ -363,7 +374,7 @@
               "kind": "Data",
               "properties": {
                 "initialValue": {
-                  "expr": "Select(Words.Query({}), Not(UpToDate($item)))"
+                  "expr": "Select(Words.Query({}), ShouldShow($item))"
                 }
               }
             },
@@ -417,7 +428,10 @@
                       "name": "Show Translation",
                       "kind": "Data",
                       "properties": {
-                        "initialValue": "false"
+                        "initialValue": {
+                          "expr": "false"
+                        },
+                        "display": false
                       },
                       "elements": []
                     },
@@ -684,6 +698,18 @@
           "kind": "FirestoreDataStore",
           "properties": {
             "collections": "Words: user-private"
+          },
+          "elements": []
+        },
+        {
+          "id": "browserdatastore_1",
+          "name": "Browser Data Store 1",
+          "kind": "BrowserDataStore",
+          "properties": {
+            "databaseName": "VocabularyRevision",
+            "collectionNames": [
+              "Words"
+            ]
           },
           "elements": []
         },
