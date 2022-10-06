@@ -24,6 +24,7 @@ import {ElementType} from './Types'
 import FirebasePublish from './FirebasePublish'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
+import ServerAppConnector from './ServerAppConnector'
 
 export const elementTypes = () => {
     return {
@@ -52,6 +53,7 @@ export const elementTypes = () => {
         Layout: Layout,
         FirebasePublish: FirebasePublish,
         ServerApp: ServerApp,
+        ServerAppConnector: ServerAppConnector,
     }
 }
 

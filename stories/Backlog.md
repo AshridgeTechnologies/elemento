@@ -3,9 +3,11 @@ Elemento Backlog
 
 Bugs
 ----
+- Text inputs: jump to end, slow rendering, unusual characters
 - Clear preview and state when load new app
 - Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
+- No code generation error for unknown name in text element
 - Select does not respond to alt-click to highlight
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 
@@ -13,18 +15,8 @@ Bugs
 Stories
 -------
 
-### Priority 1
-- Firestore data storage
-- Revision aid example
-- New publishing
-- Demo Experience Part 1
-- Runtime error and notification handling
-- General usability Part 2
-- Security review
-- Embedded apps
-
 ### Priority for customer-facing apps
-- Server apps
+- Server side apps
 - JavaScript functions
 - Payments
 - API calls from browser
@@ -41,6 +33,15 @@ Stories
 - Validation
 - Model-driven components
 - Firestore access rules
+
+### Priority 1
+- Revision aid example
+- New publishing
+- Demo Experience Part 1
+- Runtime error and notification handling
+- General usability Part 2
+- Security review
+- Embedded apps
 
 ### Priority 2
 - Firebase deploy Part 2
@@ -78,8 +79,10 @@ Tech debt
 ---------
 
 - Investigate Signals https://github.com/preactjs/signals
+- Investigate the React use hook
 - Fix all uses of constructor.name
 - Code generator
+- Unit testing/refactoring of app frame stuff in editor
 - Introducing new components
 - DOM Testing
 - Script environment creation
@@ -139,6 +142,7 @@ Done
 - User Logon
 - IndexedDB datastore
 - Firebase deploy Part 1
+- Firestore data storage
 
 
 Bugs fixed

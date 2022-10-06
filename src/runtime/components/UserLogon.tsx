@@ -2,20 +2,35 @@ import * as React from 'react'
 import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
 import {AccountCircle} from '@mui/icons-material'
 import authentication from './authentication'
+import {createElement, useEffect, useState} from 'react'
+import * as auth from 'firebase/auth'
+import {StyledFirebaseAuth} from 'react-firebaseui'
 
-export default function UserLogon() {
-    const [authenticationReady, setAuthenticationReady] = React.useState(authentication.isReady())
-    if (!authenticationReady) {
-        authentication.init().then( setAuthenticationReady )
-        return <div>Working...</div>
+const {authIsReady, getAuth, onAuthChange, currentUser, signOut} = authentication
+
+
+function AuthDialog() {
+    const uiConfig = {
+        signInFlow: 'popup',
+        signInOptions: [
+            auth.GoogleAuthProvider.PROVIDER_ID,
+            auth.EmailAuthProvider.PROVIDER_ID,
+        ],
+        tosUrl: '/terms',
+        privacyPolicyUrl: '/privacy',
+        callbacks: {
+            signInSuccessWithAuthResult: () => false
+        }
     }
 
-    return <UserLogonInternal/>
+    if (!authIsReady()) {
+        return createElement('div', null, 'Authentication not available')
+    }
+    return createElement(StyledFirebaseAuth, {uiConfig, firebaseAuth: getAuth()})
 }
 
-function UserLogonInternal() {
+export default function UserLogon() {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
-    const {AuthDialog, currentUser, signOut, useSignedInState} = authentication
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
@@ -23,7 +38,16 @@ function UserLogonInternal() {
         signOut()
         handleClose()
     }
-    const isSignedIn = useSignedInState()
+
+    const [isAuthReady, setAuthReady] = useState(authIsReady)
+    useEffect(() => onAuthChange( () => setAuthReady(authIsReady) ), [])
+
+    if (!isAuthReady) {
+        return <div>Connecting...</div>
+    }
+
+    const isSignedIn = !!currentUser()
+
 
     const userPanel = isSignedIn ?
         <Box minWidth={300} margin={2}>
@@ -38,6 +62,7 @@ function UserLogonInternal() {
 
     return (
         <div>{
+
             isSignedIn
                 ? <IconButton
                 size="large"

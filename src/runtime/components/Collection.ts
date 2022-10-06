@@ -64,7 +64,6 @@ type AddItem = object | string | number
 
 export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
     implements ComponentState<CollectionState>{
-    private immediatePendingGets = new Set()
 
     constructor({value, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         super({value: initialValue(value), collectionName, dataStore})
@@ -72,16 +71,14 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     private updateValue(id: Id, data: any) {
         const newValue = mergeRight(this.value, {[id]: data})
+        this.state.value = newValue
         this.updateState({value: newValue})
     }
 
     private updateQueries(key: string, data: any) {
         const newQueries = mergeRight(this.queries, {[key]: data})
+        this.state.queries = newQueries
         this.updateState({queries: newQueries})
-    }
-
-    private localUpdateQueries(key: string, data: any) {
-        this.state.queries = mergeRight(this.queries, {[key]: data})
     }
 
     _withStateChanges(changes: StateProperties): CollectionState {
@@ -171,9 +168,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         if (storedValue) {
             return storedValue
         }
-        if (this.immediatePendingGets.has(id)) {
-            return new Pending()
-        }
+
         if (this.dataStore) {
             const result = new Pending()
             this.updateValue(id, result)
@@ -181,7 +176,6 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             this.dataStore.getById(this.props.collectionName!, id).then( data => {
                 this.latest().updateValue(id, data)
             })
-            this.immediatePendingGets.add(id)
             return result
         }
 
@@ -197,15 +191,11 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
                 return storedResult
             }
 
-            if (this.immediatePendingGets.has(criteriaKey)) {
-                return new Pending()
-            }
             const result = new Pending()
-            this.localUpdateQueries(criteriaKey, result)
+            this.updateQueries(criteriaKey, result)
             this.dataStore.query(this.props.collectionName!, criteria).then(data => {
                 this.latest().updateQueries(criteriaKey, data)
             })
-            this.immediatePendingGets.add(criteriaKey)
             return result
         }
 

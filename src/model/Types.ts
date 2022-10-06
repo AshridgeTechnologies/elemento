@@ -44,6 +44,7 @@ export type ElementType =
     'Layout' |
     'FirebasePublish' |
     'FirestoreDataStore' |
-    'ServerApp'
+    'ServerApp' |
+    'ServerAppConnector'
 
 export type ParentType = ElementType | 'any' | null

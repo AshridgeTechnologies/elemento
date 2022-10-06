@@ -12,6 +12,7 @@ import {containerFunctions} from '../testutil/elementHelpers'
 import '@testing-library/jest-dom'
 import {act} from '@testing-library/react'
 import {wait} from '../testutil/rtlHelpers'
+import Project from '../../src/model/Project'
 
 // Hack to get Jest 28 to work with ESM firebase
 jest.mock("firebase/storage", () => ({
@@ -28,13 +29,15 @@ afterEach(() => {
 
 test('generated app can be shown in runner page', async ()=> {
 
+
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new Text('text1', 'Text 1', {content: ex`"Hi there!"`}),
             new Text('text2', 'Text 2', {content: ex`2 + 2`}),
         ])])
 
-    const theAppCode = generate(app).code
+    const project = new Project('proj1', 'Project 1', {}, [app])
+    const theAppCode = generate(app, project).code
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 

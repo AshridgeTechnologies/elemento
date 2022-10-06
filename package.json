@@ -12,7 +12,7 @@
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test",
-    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js && cp -r dist/runtime/ devDist/runtime",
+    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js && mkdir devDist && cp -r dist/runtime/ devDist/runtime",
     "buildServerRuntime": "esbuild src/serverRuntime/index.ts --bundle --sourcemap --format=esm  --platform=node --target=node16.17 --external:firebase-admin --minify --outfile=dist/serverRuntime/index.js && cp -r dist/serverRuntime/ devDist/serverRuntime"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@mui/lab": "^5.0.0-alpha.79",
     "@mui/material": "^5.6.3",
     "axios": "^0.27.2",
+    "cors": "^2.8.5",
     "date-fns": "^2.28.0",
     "dexie": "^4.0.0-alpha.4",
     "fflate": "^0.7.3",
@@ -75,11 +76,12 @@
     "os-browserify": "^0.3.0",
     "parcel": "2.6.0",
     "process": "^0.11.10",
+    "querystring-es3": "^0.2.1",
     "react-test-renderer": "^18.0.0",
     "stream-browserify": "^3.0.0",
     "ts-jest": "^28.0.4",
     "typescript": "^4.7.3"
-    },
+  },
   "alias": {
     "csv-parse/sync": "./node_modules/csv-parse/lib/sync.js"
   }

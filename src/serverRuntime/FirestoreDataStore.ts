@@ -3,39 +3,24 @@ import admin from 'firebase-admin'
 
 import {mapObjIndexed} from 'ramda'
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
-import App = admin.app.App
 import Firestore = admin.firestore.Firestore
+import {getApp} from './firebaseApp'
 
 const convertValue = (value: any) => typeof value.toDate === 'function' ? value.toDate() : value
 const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
 
-export interface AppProvider {
-    getApp(): App
-}
-
-let defaultApp: App
-
-const defaultAppProvider: AppProvider = {
-    getApp(): App {
-        if (!defaultApp) {
-            defaultApp = admin.initializeApp()
-        }
-
-        return defaultApp
-    }
-}
 type Properties = {collections: string}
 export default class FirestoreDataStore implements BasicDataStore {
     private theDb: Firestore | null = null
     private readonly collections: CollectionConfig[]
 
-    constructor(private props: Properties, private appProvider = defaultAppProvider) {
+    constructor(private props: Properties, private appProvider = getApp) {
         this.collections = parseCollections(props.collections ?? '')
     }
 
     get db(): Firestore {
         if (!this.theDb) {
-            this.theDb = admin.firestore(this.appProvider.getApp())
+            this.theDb = admin.firestore(this.appProvider())
         }
         return this.theDb!
     }

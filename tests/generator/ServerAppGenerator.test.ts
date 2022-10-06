@@ -49,15 +49,11 @@ export default ServerApp1`)
 import {expressUtils} from './serverRuntime.js'
 import baseApp from './ServerApp1.js'
 
-const {parseQueryParams} = expressUtils
+const {checkUser, parseQueryParams} = expressUtils
 
 const app = express()
 
-app.use( (req, res, next) => {
-    console.log(req.method, req.url)
-    next()
-})
-
+app.use(checkUser)
 app.use(express.json())
 
 app.get('/serverapp1/Plus', async (req, res, next) => {
@@ -161,15 +157,11 @@ export default WidgetApp`)
 import {expressUtils} from './serverRuntime.js'
 import baseApp from './WidgetApp.js'
 
-const {parseQueryParams} = expressUtils
+const {checkUser, parseQueryParams} = expressUtils
 
 const app = express()
 
-app.use( (req, res, next) => {
-    console.log(req.method, req.url)
-    next()
-})
-
+app.use(checkUser)
 app.use(express.json())
 
 app.get('/widgetapp/GetWidget', async (req, res, next) => {

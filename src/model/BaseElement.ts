@@ -12,6 +12,8 @@ import {
 import {elementId, noSpaces} from '../util/helpers'
 import {uniq} from 'ramda'
 
+type Class<T> = new (...args: any[]) => T
+
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
     if (a.length !== b.length) return false
@@ -78,6 +80,10 @@ export default abstract class BaseElement<PropertiesType extends object> {
         }
 
         return null
+    }
+
+    findChildElements<T extends Element>(elementClass: Class<T>): T[] {
+        return this.elementArray().filter( el => el instanceof elementClass) as T[]
     }
 
     findParent(id: ElementId): Element | null {

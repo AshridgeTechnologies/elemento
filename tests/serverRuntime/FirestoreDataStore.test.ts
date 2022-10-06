@@ -9,9 +9,7 @@ const serviceAccount = JSON.parse(fs.readFileSync('private/service-account-key.j
 const theApp = admin.initializeApp({credential: admin.credential.cert(serviceAccount)})
 
 beforeEach(async () => {
-    const appProvider = {
-        getApp() { return theApp }
-    }
+    const appProvider = () => theApp
 
     store = new FirestoreDataStore({collections: 'Widgets: signed-in\nUserStuff: user-private'}, appProvider)
 })

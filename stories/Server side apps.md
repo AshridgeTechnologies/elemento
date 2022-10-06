@@ -15,21 +15,25 @@ Requirements
 - ✅ Generates server side app code in a separate file
 - ✅ Can use global functions on server side
 - ✅ Can access data stores on server side
-- Actions are sent as post
-- Queries are sent as get
+- ✅ Actions are sent as post
+- ✅ Queries are sent as get
 - ✅ Query parameters are parsed as if they were string values (numeric strings to numbers, etc)
 - ✅ Deploys server side app as a Firebase cloud function
 - ✅ Updates server side app as a Firebase cloud function
-- App connector model object
-- App connector runtime is configured from the server side to expose client functions
+- ✅ App connector model object
+- ✅ App connector runtime is configured from the server side to expose client functions
 - ✅ Async calls in the server side code are handled correctly to return when all settled
-- Calls from client are cached and updated when resolved, like db calls
+- ✅ App connector functions can use object values
+- ✅ Calls from client are cached and updated when resolved, like db calls
 - Firebase authorization is transmitted to the server side
 - Current user is available in server functions
 - Preview can use simulated server running in browser
 - Documentation includes all prerequisites inc manual steps like enabling API in Cloud Console
 - Google approval for Elemento to remove security warnings
 - Errors are reported as for client app
+- Server app connector can (should/must?) have the same name as the server app
+- Server app connector cache can be refreshed in a sensible way
+- All necessary code gen features from client generator are included eg quote escaping
 
 Desirable
 ---------
@@ -57,6 +61,13 @@ Could not build the function due to missing permissions. Cloud Build API has not
 Enable it by visiting https://console.developers.google.com/apis/api/cloudbuild.googleapis.com/overview?project=266192601073 then retry. 
 If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
 
+Complications with testing
+--------------------------
 
+- Client app expects the server app to be on same origin
+- Getting firebase-admin authorised if running outside Firebase 
+- SO:
+  - add URL property to ServerAppConnector - will need similar for API connector anyway
+  - use a one-line express runner, with Google service account key in the environment variable
 
 

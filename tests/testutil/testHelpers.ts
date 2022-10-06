@@ -3,7 +3,6 @@ import React, {createElement, FunctionComponent} from 'react'
 import {treeItemSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
-import fs from 'fs'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -195,3 +194,13 @@ export const valueObj = (val: any): any => ({
         return val
     }
 })
+
+function mockReturn(fn: any, value: any) {
+    const mock_fn = fn as jest.MockedFunction<any>
+    mock_fn.mockReturnValue(value)
+}
+
+export function mockImplementation(fn: any, impl: any) {
+    const mock_fn = fn as jest.MockedFunction<any>
+    mock_fn.mockImplementation(impl)
+}

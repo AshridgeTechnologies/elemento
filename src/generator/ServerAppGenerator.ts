@@ -128,14 +128,11 @@ export default ${this.app.codeName}`
             `import {expressUtils} from './serverRuntime.js'`,
             `import baseApp from './${this.app.codeName}.js'`,
         ].join('\n')
-        const importDeclarations = `const {parseQueryParams} = expressUtils`
+        const importDeclarations = `const {checkUser, parseQueryParams} = expressUtils`
         const appDeclaration = `const app = express()`
-        const useTrace = `app.use( (req, res, next) => {
-    console.log(req.method, req.url)
-    next()
-})`
+        const useCheckUser = `app.use(checkUser)`
         const useJson = `app.use(express.json())`
-        const useCalls = [useTrace, useJson].join('\n\n')
+        const useCalls = [useCheckUser, useJson].join('\n')
         const appConfigurations = this.functions().map(generateRoute)
         const theExports = `export default app`
         const code = [

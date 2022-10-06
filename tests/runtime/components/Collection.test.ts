@@ -32,8 +32,6 @@ const mockDataStore = (): DataStore => ({
 
 const [collection, appStoreHook] = wrappedTestElement(Collection, CollectionState)
 
-const stateAt = (path: string) => appStoreHook.stateAt(path)
-
 beforeEach( () => {
     testObservable = new SendObservable<UpdateNotification>()
     return dataStore = mockDataStore()
@@ -525,7 +523,11 @@ describe('Query with external datastore', () => {
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 10, c: false})
         expect(result).toBeInstanceOf(Pending)
 
-        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+            queries: {
+                '{"a":10,"c":false}': new Pending()
+            }
+        }))
 
         await wait(10)
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({

@@ -10,11 +10,12 @@ import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, PropertyValue} from '../model/Types'
 import List from '../model/List'
-import {isArray, isPlainObject} from 'lodash'
 import FunctionDef from '../model/FunctionDef'
 import {last, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
+import Project from '../model/Project'
+import {valueLiteral} from './generatorHelpers'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -31,18 +32,6 @@ const isComponent = (name: string) => name in components
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 
-const valueLiteral = function (propertyValue: any): string {
-    if (isPlainObject(propertyValue)) {
-        return `{${Object.entries(propertyValue).map(([name, val]) => `${name}: ${valueLiteral(val)}`).join(', ')}}`
-    } else if (isArray(propertyValue)) {
-        return `[${propertyValue.map(valueLiteral).join(', ')}]`
-    } else if (typeof propertyValue === 'string') {
-        return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue.replace(/'/g, "\\'")}'`
-    } else {
-        return String(propertyValue)
-    }
-}
-
 function parseExpr(expr: string) {
     const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
     return parse(exprToParse)
@@ -52,7 +41,7 @@ export default class Parser {
     private errors: AllErrors
     private identifiers: ElementIdentifiers
     private stateEntryIdentifiers: ElementIdentifiers
-    constructor(private app: App) {
+    constructor(private app: App, private project: Project) {
         this.identifiers = {} as ElementIdentifiers
         this.stateEntryIdentifiers = {} as ElementIdentifiers
         this.errors = {} as AllErrors
@@ -131,6 +120,7 @@ export default class Parser {
         const allPages = app.pages
         const allComponentElements = allElements(component)
         const allContainerElements = containingComponent ? allElements(containingComponent) : []
+        const isServerApp = (name: string) => !!this.project.elementArray().find( el => el.kind === 'ServerApp' && el.codeName === name )
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
         const isComponentElement = (name: string) => !!allComponentElements.find(el => el.codeName === name )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
@@ -141,6 +131,7 @@ export default class Parser {
             || isComponentElement(name)
             || isPageName(name)
             || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
+            || isServerApp(name)
             || isAppElement(name)
             || isContainerElement(name)
             || isBuiltIn(name)

@@ -8,6 +8,7 @@ import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project from '../../src/model/Project'
 import Layout from '../../src/model/Layout'
+import FirebasePublish from '../../src/model/FirebasePublish'
 
 test('Project has correct properties', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
@@ -117,6 +118,17 @@ test('can find path of element in a layout by id', ()=> {
 test('can find element by path', () => {
     const {text4, project} = testProject()
     expect(project.findElementByPath('App1.Page2.Text4')).toBe(text4)
+})
+
+test('can find child elements by type', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const page1 = new Page('p1', 'Page 1', {}, [text1,])
+
+    const app = new App('app1', 'App 1', {}, [page1])
+    const publish1 = new FirebasePublish('fp1', 'Live', {})
+    const publish2 = new FirebasePublish('fp1', 'Live', {})
+    const project = new Project('pr1', 'proj1', {}, [app, publish1, publish2])
+    expect(project.findChildElements(FirebasePublish)).toStrictEqual([publish1, publish2])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

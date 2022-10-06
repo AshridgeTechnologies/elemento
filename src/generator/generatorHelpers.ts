@@ -1,4 +1,5 @@
 import Topo from '@hapi/topo'
+import {isArray, isPlainObject} from 'lodash'
 
 function safeKey(name: string) {
     return name.match(/\W/) ? `'${name}'` : name
@@ -27,4 +28,15 @@ export const topoSort = (entries: StateEntry[]): StateEntry[] => {
         sorter.add([entry], {after: dependencies, group: name})  // if add plain tuple, sorter treats it as an array
     })
     return sorter.nodes
+}
+export const valueLiteral = function (propertyValue: any): string {
+    if (isPlainObject(propertyValue)) {
+        return `{${Object.entries(propertyValue).map(([name, val]) => `${name}: ${valueLiteral(val)}`).join(', ')}}`
+    } else if (isArray(propertyValue)) {
+        return `[${propertyValue.map(valueLiteral).join(', ')}]`
+    } else if (typeof propertyValue === 'string') {
+        return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue.replace(/'/g, "\\'")}'`
+    } else {
+        return String(propertyValue)
+    }
 }

@@ -1,7 +1,7 @@
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import {FirestoreDataStoreImpl} from '../../../src/runtime/components/index'
 
-import auth from '../../../src/runtime/components/authentication'
+import auth, {test_signInWithEmailAndPassword} from '../../../src/runtime/components/authentication'
 import fs from 'fs'
 import {setConfig} from '../../../src/runtime/components/firebaseApp'
 
@@ -9,7 +9,7 @@ let store: FirestoreDataStoreImpl
 
 async function signInAs(testAccountFile: string) {
     const {name, password} = JSON.parse(fs.readFileSync(testAccountFile, 'utf8'))
-    await auth.signInWithEmailAndPassword(name, password)
+    await test_signInWithEmailAndPassword(name, password)
 }
 
 async function signOut() {
@@ -25,17 +25,12 @@ beforeEach(async () => {
     store = new FirestoreDataStoreImpl({collections: 'Widgets: signed-in\nUserStuff: user-private'})
 })
 
-afterEach(async () => {
-    //await store['db'].delete()
-})
-
 afterAll(async () => {
     await signOut()
 })
 
 describe('shared collections', () => {
     beforeAll(async () => {
-        await auth.init()
         await signInAs('private/userTestAccount.json')
     })
 
@@ -45,7 +40,6 @@ describe('shared collections', () => {
     })
 
     test('errors for unknown collection names', async () => {
-        // const store = new IdbDataStoreImpl({dbName: 'db2', collectionNames: ['Gadgets']})
         await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
     })
 
@@ -80,7 +74,7 @@ describe('shared collections', () => {
         const theDate = new Date(2022, 6, 2, hour, 11, 12)
         await store.add('Widgets', 'w1', {a: 10, date: theDate})
         const item = await store.getById('Widgets', 'w1')
-        expect(item.date.getTime()).toStrictEqual(theDate.getTime())
+        expect(item?.date.getTime()).toStrictEqual(theDate.getTime())
     })
 
     describe('log in and out', () => {
@@ -89,7 +83,6 @@ describe('shared collections', () => {
             await signInAs('private/userTestAccount.json')
             await store.add('Widgets', 'x1', {a: 110, b: 'AAA', c: true})
             await store.add('Widgets', 'x2', {a: 120, b: 'AAA', c: true})
-            await signOut()
 
             const queryIds = () => store.query('Widgets', {b: 'AAA'}).then( result => result.map( (it:any) => it.id ))
             const onNextWidgets = jest.fn()
@@ -113,7 +106,6 @@ describe('shared collections', () => {
     describe('subscribe', () => {
 
         beforeAll(async () => {
-            await auth.init()
             await signInAs('private/userTestAccount.json')
         })
 

@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
+import {equals} from 'ramda'
+import {getConfig, setConfig} from './components/firebaseApp'
 
 declare global {
     var setAppCode: (appCode: string) => void
     var getAppCode: () => string | null
+    var setFirebaseConfig: (config: object) => void
     var setComponentSelectedListener: (callback: (id: string) => void) => void
     var highlightElement: (id: string) => void
 }
@@ -17,6 +20,11 @@ export default function AppRunnerForPreview() {
         window.setAppCode = (newAppCode: string) => {
             if (newAppCode !== appCode) {
                 setAppCode(newAppCode)
+            }
+        }
+        window.setFirebaseConfig = (newConfig: object) => {
+            if (!equals(newConfig, getConfig())) {
+                setConfig(newConfig)
             }
         }
         window.getAppCode = () => appCode

@@ -1,4 +1,4 @@
-import {print, types} from 'recast'
+import {parse, prettyPrint, print, types} from 'recast'
 import {visit,} from 'ast-types'
 
 import App from '../model/App'
@@ -13,7 +13,17 @@ import {last, omit} from 'ramda'
 import Parser from './Parser'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
 import {trimParens} from '../util/helpers'
-import {DefinedFunction, objectLiteral, objectLiteralEntries, StateEntry, topoSort} from './generatorHelpers'
+import {
+    DefinedFunction,
+    objectLiteral,
+    objectLiteralEntries,
+    StateEntry,
+    topoSort,
+    valueLiteral
+} from './generatorHelpers'
+import Project from '../model/Project'
+import ServerAppConnector from '../model/ServerAppConnector'
+import ServerApp from '../model/ServerApp'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -27,16 +37,20 @@ export const DEFAULT_IMPORTS = [
     `import Elemento from 'elemento-runtime'`
 ]
 
-export function generate(app: App, imports: string[] = DEFAULT_IMPORTS) {
-    return new Generator(app, imports).output()
+export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
+    return new Generator(app, project, imports).output()
 
 }
 
 export default class Generator {
     private parser
     
-    constructor(public app: App, public imports: string[] = DEFAULT_IMPORTS) {
-        this.parser = new Parser(app)
+    constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
+        this.parser = new Parser(app, project)
+    }
+
+    static prettyPrint(code: string) {
+        return prettyPrint(parse(code), {quote: 'single'}).code
     }
 
     output() {
@@ -46,7 +60,7 @@ export default class Generator {
         }))
         const appMainFile = {
             name: 'appMain.js',
-            content: 'export default ' + this.generateComponent(this.app, this.app)
+            content: this.generateComponent(this.app, this.app)
         }
 
         const imports = this.imports.join('\n') + '\n\n'
@@ -100,7 +114,7 @@ export default class Generator {
         const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.find(comp => comp.codeName === name)
         const stateEntries = statefulComponents.map( (el): StateEntry => {
-            const entry = this.initialStateEntry(el)
+            const entry = this.initialStateEntry(el, topLevelFunctions)
             const identifiers = this.parser.stateIdentifiers(el.id)
             const stateComponentIdentifiersUsed = identifiers.filter(isStatefulComponentName)
             return [el.codeName, entry, stateComponentIdentifiersUsed]
@@ -114,7 +128,7 @@ export default class Generator {
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => {
-            const entry = this.initialStateEntry(comp)
+            const entry = this.initialStateEntry(comp, topLevelFunctions)
             return `    const [${comp.codeName}] = React.useState(${entry})`
         }).join('\n')
 
@@ -129,7 +143,8 @@ export default class Generator {
             pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
             backgroundFixedDeclarations, stateBlock
         ].filter( d => d !== '').join('\n')
-        const componentFunction = `function ${functionName}(props) {
+        const exportClause = componentIsApp ? 'export default ' : ''
+        const componentFunction = `${exportClause}function ${functionName}(props) {
 ${declarations}
 
     return ${uiElementCode}
@@ -237,6 +252,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'Function':
             case 'FirebasePublish':
             case 'ServerApp':
+            case 'ServerAppConnector':
                 return ''
 
             default:
@@ -244,7 +260,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
     }
 
-    private initialStateEntry(element: Element): string | DefinedFunction {
+    private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector): string | DefinedFunction {
 
         const modelProperties = () => {
             const propertyExprs = element.propertyDefs.filter( ({state}) => state ).map(def => {
@@ -265,7 +281,14 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             return new DefinedFunction(`(${functionDef.inputs.join(', ')}) => ${calculation}`)
         }
 
-        if (element.type() === 'statefulUI') {
+        if (element.kind === 'ServerAppConnector') {
+            const connector = element as ServerAppConnector
+            const [configFunction, configFunctionName] = this.serverAppConfigFunction(connector)
+            topLevelFunctions.add(configFunction)
+            return `new ${runtimeElementName(element)}.State({configuration: ${configFunctionName}()})`
+        }
+
+        if (element.type() === 'statefulUI' || element.type() === 'background') {
             return `new ${runtimeElementName(element)}.State(${objectLiteral(modelProperties())})`
         }
 
@@ -274,6 +297,35 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
 
         return ''
+    }
+
+    private serverAppConfigFunction(connector: ServerAppConnector) {
+        const serverAppName = this.getExprWithoutParens(connector, 'serverApp')
+        let configExpr, configFunctionName
+        if (!serverAppName) {
+            configExpr = '{}'
+            configFunctionName = 'configServerApp'
+        } else {
+            const serverApp = this.project.elementArray().find( el => el.kind === 'ServerApp' && el.codeName === serverAppName ) as ServerApp
+            configFunctionName = serverApp ? `config${serverApp.codeName}` : `configServerApp`
+            if (serverApp) {
+                const functionInfo = (fn: FunctionDef) => fn.action ? {params: fn.inputs, action: true} : {params: fn.inputs}
+
+                const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
+                configExpr = `{
+                url: ${serverUrlExpr || `'/${serverApp.codeName.toLowerCase()}'`},
+                functions: ${valueLiteral(Object.fromEntries( serverApp.functions.map( fn => [fn.codeName, functionInfo(fn)])))}
+            }`
+
+            } else {
+                const errorMessage = `Unknown name`
+                configExpr = `Elemento.codeGenerationError(\`'${connector.serverApp?.expr}'\`, '${errorMessage}')`
+            }
+        }
+        const configFunction = `function ${configFunctionName}() {
+    return ${configExpr}
+}`
+        return [Generator.prettyPrint(configFunction), configFunctionName]
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {

@@ -30,8 +30,7 @@ import auth from './authentication'
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
 import {mapObjIndexed} from 'ramda'
-import {getApp} from './firebaseApp'
-import {FirebaseApp} from 'firebase/app'
+import {getAppAndSubscribeToChanges, FirebaseApp} from './firebaseApp'
 import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 
 const convertValue = (value: any) => typeof value.toDate === 'function' ? value.toDate() : value
@@ -40,23 +39,27 @@ const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
 type Properties = {collections: string}
 export default class FirestoreDataStoreImpl implements DataStore {
     private theDb: Firestore | null = null
-    private theApp: FirebaseApp | null = null
     private readonly collections: CollectionConfig[]
     private authObserver: any = null
+    private appChangeSubscribed = false
+
     constructor(private props: Properties) {
         this.collections = parseCollections(props.collections ?? '')
     }
 
-    get db(): Firestore { return this.theDb! }
+    private handleAppChange = (app: FirebaseApp | null) => {
+        this.theDb = app ? getFirestore(app) : null
+        this.notifyAll(InvalidateAll)
+    }
 
-    private async init() {
-        await auth.init()
-        if (!this.theApp) {
-            this.theApp = await getApp()
+    get db(): Firestore | null {
+
+        if (!this.appChangeSubscribed) {
+            getAppAndSubscribeToChanges(this.handleAppChange)
+            this.appChangeSubscribed = true
         }
-        if (!this.theDb) {
-            this.theDb = getFirestore(this.theApp)
-        }
+
+        return this.theDb
     }
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
@@ -66,6 +69,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     private collectionRef(collectionName: CollectionName) {
+        if (!this.db) throw new Error(`Not connected to Firestore database`)
         const collectionConfig = this.collections.find( coll => coll.name === collectionName)
         if (!collectionConfig) {
             throw new Error(`Collection '${collectionName}' not found`)
@@ -87,7 +91,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     async getById(collectionName: CollectionName, id: Id) {
-        await this.init()
+        if (!this.db) return null
         const docSnap = await getDoc(this.docRef(collectionName, id))
         if (!docSnap.exists()) {
             throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
@@ -97,14 +101,13 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
-        await this.init()
         const itemWithId = {id, ...item}
         await setDoc(this.docRef(collectionName, id), itemWithId);
         this.notify(collectionName, Add, id, item)
     }
 
     async addAll(collectionName: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
-        await this.init()
+        if (!this.db) throw new Error(`Not connected to Firestore database`)
         const addIdToItem = (item: DataStoreObject, id: Id) => ({id, ...item})
         const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items))
 
@@ -118,19 +121,17 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
-        await this.init()
         await updateDoc(this.docRef(collectionName, id), changes)
         this.notify(collectionName, Update, id, changes)
     }
 
     async remove(collectionName: CollectionName, id: Id) {
-        await this.init()
         await deleteDoc(this.docRef(collectionName, id))
         this.notify(collectionName, Remove, id)
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        await this.init()
+        if (!this.db) return []
         if (!this.getCurrentUser()) {
             return []
         }
@@ -147,7 +148,9 @@ export default class FirestoreDataStoreImpl implements DataStore {
             observable = new SendObservable()
             this.collectionObservables.set(collection, observable)
             if (!this.authObserver) {
-                auth.init().then( () => this.authObserver = auth.onAuthStateChanged(() => this.notifyAll(InvalidateAll)))
+                this.authObserver = auth.onAuthChange(() => {
+                    this.notifyAll(InvalidateAll)
+                })
             }
         }
         return observable

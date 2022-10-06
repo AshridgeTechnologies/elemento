@@ -179,7 +179,7 @@ test('shows allowed items in menu bar insert menu', async () => {
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['App Bar', 'Page', 'File Data Store', 'Browser Data Store', 'Firestore Data Store', 'Memory Data Store', 'Function', 'Collection'])
+    expect(optionsShown()).toStrictEqual(['App Bar', 'Page', 'File Data Store', 'Browser Data Store', 'Firestore Data Store', 'Memory Data Store', 'Function', 'Collection', 'Server App Connector'])
 })
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Menu', 'List', 'Data', 'Collection', 'Layout', 'Function'])
@@ -312,7 +312,7 @@ test('notifies publish request if logged in', async () => {
     await actWait(() =>  ({container, unmount} = render(editor())))
     fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('Publish'))
-    expect(onPublish).toHaveBeenCalledWith({name: 'App One', code: generate(project.elementArray()[0] as App).code})
+    expect(onPublish).toHaveBeenCalledWith({name: 'App One', code: generate(project.elementArray()[0] as App, project).code})
 })
 
 test('publish disabled if not logged in', async () => {
@@ -338,8 +338,12 @@ test(`notifies tree action with item selected in tree`, async () => {
 })
 
 test('has iframe for running app', async () => {
+
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions}/>)))
 
     const appFrame = container.querySelector('iframe[name="appFrame"]')
     expect(appFrame.src).toMatch(/.*\/run\/editorPreview$/)
+
+    // await(wait(1000))
+    // expect(appFrame.appCode).toEqual('some code')
 })

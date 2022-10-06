@@ -119,3 +119,66 @@ Decision 4 Oct 22
 - Implementations should use lazy initialisation
 
 
+Part 3 - Calling from client app
+================================
+
+Needs
+-----
+
+- Can call server functions as easily as client functions
+- Use the most intuitive form for the calls
+- Call in same way as external apps
+- Caching, async and errors handled automatically
+- Automatic setup for own server apps
+- Setup from Open API for external apps, with manual option
+- User id and authorization must be available on the server side
+
+Forces
+------
+
+- Dot notation is more suited to situations where you have an object with many specialised methods
+- Dot notation is somewhat familiar from Excel, easy to learn
+- Dot notation also need in general objects
+- Dot notation works with proxies
+- Easier to generate code around a single object 
+- Introducing many new global functions will lead to clashes
+- Need a model object to focus usage of the API
+- Also need a runtime object for caching, async, state updates, etc
+- Need to know the functions available in the model for checking, autocomplete, docs, etc
+- Consistent approach to generating code - don't use generated class in one place, proxy in another
+- Making generated code similar to handwritten code
+- Proxies are harder to understand and debug
+- BUT shared code is good and easier to test than generated code
+- App connectors all have different functions; collections all have the same functions
+- App connectors handle every function the same way (or all query and all action functions, anyway)
+- Need to fit in with the state management approach
+- Would be good to migrate collections and databases towards the same approach
+- Collections could use a default memory data store
+
+
+Possibilities
+-------------
+
+- Proxies
+- Functions generated at runtime
+- Classes generated at build time
+- Wrapper classes
+- Proxy for async and caching stuff, generated classes for actual calls and implementation
+
+
+Decisions 7 Oct 22
+------------------
+
+- App connector in the client app for the server app
+- Use dot notation to access app connector functions
+- Model object linked to a server app object
+- Model object exposes its functions by looking at the server app
+- Runtime object takes a config in its properties
+- Runtime object adds functions to itself on construction from the config
+- Each added function is a simple call to a base function with name and params
+- Runtime object does all caching and async handling in base functions
+- Runtime object use firebase auth and sends id token in header if present
+- Server side express app picks up id token and verifies and gets auth user
+- Server side base app is instantiated for each request with the user
+
+

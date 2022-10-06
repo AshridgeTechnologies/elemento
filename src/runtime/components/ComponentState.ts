@@ -21,7 +21,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     updateFrom(newObj: this): this {
-        return shallow(this.props, newObj.props) ? this : new this.thisConstructor(newObj.props).withState(this.state)
+        return this.isEqualTo(newObj) ? this : new this.thisConstructor(newObj.props).withState(this.state)
     }
 
     latest(): this {
@@ -29,6 +29,10 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     private get thisConstructor(): any { return this.constructor as any }
+
+    protected isEqualTo(newObj: this) {
+        return shallow(this.props, newObj.props)
+    }
 
     protected withState(state: StateProps): this {
         const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>

@@ -215,6 +215,14 @@ export default class FirebaseDeploy {
         console.log('Function deployment complete')
     }
 
+    async getConfig(): Promise<object> {
+        const gapi = await getGapi()
+        const webApp = await this.webApp()
+        // @ts-ignore
+        return this.checkError(await gapi.client.firebase.projects.webApps.getConfig({name: `projects/${this.deployment.firebaseProject}/webApps/${webApp.appId}/config`}))
+    }
+
+
     private checkError(response: GapiResponse): any{
         if (response.status !== 200) {
             const {message} = response.result.error
@@ -223,7 +231,6 @@ export default class FirebaseDeploy {
 
         return response.result
     }
-
 
     private async webApp() {
         // @ts-ignore
@@ -267,7 +274,7 @@ export default class FirebaseDeploy {
             `const {React} = Elemento`
         ]
 
-        return generate(this.app, imports).code
+        return generate(this.app, this.project, imports).code
     }
 
     private runtimeLibFile() {
@@ -279,9 +286,7 @@ export default class FirebaseDeploy {
     }
 
     private async configFile() {
-        const webApp = await this.webApp()
-        // @ts-ignore
-        const config = this.checkError(await gapi.client.firebase.projects.webApps.getConfig({name:`projects/${this.deployment.firebaseProject}/webApps/${webApp.appId}/config`}))
+        const config = await this.getConfig()
         console.log('config', config)
         return JSON.stringify(config, null, 2)
     }

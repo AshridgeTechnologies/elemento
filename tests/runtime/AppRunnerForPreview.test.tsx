@@ -9,6 +9,10 @@ import {addContainer} from '../testutil/elementHelpers'
 import AppRunnerForPreview from '../../src/runtime/AppRunnerForPreview'
 import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
+import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
+
+jest.mock('../../src/runtime/components/firebaseApp')
+
 const appCode = (num: string) => `
 import React from 'react'
 import Elemento from 'elemento-runtime'
@@ -47,6 +51,8 @@ afterEach(() => {
     // @ts-ignore
     delete window.setAppCode
     // @ts-ignore
+    delete window.setFirebaseConfig
+    // @ts-ignore
     delete window.setComponentSelectedListener
     // @ts-ignore
     delete window.highlightElement
@@ -64,6 +70,26 @@ test('can update app on page', () => {
     expectEl('FirstText').toHaveTextContent('This is App One')
     act(() => window.setAppCode(appCode('"Two"')))
     expectEl('FirstText').toHaveTextContent('This is App Two')
+})
+
+test('can update config on page if it is different', () => {
+    renderIt(appRunnerForPreview())
+    const config = {projectId: 'proj1'}
+    const configCopy = {projectId: 'proj1'}
+    const newConfig = {projectId: 'proj2'}
+
+    act(() => window.setFirebaseConfig(config))
+    expect(setConfig).toHaveBeenCalledWith(config)
+
+    const mock_getConfig = getConfig as jest.MockedFunction<any>
+    mock_getConfig.mockReturnValue(config)
+
+    act(() => window.setFirebaseConfig(configCopy))
+    expect(setConfig).toHaveBeenCalledTimes(1)
+
+    act(() => window.setFirebaseConfig(newConfig))
+    expect(setConfig).toHaveBeenCalledTimes(2)
+    expect(setConfig).toHaveBeenLastCalledWith(newConfig)
 })
 
 test('can listen for component selected events on page', () => {

@@ -34,7 +34,8 @@ import './splitPane.css'
 import {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
-import TabbedPanel from './TabbedPanel'
+import PreviewPanel from './PreviewPanel'
+import FirebasePublish from '../model/FirebasePublish'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -62,9 +63,11 @@ export default function Editor({
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
+    const [firebaseConfig, setFirebaseConfig] = useState<object|null>(null)
+    const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
 
     const app = project.elementArray().find( el => el.kind === 'App') as App
-    const {errors, code: appCode} = generate(app)
+    const {errors, code: appCode} = generate(app, project)
 
     const propertyArea = () => {
         if (firstSelectedItemId) {
@@ -97,7 +100,6 @@ export default function Editor({
         onAction(ids.map( id => id.toString()), action)
     }
 
-    const appFrameRef = useRef<HTMLIFrameElement>(null)
 
     function handleComponentSelected(id: string) {
         const listItemIdRegExp = /\.#[^.]+/g
@@ -109,12 +111,20 @@ export default function Editor({
         }
     }
 
-    function setAppInAppFrame(appCode: string): boolean {
+    const appFrameRef = useRef<HTMLIFrameElement>(null)
+
+    function setAppInAppFrame(appCode: string, firebaseConfig: object | null): boolean {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
             const setAppCode = appWindow['setAppCode' as keyof Window]
             if (setAppCode) {
                 setAppCode(appCode)
+                if (firebaseConfig) {
+                    const setAppFirebaseConfig = appWindow['setFirebaseConfig' as keyof Window]
+                    if (setAppFirebaseConfig) {
+                        setAppFirebaseConfig(firebaseConfig)
+                    }
+                }
                 const setEventListenerFn = appWindow['setComponentSelectedListener' as keyof Window]
                 if (setEventListenerFn) {
                     setEventListenerFn(handleComponentSelected)
@@ -139,15 +149,26 @@ export default function Editor({
         return false
     }
 
+    const firebasePublishForPreview = project.findChildElements(FirebasePublish)[0]
+    const projectFirebaseConfigName = firebasePublishForPreview?.name
+
+    if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
+        firebasePublishForPreview.getConfig(project).then( config => {
+            console.log('Using firebase config', config)
+            setFirebaseConfig(config)
+            setFirebaseConfigName(projectFirebaseConfigName)
+        })
+    }
+
     useEffect(() => {
         const interval = setInterval(() => {
-            if (setAppInAppFrame(appCode)) {
+            if (setAppInAppFrame(appCode, firebaseConfig)) {
                 clearInterval(interval)
             }
         }, 200)
     }, [])
 
-    setAppInAppFrame(appCode)
+    setAppInAppFrame(appCode, firebaseConfig)
     highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
 
     const signedIn = useSignedInState()
@@ -155,7 +176,7 @@ export default function Editor({
     const onPublishMenu = () => {
         if (onPublish) {
             const name = app.name
-            const code = generate(app).code
+            const code = generate(app, project).code
             onPublish({name, code})
         }
     }
@@ -212,19 +233,18 @@ export default function Editor({
                     </Box>
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
-                    <TabbedPanel preview={
+                    <PreviewPanel preview={
                         <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
                         <iframe name='appFrame' src="/run/editorPreview" ref={appFrameRef}
                                                       style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                         </Box>}
-                                 code={<pre style={{
+                                  code={<pre style={{
                                      fontSize: 12,
                                      lineHeight: 1.5,
                                      fontFamily: 'Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New'
                                  }}>{appCode}
-                                    </pre>} />
-
-
+                                    </pre>}
+                    configName={firebaseConfigName}/>
                 </Grid>
             </Grid>
         </Box>

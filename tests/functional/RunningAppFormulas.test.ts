@@ -21,7 +21,7 @@ test.skip('formulas using inputs update as the input changes', async ({page}) =>
     //     ]),
     // ])
     //
-    // await loadApp(page, app)
+    // await loadApp(page, app, project)
     //
     // expect(await page.textContent('p >> nth=0')).toBe('Alice - How are you?')
     //
@@ -42,7 +42,7 @@ test.skip('actions can refer to other controls', async ({page}) => {
     //         new Button('button_1', 'Clear Name', {content: 'Clear', action: ex`Reset(NameInput)`}),
     //     ]),
     // ])
-    // await loadApp(page, app)
+    // await loadApp(page, app, project)
     //
     // expect(await page.textContent('p >> nth=0')).toBe('Hello ')
     //

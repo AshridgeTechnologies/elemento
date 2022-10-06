@@ -23,4 +23,4 @@ export {default as IdbDataStoreImpl} from './IdbDataStoreImpl'
 export {default as BrowserDataStore} from './BrowserDataStore'
 export {default as FirestoreDataStore} from './FirestoreDataStore'
 export {default as FirestoreDataStoreImpl} from './FirestoreDataStoreImpl'
-
+export {default as ServerAppConnector} from './ServerAppConnector'

@@ -12,6 +12,7 @@ import {flatten, last, uniq, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
 import {ExprType, runtimeElementName} from './Types'
 import ServerApp from '../model/ServerApp'
+import {valueLiteral} from './generatorHelpers'
 
 type IdentifierCollector = {add(s: string): void}
 type ElementErrors = {[propertyName: string]: string}
@@ -25,18 +26,6 @@ const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponentType = (name: string) => componentNames().includes(name)
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
 const isItemVar = (name: string) => name === '$item'
-
-const valueLiteral = function (propertyValue: any): string {
-    if (isPlainObject(propertyValue)) {
-        return `{${Object.entries(propertyValue).map(([name, val]) => `${name}: ${valueLiteral(val)}`).join(', ')}}`
-    } else if (isArray(propertyValue)) {
-        return `[${propertyValue.map(valueLiteral).join(', ')}]`
-    } else if (typeof propertyValue === 'string') {
-        return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue}'`
-    } else {
-        return String(propertyValue)
-    }
-}
 
 function parseExpr(expr: string) {
     const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr

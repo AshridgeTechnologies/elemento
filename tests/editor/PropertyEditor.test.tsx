@@ -339,8 +339,10 @@ test('has fields for FunctionDef', () => {
     expect(kindButton(0).disabled).toBe(true)
     expect(kindButton(4).textContent).toBe('abc')
     expect(kindButton(4).disabled).toBe(true)
-    expect(kindButton(5).textContent).toBe('fx=')
+    expect(kindButton(5).textContent).toBe('y/n')
     expect(kindButton(5).disabled).toBe(true)
+    expect(kindButton(6).textContent).toBe('fx=')
+    expect(kindButton(6).disabled).toBe(true)
 })
 
 test('has fields for FileDataStore', () => {
