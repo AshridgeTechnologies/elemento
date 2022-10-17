@@ -58,6 +58,7 @@ Problems
 - ✅ Dual id/Id
 - Message and clear after import
 - If change a word, don't save. move to another, the changed data sticks in the field
+- Revision: words come up as visible, can't see what state they are, which you have done, position shifts, animated change is irritating
 
 
 Features needed
