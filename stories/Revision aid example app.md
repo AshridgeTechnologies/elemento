@@ -28,6 +28,12 @@ Requirements
 - Format works on a phone
 - Help page
 
+Bugs
+----
+
+- If type in middle of word in text box, cursor goes to end
+- If enter accented characters, inserts extra one and loses char before
+- Sorting should be case insensitive
 
 
 Desirable
@@ -39,10 +45,14 @@ Desirable
 Finishing touches
 -----------------
 
+- Revision: Better indication of good/bad/not tried yet
+- Revision: split into sections
+- Learn: Show which are being learned
+- Learn: count of how many being learned
 - Handle errors in import
 - ✅ Import Learned, Last Revised
 - Nav buttons highlight the current page
-- Grey out today's revision if already answered
+- Grey out today's revision if already answered - or different section
 - Show All/HideAll buttons
 - Show name of open data file
 - Forms can be entered with enter
@@ -50,7 +60,25 @@ Finishing touches
 - Readonly inputs keep title in border
 - Links to word entry from lists
 - Keep Learn words visible on day learned
-- Import uses AddAll 
+- Import uses AddAll
+- Catch duplicates on imports
+- Ask to save changes before moving away from word
+- Words: search/filter list
+- Buttons too small
+- Revision needs to hide unless specifically shown that day
+- Revision needs to show whether you have revised a word that day
+- Separate add word form on Words page
+- Need a refresh button in case using it on different devices
+- Swipe might be better on phone
+
+
+Further features
+----------------
+
+- Tags for words
+- Speech synthesis
+- Speech recognition
+- Random ordering in revision sections
 
 Problems
 --------
@@ -58,8 +86,9 @@ Problems
 - ✅ Dual id/Id
 - Message and clear after import
 - If change a word, don't save. move to another, the changed data sticks in the field
-- Revision: words come up as visible, can't see what state they are, which you have done, position shifts, animated change is irritating
-
+- Words list does not update after an import
+- Change of item state when click on phone is slow
+- Typing in text box is slowing as word list grows - too much rendering?
 
 Features needed
 ---------------
