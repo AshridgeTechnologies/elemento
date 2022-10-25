@@ -80,6 +80,7 @@ Tech debt
 
 - Investigate Signals https://github.com/preactjs/signals
 - Investigate the React use hook
+- Untangle shared package into studio and runtime
 - Fix all uses of constructor.name
 - Code generator
 - Unit testing/refactoring of app frame stuff in editor

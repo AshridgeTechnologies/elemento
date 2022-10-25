@@ -4,7 +4,7 @@ import BaseElement from './BaseElement'
 import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
 import {without} from 'ramda'
-import {Web} from '@mui/icons-material'
+import Web from '@mui/icons-material/Web'
 
 
 type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValueType<string | number> }

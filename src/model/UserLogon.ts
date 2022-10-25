@@ -1,7 +1,7 @@
 import {ComponentType, PropertyDef} from './Types'
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {AccountCircle} from '@mui/icons-material'
+import AccountCircle from '@mui/icons-material/AccountCircle'
 
 type Properties = {
 }

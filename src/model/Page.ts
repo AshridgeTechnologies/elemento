@@ -2,7 +2,7 @@ import Element from './Element'
 import BaseElement from './BaseElement'
 import {ComponentType, ElementType, PropertyDef} from './Types'
 import {elementOfType} from './elements'
-import {Web} from '@mui/icons-material'
+import Web from '@mui/icons-material/Web'
 
 type Properties = {}
 

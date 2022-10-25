@@ -1,14 +1,15 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {Pending} from '../DataStore'
+import {ErrorResult, Pending} from '../DataStore'
+import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
 import {valueOf} from '../runtimeFunctions'
 import auth from './authentication'
-import shallow from 'zustand/shallow'
-import {deepEqual} from 'assert'
+import {startCase} from 'lodash'
 
 type Properties = {path: string}
 
 export interface Configuration {
+    appName: string,
     url: string,
     functions: {
         [name: string] : {
@@ -29,12 +30,38 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     implements ComponentState<ServerAppConnectorState> {
 
     private get fetch() { return this.props.fetch }
+    private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}
 
     constructor(props: ExternalProperties) {
         super({fetch: globalThis.fetch.bind(globalThis), ...props})
         const functions = this.props.configuration?.functions ?? []
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
+    }
+
+    Refresh(functionName?: string, ...args: any[]) {
+        if (!functionName) {
+            const newCache = {}
+            this.state.resultCache = newCache
+            this.updateState({resultCache: newCache})
+        } else if (args.length > 0) {
+            const functionArgsKey = this.getFunctionArgsKey(functionName, args)
+            this.updateCalls(functionArgsKey, undefined)
+        } else {
+            const keysToDelete = Object.keys(this.resultCache).filter( key => key.startsWith(`${functionName}#`))
+            const deletions = Object.fromEntries(keysToDelete.map(key => [key, undefined]))
+            const newCache = mergeRight(this.resultCache, deletions)
+            this.state.resultCache = newCache
+            this.updateState({resultCache: newCache})
+        }
+    }
+
+    private handleError = (functionName: string, error?: {message: string}) => {
+        const errorMessage = error?.message ?? ''
+        const functionDisplayName = startCase(functionName)
+        const description = `${this.configuration.appName}: ${functionDisplayName}`
+        appFunctions.NotifyError(description, new Error(errorMessage))
+        return new ErrorResult(description, errorMessage)
     }
 
     protected isEqualTo(newObj: this): boolean {
@@ -46,10 +73,12 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     }
 
     private doGetCall(name: string, params: any[]) {
-        const functionArgsKey = `${name}#${JSON.stringify(params)}`
+        const functionArgsKey = this.getFunctionArgsKey(name, params)
         const cachedResult = this.resultCache[functionArgsKey as keyof object]
+
         if (cachedResult === undefined) {
-            const config = this.props.configuration
+            const config = this.configuration
+
             const functionDef = config.functions[name]
             const paramNames = functionDef.params.slice(0, params.length)
             const queryString = paramNames.map( (name, index) => `${name}=${valueOf(params[index])}`).join('&')
@@ -57,7 +86,16 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             auth.getIdToken().then(token => {
                 const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
                 return this.fetch!(url, options)
-                    .then( resp => resp.json())
+                    .then( resp => {
+                        if (resp.ok) {
+                            return resp.json()
+                        } else {
+                            return resp.json().then( data => this.handleError(name, data.error))
+                        }
+                    })
+                    .catch(err => {
+                        return this.handleError(name, err)
+                    })
                     .then( data => this.updateCalls(functionArgsKey, data) )
             })
             const result = new Pending()
@@ -84,7 +122,19 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                 body: JSON.stringify(bodyData)
             })
         })
-            .then(resp => resp.text())
+            // @ts-ignore
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.text()
+                } else {
+                    return resp.json().then( data => this.handleError(name, data.error))
+                }
+            })
+            .catch(err => this.handleError(name, err))
+    }
+
+    private getFunctionArgsKey(name: string, params: any[]) {
+        return `${name}#${JSON.stringify(params)}`
     }
 
     private updateCalls(key: string, data: any) {

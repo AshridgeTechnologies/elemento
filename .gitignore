@@ -10,3 +10,4 @@ coverage
 /.firebase/
 
 /functions/lib/
+/.proxyrc.json

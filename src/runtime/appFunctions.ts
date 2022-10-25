@@ -1,6 +1,8 @@
 import {valueOf} from './runtimeFunctions'
-import {currentUser} from '../shared/authentication'
+import authentication from './components/authentication'
 import dataFunctions from './dataFunctions'
+
+const {currentUser} = authentication
 
 const appFunctions = {
 
@@ -20,7 +22,7 @@ const appFunctions = {
 
     CurrentUser() {
         const user = currentUser()
-        return user ? {...user, Name: user.displayName} : null
+        return user ? {...user, Name: user.displayName, Email: user.email} : null
     },
 
     ...dataFunctions

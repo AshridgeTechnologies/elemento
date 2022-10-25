@@ -25,15 +25,15 @@ Requirements
 - ✅ Async calls in the server side code are handled correctly to return when all settled
 - ✅ App connector functions can use object values
 - ✅ Calls from client are cached and updated when resolved, like db calls
-- Firebase authorization is transmitted to the server side
-- Current user is available in server functions
+- ✅ Firebase authorization is transmitted to the server side
+- ✅ Current user is available in server functions, via CurrentUser()
+- ✅ Errors are reported as for client app
+- ✅ Server app connector can (should/must?) have the same name as the server app
+- ✅ Server app connector cache can be refreshed in a sensible way
+- ✅ All necessary code gen features from client generator are included
 - Preview can use simulated server running in browser
 - Documentation includes all prerequisites inc manual steps like enabling API in Cloud Console
 - Google approval for Elemento to remove security warnings
-- Errors are reported as for client app
-- Server app connector can (should/must?) have the same name as the server app
-- Server app connector cache can be refreshed in a sensible way
-- All necessary code gen features from client generator are included eg quote escaping
 
 Desirable
 ---------
@@ -70,4 +70,19 @@ Complications with testing
   - add URL property to ServerAppConnector - will need similar for API connector anyway
   - use a one-line express runner, with Google service account key in the environment variable
 
+Generator features needed
+-------------------------
+
+~~quote escaping~~  Not needed yet as no fixed value properties
+✅ dependency order
+✅ code generation error
+✅ expressions to functions
+✅ private user-defined functions
+✅ error for syntax error
+✅ error for unknown name
+✅ error for statement not expression
+✅ multiple statements only in action
+✅ assignment treated as comparison
+✅ error for property shorthand
+✅ error for unexpected number in expression
 

@@ -1,9 +1,16 @@
 import * as functions from 'firebase-functions'
 import axios from 'axios'
+import cors from 'cors'
 import express from 'express'
 
 const app = express()
 
+app.use(cors({
+    origin: ['https://elemento.online', 'http://localhost:1234'],
+    methods: 'PUT',
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+}))
 app.use(express.raw({type: 'application/zip'}))
 app.use( (req, res, next) => {
     console.log(req.method, req.url)

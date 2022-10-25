@@ -230,17 +230,12 @@ test('stores dates in ISO format', async () => {
 })
 
 test('retrieves dates in ISO format', async () => {
-    const hour = 15
-    const data = {Widgets: { w1: {a: 10, b: `2022-06-29T${hour}:47:21.968Z`}}}
+    const data = {Widgets: { w1: {a: 10, b: `2022-06-29T15:47:21.968Z`}}}
     const showSaveFilePicker = jest.fn()
     const showOpenFilePicker = filePickerReturning(data, 'file.json')
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
     await store.Open()
-
-    const timezoneOffsetHours = new Date().getTimezoneOffset() / 60
-    const expectedHour = hour - timezoneOffsetHours
-
-    expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: new Date(2022, 5, 29, expectedHour, 47, 21, 968)})
+    expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: new Date(`2022-06-29T15:47:21.968Z`)})
 })
 
 test('retrieves invalid dates as strings', async () => {

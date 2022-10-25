@@ -208,15 +208,15 @@ test('generates Text elements with escaped quotes', ()=> {
 
     const gen = new Generator(app, dummyProject)
     const output = gen.output()
-//     expect(output.files[0].content).toBe(`function Page1(props) {
-//     const pathWith = name => props.path + '.' + name
-//     const {Page, TextElement} = Elemento.components
-//
-//     return React.createElement(Page, {id: props.path},
-//         React.createElement(TextElement, {path: pathWith('Text1'), }, 'Hi there \'Doctor\' How are you?'),
-//     )
-// }
-// `)
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there \\'Doctor\\' How are you?'),
+    )
+}
+`)
 })
 
 test('generates NumberInput elements with initial value', ()=> {
@@ -455,6 +455,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     expect(output.files[1].name).toBe('appMain.js')
     expect(output.files[1].content).toBe(`function configServerApp1() {
     return {
+        appName: 'Server App 1',
         url: '/serverapp1',
 
         functions: {
@@ -487,6 +488,47 @@ export default function App1(props) {
 
 })
 
+test('generates ServerAppConnector elements with correct configuration if has same name as Server App', () => {
+    const app = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Button('b1', 'Do It Button', {content: 'Go on, do it!', action: ex`Connector1.DoStuff('Number1')`}),
+            ]
+        ),
+        new ServerAppConnector('sac1', 'Server App 1', {serverApp: ex`ServerApp1`})
+    ])
+
+    const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
+    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
+        getWidgetFn,
+    ])
+    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+
+    const output = new Generator(app, project).output()
+    expect(output.files[1].content).toBe(`function configServerApp1() {
+    return {
+        appName: 'Server App 1',
+        url: '/serverapp1',
+
+        functions: {
+            GetWidget: {
+                params: ['id']
+            }
+        }
+    };
+}
+
+export default function App1(props) {
+    const pathWith = name => 'App1' + '.' + name
+    const {App, ServerAppConnector} = Elemento.components
+    const pages = {Page1}
+    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const ServerApp1 = Elemento.useObjectState('app.ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
+
+    return React.createElement(App, {path: 'App1', },)
+}
+`)
+})
+
 test('generates ServerAppConnector elements with specified URL', () => {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -504,6 +546,7 @@ test('generates ServerAppConnector elements with specified URL', () => {
 
     expect(output.files[1].content).toBe(`function configServerApp1() {
     return {
+        appName: 'Server App 1',
         url: 'https://example.com/api',
 
         functions: {
@@ -1312,6 +1355,32 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, Sum(Log == 12, 3, 4))),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+})
+
+test('assignment deep in complex expression is treated as comparison', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Button('id1', 'b1', {action: ex`let a = If(true, 10, Sum(Log= 12, 3, 4))
+    let b = If(Sum = 42, 10, 20)
+    Sum = 1`})
+            ]
+        )])
+
+    const output = new Generator(app, dummyProject).output()
+    const content = output.files[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Button} = Elemento.components
+    const {If, Sum, Log} = Elemento.globalFunctions
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', action: () => {let a = If(true, 10, Sum(Log == 12, 3, 4))
+    let b = If(Sum == 42, 10, 20)
+    Sum == 1}}),
     )
 }
 `)

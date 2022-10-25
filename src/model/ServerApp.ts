@@ -1,7 +1,7 @@
 import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {Webhook} from '@mui/icons-material'
+import Webhook from '@mui/icons-material/Webhook'
 import FunctionDef from './FunctionDef'
 
 type Properties = {  }

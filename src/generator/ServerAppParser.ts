@@ -6,11 +6,10 @@ import {globalFunctions} from '../serverRuntime/globalFunctions'
 import {appFunctionsNames} from '../serverRuntime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, PropertyValue} from '../model/Types'
-import {isArray, isPlainObject} from 'lodash'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, last, uniq, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
-import {ExprType, runtimeElementName} from './Types'
+import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
 import {valueLiteral} from './generatorHelpers'
 
@@ -110,13 +109,19 @@ export default class ServerAppParser {
 
     private parseElement(element: Element) {
         const identifierSet = new Set<string>()
+        const isAppElement = (name: string) => this.app.elementArray().some(el => el.codeName === name)
+        const isParam = (name: string) => element instanceof FunctionDef && element.inputs.includes(name)
         const isKnown = (name: string) => isGlobalFunction(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
             || isBuiltIn(name)
+            || isAppElement(name)
+            || isParam(name)
+            || isItemVar(name)
 
             element.propertyDefs.forEach(def => {
-                const exprType: ExprType = def.type === 'action' ? 'action': 'singleExpression'
+                const isActionCalculation = element instanceof FunctionDef && def.name === 'calculation' && element.action
+                const exprType: ExprType = (isActionCalculation || def.type === 'action') ? 'action': 'singleExpression'
                 this.parseExprAndIdentifiers(element, def.name, identifierSet, isKnown, exprType)
             })
 

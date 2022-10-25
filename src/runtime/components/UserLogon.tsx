@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
-import {AccountCircle} from '@mui/icons-material'
+import AccountCircle from '@mui/icons-material/AccountCircle'
 import authentication from './authentication'
 import {createElement, useEffect, useState} from 'react'
 import * as auth from 'firebase/auth'

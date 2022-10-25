@@ -3,7 +3,7 @@ import BaseElement, {newIdTransformer, propDef} from './BaseElement'
 import Element from './Element'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
-import {Web} from '@mui/icons-material'
+import Web from '@mui/icons-material/Web'
 import {elementOfType} from './elements'
 
 type Properties = { author?: PropertyValue }

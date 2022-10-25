@@ -120,8 +120,8 @@ export default class Parser {
         const allPages = app.pages
         const allComponentElements = allElements(component)
         const allContainerElements = containingComponent ? allElements(containingComponent) : []
-        const isServerApp = (name: string) => !!this.project.elementArray().find( el => el.kind === 'ServerApp' && el.codeName === name )
-        const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
+        const isServerApp = (name: string) => this.project.elementArray().some(el => el.kind === 'ServerApp' && el.codeName === name)
+        const isAppElement = (name: string) => app.otherComponents.some(el => el.codeName === name)
         const isComponentElement = (name: string) => !!allComponentElements.find(el => el.codeName === name )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
         const isPageName = (name: string) => !!allPages.find(p => p.codeName === name )

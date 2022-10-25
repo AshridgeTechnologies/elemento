@@ -155,7 +155,7 @@ export default class FirebaseDeploy {
         const uploadUrl = new URL(uploadUrlInfo.uploadUrl)
         console.log('uploadUrl', uploadUrl)
 
-        const uploadProxyUrl = `${location.origin}/uploadfunctioncontent?path=${uploadUrl.pathname}&${uploadUrl.search.substring(1)}`
+        const uploadProxyUrl = `https://elemento.online/uploadfunctioncontent?path=${uploadUrl.pathname}&${uploadUrl.search.substring(1)}`
         await fetch(uploadProxyUrl, {
             method: 'PUT',
             credentials: 'omit',
@@ -195,11 +195,13 @@ export default class FirebaseDeploy {
         let operation = this.checkError(functionResponse)
 
         console.log('Waiting for function deployment...')
-        let attempts = 0
-        while (!operation.done && ++attempts < 20) {
+        let startTime = Date.now()
+        const deploymentTimeoutSecs = 120
+        let elapsedTime = 0
+        while (!operation.done && (elapsedTime = Math.floor((Date.now() - startTime)/1000)) < deploymentTimeoutSecs) {
             await wait(5000)
             const opName = operation.name
-            console.log('polling operation result', attempts)
+            console.log('...', elapsedTime, 'seconds')
             operation = this.checkError(await gapi.client.cloudfunctions.projects.locations.operations.get({name: opName}))
         }
 

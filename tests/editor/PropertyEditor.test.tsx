@@ -329,7 +329,7 @@ test('has fields for MemoryDataStore', () => {
 })
 
 test('has fields for FunctionDef', () => {
-    const element = new FunctionDef('id1', 'Function 1', {input1: 'foo', input5: 'bar', calculation: ex`42`})
+    const element = new FunctionDef('id1', 'Function 1', {input1: 'foo', input5: 'bar', calculation: ex`42`, private: true})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Function 1')
     expect(inputValue('Input 1')).toBe('foo')
@@ -343,6 +343,8 @@ test('has fields for FunctionDef', () => {
     expect(kindButton(5).disabled).toBe(true)
     expect(kindButton(6).textContent).toBe('fx=')
     expect(kindButton(6).disabled).toBe(true)
+    expect(kindButton(7).textContent).toBe('y/n')
+    expect(kindButton(7).disabled).toBe(true)
 })
 
 test('has fields for FileDataStore', () => {

@@ -5,6 +5,8 @@ function safeKey(name: string) {
     return name.match(/\W/) ? `'${name}'` : name
 }
 
+export const quote = (s: string) => `'${s}'`
+
 export function objectLiteralEntries(obj: object, suffixIfNotEmpty: string = '') {
     const entries = Object.entries(obj)
     return entries.length ? entries.map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ') + suffixIfNotEmpty : ''

@@ -112,11 +112,11 @@ export default class Generator {
         const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
-        const isStatefulComponentName = (name: string) => statefulComponents.find(comp => comp.codeName === name)
+        const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
         const stateEntries = statefulComponents.map( (el): StateEntry => {
             const entry = this.initialStateEntry(el, topLevelFunctions)
             const identifiers = this.parser.stateIdentifiers(el.id)
-            const stateComponentIdentifiersUsed = identifiers.filter(isStatefulComponentName)
+            const stateComponentIdentifiersUsed = identifiers.filter( id => isStatefulComponentName(id) && id !== el.codeName)
             return [el.codeName, entry, stateComponentIdentifiersUsed]
         }).filter( ([,entry]) => !!entry )
         const stateBlock = topoSort(stateEntries).map( ([name, entry]) => {
@@ -313,6 +313,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{
+                appName: '${serverApp.name}',
                 url: ${serverUrlExpr || `'/${serverApp.codeName.toLowerCase()}'`},
                 functions: ${valueLiteral(Object.fromEntries( serverApp.functions.map( fn => [fn.codeName, functionInfo(fn)])))}
             }`

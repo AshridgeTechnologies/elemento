@@ -182,3 +182,44 @@ Decisions 7 Oct 22
 - Server side base app is instantiated for each request with the user
 
 
+Part 4 - Running server side apps for development
+=================================================
+
+Needs
+-----
+
+- Server side apps run and update instantly
+- Debugging (when added) is as easy as for the client app
+- Server app behaves as closely as possible to when deployed
+- Need to still be able to connect to deployed server app from preview
+- Developer needs to control and know when using deployed or dev server app
+- All still runs from the browser, no extra installs needed
+
+Forces
+------
+
+- Firebase-admin may be impossible to run in the browser
+- Browser APIs are different to firebase-admin
+- Debugging would be for a single request with particular inputs
+- Should at least serialize the inputs in the same way as an HTTP request
+- A short-term solution may be useful
+- Running the server code in the browser may be needed in production in some cases
+
+Possibilities
+-------------
+
+- Another iframe alongside client preview
+- Communicate by postMessage or broadcast channel
+- Local web server that accepts put requests with files and runs the app locally
+- Find a trick to swap out one set of firebase APIs and substitute another for browser running
+- Write files locally and run a hot reloading server
+- Poke app into browser frame as in client
+- Web containers
+
+Spike - Web containers
+----------------------
+
+- Quick attempt to get a server app running in Webcontainer had some promise, but hit some little snags
+- Also not sure how functional-style debugging would work with it
+- If want to run the actual express app, probably better to use a local node server
+
