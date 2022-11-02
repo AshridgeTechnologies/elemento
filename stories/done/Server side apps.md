@@ -31,12 +31,12 @@ Requirements
 - ✅ Server app connector can (should/must?) have the same name as the server app
 - ✅ Server app connector cache can be refreshed in a sensible way
 - ✅ All necessary code gen features from client generator are included
+
+Moved to Part 2
+---------------
 - Preview can use simulated server running in browser
 - Documentation includes all prerequisites inc manual steps like enabling API in Cloud Console
 - Google approval for Elemento to remove security warnings
-
-Desirable
----------
 - Server functions can run within the client app
 - Server app can provide an external API with configurable paths
 

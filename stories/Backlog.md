@@ -16,7 +16,6 @@ Stories
 -------
 
 ### Priority for customer-facing apps
-- Server side apps
 - JavaScript functions
 - Payments
 - API calls from browser
@@ -28,7 +27,6 @@ Stories
 - Web file datastores
 
 ### Priority for internal apps
-- Server side functions
 - Types
 - Validation
 - Model-driven components
@@ -144,6 +142,7 @@ Done
 - IndexedDB datastore
 - Firebase deploy Part 1
 - Firestore data storage
+- Server side apps
 
 
 Bugs fixed
