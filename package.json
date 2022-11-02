@@ -12,8 +12,8 @@
     "serve": "parcel --dist-dir devDist 'src/appswebsite/**/index.html' ",
     "functest": "playwright test",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test",
-    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/index.js && mkdir devDist && cp -r dist/runtime/ devDist/runtime",
-    "buildServerRuntime": "esbuild src/serverRuntime/index.ts --bundle --sourcemap --format=esm  --platform=node --target=node16.17 --external:firebase-admin --minify --outfile=dist/serverRuntime/index.js && mkdir devDist && cp -r dist/serverRuntime/ devDist/serverRuntime"
+    "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/runtime.js --define:process.env.NODE_ENV=\\\"development\\\" && mkdir -p devDist && cp -r dist/runtime/ devDist/runtime",
+    "buildServerRuntime": "esbuild src/serverRuntime/index.ts --bundle --sourcemap --format=esm  --platform=node --target=node16.17 --external:firebase-admin --minify --outfile=dist/serverRuntime/serverRuntime.js && mkdir -p devDist && cp -r dist/serverRuntime/ devDist/serverRuntime"
   },
   "dependencies": {
     "@emotion/react": "^11.9.0",

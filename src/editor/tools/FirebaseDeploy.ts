@@ -9,8 +9,8 @@ import ServerApp from '../../model/ServerApp'
 import ServerAppGenerator from '../../generator/ServerAppGenerator'
 
 const runtimeFileName = 'runtime.js'
-const runtimeFileSourceUrl = '/runtime/index.js'
-const serverRuntimeFileSourceUrl = '/serverRuntime/index.js'
+const runtimeFileSourceUrl = '/runtime/runtime.js'
+const serverRuntimeFileSourceUrl = '/serverRuntime/serverRuntime.js'
 
 function zipText(text: string) {
     const uint8array = new TextEncoder().encode(text)
@@ -78,7 +78,7 @@ export default class FirebaseDeploy {
         console.log('version', version)
 
         const files = await this.files()
-        console.log(files)
+        console.log('files', files)
 
         const filesToPopulate = mapObjIndexed( ({hash}) => hash, files )
         const populateFilesResult = this.checkError(await gapi.client.firebasehosting.sites.versions.populateFiles({
@@ -131,7 +131,10 @@ export default class FirebaseDeploy {
         const gen = new ServerAppGenerator(this.serverApp)
         const generatedFiles = gen.output().files
         console.log('generatedFiles', generatedFiles)
-        const staticFiles = [{name: 'serverRuntime.js', content: await this.serverRuntimeLibFile()}]
+        const staticFiles = [
+            {name: 'serverRuntime.js', content: await this.loadFile(serverRuntimeFileSourceUrl)},
+            {name: 'serverRuntime.js.map', content: await this.loadFile(serverRuntimeFileSourceUrl + '.map')},
+        ]
         const files = [...generatedFiles, ...staticFiles]
         const sourceZipData = await zipFiles(files)
 
@@ -256,7 +259,10 @@ export default class FirebaseDeploy {
                 text: this.codeFile()
             },
             [`/${runtimeFileName}`]: {
-                text: await this.runtimeLibFile()
+                text: await this.loadFile(runtimeFileSourceUrl)
+            },
+            [`/${runtimeFileName}.map`]: {
+                text: await this.loadFile(runtimeFileSourceUrl + '.map')
             }
         }
         const addHashAndZip = async (filePath: string, {text}: { text: string }) => {
@@ -279,12 +285,8 @@ export default class FirebaseDeploy {
         return generate(this.app, this.project, imports).code
     }
 
-    private runtimeLibFile() {
-        return fetch(runtimeFileSourceUrl).then(resp => resp.text())
-    }
-
-    private serverRuntimeLibFile() {
-        return fetch(serverRuntimeFileSourceUrl).then(resp => resp.text())
+    private loadFile(url: string) {
+        return fetch(url).then(resp => resp.text())
     }
 
     private async configFile() {

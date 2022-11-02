@@ -77,6 +77,14 @@ describe('shared collections', () => {
         expect(item?.date.getTime()).toStrictEqual(theDate.getTime())
     })
 
+    test('stores nulls', async () => {
+
+        const hour = 10
+        await store.add('Widgets', 'w1', {a: 10, foo: null})
+        const item = await store.getById('Widgets', 'w1')
+        expect(item).toStrictEqual({id: 'w1', a: 10, foo: null})
+    })
+
     describe('log in and out', () => {
 
         test('query is empty when logged out and updates when log in', async () => {

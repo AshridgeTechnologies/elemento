@@ -1,13 +1,11 @@
 import * as React from 'react'
-import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
-import AccountCircle from '@mui/icons-material/AccountCircle'
+import {Box, Button, Icon, IconButton, Link, Popover, Typography} from '@mui/material'
 import authentication from './authentication'
 import {createElement, useEffect, useState} from 'react'
 import * as auth from 'firebase/auth'
 import {StyledFirebaseAuth} from 'react-firebaseui'
 
 const {authIsReady, getAuth, onAuthChange, currentUser, signOut} = authentication
-
 
 function AuthDialog() {
     const uiConfig = {
@@ -73,7 +71,7 @@ export default function UserLogon() {
                 onClick={handleButtonClick}
                 color="inherit"
             >
-                <AccountCircle />
+                <Icon>account_circle</Icon>
             </IconButton>
                 : <Button variant='contained' disableElevation={true}
                           aria-label="account of current user"
