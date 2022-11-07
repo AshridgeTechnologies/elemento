@@ -4,7 +4,6 @@ Elemento Backlog
 Bugs
 ----
 - Studio: Show errors in server side apps
-- Text inputs: jump to end, slow rendering, unusual characters
 - Big error storm in preview when load app that uses firebase config
 - Clear preview and state when load new app
 - Select in copied page selects the corresponding element in the page copied from
@@ -158,3 +157,4 @@ Bugs fixed
 - Stops updating preview sometimes
 - Performance: deferred updates repeatedly update store in a loop
 - Escape quotes in Javascript string literals
+- Text inputs: jump to end, slow rendering, unusual characters

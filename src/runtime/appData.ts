@@ -32,13 +32,15 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
 
     const commitDeferredUpdates = () => {
         log('commitDeferredUpdates')
-        set((state: AppStore) => {
-            let updatedStore = state.store
-            deferredUpdates.forEach((newObject: StoredState, path: string ) => updatedStore = updatedStore.update(path, newObject))
-            return {store: updatedStore}
-        })
+        if (deferredUpdates.size) {
+            set((state: AppStore) => {
+                let updatedStore = state.store
+                deferredUpdates.forEach((newObject: StoredState, path: string ) => updatedStore = updatedStore.update(path, newObject))
+                return {store: updatedStore}
+            })
+            deferredUpdates.clear()
+        }
 
-        deferredUpdates.clear()
         timeout = null
         deferringUpdates = false
     }
@@ -47,15 +49,13 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         if (!deferringUpdates) {
             log('deferUpdates')
             deferringUpdates = true
+            timeout = setTimeout(commitDeferredUpdates, 0)
         }
     }
 
     const storeDeferredUpdate = (path: string, newObject: StoredState) => {
         log('storeDeferredUpdate', path)
         deferredUpdates.set(path, newObject)
-        if (!timeout) {
-            timeout = setTimeout(commitDeferredUpdates, 0)
-        }
     }
 
     const update = (path: string, newObject: StoredState) => {
