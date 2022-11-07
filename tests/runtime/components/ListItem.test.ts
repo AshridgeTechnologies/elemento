@@ -7,10 +7,9 @@ import {ListItem, TextElement} from '../../../src/runtime/components'
 import {snapshot} from '../../testutil/testHelpers'
 
 test('ListItem produces output containing ReactElement children', () => {
-        const para1 = createElement(TextElement, null, 'where are you?')
-        const para2 = createElement(TextElement, null, 'over here!')
+        const itemContentComponent = (props: { path: string, $item: any }) => createElement(TextElement, null, 'where are you?')
         let listItemElement: React.ReactElement
-        listItemElement = createElement(ListItem, {path: 'page1.para1', selected: false, onClick: () => { console.log('Click')}}, para1, para2)
+        listItemElement = createElement(ListItem, {path: 'page1.para1', selected: false, onClick: () => { console.log('Click')}, item: {a: 10}, itemContentComponent})
         snapshot(listItemElement!)()
     }
 )

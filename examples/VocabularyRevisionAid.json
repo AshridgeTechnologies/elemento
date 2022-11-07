@@ -104,7 +104,7 @@
                   "kind": "List",
                   "properties": {
                     "items": {
-                      "expr": "Sort(Words.Query({}), $item.Word)"
+                      "expr": "Words.Query({})"
                     }
                   },
                   "elements": [

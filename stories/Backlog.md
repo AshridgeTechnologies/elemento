@@ -3,7 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
-- Show errors in server side functions
+- Studio: Show errors in server side apps
 - Text inputs: jump to end, slow rendering, unusual characters
 - Big error storm in preview when load app that uses firebase config
 - Clear preview and state when load new app

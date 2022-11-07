@@ -58,7 +58,7 @@ test('Can highlight all matching elements in a list', async () => {
 
 test('State class has correct properties', () => {
     const item1 = {a: 1}, item2 = {a: 2}
-    const state = new ListElement.State({selectedItem: item1})
+    const state = new ListElementState({selectedItem: item1})
     const appInterface = testAppInterface(); state.init(appInterface)
     expect(state.selectedItem).toBe(item1)
     expect(state._withStateForTest({selectedItem: item2}).selectedItem).toBe(item2)

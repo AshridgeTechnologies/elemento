@@ -25,10 +25,5 @@ exports[`ListItem produces output containing ReactElement children 1`] = `
   >
     where are you?
   </p>
-  <p
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  >
-    over here!
-  </p>
 </div>
 `;

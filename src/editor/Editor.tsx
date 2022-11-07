@@ -116,6 +116,8 @@ export default function Editor({
     function setAppInAppFrame(appCode: string, firebaseConfig: object | null): boolean {
         const appWindow = appFrameRef.current?.contentWindow
         if (appWindow) {
+            // @ts-ignore  -- https://github.com/facebook/react/issues/18945#issuecomment-630421386
+            appWindow.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__
             const setAppCode = appWindow['setAppCode' as keyof Window]
             if (setAppCode) {
                 setAppCode(appCode)
