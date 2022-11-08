@@ -1,4 +1,4 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import SentimentSatisfied from '@mui/icons-material/SentimentSatisfied';
@@ -30,7 +30,7 @@ export default class Icon extends BaseElement<Properties> implements Element {
         return [
             propDef('iconName', 'string'),
             propDef('label', 'string'),
-            propDef('action', 'action'),
+            propDef('action', eventAction()),
             propDef('display', 'boolean'),
             propDef('color', 'string'),
             propDef('fontSize', 'number'),

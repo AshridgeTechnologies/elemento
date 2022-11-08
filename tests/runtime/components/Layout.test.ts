@@ -17,6 +17,6 @@ test('Layout element produces output containing children horizontal',
     snapshot(createElement(Layout, {path: 'app.page1.things', horizontal: true, width: '70%'}, text1, text2))
 )
 
-test('Layout element produces output containing children horizontal and wrapped',
-    snapshot(createElement(Layout, {path: 'app.page1.things', horizontal: true, width: '60%', wrap: true}, text1, text2))
+test('Layout element produces output containing children horizontal and wrapped with background color',
+    snapshot(createElement(Layout, {path: 'app.page1.things', horizontal: true, width: '60%', backgroundColor: 'green', wrap: true}, text1, text2))
 )

@@ -1,4 +1,4 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import Crop75 from '@mui/icons-material/Crop75'
@@ -30,7 +30,7 @@ export default class Button extends BaseElement<Properties> implements Element {
             propDef('content', 'string'),
             propDef('appearance', appearanceChoices),
             propDef('display', 'boolean'),
-            propDef('action', 'action'),
+            propDef('action', eventAction()),
         ]
     }
 }

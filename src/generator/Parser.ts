@@ -8,7 +8,7 @@ import * as components from '../runtime/components'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {ElementId, PropertyValue} from '../model/Types'
+import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {last, without} from 'ramda'
@@ -150,7 +150,7 @@ export default class Parser {
 
         const parseProperties = (element: Element) => {
             element.propertyDefs.forEach(def => {
-                const exprType: ExprType = def.type === 'action' ? 'action': 'singleExpression'
+                const exprType: ExprType = (def.type as EventActionPropertyDef).type === 'Action' ? 'action': 'singleExpression'
                 this.parseExprAndIdentifiers(element, def.name, identifiers, isKnown, exprType)
             })
         }

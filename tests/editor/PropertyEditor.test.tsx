@@ -159,6 +159,7 @@ test('has fields for Layout', () => {
     const element = new Layout('id1', 'Layout 1', {
         width: 100,
         horizontal: true,
+        backgroundColor: 'pink',
         wrap: false,
     }, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
@@ -166,6 +167,7 @@ test('has fields for Layout', () => {
     expect(selectValue('Horizontal')).toBe('true')
     expect(selectValue('Wrap')).toBe('false')
     expect(inputValue('Width')).toBe('100')
+    expect(inputValue('Background Color')).toBe('pink')
 })
 
 test('has fields for AppBar', () => {
@@ -284,7 +286,8 @@ test('has fields for MenuItem', () => {
 })
 
 test('has fields for List', () => {
-    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`, width: '100%'}, [])
+    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`, width: '100%',
+        selectable: true, selectAction: ex`Log(\$item.id)`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('List 1')
@@ -294,6 +297,10 @@ test('has fields for List', () => {
     expect(kindButton(0).disabled).toBe(true)
     expect(inputValue('Style')).toBe('funky')
     expect(inputValue('Width')).toBe('100%')
+    expect(selectValue('Selectable')).toBe('true')
+    expect(inputValue('Select Action')).toBe('Log($item.id)')
+    expect(kindButton(4).textContent).toBe('fx=')
+    expect(kindButton(4).disabled).toBe(true)
 })
 
 test('has fields for Data', () => {

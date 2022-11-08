@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {ElementId, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
+import {ElementId, EventActionPropertyDef, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
 import {isArray, startCase} from 'lodash'
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
 import {isExpr, isNumeric} from '../util/helpers'
@@ -12,12 +12,13 @@ type PropertyInputProps = {
     onChange: OnChangeFn, fixedOnly?: boolean, readOnly?: boolean, error?: string
 }
 export default function PropertyInput({ elementId, name, type, value, onChange, fixedOnly = false, readOnly = false,  error}: PropertyInputProps) {
-    const exprOnlyProperty = type === 'action' || type === 'expr'
+    const isEventAction = (type as EventActionPropertyDef).type === 'Action'
+    const exprOnlyProperty = isEventAction || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
     const [expr, setExpr] = useState(valueIsExpr)
 
     const typedValue = (input: string): PropertyValue => {
-        if (isArray(type)) {
+        if (isArray(type) || isEventAction) {
             return input
         }
         switch (type) {

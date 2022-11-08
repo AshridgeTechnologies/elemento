@@ -39,6 +39,10 @@ test('ListElement shows selectedItem as selected', () => {
     snapshot(listElement('app.page1.list1', {selectedItem: listData[1]}, {itemContentComponent: ListItem1, items: listData}))()
 })
 
+test('ListElement shows selectedItem as selected from id', () => {
+    snapshot(listElement('app.page1.list1', {selectedItem: listData[1].id}, {itemContentComponent: ListItem1, items: listData}))()
+})
+
 test('ListElement updates its selectedItem in the app state', async () => {
     const {el, user}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
     const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
@@ -46,13 +50,39 @@ test('ListElement updates its selectedItem in the app state', async () => {
     expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
 })
 
-test.skip('ListElement updates its scrollTop in the app state', async () => {
-    // jest.setTimeout(1000000)
-    const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+test('ListElement does not update its selectedItem if not selectable', async () => {
+    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectable: false}), 'container2')
+    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
+    const user = userEvent.setup()
+    await user.click(listItem0El)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(undefined)
+})
+
+test('ListElement updates its scrollTop in the app state', async () => {
+    //TODO - find a way to test this - seems that as JSDOM is non-visual so doesn't do scrolling
+    // const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+    // const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
+    // fireEvent.scroll(listItem0El, {target: {scrollTop: 99}})
+    // await wait(1000)
+    // expect(stateAt('app.page1.list1').scrollTop).toBe(99)
+})
+
+test('selectAction is called with selected item', async () => {
+    const selectAction = jest.fn()
+    const {el, user} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectAction}), 'container3')
     const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    fireEvent.scroll(listItem0El, {target: {scrollTop: 99}})
-    await wait(1000)
-    expect(stateAt('app.page1.list1').scrollTop).toBe(99)
+    await user.click(listItem0El)
+    expect(selectAction).toHaveBeenCalledWith(listData[0])
+})
+
+test('selectAction is called with selected item even if not selectable', async () => {
+    const selectAction = jest.fn()
+    const {el, user} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData,
+        selectable: false, selectAction}), 'container4')
+    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
+    await user.click(listItem0El)
+    expect(selectAction).toHaveBeenCalledWith(listData[0])
+    expect(stateAt('app.page1.list1').selectedItem).toBe(undefined)
 })
 
 test('Can highlight all matching elements in a list', async () => {

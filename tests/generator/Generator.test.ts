@@ -791,12 +791,12 @@ test('generates codeGenerationError for unknown names in elements under App used
     })
 })
 
-test('generates List element with separate child component and global functions', ()=> {
+test('generates List element with separate child component and global functions and select action', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
             new Layout('la1', 'Layout 1', {}, [
-                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200}, [
+                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200, selectAction: ex`Log(\$item.id)`}, [
                     new Text('id1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
@@ -829,13 +829,14 @@ test('generates List element with separate child component and global functions'
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput, Layout, ListElement} = Elemento.components
+    const {Log} = Elemento.globalFunctions
     const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], width: 200, style: 'color: red'}),
+            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], width: 200, selectAction: (\$item) => {Log(\$item.id)}, style: 'color: red'}),
     ),
     )
 }
@@ -846,7 +847,7 @@ test('generates List element with no items expression if undefined', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
-            new List('l1', 'List 1', {items: undefined}, [
+            new List('l1', 'List 1', {items: undefined, selectable: false}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
@@ -873,7 +874,7 @@ function Page2(props) {
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item}),
+        React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item, selectable: false}),
     )
 }
 `)
@@ -884,7 +885,7 @@ test('generates Layout element with properties and children', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`}, [
+            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`, backgroundColor: 'pink'}, [
                 new Text('text1', 'T1', {content: ex`23 + 45`}),
                 new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
@@ -903,7 +904,7 @@ test('generates Layout element with properties and children', ()=> {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
-        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200},
+        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200, backgroundColor: 'pink'},
             React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),

@@ -5,7 +5,7 @@ import {componentNames} from '../serverRuntime/names'
 import {globalFunctions} from '../serverRuntime/globalFunctions'
 import {appFunctionsNames} from '../serverRuntime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {ElementId, PropertyValue} from '../model/Types'
+import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, last, uniq, without} from 'ramda'
 import {AppData} from '../runtime/components/App'
@@ -122,7 +122,8 @@ export default class ServerAppParser {
 
             element.propertyDefs.forEach(def => {
                 const isActionCalculation = element instanceof FunctionDef && def.name === 'calculation' && element.action
-                const exprType: ExprType = (isActionCalculation || def.type === 'action') ? 'action': 'singleExpression'
+                const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
+                const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'singleExpression'
                 this.parseExprAndIdentifiers(element, def.name, identifierSet, isKnown, exprType)
             })
 
