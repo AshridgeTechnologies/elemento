@@ -4,7 +4,8 @@ import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Type
 import ViewListIcon from '@mui/icons-material/ViewList'
 import {elementOfType} from './elements'
 
-type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>, style?: PropertyValueType<string>, width?: PropertyValueType<string | number> }
+type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>,
+    style?: PropertyValueType<string>, width?: PropertyValueType<string | number>, selectable?: PropertyValueType<boolean> }
 
 export default class List extends BaseElement<Properties> implements Element {
 
@@ -15,6 +16,7 @@ export default class List extends BaseElement<Properties> implements Element {
     get items() { return this.properties.items }
     get selectedItem() { return this.properties.selectedItem }
     get width() { return this.properties.width }
+    get selectable() { return this.properties.selectable }
     get style() { return this.properties.style }
 
     get propertyDefs(): PropertyDef[] {
@@ -22,6 +24,7 @@ export default class List extends BaseElement<Properties> implements Element {
             propDef('items', 'expr'),
             propDef('selectedItem', 'expr', {state: true}),
             propDef('width', 'string|number'),
+            propDef('selectable', 'boolean'),
             propDef('style', 'string'),
         ]
     }

@@ -846,7 +846,7 @@ test('generates List element with no items expression if undefined', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
-            new List('l1', 'List 1', {items: undefined}, [
+            new List('l1', 'List 1', {items: undefined, selectable: false}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
@@ -873,7 +873,7 @@ function Page2(props) {
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item}),
+        React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item, selectable: false}),
     )
 }
 `)
@@ -884,7 +884,7 @@ test('generates Layout element with properties and children', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`}, [
+            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`, backgroundColor: 'pink'}, [
                 new Text('text1', 'T1', {content: ex`23 + 45`}),
                 new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
@@ -903,7 +903,7 @@ test('generates Layout element with properties and children', ()=> {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
-        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200},
+        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200, backgroundColor: 'pink'},
             React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),

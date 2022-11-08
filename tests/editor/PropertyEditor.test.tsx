@@ -159,6 +159,7 @@ test('has fields for Layout', () => {
     const element = new Layout('id1', 'Layout 1', {
         width: 100,
         horizontal: true,
+        backgroundColor: 'pink',
         wrap: false,
     }, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
@@ -166,6 +167,7 @@ test('has fields for Layout', () => {
     expect(selectValue('Horizontal')).toBe('true')
     expect(selectValue('Wrap')).toBe('false')
     expect(inputValue('Width')).toBe('100')
+    expect(inputValue('Background Color')).toBe('pink')
 })
 
 test('has fields for AppBar', () => {

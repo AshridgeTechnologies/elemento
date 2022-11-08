@@ -2,7 +2,7 @@ import React from 'react'
 import {valueOfProps} from '../runtimeFunctions'
 import {Stack} from '@mui/material'
 
-type Properties = { path: string, horizontal?: boolean, width?: string | number, wrap?: boolean, children?: any }
+type Properties = { path: string, horizontal?: boolean, width?: string | number, backgroundColor?: string, wrap?: boolean, children?: any }
 
 export default function Layout({children, path, horizontal = false, wrap = false, ...props}: Properties) {
     const propVals = valueOfProps(props)
@@ -13,6 +13,7 @@ export default function Layout({children, path, horizontal = false, wrap = false
         overflow: horizontal ? 'visible' : 'scroll',
         maxHeight: '100%',
         boxSizing: 'border-box',
+        bgColor: props.backgroundColor,
         alignItems: horizontal ? 'baseline' : 'flex-start',
         padding: horizontal ? 0 : 1,
     }

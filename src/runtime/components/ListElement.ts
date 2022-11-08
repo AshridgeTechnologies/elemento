@@ -11,6 +11,7 @@ type Properties = {
     items?: any[],
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
     width?: string | number,
+    selectable?: boolean,
     style?: string
 }
 type StateProperties = {selectedItem?: any, scrollTop?: number}
@@ -32,13 +33,14 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM
 
     const {selectedItem = undefined} = state
-    const {items = [], width, style} = valueOfProps(props)
-    const onClick = useCallback((event:SyntheticEvent) => {
+    const {items = [], width, style, selectable = true} = valueOfProps(props)
+    const onClickFn = useCallback((event:SyntheticEvent) => {
         const targetId = (event.target as HTMLElement).id
         const itemId = targetId.match(/\.#(\w+)/)?.[1]
         const selectedItem = items.find((it:any) => it.id === itemId)
         state._setSelectedItem(selectedItem)
     }, [items])
+    const onClick = selectable ? onClickFn : null
     const children = asArray(items).map((item, index) => {
             const itemId = item.id ?? index
             const itemPath = `${path}.#${itemId}`

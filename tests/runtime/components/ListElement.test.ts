@@ -46,6 +46,14 @@ test('ListElement updates its selectedItem in the app state', async () => {
     expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
 })
 
+test('ListElement does not update its selectedItem if not selectable', async () => {
+    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectable: false}))
+    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
+    const user = userEvent.setup()
+    await user.click(listItem0El)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(undefined)
+})
+
 test.skip('ListElement updates its scrollTop in the app state', async () => {
     // jest.setTimeout(1000000)
     const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))

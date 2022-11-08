@@ -8,13 +8,14 @@ import Page from '../../src/model/Page'
 test('List has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const list = new List('l1', 'List the First', {items: [{a:10}, {b: 20}], style: ex`color: blue`, width: 200}, [text1, text2])
+    const list = new List('l1', 'List the First', {items: [{a:10}, {b: 20}], style: ex`color: blue`, width: 200, selectable: true}, [text1, text2])
 
     expect(list.id).toBe('l1')
     expect(list.name).toBe('List the First')
     expect(list.codeName).toBe('ListtheFirst')
     expect(list.style).toStrictEqual(ex`color: blue`)
     expect(list.width).toBe(200)
+    expect(list.selectable).toBe(true)
     expect(list.items).toStrictEqual([{a:10}, {b: 20}])
     expect(list.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })

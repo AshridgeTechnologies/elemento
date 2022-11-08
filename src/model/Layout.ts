@@ -4,7 +4,8 @@ import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Type
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import {elementOfType} from './elements'
 
-type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>, wrap?: PropertyValueType<boolean> }
+type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>,
+    backgroundColor?: PropertyValueType<string>, wrap?: PropertyValueType<boolean> }
 
 export default class Layout extends BaseElement<Properties> implements Element {
 
@@ -15,6 +16,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
 
     get horizontal() { return this.properties.horizontal ?? false }
     get width() { return this.properties.width }
+    get backgroundColor() { return this.properties.backgroundColor }
     get wrap() { return this.properties.wrap ?? false }
 
     get propertyDefs(): PropertyDef[] {
@@ -22,6 +24,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
             propDef('horizontal', 'boolean'),
             propDef('width', 'string|number'),
             propDef('wrap', 'boolean'),
+            propDef('backgroundColor', 'string'),
         ]
     }
 

@@ -48,8 +48,8 @@ Finishing touches
 
 - Revision: Better indication of good/bad/not tried yet
 - Revision: split into sections
-- Learn: Show which are being learned
-- Learn: count of how many being learned
+- ✅ Learn: Show which are being learned
+- ✅ Learn: count of how many being learned
 - Handle errors in import
 - ✅ Import Learned, Last Revised
 - Nav buttons highlight the current page
@@ -60,7 +60,7 @@ Finishing touches
 - Focus field - maybe auto after reset form
 - Readonly inputs keep title in border
 - Links to word entry from lists
-- Keep Learn words visible on day learned
+- ✅ Keep Learn words visible on day learned
 - Import uses AddAll
 - Catch duplicates on imports
 - Ask to save changes before moving away from word
@@ -89,7 +89,7 @@ Problems
 - If change a word, don't save. move to another, the changed data sticks in the field
 - Words list does not update after an import
 - Change of item state when click on phone is slow
-- Typing in text box is slowing as word list grows - too much rendering?
+- ✅ Typing in text box is slowing as word list grows - too much rendering?
 
 Features needed
 ---------------
@@ -126,3 +126,19 @@ Revision conditions
 -------------------
 
 - Taking the latest revision date on or before the current date, the last revision is not successful and on or after the revision date  
+
+Learning UI improvements
+------------------------
+
+- ✅ Three states: ready (initial), learning, learned
+- ✅ Show words that are ready, learning or learned on the current day
+- ✅ Can move between any of the states
+- ✅ Three close spaced icons to switch state 
+- ✅ Icon for current state highlighted
+- ✅ Save the state in the database
+- ✅ Whole row highlighted for words in the learning state
+- ✅ List is not selectable
+- ✅ Translations of words in the learning state are hidden by default
+- ✅ Can show a translation in the learning state by clicking a button in the space (ideally just while button clicked)
+- ✅ Words and translation wrap under each other
+

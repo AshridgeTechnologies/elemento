@@ -20,9 +20,9 @@ exports[`Layout element produces output containing children horizontal 1`] = `
 </div>
 `;
 
-exports[`Layout element produces output containing children horizontal and wrapped 1`] = `
+exports[`Layout element produces output containing children horizontal and wrapped with background color 1`] = `
 <div
-  className="css-1kdau1b-MuiStack-root"
+  className="css-xfzjat-MuiStack-root"
   id="app.page1.things"
 >
   <p
