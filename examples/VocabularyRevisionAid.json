@@ -773,7 +773,7 @@
             },
             {
               "id": "text_14",
-              "name": "Text 14",
+              "name": "Instructions",
               "kind": "Text",
               "properties": {
                 "content": "Data columns are:\nWord, Translation, Date Learned, Last Revised, Last Revised Ok",
@@ -799,9 +799,27 @@
                 "content": "Import",
                 "appearance": "outline",
                 "action": {
-                  "expr": "let columns = List('Word', 'Translation', 'Date Learned', 'Last Revised', 'Last Revised Ok')\nlet newItems =  CsvToRecords(CsvText.value, columns)\nLog(newItems)\nAdd(Words, newItems)"
+                  "expr": "let columns = List('Word', 'Translation', 'Date Learned', 'Last Revised', 'Last Revised Ok')\nlet newItems =  CsvToRecords(CsvText.value, columns)\nLog(newItems)\nAdd(Words, newItems)\nSet(MessageText, \"Imported \" + newItems.length + \" words\")\nReset(CsvText)"
                 }
               }
+            },
+            {
+              "id": "data_11",
+              "name": "Message Text",
+              "kind": "Data",
+              "properties": {},
+              "elements": []
+            },
+            {
+              "id": "text_21",
+              "name": "Message",
+              "kind": "Text",
+              "properties": {
+                "content": {
+                  "expr": "MessageText"
+                }
+              },
+              "elements": []
             }
           ]
         },

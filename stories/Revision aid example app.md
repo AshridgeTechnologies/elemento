@@ -63,7 +63,6 @@ Finishing touches
 - Readonly inputs keep title in border
 - Links to word entry from lists
 - ✅ Keep Learn words visible on day learned
-- Import uses AddAll
 - Ask to save changes before moving away from word
 - Words: search/filter list
 - Buttons too small
