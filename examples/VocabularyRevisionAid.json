@@ -395,7 +395,8 @@
                 "items": {
                   "expr": "Sort(WordsToRevise, $item.LastRevised)"
                 },
-                "width": "100%"
+                "width": "100%",
+                "selectable": false
               },
               "elements": [
                 {
@@ -404,33 +405,48 @@
                   "kind": "Layout",
                   "properties": {
                     "horizontal": true,
-                    "width": "100%"
+                    "width": "100%",
+                    "backgroundColor": {
+                      "expr": "If(RevisedToday, 'lightgray', '')"
+                    }
                   },
                   "elements": [
                     {
-                      "id": "text_6",
-                      "name": "Word",
-                      "kind": "Text",
+                      "id": "layout_9",
+                      "name": "Word Layout",
+                      "kind": "Layout",
                       "properties": {
-                        "content": {
-                          "expr": "$item.Word"
+                        "horizontal": true,
+                        "width": "80%",
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "text_19",
+                          "name": "Word",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.Word"
+                            },
+                            "width": "15em"
+                          }
                         },
-                        "width": "40%"
-                      }
-                    },
-                    {
-                      "id": "text_7",
-                      "name": "Translation",
-                      "kind": "Text",
-                      "properties": {
-                        "content": {
-                          "expr": "$item.Translation"
-                        },
-                        "width": "40%",
-                        "color": {
-                          "expr": "If(ShowTranslation, 'inherit', 'transparent')"
+                        {
+                          "id": "text_20",
+                          "name": "Translation",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.Translation"
+                            },
+                            "width": "15em",
+                            "color": {
+                              "expr": "If(DaysBetween(ShowTranslation, Today()) == 0, 'inherit', 'transparent')"
+                            }
+                          }
                         }
-                      }
+                      ]
                     },
                     {
                       "id": "data_9",
@@ -438,9 +454,20 @@
                       "kind": "Data",
                       "properties": {
                         "initialValue": {
-                          "expr": "false"
+                          "expr": "null"
                         },
                         "display": false
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "data_10",
+                      "name": "RevisedToday",
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "DaysBetween($item.LastRevised, Today()) == 0"
+                        }
                       },
                       "elements": []
                     },
@@ -449,18 +476,33 @@
                       "name": "Visible Icon",
                       "kind": "Icon",
                       "properties": {
-                        "iconName": {
-                          "expr": "If(ShowTranslation, 'visibility', 'disabled_visible')"
-                        },
+                        "iconName": "visibility",
                         "fontSize": 24,
-                        "color": {
-                          "expr": "If(ShowTranslation, 'blue', 'gray')"
-                        },
+                        "color": "blue",
                         "action": {
-                          "expr": "Set(ShowTranslation, Not(ShowTranslation))"
+                          "expr": "Set(ShowTranslation, null)"
                         },
-                        "label": {
-                          "expr": "If(ShowTranslation, 'Click to hide', 'Click to show')"
+                        "label": "Click to hide",
+                        "display": {
+                          "expr": "DaysBetween(ShowTranslation, Today()) == 0"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "icon_9",
+                      "name": "Not Visible Icon",
+                      "kind": "Icon",
+                      "properties": {
+                        "iconName": "disabled_visible",
+                        "fontSize": 24,
+                        "color": "gray",
+                        "action": {
+                          "expr": "Set(ShowTranslation, Today())"
+                        },
+                        "label": "Click to show",
+                        "display": {
+                          "expr": "DaysBetween(ShowTranslation, Today()) != 0"
                         }
                       },
                       "elements": []
@@ -472,7 +514,9 @@
                       "properties": {
                         "iconName": "check",
                         "display": true,
-                        "color": "green",
+                        "color": {
+                          "expr": "If(And(RevisedToday, $item.LastRevisedOk), 'green', 'gray')"
+                        },
                         "fontSize": 24,
                         "action": {
                           "expr": "Words.Update($item.id, Record('LastRevised', Today(), 'LastRevisedOk', true))"
@@ -487,7 +531,9 @@
                       "properties": {
                         "iconName": "close",
                         "display": true,
-                        "color": "red",
+                        "color": {
+                          "expr": "If(And(RevisedToday, Not($item.LastRevisedOk)), 'red', 'gray')"
+                        },
                         "fontSize": 24,
                         "action": {
                           "expr": "Words.Update($item.id, Record('LastRevised', Today(), 'LastRevisedOk', false))"
@@ -509,7 +555,7 @@
           "elements": [
             {
               "id": "layout_8",
-              "name": "Layout 8",
+              "name": "Title Layout",
               "kind": "Layout",
               "properties": {
                 "horizontal": true,

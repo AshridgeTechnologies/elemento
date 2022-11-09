@@ -46,14 +46,16 @@ Desirable
 Finishing touches
 -----------------
 
-- Revision: Better indication of good/bad/not tried yet
+- ✅ Revision: Better indication of good/bad/not tried yet
 - Revision: split into sections
+- ✅ Revision needs to hide unless specifically shown that day
+- ✅ Revision needs to show whether you have revised a word that day
 - ✅ Learn: Show which are being learned
 - ✅ Learn: count of how many being learned
 - Handle errors in import
+- Catch duplicates on imports
 - ✅ Import Learned, Last Revised
 - Nav buttons highlight the current page
-- Grey out today's revision if already answered - or different section
 - Show All/HideAll buttons
 - Show name of open data file
 - Forms can be entered with enter
@@ -62,12 +64,9 @@ Finishing touches
 - Links to word entry from lists
 - ✅ Keep Learn words visible on day learned
 - Import uses AddAll
-- Catch duplicates on imports
 - Ask to save changes before moving away from word
 - Words: search/filter list
 - Buttons too small
-- Revision needs to hide unless specifically shown that day
-- Revision needs to show whether you have revised a word that day
 - Separate add word form on Words page
 - Need a refresh button in case using it on different devices
 - Swipe might be better on phone
@@ -142,3 +141,8 @@ Learning UI improvements
 - ✅ Can show a translation in the learning state by clicking a button in the space (ideally just while button clicked)
 - ✅ Words and translation wrap under each other
 
+
+Revision UI improvements
+------------------------
+
+- 
