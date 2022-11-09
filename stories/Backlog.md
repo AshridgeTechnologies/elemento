@@ -3,6 +3,8 @@ Elemento Backlog
 
 Bugs
 ----
+- DateFormat blows up on some bad values eg a string
+- Studio: Show errors in server side apps
 - Big error storm in preview when load app that uses firebase config
 - Asks for login to gapi on every keystroke when a Firebase Publisher exists
 - Studio: Show errors in server side apps

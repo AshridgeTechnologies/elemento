@@ -103,24 +103,53 @@
               },
               "elements": [
                 {
-                  "id": "list_3",
-                  "name": "WordList",
-                  "kind": "List",
-                  "properties": {
-                    "items": {
-                      "expr": "Sort(Words.Query({}), $item.Word)"
-                    }
-                  },
+                  "id": "layout_10",
+                  "name": "List Layout",
+                  "kind": "Layout",
+                  "properties": {},
                   "elements": [
                     {
-                      "id": "text_8",
-                      "name": "ListWord",
-                      "kind": "Text",
+                      "id": "textinput_7",
+                      "name": "WordFilter",
+                      "kind": "TextInput",
                       "properties": {
-                        "content": {
-                          "expr": "$item.Word"
+                        "width": "15em",
+                        "label": "Filter words"
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "list_5",
+                      "name": "WordList",
+                      "kind": "List",
+                      "properties": {
+                        "items": {
+                          "expr": "Sort(FilteredWords(), $item.Word.toString().toLowerCase())"
                         }
-                      }
+                      },
+                      "elements": [
+                        {
+                          "id": "text_22",
+                          "name": "ListWord",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.Word"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "function_3",
+                      "name": "FilteredWords",
+                      "kind": "Function",
+                      "properties": {
+                        "calculation": {
+                          "expr": "Select(Words.Query({}), $item.Word.toString().toLowerCase().includes(WordFilter.value.toLowerCase()))"
+                        }
+                      },
+                      "elements": []
                     }
                   ]
                 },

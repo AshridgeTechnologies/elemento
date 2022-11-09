@@ -64,7 +64,7 @@ Finishing touches
 - Links to word entry from lists
 - ✅ Keep Learn words visible on day learned
 - Ask to save changes before moving away from word
-- Words: search/filter list
+- ✅ Words: search/filter list
 - Buttons too small
 - Separate add word form on Words page
 - Need a refresh button in case using it on different devices
@@ -112,6 +112,8 @@ Features needed
 - ✅ Icon buttons
 - Styling for buttons
 - ✅ Menu
+- TextMatch function that uses value, converts number to string, checks all fields of object/array recursively
+- Lower function that uses value, accepts numbers
 - Confirmation and error messages
 - Empty message in List
 - Date entry
@@ -140,8 +142,3 @@ Learning UI improvements
 - ✅ Can show a translation in the learning state by clicking a button in the space (ideally just while button clicked)
 - ✅ Words and translation wrap under each other
 
-
-Revision UI improvements
-------------------------
-
-- 
