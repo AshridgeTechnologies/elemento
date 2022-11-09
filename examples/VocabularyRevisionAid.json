@@ -146,7 +146,7 @@
                       "kind": "Function",
                       "properties": {
                         "calculation": {
-                          "expr": "Select(Words.Query({}), $item.Word.toString().toLowerCase().includes(WordFilter.value.toLowerCase()))"
+                          "expr": "Select(Words.Query({}), Or($item.Word.toString().toLowerCase().includes(WordFilter.value.toLowerCase()), $item.Translation.toString().toLowerCase().includes(WordFilter.value.toLowerCase())))"
                         }
                       },
                       "elements": []
@@ -155,7 +155,7 @@
                 },
                 {
                   "id": "layout_2",
-                  "name": "Widget Form",
+                  "name": "Word Form",
                   "kind": "Layout",
                   "properties": {
                     "horizontal": false
@@ -185,7 +185,7 @@
                     },
                     {
                       "id": "layout_4",
-                      "name": "Layout 4",
+                      "name": "Title Layout",
                       "kind": "Layout",
                       "properties": {
                         "horizontal": true
@@ -201,15 +201,17 @@
                           }
                         },
                         {
-                          "id": "button_12",
-                          "name": "New Word Button",
-                          "kind": "Button",
+                          "id": "text_4",
+                          "name": "IdDisplay",
+                          "kind": "Text",
                           "properties": {
-                            "content": "New Word",
-                            "appearance": "outline",
-                            "action": {
-                              "expr": "Reset(Word, Translation, WordList)"
-                            }
+                            "content": {
+                              "expr": "WordId"
+                            },
+                            "display": false,
+                            "color": "gray",
+                            "width": 160,
+                            "fontSize": 12
                           }
                         }
                       ]
@@ -281,27 +283,11 @@
                       },
                       "elements": [
                         {
-                          "id": "button_8",
-                          "name": "Add Word Button",
-                          "kind": "Button",
-                          "properties": {
-                            "content": "Add Word",
-                            "appearance": "outline",
-                            "display": {
-                              "expr": "!WordId.value"
-                            },
-                            "action": {
-                              "expr": "let newWord = Record('id', 'w' + Timestamp(), 'Word', Word, 'Translation', Translation);\nAdd(Words, newWord);\nReset(Word, Translation);\nSet(WordList, newWord)"
-                            }
-                          }
-                        },
-                        {
                           "id": "button_9",
                           "name": "Update Widget Button",
                           "kind": "Button",
                           "properties": {
-                            "content": "Save Changes",
-                            "appearance": "outline",
+                            "content": "Save",
                             "display": {
                               "expr": "!!WordId.value"
                             },
@@ -315,10 +301,12 @@
                           "name": "Cancel Button",
                           "kind": "Button",
                           "properties": {
-                            "content": "Abandon Changes",
-                            "appearance": "outline",
+                            "content": "Cancel",
                             "action": {
                               "expr": "Reset(Word, Translation)"
+                            },
+                            "display": {
+                              "expr": "!!WordId.value"
                             }
                           }
                         },
@@ -340,17 +328,54 @@
                       ]
                     },
                     {
-                      "id": "text_4",
-                      "name": "IdDisplay",
+                      "id": "text_24",
+                      "name": "Text 24",
                       "kind": "Text",
                       "properties": {
-                        "content": {
-                          "expr": "WordId"
-                        },
-                        "display": false,
-                        "color": "gray",
-                        "width": 160,
-                        "fontSize": 12
+                        "width": "100%",
+                        "border": 1,
+                        "borderColor": "lightgrey"
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "text_23",
+                      "name": "New word title",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "New word",
+                        "fontSize": 19
+                      }
+                    },
+                    {
+                      "id": "textinput_8",
+                      "name": "New Word",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "label": "Word"
+                      }
+                    },
+                    {
+                      "id": "textinput_9",
+                      "name": "New Translation",
+                      "kind": "TextInput",
+                      "properties": {
+                        "multiline": true,
+                        "width": "100%",
+                        "label": "Translation"
+                      }
+                    },
+                    {
+                      "id": "button_8",
+                      "name": "Add Word Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Add",
+                        "display": true,
+                        "action": {
+                          "expr": "let newWord = Record('id', 'w' + Timestamp(), 'Word', NewWord, 'Translation', NewTranslation);\nAdd(Words, newWord);\nSet(WordList, newWord);\nReset(NewWord, NewTranslation);\n"
+                        }
                       }
                     }
                   ]
