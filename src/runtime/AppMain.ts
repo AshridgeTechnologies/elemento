@@ -5,8 +5,11 @@ import AppRunnerFromCode from './AppRunnerFromCode'
 import {welcomeAppCode} from '../util/initialProjects'
 import AppRunnerForPreview from './AppRunnerForPreview'
 import AppRunnerFromStorage from './AppRunnerFromStorage'
+import {DefaultAppContext} from './AppContext'
 
 type Properties = {windowUrlPath: string}
+
+const getAppContext = () => new DefaultAppContext(null)
 
 export default function AppMain({windowUrlPath}: Properties) {
     const path = decodeURIComponent(windowUrlPath)
@@ -14,14 +17,14 @@ export default function AppMain({windowUrlPath}: Properties) {
     const appsMatch = path.match(/\/(apps\/.+)$/)
     if (webMatch) {
         const appCodeUrl = `https://${webMatch[1]}`
-        return createElement(AppRunnerFromUrl, {appCodeUrl})
+        return createElement(AppRunnerFromUrl, {appCodeUrl, appContext: getAppContext()})
     } else if (appsMatch) {
         const appCodePath = appsMatch[1]
-        return createElement(AppRunnerFromStorage, {appCodePath})
+        return createElement(AppRunnerFromStorage, {appCodePath, appContext: getAppContext()})
     } else if (path.match(/\/editorPreview$/)) {
-        return createElement(AppRunnerForPreview, {})
+        return createElement(AppRunnerForPreview, {pathPrefix: path})
     } else {
-        return createElement(AppRunnerFromCode, {appCode: welcomeAppCode()})
+        return createElement(AppRunnerFromCode, {appCode: welcomeAppCode(), appContext: getAppContext()})
     }
 }
 

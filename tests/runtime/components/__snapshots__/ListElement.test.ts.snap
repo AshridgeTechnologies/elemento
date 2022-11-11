@@ -4,6 +4,7 @@ exports[`ListElement produces output containing ReactElement children 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
   id="app.page1.list1"
+  onScroll={[Function]}
   style="color: red"
 >
   <div
@@ -65,6 +66,7 @@ exports[`ListElement produces output containing ReactElement children 2`] = `
 <ul
   className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
   id="app.page1.list1"
+  onScroll={[Function]}
   style="color: red"
 >
   <div
@@ -126,6 +128,7 @@ exports[`ListElement produces output with indexes if items have no ids 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
   id="app.page1.list1"
+  onScroll={[Function]}
   style="color: red"
 >
   <div
@@ -193,6 +196,7 @@ exports[`ListElement shows selectedItem as selected 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
   id="app.page1.list1"
+  onScroll={[Function]}
 >
   <div
     className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"

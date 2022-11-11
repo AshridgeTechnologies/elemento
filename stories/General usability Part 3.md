@@ -21,6 +21,8 @@ General usability Part 3
 - Record editor
 - Function to make record from values of a list of controls - use their names, if available in the state object
 - Way of debugging functions and complex expressions eg the word up to date function in revision app
+- Show URL of preview frame
+- Stop functions showing as toString when don't have braces
 
 Help
 ----

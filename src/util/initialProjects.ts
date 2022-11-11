@@ -38,7 +38,8 @@ function MainPage(props) {
 export default function WelcomeApp(props) {
     const pages = {MainPage}
     const {App} = Elemento.components
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'WelcometoElemento'})
 

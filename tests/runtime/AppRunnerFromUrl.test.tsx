@@ -9,6 +9,7 @@ import '@testing-library/jest-dom'
 import {addContainer} from '../testutil/elementHelpers'
 import {wait} from '../testutil/rtlHelpers'
 import {appCode1} from '../testutil/projectFixtures'
+import AppContext, {UrlType} from '../../src/runtime/AppContext'
 
 beforeEach(() => {
     // @ts-ignore
@@ -20,7 +21,13 @@ afterEach(() => {
     global.fetch = undefined
 })
 
-const appRunnerFromUrl = (appCodeUrl: string = 'https://some.code/app.js') => createElement(AppRunnerFromUrl, {appCodeUrl})
+const appContext: AppContext = {
+    getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
+    updateUrl(path: string, query: object, anchor: string): void {},
+    onUrlChange: jest.fn()
+}
+
+const appRunnerFromUrl = (appCodeUrl: string = 'https://some.code/app.js') => createElement(AppRunnerFromUrl, {appCodeUrl, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
 beforeEach(() => {

@@ -68,7 +68,8 @@ test('generates main app and all page output files', ()=> {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
 }
@@ -117,7 +118,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -141,7 +143,8 @@ test('generates App Bar elements with contents', ()=> {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
             React.createElement(TextElement, {path: pathWith('Text0'), width: 200}, 'Welcome!'),
@@ -302,7 +305,7 @@ test('generates Button elements with properties', ()=> {
     Log("Didn't you?")`
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, filled: ex`22 || 33`, display: false}),
+            new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, appearance: ex`22 && "filled"`, display: false}),
     ]
         )])
 
@@ -313,7 +316,7 @@ test('generates Button elements with properties', ()=> {
     const {Log} = Elemento.globalFunctions
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', filled: 22 || 33, display: false, action: () => {const message = "You clicked me!"; Log(message)
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && "filled", display: false, action: () => {const message = "You clicked me!"; Log(message)
     Log("Didn't you?")}}),
     )
 }
@@ -447,7 +450,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const Connector1 = Elemento.useGetObjectState('app.Connector1')
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('DoItButton'), content: 'Go on, do it!', action: () => {Connector1.DoStuff('Number1')}}),
+        React.createElement(Button, {path: pathWith('DoItButton'), content: 'Go on, do it!', appearance: 'outline', action: () => {Connector1.DoStuff('Number1')}}),
     )
 }
 `)
@@ -479,7 +482,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const Connector1 = Elemento.useObjectState('app.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
@@ -521,7 +525,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const ServerApp1 = Elemento.useObjectState('app.ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
@@ -561,7 +566,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const Connector1 = Elemento.useObjectState('app.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
@@ -593,7 +599,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const Connector1 = Elemento.useObjectState('app.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
 
     return React.createElement(App, {path: 'App1', },)
@@ -624,7 +631,8 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const Connector1 = Elemento.useObjectState('app.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
 
     return React.createElement(App, {path: 'App1', },)
@@ -717,7 +725,8 @@ test('generates elements under App used in Page', ()=> {
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore, FileDataStore, BrowserDataStore, FirestoreDataStore} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
     const Widgets = Elemento.useObjectState('app.Widgets', new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const Store2 = Elemento.useObjectState('app.Store2', new FileDataStore.State({}))
@@ -764,7 +773,8 @@ test('generates codeGenerationError for unknown names in elements under App used
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
     const Widgets = Elemento.useObjectState('app.Widgets', new Collection.State({dataStore: Elemento.codeGenerationError(\`StoreX\`, 'Unknown names: StoreX'), collectionName: 'Widgets'}))
 
@@ -811,7 +821,7 @@ test('generates List element with separate child component and global functions'
     return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Text1')}, "Hi there " + TextInput2 + " in " + TextInput1),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
-        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', action: () => {Update('Things', '123', {done: true})}}),
+        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: () => {Update('Things', '123', {done: true})}}),
     )
 }
 
@@ -897,7 +907,7 @@ test('generates Layout element with properties and children', ()=> {
             React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),
-            React.createElement(Button, {path: pathWith('B1'), content: 'Click here!'}),
+            React.createElement(Button, {path: pathWith('B1'), content: 'Click here!', appearance: 'outline'}),
     ),
     )
 }
@@ -982,7 +992,8 @@ test('generates local user defined functions in the app', () => {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
-    const app = Elemento.useObjectState('app', new App.State({pages}))
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
     const AppBarText = (greeting) => {
         return greeting + 'our new app'
     }
@@ -1140,7 +1151,7 @@ test('app state functions and Page names available in expression', ()=> {
     const {ShowPage} = app
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', action: () => {ShowPage(Page2)}}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', appearance: 'outline', action: () => {ShowPage(Page2)}}),
     )
 }
 `)
@@ -1378,7 +1389,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const {If, Sum, Log} = Elemento.globalFunctions
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', action: () => {let a = If(true, 10, Sum(Log == 12, 3, 4))
+        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', appearance: 'outline', action: () => {let a = If(true, 10, Sum(Log == 12, 3, 4))
     let b = If(Sum == 42, 10, 20)
     Sum == 1}}),
     )

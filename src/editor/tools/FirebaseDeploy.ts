@@ -105,16 +105,17 @@ export default class FirebaseDeploy {
         await Promise.all(uploadPromises)
 
         const serverAppName = this.serverApp?.codeName?.toLowerCase()
-        const rewrites = serverAppName ? [{
+        const serverAppRewrites = serverAppName ? [{
             glob: `/${serverAppName}/**`,
             run: {serviceId: 'serverapp1', region: 'europe-west2'}}
         ] : []
+        const spaRewrite = {glob: '**', path: '/index.html'}
         const patchResult = this.checkError(await gapi.client.firebasehosting.sites.versions.patch({
             name: version.name,
             updateMask: 'status,config',
             status: 'FINALIZED',
             config: {
-                rewrites
+                rewrites: [...serverAppRewrites, spaRewrite,]
             }
         }))
         console.log('patch', patchResult)
@@ -312,8 +313,8 @@ export default class FirebaseDeploy {
 <body>
 
 <script type="module">
-    import * as Elemento from "./${runtimeFileName}"
-    import ${this.app.codeName} from "./${this.codeFileName}"
+    import * as Elemento from "/${runtimeFileName}"
+    import ${this.app.codeName} from "/${this.codeFileName}"
 
     Elemento.run(${this.app.codeName})
 </script>

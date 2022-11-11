@@ -3,8 +3,9 @@ Elemento Backlog
 
 Bugs
 ----
-- Studio: Show errors in server side apps
 - Big error storm in preview when load app that uses firebase config
+- Asks for login to gapi on every keystroke when a Firebase Publisher exists
+- Studio: Show errors in server side apps
 - Clear preview and state when load new app
 - Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
@@ -35,6 +36,7 @@ Stories
 
 ### Priority 1
 - Revision aid example
+- Internal navigation and deep links
 - New publishing
 - Demo Experience Part 1
 - Runtime error and notification handling

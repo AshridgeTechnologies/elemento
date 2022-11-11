@@ -253,11 +253,11 @@ test('has fields for SelectInput with fixed value', () => {
 })
 
 test('has fields for Button', () => {
-    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, filled: true, action: ex`doIt()`, display: false})
+    const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, appearance: 'link', action: ex`doIt()`, display: false})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
-    expect(selectValue('Filled')).toBe('true')
+    expect(selectValue('Appearance')).toBe('link')
     expect(inputValue('Action')).toBe('doIt()')
     expect(kindButton(3).textContent).toBe('fx=')
     expect(kindButton(3).disabled).toBe(true)

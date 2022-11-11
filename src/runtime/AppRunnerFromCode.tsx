@@ -2,10 +2,11 @@ import React, {FunctionComponent} from 'react'
 import * as Elemento from '../../src/runtime'
 import AppRunner from './AppRunner'
 import AppCodeError from './AppCodeError'
+import AppContext from './AppContext'
 
-type Properties = {appCode: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
+type Properties = {appCode: string, appContext: AppContext, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 
-export default function AppRunnerFromCode({appCode, onComponentSelected  = () => {}, selectedComponentId}: Properties) {
+export default function AppRunnerFromCode({appCode, appContext, onComponentSelected  = () => {}, selectedComponentId}: Properties) {
     // @ts-ignore
     globalThis['Elemento'] = Elemento
     globalThis['React'] = React
@@ -17,7 +18,7 @@ export default function AppRunnerFromCode({appCode, onComponentSelected  = () =>
     try {
         const appFunction = new Function(evalCode) // throws if not valid JS code
         const appComponent = appFunction() as FunctionComponent
-        return React.createElement(AppRunner, {appFunction: appComponent, onComponentSelected, selectedComponentId})
+        return React.createElement(AppRunner, {appFunction: appComponent, appContext, onComponentSelected, selectedComponentId})
     } catch (error: any) {
         return React.createElement(AppCodeError, {error})
     }

@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import AppLoadError from './AppLoadError'
+import AppContext from './AppContext'
 
-type Properties = {appCodeUrl: string}
+type Properties = {appCodeUrl: string, appContext: AppContext}
 
-export default function AppRunnerFromUrl({appCodeUrl}: Properties) {
+export default function AppRunnerFromUrl({appCodeUrl, appContext}: Properties) {
     const appUrlToFetch = appCodeUrl.replace(/www.dropbox.com/, 'dl.dropboxusercontent.com')
 
     const [appCode, setAppCode] = useState<string | null>(null)
@@ -19,5 +20,5 @@ export default function AppRunnerFromUrl({appCodeUrl}: Properties) {
     }
 
     return fetchError !== null ? React.createElement(AppLoadError, {appUrl: appCodeUrl, error: fetchError})
-        : appCode === null ? <p>Loading...</p> : <AppRunnerFromCode appCode={appCode}/>
+        : appCode === null ? <p>Loading...</p> : <AppRunnerFromCode appCode={appCode} appContext={appContext}/>
 }

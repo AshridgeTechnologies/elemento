@@ -17,23 +17,26 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     const [expr, setExpr] = useState(valueIsExpr)
 
     const typedValue = (input: string): PropertyValue => {
+        if (isArray(type)) {
+            return input
+        }
         switch (type) {
-        case 'number':
-            return Number(input)
-        case 'string':
-            return input
-        case 'string list':
-            return input.trim().split(/ *, */)
-        case 'string multiline':
-            return input
-        case 'string|number':
-            return isNumeric(input) ? Number(input) : input
-        case 'boolean':
-            return input === 'true'
-        default:
-            throw new UnsupportedValueError(type as never)
+            case 'string':
+            case 'string multiline':
+                return input
+            case 'number':
+                return Number(input)
+            case 'string list':
+                return input.trim().split(/ *, */)
+            case 'string|number':
+                return isNumeric(input) ? Number(input) : input
+            case 'boolean':
+                return input === 'true'
+            default:
+                throw new UnsupportedValueError(type as never)
         }
     }
+
     const valueToSend = (inputString: string | undefined, isExpr: boolean) => {
         if (inputString === undefined || inputString === '') {
             return undefined
@@ -70,7 +73,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     const fixedButtonColor = 'primary'
     const exprButtonColor = 'secondary'
     const exprButtonLabel = 'fx='
-    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : type === 'string|number' ? 'a12' : 'abc'
+    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : type === 'string|number' ? 'a12' : isArray(type) ? 'sel' : 'abc'
     const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel
     const buttonColor = expr ? exprButtonColor : fixedButtonColor
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
@@ -95,9 +98,11 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
         return <Button {...commonProps} color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
     }
 
+    const fixedBoolean = type === 'boolean' && !expr
+    const fixedChoiceList = isArray(type) && !expr
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button()}
-        {type === 'boolean' && !expr ?
+        {fixedBoolean ?
             <FormControl variant="filled" size='small' sx={{ minWidth: 120 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>
                 <Select
@@ -111,8 +116,19 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                     <MenuItem value={'false'}>No</MenuItem>
                 </Select>
             </FormControl>
-            :
-            <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
+            : fixedChoiceList ?
+            <FormControl variant="filled" size='small' sx={{ minWidth: 150 }}>
+                <InputLabel id={name + '_label'}>{label}</InputLabel>
+                <Select
+                    labelId={name + '_label'}
+                    id={name}
+                    value={initialInputValue()}
+                    onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
+                >
+                    {type.map( choiceVal => <MenuItem value={choiceVal} key={choiceVal}>{startCase(choiceVal)}</MenuItem>)}
+                </Select>
+            </FormControl>
+            : <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                 value={initialInputValue()}
                 multiline={type === 'string multiline' || expr}
                 inputProps={{readOnly}}

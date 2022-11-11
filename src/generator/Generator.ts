@@ -88,8 +88,9 @@ export default class Generator {
 
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
+        const appContext = componentIsApp ? `    const {appContext} = props` : ''
         const appStateDeclaration = componentIsApp
-            ? `    const app = Elemento.useObjectState('app', new App.State({pages}))`
+            ? `    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))`
             :  appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id)
@@ -109,7 +110,8 @@ export default class Generator {
             const containerIdentifiers = identifiers.filter(isContainerElement)
             containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState(parentPathWith('${ident}'))`).join('\n')
         }
-        const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter( d => d !== '').join('\n').trimEnd()
+        const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appContext,
+            appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter( d => d !== '').join('\n').trimEnd()
 
         const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)

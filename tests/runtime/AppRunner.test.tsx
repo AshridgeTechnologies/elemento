@@ -10,14 +10,28 @@ import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {addContainer, } from '../testutil/elementHelpers'
 import {wait} from '../testutil/rtlHelpers'
+import AppContext, {UrlType} from '../../src/runtime/AppContext'
+import {AppData} from '../../src/runtime/components/App'
 
-const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'), selectedComponentId?: string) => createElement(AppRunner, {appFunction, onComponentSelected, selectedComponentId})
+const appContext: AppContext = {
+    onUrlChange(callback: any) { return () => {} },
+    getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
+    updateUrl(path: string, query: object, anchor: string): void {}
+}
+const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
+                   selectedComponentId?: string) => createElement(AppRunner, {
+    appFunction,
+    appContext,
+    onComponentSelected,
+    selectedComponentId
+})
 
 const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput} = Elemento.components
         const input1 = Elemento.useObjectState(pathWith('input1'), new TextInput.State({value: undefined}),)
+        const app = Elemento.useGetObjectState('app') as AppData
 
         // @ts-ignore
         return React.createElement(Page, {id: props.path},
@@ -25,15 +39,17 @@ const testApp = (version: string) => {
             React.createElement(TextInput, {path: pathWith('input1'), label: 'input1'}),
             // @ts-ignore
             React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
+            React.createElement(TextElement, {path: pathWith('TheUrl'), }, app.CurrentUrl().text),
         )
     }
 
-    function AppOne() {
+    function AppOne(props: {appContext: AppContext}) {
 
-        const pages = {MainPage}
+        const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
         // @ts-ignore
-        const app = Elemento.useObjectState('app', new App.State({pages}))
+        const {appContext} = props
+        const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
         return React.createElement(App, {path: 'AppOne'})
     }
@@ -52,6 +68,10 @@ beforeEach(async () => {
 
 test('shows app on page', () => {
     expectEl('FirstText').toHaveTextContent('This is App One')
+})
+
+test('passes app context', () => {
+    expectEl('TheUrl').toHaveTextContent('http://foo.com/pp/MainPage/xyz?a=10#mark1')
 })
 
 test('updates app on page', () => {

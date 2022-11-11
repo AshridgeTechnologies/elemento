@@ -2,10 +2,11 @@ import React, {useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import AppLoadError from './AppLoadError'
 import {getTextFromStorage} from '../shared/storage'
+import AppContext from './AppContext'
 
-type Properties = {appCodePath: string}
+type Properties = {appCodePath: string, appContext: AppContext}
 
-export default function AppRunnerFromStorage({appCodePath}: Properties) {
+export default function AppRunnerFromStorage({appCodePath, appContext}: Properties) {
 
     const [appCode, setAppCode] = useState<string | null>(null)
     const [appPathFetched, setAppPathFetched] = useState<string | null>(null)
@@ -18,5 +19,5 @@ export default function AppRunnerFromStorage({appCodePath}: Properties) {
     }
 
     return fetchError !== null ? React.createElement(AppLoadError, {appUrl: appCodePath, error: fetchError})
-        : appCode === null ? <p>Loading...</p> : <AppRunnerFromCode appCode={appCode}/>
+        : appCode === null ? <p>Loading...</p> : <AppRunnerFromCode appCode={appCode} appContext={appContext}/>
 }

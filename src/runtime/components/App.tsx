@@ -1,8 +1,13 @@
 import React, {createElement} from 'react'
-import {useGetObjectState} from '../appData'
+import {AppStateForObject, useGetObjectState} from '../appData'
 import {Box, Container} from '@mui/material'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import shallow from 'zustand/shallow'
+import AppContext, {UrlType} from '../AppContext'
+import Url, {asQueryObject} from '../Url'
+import {dropWhile, takeWhile} from 'ramda'
+import {UpdateNotification} from '../DataStore'
+import {valuesOf} from '../runtimeFunctions'
 
 type Properties = {path: string, maxWidth?: string | number, children?: any, topChildren?: any}
 
@@ -38,14 +43,25 @@ export default function App({path, maxWidth, children, topChildren}: Properties)
 
 }
 type StateExternalProps = {
-    pages: { [key: string]: React.FunctionComponent }
+    pages: { [key: string]: React.FunctionComponent },
+    appContext: AppContext
 }
 
 type StateInternalProps = {
-    currentPage?: string
+    currentUrl?: UrlType, subscription?: any
 }
 
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
+
+    init(asi: AppStateForObject): void {
+        super.init(asi)
+        const {appContext} = this.props
+        const {subscription} = this.state
+
+        if (!subscription) {
+            this.state.subscription = appContext.onUrlChange(() => this.latest().updateState({currentUrl: appContext.getUrl()}))  // need state update to cause re-render
+        }
+    }
 
     updateFrom(newObj: this): this {
         const {pages: thisPages, ...thisProps} = this.props
@@ -56,14 +72,31 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     }
 
     get currentPage() {
-        const {currentPage} = this.state
-        return currentPage ? this.props.pages[currentPage] : Object.values(this.props.pages)[0]
+        const pageName = this.CurrentUrl().page
+        return pageName ? this.props.pages[pageName] : Object.values(this.props.pages)[0]
     }
 
-    ShowPage = (page: string | React.FunctionComponent) => {
-        const latest = this.latest()
-        const pageName = typeof page === 'string' ? page : page.name
-        latest.updateState({currentPage: pageName})
+    CurrentUrl = () => {
+        const {appContext} = this.props
+        const {location, pathPrefix} = appContext.getUrl()
+        const {origin, pathname, query, hash} = location
+        return new Url(origin, pathname, pathPrefix, query, hash)
+    }
+
+    ShowPage = (page: string | React.FunctionComponent, ...args: (string | object | null)[]) => {
+        const argValues = valuesOf(...args)
+        const {appContext} = this.props
+        if (page === Url.previous) {
+            appContext.goBack()
+        } else {
+            const pageName = typeof page === 'string' ? page : page.name
+            const isString = (arg: any) => typeof arg === 'string'
+            const pathSegments = takeWhile( isString, argValues)
+            const path = '/' + [pageName, ...pathSegments].join('/')
+            const remainingArgs = dropWhile(isString, argValues)
+            const [query, anchor] = [...remainingArgs, null, null]
+            appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
+        }
     }
 }
 

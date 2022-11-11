@@ -11,6 +11,7 @@ import {wait} from '../testutil/rtlHelpers'
 
 import {getTextFromStorage} from '../../src/shared/storage'
 import {appCode1} from '../testutil/projectFixtures'
+import AppContext, {UrlType} from '../../src/runtime/AppContext'
 
 jest.mock("firebase/storage", () => ({
     getStorage: jest.fn(),
@@ -26,7 +27,13 @@ export function mock_getTextFromStorage(path: string) {
     mock_fn.mockImplementation( () => wait(10).then(() => path.includes('bad') ? Promise.reject(new Error(`URL ${path} not found`)) : Promise.resolve(appCode1(path))))
 }
 
-const appRunnerFromStorage = (appCodePath: string = 'apps/xxx222/app.js') => createElement(AppRunnerFromStorage, {appCodePath})
+const appContext: AppContext = {
+    getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
+    updateUrl(path: string, query: object, anchor: string): void {},
+    onUrlChange: jest.fn()
+}
+
+const appRunnerFromStorage = (appCodePath: string = 'apps/xxx222/app.js') => createElement(AppRunnerFromStorage, {appCodePath, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
 beforeEach(() => {

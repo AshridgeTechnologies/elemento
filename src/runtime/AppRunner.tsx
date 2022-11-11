@@ -3,6 +3,7 @@ import {StoreProvider} from './appData'
 import {highlightElement} from './runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
+import AppContext from './AppContext'
 
 function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
     const containerRef = createRef()
@@ -28,13 +29,13 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
     return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
 }
 
-type Properties = {appFunction: React.FunctionComponent<any>, onComponentSelected: (id: string) => void, selectedComponentId?: string}
+type Properties = {appFunction: React.FunctionComponent<any>, appContext: AppContext, onComponentSelected: (id: string) => void, selectedComponentId?: string}
 
-export default function AppRunner({appFunction, onComponentSelected, selectedComponentId}: Properties) {
+export default function AppRunner({appFunction, appContext, onComponentSelected, selectedComponentId}: Properties) {
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider>
             <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
-                {React.createElement(appFunction)}
+                {React.createElement(appFunction, {appContext})}
             </SelectionProvider>
         </StoreProvider>
     </ErrorBoundary>

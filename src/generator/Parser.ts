@@ -16,6 +16,7 @@ import {AppData} from '../runtime/components/App'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
 import Project from '../model/Project'
 import {valueLiteral} from './generatorHelpers'
+import AppContext from '../runtime/AppContext'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -24,7 +25,7 @@ type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
 const appFunctions = appFunctionsNames()
-const appStateFunctions = Object.keys(new AppData({pages:{}})).filter( fnName => !['props', 'state'].includes(fnName))
+const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)

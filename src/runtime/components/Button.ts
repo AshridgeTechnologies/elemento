@@ -1,18 +1,29 @@
 import React from 'react'
-import {Button as MuiButton} from '@mui/material'
+import {Button as MuiButton, Link as MuiLink, Typography} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOf, valueOfProps} from '../runtimeFunctions'
 
-type Properties = {path: string, filled?: boolean , content: React.ReactNode, action?: () => void, display?: boolean}
+const appearanceChoices = ['outline', 'filled', 'link'] as const
+type Appearance = typeof appearanceChoices[number]
+type Properties = {path: string, appearance?: Appearance , content: React.ReactNode, action?: () => void, display?: boolean}
 
-export default function Button({path, action, content, filled, display}: Properties) {
+export default function Button({path, action, content, appearance, display}: Properties) {
     const optionalProps = definedPropertiesOf({onClick: action})
     const {display: displayVal} = valueOfProps({display})
+    const sxVariable = displayVal !== undefined && !displayVal ? {display: 'none'} : {}
+    const sx = {cursor: 'pointer', ...sxVariable}
 
-    const sx = displayVal !== undefined && !displayVal ? {display: 'none'} : {}
+    if (appearance === 'link') {
+        return React.createElement(MuiLink, {
+            id: path,
+            underline: 'hover',
+            sx,
+            ...optionalProps,
+        }, React.createElement(Typography, null, valueOf(content) as React.ReactNode))
+    }
     return React.createElement(MuiButton, {
         id: path,
-        variant: filled ? 'contained' : 'outlined',
+        variant: appearance === 'filled' ? 'contained' : 'outlined',
         size: 'small',
         disableElevation: true,
         sx,

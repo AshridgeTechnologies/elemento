@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import {equals} from 'ramda'
 import {getConfig, setConfig} from './components/firebaseApp'
+import {getDefaultAppContext} from './AppContext'
 
 declare global {
     var setAppCode: (appCode: string) => void
@@ -11,7 +12,7 @@ declare global {
     var highlightElement: (id: string) => void
 }
 
-export default function AppRunnerForPreview() {
+export default function AppRunnerForPreview(props: {pathPrefix: string}) {
     const [appCode, setAppCode] = useState<string|null>(null)
     const [onComponentSelected, setOnComponentSelected] = useState<((id: string) => void)|undefined>()
     const [selectedComponentId, setSelectedComponentId] = useState<string|undefined>()
@@ -32,5 +33,7 @@ export default function AppRunnerForPreview() {
         window.highlightElement = (id: string) => setSelectedComponentId(id)
     })
 
-    return appCode ? AppRunnerFromCode({appCode, onComponentSelected, selectedComponentId}) : null
+    const appContext = getDefaultAppContext(props.pathPrefix)
+
+    return appCode ? AppRunnerFromCode({appCode, appContext, onComponentSelected, selectedComponentId}) : null
 }

@@ -10,6 +10,8 @@ import AppRunnerForPreview from '../../src/runtime/AppRunnerForPreview'
 import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
 import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
+import {getDefaultAppContext} from '../../src/runtime/AppContext'
+import {wait} from '../testutil/rtlHelpers'
 
 jest.mock('../../src/runtime/components/firebaseApp')
 
@@ -21,25 +23,27 @@ function MainPage(props) {
     const pathWith = (name) => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
+    const app = Elemento.useGetObjectState('app')
     
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('FirstText')}, "This is App " + ${num}),
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')),
+        React.createElement(TextElement, {path: pathWith('TheUrl'), }, app.CurrentUrl().text),
     )
 }
 
 export default function AppOne(props) {
-    const pages = {MainPage}
-    const {App} = Elemento.components
-    const app = Elemento.useObjectState('app', new App.State({pages}))
 
-    return React.createElement(App, {path: 'AppOne'})
-}
+        const pages = {MainPage}
+        const {App} = Elemento.components
+        const {appContext} = props
+        const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
-
+        return React.createElement(App, {path: 'AppOne'})
+    }
 `
 
-const appRunnerForPreview = () => createElement(AppRunnerForPreview)
+const appRunnerForPreview = () => createElement(AppRunnerForPreview, {pathPrefix: '/some/prefix'})
 
 let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
 
@@ -62,6 +66,28 @@ test('can show app on page', () => {
     renderIt(appRunnerForPreview())
     act(() => window.setAppCode(appCode('"One"')))
     expectEl('FirstText').toHaveTextContent('This is App One')
+})
+
+test('passes app context to app with correct prefix', () => {
+    renderIt(appRunnerForPreview())
+    act(() => window.setAppCode(appCode('"One"')))
+    expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')
+})
+
+test('responds to browser history updates', async () => {
+    renderIt(appRunnerForPreview())
+    const appContext = getDefaultAppContext('/some/prefix')
+
+    act(() => window.setAppCode(appCode('"One"')))
+    expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')
+    // act(() => window.history.pushState({}, '', '/some/prefix/Page2/abc'))
+    act(() => appContext.updateUrl('/MainPage/abc', null, null))
+    expect(window.location.href).toBe('http://localhost/some/prefix/MainPage/abc')
+    // expect(appContext.getUrl().location.pathname).toBe('/Page2/abc')
+    await wait(10)
+    expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix/MainPage/abc')
+    act(() => window.history.back())
+    expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')
 })
 
 test('can update app on page', () => {

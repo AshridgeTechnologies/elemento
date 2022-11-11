@@ -2,7 +2,7 @@
 
 exports[`Button element produces output with default values where properties omitted 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-11c7338-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1kf6eet-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -26,32 +26,7 @@ exports[`Button element produces output with default values where properties omi
 
 exports[`Button element produces output with display false 1`] = `
 <button
-  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-8lgvfk-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
-  id="app.page1.save"
-  onBlur={[Function]}
-  onClick={[Function]}
-  onContextMenu={[Function]}
-  onDragLeave={[Function]}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  onKeyUp={[Function]}
-  onMouseDown={[Function]}
-  onMouseLeave={[Function]}
-  onMouseUp={[Function]}
-  onTouchEnd={[Function]}
-  onTouchMove={[Function]}
-  onTouchStart={[Function]}
-  tabIndex={0}
-  type="button"
->
-  Click me!
-</button>
-`;
-
-exports[`Button element produces output with display true 1`] = `
-<button
-  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1ysosz0-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-bx9fca-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -77,9 +52,50 @@ exports[`Button element produces output with display true 1`] = `
 </button>
 `;
 
+exports[`Button element produces output with display true 1`] = `
+<button
+  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-zt059t-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+</button>
+`;
+
+exports[`Button element produces output with link style 1`] = `
+<a
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-167u9bt-MuiTypography-root-MuiLink-root"
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  >
+    Click me!
+  </p>
+</a>
+`;
+
 exports[`Button element produces output with properties supplied 1`] = `
 <button
-  className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1ysosz0-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1kf6eet-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -104,7 +120,7 @@ exports[`Button element produces output with properties supplied 1`] = `
 
 exports[`Button element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-1b8mixh-MuiButtonBase-root-MuiButton-root"
+  className="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButtonBase-root  css-bx9fca-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}

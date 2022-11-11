@@ -14,14 +14,18 @@ const {Log} = globalFunctions
 const doIt = () => {}
 
 test('Button element produces output with properties supplied',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', filled: true, action: () => {doIt()}}))
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'outline', action: () => {doIt()}}))
+)
+
+test('Button element produces output with link style',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'link', action: () => {doIt()}}))
 )
 
 test('Button element produces output with display true',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', filled: true, action: () => {doIt()}, display: true}))
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'filled', action: () => {doIt()}, display: true}))
 )
 test('Button element produces output with display false',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', filled: true, action: () => {doIt()}, display: false}))
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}, display: false}))
 )
 
 test('Button element produces output with properties supplied as state values', async () => {

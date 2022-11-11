@@ -143,6 +143,15 @@ test('shows fixed value control for string list property if current value is a l
     expect(label().textContent).toBe('Color')
 })
 
+test('shows fixed value control for ChoiceList property if current value is a string', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type={['red', 'green', 'blue']} value={'green'} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('sel')
+    expect(input().type).toBe('text')
+    expect(input().previousSibling.id).toBe('color')
+    expect(input().value).toBe('green')
+    expect(label().textContent).toBe('Color')
+})
+
 test('shows expression control for string property if current value is an expression', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '"Hi there!"'}} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
@@ -165,6 +174,14 @@ test('shows expression control for number property if current value is an expres
     expect(textarea().id).toBe('length')
     expect(textarea().textContent).toBe('10 + 20')
     expect(label().textContent).toBe('Length')
+})
+
+test('shows expression control for ChoiceList property if current value is an expression', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type={['red', 'green', 'blue']} value={{expr: 'theColor + 1'}} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('fx=')
+    expect(textarea().id).toBe('color')
+    expect(textarea().textContent).toBe('theColor + 1')
+    expect(label().textContent).toBe('Color')
 })
 
 test('shows expression control for property if type is action and current value is an expression', () => {
@@ -238,6 +255,13 @@ test('calls onChange with new boolean fixed value', () => {
 
     fireEvent.change(input(), {target: {value: 'false'}})
     expect(newValue).toBe(false)
+})
+
+test('calls onChange with new ChoiceList fixed value', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type={['red', 'green', 'blue']} value={'blue'} onChange={onChange}/>))
+
+    fireEvent.change(input(), {target: {value: 'red'}})
+    expect(newValue).toBe('red')
 })
 
 test('calls onChange with new expression value', () => {

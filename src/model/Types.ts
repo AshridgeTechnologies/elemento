@@ -1,6 +1,7 @@
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility'
-export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr'
+export type ChoiceList = readonly string[]
+export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr' | ChoiceList
 export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr

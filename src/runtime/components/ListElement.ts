@@ -1,9 +1,10 @@
-import React, {SyntheticEvent, useCallback} from 'react'
+import React, {SyntheticEvent, useCallback, useEffect, useMemo, useRef} from 'react'
 import {asArray, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
+import {debounce} from 'lodash'
 
 type Properties = {
     path: string,
@@ -12,12 +13,23 @@ type Properties = {
     width?: string | number,
     style?: string
 }
-type StateProperties = {selectedItem?: any}
+type StateProperties = {selectedItem?: any, scrollTop?: number}
 
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0}
 
 const ListElement = React.memo( function ListElement({path, itemContentComponent, ...props}: Properties) {
     const state = useGetObjectState<ListElementState>(path)
+    const {scrollTop} = state
+    const scrollHandler = (event: SyntheticEvent) => {
+        const {scrollTop} = (event.target as HTMLElement)
+        state._setScrollTop(scrollTop)
+    }
+
+    const debouncedScrollHandler = useMemo(() => debounce(scrollHandler, 300), [])
+    useEffect(() => () => debouncedScrollHandler.cancel(), []);
+
+    const listRef = useRef<HTMLUListElement>(null)
+    useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM
 
     const {selectedItem = undefined} = state
     const {items = [], width, style} = valueOfProps(props)
@@ -35,7 +47,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         }
     )
 
-    return React.createElement(List, {id: path, sx: fixedSx, style}, children)
+    return React.createElement(List, {id: path, sx: fixedSx, style, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
 export default ListElement
@@ -43,12 +55,20 @@ export default ListElement
 export class ListElementState extends BaseComponentState<StateProperties>
     implements ComponentState<ListElementState>{
 
+    get scrollTop() {
+        return this.state.scrollTop ?? 0
+    }
+
+    _setScrollTop(scrollTop: number) {
+        this.latest().updateState({scrollTop})
+    }
+
     get selectedItem() {
         return this.state.selectedItem !== undefined ? this.state.selectedItem : this.props.selectedItem
     }
 
     _setSelectedItem(selectedItem: any) {
-        this.updateState({selectedItem})
+        this.latest().updateState({selectedItem})
     }
 
     Reset() {
