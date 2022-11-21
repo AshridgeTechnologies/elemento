@@ -36,7 +36,6 @@ Stories
 
 ### Priority 1
 - Revision aid example
-- Internal navigation and deep links
 - New publishing
 - Demo Experience Part 1
 - Runtime error and notification handling
@@ -145,7 +144,9 @@ Done
 - IndexedDB datastore
 - Firebase deploy Part 1
 - Firestore data storage
+- Preview with Firebase
 - Server side apps
+- Internal navigation and deep links
 
 
 Bugs fixed
