@@ -16,7 +16,7 @@ import {AppData} from '../runtime/components/App'
 import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
 import Project from '../model/Project'
 import {valueLiteral} from './generatorHelpers'
-import AppContext from '../runtime/AppContext'
+import type AppContext from '../runtime/AppContext'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}

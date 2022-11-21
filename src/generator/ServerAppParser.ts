@@ -12,13 +12,14 @@ import {AppData} from '../runtime/components/App'
 import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
 import {valueLiteral} from './generatorHelpers'
+import {dummyAppContext} from '../runtime/AppContext'
 
 type IdentifierCollector = {add(s: string): void}
 type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
-const appStateFunctions = Object.keys(new AppData({pages:{}})).filter( fnName => !['props', 'state'].includes(fnName))
+const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: dummyAppContext})).filter( fnName => !['props', 'state'].includes(fnName))
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctionsNames().includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
@@ -32,9 +33,9 @@ function parseExpr(expr: string) {
 }
 
 export default class ServerAppParser {
-    private errors: AllErrors
-    private identifiers: ElementIdentifiers
-    private stateEntryIdentifiers: ElementIdentifiers
+    private readonly errors: AllErrors
+    private readonly identifiers: ElementIdentifiers
+    private readonly stateEntryIdentifiers: ElementIdentifiers
     constructor(private app: ServerApp) {
         this.identifiers = {} as ElementIdentifiers
         this.stateEntryIdentifiers = {} as ElementIdentifiers

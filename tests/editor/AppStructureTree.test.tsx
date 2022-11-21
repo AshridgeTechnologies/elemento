@@ -9,18 +9,10 @@ import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
-import userEvent from '@testing-library/user-event'
 import {startCase} from 'lodash'
+import {actWait} from '../testutil/rtlHelpers'
 
 let container: any, unmount: any
-
-const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time) )
-const actWait = async (testFn: () => void) => {
-    await act(async ()=> {
-        testFn()
-        await wait(20)
-    })
-}
 
 const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))

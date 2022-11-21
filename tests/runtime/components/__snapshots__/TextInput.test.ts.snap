@@ -5,13 +5,13 @@ exports[`TextInput element produces output with default values where properties 
   className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
 >
   <div
-    className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoFocus={false}
-      className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.height"
       onAnimationStart={[Function]}
@@ -27,7 +27,7 @@ exports[`TextInput element produces output with default values where properties 
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-hdw1oc"
+        className="css-ihdtdm"
       >
         <span
           className="notranslate"
@@ -40,14 +40,14 @@ exports[`TextInput element produces output with default values where properties 
 </div>
 `;
 
-exports[`TextInput element produces output with multiline 1`] = `"<div class=\\"MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root\\"><label class=\\"MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root\\" data-shrink=\\"true\\" for=\\"app.page1.description\\" id=\\"app.page1.description-label\\">Item Description</label><div class=\\"MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-multiline css-1qxw4jt-MuiInputBase-root-MuiOutlinedInput-root\\"><textarea aria-invalid=\\"false\\" id=\\"app.page1.description\\" class=\\"MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-inputSizeSmall css-12tl3rr-MuiInputBase-input-MuiOutlinedInput-input\\" style=\\"height: 0px; overflow: hidden;\\">Hi there!</textarea><textarea aria-hidden=\\"true\\" class=\\"MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-inputSizeSmall css-12tl3rr-MuiInputBase-input-MuiOutlinedInput-input\\" readonly=\\"\\" tabindex=\\"-1\\" style=\\"visibility: hidden; position: absolute; overflow: hidden; height: 0px; top: 0px; left: 0px; transform: translateZ(0); padding: 0px; width: 100%;\\"></textarea><fieldset aria-hidden=\\"true\\" class=\\"MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline\\"><legend class=\\"css-1in441m\\"><span>Item Description</span></legend></fieldset></div></div>"`;
+exports[`TextInput element produces output with multiline 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.description" id="app.page1.description-label">Item Description</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-multiline css-1qxw4jt-MuiInputBase-root-MuiOutlinedInput-root"><textarea aria-invalid="false" id="app.page1.description" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMultiline MuiInputBase-inputSizeSmall css-12tl3rr-MuiInputBase-input-MuiOutlinedInput-input" style="height: 0px; overflow: hidden;">Hi there!</textarea><textarea aria-hidden="true" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMultiline MuiInputBase-inputSizeSmall css-12tl3rr-MuiInputBase-input-MuiOutlinedInput-input" readonly="" tabindex="-1" style="visibility: hidden; position: absolute; overflow: hidden; height: 0px; top: 0px; left: 0px; transform: translateZ(0); padding: 0px; width: 100%;"></textarea><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"><legend class="css-14lo706"><span>Item Description</span></legend></fieldset></div></div>"`;
 
 exports[`TextInput element produces output with properties supplied 1`] = `
 <div
   className="MuiFormControl-root MuiTextField-root css-1jaqk4a-MuiFormControl-root-MuiTextField-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.width"
     id="app.page1.width-label"
@@ -55,13 +55,13 @@ exports[`TextInput element produces output with properties supplied 1`] = `
     Item Description
   </label>
   <div
-    className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoFocus={false}
-      className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.width"
       maxLength={11}
@@ -79,7 +79,7 @@ exports[`TextInput element produces output with properties supplied 1`] = `
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-1in441m"
+        className="css-14lo706"
       >
         <span>
           Item Description

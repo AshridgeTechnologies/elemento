@@ -1,5 +1,5 @@
 import {test, expect, TestInfo} from '@playwright/test'
-import {pageFunctions} from './playwrightHelpers'
+import {pageFunctions} from './playwrightHelpers.js'
 import fs from 'fs'
 
 const fileMenu = 'text=File'
@@ -22,7 +22,7 @@ test('can publish to apps site and run the app', async ({ page , context}, testI
     }
 
     const testAccount = JSON.parse(fs.readFileSync(testAccountFile, 'utf8'))
-    const {goto, click, fill, press, locator, waitForSelector, textContent} = pageFunctions(page)
+    const {goto, click, fill, press, locator, waitForSelector} = pageFunctions(page)
 
     await goto('/studio')
 

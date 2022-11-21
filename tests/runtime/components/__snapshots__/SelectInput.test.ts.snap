@@ -5,19 +5,19 @@ exports[`SelectInput element produces output with default values where propertie
   className="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={false}
     id="app.page1.height_label"
   />
   <div
-    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-labelledby="app.page1.height_label app.page1.height"
-      className="MuiSelect-select MuiSelect-filled MuiFilledInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
+      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
       id="app.page1.height"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -62,21 +62,21 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
   className="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     id="app.page1.background_label"
   >
     Background
   </label>
   <div
-    className="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-labelledby="app.page1.background_label app.page1.background"
-      className="MuiSelect-select MuiSelect-filled MuiFilledInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
+      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
       id="app.page1.background"
       onBlur={[Function]}
       onFocus={[Function]}

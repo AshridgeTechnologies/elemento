@@ -1,6 +1,6 @@
 import {expect, Page, test} from '@playwright/test'
-import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
-import {projectFixture1} from '../testutil/projectFixtures'
+import {loadProject, treeExpand, treeItem} from './playwrightHelpers.js'
+import {projectFixture1} from './functionalTestFixtures.js'
 
 const pageUrl = '/studio'
 

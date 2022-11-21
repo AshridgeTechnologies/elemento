@@ -5,13 +5,13 @@ exports[`NumberInput element produces output with default values where propertie
   className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
 >
   <div
-    className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoFocus={false}
-      className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.height"
       onAnimationStart={[Function]}
@@ -27,7 +27,7 @@ exports[`NumberInput element produces output with default values where propertie
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-hdw1oc"
+        className="css-ihdtdm"
       >
         <span
           className="notranslate"
@@ -45,7 +45,7 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
   className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
 >
   <label
-    className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.width"
     id="app.page1.width-label"
@@ -53,13 +53,13 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
     Width
   </label>
   <div
-    className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoFocus={false}
-      className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.width"
       onAnimationStart={[Function]}
@@ -75,7 +75,7 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
       className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-1in441m"
+        className="css-14lo706"
       >
         <span>
           Width

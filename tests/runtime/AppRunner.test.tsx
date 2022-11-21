@@ -9,14 +9,15 @@ import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {addContainer, } from '../testutil/elementHelpers'
-import {wait} from '../testutil/rtlHelpers'
+import {actWait, wait} from '../testutil/rtlHelpers'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {AppData} from '../../src/runtime/components/App'
 
 const appContext: AppContext = {
-    onUrlChange(callback: any) { return () => {} },
     getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
-    updateUrl(path: string, query: object, anchor: string): void {}
+    updateUrl(path: string, query: object, anchor: string): void {},
+    onUrlChange(callback: any) { return () => {} },
+    goBack(): void {}
 }
 const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
                    selectedComponentId?: string) => createElement(AppRunner, {
@@ -35,7 +36,7 @@ const testApp = (version: string) => {
 
         // @ts-ignore
         return React.createElement(Page, {id: props.path},
-            React.createElement(TextElement, {path: pathWith('FirstText')}, `This is App ${version}`),
+            React.createElement(TextElement, {path: pathWith('FirstText')}, 'This is App ' + version),
             React.createElement(TextInput, {path: pathWith('input1'), label: 'input1'}),
             // @ts-ignore
             React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
@@ -50,7 +51,32 @@ const testApp = (version: string) => {
         // @ts-ignore
         const {appContext} = props
         const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+        return React.createElement(App, {path: 'AppOne'})
+    }
 
+    return AppOne
+}
+
+const badApp = () => {
+    function MainPage(props: {path: string}) {
+        const pathWith = (name: string) => props.path + '.' + name
+        const {Page, TextElement, TextInput} = Elemento.components
+        const app = Elemento.useGetObjectState('app') as AppData
+
+        // @ts-ignore
+        const goWrong = () => {throw new Error('Aaaargh!')}
+        return React.createElement(Page, {path: 'MainPage'},
+            React.createElement(TextElement, {path: pathWith('FirstText')}, 'This is App ' + goWrong()),
+        )
+    }
+
+    function AppOne(props: {appContext: AppContext}) {
+
+        const pages = {MainPage: MainPage as any}
+        const {App} = Elemento.components
+        // @ts-ignore
+        const {appContext} = props
+        const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -63,7 +89,6 @@ beforeEach(async () => {
     ({click, elIn, enter, expectEl, renderThe} = container = addContainer())
     onComponentSelected = jest.fn()
     renderThe(appRunner())
-    await wait(0)
 })
 
 test('shows app on page', () => {
@@ -81,30 +106,26 @@ test('updates app on page', () => {
 })
 
 test('app can set state', async () => {
-    enter('input1', 'cool')
-    await wait(20)
+    await enter('input1', 'cool')
     expectEl('SecondText').toHaveTextContent('Input is cool')
 })
 
-test('app can keep state when app is updated', () => {
+test('app can keep state when app is updated', async () => {
     renderThe(appRunner(testApp('One')))
-    enter('input1', 'cool')
+    await actWait(() => enter('input1', 'cool'))
     renderThe(appRunner(testApp('Two')))
     expectEl('SecondText').toHaveTextContent('Input is cool')
 })
 
 test('can run multiple apps with independent state', async () => {
     const container2 = addContainer()
-    container2.renderThe(appRunner(testApp('Two')))
-    await wait(20)
+    await actWait( () => container2.renderThe(appRunner(testApp('Two'))) )
 
-    container.enter('input1', 'cool')
-    await wait(20)
+    await container.enter('input1', 'cool')
     container.expectEl('SecondText').toHaveTextContent('Input is cool')
     container2.expectEl('SecondText').toHaveTextContent('Input is')
 
-    container2.enter('input1', 'hot')
-    await wait(20)
+    await container2.enter('input1', 'hot')
     container.expectEl('SecondText').toHaveTextContent('Input is cool')
     container2.expectEl('SecondText').toHaveTextContent('Input is hot')
 })
@@ -127,8 +148,6 @@ test('highlights selected component', function () {
 })
 
 test('can change to highlight a different component', function () {
-    renderThe(appRunner(testApp('One')))
-
     highlightElement('AppOne.MainPage.FirstText')
     expectEl('FirstText').toHaveClass(highlightClassName)
     expectEl('SecondText').not.toHaveClass(highlightClassName)
@@ -138,4 +157,14 @@ test('can change to highlight a different component', function () {
     expectEl('SecondText').toHaveClass(highlightClassName)
 })
 
-test.todo('shows error fallback for unexpected error')
+test('shows error fallback for unexpected error', () => {
+    const originalError = console.error
+    console.error = jest.fn()
+    try {
+        renderThe(appRunner(badApp()))
+    } catch (e) {
+        console.error = originalError
+    }
+    expect(console.error).toHaveBeenCalled()
+    expect(container.domContainer.textContent).toContain('Unable to display the app due to an error')
+})

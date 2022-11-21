@@ -2,24 +2,24 @@ import {createElement} from 'react'
 import renderer, {act} from 'react-test-renderer'
 import {StoreProvider, useGetObjectState, useObjectState} from '../../src/runtime/appData'
 import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
-import {wait} from '../testutil/rtlHelpers'
+import {actWait, wait} from '../testutil/rtlHelpers'
 
-const runInProvider = function (testFn: () => void, childTestFn?: () => void) {
+const runInProvider = async function (testFn: () => void, childTestFn?: () => void) {
     function TestComponent(props: any) {
         props.testFn()
         return props.children ?? null
     }
 
-    act(() => {
+    await actWait(() => {
         renderer.create(createElement(StoreProvider, {
             children:
-                createElement(TestComponent, {testFn, children: childTestFn && createElement(TestComponent, {testFn: childTestFn})
+                createElement(TestComponent, {
+                    testFn, children: childTestFn && createElement(TestComponent, {testFn: childTestFn})
                 })
         }))
     })
 
 }
-
 
 class StateObject extends BaseComponentState<object> implements ComponentState<StateObject> {
 
@@ -47,16 +47,16 @@ class StateObject extends BaseComponentState<object> implements ComponentState<S
 
 const stateObj = (props: object) => new StateObject(props)
 
-test('get initial state using initialiser supplied', () => {
+test('get initial state using initialiser supplied', async () => {
     const state = stateObj({widgets: {color: 'red', length: 23}})
-    runInProvider(() => {
+    await runInProvider(() => {
         expect(useObjectState('app.foo', state)).toBe(state)
     })
 })
 
-test('get initial state immediately without initialiser', () => {
+test('get initial state immediately without initialiser', async () => {
     const state = stateObj({widgets: {color: 'red', length: 23}})
-    runInProvider(() => {
+    await runInProvider(() => {
         useObjectState('app.foo', state)
         expect(useGetObjectState('app.foo')).toBe(state)
     })
@@ -84,28 +84,28 @@ test('updates initial state object from initialiser supplied so it is available 
         }
     }
 
-    runInProvider(parentTestFn, childTestFn)
+    await runInProvider(parentTestFn, childTestFn)
     await wait(0)
     expect(renderCount).toBe(2)
 })
 
-test('keeps same state object if initialiser supplied has same properties', () => {
+test('keeps same state object if initialiser supplied has same properties', async () => {
     const anObj = {a: 10}
     const state = stateObj({color: 'red', length: 23, thing: anObj})
     const state2 = stateObj({color: 'red', length: 23, thing: anObj})
-    runInProvider(() => {
+    await runInProvider(() => {
         expect(useObjectState('app.foo', state)).toBe(state)
         expect(useObjectState('app.foo', state2)).toBe(state)
     })
 })
 
-test('initial state is empty object if no initial values supplied', () => runInProvider(() => {
+test('initial state is empty object if no initial values supplied', async () => await runInProvider(() => {
     expect(useObjectState<StateObject>('app.page1.description', stateObj({})).props).toStrictEqual({})
 }))
 
-test('can get state with an element path and normalise first part to "app"', () => {
+test('can get state with an element path and normalise first part to "app"', async () => {
     const state = stateObj({color: 'red', length: 23})
-    runInProvider(() => {
+    await runInProvider(() => {
         useObjectState('app.page1.description', state)
         expect(useGetObjectState('BigApp.page1.description')).toBe(state)
     })
@@ -115,7 +115,7 @@ test('state object can update its own state immediately', async () => {
     const state = stateObj({color: 'red', length: 23})
     let renderCount = 0
     let fooState: any
-    runInProvider(() => {
+    await runInProvider(() => {
         renderCount++
         fooState = useObjectState<StateObject>('app.foo', state)
         fooState.setColor('blue')
@@ -129,7 +129,7 @@ test('state object can update its own state asynchronously', async () => {
     const state = stateObj({color: 'red', length: 23})
     let renderCount = 0
     let fooState: any
-    runInProvider(() => {
+    await runInProvider(() => {
         renderCount++
         fooState = useObjectState('app.foo', state)
     })
@@ -152,7 +152,7 @@ test('state object can get latest to update its own state', async () => {
     const state = stateObj({color: 'red', length: 20})
     let renderCount = 0
     let fooState: StateObject
-    runInProvider(() => {
+    await runInProvider(() => {
         renderCount++
         fooState = useObjectState('app.foo', state)
     })

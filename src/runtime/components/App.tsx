@@ -6,7 +6,6 @@ import shallow from 'zustand/shallow'
 import AppContext, {UrlType} from '../AppContext'
 import Url, {asQueryObject} from '../Url'
 import {dropWhile, takeWhile} from 'ramda'
-import {UpdateNotification} from '../DataStore'
 import {valuesOf} from '../runtimeFunctions'
 
 type Properties = {path: string, maxWidth?: string | number, children?: any, topChildren?: any}
@@ -73,7 +72,8 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
 
     get currentPage() {
         const pageName = this.CurrentUrl().page
-        return pageName ? this.props.pages[pageName] : Object.values(this.props.pages)[0]
+        const defaultPage = Object.values(this.props.pages)[0]
+        return pageName ? this.props.pages[pageName] ?? defaultPage : defaultPage
     }
 
     CurrentUrl = () => {

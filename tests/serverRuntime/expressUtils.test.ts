@@ -41,11 +41,19 @@ test('gets user from id token in authorization header', async () => {
     const verifyIdToken = jest.fn().mockResolvedValue(theUser)
     mockImplementation(getApp, () => mockApp)
     mockImplementation(getAuth, () => ({verifyIdToken}))
-    await checkUser(req, {}, next)
+
+    const originalLogFn = console.log
+    const mockLog = console.log = jest.fn()
+    try {
+        await checkUser(req, {}, next)
+    } finally {
+        console.log = originalLogFn
+    }
 
     expect(req.currentUser).toBe(theUser)
     expect(verifyIdToken).toHaveBeenCalledWith('the_token')
     expect(next).toHaveBeenCalled()
+    expect(mockLog).toHaveBeenCalledWith('user id', 'fred')
 })
 
 test('no user if no authorization header', async () => {

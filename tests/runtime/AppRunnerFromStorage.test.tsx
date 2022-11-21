@@ -30,7 +30,8 @@ export function mock_getTextFromStorage(path: string) {
 const appContext: AppContext = {
     getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
     updateUrl(path: string, query: object, anchor: string): void {},
-    onUrlChange: jest.fn()
+    onUrlChange: jest.fn(),
+    goBack(): void {}
 }
 
 const appRunnerFromStorage = (appCodePath: string = 'apps/xxx222/app.js') => createElement(AppRunnerFromStorage, {appCodePath, appContext})

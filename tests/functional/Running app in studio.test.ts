@@ -1,8 +1,7 @@
 import {expect, Frame, Page, test} from '@playwright/test';
-import {loadProject, treeExpand, treeItem, treeItemText} from './playwrightHelpers'
-import {waitUntil} from '../testutil/testHelpers'
-import {projectFixtureWithList} from '../testutil/projectFixtures'
-import {wait} from '../testutil/rtlHelpers'
+import {loadProject, treeExpand, treeItem, treeItemText, wait} from './playwrightHelpers.js'
+import {waitUntil} from './playwrightHelpers.js'
+import {projectFixtureWithList} from './functionalTestFixtures.js'
 
 const pageUrl = '/studio'
 
@@ -28,10 +27,11 @@ test('code shown in code tab', async ({ page }) => {
 
 test('Selecting list element in editor or running app highlights in the running app', async ({ page }) => {
     test.skip(true, 'Only works when run headed for some reason');
-    const item1para1 = 'li >> nth=0 >> p >> nth=0'
-    const item1para2 = 'li >> nth=0 >> p >> nth=1'
+    const item1para1 = 'li >> nth=0 >> div >> nth=0 >> p >> nth=0'
+    const item1para2 = 'li >> nth=0 >> div >> nth=0 >> p >> nth=1'
 
     await page.goto(pageUrl)
+    await wait()
     await loadProject(page, projectFixtureWithList())
 
     const getOutlineStyle = async (selector: string) => page.evaluate((el: any) => getComputedStyle(el).outlineStyle, await appFrame.$(selector))

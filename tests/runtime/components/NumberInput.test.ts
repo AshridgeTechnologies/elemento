@@ -62,7 +62,6 @@ test('NumberInput stores updated values in the app store section for its path', 
 
 test('NumberInput stores null value in the app store when cleared', async () => {
     let container = testContainer(numberInput('app.page1.sprocket', {value: 27}))
-    await wait(5)
     const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
     const user = userEvent.setup()
     await user.clear(inputEl)

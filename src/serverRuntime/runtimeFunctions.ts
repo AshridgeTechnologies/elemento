@@ -1,4 +1,4 @@
-export const asCurrentUser = (user: {email: string, name: string}) => {
+export const asCurrentUser = (user: {email: string, name: string} | null) => {
    return user && {...user, Name: user.name, Email: user.email}
 }
 

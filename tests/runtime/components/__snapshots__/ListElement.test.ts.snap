@@ -8,7 +8,7 @@ exports[`ListElement produces output containing ReactElement children 1`] = `
   style="color: red"
 >
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id1"
     onBlur={[Function]}
     onClick={[Function]}
@@ -34,7 +34,7 @@ exports[`ListElement produces output containing ReactElement children 1`] = `
     </p>
   </div>
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id2"
     onBlur={[Function]}
     onClick={[Function]}
@@ -70,7 +70,7 @@ exports[`ListElement produces output containing ReactElement children 2`] = `
   style="color: red"
 >
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id1"
     onBlur={[Function]}
     onClick={[Function]}
@@ -96,7 +96,7 @@ exports[`ListElement produces output containing ReactElement children 2`] = `
     </p>
   </div>
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id2"
     onBlur={[Function]}
     onClick={[Function]}
@@ -132,7 +132,7 @@ exports[`ListElement produces output with indexes if items have no ids 1`] = `
   style="color: red"
 >
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#0"
     onBlur={[Function]}
     onClick={[Function]}
@@ -161,7 +161,7 @@ exports[`ListElement produces output with indexes if items have no ids 1`] = `
     />
   </div>
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#1"
     onBlur={[Function]}
     onClick={[Function]}
@@ -199,7 +199,7 @@ exports[`ListElement shows selectedItem as selected 1`] = `
   onScroll={[Function]}
 >
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id1"
     onBlur={[Function]}
     onClick={[Function]}
@@ -228,7 +228,7 @@ exports[`ListElement shows selectedItem as selected 1`] = `
     />
   </div>
   <div
-    className="MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected MuiButtonBase-root css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
     id="app.page1.list1.#id2"
     onBlur={[Function]}
     onClick={[Function]}

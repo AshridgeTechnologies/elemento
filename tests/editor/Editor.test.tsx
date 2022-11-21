@@ -16,6 +16,7 @@ import {treeExpandControlSelector} from './Selectors'
 import {generate} from '../../src/generator/Generator'
 
 import * as authentication from '../../src/shared/authentication'
+import { actWait } from '../testutil/rtlHelpers'
 
 // Hack to get Jest 28 to work with ESM firebase
 jest.mock("firebase/storage", () => ({
@@ -44,13 +45,6 @@ const onInsert = ()=> '123'
 
 const onFunctions = {onChange, onAction, onMove, onInsert}
 
-const wait = (time: number): Promise<void> => new Promise(resolve => setInterval(resolve, time))
-const actWait = async (testFn: () => void) => {
-    await act(async () => {
-        testFn()
-        await wait(20)
-    })
-}
 const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
 }
@@ -278,14 +272,10 @@ test(`notifies insert of DataStore under the App and selects new item`, async ()
 test('notifies open request and closes menu', async () => {
     let opened: boolean = false
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} onOpen={() => opened = true}/>)))
-    act(() => {
-        fireEvent.click(screen.getByText('File'))
-    })
-    act(() => {
-        fireEvent.click(screen.getByText('Open'))
-    })
+    await actWait(() => fireEvent.click(screen.getByText('File')) )
+    await actWait(() => fireEvent.click(screen.getByText('Open')) )
     expect(opened).toBe(true)
-    await wait(10)
+    await actWait()
     expect(screen.queryByText('Open')).toBeNull()
 })
 

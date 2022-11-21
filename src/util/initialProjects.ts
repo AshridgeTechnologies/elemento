@@ -35,7 +35,7 @@ function MainPage(props) {
     )
 }
 
-export default function WelcomeApp(props) {
+export default function WelcometoElemento(props) {
     const pages = {MainPage}
     const {App} = Elemento.components
     const {appContext} = props

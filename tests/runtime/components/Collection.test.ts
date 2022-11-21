@@ -14,7 +14,7 @@ import DataStore, {
 } from '../../../src/runtime/DataStore'
 import SendObservable from '../../../src/runtime/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
-import {wait} from '../../testutil/rtlHelpers'
+import {actWait} from '../../testutil/rtlHelpers'
 import {AppStateForObject} from '../../../src/runtime/appData'
 
 let dataStore: DataStore
@@ -440,7 +440,7 @@ describe('Get with external datastore', () => {
             }
         }))
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {
                 x1: {a: 10, b: 'Bee'}
@@ -460,7 +460,7 @@ describe('Get with external datastore', () => {
             }
         }))
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {
                 x1: new ErrorResult('Some', 'problem')
@@ -503,7 +503,7 @@ describe('Get with external datastore', () => {
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x2')
         expect(state.Get('x1')).toBeInstanceOf(Pending)
         expect(state.Get('x2')).toBeInstanceOf(Pending)
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {
                 x1: {a: 10, b: 'Bee'},
@@ -529,7 +529,7 @@ describe('Query with external datastore', () => {
             }
         }))
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             queries: {
                 '{"a":10,"c":false}': [{id: 'a1', a: 10, b: 'Bee'}]
@@ -552,7 +552,7 @@ describe('Query with external datastore', () => {
         (dataStore.query as jest.MockedFunction<any>).mockResolvedValue(new ErrorResult('Some', 'problem'))
         state.Query({a: 10})
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             queries: {
                 '{"a":10}': new ErrorResult("Some", "problem")            }
@@ -585,7 +585,7 @@ describe('Query with external datastore', () => {
         expect(state.Query({a: 10, c: false})).toBeInstanceOf(Pending)
         expect(state.Query({a: 20})).toBeInstanceOf(Pending)
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             queries: {
                 '{"a":10,"c":false}': [{id: 'a1', a: 10, b: 'Bee'}],
@@ -609,7 +609,7 @@ describe('Query with external datastore', () => {
         expect(state.Get('x1')).toBeInstanceOf(Pending)
         expect(state.Query({a: 20})).toBeInstanceOf(Pending)
 
-        await wait(10)
+        await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {
                 x1: {a: 10, b: 'Bee'},
@@ -620,6 +620,7 @@ describe('Query with external datastore', () => {
         }))
     })
 })
+
 
 describe('subscribe with external data store', () => {
 
@@ -670,8 +671,7 @@ describe('subscribe with external data store', () => {
             .mockResolvedValueOnce({a: 10, b: 'Bee'});
 
         state.Get('x1')
-        await wait(10)
-
+        await actWait()
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {x1: {a: 10, b: 'Bee'}},

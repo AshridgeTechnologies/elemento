@@ -96,3 +96,13 @@ export const getDefaultAppContext = (pathPrefix: string): AppContext => {
     }
     return defaultAppContexts.get(pathPrefix)!
 }
+
+export const dummyAppContext: AppContext = {
+    getUrl(): UrlType {
+        return {location: { origin: '', pathname: '', query: {}, hash: ''}, pathPrefix: null}
+    },
+    goBack(): void {},
+    onUrlChange(callback: CallbackFn): UnsubscribeFn { return () => {} },
+    updateUrl(path: string, query: object | null, anchor: string | null): void {}
+
+}

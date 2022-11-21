@@ -6,9 +6,10 @@ import {NumberInput, TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {actWait, testContainer, wait} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
+import {act} from '@testing-library/react/pure'
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 
@@ -76,18 +77,17 @@ test('TextInput stores updated values in the app store section for its path', as
     await user.type(inputEl, '!')
     await wait(10)
     expect(stateAt('app.page1.sprocket').value).toBe('Hi!')
-} )
+})
 
 test('TextInput stores null value in the app store when cleared', async () => {
-    let container = testContainer(textInput('app.page1.sprocket', {value: 'Hi'}))
-    await wait(0)
+    let container = testContainer(textInput('app.page1.sprocket2', {value: 'Hi'}))
 
-    const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
+    const inputEl = container.querySelector('input[id="app.page1.sprocket2"]')
     const user = userEvent.setup()
     await user.clear(inputEl)
     await wait(10)
-    expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
-} )
+    expect(stateAt('app.page1.sprocket2')._controlValue).toBe(null)
+})
 
 test('State class has correct properties and functions', () => {
     const state = new TextInput.State({value: 'car'})

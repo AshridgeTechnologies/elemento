@@ -1,5 +1,5 @@
 import {expect, test} from '@playwright/test'
-import {pageFunctions} from './playwrightHelpers'
+import {pageFunctions} from './playwrightHelpers.js'
 
 const homePageUrl = '/'
 

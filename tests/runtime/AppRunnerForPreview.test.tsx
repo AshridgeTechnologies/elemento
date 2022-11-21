@@ -11,7 +11,7 @@ import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
 import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
 import {getDefaultAppContext} from '../../src/runtime/AppContext'
-import {wait} from '../testutil/rtlHelpers'
+import {actWait, wait} from '../testutil/rtlHelpers'
 
 jest.mock('../../src/runtime/components/firebaseApp')
 
@@ -80,11 +80,8 @@ test('responds to browser history updates', async () => {
 
     act(() => window.setAppCode(appCode('"One"')))
     expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')
-    // act(() => window.history.pushState({}, '', '/some/prefix/Page2/abc'))
-    act(() => appContext.updateUrl('/MainPage/abc', null, null))
+    await actWait(() => appContext.updateUrl('/MainPage/abc', null, null))
     expect(window.location.href).toBe('http://localhost/some/prefix/MainPage/abc')
-    // expect(appContext.getUrl().location.pathname).toBe('/Page2/abc')
-    await wait(10)
     expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix/MainPage/abc')
     act(() => window.history.back())
     expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')

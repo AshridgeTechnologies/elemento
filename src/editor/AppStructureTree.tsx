@@ -137,7 +137,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         }
     }
 
-    const onDrop = ({node: dropNode, dragNode}: {node: EventDataNode, dragNode: EventDataNode}) => {
+    const onDrop = ({node: dropNode, dragNode}: {node: EventDataNode<DataNode>, dragNode: EventDataNode<DataNode>}) => {
         const insertPosition: InsertPosition = dropNode.expanded ? 'inside' : 'after'
         const dragNodeIds = dragNode.selected ? selectedItemIds : [dragNode.key.toString()]
         onMove(insertPosition, dropNode.key.toString(), dragNodeIds)
@@ -206,7 +206,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
                                                            onInsert={insertConfirmed}/>
 
     return <>
-        <Tree treeData={[treeData] as BasicDataNode[]}
+        <Tree treeData={[treeData] as DataNode[]}
             draggable={canDrag}
             multiple
             icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
@@ -216,7 +216,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
             onExpand={onExpand}
             // @ts-ignore
             onDrop={onDrop}
-            onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode }) => {
+            onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode<DataNode> }) => {
                 showContextMenu(event, node.key, node.title as string)
             }}
             style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>

@@ -1,11 +1,6 @@
 import {expect, Page, test} from '@playwright/test'
-import App from '../../src/model/App'
-import Project from '../../src/model/Project'
-import Text from '../../src/model/Text'
-import {treeExpand, treeItem} from './playwrightHelpers'
-import {loadJSONFromString} from '../../src/model/loadJSON'
-import {projectFixture1} from '../testutil/projectFixtures'
-import {ex} from '../testutil/testHelpers'
+import {treeExpand, treeItem, ex} from './playwrightHelpers.js'
+import {projectFixture1} from './functionalTestFixtures.js'
 
 // Expects test server such as Parcel dev server running on port 1234
 const pageUrl = '/studio'
@@ -93,8 +88,8 @@ test('save previously loaded app to file', async ({page}) => {
     await page.click(fileMenu_Save)
 
     const updatedProjectText = (await page.textContent('#_testFile')) as string
-    const updatedProject = loadJSONFromString(updatedProjectText) as Project
-    expect(((updatedProject.elementArray()[0] as App).pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
+    const updatedProject = JSON.parse(updatedProjectText)
+    expect(((updatedProject.elements[0]).elements[0].elements[1]).properties.content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('save new app to file', async ({page}) => {
@@ -116,8 +111,8 @@ test('save new app to file', async ({page}) => {
     await page.click(fileMenu_Save)
 
     const updatedProjectText = (await page.textContent('#_testFile')) as string
-    const updatedProject = loadJSONFromString(updatedProjectText) as Project
-    expect(((updatedProject.elementArray()[0] as App).pages[0].elementArray()[1] as Text).content).toStrictEqual(ex`"The updated second text"`)
+    const updatedProject = JSON.parse(updatedProjectText)
+    expect(((updatedProject.elements[0]).elements[0].elements[1]).properties.content).toStrictEqual(ex`"The updated second text"`)
 })
 
 test('start new app', async ({page}) => {

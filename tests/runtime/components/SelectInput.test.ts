@@ -5,7 +5,7 @@
 import {SelectInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {actWait, testContainer, wait} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
 
 const [selectInput, appStoreHook] = wrappedTestElement(SelectInput, SelectInputState)
@@ -64,26 +64,21 @@ test('SelectInput shows empty value when state value is set to null and initial 
 })
 
 test('SelectInput stores updated values in the app store section for its path', async () => {
-    const {
-        getByRole,
-        container: localContainer
-    } = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))
-    container = localContainer
-    await wait(20)
-    fireEvent.mouseDown(getByRole('button'))
-    fireEvent.click(within(getByRole('listbox')).getByText('Blue'))
-    await wait(20)
+    let getByRole: any
+    await actWait( () =>
+        ({getByRole, container} = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))))
+    await actWait( () => fireEvent.mouseDown(getByRole('button')))
+    await actWait( () => fireEvent.click(within(getByRole('listbox')).getByText('Blue')))
 
     expect(stateAt('app.page1.sprocket').value).toBe('Blue')
 } )
 
 test('SelectInput stores null value in the app store when cleared', async () => {
-    const {getByRole, container: localContainer} = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))
-    container = localContainer
-    await wait(20)
-    fireEvent.mouseDown(getByRole('button'))
-    fireEvent.click(within(getByRole('listbox')).getByText('None'))
-    await wait(20)
+    let getByRole: any
+    await actWait( () =>
+        ({getByRole, container} = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))))
+    await actWait( () => fireEvent.mouseDown(getByRole('button')))
+    await actWait( () => fireEvent.click(within(getByRole('listbox')).getByText('None')))
 
     expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
 } )

@@ -1,5 +1,5 @@
-import {expect, Frame, Page, test} from '@playwright/test'
-import {waitUntil} from '../testutil/testHelpers'
+import {Frame, Page, test} from '@playwright/test'
+import {waitUntil} from './playwrightHelpers.js'
 
 const getAppFrame = (page: Page): Promise<Frame> => waitUntil(() => page.frame('appFrame') as Frame)
 

@@ -1,5 +1,5 @@
 import {expect, Page, test, TestInfo} from '@playwright/test'
-import {pageFunctions} from './playwrightHelpers'
+import {pageFunctions} from './playwrightHelpers.js'
 import * as fs from 'fs'
 
 const userButton = '[aria-label="account of current user"]'

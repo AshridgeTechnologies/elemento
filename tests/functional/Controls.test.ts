@@ -1,9 +1,6 @@
 import {expect, Frame, Page as PWPage, test} from '@playwright/test';
-import App from '../../src/model/App'
-import Page from '../../src/model/Page'
-import Project from '../../src/model/Project'
-import Text from '../../src/model/Text'
-import {loadProject, treeExpand, treeItem} from './playwrightHelpers'
+import {loadProject, treeExpand, treeItem} from './playwrightHelpers.js'
+import {el} from './functionalTestFixtures.js'
 
 const pageUrl = '/studio'
 
@@ -25,12 +22,14 @@ const getAppFrame = async (page: PWPage) => {
 
 test.describe('Controls can be used', () => {
 
-    const project = new Project('project1', 'Project One', {}, [new App('app1', 'App One', {}, [
-        new Page('page_1', 'Control Test Page', {}, [
-            new Text('text_1', 'The text', {content: `Some text`}),
-        ]),
-    ])
-    ])
+    const project =
+        el("Project", "project1", "Project One", {}, [
+            el("App", "app1", "App One", {}, [
+                el("Page", "page_1", "Control Test Page", {}, [
+                    el("Text", "text_1", "The text", {content: "Some text"})
+                ])
+            ])
+        ])
 
     let selectControlTestPage = async function (page: PWPage) {
         await page.click(treeExpand(0))

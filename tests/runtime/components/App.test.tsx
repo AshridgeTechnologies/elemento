@@ -8,7 +8,7 @@ import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/c
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {fireEvent} from '@testing-library/react'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {actWait, testContainerWait} from '../../testutil/rtlHelpers'
 import {AppData} from '../../../src/runtime/components/App'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
@@ -62,6 +62,7 @@ test('App element produces output containing page and additional components with
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
 
+
 test('App shows first page initially and other page when state changes', async () => {
 
     const [appContext] = getRealAppContext()
@@ -85,17 +86,11 @@ test('App shows first page initially and other page when state changes', async (
         return createElement(App, {path: 'app1'})
     }
 
-    const appElement = createElement(app, {path: 'app1', })
-
-    const container = testContainer(createElement(StoreProvider, {children: appElement})) as HTMLElement
-    await wait(20)
-
+    const container = await testContainerWait(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
     expect(container.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Main')
 
-    fireEvent.click(container.querySelector('button') as HTMLElement)
-    await wait(20)
-
-    expect(container.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Other')
+    await actWait( () => fireEvent.click(container!.querySelector('button') as HTMLElement))
+    expect(container!.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Other')
 })
 
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {
@@ -103,9 +98,14 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const pages = {Page1, Page2, Page3}
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page1)
+
+    appContext.updateUrl('/unknownPage', null, null)
+    const updatedState1 = state._withStateForTest({currentUrl: appContext.getUrl()})
+    expect(updatedState1.currentPage).toBe(Page1)
+
     appContext.updateUrl('/Page2', null, null)
-    const updatedState = state._withStateForTest({currentUrl: appContext.getUrl()})
-    expect(updatedState.currentPage).toBe(Page2)
+    const updatedState2 = state._withStateForTest({currentUrl: appContext.getUrl()})
+    expect(updatedState2.currentPage).toBe(Page2)
 
     const appInterface = testAppInterface(state); state.init(appInterface)
     const {ShowPage} = state
@@ -163,7 +163,7 @@ test('App.State uses latest default page version if it changes', () => {
 test('App.State uses latest set page version if it changes ', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null, Page1updated = (props: any) => null, Page2updated = (props: any) => null
     const pages = {Page1, Page2}
-    const [appContext] = getRealAppContext('Page2')
+    const [appContext] = getRealAppContext('/Page2')
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page2)
 

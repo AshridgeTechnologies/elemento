@@ -1,5 +1,6 @@
 import React from 'react'
 import {act, fireEvent, render, RenderResult} from '@testing-library/react'
+import {actWait} from './rtlHelpers'
 
 type ElOrSel = HTMLElement | string
 export const addContainer = (documentEl: Document = document) => {
@@ -19,7 +20,7 @@ export const containerFunctions = (container: HTMLElement) => {
     }
     const element = (elOrSelector: ElOrSel): HTMLElement => elOrSelector instanceof HTMLElement ? elOrSelector : elIn(container, elOrSelector)
     const expectEl = (elOrSel: ElOrSel) => expect(element(elOrSel))
-    const enter = (elOrSel: ElOrSel, text: string) => fireEvent.input(element(elOrSel), {target: {value: text}})
+    const enter = (elOrSel: ElOrSel, text: string) => actWait( () => fireEvent.input(element(elOrSel), {target: {value: text}}) )
     const click = (elOrSel: ElOrSel, options: object = {}) => {
         fireEvent(element(elOrSel),
             new MouseEvent('click', {
