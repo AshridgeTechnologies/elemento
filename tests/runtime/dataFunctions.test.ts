@@ -1,4 +1,4 @@
-import {valObj} from '../testutil/testHelpers'
+import {valueObj} from '../testutil/testHelpers'
 import dataFunctions from '../../src/runtime/dataFunctions'
 
 const mockFn = jest.fn()
@@ -23,7 +23,7 @@ describe('Add', () => {
 
     test('uses object value for id', () => {
         const elementState = {value: {}, Add: mockFn}
-        Add(elementState, valObj('green'))
+        Add(elementState, valueObj('green'))
         expect(elementState.Add).toBeCalledWith('green')
     })
 })
@@ -38,7 +38,7 @@ describe('AddAll', () => {
 
     test('uses object value for id', () => {
         const elementState = {value: {}, AddAll: mockFn}
-        AddAll(elementState, [valObj('green'), valObj('blue')])
+        AddAll(elementState, [valueObj('green'), valueObj('blue')])
         expect(elementState.AddAll).toBeCalledWith(['green', 'blue'])
     })
 })
@@ -52,7 +52,7 @@ describe('Remove', () => {
 
     test('uses object value for id', () => {
         const elementState = {value: {}, Remove: mockFn}
-        Remove(elementState, valObj('x3'))
+        Remove(elementState, valueObj('x3'))
         expect(elementState.Remove).toBeCalledWith('x3')
     })
 
@@ -69,7 +69,7 @@ describe('Update item in collection', () => {
 
     test('uses object value for id', () => {
         const elementState = {value: existingCollection, Update: mockFn}
-        Update(elementState, valObj('x1'), {a: 50, b: 'Bee'})
+        Update(elementState, valueObj('x1'), {a: 50, b: 'Bee'})
         expect(elementState.Update).toBeCalledWith('x1', {a: 50, b: 'Bee'})
     })
 })
@@ -86,7 +86,7 @@ describe('Get', () => {
 
     test('uses object value for id', () => {
         const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
-        const result = Get(elementState, valObj('x1'))
+        const result = Get(elementState, valueObj('x1'))
         expect(result).toStrictEqual({a: 50, b: 'Bee'})
         expect(elementState.Get).toBeCalledWith('x1')
     })

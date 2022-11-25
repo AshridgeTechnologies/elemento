@@ -8,10 +8,9 @@ import {generate} from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
 import {ex} from '../testutil/testHelpers'
 import {runAppFromWindowUrl} from '../../src/runtime/AppMain'
-import {containerFunctions} from '../testutil/elementHelpers'
 import '@testing-library/jest-dom'
 import {act} from '@testing-library/react'
-import {wait} from '../testutil/rtlHelpers'
+import {containerFunctions, wait} from '../testutil/rtlHelpers'
 import Project from '../../src/model/Project'
 
 // Hack to get Jest 28 to work with ESM firebase

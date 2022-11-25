@@ -78,21 +78,20 @@ Epics
 Tech debt
 ---------
 
-- Investigate Signals https://github.com/preactjs/signals
-- Investigate the React use hook
+- DOM Testing consistency, clarity, simplicity
 - Untangle shared package into studio and runtime
 - Fix all uses of constructor.name
-- Code generator
 - Unit testing/refactoring of app frame stuff in editor
-- Introducing new components
-- DOM Testing
-- Script environment creation
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent
 - Use React.StrictMode in some tests that do not need sign-in
+- Investigate Signals https://github.com/preactjs/signals
+- Investigate the React use hook
+- Code generator
 - Review Generator.initialStateEntry vs generateElement
+- Introducing new components
 - Mechanism for generating defaults, state and properties code from model object - mark as stateful?
-- Upgrade Parcel - babel _typeof error in prod build after 2.3.2
+- Script environment creation
 
 
 Done
@@ -147,6 +146,7 @@ Done
 - Preview with Firebase
 - Server side apps
 - Internal navigation and deep links
+- Upgrade Parcel - babel _typeof error in prod build after 2.3.2
 
 
 Bugs fixed

@@ -5,13 +5,12 @@
 import React, {createElement} from 'react'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {addContainer} from '../testutil/elementHelpers'
 import AppRunnerForPreview from '../../src/runtime/AppRunnerForPreview'
 import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
 import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
 import {getDefaultAppContext} from '../../src/runtime/AppContext'
-import {actWait, wait} from '../testutil/rtlHelpers'
+import {actWait, addContainer, wait} from '../testutil/rtlHelpers'
 
 jest.mock('../../src/runtime/components/firebaseApp')
 

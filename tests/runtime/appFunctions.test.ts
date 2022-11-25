@@ -1,5 +1,5 @@
 import appFunctions, {appFunctionsNames} from '../../src/runtime/appFunctions'
-import {valObj} from '../testutil/testHelpers'
+import {valueObj} from '../testutil/testHelpers'
 import authentication from '../../src/runtime/components/authentication'
 
 jest.mock('../../src/runtime/appData')
@@ -46,7 +46,7 @@ describe('Set', () => {
 
     test('uses object value', () => {
         const elementState = {value: 42, Set: mockFn}
-        Set(elementState, valObj(42))
+        Set(elementState, valueObj(42))
         expect(elementState.Set).toBeCalledWith(42)
     })
 })

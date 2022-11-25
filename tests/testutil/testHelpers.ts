@@ -83,12 +83,6 @@ export const waitUntil = <T>(fn: () => T, time = 1000, wait = 10000): Promise<T>
     }
 }
 
-export const valObj = <T>(val: T) => ({
-    v: val, valueOf() {
-        return this.v
-    }
-})
-
 export let saveFileData: any
 export let saveFilePickerOptions: any
 

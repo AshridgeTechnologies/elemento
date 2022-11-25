@@ -5,9 +5,9 @@
 import React, {createElement} from 'react'
 import AppRunnerFromCode from '../../src/runtime/AppRunnerFromCode'
 import '@testing-library/jest-dom'
-import {addContainer} from '../testutil/elementHelpers'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import AppRunner from '../../src/runtime/AppRunner'
+import {addContainer} from '../testutil/rtlHelpers'
 
 const appCode = (num: string) => `
 import React from 'react'

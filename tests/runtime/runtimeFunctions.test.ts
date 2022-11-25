@@ -1,5 +1,5 @@
 import {asArray} from '../../src/runtime'
-import {valObj} from '../testutil/testHelpers'
+import {valueObj} from '../testutil/testHelpers'
 import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
 
 test('gets correct valueOf for date, object, primitive', () => {
@@ -31,7 +31,7 @@ test('gets null or undefined as an empty array', () => {
 
 test('gets value of objects', () => {
     const obj = {x1: {a:10}, x2: {a: 20}}
-    expect(asArray(valObj(obj))).toStrictEqual([{a: 10}, {a: 20}])
+    expect(asArray(valueObj(obj))).toStrictEqual([{a: 10}, {a: 20}])
 })
 
 test('parentPath finds parent path', () => {
