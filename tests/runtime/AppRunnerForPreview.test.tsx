@@ -10,7 +10,8 @@ import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
 import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
 import {getDefaultAppContext} from '../../src/runtime/AppContext'
-import {actWait, addContainer, wait} from '../testutil/rtlHelpers'
+import {actWait, testContainer} from '../testutil/rtlHelpers'
+import {wait} from '../testutil/testHelpers'
 
 jest.mock('../../src/runtime/components/firebaseApp')
 
@@ -44,10 +45,10 @@ export default function AppOne(props) {
 
 const appRunnerForPreview = () => createElement(AppRunnerForPreview, {pathPrefix: '/some/prefix'})
 
-let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
+let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 
 beforeEach(() => {
-    ({click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer())
+    ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
 })
 
 afterEach(() => {
@@ -62,19 +63,19 @@ afterEach(() => {
 })
 
 test('can show app on page', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => window.setAppCode(appCode('"One"')))
     expectEl('FirstText').toHaveTextContent('This is App One')
 })
 
 test('passes app context to app with correct prefix', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => window.setAppCode(appCode('"One"')))
     expectEl('TheUrl').toHaveTextContent('http://localhost/some/prefix')
 })
 
 test('responds to browser history updates', async () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     const appContext = getDefaultAppContext('/some/prefix')
 
     act(() => window.setAppCode(appCode('"One"')))
@@ -87,7 +88,7 @@ test('responds to browser history updates', async () => {
 })
 
 test('can update app on page', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => window.setAppCode(appCode('"One"')))
     expectEl('FirstText').toHaveTextContent('This is App One')
     act(() => window.setAppCode(appCode('"Two"')))
@@ -95,7 +96,7 @@ test('can update app on page', () => {
 })
 
 test('can update config on page if it is different', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     const config = {projectId: 'proj1'}
     const configCopy = {projectId: 'proj1'}
     const newConfig = {projectId: 'proj2'}
@@ -117,7 +118,7 @@ test('can update config on page if it is different', () => {
 test('can listen for component selected events on page', () => {
     const onComponentSelected = jest.fn()
 
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => {
         window.setAppCode(appCode('"One"'))
         window.setComponentSelectedListener(onComponentSelected)
@@ -127,7 +128,7 @@ test('can listen for component selected events on page', () => {
 })
 
 test('can highlight component on page', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => {
         window.setAppCode(appCode('"One"'))
         window.highlightElement('AppOne.MainPage.FirstText')
@@ -136,7 +137,7 @@ test('can highlight component on page', () => {
 })
 
 test('can highlight component in a list on page', () => {
-    renderIt(appRunnerForPreview())
+    renderThe(appRunnerForPreview())
     act(() => {
         window.setAppCode(appCode('"One"'))
         window.highlightElement('AppOne.MainPage.FirstText')

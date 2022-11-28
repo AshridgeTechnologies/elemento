@@ -3,13 +3,12 @@
  */
 
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {actWait, testContainer, wait} from '../../testutil/rtlHelpers'
+import {testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
-import {act} from '@testing-library/react/pure'
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 
@@ -26,14 +25,14 @@ test('TextInput element produces output with properties supplied', () => {
 })
 
 test('TextInput element produces output with properties supplied as state objects', () => {
-    let container = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {
+    const {el} = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {
         maxLength: new NumberInput.State({value: 10}),
         label: new TextInputState({value: 'Item Description'}),
         readOnly: new TrueFalseInputState({value: true})
     }))
-    expect(container.querySelector('input[id="app.page1.widget1"]').maxLength).toBe(10)
-    expect(container.querySelector('input[id="app.page1.widget1"]').readOnly).toBe(true)
-    expect(container.querySelector('label[for="app.page1.widget1"]').innerHTML).toBe('Item Description')
+    expect(el`app.page1.widget1`.maxLength).toBe(10)
+    expect(el`app.page1.widget1`.readOnly).toBe(true)
+    expect(el`label[for="app.page1.widget1"]`.innerHTML).toBe('Item Description')
 })
 
 test('TextInput element produces output with multiline', () => {
@@ -46,44 +45,42 @@ test('TextInput element produces output with default values where properties omi
 )
 
 test('TextInput shows value from the state supplied', () => {
-    let container = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('Hello!')
+    const {el} = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {}))
+    expect(el`app.page1.widget1`.value).toBe('Hello!')
 })
 
 test('TextInput shows empty value when state value is absent', () => {
-    let container = testContainer(textInput('app.page1.widget1', {}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el} = testContainer(textInput('app.page1.widget1', {}))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('TextInput shows empty value when state value is set to undefined', () => {
-    let container = testContainer(textInput('app.page1.widget1', {value: undefined}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el} = testContainer(textInput('app.page1.widget1', {value: undefined}))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('TextInput shows initial value when state value is set to undefined and initial value exists', () => {
-    let container = testContainer(textInput('app.page1.widget1', {value: 'Axe'}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('Axe')
+    const {el} = testContainer(textInput('app.page1.widget1', {value: 'Axe'}))
+    expect(el`app.page1.widget1`.value).toBe('Axe')
 })
 
 test('TextInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(textInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el} = testContainer(textInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('TextInput stores updated values in the app store section for its path', async () => {
-    let container = testContainer(textInput('app.page1.sprocket', {value: 'Hi'}))
-    const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    const user = userEvent.setup()
+    const {el, user} = testContainer(textInput('app.page1.sprocket', {value: 'Hi'}))
+    const inputEl = el`app.page1.sprocket`
     await user.type(inputEl, '!')
     await wait(10)
     expect(stateAt('app.page1.sprocket').value).toBe('Hi!')
 })
 
 test('TextInput stores null value in the app store when cleared', async () => {
-    let container = testContainer(textInput('app.page1.sprocket2', {value: 'Hi'}))
+    const {el, user} = testContainer(textInput('app.page1.sprocket2', {value: 'Hi'}))
 
-    const inputEl = container.querySelector('input[id="app.page1.sprocket2"]')
-    const user = userEvent.setup()
+    const inputEl = el`app.page1.sprocket2`
     await user.clear(inputEl)
     await wait(10)
     expect(stateAt('app.page1.sprocket2')._controlValue).toBe(null)

@@ -7,7 +7,7 @@ import AppRunnerFromCode from '../../src/runtime/AppRunnerFromCode'
 import '@testing-library/jest-dom'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import AppRunner from '../../src/runtime/AppRunner'
-import {addContainer} from '../testutil/rtlHelpers'
+import {testContainer} from '../testutil/rtlHelpers'
 
 const appCode = (num: string) => `
 import React from 'react'
@@ -46,9 +46,9 @@ const appContext: AppContext = {
 
 const appRunnerFromCode = (code: string) => createElement(AppRunnerFromCode, {appCode: appCode(code), appContext})
 
-let container: any, {click, elIn, enter, expectEl, renderThe} = container = addContainer()
+let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
-    ({click, elIn, enter, expectEl, renderThe} = container = addContainer())
+    ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
     renderThe(appRunnerFromCode('"One"'))
 })
 

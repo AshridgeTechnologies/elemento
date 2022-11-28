@@ -81,6 +81,7 @@ Tech debt
 - DOM Testing consistency, clarity, simplicity
 - Untangle shared package into studio and runtime
 - Fix all uses of constructor.name
+- Generated code with concise fns eg objState(elType, pathEnd, props) and el(elType, pathEnd, props, children)
 - Unit testing/refactoring of app frame stuff in editor
 - Refactor runApp.ts and unit test
 - Unit test highlightComponent

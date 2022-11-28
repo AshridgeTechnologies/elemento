@@ -6,11 +6,11 @@ import {createElement} from 'react'
 import '@testing-library/jest-dom'
 import {projectFixture1} from '../testutil/projectFixtures'
 import userEvent from '@testing-library/user-event'
-import {actWait, wait} from '../testutil/rtlHelpers'
+import {actWait} from '../testutil/rtlHelpers'
 import {fireEvent} from '@testing-library/react'
 import EditorRunner from '../../src/editor/EditorRunner'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
+import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels, wait} from '../testutil/testHelpers'
 import {act, render} from '@testing-library/react/pure'
 
 // Hack to get Jest 28 to work with ESM firebase

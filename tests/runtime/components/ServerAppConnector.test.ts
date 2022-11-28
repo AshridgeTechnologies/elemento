@@ -1,15 +1,13 @@
 import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, Pending} from '../../../src/runtime/DataStore'
-import {wait} from '../../testutil/rtlHelpers'
 import {AppStateForObject} from '../../../src/runtime/appData'
-import {testAppInterface, valueObj} from '../../testutil/testHelpers'
+import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import auth from '../../../src/runtime/components/authentication'
 import appFunctions from '../../../src/runtime/appFunctions'
 
 jest.mock('../../../src/runtime/components/authentication')
 jest.mock('../../../src/runtime/appFunctions')
-
 
 const configuration: Configuration = {
     appName: 'Server App 1',

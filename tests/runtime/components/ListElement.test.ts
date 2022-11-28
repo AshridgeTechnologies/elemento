@@ -4,8 +4,8 @@
 
 import {createElement, Fragment} from 'react'
 import {ListElement, TextElement} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import {ListElementState} from '../../../src/runtime/components/ListElement'
@@ -40,28 +40,27 @@ test('ListElement shows selectedItem as selected', () => {
 })
 
 test('ListElement updates its selectedItem in the app state', async () => {
-    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
-    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
-    const user = userEvent.setup()
+    const {el, user}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
     await user.click(listItem0El)
     expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
 })
 
 test.skip('ListElement updates its scrollTop in the app state', async () => {
     // jest.setTimeout(1000000)
-    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
-    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
+    const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
     fireEvent.scroll(listItem0El, {target: {scrollTop: 99}})
     await wait(1000)
     expect(stateAt('app.page1.list1').scrollTop).toBe(99)
 })
 
 test('Can highlight all matching elements in a list', async () => {
-    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+    const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
     highlightElement('app.page1.list1.Text99')
 
-    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
-    const listItem1El = container.querySelector('[id="app.page1.list1.#id2.Text99"]')
+    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
+    const listItem1El = el`[id="app.page1.list1.#id2.Text99"]`
     expect(listItem0El).toHaveClass(highlightClassName)
     expect(listItem1El).toHaveClass(highlightClassName)
 })

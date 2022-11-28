@@ -6,11 +6,12 @@ import React, {createElement} from 'react'
 import AppRunnerFromStorage from '../../src/runtime/AppRunnerFromStorage'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {addContainer, wait} from '../testutil/rtlHelpers'
+import {testContainer} from '../testutil/rtlHelpers'
 
 import {getTextFromStorage} from '../../src/shared/storage'
 import {appCode1} from '../testutil/projectFixtures'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
+import {wait} from '../testutil/testHelpers'
 
 jest.mock("firebase/storage", () => ({
     getStorage: jest.fn(),
@@ -35,12 +36,12 @@ const appContext: AppContext = {
 
 const appRunnerFromStorage = (appCodePath: string = 'apps/xxx222/app.js') => createElement(AppRunnerFromStorage, {appCodePath, appContext})
 
-let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
+let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
     jest.resetAllMocks();
-    ({click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer())
+    ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
     mock_getTextFromStorage('apps/xxx222/app.js')
-    renderIt(appRunnerFromStorage())
+    renderThe(appRunnerFromStorage())
 })
 
 test('shows loading until app loads then shows app on page', async () => {
@@ -51,7 +52,7 @@ test('shows loading until app loads then shows app on page', async () => {
 
 test('only fetches app code once for a url', async () => {
     await act( () => wait(20) )
-    renderIt(appRunnerFromStorage()) // second render
+    renderThe(appRunnerFromStorage()) // second render
     await act( () => wait(20) )
     expect(getTextFromStorage).toHaveBeenCalledTimes(1)
 })

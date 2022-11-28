@@ -5,7 +5,7 @@
 import {SelectInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
-import {actWait, testContainer, wait} from '../../testutil/rtlHelpers'
+import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
 
 const [selectInput, appStoreHook] = wrappedTestElement(SelectInput, SelectInputState)
@@ -24,7 +24,7 @@ test('SelectInput element produces output with default values where properties o
 )
 
 test('SelectInput shows value from the state supplied', () => {
-    container = testContainer(selectInput('app.page1.widget1', {value: 'Red', }, {values: ['Green', 'Red'], }))
+    container = testContainer(selectInput('app.page1.widget1', {value: 'Red',}, {values: ['Green', 'Red'],}))
     expect(theSelect('app.page1.widget1').value).toBe('Red')
 })
 
@@ -44,17 +44,17 @@ test('SelectInput element produces output with properties supplied as state obje
 })
 
 test('SelectInput shows value of empty string if value in state is undefined', () => {
-    container = testContainer(selectInput('app.page1.widget1', {value: undefined}, {values: ['Green', 'Red'], }))
+    container = testContainer(selectInput('app.page1.widget1', {value: undefined}, {values: ['Green', 'Red'],}))
     expect(theSelect('app.page1.widget1').value).toBe('')
 })
 
 test('SelectInput shows value of empty string if value in state is absent', () => {
-    container = testContainer(selectInput('app.page1.widget1', {}, {values: ['Green', 'Red'], }))
+    container = testContainer(selectInput('app.page1.widget1', {}, {values: ['Green', 'Red'],}))
     expect(theSelect('app.page1.widget1').value).toBe('')
 })
 
 test('SelectInput shows initial value when state value has initial value', () => {
-    container = testContainer(selectInput('app.page1.widget1', {value: 'Red'}, {values: ['Green', 'Red']} ))
+    container = testContainer(selectInput('app.page1.widget1', {value: 'Red'}, {values: ['Green', 'Red']}))
     expect(theSelect('app.page1.widget1').value).toBe('Red')
 })
 

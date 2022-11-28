@@ -30,7 +30,7 @@ function Parent(props: object) {
 }
 
 test('Child can get state set by parent with the same class', () => {
-    testContainer(createElement(StoreProvider, null, createElement(Parent )) )
+    testContainer(createElement(StoreProvider, null, createElement(Parent)))
     expect(stateInParent).toMatchObject(new Thing({a: 10, b: 'Bee'}))
     expect(stateInParent).toBeInstanceOf(Thing)
     expect(stateInChild).toBe(stateInParent)

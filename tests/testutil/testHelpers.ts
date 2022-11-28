@@ -158,7 +158,7 @@ export function testAppStoreHook() {
     }
 }
 
-export const TestWrapper = <State extends object>({
+const TestWrapper = <State extends object>({
                                                       path,
                                                       state,
                                                       children
@@ -166,7 +166,7 @@ export const TestWrapper = <State extends object>({
     useObjectState(path, state)
     return children
 }
-export type Class<T> = new (...args: any[]) => T
+type Class<T> = new (...args: any[]) => T
 
 export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>): [any, any] => {
 
@@ -198,3 +198,7 @@ export function mockImplementation(fn: any, impl: any) {
     const mock_fn = fn as jest.MockedFunction<any>
     mock_fn.mockImplementation(impl)
 }
+
+export const doNothing = () => {
+}
+export const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))

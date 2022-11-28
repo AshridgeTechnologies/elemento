@@ -6,9 +6,10 @@ import React, {createElement} from 'react'
 import AppRunnerFromUrl from '../../src/runtime/AppRunnerFromUrl'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {addContainer, wait} from '../testutil/rtlHelpers'
+import {testContainer} from '../testutil/rtlHelpers'
 import {appCode1} from '../testutil/projectFixtures'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
+import {wait} from '../testutil/testHelpers'
 
 beforeEach(() => {
     // @ts-ignore
@@ -29,10 +30,10 @@ const appContext: AppContext = {
 
 const appRunnerFromUrl = (appCodeUrl: string = 'https://some.code/app.js') => createElement(AppRunnerFromUrl, {appCodeUrl, appContext})
 
-let container: any, {click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer()
+let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
-    ({click, elIn, enter, expectEl, renderThe, renderIt} = container = addContainer())
-    renderIt(appRunnerFromUrl())
+    ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
+    renderThe(appRunnerFromUrl())
 })
 
 test('shows loading until app loads then shows app on page', async () => {
@@ -43,7 +44,7 @@ test('shows loading until app loads then shows app on page', async () => {
 
 test('only fetches app code once for a url', async () => {
     await act( () => wait(20) )
-    renderIt(appRunnerFromUrl()) // second render
+    renderThe(appRunnerFromUrl()) // second render
     await act( () => wait(20) )
     expect(global.fetch).toHaveBeenCalledTimes(1)
 })

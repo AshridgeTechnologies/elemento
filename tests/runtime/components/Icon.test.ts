@@ -4,9 +4,9 @@
 
 import {createElement} from 'react'
 import {Icon} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, valueObj} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, valueObj, wait} from '../../testutil/testHelpers'
 import userEvent from '@testing-library/user-event'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import {testContainer} from '../../testutil/rtlHelpers'
 
 const doIt = () => {}
 
@@ -42,9 +42,8 @@ test('Icon element produces output with default values where properties omitted'
 
 test('Icon does action when clicked', async () => {
     const action = jest.fn()
-    let container = testContainer(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action}, ))
-    const iconEl = container.querySelector('button[id="app.page1.save"]')
-    const user = userEvent.setup()
+    const {el, user} = testContainer(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action},))
+    const iconEl = el`app.page1.save`
     await user.click(iconEl)
     expect(action).toBeCalled()
 } )

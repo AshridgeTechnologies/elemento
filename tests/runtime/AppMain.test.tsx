@@ -6,9 +6,10 @@ import React, {createElement} from 'react'
 import AppMain from '../../src/runtime/AppMain'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {addContainer, wait} from '../testutil/rtlHelpers'
+import {testContainer} from '../testutil/rtlHelpers'
 import {appCode1} from '../testutil/projectFixtures'
 import {getTextFromStorage} from '../../src/shared/storage'
+import {wait} from '../testutil/testHelpers'
 
 // Hack to get Jest 28 to work with ESM firebase
 jest.mock("firebase/storage", () => ({
@@ -27,7 +28,7 @@ function mock_getTextFromStorage(path: string) {
 
 beforeEach(() => {
     jest.resetAllMocks();
-    ({domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = addContainer())
+    ({domContainer, click, elIn, enter, expectEl, renderThe, el} = container = testContainer())
     // @ts-ignore
     global.fetch = jest.fn((url) => Promise.resolve( {text: () => wait(10).then( () => appCode1(url) )}))
 })
@@ -39,35 +40,35 @@ afterEach(() => {
 
 const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
 
-let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, renderIt, el} = container = {} as any
+let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} = container = {} as any
 
 test('runs app from url at end of window location path', async () => {
-    renderIt(appMain('/runner/web/some.code/app.js'))
+    renderThe(appMain('/runner/web/some.code/app.js'))
     await act(() => wait(20))
     expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
 })
 
 test('runs app from encoded url at end of window location path', async () => {
-    renderIt(appMain('/runner/web/some.code%2fapp.js'))
+    renderThe(appMain('/runner/web/some.code%2fapp.js'))
     await act(() => wait(20))
     expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
 })
 
 test('runs app from storage location at end of window location path', async () => {
     mock_getTextFromStorage('apps/xxx222/myApp.js')
-    renderIt(appMain('/runner/apps/xxx222/myApp.js'))
+    renderThe(appMain('/runner/apps/xxx222/myApp.js'))
     await act(() => wait(20))
     expect(el`FirstText`).toHaveTextContent('This is App One from apps/xxx222/myApp.js')
 })
 
 test('runs in editor preview mode if path found', async () => {
-    renderIt(appMain('/runner/editorPreview'))
+    renderThe(appMain('/runner/editorPreview'))
     await act( () => wait(20) )
     expect(global.setAppCode).not.toBeUndefined()
 })
 
 test('shows welcome app if no url found', async () => {
-    renderIt(appMain('/runner'))
+    renderThe(appMain('/runner'))
     await act( () => wait(20) )
     expect(el`FirstText`).toHaveTextContent('Welcome to Elemento!')
 })

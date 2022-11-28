@@ -8,7 +8,7 @@ import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/c
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {fireEvent} from '@testing-library/react'
-import {actWait, testContainerWait} from '../../testutil/rtlHelpers'
+import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {AppData} from '../../../src/runtime/components/App'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
@@ -86,11 +86,11 @@ test('App shows first page initially and other page when state changes', async (
         return createElement(App, {path: 'app1'})
     }
 
-    const container = await testContainerWait(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
-    expect(container.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Main')
+    const {el, click} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
+    expect(el`p[id="app1.page1.para1"`?.textContent).toBe('this is page Main')
 
-    await actWait( () => fireEvent.click(container!.querySelector('button') as HTMLElement))
-    expect(container!.querySelector('p[id="app1.page1.para1"]')?.textContent).toBe('this is page Other')
+    await actWait( () => click('button'))
+    expect(el`p[id="app1.page1.para1`?.textContent).toBe('this is page Other')
 })
 
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {

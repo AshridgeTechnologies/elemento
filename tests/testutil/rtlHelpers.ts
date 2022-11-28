@@ -1,27 +1,10 @@
-import {act, fireEvent, render, RenderResult} from '@testing-library/react'
+import {act, fireEvent, render, RenderResult, screen} from '@testing-library/react/pure'
+import userEvent from '@testing-library/user-event'
 import {treeExpandControlSelector} from '../editor/Selectors'
 import React from 'react'
+import {doNothing, wait} from './testHelpers'
 
-export const testContainer = function (element: React.ReactElement) {
-    let container: any
-    act(() => {
-        ({container} = render(element))
-    })
-    return container!
-}
-
-export const testContainerWait = async (element: React.ReactElement) => {
-    let container: HTMLElement
-    await actWait(() => {
-        ({container} = render(element))
-    })
-    return container!
-}
-
-const doNothingJustWait = () => {}
-
-export const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
-export const actWait = async (testFn: () => void = doNothingJustWait) => await act(async () => {
+export const actWait = async (testFn: () => void = doNothing) => await act(async () => {
     testFn()
     await wait(5)
 })
@@ -29,21 +12,32 @@ export const clickExpandControlFn = (container: any) => async (...indexes: numbe
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
 }
 type ElOrSel = HTMLElement | string
-export const addContainer = (documentEl: Document = document) => {
+export const testContainer = (element: React.ReactElement | null = null, containerId = 'testContainer') => {
 
-    const containerEl = documentEl.createElement('div')
-    documentEl.body.appendChild(containerEl)
-    return containerFunctions(containerEl)
+    const addTestContainer = () => {
+        const el = document.createElement('div')
+        el.id = containerId
+        document.body.appendChild(el)
+        return el
+    }
+    const containerEl = document.getElementById(containerId) || addTestContainer()
+    const functions = containerFunctions(containerEl)
+    if (element) {
+        functions.renderThe(element)
+    }
+    return functions
 }
 export const containerFunctions = (container: HTMLElement) => {
     let renderResult: RenderResult
     const renderThe = (element: React.ReactElement) => {
         renderResult = render(element, {container})
     }
-    const renderIt = (element: React.ReactElement) => render(element, {container})
     const elIn = (containingEl: HTMLElement, selector: string): HTMLElement => {
-        return containingEl.querySelector(`[id$="${selector}"]`) as HTMLElement
-            || renderResult.getByText(selector)
+        return containingEl.querySelector(selector) as HTMLElement
+        ?? containingEl.querySelector(`[id$="${selector}"]`) as HTMLElement
+            ?? renderResult.queryByLabelText(selector)
+            ?? renderResult.getByText(selector)
+            // ?? screen.getByText(selector)
     }
     const element = (elOrSelector: ElOrSel): HTMLElement => elOrSelector instanceof HTMLElement ? elOrSelector : elIn(container, elOrSelector)
     const expectEl = (elOrSel: ElOrSel) => expect(element(elOrSel))
@@ -58,9 +52,8 @@ export const containerFunctions = (container: HTMLElement) => {
         )
     }
 
-    const el = ([s]: TemplateStringsArray) => {
-        return element(s)
-    }
-
-    return {domContainer: container, renderThe, renderIt, elIn, el, expectEl, enter, click}
+    const el = ([s]: TemplateStringsArray): any => element(s)
+    const querySelector = (selector: string): HTMLElement => container.querySelector(selector)!
+    const user = userEvent.setup()
+    return {domContainer: container, renderThe, elIn, el, element, querySelector, expectEl, user, enter, click}
 }

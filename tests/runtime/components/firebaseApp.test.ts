@@ -4,9 +4,8 @@ import {
     getAppAndSubscribeToChanges,
     test_resetAppManager
 } from '../../../src/runtime/components/firebaseApp'
-import {mockImplementation} from '../../testutil/testHelpers'
+import {mockImplementation, wait} from '../../testutil/testHelpers'
 import * as firebaseApp from 'firebase/app'
-import {wait} from '../../testutil/rtlHelpers'
 
 jest.mock('firebase/app')
 

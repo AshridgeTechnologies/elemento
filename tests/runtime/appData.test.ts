@@ -2,7 +2,7 @@ import {createElement} from 'react'
 import renderer, {act} from 'react-test-renderer'
 import {StoreProvider, useGetObjectState, useObjectState} from '../../src/runtime/appData'
 import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
-import {actWait, wait} from '../testutil/rtlHelpers'
+import {wait} from '../testutil/testHelpers'
 
 const runInProvider = async function (testFn: () => void, childTestFn?: () => void) {
     function TestComponent(props: any) {
@@ -10,13 +10,14 @@ const runInProvider = async function (testFn: () => void, childTestFn?: () => vo
         return props.children ?? null
     }
 
-    await actWait(() => {
+    await act(async () => {
         renderer.create(createElement(StoreProvider, {
             children:
                 createElement(TestComponent, {
                     testFn, children: childTestFn && createElement(TestComponent, {testFn: childTestFn})
                 })
         }))
+        await wait(5)
     })
 
 }

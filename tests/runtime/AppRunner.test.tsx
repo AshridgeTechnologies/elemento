@@ -8,7 +8,7 @@ import * as Elemento from '../../src/runtime/index'
 import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
-import {actWait, addContainer} from '../testutil/rtlHelpers'
+import {actWait, testContainer} from '../testutil/rtlHelpers'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {AppData} from '../../src/runtime/components/App'
 
@@ -83,9 +83,9 @@ const badApp = () => {
 }
 let onComponentSelected: (id: string) => void
 
-let container: any, {click, elIn, enter, expectEl, renderThe} = container = addContainer()
+let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(async () => {
-    ({click, elIn, enter, expectEl, renderThe} = container = addContainer())
+    ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
     onComponentSelected = jest.fn()
     renderThe(appRunner())
 })
@@ -117,8 +117,7 @@ test('app can keep state when app is updated', async () => {
 })
 
 test('can run multiple apps with independent state', async () => {
-    const container2 = addContainer()
-    await actWait( () => container2.renderThe(appRunner(testApp('Two'))) )
+    const container2 = testContainer(appRunner(testApp('Two')), 'testContainer2')
 
     await container.enter('input1', 'cool')
     container.expectEl('SecondText').toHaveTextContent('Input is cool')

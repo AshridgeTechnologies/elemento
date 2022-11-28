@@ -4,8 +4,8 @@
 
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
-import userEvent from '@testing-library/user-event'
-import {testContainer, wait} from '../../testutil/rtlHelpers'
+import '@testing-library/jest-dom'
+import {testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'
 
@@ -22,48 +22,45 @@ test('NumberInput element produces output with default values where properties o
 )
 
 test('NumberInput shows value from the state supplied', () => {
-    let container = testContainer(numberInput('app.page1.widget1', {value: 27}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('27')
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: 27}))
+    expect(el`app.page1.widget1`.value).toBe('27')
 })
 
 test('NumberInput element produces output with properties supplied as state objects', () => {
-    let container = testContainer(numberInput('app.page1.widget1', {value: 27},
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: 27},
         {label: new TextInputState({value: 'Item Number'})}))
-    expect(container.querySelector('label[for="app.page1.widget1"]').innerHTML).toBe('Item Number')
+    expect(el`label[for="app.page1.widget1"]`.innerHTML).toBe('Item Number')
 })
 
 test('NumberInput shows empty value when state value is absent', () => {
-    let container = testContainer(numberInput('app.page1.widget1', {}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el} = testContainer(numberInput('app.page1.widget1', {}))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('NumberInput shows empty value when state value is set to undefined', () => {
-    let container = testContainer(numberInput('app.page1.widget1', {value: undefined}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: undefined}))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('NumberInput shows initial value when state value  exists', () => {
-    let container = testContainer(numberInput('app.page1.widget1', {value: 99}))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('99')
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: 99}))
+    expect(el`app.page1.widget1`.value).toBe('99')
 })
 
 test('NumberInput shows empty value when state value is set to null and initial value exists', () => {
-    let container = testContainer(numberInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
-    expect(container.querySelector('input[id="app.page1.widget1"]').value).toBe('')
+    const {el}  = testContainer(numberInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
+    expect(el`app.page1.widget1`.value).toBe('')
 })
 
 test('NumberInput stores updated values in the app store section for its path', async () => {
-    let container = testContainer(numberInput('app.page1.sprocket', {value: 27}))
-    const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    const user = userEvent.setup()
-    await user.type(inputEl, '6')
-    expect(stateAt('app.page1.sprocket').value).toBe(276)
-} )
+    const {enter}  = testContainer(numberInput('app.page1.sprocket', {value: 27}))
+    await enter('sprocket', '421')
+    expect(stateAt('app.page1.sprocket').value).toBe(421)
+})
 
 test('NumberInput stores null value in the app store when cleared', async () => {
-    let container = testContainer(numberInput('app.page1.sprocket', {value: 27}))
-    const inputEl = container.querySelector('input[id="app.page1.sprocket"]')
-    const user = userEvent.setup()
+    const {el, user} = testContainer(numberInput('app.page1.sprocket', {value: 27}))
+    const inputEl = el`app.page1.sprocket`
     await user.clear(inputEl)
     expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
 } )
