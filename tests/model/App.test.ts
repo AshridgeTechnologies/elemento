@@ -56,17 +56,17 @@ let testApp = function () {
     ])
     const text3 = new Text('t3', 'Text 1', {content: ex``})
     const text4 = new Text('t4', 'Text 4', {content: ex``})
+    const text5 = new Text('t5', 'Text 3', {content: ex``})
     let page2 = new Page('p2', 'Page 2', {}, [
-        text3, text4,
+        text3, text4, text5
     ])
     const app = new App('app1', 'App 1', {}, [page1, page2])
-    return {text4, app}
+    return {text4, text5, app}
 }
 test('can find element on a page by id', ()=> {
     const {text4, app} = testApp()
     expect(app.findElement('t4')).toBe(text4)
 })
-
 
 test('can find path of app itself by id', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -90,9 +90,13 @@ test('can find path of element on a page by id', ()=> {
 
 test('can find element by path', () => {
     const {text4, app} = testApp()
-    expect(app.findElementByPath('app.Page2.Text4')).toBe(text4)
+    expect(app.findElementByPath('App1.Page2.Text4')).toBe(text4)
 })
 
+test('can find element by path where two elements have the same name', () => {
+    const {text5, app} = testApp()
+    expect(app.findElementByPath('App1.Page2.Text3')).toBe(text5)
+})
 
 test('creates an updated object with a property set to a new value', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

@@ -23,8 +23,9 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     return true
 }
 
-type PropOptions = {multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean, readOnly?: boolean}
-export function propDef(name: string, type: PropertyType = 'string', options: PropOptions = {} ): PropertyDef {
+type PropOptions = { multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean, readOnly?: boolean }
+
+export function propDef(name: string, type: PropertyType = 'string', options: PropOptions = {}): PropertyDef {
     return {name, type, ...options}
 }
 
@@ -56,15 +57,24 @@ export default abstract class BaseElement<PropertiesType extends object> {
     abstract type(): ComponentType
 
     static kind = 'unknown'
-    static get initialProperties() { return {} }
+
+    static get initialProperties() {
+        return {}
+    }
 
     static is<T extends Element>(element: Element): element is T {
         return element.constructor.name === this.name
     }
 
-    isLayoutOnly() { return false }
+    isLayoutOnly() {
+        return false
+    }
+
     abstract get propertyDefs(): PropertyDef[]
-    get actionDefs(): ActionDef[] { return []}
+
+    get actionDefs(): ActionDef[] {
+        return []
+    }
 
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
@@ -83,7 +93,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     findChildElements<T extends Element>(elementClass: Class<T>): T[] {
-        return this.elementArray().filter( el => el instanceof elementClass) as T[]
+        return this.elementArray().filter(el => el instanceof elementClass) as T[]
     }
 
     findParent(id: ElementId): Element | null {
@@ -118,20 +128,25 @@ export default abstract class BaseElement<PropertiesType extends object> {
 
     findElementByPath(path: string): Element | null {
         const [firstElementName, ...remainingPathSegments] = path.split('.')
-        if (this.pathSegment === '') {
-            for (const el of this.elementArray()) {
-                const element = el.findElementByPath(path)
-                if (element) return element
-            }
-        }
         if (firstElementName === this.pathSegment && remainingPathSegments.length === 0) {
             return this as unknown as Element
         }
 
-        const remainingPath = this.isLayoutOnly() ? path : remainingPathSegments.join('.')
-        for (const el of this.elementArray()) {
-            const element = el.findElementByPath(remainingPath)
-            if (element) return element
+        const findInElements = (path: string) => {
+            for (const el of this.elementArray()) {
+                const element = el.findElementByPath(path)
+                if (element) return element
+            }
+
+            return null
+        }
+
+        if (this.pathSegment === '' || this.isLayoutOnly()) {
+            return findInElements(path)
+        }
+
+        if (firstElementName === this.pathSegment) {
+            return findInElements(remainingPathSegments.join('.'))
         }
 
         return null
@@ -182,7 +197,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return Math.max(ownMax(), ...this.elementArray().map(el => el.findMaxId(elementType)))
     }
 
-    static get parentType(): ParentType { return 'any' }
+    static get parentType(): ParentType {
+        return 'any'
+    }
 
     get codeName() {
         const noSpaceName = noSpaces(this.name)
@@ -194,9 +211,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     create(id: ElementId,
-                     name: string,
-                     properties: PropertiesType,
-                     elements: ReadonlyArray<Element> | undefined) {
+           name: string,
+           properties: PropertiesType,
+           elements: ReadonlyArray<Element> | undefined) {
         const ctor = this.constructor as any
         return new ctor(id, name, properties, elements)
     }
@@ -221,9 +238,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
         }
 
         const checkLegal = () => {
-            const illegalInserts = elements.filter( el => !this.canContain(el.kind))
+            const illegalInserts = elements.filter(el => !this.canContain(el.kind))
             if (illegalInserts.length) {
-                const illegalElementTypes = uniq(illegalInserts.map( el => el.kind )).join(', ')
+                const illegalElementTypes = uniq(illegalInserts.map(el => el.kind)).join(', ')
                 throw new Error(`Cannot insert elements of types ${illegalElementTypes} inside ${this.kind}`)
             }
         }
@@ -250,7 +267,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     transform(transformFn: (element: BaseElement<PropertiesType>, transformedChildElements: BaseElement<PropertiesType>[] | undefined) => Element): this {
-        const newChildElements = this.elements && this.elementArray().map( el => (el as this).transform(transformFn))
+        const newChildElements = this.elements && this.elementArray().map(el => (el as this).transform(transformFn))
         return transformFn(this as BaseElement<PropertiesType>, newChildElements) as this
     }
 

@@ -90,7 +90,6 @@ test('finds itself and children in a page', () => {
     expect(page.findElementByPath('Page1.Text2')).toBe(text2)
 })
 
-
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})

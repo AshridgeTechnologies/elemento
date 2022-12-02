@@ -33,6 +33,7 @@
               "kind": "Button",
               "properties": {
                 "content": "Learn",
+                "appearance": "filled",
                 "filled": true,
                 "action": {
                   "expr": "ShowPage(LearnPage)"
@@ -45,6 +46,7 @@
               "kind": "Button",
               "properties": {
                 "content": "Revision",
+                "appearance": "filled",
                 "filled": true,
                 "action": {
                   "expr": "ShowPage(RevisionPage)"
@@ -57,6 +59,7 @@
               "kind": "Button",
               "properties": {
                 "content": "Words",
+                "appearance": "filled",
                 "filled": true,
                 "action": {
                   "expr": "ShowPage(WordDetailsPage)"
@@ -69,6 +72,7 @@
               "kind": "Button",
               "properties": {
                 "content": "Import",
+                "appearance": "filled",
                 "filled": true,
                 "action": {
                   "expr": "ShowPage(ImportPage)"
@@ -173,6 +177,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "New Word",
+                            "appearance": "outline",
                             "action": {
                               "expr": "Reset(Word, Translation, WordList)"
                             }
@@ -252,6 +257,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Add Word",
+                            "appearance": "outline",
                             "display": {
                               "expr": "!WordId.value"
                             },
@@ -266,6 +272,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Save Changes",
+                            "appearance": "outline",
                             "display": {
                               "expr": "!!WordId.value"
                             },
@@ -280,6 +287,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Abandon Changes",
+                            "appearance": "outline",
                             "action": {
                               "expr": "Reset(Word, Translation)"
                             }
@@ -291,6 +299,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Delete",
+                            "appearance": "outline",
                             "action": {
                               "expr": "Remove(Words, WordId)\nReset(WordList)\nReset(Word, Translation)"
                             },
@@ -685,6 +694,7 @@
               "kind": "Button",
               "properties": {
                 "content": "Import",
+                "appearance": "outline",
                 "action": {
                   "expr": "let columns = List('Word', 'Translation', 'Date Learned', 'Last Revised', 'Last Revised Ok')\nlet newItems =  CsvToRecords(CsvText.value, columns)\nLog(newItems)\nAdd(Words, newItems)"
                 }

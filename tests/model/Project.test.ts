@@ -55,15 +55,16 @@ let testProject = function () {
     ])
     const text3 = new Text('t3', 'Text 1', {content: ex``})
     const text4 = new Text('t4', 'Text 4', {content: ex``})
+    const text5 = new Text('t5', 'Text 3', {content: ex`Same name as text2`})
     const page2 = new Page('p2', 'Page 2', {}, [
-        text3, text4,
+        text3, text4, text5
     ])
 
     const button1 = new Button('b1', 'Button 1', {})
     const appBar = new AppBar('ab1', 'AppBar 1', {}, [button1])
     const app = new App('app1', 'App 1', {}, [page1, page2, appBar])
     const project = new Project('pr1', 'proj1', {}, [app])
-    return {text1, text2, page1, text3, text4, layout1, page2, app, appBar, button1, project}
+    return {text1, text2, page1, text3, text4, text5, layout1, page2, app, appBar, button1, project}
 }
 
 test('can find element by id', ()=> {
@@ -114,10 +115,14 @@ test('can find path of element in a layout by id', ()=> {
     expect(project.findElementPath(text2.id)).toBe('App1.Page1.Text2')
 })
 
-
 test('can find element by path', () => {
     const {text4, project} = testProject()
     expect(project.findElementByPath('App1.Page2.Text4')).toBe(text4)
+})
+
+test('can find element by path where two elements have the same name', () => {
+    const {text5, project} = testProject()
+    expect(project.findElementByPath('App1.Page2.Text3')).toBe(text5)
 })
 
 test('can find child elements by type', () => {

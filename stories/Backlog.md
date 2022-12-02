@@ -7,10 +7,8 @@ Bugs
 - Asks for login to gapi on every keystroke when a Firebase Publisher exists
 - Studio: Show errors in server side apps
 - Clear preview and state when load new app
-- Select in copied page selects the corresponding element in the page copied from
 - Dependencies error while editing blows up editor
 - No code generation error for unknown name in text element
-- Select does not respond to alt-click to highlight
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 
 
@@ -162,3 +160,5 @@ Bugs fixed
 - Performance: deferred updates repeatedly update store in a loop
 - Escape quotes in Javascript string literals
 - Text inputs: jump to end, slow rendering, unusual characters
+- Select in copied page selects the corresponding element in the page copied from
+- Select does not respond to alt-click to highlight

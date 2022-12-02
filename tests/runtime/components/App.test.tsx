@@ -7,7 +7,6 @@ import {componentJSON, testAppInterface, valueObj, wrappedTestElement} from '../
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
-import {fireEvent} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {AppData} from '../../../src/runtime/components/App'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
