@@ -5,6 +5,7 @@ import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {debounce} from 'lodash'
+import { isNil } from 'ramda'
 
 type Properties = {
     path: string,
@@ -12,6 +13,7 @@ type Properties = {
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
     width?: string | number,
     selectable?: boolean,
+    selectAction?: ($item: any) => void,
     style?: string
 }
 type StateProperties = {selectedItem?: any, scrollTop?: number}
@@ -38,13 +40,23 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         const targetId = (event.target as HTMLElement).id
         const itemId = targetId.match(/\.#(\w+)/)?.[1]
         const selectedItem = items.find((it:any) => it.id === itemId)
-        state._setSelectedItem(selectedItem)
+        if (selectable) {
+            state._setSelectedItem(selectedItem)
+        }
+        props.selectAction?.(selectedItem)
     }, [items])
-    const onClick = selectable ? onClickFn : null
+    const onClick = selectable || props.selectAction ? onClickFn : null
+    const isSelected = (item: any) => {
+        return !isNil(selectedItem) && (
+            item === selectedItem
+            || item.id === selectedItem
+            || item.id === (selectedItem as any)?.id
+        )
+    }
     const children = asArray(items).map((item, index) => {
             const itemId = item.id ?? index
             const itemPath = `${path}.#${itemId}`
-            const selected = Boolean(item === selectedItem || (item.id && item.id === (selectedItem as any)?.id) )
+            const selected = isSelected(item)
             return React.createElement(ListItem, {path: itemPath, selected, onClick, item, itemContentComponent, key: itemId})
         }
     )

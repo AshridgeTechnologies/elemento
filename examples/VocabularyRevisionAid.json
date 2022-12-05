@@ -125,7 +125,14 @@
                       "properties": {
                         "items": {
                           "expr": "Sort(FilteredWords(), $item.Word.toString().toLowerCase())"
-                        }
+                        },
+                        "selectedItem": {
+                          "expr": "CurrentUrl().pathSections[0]"
+                        },
+                        "selectAction": {
+                          "expr": "ShowPage(WordDetailsPage, $item.id)"
+                        },
+                        "selectable": false
                       },
                       "elements": [
                         {
@@ -168,7 +175,7 @@
                       "properties": {
                         "display": false,
                         "initialValue": {
-                          "expr": "WordList.selectedItem && WordList.selectedItem.id"
+                          "expr": "CurrentUrl().pathSections[0]"
                         }
                       }
                     },
@@ -288,6 +295,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Save",
+                            "appearance": "outline",
                             "display": {
                               "expr": "!!WordId.value"
                             },
@@ -302,6 +310,7 @@
                           "kind": "Button",
                           "properties": {
                             "content": "Cancel",
+                            "appearance": "outline",
                             "action": {
                               "expr": "Reset(Word, Translation)"
                             },
@@ -326,17 +335,6 @@
                           }
                         }
                       ]
-                    },
-                    {
-                      "id": "text_24",
-                      "name": "Text 24",
-                      "kind": "Text",
-                      "properties": {
-                        "width": "100%",
-                        "border": 1,
-                        "borderColor": "lightgrey"
-                      },
-                      "elements": []
                     },
                     {
                       "id": "text_23",
@@ -372,6 +370,7 @@
                       "kind": "Button",
                       "properties": {
                         "content": "Add",
+                        "appearance": "outline",
                         "display": true,
                         "action": {
                           "expr": "let newWord = Record('id', 'w' + Timestamp(), 'Word', NewWord, 'Translation', NewTranslation);\nAdd(Words, newWord);\nSet(WordList, newWord);\nReset(NewWord, NewTranslation);\n"
@@ -687,15 +686,30 @@
                       },
                       "elements": [
                         {
-                          "id": "text_15",
-                          "name": "Word",
-                          "kind": "Text",
+                          "id": "layout_11",
+                          "name": "Layout 11",
+                          "kind": "Layout",
                           "properties": {
-                            "content": {
-                              "expr": "$item.Word"
-                            },
-                            "width": "15em"
-                          }
+                            "width": "15em",
+                            "horizontal": true
+                          },
+                          "elements": [
+                            {
+                              "id": "button_22",
+                              "name": "Word and Link",
+                              "kind": "Button",
+                              "properties": {
+                                "content": {
+                                  "expr": "$item.Word"
+                                },
+                                "appearance": "link",
+                                "action": {
+                                  "expr": "ShowPage(WordDetailsPage, $item.id)"
+                                }
+                              },
+                              "elements": []
+                            }
+                          ]
                         },
                         {
                           "id": "text_16",
@@ -800,7 +814,9 @@
                       "name": "Show Translation",
                       "kind": "Data",
                       "properties": {
-                        "initialValue": "true"
+                        "initialValue": {
+                          "expr": "Not($item.Learning)"
+                        }
                       },
                       "elements": []
                     }

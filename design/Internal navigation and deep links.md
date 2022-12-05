@@ -78,5 +78,43 @@ Desirable
 - Can pass element name to Show() query for anchor  BUT how deal with stateless elements?
 
 
-Possible later improvements
----------------------------
+Linking list selected item to URL
+=================================
+
+Aims
+----
+
+- Can link (both ways) selected item in a list to the URL
+
+Needs
+-----
+
+- When page is loaded, can set the selected item from the URL
+- When URL is updated by any means, the selected item changes
+- When an item in the list is selected, the URL is updated
+
+Forces
+------
+
+- Keep it simple, intuitive, easy to reason about
+- No combinations of settings that are easy to forget or get wrong
+- A selectable list must still work if not linked to the URL
+- Selected item property must still be available even if set from URL
+- May still want to do action on list selection even if not linked to URL
+- Setting selected item is an advanced usage, may be OK to take longer to understand
+
+Possibilities
+-------------
+
+- List selected item is controlled from the URL, not held in state
+- OnSelected action, use to set URL
+- URL initially sets the URL, then tracks the selection - BUT how URL change affect selected?
+- Specific URL tracking
+
+Decision 5 Dec 22
+-----------------
+
+- OnItemSelected action - can use to update URL
+- Can have OnItemSelected action even if not Selectable
+- To control from URL, use not selectable and set URL from OnItemSelected
+- Maybe: rename Selectable to StoreSelection, HoldSelection

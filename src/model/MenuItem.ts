@@ -1,6 +1,6 @@
-import {ComponentType, ElementType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 type Properties = {
@@ -21,9 +21,9 @@ export default class MenuItem extends BaseElement<Properties> implements Element
 
     get propertyDefs(): PropertyDef[] {
         return [
-            {name: 'label', type: 'string'},
-            {name: 'display', type: 'boolean'},
-            {name: 'action', type: 'action'},
+            propDef('label', 'string'),
+            propDef('display', 'boolean'),
+            propDef('action', eventAction())
         ]
     }
 

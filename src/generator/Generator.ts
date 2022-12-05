@@ -24,6 +24,7 @@ import {
 import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
+import {EventActionPropertyDef} from '../model/Types'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -175,8 +176,10 @@ ${generateChildren(element.list)}
         const modelProperties = () => {
             const propertyDefs = element.propertyDefs.filter(def => !def.state )
             const propertyExprs = propertyDefs.map(def => {
-                const exprType: ExprType = def.type === 'action' ? 'action': 'singleExpression'
-                const expr = this.getExpr(element, def.name, exprType)
+                const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
+                const exprType: ExprType = isEventAction ? 'action': 'singleExpression'
+                const exprArgNames = isEventAction ? (def.type as EventActionPropertyDef).argumentNames : undefined
+                const expr = this.getExpr(element, def.name, exprType, exprArgNames)
                 return [def.name, expr]
             })
 
@@ -331,7 +334,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         return [Generator.prettyPrint(configFunction), configFunctionName]
     }
 
-    private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
+    private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
         function isShorthandProperty(node: any) {
             return node.shorthand
         }
@@ -391,7 +394,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'singleExpression':
                 return exprCode
             case 'action':
-                return `() => {${exprCode}}`
+                const argList = (argumentNames ?? []).join(', ')
+                return `(${argList}) => {${exprCode}}`
             case 'multilineExpression': {
                 return `{\n${indent(exprCode, '        ')}\n    }`
             }

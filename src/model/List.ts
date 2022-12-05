@@ -1,11 +1,15 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import ViewListIcon from '@mui/icons-material/ViewList'
 import {elementOfType} from './elements'
 
-type Properties = { items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>,
-    style?: PropertyValueType<string>, width?: PropertyValueType<string | number>, selectable?: PropertyValueType<boolean> }
+type Properties = {
+    items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>,
+    readonly style?: PropertyValueType<string>, readonly width?: PropertyValueType<string | number>,
+    readonly selectable?: PropertyValueType<boolean>,
+    readonly selectAction?: PropertyExpr
+}
 
 export default class List extends BaseElement<Properties> implements Element {
 
@@ -17,6 +21,7 @@ export default class List extends BaseElement<Properties> implements Element {
     get selectedItem() { return this.properties.selectedItem }
     get width() { return this.properties.width }
     get selectable() { return this.properties.selectable }
+    get selectAction() { return this.properties.selectAction }
     get style() { return this.properties.style }
 
     get propertyDefs(): PropertyDef[] {
@@ -25,6 +30,7 @@ export default class List extends BaseElement<Properties> implements Element {
             propDef('selectedItem', 'expr', {state: true}),
             propDef('width', 'string|number'),
             propDef('selectable', 'boolean'),
+            propDef('selectAction', eventAction('$item')),
             propDef('style', 'string'),
         ]
     }

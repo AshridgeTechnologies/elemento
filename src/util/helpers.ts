@@ -1,7 +1,6 @@
 import {ElementType, PropertyExpr, PropertyValue} from '../model/Types'
 import {isObject} from 'lodash'
 import Element from '../model/Element'
-import {ElementType} from '../model/elements'
 import {parseISO} from 'date-fns'
 
 export function definedPropertiesOf(obj: object) {

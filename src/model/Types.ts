@@ -1,12 +1,19 @@
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility'
 export type ChoiceList = readonly string[]
-export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'action' | 'expr' | ChoiceList
+export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'expr' | ChoiceList | EventActionPropertyDef
 export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr
 
 export type InsertPosition = 'before' | 'after' | 'inside'
+
+export interface EventActionPropertyDef {
+    type: 'Action',
+    argumentNames: string[]
+}
+
+export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
 
 export type PropertyDef = {
     name: string,

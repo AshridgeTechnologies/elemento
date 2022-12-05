@@ -31,9 +31,9 @@ Requirements
 Bugs
 ----
 
-- If type in middle of word in text box, cursor goes to end
-- If enter accented characters, inserts extra one and loses char before
-- Sorting should be case insensitive
+- ✅ If type in middle of word in text box, cursor goes to end
+- ✅ If enter accented characters, inserts extra one and loses char before
+- ✅ Sorting should be case insensitive
 - Not clearing changes when display a different word - but also linked with warning about unsaved changes
 
 
