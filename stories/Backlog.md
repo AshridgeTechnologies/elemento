@@ -18,6 +18,9 @@ Bugs
 Stories
 -------
 
+### Move to GitHub
+- Local working copy stored in IDB
+
 ### Priority for customer-facing apps
 - JavaScript functions
 - Payments
@@ -27,6 +30,7 @@ Stories
 - Email
 - Images
 - Assets - eg image files
+- Uploaded files
 - Web file datastores
 
 ### Priority for internal apps
@@ -43,6 +47,7 @@ Stories
 - General usability Part 2
 - Security review
 - Embedded apps
+- Slick quick apps
 
 ### Priority 2
 - Firebase deploy Part 2
