@@ -18,17 +18,6 @@ import {generate} from '../../src/generator/Generator'
 import * as authentication from '../../src/shared/authentication'
 import { actWait } from '../testutil/rtlHelpers'
 
-// Hack to get Jest 28 to work with ESM firebase
-jest.mock("firebase/storage", () => ({
-    getStorage: jest.fn(),
-}))
-jest.mock("firebase/auth", () => ({
-    getAuth: jest.fn(),
-}))
-jest.mock("firebase/app", () => ({
-    initializeApp: jest.fn(),
-}))
-
 jest.mock('../../src/shared/authentication')
 
 let container: any = null, unmount: any
@@ -68,9 +57,9 @@ afterEach( async () => await act(() => {
 }))
 
 test("renders tree with app elements",  async () => {
-    await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} />)))
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} projectStoreName='Stored Project' {...onFunctions} />)))
     await clickExpandControl(0, 1, 2)
-    expect(container.querySelector('.MuiTypography-h6').textContent).toBe("Elemento Studio")
+    expect(container.querySelector('.MuiTypography-h6').textContent).toBe('Elemento Studio - Stored Project')
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 })
 
@@ -279,17 +268,17 @@ test('notifies open request and closes menu', async () => {
     expect(screen.queryByText('Open')).toBeNull()
 })
 
-test('notifies save request', async () => {
-    let saved: boolean = false
-    await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} onSave={() => saved = true} />)))
+test('notifies export request', async () => {
+    const onExport = jest.fn()
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} onExport={onExport} />)))
     fireEvent.click(screen.getByText('File'))
-    fireEvent.click(screen.getByText('Save'))
-    expect(saved).toBe(true)
+    fireEvent.click(screen.getByText('Export'))
+    expect(onExport).toHaveBeenCalled()
 })
 
 test('notifies new request', async () => {
     let onNew = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} onSave={() => {}} onNew={onNew}/>)))
+    await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions} onExport={() => {}} onNew={onNew}/>)))
     fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('New'))
     expect(onNew).toHaveBeenCalled()

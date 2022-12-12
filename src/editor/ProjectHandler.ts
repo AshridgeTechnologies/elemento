@@ -5,35 +5,28 @@ import {editorEmptyProject, editorInitialProject} from '../util/initialProjects'
 import {AppElementAction} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
-import {currentUser} from '../shared/authentication'
-import {uploadTextToStorage} from '../shared/storage'
 import {elementToJSON} from '../util/helpers'
 import {last} from 'ramda'
 
-declare global {
-    var showOpenFilePicker: (options: object) => any
-    var showSaveFilePicker: (options: object) => any
-    var location: Location
-}
-const globalExternals = {
-    showOpenFilePicker: (options: object) => global.showOpenFilePicker(options),
-    showSaveFilePicker: (options: object) => global.showSaveFilePicker(options),
-    baseUrl: global.location?.origin
+export interface ProjectHolder {
+    get current(): Project
+    get name(): string
+    set name(n: string)
+    setProject(project: Project): void
+    newProject(): void
 }
 
-type Externals = { showOpenFilePicker: (options: object) => any; showSaveFilePicker: (options: object) => any, baseUrl: string }
-
-export default class ProjectHandler {
-    private externals: Externals
+export default class ProjectHandler implements ProjectHolder {
     private project: Project
-    private loadedFileHandle: any
+    public name: string = 'Unnamed project'
 
-    constructor(initialProject = editorInitialProject(), externals: Externals = globalExternals) {
+    constructor(initialProject = editorInitialProject()) {
         this.project = initialProject
-        this.externals = externals
     }
 
-    get current() { return this.project }
+    get current() {
+        return this.project
+    }
 
     setProject(project: Project) {
         this.project = project
@@ -60,7 +53,7 @@ export default class ProjectHandler {
     }
 
     async elementAction(elementIds: ElementId[], action: AppElementAction) {
-        const deleteElements = () => elementIds.reduce( (proj, id) => proj.delete(id), this.project)
+        const deleteElements = () => elementIds.reduce((proj, id) => proj.delete(id), this.project)
 
         const copyElementsToClipboard = async () => {
             const elements = elementIds.map(id => this.project.findElement(id)) as Element[]
@@ -80,8 +73,7 @@ export default class ProjectHandler {
                 }
                 case 'pasteAfter':
                 case 'pasteBefore':
-                case 'pasteInside':
-                {
+                case 'pasteInside': {
                     const insertPosition = action.replace(/paste/, '').toLowerCase() as InsertPosition
                     const clipboardText = await navigator.clipboard.readText()
                     const elementsToInsert = loadJSONFromString(clipboardText)
@@ -90,7 +82,7 @@ export default class ProjectHandler {
                 }
                 case 'duplicate': {
                     const elements = elementIds.map(id => this.project.findElement(id)) as Element[]
-                    const duplicateElements = elements.map( el => el.set(el.id, 'name', el.name + ' Copy'))
+                    const duplicateElements = elements.map(el => el.set(el.id, 'name', el.name + ' Copy'))
                     const [project] = this.project.insert('after', last(elementIds) as string, duplicateElements)
                     return project
                 }
@@ -111,77 +103,5 @@ export default class ProjectHandler {
 
     newProject() {
         this.project = editorEmptyProject()
-        this.loadedFileHandle = null
-    }
-
-    private userCancelledFilePick = (e:any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'
-
-    async openFile() {
-        try {
-            const [fileHandle] = await this.externals.showOpenFilePicker({id: 'elemento_editor'})
-            const file = await fileHandle.getFile()
-            const jsonText = await file.text()
-            this.project = loadJSONFromString(jsonText) as Project
-            this.loadedFileHandle = fileHandle
-        } catch (e: any) {
-            if (!this.userCancelledFilePick(e)) {
-                throw e
-            }
-        }
-    }
-
-
-    private async writeProjectToFile (fileHandle: any) {
-        const writable = await fileHandle.createWritable()
-        await writable.write(elementToJSON(this.project))
-        await writable.close()
-    }
-
-    async saveFileAs() {
-        const options = {
-            types: [
-                {
-                    description: 'Project JSON Files',
-                    accept: {
-                        'application/json': ['.json'],
-                    },
-                },
-            ],
-        }
-        try {
-            const fileHandle = await this.externals.showSaveFilePicker(options)
-            if (fileHandle) {
-                await this.writeProjectToFile(fileHandle)
-                this.loadedFileHandle = fileHandle
-            }
-        } catch (e: any) {
-            if (!this.userCancelledFilePick(e)) {
-                throw e
-            }
-        }
-
-    }
-
-    async save() {
-        if (this.loadedFileHandle) {
-            await this.writeProjectToFile(this.loadedFileHandle)
-        } else {
-            await this.saveFileAs()
-        }
-    }
-
-    async publish(name: string, code: string) {
-        const user = currentUser()
-        if(user === null) {
-            throw new Error('Must be logged in to publish')
-        }
-
-        const publishPath = `apps/${user.uid}/${name}`
-        const metadata = {
-            contentType: 'text/javascript',
-        }
-        await uploadTextToStorage(publishPath, code, metadata)
-
-        return this.externals.baseUrl + '/run/' + publishPath
     }
 }

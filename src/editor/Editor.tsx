@@ -13,7 +13,7 @@ import {
     OnNewFn,
     OnOpenFn,
     OnPublishFn,
-    OnSaveFn
+    OnExportFn
 } from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
@@ -50,16 +50,17 @@ export const ProjectContext = React.createContext<Project | null>(null)
 
 export default function Editor({
     project,
+    projectStoreName = project.name,
     onChange,
     onInsert,
     onMove,
     onAction,
     onNew,
     onOpen,
-    onSave,
+    onExport,
     onPublish
-}: { project: Project, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
-                                    onOpen?: OnOpenFn, onSave?: OnSaveFn, onNew?: OnNewFn, onPublish?: OnPublishFn }) {
+}: { project: Project, projectStoreName?: string, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
+                                    onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn, onPublish?: OnPublishFn }) {
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
@@ -184,7 +185,7 @@ export default function Editor({
     }
 
     const EditorMenuBar = () => <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen} onSave={onSave} onPublish={onPublishMenu} signedIn={signedIn}/>
+        <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport} onPublish={onPublishMenu} signedIn={signedIn}/>
         <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
@@ -198,8 +199,9 @@ export default function Editor({
         <FunctionReference/>
     </HelpPanel>
 
+    const appBarTitle = `Elemento Studio - ${projectStoreName}`
     const OverallAppBar = <Box flex='0'>
-        <AppBar title='Elemento Studio'/>
+        <AppBar title={appBarTitle}/>
     </Box>
     const EditorHeader = <Box flex='0'>
         <EditorMenuBar/>

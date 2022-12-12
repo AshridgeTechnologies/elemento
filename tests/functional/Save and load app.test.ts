@@ -1,6 +1,5 @@
 import {expect, Page, test} from '@playwright/test'
-import {treeExpand, treeItem, ex} from './playwrightHelpers.js'
-import {projectFixture1} from './functionalTestFixtures.js'
+import {ex, treeExpand, treeItem} from './playwrightHelpers.js'
 
 // Expects test server such as Parcel dev server running on port 1234
 const pageUrl = '/studio'
@@ -39,103 +38,71 @@ const installMockFilePickers = (app: any) => {
 const fileMenu = 'text=File'
 const fileMenu_New = 'ul[role="menu"] :text("New")'
 const fileMenu_Open = 'ul[role="menu"] :text("Open")'
-const fileMenu_Save = 'ul[role="menu"] :text("Save")'
+const fileMenu_Export = 'ul[role="menu"] :text("Export")'
 
 let openMainPage = async function (page: Page) {
     await page.click(treeExpand(0))
     await page.click(treeExpand(1))
     await page.click(treeExpand(2))
-    expect(await page.textContent(treeItem(4))).toBe('Second Text')
+    expect(await page.textContent(treeItem(2))).toBe('Main Page')
 }
 
-test('load app from file into editor', async ({page}) => {
+test('creates new project and updates it and auto-saves and reloads', async ({page}) => {
     await page.goto(pageUrl)
-
-    await page.evaluate( installMockFilePickers, projectFixture1())
-
-    await page.click(fileMenu)
-    await page.click(fileMenu_Open)
-
-    // would select the app file here
-
-    await openMainPage(page)
-    expect(await page.textContent(treeItem(4))).toBe('Second Text')
-
-    await page.click(treeItem(4))
-    expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
-})
-
-test('save previously loaded app to file', async ({page}) => {
-    await page.goto(pageUrl)
-
-    await page.evaluate( installMockFilePickers, projectFixture1())
-
-    await page.click(fileMenu)
-    await page.click(fileMenu_Open)
-
-    // would select the app file here
-
-    await openMainPage(page)
-    expect(await page.textContent(treeItem(4))).toBe('Second Text')
-
-    await page.click(treeItem(4))
-    expect(await page.locator('textarea#content').textContent()).toBe('"The second bit of text"')
-
-    await page.fill('textarea#content', '"The updated second text"')
-    expect(await page.locator('textarea#content').textContent()).toBe('"The updated second text"')
-
-    await page.click(fileMenu)
-    await page.click(fileMenu_Save)
-
-    const updatedProjectText = (await page.textContent('#_testFile')) as string
-    const updatedProject = JSON.parse(updatedProjectText)
-    expect(((updatedProject.elements[0]).elements[0].elements[1]).properties.content).toStrictEqual(ex`"The updated second text"`)
-})
-
-test('save new app to file', async ({page}) => {
-    await page.goto(pageUrl)
-    await page.evaluate( installMockFilePickers, {})
-
-    // expect editorInitialApp to be loaded
-
-    await openMainPage(page)
-    expect(await page.textContent(treeItem(4))).toBe('Second Text')
-
-    await page.click(treeItem(4))
-    expect(await page.locator('textarea#content').textContent()).toBe('"The future of low code programming"')
-
-    await page.fill('textarea#content', '"The updated second text"')
-    expect(await page.locator('textarea#content').textContent()).toBe('"The updated second text"')
-
-    await page.click(fileMenu)
-    await page.click(fileMenu_Save)
-
-    const updatedProjectText = (await page.textContent('#_testFile')) as string
-    const updatedProject = JSON.parse(updatedProjectText)
-    expect(((updatedProject.elements[0]).elements[0].elements[1]).properties.content).toStrictEqual(ex`"The updated second text"`)
-})
-
-test('start new app', async ({page}) => {
-    await page.goto(pageUrl)
-
-    // expect editorInitialApp to be loaded
-
-    await openMainPage(page)
-    expect(await page.textContent(treeItem(4))).toBe('Second Text')
 
     await page.click(fileMenu)
     await page.click(fileMenu_New)
 
-    expect(await page.textContent(treeItem(0))).toBe('New Project')
-})
+    const projectName = 'Project ' + Date.now()
+    await page.fill('input:visible', projectName)
+    await page.locator('button', { hasText: 'Create' }).click()
 
-test('error message if cannot read app from file', async ({page}) => {
-    await page.goto(pageUrl)
-    await page.evaluate(installMockFilePickers, {})
+    await openMainPage(page)
+    expect(await page.textContent(treeItem(2))).toBe('Main Page')
+
+    await page.click(treeItem(2))
+    expect(await page.locator('input#name').inputValue()).toBe('Main Page')
+    await page.locator('input#name').fill('First Page')
+
     await page.click(fileMenu)
     await page.click(fileMenu_Open)
+    await page.click(`ul.MuiList-root >> text=${projectName}`)
+    expect(await page.textContent(treeItem(2))).toBe('First Page')
 
-    // would select the app file here
-
-    expect(await page.textContent('#alertMessage')).toBe('This file does not contain a valid Elemento project')
 })
+
+test('exports app to file', async ({page}) => {
+    await page.goto(pageUrl)
+    await page.evaluate(installMockFilePickers, {})
+
+    await page.click(fileMenu)
+    await page.click(fileMenu_New)
+
+    const projectName = 'Project ' + Date.now()
+    await page.fill('input:visible', projectName)
+    await page.locator('button', { hasText: 'Create' }).click()
+
+    await openMainPage(page)
+
+    await page.click(treeItem(2))
+    await page.locator('input#name').fill('First Page')
+
+    await page.click(fileMenu)
+    await page.click(fileMenu_Export)
+
+    const updatedProjectText = (await page.textContent('#_testFile')) as string
+    const updatedProject = JSON.parse(updatedProjectText)
+    expect(updatedProject.elements[0].elements[0].name).toBe('First Page')
+})
+
+// May use this test when Import project implemented
+// test('error message if cannot read app from file', async ({page}) => {
+//     await page.goto(pageUrl)
+//     await page.evaluate(installMockFilePickers, {})
+//     await page.click(fileMenu)
+//     await page.click(fileMenu_Open)
+//
+//     // would select the app file here
+//
+//     expect(await page.textContent('#alertMessage')).toBe('This file does not contain a valid Elemento project')
+// })

@@ -4,7 +4,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn, OnNewFn} from './Types'
 
-export default function FileMenu({onNew, onOpen, onSave, onPublish, signedIn}: {onNew?: OnNewFn, onOpen?: MenuItemFn, onSave?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
+export default function FileMenu({onNew, onOpen, onExport, onPublish, signedIn}: {onNew?: OnNewFn, onOpen?: MenuItemFn, onExport?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
@@ -42,7 +42,7 @@ export default function FileMenu({onNew, onOpen, onSave, onPublish, signedIn}: {
             >
                 {onNew ? menuItem('New', onNew): null}
                 {onOpen ? menuItem('Open', onOpen): null}
-                {onSave ? menuItem('Save', onSave): null}
+                {onExport ? menuItem('Export', onExport): null}
                 {onPublish ? signedInMenuItem('Publish', onPublish): null}
             </Menu>
         </div>

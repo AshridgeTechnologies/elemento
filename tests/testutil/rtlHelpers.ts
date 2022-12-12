@@ -4,9 +4,13 @@ import {treeExpandControlSelector} from '../editor/Selectors'
 import React from 'react'
 import {doNothing, wait} from './testHelpers'
 
-export const actWait = async (testFn: () => void = doNothing) => await act(async () => {
-    testFn()
-    await wait(5)
+export const actWait = async (testFnOrTime: (() => void) | number = doNothing) => await act(async () => {
+    if (typeof testFnOrTime === 'function') {
+        testFnOrTime()
+        await wait(5)
+    } else {
+        await wait(testFnOrTime)
+    }
 })
 export const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))

@@ -67,13 +67,14 @@ Stories
 -------
 
 - Local working copy stored in IDB
+- Run from GitHub and CDN
+- Import/commit/push working copy to Git
+- Clone/update working copy from Git
+- Create repo in GitHub
+- Run preview from working copy
 - Multiple files in working copy
 - Export working copy to directory - or zip?
 - Import working copy from directory - or zip?
 - Asset files stored in working copy
 - Image component loaded from asset file
-- Import/commit/push working copy to Git
-- Clone/update working copy from Git
-- Create repo in GitHub
-- Run from GitHub and CDN
-- Run preview from working copy
+- Add deferred desirable features from previous stories

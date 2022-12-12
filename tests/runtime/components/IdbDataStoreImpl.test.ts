@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto'
-import {FileDataStoreImpl, IdbDataStoreImpl} from '../../../src/runtime/components/index'
+import {IdbDataStoreImpl} from '../../../src/runtime/components/index'
 import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 
 let store: IdbDataStoreImpl
