@@ -19,7 +19,8 @@ Stories
 -------
 
 ### Move to GitHub
-- Run from GitHub and CDN
+- Update GitHub from working copy
+- Get or update working copy from GitHub
 
 ### Priority for customer-facing apps
 - JavaScript functions
@@ -155,7 +156,7 @@ Done
 - Internal navigation and deep links
 - Upgrade Parcel - babel _typeof error in prod build after 2.3.2
 - Local working copy stored in IDB
-
+- Run from GitHub and CDN
 
 Bugs fixed
 ----------

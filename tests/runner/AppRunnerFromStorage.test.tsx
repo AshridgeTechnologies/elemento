@@ -3,7 +3,7 @@
  */
 
 import React, {createElement} from 'react'
-import AppRunnerFromStorage from '../../src/runtime/AppRunnerFromStorage'
+import AppRunnerFromStorage from '../../src/runner/AppRunnerFromStorage'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {testContainer} from '../testutil/rtlHelpers'

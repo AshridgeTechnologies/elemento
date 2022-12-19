@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import AppRunner from '../../src/runtime/AppRunner'
+import AppRunner from '../../src/runner/AppRunner'
 import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
 import '@testing-library/jest-dom'

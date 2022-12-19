@@ -153,7 +153,7 @@
                       "kind": "Function",
                       "properties": {
                         "calculation": {
-                          "expr": "Select(Words.Query({}), Or($item.Word.toString().toLowerCase().includes(WordFilter.value.toLowerCase()), $item.Translation.toString().toLowerCase().includes(WordFilter.value.toLowerCase())))"
+                          "expr": "Select(Words.Query({}), Or($item.Word && $item.Word.toString().toLowerCase().includes(WordFilter.value.toLowerCase()), $item.Translation && $item.Translation.toString().toLowerCase().includes(WordFilter.value.toLowerCase())))"
                         }
                       },
                       "elements": []

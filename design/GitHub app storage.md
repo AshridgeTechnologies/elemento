@@ -68,9 +68,8 @@ Stories
 
 - Local working copy stored in IDB
 - Run from GitHub and CDN
-- Import/commit/push working copy to Git
-- Clone/update working copy from Git
-- Create repo in GitHub
+- Update GitHub from working copy
+- Get or update working copy from GitHub
 - Run preview from working copy
 - Multiple files in working copy
 - Export working copy to directory - or zip?

@@ -48,6 +48,31 @@ export function projectFixture2() {
     return new Project('project_1', 'Project One', {}, [app])
 }
 
+export function projectFixture3(url: string) {
+
+    const page1 = new Page('page_1', 'Main Page', {}, [
+        new Text('text_1', 'First Text', {content: 'From ' + url}),
+        new Text('text_2', 'Page', {content: ex`CurrentUrl().page`}),
+        new Text('text_3', 'Path Sections', {content: ex`CurrentUrl().pathSections.join(',')`}),
+        new Text('text_4', 'Current Url', {content: ex`CurrentUrl().text`}),
+    ])
+    const app = new App('app1', 'App One', {}, [
+        page1,
+    ])
+    return new Project('project_1', 'Project One', {}, [app])
+}
+
+export function projectFixtureWithError() {
+
+    const page1 = new Page('page_1', 'Main Page', {}, [
+        new Text('text_1', 'First Text', {content: ex`'From ' + nowhere`}),
+    ])
+    const app = new App('app1', 'App One', {}, [
+        page1,
+    ])
+    return new Project('project_1', 'Project One', {}, [app])
+}
+
 export function projectFixtureWithList() {
     const page1 = new Page('p1', 'Page 1', {}, [
             new List('l1', 'List 1', {items: [{color: 'green'}, {color: 'red'}, {color: 'blue'}]}, [

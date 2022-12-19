@@ -3,10 +3,10 @@
  */
 
 import React, {createElement} from 'react'
-import AppRunnerFromCode from '../../src/runtime/AppRunnerFromCode'
+import AppRunnerFromCode from '../../src/runner/AppRunnerFromCode'
 import '@testing-library/jest-dom'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
-import AppRunner from '../../src/runtime/AppRunner'
+import AppRunner from '../../src/runner/AppRunner'
 import {testContainer} from '../testutil/rtlHelpers'
 
 const appCode = (num: string) => `

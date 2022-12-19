@@ -7,7 +7,7 @@ describe('page', () => {
     })
 
     test('gets page from only path segment with path prefix', ()=> {
-        const url = new Url('http://example.com', '/somewhere/MainPage', '/somewhere', {})
+        const url = new Url('http://example.com', '/MainPage', '/somewhere', {})
         expect(url.page).toBe('MainPage')
     })
 
@@ -29,7 +29,7 @@ describe('path segments', () => {
     })
 
     test('gets empty path segments if only have page with path prefix', ()=> {
-        const url = new Url('http://example.com', '/somewhere/MainPage', '/somewhere', {})
+        const url = new Url('http://example.com', '/MainPage', '/somewhere', {})
         expect(url.pathSections).toStrictEqual([])
     })
 

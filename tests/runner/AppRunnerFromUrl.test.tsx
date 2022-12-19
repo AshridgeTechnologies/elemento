@@ -3,7 +3,7 @@
  */
 
 import React, {createElement} from 'react'
-import AppRunnerFromUrl from '../../src/runtime/AppRunnerFromUrl'
+import AppRunnerFromUrl from '../../src/runner/AppRunnerFromUrl'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {testContainer} from '../testutil/rtlHelpers'
