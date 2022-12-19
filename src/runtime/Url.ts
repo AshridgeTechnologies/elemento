@@ -31,8 +31,7 @@ export default class Url {
     ){}
 
     private get allPathSections() {
-        const actualPath = this.pathPrefix ? this.pathname.replace(this.pathPrefix, '') : this.pathname
-        return actualPath.replace(/^\/*/, '').split(/\//)
+        return this.pathname.replace(/^\/*/, '').split(/\//)
     }
 
     get page(): string | null {

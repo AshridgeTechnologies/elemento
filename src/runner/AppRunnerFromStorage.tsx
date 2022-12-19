@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import AppLoadError from './AppLoadError'
 import {getTextFromStorage} from '../shared/storage'
-import AppContext from './AppContext'
+import AppContext from '../runtime/AppContext'
 
 type Properties = {appCodePath: string, appContext: AppContext}
 

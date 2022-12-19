@@ -9,11 +9,11 @@ import {
 } from '../testutil/testHelpers'
 import ProjectFileStore from '../../src/editor/ProjectFileStore'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
-import {editorEmptyProject} from '../../src/util/initialProjects'
 import Project from '../../src/model/Project'
 
 const project = projectFixture1()
 const testProjectHolder = (project: Project) => ({
+    name: 'testProject',
     project,
     get current() { return this.project },
     setProject(proj: Project) { this.project = proj },

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import AppLoadError from './AppLoadError'
-import AppContext from './AppContext'
+import AppContext from '../runtime/AppContext'
 
 type Properties = {appCodeUrl: string, appContext: AppContext}
 

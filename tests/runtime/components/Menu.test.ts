@@ -25,18 +25,6 @@ test('Menu element produces output with properties supplied when open', async ()
         }))
         const buttonEl = el`app.page1.fileMenu_button`
         await user.click(buttonEl)
-
-        expect(document.body.innerHTML).toMatchSnapshot()
-    }
-)
-
-test('Menu element produces output for single menu item when open', async () => {
-    const {el, user} = testContainer(createElement(Menu, {
-            path: 'app.page1.fileMenu', label: 'File'
-        },
-        createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: jest.fn()})), 'container2')
-        const buttonEl = el`app.page1.fileMenu_button`
-        await user.click(buttonEl)
         await wait(10)
 
         expect(document.body.innerHTML).toMatchSnapshot()

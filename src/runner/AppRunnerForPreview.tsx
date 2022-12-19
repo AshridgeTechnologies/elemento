@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import {equals} from 'ramda'
-import {getConfig, setConfig} from './components/firebaseApp'
-import {getDefaultAppContext} from './AppContext'
+import {getConfig, setConfig} from '../runtime/components/firebaseApp'
+import {getDefaultAppContext} from '../runtime/AppContext'
 
 declare global {
     var setAppCode: (appCode: string) => void

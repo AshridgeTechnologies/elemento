@@ -54,6 +54,11 @@ test('shows error if cannot load app from web', async ({ page }) => {
     expect(await page.textContent('div.MuiAlertTitle-root')).toBe('Invalid app code')
 })
 
+test('can load app from GitHub', async ({ page }) => {
+    await page.goto(pageUrl+ '/gh/rileydog16/dogslife')
+    expect(await page.textContent('p[id="DogsLife.MainPage.FirstText"]')).toBe('Welcome to Dogs Life!')
+})
+
 
 const testAppCode = `
 import React from 'react'

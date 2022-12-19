@@ -1,8 +1,8 @@
 import React, {FunctionComponent} from 'react'
-import * as Elemento from '../../src/runtime'
+import * as Elemento from '../runtime/index'
 import AppRunner from './AppRunner'
 import AppCodeError from './AppCodeError'
-import AppContext from './AppContext'
+import AppContext from '../runtime/AppContext'
 
 type Properties = {appCode: string, appContext: AppContext, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 

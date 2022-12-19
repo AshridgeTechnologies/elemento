@@ -11,10 +11,9 @@ import {actWait} from '../testutil/rtlHelpers'
 import {fireEvent} from '@testing-library/react'
 import EditorRunner from '../../src/editor/EditorRunner'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels, wait} from '../testutil/testHelpers'
+import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {act, render, screen} from '@testing-library/react/pure'
 import {LocalProjectStoreIDB} from '../../src/editor/LocalProjectStore'
-import {editorEmptyProject} from '../../src/util/initialProjects'
 
 jest.setTimeout(20000)
 beforeAll(suppressRcTreeJSDomError)
@@ -94,7 +93,7 @@ test('opens project from list of local projects and updates it and auto-saves', 
     await actWait(100) // wait for project to load
 
     await clickExpandControl(0, 1, 2)
-    await actWait()
+    await actWait(100)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 
     // @ts-ignore

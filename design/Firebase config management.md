@@ -30,12 +30,22 @@ Forces
 - Elemento login is separate to the auth for Firebase management
 - Projects should not store configs or apps 
 
+Further forces - 21 Dec 22
+--------------------------
+
+- Apps deployed to sites other than Firebase should be able to use Firebase facilities
+- GitHub apps should be able to do this
+
 
 Possibilities
 -------------
 - Config could be downloaded when Firebase first needed so long as everything is async
 - Config could be a module picked up by the import mechanism
 - Test with a different kind of database in preview
+- Could store config in the app
+- Could store multiple configs in the app
+- Precise instructions to download config
+- Tool to create a config in the app by downloading from one of your apps via the management api
 
 
 Design - 17 Oct 22

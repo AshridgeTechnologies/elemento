@@ -1,9 +1,9 @@
 import React, {createRef, useEffect} from 'react'
-import {StoreProvider} from './appData'
-import {highlightElement} from './runtimeFunctions'
+import {StoreProvider} from '../runtime/appData'
+import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
-import AppContext from './AppContext'
+import AppContext from '../runtime/AppContext'
 
 function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
     const containerRef = createRef()

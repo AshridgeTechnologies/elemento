@@ -5,7 +5,7 @@
 import React, {createElement} from 'react'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import AppRunnerForPreview from '../../src/runtime/AppRunnerForPreview'
+import AppRunnerForPreview from '../../src/runner/AppRunnerForPreview'
 import {highlightClassName} from '../../src/runtime/runtimeFunctions'
 
 import {setConfig, getConfig} from '../../src/runtime/components/firebaseApp'
