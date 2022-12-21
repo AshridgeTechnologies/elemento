@@ -89,11 +89,15 @@ export default () =>
         </Para>
 
         <SubHeading>Publish your app (optional)</SubHeading>
-        <Para>If you would like to show the world what you have created, let's get your app on the internet.  It takes less than a minute.</Para>
-        <Para>Click Login at the top right of the Studio, and follow the instructions.  You can login with your Google account, if you have one,
-        or create a new Elemento account with an email and password.</Para>
-        <Para>When you are logged in, click on the <b>File</b> button at the top left of the studio, then click <b>Publish</b>.</Para>
-        <Para>Click on the link in the message to run the app.  It will open in a new tab or window.</Para>
+        <Para>If you would like to show people what you have created, let's get your app on the internet.  It takes only a minute or two.</Para>
+        <Para>Elemento stores apps in GitHub, which is used by millions of developers to store code they have created.  You can use if for free,
+        but you do need to create an account.  This is a similar process to all the other websites that require you to sign up before you can use them.</Para>
+        <Para>Click Sign In at the top right of the Studio, then Sign In with GitHub.
+            In the popup window, scroll down to where it says "New to GitHub?" and click "Create an account", then just enter the required details.</Para>
+        <Para>When you are signed in, click on the <b>File</b> button at the top left of the studio, then click <b>Save to GitHub</b>.</Para>
+        <Para>Click Create in the message box entitled Create GitHub repository.
+            Enter a few words to describe your app in the box entitled Save to GitHub, and click Save.</Para>
+        <Para>A link will now appear near the top right.  Click on this link to run the app.  It will open in a new tab or window.</Para>
         <Para>You can also copy the link and share it with anyone you want.</Para>
         <Para><em>Please note:</em>  Apps published on Elemento are available to anyone if they have the link,
             so don't include any private information in an app until you have learned how to add security features.</Para>

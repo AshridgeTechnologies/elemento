@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto'
-import {LocalProjectStoreIDB} from '../../src/editor/LocalProjectStore'
+import {LocalProjectStoreIDB, projectFileName} from '../../src/editor/LocalProjectStore'
 import {projectFixture1} from '../testutil/projectFixtures'
 
 let store: LocalProjectStoreIDB
@@ -38,4 +38,13 @@ test('writes and reads project file in a project dir', async () => {
     await store.writeProjectFile(projectName, project)
     const projectRead = (await store.getProject(projectName)).project
     expect(projectRead).toStrictEqual(project)
+})
+
+test('writes project file as formatted JSON', async () => {
+    const projectName = 'Test dir 3'
+    const project = projectFixture1()
+    await store.createProject(projectName)
+    await store.writeProjectFile(projectName, project)
+    const textRead = await store.readTextFile(projectName, projectFileName)
+    expect(textRead).toBe(JSON.stringify(project, null, 2))
 })

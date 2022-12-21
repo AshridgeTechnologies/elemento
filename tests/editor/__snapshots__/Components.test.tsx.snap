@@ -69,7 +69,7 @@ exports[`Components AppBar has expected structure 1`] = `
           tabIndex={0}
           type="button"
         >
-          Login
+          Sign In
         </button>
       </div>
     </div>

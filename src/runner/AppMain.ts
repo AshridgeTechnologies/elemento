@@ -14,7 +14,7 @@ const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContex
 
 export default function AppMain({windowUrlPath}: Properties) {
     const path = decodeURIComponent(windowUrlPath)
-    const githubMatch = path.match(/(.*)\/gh\/(\w+)\/(\w+)/)
+    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)/)
     const webMatch = path.match(/\/web\/(.+)$/)
     const appsMatch = path.match(/\/(apps\/.+)$/)
     if (githubMatch) {

@@ -1,21 +1,19 @@
 import * as React from 'react'
 import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
 import AccountCircle from '@mui/icons-material/AccountCircle'
-import {AuthDialog, currentUser, signOut, useSignedInState} from './authentication'
+import {currentUser, signIn, signOut, useSignedInState} from './authentication'
 
-function UserPanel({isSignedIn, handleLogout}: {isSignedIn: boolean, handleLogout: () => void}) {
+function UserPanel({isSignedIn, handleSignIn, handleSignOut}: { isSignedIn: boolean, handleSignIn: VoidFunction, handleSignOut: VoidFunction }) {
 
-    if (!isSignedIn) {
-        return <Box minWidth={400} margin={2}>
-            <Typography variant='body1'>Please log in</Typography>
-            <AuthDialog />
-        </Box>
-    }
-    return <Box minWidth={300} margin={2}>
-        <Typography variant='body1'>Logged in as {currentUser()!.displayName}</Typography>
-        <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1} onClick={handleLogout}>Logout</Link>
+    const linkText = isSignedIn ? 'Sign Out' : 'Sign in with GitHub'
+    const clickHandler = isSignedIn ? handleSignOut : handleSignIn
+    const user = currentUser()
+
+    return <Box minWidth={400} margin={2}>
+        {isSignedIn && <Typography variant='body1'>Signed in as {user!.displayName ?? user!.email}</Typography>}
+        <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1}
+              onClick={clickHandler}>{linkText}</Link>
     </Box>
-
 }
 
 export default function UserMenu() {
@@ -23,7 +21,11 @@ export default function UserMenu() {
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
-    const handleLogout = () => {
+    const handleSignIn = () => {
+        signIn()
+        handleClose()
+    }
+    const handleSignOut = () => {
         signOut()
         handleClose()
     }
@@ -48,7 +50,7 @@ export default function UserMenu() {
                           aria-controls="userMenu"
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
-                          onClick={handleButtonClick}>Login
+                          onClick={handleButtonClick}>Sign In
                 </Button>
         }
 
@@ -61,7 +63,7 @@ export default function UserMenu() {
                 anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                 transformOrigin={{vertical: 'top', horizontal: 'right'}}
             >
-                <UserPanel isSignedIn={isSignedIn} handleLogout={handleLogout}/>
+                <UserPanel isSignedIn={isSignedIn} handleSignIn={handleSignIn} handleSignOut={handleSignOut}/>
             </Popover>
         </div>
     )

@@ -4,7 +4,7 @@ General usability Part 3
 - Auto-save in editor
 - Remove animation on list so things change quickly
 - Retain position in list when content changes
-- Get Text area editing to accept characters with accents typed by holding down key
+- Editor messages are done with toasts
 - Duplicate names are highlighted and handled sensibly without losing state (eg add a suffix to one name)
 - Data store has type and enforces it
 - Alt-hover over running app highlights the elements
@@ -24,6 +24,7 @@ General usability Part 3
 - Way of debugging functions and complex expressions eg the word up to date function in revision app
 - Show URL of preview frame
 - Stop functions showing as toString when don't have braces
+- Can edit text elements content in place if fixed value (use contentEditable)
 
 Help
 ----

@@ -90,7 +90,7 @@ test('opens project from list of local projects and updates it and auto-saves', 
     await user.click(screen.getByText('Open'))
     await actWait(100) // transition for Open Dialog
     await user.click(screen.getByText('Project One'))
-    await actWait(100) // wait for project to load
+    await actWait(300) // wait for project to load
 
     await clickExpandControl(0, 1, 2)
     await actWait(100)

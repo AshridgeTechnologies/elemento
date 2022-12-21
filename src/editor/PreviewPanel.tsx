@@ -2,7 +2,7 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import {Stack, Typography} from '@mui/material'
+import {Link, Stack, Typography} from '@mui/material'
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -37,14 +37,18 @@ function a11yProps(index: number) {
     };
 }
 
-export default function PreviewPanel(props: { preview: React.ReactNode, code: React.ReactNode, configName: string | null }) {
-    const [value, setValue] = React.useState(0);
+export default function PreviewPanel(props: { preview: React.ReactNode, code: React.ReactNode, configName: string | null, runUrl?: string }) {
+    const [value, setValue] = React.useState(0)
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
     const message = props.configName ? <Typography padding='10px 4em'>Connected to {props.configName}</Typography> : ''
+    const {runUrl} = props
+    const runLink = props.runUrl ? <Typography padding='10px 4em'>Run app from GitHub:
+        <Link id='runLink' href={runUrl} target='publishedApp'>{runUrl}</Link>
+    </Typography> : ''
     return (
         <Box sx={{width: '100%', height: '100%', borderLeft: '2px solid gray'}}>
             <Stack direction="row" spacing={2} sx={{borderBottom: 1, borderColor: 'divider'}}>
@@ -52,6 +56,7 @@ export default function PreviewPanel(props: { preview: React.ReactNode, code: Re
                     <Tab label="Preview" {...a11yProps(0)} />
                     <Tab label="Code" {...a11yProps(1)} />
                 </Tabs>
+                {runLink}
                 {message}
             </Stack>
             <TabPanel value={value} index={0}>

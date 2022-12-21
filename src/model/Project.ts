@@ -1,10 +1,11 @@
-import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
-import BaseElement, {newIdTransformer, propDef} from './BaseElement'
+import {ActionDef, ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
+import BaseElement, {actionDef, newIdTransformer, propDef} from './BaseElement'
 import Element from './Element'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
 import Web from '@mui/icons-material/Web'
 import {elementOfType} from './elements'
+import FirebaseDeploy from '../editor/tools/FirebaseDeploy'
 
 type Properties = { author?: PropertyValue }
 

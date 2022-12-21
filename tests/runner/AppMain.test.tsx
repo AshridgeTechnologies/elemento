@@ -57,6 +57,16 @@ test('runs app from GitHub', async () => {
     expect(el`PathSections`).toBeEmptyDOMElement()
 })
 
+test('runs app from GitHub with non-standard chars', async () => {
+    // @ts-ignore
+    global.fetch = mockFetchForGitHub()
+
+    renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-'))
+    await actWait(50)
+    expect(el`FirstText`).toHaveTextContent('From https://cdn.jsdelivr.net/gh/mongo-pongo/-beetle-juice-@abc123/ElementoProject.json')
+    expect(el`PathSections`).toBeEmptyDOMElement()
+})
+
 test('runs app from url at end of window location path', async () => {
     renderThe(appMain('/runner/web/some.code/app.js'))
     await actWait(20)

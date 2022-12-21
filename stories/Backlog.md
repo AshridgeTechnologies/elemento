@@ -21,6 +21,16 @@ Stories
 ### Move to GitHub
 - Update GitHub from working copy
 - Get or update working copy from GitHub
+- Run preview from working copy
+- Multiple files in working copy
+- Export working copy to directory - or zip?
+- Import working copy from directory - or zip?
+- Asset files stored in working copy
+- Image component loaded from asset file
+- Handle merge conflicts
+- Functional test covering Get and Update - and others
+- Add deferred desirable features from previous stories
+
 
 ### Priority for customer-facing apps
 - JavaScript functions
@@ -85,6 +95,8 @@ Epics
 Tech debt
 ---------
 
+- Flaky EditorRunner and AppMain tests
+- Refactor Editor menu actions to be flexible map
 - DOM Testing consistency, clarity, simplicity
 - Untangle shared package into studio and runtime
 - Fix all uses of constructor.name

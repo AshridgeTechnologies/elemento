@@ -9,7 +9,11 @@ Aims
 Requirements
 ------------
 
-- Can use File -> Import from GitHub to create a new working copy from a repo
-- Name defaults to repo but can be changed
-- Validate the name does not already exist
-- Action on Project to update from repo - pulls latest changes
+- ✅ Can use File -> Get from GitHub to create a new working copy from a repo
+- ✅ Dialog to enter URL and set name
+- ✅ URL can be either with or without .git at the end so you can just copy page url from GitHub
+- ✅ Name defaults to repo but can be changed
+- ✅ Validate the name does not already exist
+- ✅ Can use File -> Update from GitHub to pull changes
+- ✅ Update from GitHub only enabled if current project is a Git repo
+- ✅ Handle non-conflicting changes sensibly

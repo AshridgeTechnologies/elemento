@@ -4,21 +4,21 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn, OnNewFn} from './Types'
 
-export default function FileMenu({onNew, onOpen, onExport, onPublish, signedIn}: {onNew?: OnNewFn, onOpen?: MenuItemFn, onExport?: MenuItemFn, onPublish?: MenuItemFn, signedIn: boolean}) {
+export default function FileMenu({onNew, onOpen, onExport, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
+    {onNew?: OnNewFn, onOpen?: MenuItemFn, onExport?: MenuItemFn,
+        onSaveToGitHub?: MenuItemFn, onGetFromGitHub?: MenuItemFn, onUpdateFromGitHub?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
 
-    const menuItem = (label: string, action: () => void) => {
+    const menuItem = (label: string, action?: () => void) => {
+        if (!action) {
+            return null
+        }
         const onClick = () => { action(); handleClose() }
         return <MenuItem onClick={onClick}>{label}</MenuItem>
     }
-
-    const signedInMenuItem = (label: string, action: () => void) => signedIn ?
-        menuItem(label, action) :
-        <MenuItem disabled>{`${label} - please Login` }</MenuItem>
-
     return (
         <div>
             <Button
@@ -40,10 +40,12 @@ export default function FileMenu({onNew, onOpen, onExport, onPublish, signedIn}:
                     'aria-labelledby': 'fileButton',
                 }}
             >
-                {onNew ? menuItem('New', onNew): null}
-                {onOpen ? menuItem('Open', onOpen): null}
-                {onExport ? menuItem('Export', onExport): null}
-                {onPublish ? signedInMenuItem('Publish', onPublish): null}
+                {menuItem('New', onNew)}
+                {menuItem('Open', onOpen)}
+                {menuItem('Export', onExport)}
+                {menuItem('Get from GitHub', onGetFromGitHub)}
+                {menuItem('Update from GitHub', onUpdateFromGitHub)}
+                {menuItem('Save to GitHub', onSaveToGitHub)}
             </Menu>
         </div>
     )

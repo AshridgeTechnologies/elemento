@@ -5,7 +5,9 @@ type VoidFn = () => void
 export type OnOpenFn = VoidFn
 export type OnExportFn = VoidFn
 export type OnNewFn = VoidFn
-export type OnPublishFn = (args: {name: string, code: string}) => void
+export type OnSaveToGitHubFn = VoidFn
+export type OnGetFromGitHubFn = VoidFn
+export type OnUpdateFromGitHubFn = VoidFn
 export type OnChangeFn = (id: ElementId, propertyName: string, value: any) => void
 export type OnInsertFn = (elementType: ElementType) => void
 export type OnInsertWithSelectedFn = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => ElementId

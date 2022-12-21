@@ -66,8 +66,8 @@ Versioning possibilities
 Stories
 -------
 
-- Local working copy stored in IDB
-- Run from GitHub and CDN
+- ✅ Local working copy stored in IDB
+- ✅ Run from GitHub and CDN
 - Update GitHub from working copy
 - Get or update working copy from GitHub
 - Run preview from working copy

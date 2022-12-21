@@ -1,14 +1,6 @@
 import Project from '../model/Project'
-import Element from '../model/Element'
-import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {editorEmptyProject, editorInitialProject} from '../util/initialProjects'
-import {AppElementAction} from './Types'
-import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
-import {currentUser} from '../shared/authentication'
-import {uploadTextToStorage} from '../shared/storage'
 import {elementToJSON} from '../util/helpers'
-import {last} from 'ramda'
 import {ProjectHolder} from './ProjectHandler'
 
 declare global {

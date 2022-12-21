@@ -12,8 +12,7 @@ import {
     OnMoveFn,
     OnNewFn,
     OnOpenFn,
-    OnPublishFn,
-    OnExportFn
+    OnExportFn, OnSaveToGitHubFn, OnGetFromGitHubFn, OnUpdateFromGitHubFn
 } from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
@@ -58,9 +57,14 @@ export default function Editor({
     onNew,
     onOpen,
     onExport,
-    onPublish
+    onSaveToGitHub,
+    onGetFromGitHub,
+    onUpdateFromGitHub,
+    runUrl
 }: { project: Project, projectStoreName?: string, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
-                                    onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn, onPublish?: OnPublishFn }) {
+                                    onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn,
+                                    onSaveToGitHub: OnSaveToGitHubFn, onGetFromGitHub: OnGetFromGitHubFn, onUpdateFromGitHub?: OnUpdateFromGitHubFn,
+                                    runUrl?: string}) {
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
@@ -175,17 +179,9 @@ export default function Editor({
     highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
 
     const signedIn = useSignedInState()
-
-    const onPublishMenu = () => {
-        if (onPublish) {
-            const name = app.name
-            const code = generate(app, project).code
-            onPublish({name, code})
-        }
-    }
-
     const EditorMenuBar = () => <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport} onPublish={onPublishMenu} signedIn={signedIn}/>
+        <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport}
+                  onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub} onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
         <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
@@ -248,7 +244,7 @@ export default function Editor({
                                      fontFamily: 'Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New'
                                  }}>{appCode}
                                     </pre>}
-                    configName={firebaseConfigName}/>
+                    configName={firebaseConfigName} runUrl={runUrl}/>
                 </Grid>
             </Grid>
         </Box>
