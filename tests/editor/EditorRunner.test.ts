@@ -11,7 +11,12 @@ import {actWait} from '../testutil/rtlHelpers'
 import {fireEvent} from '@testing-library/react'
 import EditorRunner from '../../src/editor/EditorRunner'
 import {treeExpandControlSelector, treeItemSelector} from './Selectors'
-import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
+import {
+    stopSuppressingRcTreeJSDomError,
+    suppressRcTreeJSDomError,
+    treeItemLabels,
+    waitUntil
+} from '../testutil/testHelpers'
 import {act, render, screen} from '@testing-library/react/pure'
 import {LocalProjectStoreIDB} from '../../src/editor/LocalProjectStore'
 
@@ -184,7 +189,6 @@ test('creates new project and updates it and auto-saves', async () => {
     expect(getProject().elements[0].pages[0].name).toBe('Page One')
     expect((nameInput).value).toBe('Page One')
 
-    await actWait(3000)  // allow for debounce time on auto-save
-    const updatedProject = await store.getProject('The New Project') as any
-    expect(updatedProject.project.elements[0].pages[0].name).toBe('Page One')
+    const newPageName = async () => ((await store.getProject('The New Project')) as any).project.elements[0].pages[0].name
+    await waitUntil(async () => await newPageName() === 'Page One')
 })
