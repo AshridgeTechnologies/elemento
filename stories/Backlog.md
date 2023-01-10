@@ -19,8 +19,6 @@ Stories
 -------
 
 ### Move to GitHub
-- Update GitHub from working copy
-- Get or update working copy from GitHub
 - Run preview from working copy
 - Multiple files in working copy
 - Export working copy to directory - or zip?
@@ -169,6 +167,8 @@ Done
 - Upgrade Parcel - babel _typeof error in prod build after 2.3.2
 - Local working copy stored in IDB
 - Run from GitHub and CDN
+- Update GitHub from working copy
+- Get or update working copy from GitHub
 
 Bugs fixed
 ----------
