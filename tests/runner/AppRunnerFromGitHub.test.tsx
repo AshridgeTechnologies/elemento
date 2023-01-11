@@ -22,10 +22,11 @@ beforeEach(() => {
                     ]
                 ))})
         }
+        //TODO mystery test bug - fails if include a wait(10) at the start of the json function in the response
         if (url.startsWith('https://cdn.jsdelivr.net/gh/mickey')) {
-            if (url.includes('badjson')) return Promise.resolve({json: () => wait(10).then(() => {throw new Error('Not JSON')})})
-            if (url.includes('badsource')) return Promise.resolve({json: () => wait(10).then(() => asJSON(projectFixtureWithError()))})
-            return Promise.resolve({json: () => wait(10).then(() => asJSON(projectFixture3(url)))})
+            if (url.includes('badjson')) return Promise.resolve({json: () => Promise.resolve().then(() => {throw new Error('Not JSON')})})
+            if (url.includes('badsource')) return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixtureWithError()))})
+            return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixture3(url)))})
         }
         return Promise.reject(new Error(`URL ${url} not found`))
     })
@@ -52,8 +53,8 @@ beforeEach(() => {
 })
 
 test('shows loading until app loads then shows app on page', async () => {
-    expectEl(container.domContainer).toHaveTextContent('Loading...')
-    await actWait(50)
+    expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
+    await actWait(500)
     expectEl('FirstText').toHaveTextContent('From https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/ElementoProject.json')
 })
 

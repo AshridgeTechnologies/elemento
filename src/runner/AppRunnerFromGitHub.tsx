@@ -7,6 +7,7 @@ import {generate} from '../generator/Generator'
 import AppLoadError from './AppLoadError'
 import {isEmpty} from 'ramda'
 import {loadJSON} from '../model/loadJSON'
+import AppRunnerFromSource from './AppRunnerFromSource'
 
 type Properties = {username: string, repo: string, appContext: AppContext}
 
@@ -36,27 +37,18 @@ const getAppSource = (url: string): Promise<Project> => {
 }
 
 export default function AppRunnerFromGitHub({username, repo, appContext}: Properties) {
-    const [appCode, setAppCode] = useState<string | null>(null)
-    const [appFetched, setAppFetched] = useState<string | null>(null)
-    const [error, setError] = useState<Error | null>(null)
+    const [usernameRepoFetched, setUsernameRepoFetched] = useState<string | null>(null)
+    const [appUrl, setAppUrl] = useState<string | null>(null)
 
-    const appToFetch = username + '/' + repo
-    if ( appFetched !== appToFetch) {
+    const usernameRepo = username + '/' + repo
+    if ( usernameRepoFetched !== usernameRepo) {
         getLatestCommitId(username, repo)
-            .then( commitId => {
-                const appUrlToFetch = `${CDN_HOST}/gh/${username}/${repo}@${commitId}/${PROJECT_FILE_NAME}`
-                return fetch(appUrlToFetch)
-                    .then(resp => resp.json())
-                    .then(json => {
-                        const project = loadJSON(json) as Project
-                        setAppCode(generateAppCode(project))
-                    })
-                    .catch(error => setError(error))
-            })
-        setAppFetched(appToFetch)
+            .then( commitId => setAppUrl(`${CDN_HOST}/gh/${username}/${repo}@${commitId}`))
+        setUsernameRepoFetched(usernameRepo)
     }
 
-    if (error !== null) return <AppLoadError appUrl={appToFetch} error={error}/>
-    if (appCode === null) return <p>Loading...</p>
-    return<AppRunnerFromCode appCode={appCode} appContext={appContext}/>
+    if (appUrl === null) {
+        return <p>Finding latest version...</p>
+    }
+    return <AppRunnerFromSource url={appUrl} appContext={appContext}/>
 }
