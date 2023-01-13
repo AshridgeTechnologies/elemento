@@ -41,7 +41,7 @@ function mockFetchForGitHub() {
             return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})
         }
         if (url.startsWith('https://cdn.jsdelivr.net/gh/')) {
-            return Promise.resolve({json: () => wait(10).then(() => asJSON(projectFixture3(url)))})
+            return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixture3(url)))})
         }
         return Promise.reject(new Error(`URL ${url} not found`))
     })
