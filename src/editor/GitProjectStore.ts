@@ -121,6 +121,19 @@ export default class GitProjectStore {
         })
     }
 
+    async deleteFile(localName: string, filepath: string) {
+        const {fs} = this
+        const dir = `${this.workingDirRoot}/${localName}`
+        await git.remove({ fs, dir, filepath })
+    }
+
+    async rename(localName: string, oldFilepath: string, newFilepath: string) {
+        const {fs} = this
+        const dir = `${this.workingDirRoot}/${localName}`
+        await git.add({ fs, dir, filepath: newFilepath })
+        await git.remove({ fs, dir, filepath: oldFilepath })
+    }
+
     // async status(localName: string) {
     //     const {fs, http} = this
     //     const dir = `${this.workingDirRoot}/${localName}`
@@ -130,4 +143,5 @@ export default class GitProjectStore {
     //         return [file, status].join(': ')
     //     }))
     // }
+
 }

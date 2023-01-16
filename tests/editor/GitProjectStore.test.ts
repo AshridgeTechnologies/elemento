@@ -13,6 +13,7 @@ jest.setTimeout(25000)
 
 const {username, repo} = JSON.parse(fs.readFileSync('./private/githubTestRepo.json', 'utf8'))
 const accessToken = fs.readFileSync('./private/githubTestRepoAccessToken.txt', 'utf8')
+const waitForGitHub = (fn: () => Promise<boolean>) => waitUntil( fn, 2000, 15000 )
 
 let localName: string, tempDir: string, localDirPath: string, repoToCreate: string | null
 beforeEach( () => {
@@ -80,7 +81,47 @@ test('updates repo in GitHub', async () => {
     const commitResults = await git.log({fs, dir: localDirPath})
     expect(commitResults[0].commit.message).toBe(message + '\n')
     const updatedFileContent = () => fetch(`https://raw.githubusercontent.com/${username}/${repo}/main/${currentTimeFile}`).then(resp => resp.text())
-    await waitUntil( async () => await updatedFileContent() === currentTime, 2000, 10000 )
+    await waitUntil( async () => await updatedFileContent() === currentTime, 2000, 12000 )
+})
+
+test('adds and deletes files in repo in GitHub', async () => {
+    const store = new GitProjectStore(fs, http, username, accessToken, tempDir)
+    const url = `https://github.com/${username}/${repo}`
+    await store.clone(url, localName)
+
+    const newFile = `NewFile-${new Date().toISOString()}.txt`
+    fs.writeFileSync(`${tempDir}/${localName}/${newFile}`, 'New stuff')
+    await store.commitAndPush(localName, 'Add new stuff')
+
+    const fileStatus = () => fetch(`https://github.com/${username}/${repo}/blob/main/${newFile}`).then(resp => resp.status)
+    await waitForGitHub( async () => await fileStatus() === 200 )
+
+    fs.unlinkSync(`${tempDir}/${localName}/${newFile}`)
+    await store.deleteFile(localName, newFile)
+    await store.commitAndPush(localName, 'Delete new stuff')
+
+    await waitForGitHub( async () => await fileStatus() === 404 )
+})
+
+test('renames files in repo in GitHub', async () => {
+    const store = new GitProjectStore(fs, http, username, accessToken, tempDir)
+    const url = `https://github.com/${username}/${repo}`
+    await store.clone(url, localName)
+
+    const newFile = `NewFile-${new Date().toISOString()}.txt`
+    const renamedFile = newFile.replace(/NewFile/, 'RenamedFile')
+    fs.writeFileSync(`${tempDir}/${localName}/${newFile}`, 'New stuff')
+    await store.commitAndPush(localName, 'Add new stuff')
+
+    const fileStatus = (file: string) => fetch(`https://github.com/${username}/${repo}/blob/main/${file}`).then(resp => resp.status)
+    await waitForGitHub( async () => await fileStatus(newFile) === 200 )
+
+    fs.renameSync(`${tempDir}/${localName}/${newFile}`, `${tempDir}/${localName}/${renamedFile}`)
+    await store.rename(localName, newFile, renamedFile)
+    await store.commitAndPush(localName, 'Rename new stuff')
+
+    await waitForGitHub( async () => await fileStatus(newFile) === 404 )
+    await waitForGitHub( async () => await fileStatus(renamedFile) === 200 )
 })
 
 test('detects if dir is a git repo and origin remote returns null if not', async () => {
@@ -164,9 +205,6 @@ test('pulls updates to a cloned git repo and merges non-conflicting changes', as
 })
 
 test('creates GitHub repo and pushes and can pull', async () => {
-    const tempDir = os.tmpdir()
-    const localName = 'MyDogsLife-' + Date.now()
-    const localDirPath = `${tempDir}/${localName}`
     const now = Date.now()
     repoToCreate = 'test ' + now
     await fs.promises.mkdir(localDirPath)
@@ -182,6 +220,6 @@ test('creates GitHub repo and pushes and can pull', async () => {
     await wait(1000)
     await store.commitAndPush(localName)
     const updatedFileContent = () => fetch(`https://raw.githubusercontent.com/${username}/${actualName}/main/${currentTimeFile}`).then( resp => resp.text())
-    await waitUntil( async () => await updatedFileContent() === currentTime)
+    await waitForGitHub( async () => await updatedFileContent() === currentTime)
     await store.pull(localName)
 })

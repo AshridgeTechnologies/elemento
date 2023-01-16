@@ -1,13 +1,17 @@
-import {ActionDef, ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
-import BaseElement, {actionDef, newIdTransformer, propDef} from './BaseElement'
+import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
+import BaseElement, {newIdTransformer, propDef} from './BaseElement'
 import Element from './Element'
+import File from './File'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
 import Web from '@mui/icons-material/Web'
 import {elementOfType} from './elements'
-import FirebaseDeploy from '../editor/tools/FirebaseDeploy'
+import FileFolder from './FileFolder'
+import {AppElementAction, ConfirmAction, InsertAction} from '../editor/Types'
 
 type Properties = { author?: PropertyValue }
+
+export const FILES_ID = '_FILES'
 
 export default class Project extends BaseElement<Properties> implements Element {
 
@@ -26,6 +30,23 @@ export default class Project extends BaseElement<Properties> implements Element 
         return ''
     }
 
+    actionsAvailable(targetItemId: ElementId) {
+        const element = this.findElement(targetItemId)!
+        const standardActionsAvailable = [
+            new InsertAction('before'),
+            new InsertAction('after'),
+            new InsertAction('inside'),
+            new ConfirmAction('delete'),
+            'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'] as AppElementAction[]
+        const fileFolderActions = ['upload'] as AppElementAction[]
+        const fileActions = ['delete'] as AppElementAction[]
+        switch(element.kind) {
+            case 'FileFolder': return fileFolderActions
+            case 'File': return fileActions
+            default: return standardActionsAvailable
+        }
+    }
+
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
         if (insertPosition === 'inside') {
             return Boolean(this.findElement(targetItemId)?.canContain(elementType))
@@ -33,10 +54,8 @@ export default class Project extends BaseElement<Properties> implements Element 
         return Boolean(this.findParent(targetItemId)?.canContain(elementType))
     }
 
-    insertNew(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): [Project, Element] {
-        const newIdSeq = this.findMaxId(elementType) + 1
-        const newElement = createElement(elementType, newIdSeq)
-
+    insertNew(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType, properties: object): [Project, Element] {
+        const newElement = this.newElement(elementType, properties)
         return [this.doInsert(insertPosition, targetItemId, [newElement]), newElement]
     }
 
@@ -58,5 +77,25 @@ export default class Project extends BaseElement<Properties> implements Element 
     canContain(elementType: ElementType) {
         const parentType = elementOfType(elementType).parentType
         return parentType === this.kind
+    }
+
+    withFiles(fileNames: string[] = []) {
+        let fileIdSeq = this.findMaxId('File') + 1
+        const newId = () => `file_${fileIdSeq++}`
+
+        const files = fileNames.map( name => new File(newId(), name, {}))
+        const fileFolder = new FileFolder(FILES_ID, 'Files', {}, files)
+        const elementsWithFiles = [...this.elementArray(), fileFolder]
+        return new Project(this.id, this.name, this.properties, elementsWithFiles)
+    }
+
+    withoutFiles() {
+        const elementsExcludingFiles = this.elementArray().filter( el => el.id !== FILES_ID)
+        return new Project(this.id, this.name, this.properties, elementsExcludingFiles)
+    }
+
+    private newElement(elementType: ElementType, properties: object) {
+        const newIdSeq = this.findMaxId(elementType) + 1
+        return createElement(elementType, newIdSeq, properties)
     }
 }

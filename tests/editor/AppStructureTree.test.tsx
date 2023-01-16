@@ -11,6 +11,7 @@ import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabel
 import {InsertPosition} from '../../src/model/Types'
 import {startCase} from 'lodash'
 import {actWait} from '../testutil/rtlHelpers'
+import {AppElementAction, ConfirmAction, InsertAction} from '../../src/editor/Types'
 
 let container: any, unmount: any
 
@@ -31,8 +32,17 @@ const selectedItemLabel = () => {
     return [...treeNodesSelected.values()].map( (it: any) => it.textContent)[0]
 }
 
-const noInsert = () => 'x'
 const noOp = jest.fn()
+
+const standardActionsAvailable = () => [
+    new InsertAction('before'),
+    new InsertAction('after'),
+    new InsertAction('inside'),
+    new ConfirmAction('delete'),
+    'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'] as AppElementAction[]
+const fileActionsAvailable = () => ['upload'] as AppElementAction[]
+
+const defaultFunctions = {onAction: noOp, insertMenuItemFn: noOp, onInsert: noOp, onMove: noOp, actionsAvailableFn: standardActionsAvailable}
 
 const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
     new ModelTreeItem('app1', 'App One', 'App', [
@@ -57,6 +67,10 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
         new ModelTreeItem('memoryDataStore_2', 'The Data Store', 'MemoryDataStore'),
         new ModelTreeItem('fileDataStore_2', 'The File Data Store', 'FileDataStore'),
         new ModelTreeItem('appBar1', 'The App Bar', 'AppBar')
+    ]),
+    new ModelTreeItem('_FILES', 'Files', 'FileFolder',[
+        new ModelTreeItem('file_1', 'Duck.jpg', 'File'),
+        new ModelTreeItem('file_2', 'Rules.pdf', 'File'),
     ])
 ])
 
@@ -129,18 +143,18 @@ describe('ModelTreeItem', () => {
 })
 
 test("renders tree with all types of model elements",  async () => {
-    ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>))
+    ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>))
     await clickExpandControl(0, 1)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon', 'FolderOutlinedIcon', 'InsertDriveFileOutlinedIcon', 'InsertDriveFileOutlinedIcon',])
 
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'MenuIcon', 'MenuOpenIcon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'FunctionsIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
+    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'MenuIcon', 'MenuOpenIcon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'FunctionsIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon', 'FolderOutlinedIcon', 'InsertDriveFileOutlinedIcon', 'InsertDriveFileOutlinedIcon'])
 })
 
 test("can expand and collapse branches and show",  async () => {
-    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>)))
 
     await clickExpandControl(0, 1, 2)
     expect(itemLabels()).toContain('First Text')
@@ -150,7 +164,7 @@ test("can expand and collapse branches and show",  async () => {
 })
 
 test("always shows Project and App expanded",  async () => {
-    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait( () => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>)))
 
     expect(itemLabels()).toContain('Main Page')
 
@@ -164,7 +178,7 @@ test("always shows Project and App expanded",  async () => {
 test('notifies replacement selected item id in array', async () => {
     const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
     expect(storeSelectedIds).toHaveBeenCalledWith(['textInput1_2'])
@@ -173,7 +187,7 @@ test('notifies replacement selected item id in array', async () => {
 test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array with %s', async (keyName) => {
     const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {[keyName]: true}))
     expect(storeSelectedIds).toHaveBeenLastCalledWith(['page_1', 'textInput1_2'])
@@ -182,7 +196,7 @@ test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array
 test('unselects all items if click already selected item', async () => {
     const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
     expect(storeSelectedIds).toHaveBeenLastCalledWith([])
@@ -191,20 +205,20 @@ test('unselects all items if click already selected item', async () => {
 test('unselects already selected item id in array with ctrl key', async () => {
     const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {ctrlKey: true}))
     expect(storeSelectedIds).toHaveBeenLastCalledWith(['page_1'])
 })
 
 test('shows selected item highlighted', async () => {
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['project_1']} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['project_1']} onSelect={noOp} {...defaultFunctions}/>)))
     expect(itemLabels()).toContain('Project One')
     expect(selectedItemLabel()).toBe('Project One')
 })
 
 test('expands to show selected item highlighted', async () => {
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={jest.fn()} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={noOp} {...defaultFunctions}/>)))
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
 })
@@ -213,7 +227,7 @@ test('selects collapsed item if it contained the selected item', async () => {
     const onSelect = jest.fn()
     await actWait(() => {
         return ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']}
-                                                       onSelect={onSelect} onAction={jest.fn()} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>))
+                                                       onSelect={onSelect} {...defaultFunctions}/>))
     })
     expect(itemLabels()).toContain('First Text')
     expect(selectedItemLabel()).toBe('The Text Input')
@@ -225,7 +239,7 @@ test.each(['before', 'after', 'inside'])('notifies insert %s with position, item
     const onInsert = jest.fn()
     const itemsFn = jest.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={jest.fn()} onInsert={onInsert} insertMenuItemFn={itemsFn} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     await actWait(() => fireEvent.click(screen.getByText(`Insert ${position}`)))
@@ -240,9 +254,8 @@ test('only shows insert menu item if there are items to insert in that position'
     const onInsert = jest.fn()
     const itemsFn = jest.fn().mockImplementation( (position: InsertPosition) => position === 'after' ? [] : ['Text'])
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()}
-                                                                         onAction={jest.fn()} onInsert={onInsert}
-                                                                         insertMenuItemFn={itemsFn} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
+                                                                         insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     expect(screen.queryByText(`Insert before`)).not.toBeNull()
@@ -250,10 +263,27 @@ test('only shows insert menu item if there are items to insert in that position'
     expect(screen.queryByText(`Insert inside`)).not.toBeNull()
 })
 
+test('notifies insert file', async () => {
+    const onInsert = jest.fn()
+    const itemsFn = jest.fn().mockReturnValue(['File'])
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
+                                                                         insertMenuItemFn={itemsFn}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
+    await actWait(() => fireEvent.click(screen.getByText(`Insert inside`)))
+    expect(onInsert).not.toHaveBeenCalled()
+
+    await actWait(() => fireEvent.click(screen.getByText('File')))
+    expect(onInsert).toHaveBeenCalledWith('inside', '_FILES', 'File')
+    expect(screen.queryByText(`Add file`)).toBeNull()
+})
+
 test('notifies copy with clicked item id if not selected', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']}
+                                                                         {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -266,7 +296,8 @@ test('notifies copy with clicked item id if not selected', async () => {
 test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item ids', async (action) => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'page_2']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'page_2']}
+                                                                         {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -279,7 +310,7 @@ test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['paste
         ('notifies %s with id of clicked item', async (action, actionLabel) => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -292,7 +323,7 @@ test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['paste
 test('notifies delete with clicked item id', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -309,7 +340,7 @@ test('notifies delete with clicked item id', async () => {
 test('notifies delete with all selected item ids if one is clicked', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}  selectedItemIds={['textInput1_2', 'numberInput1_2']} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}  selectedItemIds={['textInput1_2', 'numberInput1_2']} {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -328,7 +359,7 @@ test('notifies delete with all selected item ids if one is clicked', async () =>
 test('abandons delete if do not confirm', async () => {
     const onAction = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} onAction={onAction} onInsert={noInsert} insertMenuItemFn={noOp} onMove={noOp}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
     await actWait(() => fireEvent.click(screen.getByText('Main Page')))
 
@@ -341,6 +372,21 @@ test('abandons delete if do not confirm', async () => {
     expect(onAction).not.toHaveBeenCalled()
     expect(screen.queryByText('Delete')).toBeNull()
 })
+
+test('notifies upload for files folder with clicked item id if not selected', async () => {
+    const onAction = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']}
+                                                                         {...defaultFunctions} actionsAvailableFn={fileActionsAvailable} onAction={onAction} />)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
+    expect(screen.queryByText('Insert inside')).toBeNull()
+    await actWait(() => fireEvent.click(screen.getByText('Upload')))
+    expect(onAction).toHaveBeenCalledWith({action: 'upload', ids: ['_FILES'], itemNames: ['Files']})
+})
+
 
 
 

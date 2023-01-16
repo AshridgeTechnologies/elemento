@@ -9,6 +9,9 @@ import {loadJSON} from '../../src/model/loadJSON'
 import Project from '../../src/model/Project'
 import Layout from '../../src/model/Layout'
 import FirebasePublish from '../../src/model/FirebasePublish'
+import FileFolder from '../../src/model/FileFolder'
+import File from '../../src/model/File'
+import {ConfirmAction, InsertAction} from '../../src/editor/Types'
 
 test('Project has correct properties', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
@@ -201,7 +204,7 @@ describe('Insert new element', () => {
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', ()=> {
 
-        const [updatedProject, newElement] = project.insertNew('before', text1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('before', text1.id, 'Text', {})
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement!.id).toBe('text_8')
@@ -212,7 +215,7 @@ describe('Insert new element', () => {
 
     test('creates an updated object on insert element in a page and preserves unchanged objects', ()=> {
 
-        const [updatedProject, newElement] = project.insertNew('after', text1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('after', text1.id, 'Text', {})
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
         expect(newElement!.id).toBe('text_8')
@@ -222,7 +225,7 @@ describe('Insert new element', () => {
     })
 
     test('creates an updated object on insert element inside a page and preserves unchanged objects', ()=> {
-        const [updatedProject, newElement] = project.insertNew('inside', page1.id, 'Text')
+        const [updatedProject, newElement] = project.insertNew('inside', page1.id, 'Text', {})
         expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![2])
         expect(newElement!.id).toBe('text_8')
@@ -233,7 +236,7 @@ describe('Insert new element', () => {
     })
 
     test('creates an updated object on insert page and preserves unchanged objects', () => {
-        const [updatedProject, newElement] = project.insertNew('after', page1.id, 'Page')
+        const [updatedProject, newElement] = project.insertNew('after', page1.id, 'Page', {})
         expect((updatedProject.elements![0] as App).pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[1])
         expect(newElement!.id).toBe('page_3')
@@ -243,7 +246,7 @@ describe('Insert new element', () => {
     })
 
     test('exception on illegal insert page inside page', () => {
-        expect( ()=> project.insertNew('inside', page1.id, 'App')).toThrow(/Cannot insert elements of types App inside Page/)
+        expect( ()=> project.insertNew('inside', page1.id, 'App', {})).toThrow(/Cannot insert elements of types App inside Page/)
     })
 })
 
@@ -391,7 +394,7 @@ test('finds element types that can insert for a position and target element', ()
 
 })
 
-test('converts to JSON', ()=> {
+test('gets actions available', () => {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
@@ -400,9 +403,51 @@ test('converts to JSON', ()=> {
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'Project 1', {}, [app, app2])
+    const file1 = new File('f1', 'Image1.jpg', {})
+    const files = new FileFolder('_FILES', 'Files', {}, [file1])
+    const project = new Project('pr1', 'Project 1', {}, [app, app2, files])
 
-    expect(asJSON(project)).toStrictEqual({
+    const actions = project.actionsAvailable('t1')
+    expect(actions).toStrictEqual([
+        new InsertAction('before'),
+        new InsertAction('after'),
+        new InsertAction('inside'),
+        new ConfirmAction('delete'),
+        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'])
+
+    expect( project.actionsAvailable('_FILES')).toStrictEqual(['upload'])
+    expect( project.actionsAvailable('f1')).toStrictEqual(['delete'])
+})
+
+test('adds Files element', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const page1 = new Page('page_1', 'Page 1', {}, [text1])
+    const text3 = new Text('text_7', 'Text 3', {content: ex`"Some text 3"`})
+    const page2 = new Page('page_2', 'Page 2', {}, [text3])
+    const app = new App('app', 'App 1', {}, [page1])
+    const app2 = new App('a2', 'App 2', {}, [page2])
+    const bareProject = new Project('pr1', 'proj1', {}, [app, app2])
+
+    const project = bareProject.withFiles(['Image 1.jpg', 'Form 2.pdf'])
+    expect(project.elementArray()[2]).toStrictEqual(new FileFolder('_FILES', 'Files', {}, [
+        new File('file_1', 'Image 1.jpg', {}),
+        new File('file_2', 'Form 2.pdf', {}),
+    ]))
+})
+
+test('converts to JSON, excludes Files', ()=> {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
+
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
+    const app2 = new App('a2', 'App 2', {}, [page2])
+    const files = new FileFolder('_FILES', 'Files', {})
+    const project = new Project('pr1', 'Project 1', {}, [app, app2, files])
+
+    expect(asJSON(project.withoutFiles())).toStrictEqual({
         kind: 'Project',
         id: 'pr1',
         name: 'Project 1',

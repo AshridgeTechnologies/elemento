@@ -85,9 +85,11 @@ export default function Editor({
         return null
     }
 
-    function insertMenuItems(insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] {
-        return allElementTypes.filter( type => project.canInsert(insertPosition, targetItemId, type))
+    const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {
+        return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
     }
+
+    const actionsAvailable = (targetItemId: ElementId): AppElementAction[] => project.actionsAvailable(targetItemId)
 
     const onMenuInsert = (elementType: ElementType) => {
         const newElementId = onInsert('after', firstSelectedItemId, elementType)
@@ -101,8 +103,11 @@ export default function Editor({
 
     const onHelp = () => setHelpVisible(!helpVisible)
 
-    const onTreeAction = ({action, ids}: { action: AppElementAction, ids: (string | number)[] }) => {
-        onAction(ids.map( id => id.toString()), action)
+    const onTreeAction = async ({action, ids}: { action: AppElementAction, ids: (string | number)[] }) => {
+        const newSelectedItemId = await onAction(ids.map(id => id.toString()), action)
+        if (newSelectedItemId) {
+            setSelectedItemIds([newSelectedItemId])
+        }
     }
 
 
@@ -215,7 +220,10 @@ export default function Editor({
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemIds}
-                                        selectedItemIds={selectedItemIds} onAction={onTreeAction} onInsert={onContextMenuInsert} insertMenuItemFn={insertMenuItems}
+                                        selectedItemIds={selectedItemIds}
+                                                      onAction={onTreeAction} onInsert={onContextMenuInsert}
+                                                      insertMenuItemFn={insertMenuItems}
+                                                      actionsAvailableFn={actionsAvailable}
                                         onMove={onMove}/>
                                 </Grid>
                                 <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}}>

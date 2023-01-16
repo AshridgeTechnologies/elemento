@@ -52,3 +52,10 @@ test('creates elements with next sequence number in start case name', ()=> {
     const element = createElement('TextInput', 2)
     expect(element.name).toBe('Text Input 2')
 })
+
+test('creates elements with properties', ()=> {
+    const element = createElement('TextInput', 2, {width: 100, initialValue: 'Wide'})
+    expect(element.name).toBe('Text Input 2')
+    expect((element as TextInput).width).toBe(100)
+    expect((element as TextInput).initialValue).toBe('Wide')
+})

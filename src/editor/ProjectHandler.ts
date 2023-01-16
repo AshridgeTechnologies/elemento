@@ -2,7 +2,7 @@ import Project from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {editorEmptyProject, editorInitialProject} from '../util/initialProjects'
-import {AppElementAction} from './Types'
+import {AppElementAction, AppElementActionName} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
 import {elementToJSON} from '../util/helpers'
@@ -20,7 +20,7 @@ export default class ProjectHandler implements ProjectHolder {
     private project: Project
     public name: string = 'Unnamed project'
 
-    constructor(initialProject = editorInitialProject()) {
+    constructor(initialProject = editorInitialProject().withFiles()) {
         this.project = initialProject
     }
 
@@ -36,8 +36,8 @@ export default class ProjectHandler implements ProjectHolder {
         this.project = this.project.set(elementId, propertyName, value)
     }
 
-    insertNewElement(insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType): ElementId {
-        const [newProject, newElement] = this.project.insertNew(insertPosition, targetElementId, elementType)
+    insertNewElement(insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType, properties: object = {}): ElementId {
+        const [newProject, newElement] = this.project.insertNew(insertPosition, targetElementId, elementType, properties)
         this.project = newProject
         return newElement.id
     }
@@ -52,7 +52,7 @@ export default class ProjectHandler implements ProjectHolder {
         this.project = this.project.move(insertPosition, targetElementId, movedElementIds)
     }
 
-    async elementAction(elementIds: ElementId[], action: AppElementAction) {
+    async elementAction(elementIds: ElementId[], action: AppElementActionName) {
         const deleteElements = () => elementIds.reduce((proj, id) => proj.delete(id), this.project)
 
         const copyElementsToClipboard = async () => {
@@ -88,6 +88,8 @@ export default class ProjectHandler implements ProjectHolder {
                 }
                 case 'delete':
                     return deleteElements()
+                case 'upload':
+                    return this.project
                 default:
                     throw new UnsupportedValueError(action)
             }

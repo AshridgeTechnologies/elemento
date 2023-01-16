@@ -1,6 +1,24 @@
 Design decisions
 ================
 
+Renaming elements
+-----------------
+- Make this a deliberate action, only done when changes complete
+- UI indicates renaming is in progress, acts when leave name field or press Enter
+Reasons:
+- User should know they are doing something with more consequences
+- If elements, especially files, are renamed there is more work to do
+- The work in renaming files will take time and would block if done for every keystroke
+
+Asset files and Project file
+----------------------------
+- Will be added to Project object when it is loaded
+- Will not be stored in JSON of Project object
+Reasons:
+- Do not want to have two persisted representations of files
+- Want to deal with Project as a whole
+- Project will be split into multiple files in the future - this is part of that
+
 Icons and Icon buttons - 4 Aug 22
 ---------------------------------
 Have one general Icon component, render as IconButton if it has an Action, plain Icon if not

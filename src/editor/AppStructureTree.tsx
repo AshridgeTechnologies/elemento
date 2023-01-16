@@ -1,14 +1,15 @@
 import Tree, {TreeNodeProps} from 'rc-tree'
 import React, {createElement, useState} from 'react'
-import {BasicDataNode, DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
+import {DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementOfType} from '../model/elements'
-import {AppElementAction} from './Types'
+import {AppElementAction, ConfirmAction, InsertAction} from './Types'
 import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
+import {startCase} from 'lodash'
 
 export class ModelTreeItem implements DataNode {
     constructor(public id: string,
@@ -58,9 +59,12 @@ type Insertion = {
     id: ElementId
 }
 
-export default function AppStructureTree({treeData, onSelect, selectedItemIds = [], onAction, onInsert, insertMenuItemFn, onMove}: {
+type ActionsAvailableFn = (targetElementId: ElementId) => AppElementAction[]
+export default function AppStructureTree({treeData, onSelect, selectedItemIds = [], onAction, onInsert,
+                                             insertMenuItemFn, actionsAvailableFn, onMove}: {
     treeData: ModelTreeItem, onSelect?: (ids: string[]) => void, selectedItemIds?: string[], onAction: (action: Action) => void,
     insertMenuItemFn: (insertPosition: InsertPosition, targetElementId: ElementId) => ElementType[],
+    actionsAvailableFn: ActionsAvailableFn
     onInsert: (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => void,
     onMove: (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => void,
 }) {
@@ -82,22 +86,12 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         setActionNode({id: nodeId.toString(), name: nodeTitle})
     }
 
-    const confirmAction = (event: React.MouseEvent, action: AppElementAction) => {
-        setConfirmingEl((event as React.MouseEvent<HTMLElement>).currentTarget)
-        setActionToConfirm(actionToPerform(action))
-    }
-
     function actionToPerform(action: AppElementAction) {
         const clickedId = actionNode!.id
         const selectedItemClicked = selectedItemIds.includes(clickedId)
         const actionItemIds = selectedItemClicked ? selectedItemIds : [clickedId]
         const actionItemNames = actionItemIds.map(id => treeData.findItem(id)?.title ?? id)
         return {action, ids: actionItemIds, itemNames: actionItemNames}
-    }
-
-    const immediateAction = (action: AppElementAction) => {
-        onAction(actionToPerform(action))
-        closeMenus()
     }
 
     const showInsertMenu = (event: React.MouseEvent, insertPosition: InsertPosition) => {
@@ -143,22 +137,49 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         onMove(insertPosition, dropNode.key.toString(), dragNodeIds)
     }
 
-    const canDrag = (node: DataNode) => (node as ModelTreeItem).kind !== 'Project'
+    const undraggables = ['Project', 'File', 'FileFolder']
+    const canDrag = (node: DataNode) => !undraggables.includes((node as ModelTreeItem).kind)
 
     const alwaysShownKeys = flatten([treeData.ancestorKeysOf(selectedItemIds[0]), treeData.key, (treeData.children?? []).map( child => child.key )])
+
     const allExpandedKeys = union(expandedKeys, alwaysShownKeys)
     if (allExpandedKeys.length > expandedKeys.length) {
         setExpandedKeys(allExpandedKeys)
     }
-
     const insertMenuItem = (position: InsertPosition) => {
         const hasItemsToInsert = Boolean(insertMenuItemFn(position, actionNode!.id)?.length)
         return hasItemsToInsert ? (
-            <MenuItem onClick={(event: React.MouseEvent) => showInsertMenu(event, position)}>
+            <MenuItem onClick={(event: React.MouseEvent) => showInsertMenu(event, position)} key={'insert_' + position}>
                 <ListItemText sx={{minWidth: 2}}>Insert {position}</ListItemText><ArrowRightIcon/>
             </MenuItem>
         ) : null
     }
+
+    const confirmAction = (event: React.MouseEvent, action: ConfirmAction) => {
+        setConfirmingEl((event as React.MouseEvent<HTMLElement>).currentTarget)
+        setActionToConfirm(actionToPerform(action.name))
+    }
+
+    const immediateAction = (action: AppElementAction) => {
+        onAction(actionToPerform(action))
+        closeMenus()
+    }
+
+    const menuItems = (actions: AppElementAction[]) => {
+        return actions.map( action => {
+            const name = action.toString()
+            const label = startCase(name)
+            if (action instanceof ConfirmAction) {
+                return <MenuItem key={name} onClick={(event: React.MouseEvent) => confirmAction(event, action)} >Delete</MenuItem>
+            }
+            if (action instanceof InsertAction) {
+                return insertMenuItem(action.position)
+            }
+
+            return <MenuItem onClick={() => immediateAction(action)} key={action}>{label}</MenuItem>
+        })
+    }
+
     const contextMenuIfOpen = contextMenuOpen && (
         <Menu
             id="tree-context-menu"
@@ -168,16 +189,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
             anchorOrigin={{vertical: 'top', horizontal: 'right',}}
             transformOrigin={{vertical: 'top', horizontal: 'left',}}
         >
-            {insertMenuItem('before')}
-            {insertMenuItem('after')}
-            {insertMenuItem('inside')}
-            <MenuItem onClick={(event: React.MouseEvent) => confirmAction(event, 'delete')}>Delete</MenuItem>
-            <MenuItem onClick={() => immediateAction('copy')}>Copy</MenuItem>
-            <MenuItem onClick={() => immediateAction('cut')}>Cut</MenuItem>
-            <MenuItem onClick={() => immediateAction('duplicate')}>Duplicate</MenuItem>
-            <MenuItem onClick={() => immediateAction('pasteBefore')}>Paste Before</MenuItem>
-            <MenuItem onClick={() => immediateAction('pasteAfter')}>Paste After</MenuItem>
-            <MenuItem onClick={() => immediateAction('pasteInside')}>Paste Inside</MenuItem>
+            {menuItems(actionsAvailableFn(actionNode!.id))}
         </Menu>
     )
 
@@ -196,7 +208,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
                 horizontal: 'left',
             }}
         >
-            <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action} {actionToConfirm!.itemNames.join(', ')}</MenuItem>
+            <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action + ' ' + actionToConfirm!.itemNames.join(', ')}</MenuItem>
             <MenuItem onClick={closeMenus}>No - go back</MenuItem>
         </Menu>
     )

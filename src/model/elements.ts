@@ -25,6 +25,8 @@ import FirebasePublish from './FirebasePublish'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
+import File from './File'
+import FileFolder from './FileFolder'
 
 export const elementTypes = () => {
     return {
@@ -54,6 +56,8 @@ export const elementTypes = () => {
         FirebasePublish: FirebasePublish,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
+        File: File,
+        FileFolder: FileFolder,
     }
 }
 

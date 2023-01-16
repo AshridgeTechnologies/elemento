@@ -53,6 +53,8 @@ export type ElementType =
     'FirebasePublish' |
     'FirestoreDataStore' |
     'ServerApp' |
-    'ServerAppConnector'
+    'ServerAppConnector' |
+    'File' |
+    'FileFolder'
 
 export type ParentType = ElementType | 'any' | null

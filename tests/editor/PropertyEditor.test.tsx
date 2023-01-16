@@ -18,7 +18,7 @@ import List from '../../src/model/List'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
-import Project from '../../src/model/Project'
+import Project, {FILES_ID} from '../../src/model/Project'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
@@ -28,9 +28,14 @@ import AppBar from '../../src/model/AppBar'
 import FirebasePublish from '../../src/model/FirebasePublish'
 import {ProjectContext} from '../../src/editor/Editor'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
+import FileFolder from '../../src/model/FileFolder'
+import userEvent from '@testing-library/user-event'
+
 
 let container: any
 let changedValue: any
+
+beforeEach( ()=> changedValue = undefined )
 
 const render = (element: React.ReactElement) => ({container} = tlRender(element))
 const onChange = (id: string, propName: string, value: any) => {
@@ -56,22 +61,58 @@ const kindButton = (index: number) => {
     return Array.from(nodes)[index] as HTMLButtonElement
 }
 
+
 test('shows type and id', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(typeField().textContent).toBe('Page')
     expect(nameInputValue()).toBe('Page 1')
-    fireEvent.input(nameInput(), {target: {value: 'Page One'}})
-    expect(changedValue).toBe('Page One')
 })
 
-test('updates name', () => {
+test('updates name on blur', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
+    expect(nameInputValue()).toBe('Page One')
+    expect(changedValue).toBe(undefined)
+    fireEvent.blur(nameInput(), {target: {value: 'Page One'}})
     expect(changedValue).toBe('Page One')
+})
+
+test('updates name on enter', () => {
+    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    fireEvent.input(nameInput(), {target: {value: 'Page One'}})
+    fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
+    expect(changedValue).toBe('Page One')
+})
+
+test('does not update name if enter without typing', () => {
+    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    expect(nameInputValue()).toBe('Page 1')
+    fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
+    expect(changedValue).toBe(undefined)
+})
+
+test('does not update name if new name is the same', () => {
+    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    fireEvent.input(nameInput(), {target: {value: 'Page 1'}})
+    fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
+    expect(changedValue).toBe(undefined)
+})
+
+test('cannot change name of Files element', async () => {
+    const element = new FileFolder(FILES_ID, 'Files', {}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    const user = userEvent.setup()
+    await user.type(nameInput(), 'Files 2')
+    expect(nameInputValue()).toBe('Files')
+    await user.keyboard('[Enter]')
+    expect(changedValue).toBe(undefined)
 })
 
 test('updates other properties', () => {

@@ -99,7 +99,7 @@ test('opens project from list of local projects and updates it and auto-saves', 
 
     await clickExpandControl(0, 1, 2)
     await actWait(100)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page', 'Files'])
 
     // @ts-ignore
     const elementId = getProject().elements[0].pages[0].elements[0].id
@@ -121,6 +121,7 @@ test('opens project from list of local projects and updates it and auto-saves', 
     await act( async () => {
         await user.clear(nameInput)
         await user.type(nameInput, 'Further Text')
+        await user.keyboard('[Enter]')
     })
     // @ts-ignore
     expect(getProject().elements[0].pages[0].elements[1].name).toBe('Further Text')
@@ -140,7 +141,9 @@ test('creates new project and updates it and auto-saves', async () => {
     await user.click(screen.getByText('File'))
     await actWait(100)
     await user.click(screen.getByText('New'))
-    await actWait(500) // transition for New Dialog
+    await actWait(500)
+    await waitUntil( () => screen.queryByLabelText('Project Name') !== null)
+
     const projectNameInput = screen.getByLabelText('Project Name')
     await user.type(projectNameInput, 'Project X')
     await actWait(100)
@@ -162,7 +165,7 @@ test('creates new project and updates it and auto-saves', async () => {
 
     await clickExpandControl(0, 1)
     await actWait()
-    expect(itemLabels()).toStrictEqual(['New Project', 'New App', 'Main Page'])
+    expect(itemLabels()).toStrictEqual(['New Project', 'New App', 'Main Page', 'Files'])
 
     // @ts-ignore
     const elementId = getProject().elements[0].pages[0].id
@@ -184,6 +187,7 @@ test('creates new project and updates it and auto-saves', async () => {
     await act( async () => {
         await user.clear(nameInput)
         await user.type(nameInput, 'Page One')
+        await user.keyboard('[Enter]')
     })
     // @ts-ignore
     expect(getProject().elements[0].pages[0].name).toBe('Page One')

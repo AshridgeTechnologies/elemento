@@ -28,15 +28,6 @@ Requirements
 - Format works on a phone
 - Help page
 
-Bugs
-----
-
-- ✅ If type in middle of word in text box, cursor goes to end
-- ✅ If enter accented characters, inserts extra one and loses char before
-- ✅ Sorting should be case insensitive
-- Not clearing changes when display a different word - but also linked with warning about unsaved changes
-
-
 Desirable
 ---------
 
@@ -71,6 +62,7 @@ Finishing touches
 - Show name of open data file
 
 
+
 Further features
 ----------------
 
@@ -78,16 +70,22 @@ Further features
 - Speech synthesis
 - Speech recognition
 - Random ordering in revision sections
+- Notes on word eg to distinguish meaning
 
 Problems
 --------
 
+- ✅ If type in middle of word in text box, cursor goes to end
+- ✅ If enter accented characters, inserts extra one and loses char before
+- ✅ Sorting should be case insensitive
 - ✅ Dual id/Id
 - ✅ Message and clear after import
 - If change a word, don't save. move to another, the changed data sticks in the field
 - Words list does not update after an import
 - Change of item state when click on phone is slow
 - ✅ Typing in text box is slowing as word list grows - too much rendering?
+- Revision very slow with thousands of entries
+- Not clearing changes when display a different word - but also linked with warning about unsaved changes
 
 Features needed
 ---------------
@@ -121,6 +119,7 @@ Features needed
 - Date entry
 - Get current page
 - Styling/Highlight button
+
 
 Revision conditions
 -------------------

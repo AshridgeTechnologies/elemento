@@ -1,7 +1,7 @@
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
 import Button from '../../src/model/Button'
-import {AppElementAction} from '../../src/editor/Types'
+import {AppElementActionName} from '../../src/editor/Types'
 import {resetSaveFileCallData} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
@@ -67,7 +67,16 @@ test('can create a new element in the project', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'Text')
     expect(handler.current).not.toBe(project)
     expect((handler.current.findElement(newId) as TextInput).id).toBe(newId)
-    expect((handler.current.findElement('page_2')?.elements as any)[2].id).toBe('text_5')
+    expect((handler.current.findElement('page_2')?.elements as any)[2].id).toBe(newId)
+})
+
+test('can create a new element in the project and set name and properties', () => {
+    const newId = handler.insertNewElement('inside', 'page_2', 'Text', {name: 'The Stuff', width: '100%'})
+    expect(handler.current).not.toBe(project)
+    const newElement = handler.current.findElement(newId) as TextInput
+    expect(newElement.id).toBe(newId)
+    expect(newElement.name).toBe('The Stuff')
+    expect(newElement.width).toBe('100%')
 })
 
 test('can insert an element into the project', () => {
@@ -111,7 +120,7 @@ test('can do cut action on the project with multiple ids', async () => {
 test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the project after the first id with single item', async (action) => {
     const elementToPaste = new Button('xyz', 'Big button', {})
     clipboardData = elementToJSON(elementToPaste)
-    await handler.elementAction(['layout_1', 'text_1'], action as AppElementAction)
+    await handler.elementAction(['layout_1', 'text_1'], action as AppElementActionName)
     const pastedElement = handler.current.findElement('button_1')
     expect(pastedElement!.name).toBe('Big button')
 })
@@ -147,7 +156,7 @@ test('illegal action leaves the project unchanged and throws error', async () =>
         clipboardData = elementToJSON(elementToPaste)
         let error: any
         try {
-            await handler.elementAction(['text_3'], 'pasteInside' as AppElementAction)
+            await handler.elementAction(['text_3'], 'pasteInside' as AppElementActionName)
         } catch(e) {
             error = e
         }
@@ -166,7 +175,7 @@ test('unknown action leaves the project unchanged', async () => {
         console.error = jest.fn()
         let error: any
         try {
-            await handler.elementAction(['text_3'], 'doSomething' as AppElementAction)
+            await handler.elementAction(['text_3'], 'doSomething' as AppElementActionName)
         } catch(e) {
             error = e
         }

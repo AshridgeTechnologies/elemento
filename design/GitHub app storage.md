@@ -71,7 +71,7 @@ Stories
 - ✅ Update GitHub from working copy
 - ✅ Get or update working copy from GitHub
 - Run preview from working copy
-- Multiple files in working copy
+- Store working copy as multiple files
 - Export working copy to directory - or zip?
 - Import working copy from directory - or zip?
 - Asset files stored in working copy

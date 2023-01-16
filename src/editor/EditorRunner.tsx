@@ -3,7 +3,7 @@ import React, {ChangeEvent, useEffect, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {AppElementAction} from './Types'
+import {AppElementAction, AppElementActionName} from './Types'
 import {
     Alert,
     AlertColor,
@@ -112,6 +112,53 @@ function NewDialog({onClose, onCreate, existingNames}: { onClose: () => void, on
             <DialogActions>
                 <Button variant='outlined' onClick={() => onCreate(name)} disabled={!canCreate}>Create</Button>
                 <Button variant='outlined' onClick={onClose}>Cancel</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
+function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: string) => void }) {
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const {target} = event
+        const {files} = target
+        const file1 = files?.[0]
+        if (file1) {
+            onUpload (file1).then( onClose )
+        } else {
+            onClose()
+        }
+    }
+
+    const onBlur = (event: ChangeEvent<HTMLInputElement>) => {
+        const {target} = event
+        const {files} = target
+        console.log('blur', files)
+    }
+
+    const onUpload = async (file: File | undefined) => {
+        if (file) {
+            const data = await file.text()
+            onUploaded(file.name, data)
+        }
+    }
+
+    return (
+        <Dialog onClose={onClose} open={true}>
+            <DialogTitle>Upload file <CloseButton onClose={onClose}/></DialogTitle>
+            <DialogContent>
+                <input
+                    style={{ display: 'none' }}
+                    id="uploadFileInput"
+                    type="file"
+                    onChange={onChange}
+                    onBlur={onBlur}
+                />
+            </DialogContent>
+            <DialogActions>
+                <label htmlFor="uploadFileInput">
+                    <Button variant="contained" component="span">Choose File</Button>
+                </label>
+                <Button variant='outlined' onClick={onClose} sx={{ml: 1}}>Cancel</Button>
             </DialogActions>
         </Dialog>
     )
@@ -252,7 +299,7 @@ export default function EditorRunner() {
     const removeDialog = () => setDialog(null)
     const updateProjectAndSave = () => {
         setProject(projectHandler.current)
-        localProjectStore.writeProjectFile(projectHandler.name, projectHandler.current)
+        localProjectStore.writeProjectFile(projectHandler.name, projectHandler.current.withoutFiles())
     }
 
     const updateProjectHandler = (proj: Project, name: string) => {
@@ -271,7 +318,16 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
 
-    const onPropertyChange = (id: ElementId, propertyName: string, value: any)=> {
+    const isFileElement = (id: ElementId) => projectHandler.current.findElement(id)?.kind === 'File'
+
+    const onPropertyChange = async (id: ElementId, propertyName: string, value: any) => {
+        const element = projectHandler.current.findElement(id)!
+        if (element.kind === 'File' && propertyName === 'name') {
+            const projectName = projectHandler.name
+            await localProjectStore.rename(projectName, element.name, value)
+            const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
+            await gitProjectStore.rename(projectName, element.name, value)
+        }
         projectHandler.setProperty(id, propertyName, value)
         updateProjectAndSave()
     }
@@ -287,18 +343,62 @@ export default function EditorRunner() {
         updateProjectAndSave()
     }
 
-    const onAction = (ids: ElementId[], action: AppElementAction) => {
-        projectHandler.elementAction(ids, action).then(updateProjectAndSave).catch( error => {
-            alert(error.message)
+    const onUpload = async (targetElementId: ElementId): Promise<ElementId | null> => {
+        return new Promise(resolve => {
+            const onFileUploaded = async (name: string, data: string) => {
+                await localProjectStore.writeTextFile(projectHandler.name, name, data)
+                const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
+                updateProjectAndSave()
+                removeDialog()
+                resolve(newId)
+            }
+
+            const onClose = () => {
+                removeDialog()
+                resolve(null)
+            }
+
+            setDialog(<UploadDialog onClose={onClose} onUploaded={onFileUploaded}/>)
         })
+    }
+
+    const deleteFilesWhereNecessary = (ids: ElementId[]) => {
+        const fileIds = ids.filter( isFileElement )
+        const projectName = projectHandler.name
+        const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
+
+        return Promise.all(fileIds.map( async id => {
+            const filename = projectHandler.current.findElement(id)?.name
+            if (filename) {
+                await localProjectStore.deleteFile(projectName, filename)
+                await gitProjectStore.deleteFile(projectName, filename)
+            }
+        }))
+    }
+
+    const onAction = async (ids: ElementId[], action: AppElementAction): Promise<ElementId | null | void> => {
+        if (action === 'upload') {
+            return await onUpload(ids[0])
+        }
+        if (action === 'delete') {
+            await deleteFilesWhereNecessary(ids)
+            // do not return - delete from project too
+        }
+
+        try {
+            await projectHandler.elementAction(ids, action.toString() as AppElementActionName)
+            updateProjectAndSave()
+        } catch(error: any) {
+            alert(error.message)
+        }
     }
 
     const onNew = async () => {
         const existingProjectNames = await localProjectStore.getProjectNames()
         const onProjectCreated = async (name: string) => {
             await localProjectStore.createProject(name)
-            updateProjectHandler(editorEmptyProject(), name)
-            await localProjectStore.writeProjectFile(name, projectHandler.current)
+            updateProjectHandler(editorEmptyProject().withFiles(), name)
+            await localProjectStore.writeProjectFile(name, projectHandler.current.withoutFiles())
             removeDialog()
         }
 
@@ -309,7 +409,8 @@ export default function EditorRunner() {
         const names = await localProjectStore.getProjectNames()
         const onProjectSelected = async (name: string) => {
             const projectWorkingCopy = await localProjectStore.getProject(name)
-            updateProjectHandler(projectWorkingCopy.project, name)
+            const project = projectWorkingCopy.projectWithFiles
+            updateProjectHandler(project, name)
             removeDialog()
         }
 
@@ -329,7 +430,7 @@ export default function EditorRunner() {
                 showAlert('Problem getting from GitHub', `Message: ${e.message}`, null, 'error')
             }
             const projectWorkingCopy = await localProjectStore.getProject(projectName)
-            updateProjectHandler(projectWorkingCopy.project, projectName)
+            updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
             removeDialog()
         }
         setDialog(<GetFromGitHubDialog onClose={removeDialog} onGet={onGet} existingNames={existingProjectNames}/>)
@@ -348,7 +449,7 @@ export default function EditorRunner() {
             showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
         }
         const projectWorkingCopy = await localProjectStore.getProject(projectName)
-        updateProjectHandler(projectWorkingCopy.project, projectName)
+        updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
     }
 
     const onExport = async () => {

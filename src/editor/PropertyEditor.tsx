@@ -1,12 +1,35 @@
-import React, {ChangeEvent, useContext} from 'react'
+import React, {ChangeEvent, useContext, useState} from 'react'
 import Element from '../model/Element'
-import {Box, Button, Stack, TextField, Typography} from '@mui/material'
+import {Box, Button, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
 import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
 import {startCase} from 'lodash'
-import Project from '../model/Project'
+import Project, {FILES_ID} from '../model/Project'
 import {ProjectContext} from './Editor'
+
+function NameTextField(props: TextFieldProps) {
+    const [changedValue, setChangedValue] = useState<string | undefined>(undefined)
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setChangedValue(event.target.value)
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            onFinishChange()
+        }
+    }
+    const onFinishChange = () => {
+        if (changedValue !== undefined && changedValue !== props.value) {
+            props.onChange?.({target: {value: changedValue ?? ''}} as any)
+        }
+        setChangedValue(undefined)
+    }
+
+    return <TextField {...props}  value={changedValue ?? props.value}
+                      onChange={onChange}
+                      onBlur={onFinishChange}
+                      onKeyDown={onKeyDown}
+                        helperText={changedValue !== undefined ? 'Renaming - Enter to confirm' : undefined}
+    />
+}
 
 export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
 
@@ -36,7 +59,9 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
     }
 
     const children = propertyFieldsAndActions()
+    const readOnly = element.id === FILES_ID
     if (children) {
+        const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)
         return <Box
             component="form"
             sx={{
@@ -46,9 +71,9 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
             autoComplete="off"
         >
             <Stack direction='row' spacing={2}>
-                <TextField id='name' variant='outlined' size='small' value={element.name}
-                           onChange={ (event: ChangeEvent) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)}
-                           sx={{flexGrow: 0.7 }} InputProps={{sx: {fontSize: 20}}}/>
+                <NameTextField id='name' variant='outlined' size='small' value={element.name}
+                           onChange={ onNameChange }
+                           sx={{flexGrow: 0.7 }} InputProps={{sx: {fontSize: 20}}} inputProps={{readOnly}}/>
                 <TextField id="formulaName" label="Formula Name" variant='filled' size='small' value={element.codeName} inputProps={{readOnly: true}} sx={{flexGrow: 0.3}}/>
             </Stack>
             <Stack direction='row' spacing={2} alignItems='baseline'>

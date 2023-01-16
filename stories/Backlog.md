@@ -19,14 +19,12 @@ Stories
 -------
 
 ### Move to GitHub
-- Run preview from working copy
-- Multiple files in working copy
+- Image component loaded from asset file
 - Export working copy to directory - or zip?
 - Import working copy from directory - or zip?
-- Asset files stored in working copy
-- Image component loaded from asset file
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
+- Multiple files in working copy
 - Add deferred desirable features from previous stories
 
 
@@ -169,6 +167,7 @@ Done
 - Run from GitHub and CDN
 - Update GitHub from working copy
 - Get or update working copy from GitHub
+- Asset files stored in working copy
 
 Bugs fixed
 ----------

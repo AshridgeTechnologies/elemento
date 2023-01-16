@@ -258,6 +258,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'FirebasePublish':
             case 'ServerApp':
             case 'ServerAppConnector':
+            case 'File':
+            case 'FileFolder':
                 return ''
 
             default:

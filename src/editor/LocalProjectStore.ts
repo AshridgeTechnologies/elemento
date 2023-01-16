@@ -1,10 +1,11 @@
 import Project from '../model/Project'
 import FS from '@isomorphic-git/lightning-fs'
 import {loadJSONFromString} from '../model/loadJSON'
-import {PromiseFsClient} from 'isomorphic-git'
 
 interface ProjectWorkingCopy {
     get project(): Project
+    get assetFileNames(): string[]
+    get projectWithFiles(): Project
 }
 
 export interface LocalProjectStore {
@@ -19,8 +20,11 @@ export interface LocalProjectStore {
 
     writeProjectFile(projectName: string, project: Project): Promise<void>
 
-    get fileSystem() : FS
+    deleteFile(projectName: string, path: string): Promise<void>
 
+    rename(projectName: string, oldPath: string, newPath: string): Promise<void>
+
+    get fileSystem() : FS
 }
 
 export const projectFileName = 'ElementoProject.json'
@@ -36,13 +40,24 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
     async getProject(projectName: string): Promise<ProjectWorkingCopy> {
         const projectFileText = await this.readTextFile(projectName, projectFileName)
         const project = loadJSONFromString(projectFileText) as Project
+        const assetFileNames = (await this.getFileNames(projectName)).filter( name => name !== projectFileName && !name.startsWith('.'))
+
         return {
-            project
+            project,
+            assetFileNames,
+            get projectWithFiles() {
+                return project.withFiles(assetFileNames)
+            }
         }
     }
 
     async getProjectNames() {
-        const names = await this.fs.readdir('/')
+        return this.getFileNames(null)
+    }
+
+    async getFileNames(projectName: string | null) {
+        const dirname = projectName ?? ''
+        const names = await this.fs.readdir(`/${dirname}`)
         names.sort()
         return names
     }
@@ -61,6 +76,14 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
 
     writeProjectFile(projectName: string, project: Project) {
         return this.writeTextFile(projectName, projectFileName, JSON.stringify(project, null, 2))
+    }
+
+    deleteFile(projectName: string, path: string) {
+        return this.fs.unlink(`/${projectName}/${path}`)
+    }
+
+    rename(projectName: string, oldPath: string, newPath: string) {
+        return this.fs.rename(`/${projectName}/${oldPath}`, `/${projectName}/${newPath}`)
     }
 
     get fileSystem(): any {

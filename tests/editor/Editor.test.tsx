@@ -13,10 +13,7 @@ import App from '../../src/model/App'
 import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
-import {generate} from '../../src/generator/Generator'
-
-import * as authentication from '../../src/shared/authentication'
-import { actWait } from '../testutil/rtlHelpers'
+import {actWait} from '../testutil/rtlHelpers'
 
 jest.mock('../../src/shared/authentication')
 
@@ -41,13 +38,12 @@ const clickExpandControlFn = (container: any) => async (...indexes: number[]) =>
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
 }
 
+function propertiesPanelName() {
+    return container.querySelector('#name') as HTMLInputElement
+}
+
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
-
-function mockSignedInValue(signedInValue: boolean) {
-    const mock_useSignedInState = authentication.useSignedInState as jest.MockedFunction<any>
-    mock_useSignedInState.mockReturnValue(signedInValue)
-}
 
 afterEach( async () => await act(() => {
     try{
@@ -73,9 +69,7 @@ test('shows Text element selected in tree in property editor', async () => {
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
 
     fireEvent.click(screen.getByText('Second Text'))
-
-    const nameInput = container.querySelector('#name') as HTMLInputElement
-    expect(nameInput.value).toBe('Second Text')
+    expect(propertiesPanelName().value).toBe('Second Text')
 })
 
 test('property kind button state does not leak into other properties', async () => {
@@ -99,12 +93,11 @@ test('shows TextInput element selected in tree in property editor', async () => 
     await actWait(() =>  ({container, unmount} = render(<Editor project={projectFixture2()} {...onFunctions}/>)))
     await clickExpandControl(0, 1, 3)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2', 'Files', 'Image 1.jpg'])
 
     fireEvent.click(screen.getByText('Another Text Input'))
 
-    const nameInput = container.querySelector('#name') as HTMLInputElement
-    expect(nameInput.value).toBe('Another Text Input')
+    expect(propertiesPanelName().value).toBe('Another Text Input')
 
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
     expect(initialValueInput.value).toBe('"Type the text"')
@@ -120,7 +113,6 @@ test('shows errors for properties', async () => {
         ]),
     ]) ])
     await actWait(() =>  ({container, unmount} = render(<Editor project={projectWithErrors} {...onFunctions}/>)))
-    // await actWait(() =>  fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[0]))
     await clickExpandControl(0, 1, 2)
 
     expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input'])
@@ -146,6 +138,22 @@ test('shows allowed items in context insert menu of a page item', async () => {
     await actWait(() => fireEvent.click(screen.getByText('Insert before')))
 
     expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Collection', 'Layout'])
+})
+
+test('notifies upload action from context menu of the files item', async () => {
+
+    // using id of Image 1.jpg to simplify the test
+    const notionalNewFileId = 'file_1'
+    const onAction = jest.fn().mockImplementation(()=> Promise.resolve(notionalNewFileId))
+
+    await actWait(() =>  ({container, unmount} = render(<Editor project={projectFixture2()} {...onFunctions} onAction={onAction}/>)))
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Files', 'Image 1.jpg'])
+
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
+    await actWait(() => fireEvent.click(screen.getByText('Upload')))
+
+    expect(onAction).toHaveBeenCalledWith(['_FILES'], 'upload')
+    expect(propertiesPanelName().value).toBe('Image 1.jpg')
 })
 
 test('shows allowed items in menu bar insert menu', async () => {

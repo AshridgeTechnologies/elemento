@@ -8,6 +8,8 @@ import List from '../../src/model/List'
 import Layout from '../../src/model/Layout'
 import NumberInput from '../../src/model/NumberInput'
 import Text from '../../src/model/Text'
+import File from '../../src/model/File'
+import FileFolder from '../../src/model/FileFolder'
 
 export function projectFixture1() {
 
@@ -45,7 +47,9 @@ export function projectFixture2() {
         page1,
         page2
     ])
-    return new Project('project_1', 'Project One', {}, [app])
+    const file1 = new File('file_1', 'Image 1.jpg', {})
+    const folder = new FileFolder('_FILES', 'Files', {}, [file1])
+    return new Project('project_1', 'Project One', {}, [app, folder])
 }
 
 export function projectFixture3(url: string) {
