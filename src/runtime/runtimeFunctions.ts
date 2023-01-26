@@ -100,3 +100,4 @@ export function asArray(value: any[] | object | any) {
 
 export const _DELETE = '_DELETE'
 export const isClassObject = (obj: any) => isObject(obj) && !isPlainObject(obj)
+export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''

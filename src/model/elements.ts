@@ -9,6 +9,7 @@ import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Button from './Button'
 import Icon from './Icon'
+import Image from './Image'
 import UserLogon from './UserLogon'
 import Menu from './Menu'
 import MenuItem from './MenuItem'
@@ -40,6 +41,7 @@ export const elementTypes = () => {
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
         Button: Button,
+        Image: Image,
         Icon: Icon,
         UserLogon: UserLogon,
         Menu: Menu,

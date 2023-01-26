@@ -15,7 +15,12 @@ export interface LocalProjectStore {
 
     createProject(name: string): Promise<void>
 
+    readFile(projectName: string, fileName: string): Promise<Uint8Array>
+
+    writeFile(projectName: string, fileName: string, fileData: Uint8Array): Promise<void>
+
     readTextFile(projectName: string, path: string): Promise<string>
+
     writeTextFile(projectName: string, path: string, text: string): Promise<void>
 
     writeProjectFile(projectName: string, project: Project): Promise<void>
@@ -24,10 +29,20 @@ export interface LocalProjectStore {
 
     rename(projectName: string, oldPath: string, newPath: string): Promise<void>
 
+    readAssetFile(projectName: string, fileName: string): Promise<Uint8Array>
+
+    writeAssetFile(projectName: string, fileName: string, fileData: Uint8Array): Promise<void>
+
+    deleteAssetFile(projectName: string, path: string): Promise<void>
+
+    renameAsset(projectName: string, oldPath: string, newPath: string): Promise<void>
+
     get fileSystem() : FS
 }
 
 export const projectFileName = 'ElementoProject.json'
+export const ASSET_DIR = 'files'  // also rename in LocalAssetReader
+
 export class LocalProjectStoreIDB implements LocalProjectStore {
     private cbfs: FS
     private readonly fs: FS.PromisifiedFS
@@ -40,7 +55,7 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
     async getProject(projectName: string): Promise<ProjectWorkingCopy> {
         const projectFileText = await this.readTextFile(projectName, projectFileName)
         const project = loadJSONFromString(projectFileText) as Project
-        const assetFileNames = (await this.getFileNames(projectName)).filter( name => name !== projectFileName && !name.startsWith('.'))
+        const assetFileNames = (await this.getFileNames(`${projectName}/${ASSET_DIR}`)).filter( name => !name.startsWith('.'))
 
         return {
             project,
@@ -63,7 +78,7 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
     }
 
     createProject(name: string) {
-        return this.fs.mkdir('/' + name)
+        return this.fs.mkdir(`/${name}`).then( ()=> this.fs.mkdir(`/${name}/${ASSET_DIR}`))
     }
 
     readTextFile(projectName: string, path: string) {
@@ -90,4 +105,27 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
         return this.cbfs
     }
 
+    writeFile(projectName: string, path: string, fileData: Uint8Array) {
+        return this.fs.writeFile(`/${projectName}/${path}`, fileData)
+    }
+
+    readFile(projectName: string, path: string) {
+        return this.fs.readFile(`/${projectName}/${path}`) as Promise<Uint8Array>
+    }
+
+    writeAssetFile(projectName: string, path: string, fileData: Uint8Array) {
+        return this.fs.writeFile(`/${projectName}/${ASSET_DIR}/${path}`, fileData)
+    }
+
+    readAssetFile(projectName: string, path: string) {
+        return this.fs.readFile(`/${projectName}/${ASSET_DIR}/${path}`) as Promise<Uint8Array>
+    }
+
+    deleteAssetFile(projectName: string, path: string) {
+        return this.fs.unlink(`/${projectName}/${ASSET_DIR}/${path}`)
+    }
+
+    renameAsset(projectName: string, oldPath: string, newPath: string) {
+        return this.fs.rename(`/${projectName}/${ASSET_DIR}/${oldPath}`, `/${projectName}/${ASSET_DIR}/${newPath}`)
+    }
 }

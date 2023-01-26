@@ -1,6 +1,16 @@
 Design decisions
 ================
 
+Image src URL adjustments
+-------------------------
+
+- Problem: To allow use of simple asset names, need to adjust for path to app root eg when run from GitHub
+- Decision: place AppContext in a context provider in AppRunner, reference in Image to get adjusted URL
+- Reasons: 
+  - avoid generating deployment-specific code
+  - avoid prop passing
+  - keep knowledge of path prefix in one place
+
 Renaming elements
 -----------------
 - Make this a deliberate action, only done when changes complete

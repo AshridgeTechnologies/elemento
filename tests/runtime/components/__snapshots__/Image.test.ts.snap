@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Image element not visible with display false 1`] = `
+<div
+  className="mui-image-wrapper "
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "inherit",
+      "display": "flex",
+      "height": "100%",
+      "justifyContent": "center",
+      "marginBottom": undefined,
+      "width": "100%",
+    }
+  }
+>
+  <img
+    alt=""
+    className="mui-image-img  css-7e4lz0"
+    id="app.page1.photo"
+    onError={[Function]}
+    onLoad={[Function]}
+    src="http://example.com/anApp/somewhere/star.jpg"
+    style={
+      {
+        "animation": "",
+        "height": "100%",
+        "objectFit": "cover",
+        "opacity": 0,
+        "position": "relative",
+        "transitionDuration": "0ms",
+        "transitionProperty": "opacity",
+        "transitionTimingFunction": "cubic-bezier(0.7, 0, 0.6, 1)",
+        "width": "100%",
+      }
+    }
+  />
+  <div
+    className="mui-image-iconWrapper "
+    style={
+      {
+        "alignItems": "center",
+        "display": "flex",
+        "justifyContent": "center",
+        "marginLeft": "-100%",
+        "opacity": 1,
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Image element produces image output with default properties 1`] = `
+<div
+  className="mui-image-wrapper "
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "inherit",
+      "display": "flex",
+      "height": "100%",
+      "justifyContent": "center",
+      "marginBottom": undefined,
+      "width": "100%",
+    }
+  }
+>
+  <img
+    alt=""
+    className="mui-image-img  css-jlmoib"
+    id="app.page1.photo"
+    onError={[Function]}
+    onLoad={[Function]}
+    src="/star.jpg"
+    style={
+      {
+        "animation": "",
+        "height": "100%",
+        "objectFit": "cover",
+        "opacity": 0,
+        "position": "relative",
+        "transitionDuration": "0ms",
+        "transitionProperty": "opacity",
+        "transitionTimingFunction": "cubic-bezier(0.7, 0, 0.6, 1)",
+        "width": "100%",
+      }
+    }
+  />
+  <div
+    className="mui-image-iconWrapper "
+    style={
+      {
+        "alignItems": "center",
+        "display": "flex",
+        "justifyContent": "center",
+        "marginLeft": "-100%",
+        "opacity": 1,
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Image element produces output with properties supplied as state values 1`] = `
+<div
+  className="mui-image-wrapper "
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "inherit",
+      "display": "flex",
+      "height": 100,
+      "justifyContent": "center",
+      "marginBottom": "1em",
+      "width": 200,
+    }
+  }
+>
+  <img
+    alt="A big mountain"
+    className="mui-image-img  css-jlmoib"
+    id="app.page1.photo"
+    onError={[Function]}
+    onLoad={[Function]}
+    src="http://example.com/anApp/somewhere/star.jpg"
+    style={
+      {
+        "animation": "",
+        "height": "100%",
+        "objectFit": "cover",
+        "opacity": 0,
+        "position": "relative",
+        "transitionDuration": "0ms",
+        "transitionProperty": "opacity",
+        "transitionTimingFunction": "cubic-bezier(0.7, 0, 0.6, 1)",
+        "width": "100%",
+      }
+    }
+    title="A big mountain"
+  />
+  <div
+    className="mui-image-iconWrapper "
+    style={
+      {
+        "alignItems": "center",
+        "display": "flex",
+        "justifyContent": "center",
+        "marginLeft": "-100%",
+        "opacity": 1,
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;

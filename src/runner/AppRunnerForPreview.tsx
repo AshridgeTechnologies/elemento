@@ -3,6 +3,7 @@ import AppRunnerFromCode from './AppRunnerFromCode'
 import {equals} from 'ramda'
 import {getConfig, setConfig} from '../runtime/components/firebaseApp'
 import {getDefaultAppContext} from '../runtime/AppContext'
+import {ASSET_DIR} from '../editor/LocalProjectStore'
 
 declare global {
     var setAppCode: (appCode: string) => void
@@ -34,6 +35,6 @@ export default function AppRunnerForPreview(props: {pathPrefix: string}) {
     })
 
     const appContext = getDefaultAppContext(props.pathPrefix)
-
-    return appCode ? AppRunnerFromCode({appCode, appContext, onComponentSelected, selectedComponentId}) : null
+    const resourceUrl = props.pathPrefix + '/' + ASSET_DIR
+    return appCode ? AppRunnerFromCode({appCode, appContext, resourceUrl, onComponentSelected, selectedComponentId}) : null
 }

@@ -39,6 +39,7 @@ export type ElementType =
     'TrueFalseInput' |
     'Button' |
     'Icon' |
+    'Image' |
     'UserLogon' |
     'Menu' |
     'MenuItem' |

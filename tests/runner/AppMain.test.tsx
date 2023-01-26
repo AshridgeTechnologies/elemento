@@ -87,7 +87,7 @@ test('runs app from storage location at end of window location path', async () =
 })
 
 test('runs in editor preview mode if path found', async () => {
-    renderThe(appMain('/runner/editorPreview'))
+    renderThe(appMain('/preview/MyProject'))
     await act( () => wait(20) )
     expect(global.setAppCode).not.toBeUndefined()
 })

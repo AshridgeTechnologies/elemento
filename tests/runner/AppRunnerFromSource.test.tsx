@@ -48,6 +48,7 @@ test('shows loading until app loads then shows app on page', async () => {
     expectEl(container.domContainer).toHaveTextContent('Loading...')
     await actWait(50)
     expectEl('FirstText').toHaveTextContent('From https://myappstore.com/mickey/ElementoProject.json')
+    expectEl('HeroImage').toHaveAttribute('src', 'https://myappstore.com/mickey/Hero.jpg')
 })
 
 test('only fetches github and app source once for a url', async () => {

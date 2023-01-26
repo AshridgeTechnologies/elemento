@@ -16,20 +16,22 @@ const appContext: AppContext = {
     getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
     updateUrl(path: string, query: object, anchor: string): void {},
     onUrlChange(callback: any) { return () => {} },
-    goBack(): void {}
+    goBack(): void {},
 }
+const resourceUrl = 'https://example.com:8080/app/somewhere'
 const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
                    selectedComponentId?: string) => createElement(AppRunner, {
     appFunction,
     appContext,
     onComponentSelected,
-    selectedComponentId
+    selectedComponentId,
+    resourceUrl
 })
 
 const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
-        const {Page, TextElement, TextInput} = Elemento.components
+        const {Page, TextElement, TextInput, Image} = Elemento.components
         const input1 = Elemento.useObjectState(pathWith('input1'), new TextInput.State({value: undefined}),)
         const app = Elemento.useGetObjectState('app') as AppData
 
@@ -40,6 +42,7 @@ const testApp = (version: string) => {
             // @ts-ignore
             React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
             React.createElement(TextElement, {path: pathWith('TheUrl'), }, app.CurrentUrl().text),
+            React.createElement(Image, {path: pathWith('TheImage'), source: 'Duck.jpg'}),
         )
     }
 
@@ -96,6 +99,10 @@ test('shows app on page', () => {
 
 test('passes app context', () => {
     expectEl('TheUrl').toHaveTextContent('http://foo.com/pp/MainPage/xyz?a=10#mark1')
+})
+
+test('makes app utils available to images', () => {
+    expectEl('TheImage').toHaveAttribute('src', 'https://example.com:8080/app/somewhere/Duck.jpg')
 })
 
 test('updates app on page', () => {

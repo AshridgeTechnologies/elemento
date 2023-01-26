@@ -39,9 +39,9 @@ function parseExpr(expr: string) {
 }
 
 export default class Parser {
-    private errors: AllErrors
-    private identifiers: ElementIdentifiers
-    private stateEntryIdentifiers: ElementIdentifiers
+    private readonly errors: AllErrors
+    private readonly identifiers: ElementIdentifiers
+    private readonly stateEntryIdentifiers: ElementIdentifiers
     constructor(private app: App, private project: Project) {
         this.identifiers = {} as ElementIdentifiers
         this.stateEntryIdentifiers = {} as ElementIdentifiers

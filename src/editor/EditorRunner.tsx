@@ -25,7 +25,7 @@ import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
 import Close from '@mui/icons-material/Close'
-import {LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
+import {ASSET_DIR, LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
 import {editorEmptyProject} from '../util/initialProjects'
 import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
@@ -117,7 +117,7 @@ function NewDialog({onClose, onCreate, existingNames}: { onClose: () => void, on
     )
 }
 
-function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: string) => void }) {
+function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
         const {files} = target
@@ -137,7 +137,7 @@ function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: 
 
     const onUpload = async (file: File | undefined) => {
         if (file) {
-            const data = await file.text()
+            const data = await file.arrayBuffer() as Uint8Array
             onUploaded(file.name, data)
         }
     }
@@ -324,9 +324,9 @@ export default function EditorRunner() {
         const element = projectHandler.current.findElement(id)!
         if (element.kind === 'File' && propertyName === 'name') {
             const projectName = projectHandler.name
-            await localProjectStore.rename(projectName, element.name, value)
+            await localProjectStore.renameAsset(projectName, element.name, value)
             const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
-            await gitProjectStore.rename(projectName, element.name, value)
+            await gitProjectStore.rename(projectName, ASSET_DIR + '/' + element.name, ASSET_DIR + '/' + value)
         }
         projectHandler.setProperty(id, propertyName, value)
         updateProjectAndSave()
@@ -345,8 +345,8 @@ export default function EditorRunner() {
 
     const onUpload = async (targetElementId: ElementId): Promise<ElementId | null> => {
         return new Promise(resolve => {
-            const onFileUploaded = async (name: string, data: string) => {
-                await localProjectStore.writeTextFile(projectHandler.name, name, data)
+            const onFileUploaded = async (name: string, data: Uint8Array) => {
+                await localProjectStore.writeAssetFile(projectHandler.name, name, data)
                 const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
                 updateProjectAndSave()
                 removeDialog()
@@ -370,8 +370,8 @@ export default function EditorRunner() {
         return Promise.all(fileIds.map( async id => {
             const filename = projectHandler.current.findElement(id)?.name
             if (filename) {
-                await localProjectStore.deleteFile(projectName, filename)
-                await gitProjectStore.deleteFile(projectName, filename)
+                await localProjectStore.deleteAssetFile(projectName, filename)
+                await gitProjectStore.deleteFile(projectName , ASSET_DIR + '/' + filename)
             }
         }))
     }

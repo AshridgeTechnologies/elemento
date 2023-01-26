@@ -1,4 +1,4 @@
-import React, {createElement} from 'react'
+import {createElement} from 'react'
 import {createRoot} from 'react-dom/client'
 import AppRunnerFromUrl from './AppRunnerFromUrl'
 import AppRunnerFromCode from './AppRunnerFromCode'
@@ -27,7 +27,7 @@ export default function AppMain({windowUrlPath}: Properties) {
     } else if (appsMatch) {
         const appCodePath = appsMatch[1]
         return createElement(AppRunnerFromStorage, {appCodePath, appContext: getAppContext()})
-    } else if (path.match(/\/editorPreview$/)) {
+    } else if (path.match(/\/preview\/[^/]+$/)) {
         return createElement(AppRunnerForPreview, {pathPrefix: path})
     } else {
         return createElement(AppRunnerFromCode, {appCode: welcomeAppCode(), appContext: getAppContext()})
@@ -39,5 +39,5 @@ export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, c
     container.id = containerElementId
     document.body.appendChild(container)
     const root = createRoot(container)
-    root.render(React.createElement(AppMain, {windowUrlPath}))
+    root.render(createElement(AppMain, {windowUrlPath}))
 }

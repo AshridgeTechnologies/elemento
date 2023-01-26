@@ -41,5 +41,5 @@ export default function AppRunnerFromSource({url, appContext}: Properties) {
 
     if (error !== null) return <AppLoadError appUrl={appToFetch} error={error}/>
     if (appCode === null) return <p>Loading...</p>
-    return<AppRunnerFromCode appCode={appCode} appContext={appContext}/>
+    return<AppRunnerFromCode appCode={appCode} appContext={appContext} resourceUrl={url}/>
 }

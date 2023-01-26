@@ -4,6 +4,9 @@ import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
 import AppContext from '../runtime/AppContext'
+import AppUtils from '../runtime/AppUtils'
+
+export const AppUtilsContext = React.createContext<AppUtils | null>(null)
 
 function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
     const containerRef = createRef()
@@ -29,14 +32,17 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
     return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
 }
 
-type Properties = {appFunction: React.FunctionComponent<any>, appContext: AppContext, onComponentSelected: (id: string) => void, selectedComponentId?: string}
+type Properties = {appFunction: React.FunctionComponent<any>, appContext: AppContext, resourceUrl?: string,
+    onComponentSelected: (id: string) => void, selectedComponentId?: string }
 
-export default function AppRunner({appFunction, appContext, onComponentSelected, selectedComponentId}: Properties) {
+export default function AppRunner({appFunction, appContext, resourceUrl, onComponentSelected, selectedComponentId}: Properties) {
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider>
-            <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
-                {React.createElement(appFunction, {appContext})}
-            </SelectionProvider>
+            <AppUtilsContext.Provider value={new AppUtils(resourceUrl)}>
+                <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
+                    {React.createElement(appFunction, {appContext})}
+                </SelectionProvider>
+            </AppUtilsContext.Provider>
         </StoreProvider>
     </ErrorBoundary>
 }

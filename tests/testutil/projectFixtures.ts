@@ -1,6 +1,7 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
+import Image from '../../src/model/Image'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
@@ -59,6 +60,7 @@ export function projectFixture3(url: string) {
         new Text('text_2', 'Page', {content: ex`CurrentUrl().page`}),
         new Text('text_3', 'Path Sections', {content: ex`CurrentUrl().pathSections.join(',')`}),
         new Text('text_4', 'Current Url', {content: ex`CurrentUrl().text`}),
+        new Image('image_4', 'Hero Image', {source: 'Hero.jpg'}),
     ])
     const app = new App('app1', 'App One', {}, [
         page1,

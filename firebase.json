@@ -12,6 +12,10 @@
         "destination": "/run/index.html"
       },
       {
+        "source": "/preview/**",
+        "destination": "/preview/index.html"
+      },
+      {
         "source": "/studio/**",
         "destination": "/studio/index.html"
       },

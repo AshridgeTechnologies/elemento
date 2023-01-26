@@ -19,12 +19,11 @@ Stories
 -------
 
 ### Move to GitHub
-- Image component loaded from asset file
+- Deploy from GitHub
 - Export working copy to directory - or zip?
 - Import working copy from directory - or zip?
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
-- Deploy from GitHub
 - Add deferred desirable features from previous stories
 
 
@@ -92,6 +91,8 @@ Tech debt
 ---------
 
 - Flaky EditorRunner and AppMain tests
+- Refactor Editor etc so could swap in different Editor, outer component generates and previews
+- Refactor EditorRunner into visual and project handling parts
 - Refactor Editor menu actions to be flexible map
 - DOM Testing consistency, clarity, simplicity
 - Untangle shared package into studio and runtime
@@ -168,6 +169,7 @@ Done
 - Update GitHub from working copy
 - Get or update working copy from GitHub
 - Asset files stored in working copy
+- Image component loaded from asset file
 
 Bugs fixed
 ----------

@@ -3,7 +3,6 @@ import {BrowserHistory, createMemoryHistory} from 'history'
 
 let browserHistory: BrowserHistory
 
-
 beforeEach(() => {
     browserHistory = createMemoryHistory()
 })

@@ -1,7 +1,7 @@
 import {asQueryString} from './Url'
-// import standardHistory from "history/browser"
 import {BrowserHistory, createBrowserHistory} from 'history'
 import {without} from 'ramda'
+import {ensureSlash} from './runtimeFunctions'
 
 interface LocationType {
     origin: string,
@@ -21,7 +21,7 @@ type UnsubscribeFn = () => void
 let _standardHistory: BrowserHistory
 const getHistory = () => _standardHistory ?? (_standardHistory = createBrowserHistory())
 
-export default interface AppContext {
+export default interface AppContext{
 
     getUrl(): UrlType
     updateUrl(path: string, query: object | null, anchor: string | null): void
@@ -36,8 +36,7 @@ const convertSearch = (search: string) => {
 }
 
 const removePrefix = (pathname: string, prefix: string | null) => {
-    const prefixEnsureSlash = prefix?.replace(/^\/?/, '/') ?? ''
-    return pathname.replace(new RegExp(`^${prefixEnsureSlash}`), '')
+    return pathname.replace(new RegExp(`^${ensureSlash(prefix)}`), '')
 }
 
 export class DefaultAppContext implements AppContext {
@@ -103,6 +102,5 @@ export const dummyAppContext: AppContext = {
     },
     goBack(): void {},
     onUrlChange(callback: CallbackFn): UnsubscribeFn { return () => {} },
-    updateUrl(path: string, query: object | null, anchor: string | null): void {}
-
+    updateUrl(path: string, query: object | null, anchor: string | null): void {},
 }

@@ -225,6 +225,7 @@ ${generateChildren(page, indentLevel2, page)}
             case 'TrueFalseInput':
             case 'Button':
             case 'Icon':
+            case 'Image':
             case 'UserLogon':
             case 'MenuItem':
             case 'Data':

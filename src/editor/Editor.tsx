@@ -129,7 +129,8 @@ export default function Editor({
             // @ts-ignore  -- https://github.com/facebook/react/issues/18945#issuecomment-630421386
             appWindow.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__
             const setAppCode = appWindow['setAppCode' as keyof Window]
-            if (setAppCode) {
+            const projectLoaded = appWindow['projectLoaded' as keyof Window]
+            if (setAppCode && projectLoaded === projectStoreName) {
                 setAppCode(appCode)
                 if (firebaseConfig) {
                     const setAppFirebaseConfig = appWindow['setFirebaseConfig' as keyof Window]
@@ -172,15 +173,18 @@ export default function Editor({
         })
     }
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (setAppInAppFrame(appCode, firebaseConfig)) {
-                clearInterval(interval)
-            }
-        }, 200)
-    }, [])
+    const waitUntilAppSetInAppFrame = () => {
+        const ok = setAppInAppFrame(appCode, firebaseConfig)
+        if (!ok) {
+            const interval = setInterval(() => {
+                if (setAppInAppFrame(appCode, firebaseConfig)) {
+                    clearInterval(interval)
+                }
+            }, 200)
+        }
+    }
 
-    setAppInAppFrame(appCode, firebaseConfig)
+    waitUntilAppSetInAppFrame()
     highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
 
     const signedIn = useSignedInState()
@@ -208,6 +212,7 @@ export default function Editor({
         <EditorMenuBar/>
     </Box>
 
+    const previewUrl = `/preview/${projectStoreName}`
     return <ProjectContext.Provider value={project}>
     <Box display='flex' flexDirection='column' height='100%' width='100%'>
         {OverallAppBar}
@@ -243,7 +248,7 @@ export default function Editor({
                 <Grid item xs={10} height='100%' overflow='scroll'>
                     <PreviewPanel preview={
                         <Box sx={{backgroundColor: '#ddd', padding: '20px', height: 'calc(100% - 40px)'}}>
-                        <iframe name='appFrame' src="/run/editorPreview" ref={appFrameRef}
+                        <iframe name='appFrame' src={previewUrl} ref={appFrameRef}
                                                       style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
                         </Box>}
                                   code={<pre style={{

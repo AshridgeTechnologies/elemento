@@ -3,7 +3,11 @@
   "display": "Node 14",
 
   "compilerOptions": {
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom",
+      "webworker"
+    ],
     "module": "es2020",
     "moduleResolution": "node",
     "target": "es2020",

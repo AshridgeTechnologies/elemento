@@ -137,7 +137,7 @@ test('shows allowed items in context insert menu of a page item', async () => {
     await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
     await actWait(() => fireEvent.click(screen.getByText('Insert before')))
 
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Collection', 'Layout'])
 })
 
 test('notifies upload action from context menu of the files item', async () => {
@@ -169,7 +169,7 @@ test('shows allowed items in menu bar insert menu', async () => {
 
     fireEvent.click(screen.getByText('Second Text'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function', 'Collection', 'Layout'])
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
@@ -332,7 +332,7 @@ test('has iframe for running app', async () => {
     await actWait(() =>  ({container, unmount} = render(<Editor project={project} {...onFunctions}/>)))
 
     const appFrame = container.querySelector('iframe[name="appFrame"]')
-    expect(appFrame.src).toMatch(/.*\/run\/editorPreview$/)
+    expect(appFrame.src).toMatch(new RegExp(`.*\/preview\/${encodeURIComponent(project.name)}$`))
 
     // await(wait(1000))
     // expect(appFrame.appCode).toEqual('some code')

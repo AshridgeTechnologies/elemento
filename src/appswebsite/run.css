@@ -1,0 +1,2 @@
+body { margin: 0; padding: 0}
+#main { height: calc(100vh - 8px); width: calc(100vw - 8px); margin: 4px }
