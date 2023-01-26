@@ -10,7 +10,7 @@ exports[`SelectInput element produces output with default values where propertie
     id="app.page1.height_label"
   />
   <div
-    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-llrb4p-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
@@ -69,7 +69,7 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
     Background
   </label>
   <div
-    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-llrb4p-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div

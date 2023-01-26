@@ -20,9 +20,10 @@
     "@emotion/styled": "^11.10.5",
     "@hapi/topo": "^6.0.0",
     "@isomorphic-git/lightning-fs": "^4.6.0",
-    "@mui/icons-material": "^5.10.15",
+    "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.109",
-    "@mui/material": "^5.10.15",
+    "@mui/material": "^5.11.0",
+
     "axios": "^1.2.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",

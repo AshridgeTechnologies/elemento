@@ -24,7 +24,7 @@ Stories
 - Import working copy from directory - or zip?
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
-- Multiple files in working copy
+- Deploy from GitHub
 - Add deferred desirable features from previous stories
 
 
