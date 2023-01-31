@@ -3,6 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Changes really slow on large list
 - Select element in page has stopped working
 - DateFormat blows up on some bad values eg a string
 - Studio: Show errors in server side apps

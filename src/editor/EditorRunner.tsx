@@ -14,7 +14,6 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    IconButton,
     TextField,
 } from '@mui/material'
 import Project from '../model/Project'
@@ -24,38 +23,20 @@ import ProjectFileStore from './ProjectFileStore'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
-import Close from '@mui/icons-material/Close'
 import {ASSET_DIR, LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
 import {editorEmptyProject} from '../util/initialProjects'
 import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
+import {GetFromGitHubDialog} from './actions/GetFromGitHub'
+import {CloseButton} from './actions/ActionComponents'
+import {UIManager, validateProjectName} from './actions/actionHelpers'
+import EditorManager from './actions/EditorManager'
 
 
 declare global {
     var getProject: () => Project
     var setProject: (project: string|Project) => void
-}
-
-function CloseButton(props: {onClose:() => void}) {
-    return <IconButton
-        aria-label="close"
-        onClick={props.onClose}
-        sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-        }}
-    >
-        <Close />
-    </IconButton>
-}
-function validateProjectName(name: string, existingNames: string[]) {
-    if (existingNames.includes(name)) return 'There is already a project with this name'
-    const match = name.match(/[^\w \(\)#%&+=.-]/g)
-    if (match) return 'Name contains invalid characters: ' + match.join('')
-    return null
 }
 
 function OpenDialog({names, onClose, onSelect}: { names: string[], onClose: () => void, onSelect: (name: string) => void }) {
@@ -162,66 +143,6 @@ function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: 
             </DialogActions>
         </Dialog>
     )
-}
-
-function GetFromGitHubDialog({onClose, onGet, existingNames}: { onClose: () => void, onGet: (url: string, projectName: string) => Promise<void>, existingNames: string[]}) {
-    const [url, setUrl] = useState<string>('')
-    const [projectName, setProjectName] = useState<string>('')
-
-    const projectNameFromUrl = (url: string) => {
-        const urlNoExt = url.replace(/\.g?i?t?$/, '')
-        const nameFromUrlRegex = /https:\/\/[^/]+\/[^/]+\/(.+)(\.git)?$/
-        return urlNoExt.match(nameFromUrlRegex)?.[1]
-    }
-    const onChangeUrl = (event: ChangeEvent) => {
-        const newUrl = (event.target as HTMLInputElement).value
-        const oldNameFromUrl = projectNameFromUrl(url)
-        const nameFromNewUrl = projectNameFromUrl(newUrl) ?? ''
-        setUrl(newUrl)
-        if (nameFromNewUrl && projectName === '' || projectName === oldNameFromUrl) {
-            setProjectName(nameFromNewUrl)
-        }
-    }
-    const onChangeProjectName = (event: ChangeEvent) => setProjectName((event.target as HTMLInputElement).value)
-
-    const error = validateProjectName(projectName, existingNames)
-    const canCreate = url && projectName && !error
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Get project from GitHub <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter the GitHub URL and a name for the new project.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="url"
-                    label="GitHub URL"
-                    fullWidth
-                    variant="standard"
-                    value={url}
-                    onChange={onChangeUrl}
-                />
-                <TextField
-                    margin="dense"
-                    id="name"
-                    label="Project Name"
-                    fullWidth
-                    variant="standard"
-                    value={projectName}
-                    onChange={onChangeProjectName}
-                    error={!!error}
-                    helperText={error}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onGet(url, projectName)} disabled={!canCreate}>Get</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-
 }
 
 
@@ -417,24 +338,9 @@ export default function EditorRunner() {
         setDialog(<OpenDialog names={names} onClose={removeDialog} onSelect={onProjectSelected}/>)
     }
 
-    const onGetFromGitHub = async() => {
-        console.log('Get from GitHub')
-        const existingProjectNames = await localProjectStore.getProjectNames()
-        const onGet = async (url: string, projectName: string) => {
-            const fs = localProjectStore.fileSystem
-            const store =  new GitProjectStore(fs, http)
-            try {
-                await store.clone(url, projectName)
-            } catch(e: any) {
-                console.error('Error in clone', e)
-                showAlert('Problem getting from GitHub', `Message: ${e.message}`, null, 'error')
-            }
-            const projectWorkingCopy = await localProjectStore.getProject(projectName)
-            updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
-            removeDialog()
-        }
-        setDialog(<GetFromGitHubDialog onClose={removeDialog} onGet={onGet} existingNames={existingProjectNames}/>)
-    }
+
+    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(localProjectStore, projectHandler, setGitHubUrl)}
+                                                                 uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onUpdateFromGitHub = async() => {
         console.log('Update from GitHub')
@@ -519,7 +425,7 @@ export default function EditorRunner() {
     return <ThemeProvider theme={theme}>
             {alertMessage}
             {dialog}
-            <Editor project={project} projectStoreName={projectHandler.name}
+            <Editor project={projectHandler.current} projectStoreName={projectHandler.name}
                     onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
                     onNew={onNew} onOpen={onOpen}
                     onExport={onExport}

@@ -55,7 +55,8 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
     async getProject(projectName: string): Promise<ProjectWorkingCopy> {
         const projectFileText = await this.readTextFile(projectName, projectFileName)
         const project = loadJSONFromString(projectFileText) as Project
-        const assetFileNames = (await this.getFileNames(`${projectName}/${ASSET_DIR}`)).filter( name => !name.startsWith('.'))
+        let assetFileNames: string[] = []
+        try { assetFileNames = (await this.getFileNames(`${projectName}/${ASSET_DIR}`)).filter(name => !name.startsWith('.'))} catch (e) { }
 
         return {
             project,

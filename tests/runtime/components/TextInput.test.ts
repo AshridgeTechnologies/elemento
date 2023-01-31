@@ -5,7 +5,6 @@
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import {testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
