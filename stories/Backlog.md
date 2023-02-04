@@ -21,12 +21,9 @@ Stories
 
 ### Move to GitHub
 - Deploy from GitHub
-- Export working copy to directory - or zip?
-- Import working copy from directory - or zip?
+- Can use private GitHub repos
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
-- Add deferred desirable features from previous stories
-
 
 ### Priority for customer-facing apps
 - JavaScript functions
@@ -35,8 +32,6 @@ Stories
 - External API calls (eg for webhook)
 - Styling
 - Email
-- Images
-- Assets - eg image files
 - Uploaded files
 - Web file datastores
 
@@ -46,27 +41,39 @@ Stories
 - Model-driven components
 - Firestore access rules
 
-### Priority 1
+### Priority for education and games
+- Event actions
+- Shapes, drawing, animation
+
+### Priority for learning
+- Tutorials
+- Example apps
+
+### Priority for credibility
+- Security review
 - Revision aid example
-- New publishing
+- E-commerce example
+- Admin app example
 - Demo Experience Part 1
+
+### Priority for usability
 - Runtime error and notification handling
 - General usability Part 2
-- Security review
-- Embedded apps
-- Slick quick apps
-
-### Priority 2
-- Firebase deploy Part 2
-- Google Sheets datastore
-- Formula improvements Part 3
-- Info website update
-- Read-only calculations
-- Complex calculation entry
 - Debugger Part 1
 - Preview improvements - screen size, scrolling, etc
 
+### Priority 1
+- Export working copy to directory - or zip?
+- Import working copy from directory - or zip?
+- Add deferred desirable features from previous stories
+- Google Sheets datastore
+- Formula improvements Part 3
+- Read-only calculations
+- Complex calculation entry
+- Embedded apps
+
 ### The Rest
+- Slick quick apps
 - CSV file datastore
 - Tutorial Hello World
 - Tutorial Real World 1
