@@ -25,6 +25,8 @@ import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {EventActionPropertyDef} from '../model/Types'
+import {loadJSONFromString} from '../model/loadJSON'
+import ServerAppGenerator from './ServerAppGenerator'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -40,12 +42,24 @@ export const DEFAULT_IMPORTS = [
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
     return new Generator(app, project, imports).output()
+}
+export function generateServerApp(app: ServerApp) {
+    return new ServerAppGenerator(app).output()
+}
 
+export function generateFromJson(projectJson: string) {
+    const project = loadJSONFromString(projectJson) as Project
+    const clientAppSources = project.elementArray().filter(el => el.kind === 'App') as App[]
+    const serverAppSources = project.elementArray().filter(el => el.kind === 'ServerApp') as ServerApp[]
+
+    const clientApps = Object.fromEntries(clientAppSources.map(app => [app.codeName, generate(app, project)]))
+    const serverApps = Object.fromEntries(serverAppSources.map(app => [app.codeName, generateServerApp(app)]))
+    return {clientApps, serverApps}
 }
 
 export default class Generator {
     private parser
-    
+
     constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
     }

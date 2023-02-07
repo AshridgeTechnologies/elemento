@@ -10,7 +10,7 @@ import userEvent from '@testing-library/user-event'
 import {actWait} from '../testutil/rtlHelpers'
 import {fireEvent} from '@testing-library/react'
 import EditorRunner from '../../src/editor/EditorRunner'
-import {treeExpandControlSelector, treeItemSelector} from './Selectors'
+import {treeExpandControlSelector, treeItemTitleSelector} from './Selectors'
 import {
     stopSuppressingRcTreeJSDomError,
     suppressRcTreeJSDomError,
@@ -44,7 +44,7 @@ const clickExpandControl = async (...indexes: number[]) => {
 
 const itemLabels = () => treeItemLabels(container)
 const itemElements = () => {
-    const treeNodesShown = (container as HTMLDivElement).querySelectorAll(`${treeItemSelector}`)
+    const treeNodesShown = (container as HTMLDivElement).querySelectorAll(`${treeItemTitleSelector}`)
     return Array.from(treeNodesShown)
 }
 

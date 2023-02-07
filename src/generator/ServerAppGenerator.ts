@@ -165,12 +165,17 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
 
     private packageJson() {
         return {name: `package.json`, content: `{
-    "type": "module",
-    "dependencies": {
-      "express": "^4.18.1",
-      "firebase-functions": "^3.23.0",
-      "firebase-admin": "^11.0.1"
-    }
+  "type": "module",
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.1",
+    "firebase-functions": "^3.23.0",
+    "firebase-admin": "^11.0.1"
+  },
+  "private": true
 }`}
 
     }

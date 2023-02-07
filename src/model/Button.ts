@@ -1,7 +1,6 @@
 import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import Crop75 from '@mui/icons-material/Crop75'
 
 const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
@@ -16,7 +15,7 @@ type Properties = {
 export default class Button extends BaseElement<Properties> implements Element {
 
     static kind = 'Button'
-    static get iconClass() { return Crop75 }
+    static get iconClass() { return 'crop_3_2' }
     static get initialProperties() { return {content: 'Do something', appearance: appearanceChoices[0]} }
     type(): ComponentType { return 'statelessUI' }
 

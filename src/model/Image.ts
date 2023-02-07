@@ -1,7 +1,6 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
 import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
-import ImageIcon from '@mui/icons-material/Image'
 
 type Properties = {
     readonly source?: PropertyValueType<string>,
@@ -16,7 +15,7 @@ export default class Image extends BaseElement<Properties> implements Element {
 
     static kind = 'Image'
 
-    static get iconClass() { return ImageIcon }
+    static get iconClass() { return 'image' }
 
     get source() {return this.properties.source}
     get display() {return this.properties.display}

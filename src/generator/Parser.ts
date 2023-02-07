@@ -4,19 +4,19 @@ import {visit,} from 'ast-types'
 import App from '../model/App'
 import Page from '../model/Page'
 import Element from '../model/Element'
-import * as components from '../runtime/components'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
+import {ElementId, ElementType, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {last, without} from 'ramda'
-import {AppData} from '../runtime/components/App'
-import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
+import {allElements, ExprType, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
 import {valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
+import {AppData} from '../runtime/components/AppData'
+import {elementTypes} from '../model/elements'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
@@ -26,10 +26,12 @@ type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
 const appFunctions = appFunctionsNames()
 const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
+const runtimeElementTypes = () => Object.keys(elementTypes()).filter(key => key !== 'Function').map( key => runtimeElementTypeName(key as ElementType))
+
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
-const isComponent = (name: string) => name in components
+const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 
@@ -37,6 +39,7 @@ function parseExpr(expr: string) {
     const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
     return parse(exprToParse)
 }
+
 
 export default class Parser {
     private readonly errors: AllErrors

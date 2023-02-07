@@ -2,6 +2,7 @@ import List from '../model/List'
 import Element from '../model/Element'
 import App from '../model/App'
 import {flatten} from 'ramda'
+import {ElementType} from '../model/Types'
 
 export class ListItem {
     constructor(public list: List) {
@@ -32,5 +33,6 @@ const runtimeNames = {
     Text: 'TextElement',
     List: 'ListElement',
 }
-export const runtimeElementName = (element: Element) => runtimeNames[element.kind as keyof typeof runtimeNames] ?? element.kind
+export const runtimeElementName = (element: Element) => runtimeElementTypeName(element.kind)
+export const runtimeElementTypeName = (elementType: ElementType) => runtimeNames[elementType as keyof typeof runtimeNames] ?? elementType
 export type ExprType = 'singleExpression' | 'action' | 'multilineExpression'

@@ -1,7 +1,6 @@
 import {ComponentType, ElementType, PropertyDef} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import SdStorageIcon from '@mui/icons-material/SdStorage'
 
 type Properties = {
     readonly databaseName?: string,
@@ -11,7 +10,7 @@ type Properties = {
 export default class BrowserDataStore extends BaseElement<Properties> implements Element {
 
     static kind = 'BrowserDataStore'
-    static get iconClass() { return SdStorageIcon }
+    static get iconClass() { return 'sd_storage' }
     type(): ComponentType { return 'statefulUI' }
 
     get databaseName() {return this.properties.databaseName}

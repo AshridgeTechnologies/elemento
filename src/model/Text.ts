@@ -1,7 +1,6 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, PropertyDef, PropertyValue, PropertyValueType} from './Types'
-import Subject from '@mui/icons-material/Subject'
 
 type Properties = {
     readonly content?: PropertyValue,
@@ -22,7 +21,7 @@ export default class Text extends BaseElement<Properties> implements Element {
 
     static kind = 'Text'
     static get initialProperties() { return {content: 'Your text here'} }
-    static get iconClass() { return Subject }
+    static get iconClass() { return 'subject' }
 
     type(): ComponentType { return 'statelessUI' }
 

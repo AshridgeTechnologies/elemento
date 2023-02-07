@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer'
 import React, {createElement, FunctionComponent} from 'react'
-import {treeItemSelector} from '../editor/Selectors'
+import {treeItemTitleSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
 
@@ -49,7 +49,7 @@ export function ex([s]: TemplateStringsArray) {
 }
 
 export const treeItemLabels = (container: any) => {
-    const treeNodesShown = container.querySelectorAll(treeItemSelector)
+    const treeNodesShown = container.querySelectorAll(treeItemTitleSelector)
     return [...treeNodesShown.values()].map((it: any) => it.textContent)
 }
 

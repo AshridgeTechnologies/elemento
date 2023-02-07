@@ -1,7 +1,6 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import {elementOfType} from './elements'
 
 type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>,
@@ -10,7 +9,7 @@ type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyVal
 export default class Layout extends BaseElement<Properties> implements Element {
 
     static kind = 'Layout'
-    static get iconClass() { return ViewModuleIcon }
+    static get iconClass() { return 'view_module' }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }
 

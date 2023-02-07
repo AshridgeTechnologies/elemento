@@ -1,7 +1,6 @@
 import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,
@@ -13,7 +12,7 @@ type Properties = {
 export default class Collection extends BaseElement<Properties> implements Element {
 
     static kind = 'Collection'
-    static get iconClass() { return AutoAwesomeMotionIcon }
+    static get iconClass() { return 'auto_awesome_motion' }
     type(): ComponentType { return 'statefulUI' }
 
     get initialValue() {return this.properties.initialValue}

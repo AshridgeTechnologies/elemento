@@ -2,7 +2,7 @@ import Tree, {TreeNodeProps} from 'rc-tree'
 import React, {createElement, useState} from 'react'
 import {DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
-import {ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
+import {Icon, ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementOfType} from '../model/elements'
@@ -46,7 +46,7 @@ function TreeNodeIcon(color: string, props: TreeNodeProps) {
     const sx = { fontSize: 16, color }
     const elementClass = elementOfType(kind)
     const {iconClass} = elementClass
-    return createElement(iconClass, {sx})
+    return <Icon sx={sx}>{iconClass}</Icon>
 }
 
 type Action = {

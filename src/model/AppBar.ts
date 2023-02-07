@@ -1,7 +1,6 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
-import WebAssetIcon from '@mui/icons-material/WebAsset';
 import {elementOfType} from './elements'
 
 type Properties = { title?: PropertyValueType<string> }
@@ -9,7 +8,7 @@ type Properties = { title?: PropertyValueType<string> }
 export default class AppBar extends BaseElement<Properties> implements Element {
 
     static kind = 'AppBar'
-    static get iconClass() { return WebAssetIcon }
+    static get iconClass() { return 'web_asset' }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }
 

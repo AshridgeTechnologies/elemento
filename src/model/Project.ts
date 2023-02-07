@@ -4,7 +4,6 @@ import Element from './Element'
 import File from './File'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
-import Web from '@mui/icons-material/Web'
 import {elementOfType} from './elements'
 import FileFolder from './FileFolder'
 import {AppElementAction, ConfirmAction, InsertAction} from '../editor/Types'
@@ -16,7 +15,7 @@ export const FILES_ID = '_FILES'
 export default class Project extends BaseElement<Properties> implements Element {
 
     static kind = 'Project'
-    static get iconClass() { return Web }
+    static get iconClass() { return 'web' }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
 

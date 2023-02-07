@@ -1,7 +1,6 @@
 import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
-import Webhook from '@mui/icons-material/Webhook'
 import FunctionDef from './FunctionDef'
 
 type Properties = {  }
@@ -9,7 +8,7 @@ type Properties = {  }
 export default class ServerApp extends BaseElement<Properties> implements Element {
 
     static kind = 'ServerApp'
-    static get iconClass() { return Webhook }
+    static get iconClass() { return 'webhook' }
     type(): ComponentType { return 'app' }
 
     get functions() {

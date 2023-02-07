@@ -1,13 +1,12 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
 import {ComponentType, ElementType, PropertyDef} from './Types'
-import Folder from '@mui/icons-material/FolderOutlined'
 
 type Properties = {}
 
 export default class FileFolder extends BaseElement<Properties> implements Element {
     static kind = 'FileFolder'
-    static get iconClass() { return Folder }
+    static get iconClass() { return 'folder' }
 
     get propertyDefs(): PropertyDef[] {
         return []

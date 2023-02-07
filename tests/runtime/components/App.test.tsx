@@ -8,11 +8,11 @@ import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/c
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
-import {AppData} from '../../../src/runtime/components/App'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
 import {createMemoryHistory, MemoryHistory} from 'history'
 import MockedFunction = jest.MockedFunction
+import {AppData} from '../../../src/runtime/components/AppData'
 
 const [appComponent, appStoreHook] = wrappedTestElement(App, AppData)
 

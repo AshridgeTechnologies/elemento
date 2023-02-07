@@ -4,15 +4,13 @@ import BaseElement from './BaseElement'
 import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
 import {without} from 'ramda'
-import Web from '@mui/icons-material/Web'
-
 
 type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValueType<string | number> }
 
 export default class App extends BaseElement<Properties> implements Element {
 
     static kind = 'App'
-    static get iconClass() { return Web }
+    static get iconClass() { return 'web' }
     type(): ComponentType { return 'app' }
 
     get pages() {return this.elementArray().filter( el => el.kind === 'Page') as Page[]}

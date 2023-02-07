@@ -1,7 +1,6 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
-import ViewListIcon from '@mui/icons-material/ViewList'
 import {elementOfType} from './elements'
 
 type Properties = {
@@ -14,7 +13,7 @@ type Properties = {
 export default class List extends BaseElement<Properties> implements Element {
 
     static kind = 'List'
-    static get iconClass() { return ViewListIcon }
+    static get iconClass() { return 'view_list' }
     type(): ComponentType { return 'statefulUI' }
 
     get items() { return this.properties.items }

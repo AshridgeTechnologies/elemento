@@ -10,7 +10,7 @@ import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
-import {AppData} from '../../src/runtime/components/App'
+import {AppData} from '../../src/runtime/components/AppData'
 
 const appContext: AppContext = {
     getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},

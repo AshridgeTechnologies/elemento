@@ -1,7 +1,6 @@
 import Element from './Element'
 import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement from './BaseInputElement'
-import ToggleOn from '@mui/icons-material/ToggleOn'
 
 export type Properties = {
     readonly initialValue?: PropertyValueType<boolean>,
@@ -10,6 +9,6 @@ export type Properties = {
 export default class TrueFalseInput extends BaseInputElement<Properties> implements Element {
 
     static kind = 'TrueFalseInput'
-    static get iconClass() { return ToggleOn }
+    static get iconClass() { return 'toggle_on' }
     get valueType(): PropertyType { return 'boolean' }
 }

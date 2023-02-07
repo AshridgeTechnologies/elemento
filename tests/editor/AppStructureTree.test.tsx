@@ -6,7 +6,7 @@ import React from 'react'
 import {act, fireEvent, render, screen} from '@testing-library/react/pure'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
-import {treeExpandControlSelector, treeItemSelector} from './Selectors'
+import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
 import {startCase} from 'lodash'
@@ -23,12 +23,12 @@ const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(contai
 const itemLabels = () => treeItemLabels(container)
 
 const itemIcons = () => {
-    const treeNodesShown = container.querySelectorAll(treeItemSelector)
-    return [...treeNodesShown.values()].map( (it: any) => it.querySelector('svg').getAttribute('data-testid') )
+    const treeNodesShown = container.querySelectorAll(treeNodeSelector)
+    return [...treeNodesShown.values()].map( (it: any) => it.querySelector('.material-icons').textContent )
 }
 
 const selectedItemLabel = () => {
-    const treeNodesSelected = container.querySelectorAll('.rc-tree-list .rc-tree-treenode-selected')
+    const treeNodesSelected = container.querySelectorAll('.rc-tree-list .rc-tree-treenode-selected .rc-tree-title')
     return [...treeNodesSelected.values()].map( (it: any) => it.textContent)[0]
 }
 
@@ -146,11 +146,11 @@ test("renders tree with all types of model elements",  async () => {
     ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>))
     await clickExpandControl(0, 1)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon', 'FolderOutlinedIcon', 'InsertDriveFileOutlinedIcon', 'InsertDriveFileOutlinedIcon',])
+    expect(itemIcons()).toStrictEqual([ "web", "web", "web", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
 
     await clickExpandControl(2)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
-    expect(itemIcons()).toStrictEqual(['WebIcon', 'WebIcon', 'WebIcon', 'SubjectIcon', 'RectangleOutlinedIcon', 'MoneyOutlinedIcon', 'DensitySmallIcon', 'ToggleOnIcon', 'Crop75Icon', 'MenuIcon', 'MenuOpenIcon', 'ViewListIcon', 'NoteIcon', 'AutoAwesomeMotionIcon', 'ViewModuleIcon', 'FunctionsIcon', 'WebIcon', 'MemoryIcon', 'InsertDriveFileIcon', 'WebAssetIcon', 'FolderOutlinedIcon', 'InsertDriveFileOutlinedIcon', 'InsertDriveFileOutlinedIcon'])
+    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "toggle_on", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
 })
 
 test("can expand and collapse branches and show",  async () => {
@@ -368,7 +368,7 @@ test('abandons delete if do not confirm', async () => {
     await actWait(() => fireEvent.click(screen.getByText('Delete')))
     expect(onAction).not.toHaveBeenCalled()
 
-    await actWait(() => fireEvent.click(screen.getByText('No', {exact: false})))
+    await actWait(() => fireEvent.click(screen.getByText('No - go back', {exact: false})))
     expect(onAction).not.toHaveBeenCalled()
     expect(screen.queryByText('Delete')).toBeNull()
 })

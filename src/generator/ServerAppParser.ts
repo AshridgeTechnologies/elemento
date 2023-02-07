@@ -8,11 +8,11 @@ import {isExpr} from '../util/helpers'
 import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, last, uniq, without} from 'ramda'
-import {AppData} from '../runtime/components/App'
 import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
 import {valueLiteral} from './generatorHelpers'
 import {dummyAppContext} from '../runtime/AppContext'
+import {AppData} from '../runtime/components/AppData'
 
 type IdentifierCollector = {add(s: string): void}
 type ElementErrors = {[propertyName: string]: string}

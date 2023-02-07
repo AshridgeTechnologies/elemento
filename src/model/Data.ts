@@ -1,7 +1,6 @@
 import {ComponentType, PropertyDef, PropertyValue} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import NoteIcon from '@mui/icons-material/Note'
 
 type Properties = {
     readonly initialValue?: PropertyValue,
@@ -11,7 +10,7 @@ type Properties = {
 export default class Data extends BaseElement<Properties> implements Element {
 
     static kind = 'Data'
-    static get iconClass() { return NoteIcon }
+    static get iconClass() { return 'note' }
     type(): ComponentType { return 'statefulUI' }
 
     get initialValue() {return this.properties.initialValue}

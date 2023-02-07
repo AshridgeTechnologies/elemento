@@ -1,7 +1,6 @@
 import {ActionDef, ComponentType, ParentType, PropertyDef} from './Types'
 import Element from './Element'
 import BaseElement, {actionDef, propDef} from './BaseElement'
-import FireplaceIcon from '@mui/icons-material/Fireplace'
 import {parseCollections} from '../shared/CollectionConfig'
 import Project from './Project'
 
@@ -40,7 +39,7 @@ ${rules.join('\n')}
 export default class FirestoreDataStore extends BaseElement<Properties> implements Element {
 
     static kind = 'FirestoreDataStore'
-    static get iconClass() { return FireplaceIcon }
+    static get iconClass() { return 'fireplace' }
     static get parentType() { return 'App' as ParentType }
     type(): ComponentType { return 'statefulUI' }
 

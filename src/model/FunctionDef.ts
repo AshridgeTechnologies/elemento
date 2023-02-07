@@ -1,7 +1,6 @@
 import {ComponentType, ElementType, PropertyDef, PropertyExpr} from './Types'
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import FunctionsIcon from '@mui/icons-material/Functions';
 
 type Properties = {
     readonly input1?: string,
@@ -16,7 +15,7 @@ type Properties = {
 
 export default class FunctionDef extends BaseElement<Properties> implements Element {
 
-    static get iconClass() { return FunctionsIcon }
+    static get iconClass() { return 'functions' }
     kind: ElementType = 'Function'
     type(): ComponentType { return 'background' }
 

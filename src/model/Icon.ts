@@ -1,7 +1,6 @@
 import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import SentimentSatisfied from '@mui/icons-material/SentimentSatisfied';
 
 type Properties = {
     readonly iconName?: PropertyValueType<string>,
@@ -15,7 +14,7 @@ type Properties = {
 export default class Icon extends BaseElement<Properties> implements Element {
 
     static kind = 'Icon'
-    static get iconClass() { return SentimentSatisfied }
+    static get iconClass() { return 'sentiment_satisfied' }
     static get initialProperties() { return {iconName: 'sentiment_satisfied'} }
     type(): ComponentType { return 'statelessUI' }
 
