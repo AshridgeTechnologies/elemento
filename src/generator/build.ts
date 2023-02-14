@@ -17,9 +17,9 @@ export async function buildProject(projectDir: string, outputDir: string, elemen
     const projectJson = fs.readFileSync(`${projectDir}/${projectFileName}`, 'utf8')
     const project = loadJSONFromString(projectJson) as Project
     const builder = new Builder(project, elementoUrl)
-    const writeFiles = (clientFiles: FileCollection, clientDir: string) => {
-        for (let path in clientFiles) {
-            fs.writeFileSync(`${clientDir}/${path}`, clientFiles[path].text, {encoding: 'utf8'})
+    const writeFiles = (files: FileCollection, dir: string) => {
+        for (let path in files) {
+            fs.writeFileSync(`${dir}/${path}`, files[path].text, {encoding: 'utf8'})
         }
     }
 

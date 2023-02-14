@@ -167,7 +167,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
         return {name: `package.json`, content: `{
   "type": "module",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "main": "index.js",
   "dependencies": {

@@ -28,6 +28,8 @@ Forces
 - Storing working copy on file system would be nice, but less important
 - More advanced users would be happy to take extra steps
 - Providing a public server could be useful but would be an overhead
+- Deployment from local is probably not a good idea: tools will work differently, best to have actual version deployed in GitHub
+- Tools for packaging should probably also run on GitHub with a known version
 
 Possibilities
 -------------
@@ -41,4 +43,10 @@ Spikes
 ------
 
 - Electron: various niggling difficulties, studio still not running at all after several hours, little feel for how long it would take
-- 
+- Firebase-tools in node app: non-starter, too complex, native code dependencies, cannot get parcel or esbuild to work and would be huge
+
+Approach 14 Feb 23
+------------------
+
+- Use GitHub Actions for build, packaging and deployment
+- Use a small local server for developing server apps, maybe client apps and maybe also for saving files in local file system
