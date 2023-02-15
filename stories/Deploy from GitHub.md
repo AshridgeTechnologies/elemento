@@ -48,11 +48,12 @@ Tasks
 - (✅)Make library accessible on internet
 - ✅ Script to build files locally
 - ✅ Deploy client app to FB hosting 
-- Deploy server app to FB functions
-- Get firebase config and add to deployed files
+- ✅ Deploy server app to FB functions
+- ✅ Get firebase config and add to deployed files
 - ✅ GitHub action
 - Remove unnecessary dependencies in Generator library
 - ✅ Ensure icons still OK in studio
+- All necessary build and deploy scripts are in the generated codebase
 
 Steps to set up action
 ----------------------
@@ -60,16 +61,18 @@ Steps to set up action
 - Create .github/workflows/deploy.yml
 
 
-Steps to set up Firebase - permissions problems
+Steps to set up Firebase
 ------------------------
 
 - New Google account if required
 - Sign in to console
 - New project
-- New app - with hosting
-- Create service account
-- Download private key
-- Need to enable at least two APIs (cloud function, artifact registry) - why not automatic?
+- Upgrade to Blaze plan
+- Create Firestore database
+- Add a web app
+- Download service account private key - https://console.firebase.google.com/u/0/project/rock-chipper/settings/serviceaccounts/adminsdk
+- Add Editor and Cloud Functions Admin roles to service account - https://console.cloud.google.com/iam-admin/iam?authuser=0&project=rock-chipper
+
 
 Steps to set up Firebase - by the book
 --------------------------------------
@@ -114,4 +117,8 @@ Options
 - Find an easy way to auto add all the permissions
 - Search for github action functions deployment
 - Instructions to add all manually in console
+
+
+
+
 

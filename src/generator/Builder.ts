@@ -1,37 +1,12 @@
 import Project from '../model/Project'
 import App from '../model/App'
 import {generate} from './Generator'
-import {gzipSync} from 'fflate'
-import JSZip from 'jszip'
 import ServerApp from '../model/ServerApp'
 import ServerAppGenerator from './ServerAppGenerator'
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourcePath = '/runtime/runtime.js'
 const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.js'
-
-function zipText(text: string) {
-    const uint8array = new TextEncoder().encode(text)
-    return gzipSync(uint8array)
-}
-
-const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
-
-type FileInfo = { name: string, content: string }
-
-function zipFiles(files: FileInfo[]) {
-    const zip = new JSZip()
-    files.forEach( f => zip.file(f.name, f.content))
-    return zip.generateAsync({type: 'uint8array'})
-}
-
-async function hashData(data: BufferSource) {
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-    const hashArray = Array.from(new Uint8Array(hashBuffer))
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-}
-
-
 export default class Builder {
 
     constructor(public project: Project, private elementoUrl: string) {}
@@ -45,16 +20,10 @@ export default class Builder {
     }
 
     get codeFileName() { return `${this.app.codeName}.js` }
-
-    async getConfig(): Promise<object> {
-        return {config: true}
-    }
-
-
     async clientFiles(): Promise<{[path: string] : {text: string}}> {
         return {
             '/index.html':              {text: this.indexFile()},
-            '/firebaseConfig.json':     {text: await this.configFile()},
+            //'/firebaseConfig.json':     // downloaded and inserted by build script
             [`/${this.codeFileName}`]:  {text: this.codeFile()},
             [`/${runtimeFileName}`]:    {text: await this.loadFile(runtimeFileSourcePath)},
             [`/${runtimeFileName}.map`]: {text: await this.loadFile(runtimeFileSourcePath + '.map')}
@@ -91,13 +60,6 @@ export default class Builder {
             })
             .then(resp => resp.text())
     }
-
-    private async configFile() {
-        const config = await this.getConfig()
-        console.log('config', config)
-        return JSON.stringify(config, null, 2)
-    }
-
     private indexFile() {
         return `<!DOCTYPE html>
 <html lang="en">

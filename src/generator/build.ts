@@ -26,7 +26,16 @@ export async function buildProject(projectDir: string, outputDir: string, elemen
     writeFiles(await builder.clientFiles(), clientDir)
     writeFiles(await builder.serverFiles(), serverDir)
 
-    fs.cpSync(`${projectDir}/files`, `${clientDir}/files`, {recursive: true, preserveTimestamps: true})
+    if (fs.existsSync(`${projectDir}/files`)) {
+        fs.cpSync(`${projectDir}/files`, `${clientDir}/files`, {recursive: true, preserveTimestamps: true})
+    }
+
+    const sdkConfigOutput = fs.readFileSync(`${projectDir}/sdkConfig.out`, 'utf8')
+    const firebaseConfigJson = sdkConfigOutput.match(/{[^}]+}/m)?.[0]
+    if (!firebaseConfigJson) {
+        throw new Error('Could not get firebase sdk config.  Command output was:\n' + sdkConfigOutput)
+    }
+    fs.writeFileSync(`${clientDir}/firebaseConfig.json`, firebaseConfigJson, {encoding: 'utf8'})
 }
 
 
