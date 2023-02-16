@@ -3,7 +3,6 @@ import {createRoot} from 'react-dom/client'
 import AppRunnerFromUrl from './AppRunnerFromUrl'
 import AppRunnerFromCode from './AppRunnerFromCode'
 import {welcomeAppCode} from '../util/initialProjects'
-import AppRunnerForPreview from './AppRunnerForPreview'
 import AppRunnerFromStorage from './AppRunnerFromStorage'
 import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
@@ -27,8 +26,6 @@ export default function AppMain({windowUrlPath}: Properties) {
     } else if (appsMatch) {
         const appCodePath = appsMatch[1]
         return createElement(AppRunnerFromStorage, {appCodePath, appContext: getAppContext()})
-    } else if (path.match(/\/preview\/[^/]+$/)) {
-        return createElement(AppRunnerForPreview, {pathPrefix: path})
     } else {
         return createElement(AppRunnerFromCode, {appCode: welcomeAppCode(), appContext: getAppContext()})
     }

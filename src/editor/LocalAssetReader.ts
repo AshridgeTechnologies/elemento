@@ -1,5 +1,5 @@
 import FS from '@isomorphic-git/lightning-fs'
-export const ASSET_DIR = 'files' // cannot import from LocalProjectStore or service worker bundle sucks in everything
+import {ASSET_DIR} from '../shared/constants'
 
 export class LocalAssetReader {
     private cbfs: FS

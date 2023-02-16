@@ -1,6 +1,7 @@
 import Project from '../model/Project'
 import FS from '@isomorphic-git/lightning-fs'
 import {loadJSONFromString} from '../model/loadJSON'
+import {ASSET_DIR, projectFileName} from '../shared/constants'
 
 interface ProjectWorkingCopy {
     get project(): Project
@@ -40,9 +41,6 @@ export interface LocalProjectStore {
     get fileSystem() : FS
 }
 
-export const projectFileName = 'ElementoProject.json'
-export const ASSET_DIR = 'files'  // also rename in LocalAssetReader
-
 export class LocalProjectStoreIDB implements LocalProjectStore {
     private cbfs: FS
     private readonly fs: FS.PromisifiedFS
@@ -56,7 +54,7 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
         const projectFileText = await this.readTextFile(projectName, projectFileName)
         const project = loadJSONFromString(projectFileText) as Project
         let assetFileNames: string[] = []
-        try { assetFileNames = (await this.getFileNames(`${projectName}/${ASSET_DIR}`)).filter(name => !name.startsWith('.'))} catch (e) { }
+        try { assetFileNames = await this.assetFilePaths(projectName)} catch (e) { }
 
         return {
             project,
@@ -116,6 +114,10 @@ export class LocalProjectStoreIDB implements LocalProjectStore {
 
     writeAssetFile(projectName: string, path: string, fileData: Uint8Array) {
         return this.fs.writeFile(`/${projectName}/${ASSET_DIR}/${path}`, fileData)
+    }
+
+    async assetFilePaths(projectName: string): Promise<string[]> {
+        return (await this.getFileNames(`/${projectName}/${ASSET_DIR}`)).filter(name => !name.startsWith('.'))
     }
 
     readAssetFile(projectName: string, path: string) {

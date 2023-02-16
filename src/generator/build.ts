@@ -1,11 +1,9 @@
 import {loadJSONFromString} from '../model/loadJSON'
 import Project from '../model/Project'
 import fs from 'fs'
-import Builder from './Builder'
-import {projectFileName} from '../editor/LocalProjectStore'
+import Builder, {FileCollection} from './Builder'
+import {projectFileName} from '../shared/constants'
 
-
-type FileCollection = { [p: string]: { text: string } }
 
 export async function buildProject(projectDir: string, outputDir: string, elementoUrl: string) {
     console.log('buildProject', projectDir, outputDir)
@@ -19,7 +17,7 @@ export async function buildProject(projectDir: string, outputDir: string, elemen
     const builder = new Builder(project, elementoUrl)
     const writeFiles = (files: FileCollection, dir: string) => {
         for (let path in files) {
-            fs.writeFileSync(`${dir}/${path}`, files[path].text, {encoding: 'utf8'})
+            fs.writeFileSync(`${dir}/${path}`, files[path].contents, {encoding: 'utf8'})
         }
     }
 

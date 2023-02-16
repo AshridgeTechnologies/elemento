@@ -60,6 +60,7 @@ Finishing touches
 - Touch to show word, then swipe
 - Swipe right/left to revise on phone
 - Show name of open data file
+- Set date for revision with default to today
 
 
 

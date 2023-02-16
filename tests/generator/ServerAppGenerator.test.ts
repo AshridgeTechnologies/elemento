@@ -19,7 +19,7 @@ describe('generates files', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('ServerApp1.js')
-        expect(serverAppFile.content).toBe(`import {runtimeFunctions} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
 import {globalFunctions} from './serverRuntime.js'
 
 const {Sum} = globalFunctions
@@ -56,7 +56,7 @@ export default ServerApp1`)
 
     test('express app file', () => {
         expect(expressAppFile.name).toBe('ServerApp1Express.js')
-        expect(expressAppFile.content).toBe(`import express from 'express'
+        expect(expressAppFile.contents).toBe(`import express from 'express'
 import {expressUtils} from './serverRuntime.js'
 import baseApp from './ServerApp1.js'
 
@@ -79,7 +79,7 @@ export default app`)
 
     test('function file', () => {
         expect(functionFile.name).toBe('index.js')
-        expect(functionFile.content).toBe(`import {onRequest} from 'firebase-functions/v2/https'
+        expect(functionFile.contents).toBe(`import {onRequest} from 'firebase-functions/v2/https'
 import app from './ServerApp1Express.js'
 
 export const serverapp1 = onRequest(app)`)
@@ -87,7 +87,7 @@ export const serverapp1 = onRequest(app)`)
 
     test('package json file', () => {
         expect(packageFile.name).toBe('package.json')
-        expect(packageFile.content).toBe(`{
+        expect(packageFile.contents).toBe(`{
   "type": "module",
   "engines": {
     "node": "18"
@@ -122,7 +122,7 @@ describe('generates files using data components in dependency order', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.js')
-        expect(serverAppFile.content).toBe(`import {runtimeFunctions} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
 import {appFunctions} from './serverRuntime.js'
 import {components} from './serverRuntime.js'
 
@@ -161,7 +161,7 @@ export default WidgetApp`)
 
     test('express app file', () => {
         expect(expressAppFile.name).toBe('WidgetAppExpress.js')
-        expect(expressAppFile.content).toBe(`import express from 'express'
+        expect(expressAppFile.contents).toBe(`import express from 'express'
 import {expressUtils} from './serverRuntime.js'
 import baseApp from './WidgetApp.js'
 
@@ -214,7 +214,7 @@ describe('handles errors and special cases', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.js')
-        expect(serverAppFile.content).toBe(`import {runtimeFunctions} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
 import {globalFunctions} from './serverRuntime.js'
 import {components} from './serverRuntime.js'
 

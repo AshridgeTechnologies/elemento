@@ -1,7 +1,7 @@
 import {createRoot} from 'react-dom/client'
 import React from 'react'
 
-export const run = (elementType: React.FunctionComponent, containerElementId = 'main') => {
+export const run = (elementType: React.FunctionComponent, props?: React.Attributes | null | undefined, containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
         container.id = containerElementId
@@ -11,5 +11,5 @@ export const run = (elementType: React.FunctionComponent, containerElementId = '
 
     const container = document.getElementById(containerElementId) ?? createContainer()
     const root = createRoot(container)
-    root.render(React.createElement(elementType))
+    root.render(React.createElement(elementType, props))
 }

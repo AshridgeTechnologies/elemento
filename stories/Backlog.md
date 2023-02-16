@@ -19,6 +19,10 @@ Bugs
 Stories
 -------
 
+### WebContainer server
+- Serve preview from WebContainer
+- Serve server apps from WebContainer
+
 ### Move to GitHub
 - Deploy from GitHub
 - Can use private GitHub repos
@@ -36,9 +40,9 @@ Stories
 - Web file datastores
 
 ### Priority for internal apps
-- Types
+- Types (consider Zod, ArkType)
 - Validation
-- Model-driven components
+- Model-driven components (consider zorm and other Zod integrations)
 - Firestore access rules
 
 ### Priority for education and games
@@ -102,6 +106,7 @@ Tech debt
 - Refactor Editor etc so could swap in different Editor, outer component generates and previews
 - Refactor EditorRunner into visual and project handling parts
 - Refactor Editor menu actions to be flexible map
+- Consider using useSyncExternalStore to connect to data stores
 - DOM Testing consistency, clarity, simplicity
 - Untangle shared package into studio and runtime
 - Fix all uses of constructor.name

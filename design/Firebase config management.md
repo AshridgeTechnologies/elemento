@@ -86,3 +86,14 @@ Firebase datastore
 - db is null if no app
 - On app change, db is recreated and all observers invalidated
 - All functions return null/empty/do nothing when no db
+
+
+Further decisions 3 Mar 23
+==========================
+
+- With GitHub deploy, moving away from studio using Firebase management API
+- Probably best to accept that Firebase is advanced usage, and ask dev to copy-paste the config from the console
+- Can extract the JSON part from the full text in the studio
+- Store with each Firebase publish
+- GitHub deploy can get config from project
+- 

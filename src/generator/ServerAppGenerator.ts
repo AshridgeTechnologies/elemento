@@ -120,7 +120,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
             exportDeclaration
         ].filter(isTruthy).join('\n\n')
 
-        return {name: `${this.app.codeName}.js`, content: serverAppCode}
+        return {name: `${this.app.codeName}.js`, contents: serverAppCode}
     }
 
     private expressApp() {
@@ -149,7 +149,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
             imports, importDeclarations, appDeclaration, useCalls, appConfigurations, useError, theExports
         ].join('\n\n')
 
-        return {name: `${this.app.codeName}Express.js`, content: code}
+        return {name: `${this.app.codeName}Express.js`, contents: code}
     }
 
     private cloudFunction() {
@@ -159,12 +159,12 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
             imports, theExports
         ].join('\n\n')
 
-        return {name: `index.js`, content: code}
+        return {name: `index.js`, contents: code}
 
     }
 
     private packageJson() {
-        return {name: `package.json`, content: `{
+        return {name: `package.json`, contents: `{
   "type": "module",
   "engines": {
     "node": "18"

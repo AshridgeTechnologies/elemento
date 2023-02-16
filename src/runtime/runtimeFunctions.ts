@@ -46,7 +46,7 @@ const findElementWith = (el: Element, condition: (el: Element) => boolean) => {
 
 const findInputParentLabel = (el: Element) : Element | null => el.tagName === 'INPUT' ? findElementWith(el, el => el.tagName === 'LABEL') : null
 
-export const highlightElement = (id: string | null) => {
+export const highlightElement = (id: string | undefined) => {
     if (!document.getElementById(highlightStyleId)) {
         const styleEl = document.createElement('style')
         styleEl.id = highlightStyleId

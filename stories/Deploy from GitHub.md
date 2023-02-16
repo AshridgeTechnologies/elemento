@@ -11,6 +11,7 @@ Aims
 Requirements
 ------------
 
+- Firebase Publish invokes GitHub action
 - Uses access token that is available without complex command line work
 - Studio has a way to get the token into a GitHub secret
 - Can only be deployed by repo owner even if repo is public

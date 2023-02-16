@@ -5,9 +5,7 @@ import Project from '../../model/Project'
 import ProjectHandler from '../ProjectHandler'
 
 export default class EditorManager {
-    constructor(private localProjectStore: LocalProjectStore,
-                private projectHandler: ProjectHandler,
-                private setGitHubUrl: (url: string) => void) //TODO avoid need to pass this around
+    constructor(private localProjectStore: LocalProjectStore) //TODO avoid need to pass this around
     {}
 
     getProjectNames = async () => this.localProjectStore.getProjectNames()
@@ -21,9 +19,7 @@ export default class EditorManager {
     }
 
     private updateProject = (proj: Project, name: string) => {
-        this.projectHandler.setProject(proj)
-        this.projectHandler.name = name
         const gitProjectStore = new GitProjectStore(this.localProjectStore.fileSystem, http, null, null)
-        gitProjectStore.getOriginRemote(name).then( this.setGitHubUrl )
+        gitProjectStore.getOriginRemote(name)
     }
 }

@@ -1,8 +1,17 @@
-import {createRoot} from 'react-dom/client'
-import React, {Attributes} from 'react'
+import {createRoot, Root} from 'react-dom/client'
+import React from 'react'
 import {DefaultAppContext} from './AppContext'
+import AppRunner from '../runner/AppRunner'
+import {ASSET_DIR} from '../shared/constants'
 
-export const run = (elementType: React.FunctionComponent, containerElementId = 'main') => {
+let root: Root
+
+type ComponentSelectedFn = (id: string) => void
+
+export const run = (elementType: React.FunctionComponent,
+                    selectedComponentId: string | undefined = undefined,
+                    onComponentSelected: ComponentSelectedFn | undefined = undefined,
+                    containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
         container.id = containerElementId
@@ -11,7 +20,46 @@ export const run = (elementType: React.FunctionComponent, containerElementId = '
     }
 
     const container = document.getElementById(containerElementId) ?? createContainer()
-    const root = createRoot(container)
+    if (!root) {
+        root = createRoot(container)
+    }
     const appContext = new DefaultAppContext(null)
-    root.render(React.createElement(elementType, {appContext} as Attributes))
+    // @ts-ignore
+    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl: ASSET_DIR, selectedComponentId, onComponentSelected})
+    root.render(appRunner)
+}
+
+let refreshCount = 0
+let selectedComponentIds: string[] = []
+let appModule: any
+
+export const runForDev = (url: string) => {
+    function runModule() {
+        run(appModule.default, selectedComponentIds[0], onComponentSelected)
+    }
+
+    async function refreshCode() {
+        appModule = await import(url + '?' + (++refreshCount))
+        runModule()
+    }
+
+    function onComponentSelected(id: string) {
+        webSocket.send(JSON.stringify({type: 'componentSelected', id}))
+    }
+
+    const webSocket = new WebSocket('wss://' + location.host)
+    webSocket.onmessage = (event) => {
+        const message = JSON.parse(event.data)
+        if (message.type === 'refreshCode') {
+            refreshCode()
+        }
+        if (message.type === 'selectedItems') {
+            selectedComponentIds = message.ids
+            runModule()
+        }
+    }
+    webSocket.onerror = event => console.error('Error', event)
+    webSocket.onclose = event => console.error('closed', event)
+
+    return refreshCode()
 }

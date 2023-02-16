@@ -1,5 +1,6 @@
 import * as auth from 'firebase/auth'
 import {FirebaseApp, getAppAndSubscribeToChanges} from './firebaseApp'
+import {useEffect, useState} from 'react'
 
 type SignedInCallback = (signedIn: boolean) => void
 
@@ -49,12 +50,25 @@ export const test_signInWithEmailAndPassword = async (name: string, password: st
     return auth.signInWithEmailAndPassword(getAuth()!, name, password)
 }
 
+function useSignedInState() {
+    const [isSignedIn, setIsSignedIn] = useState(false)
+
+    useEffect(() => {
+        if (getAuth()) {
+            const unregisterAuthObserver = auth.onAuthStateChanged(getAuth()!, user => setIsSignedIn(!!user))
+            return () => unregisterAuthObserver() // Un-register Firebase observers when the component unmounts.
+        }
+    }, [getAuth()])
+    return isSignedIn
+}
+
 export default {
     authIsReady,
     onAuthChange,
     signOut,
     getAuth,
     currentUser,
-    getIdToken
+    getIdToken,
+    useSignedInState
 }
 

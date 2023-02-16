@@ -19,6 +19,8 @@ const appContext: AppContext = {
     goBack(): void {},
 }
 const resourceUrl = 'https://example.com:8080/app/somewhere'
+let onComponentSelected: (id: string) => void
+
 const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
                    selectedComponentId?: string) => createElement(AppRunner, {
     appFunction,
@@ -84,7 +86,6 @@ const badApp = () => {
 
     return AppOne
 }
-let onComponentSelected: (id: string) => void
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(async () => {
@@ -136,7 +137,8 @@ test('can run multiple apps with independent state', async () => {
 })
 
 test('notifies id when component selected', () => {
-    click('SecondText', {altKey: true})
+    const container3 = testContainer(appRunner(), 'testContainer3')
+    container3.click('SecondText', {altKey: true})
     expect(onComponentSelected).toHaveBeenCalledWith('AppOne.MainPage.SecondText')
 })
 

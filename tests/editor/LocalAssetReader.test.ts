@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto'
-import {ASSET_DIR} from '../../src/editor/LocalProjectStore'  //ensure test uses original constant
+//ensure test uses original constant
 import {LocalAssetReader} from '../../src/editor/LocalAssetReader'
+import {ASSET_DIR} from '../../src/shared/constants'
 
 let store: LocalAssetReader
 globalThis.navigator = {} as any

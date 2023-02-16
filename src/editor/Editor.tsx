@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import App from '../model/App'
 
 import Element from '../model/Element'
@@ -8,11 +8,14 @@ import {
     AppElementAction,
     OnActionFn,
     OnChangeFn,
+    OnExportFn,
+    OnGetFromGitHubFn,
     OnInsertWithSelectedFn,
     OnMoveFn,
     OnNewFn,
     OnOpenFn,
-    OnExportFn, OnSaveToGitHubFn, OnGetFromGitHubFn, OnUpdateFromGitHubFn
+    OnSaveToGitHubFn,
+    OnUpdateFromGitHubFn
 } from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
@@ -60,15 +63,16 @@ export default function Editor({
     onSaveToGitHub,
     onGetFromGitHub,
     onUpdateFromGitHub,
-    runUrl
+    runUrl,
+    previewUrl,
+    selectedItemIds,
+    onSelectedItemsChange
 }: { project: Project, projectStoreName?: string, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
                                     onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn,
                                     onSaveToGitHub: OnSaveToGitHubFn, onGetFromGitHub: OnGetFromGitHubFn, onUpdateFromGitHub?: OnUpdateFromGitHubFn,
-                                    runUrl?: string}) {
-    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+                                    runUrl?: string, previewUrl?: string, selectedItemIds: string[], onSelectedItemsChange: (ids: string[]) => void}) {
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
-    const [firebaseConfig, setFirebaseConfig] = useState<object|null>(null)
     const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
 
     const app = project.elementArray().find( el => el.kind === 'App') as App
@@ -93,12 +97,12 @@ export default function Editor({
 
     const onMenuInsert = (elementType: ElementType) => {
         const newElementId = onInsert('after', firstSelectedItemId, elementType)
-        setSelectedItemIds([newElementId])
+        onSelectedItemsChange([newElementId])
     }
 
     const onContextMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
         const newElementId = onInsert(insertPosition, targetElementId, elementType)
-        setSelectedItemIds([newElementId])
+        onSelectedItemsChange([newElementId])
     }
 
     const onHelp = () => setHelpVisible(!helpVisible)
@@ -106,87 +110,16 @@ export default function Editor({
     const onTreeAction = async ({action, ids}: { action: AppElementAction, ids: (string | number)[] }) => {
         const newSelectedItemId = await onAction(ids.map(id => id.toString()), action)
         if (newSelectedItemId) {
-            setSelectedItemIds([newSelectedItemId])
+            onSelectedItemsChange([newSelectedItemId])
         }
     }
-
-
-    function handleComponentSelected(id: string) {
-        const listItemIdRegExp = /\.#[^.]+/g
-        const idWithoutIndexes = id.replace(listItemIdRegExp, '')
-
-        const element = app.findElementByPath(idWithoutIndexes)
-        if (element) {
-            setSelectedItemIds([element.id])
-        }
-    }
-
     const appFrameRef = useRef<HTMLIFrameElement>(null)
-
-    function setAppInAppFrame(appCode: string, firebaseConfig: object | null): boolean {
-        const appWindow = appFrameRef.current?.contentWindow
-        if (appWindow) {
-            // @ts-ignore  -- https://github.com/facebook/react/issues/18945#issuecomment-630421386
-            appWindow.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__
-            const setAppCode = appWindow['setAppCode' as keyof Window]
-            const projectLoaded = appWindow['projectLoaded' as keyof Window]
-            if (setAppCode && projectLoaded === projectStoreName) {
-                setAppCode(appCode)
-                if (firebaseConfig) {
-                    const setAppFirebaseConfig = appWindow['setFirebaseConfig' as keyof Window]
-                    if (setAppFirebaseConfig) {
-                        setAppFirebaseConfig(firebaseConfig)
-                    }
-                }
-                const setEventListenerFn = appWindow['setComponentSelectedListener' as keyof Window]
-                if (setEventListenerFn) {
-                    setEventListenerFn(handleComponentSelected)
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    function highlightElementInAppFrame(id: string | null) {
-        const appWindow = appFrameRef.current?.contentWindow
-        if (appWindow) {
-            const highlightFn = appWindow['highlightElement' as keyof Window]
-            if (highlightFn) {
-                highlightFn(id)
-                return true
-            }
-        }
-
-        return false
-    }
-
     const firebasePublishForPreview = project.findChildElements(FirebasePublish)[0]
     const projectFirebaseConfigName = firebasePublishForPreview?.name
 
     if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
-        firebasePublishForPreview.getConfig(project).then( config => {
-            console.log('Using firebase config', config)
-            setFirebaseConfig(config)
-            setFirebaseConfigName(projectFirebaseConfigName)
-        })
+        setFirebaseConfigName(projectFirebaseConfigName)
     }
-
-    const waitUntilAppSetInAppFrame = () => {
-        const ok = setAppInAppFrame(appCode, firebaseConfig)
-        if (!ok) {
-            const interval = setInterval(() => {
-                if (setAppInAppFrame(appCode, firebaseConfig)) {
-                    clearInterval(interval)
-                }
-            }, 200)
-        }
-    }
-
-    waitUntilAppSetInAppFrame()
-    highlightElementInAppFrame(app.findElementPath(firstSelectedItemId))
-
     const signedIn = useSignedInState()
     const EditorMenuBar = () => <MenuBar>
         <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport}
@@ -212,7 +145,6 @@ export default function Editor({
         <EditorMenuBar/>
     </Box>
 
-    const previewUrl = `/preview/${projectStoreName}`
     return <ProjectContext.Provider value={project}>
     <Box display='flex' flexDirection='column' height='100%' width='100%'>
         {OverallAppBar}
@@ -224,7 +156,7 @@ export default function Editor({
                         <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'>
-                                    <AppStructureTree treeData={treeData(project)} onSelect={setSelectedItemIds}
+                                    <AppStructureTree treeData={treeData(project)} onSelect={onSelectedItemsChange}
                                         selectedItemIds={selectedItemIds}
                                                       onAction={onTreeAction} onInsert={onContextMenuInsert}
                                                       insertMenuItemFn={insertMenuItems}

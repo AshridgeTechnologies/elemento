@@ -86,12 +86,6 @@ test('runs app from storage location at end of window location path', async () =
     expect(el`FirstText`).toHaveTextContent('This is App One from apps/xxx222/myApp.js')
 })
 
-test('runs in editor preview mode if path found', async () => {
-    renderThe(appMain('/preview/MyProject'))
-    await act( () => wait(20) )
-    expect(global.setAppCode).not.toBeUndefined()
-})
-
 test('shows welcome app if no url found', async () => {
     renderThe(appMain('/runner'))
     await act( () => wait(20) )

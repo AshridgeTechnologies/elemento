@@ -10,7 +10,6 @@ coverage
 /.firebase/
 
 /functions/lib/
-/.proxyrc.json
 /test-results/
 /playwright/.cache/
-/playwright/
+/playwright/report

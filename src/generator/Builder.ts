@@ -3,10 +3,15 @@ import App from '../model/App'
 import {generate} from './Generator'
 import ServerApp from '../model/ServerApp'
 import ServerAppGenerator from './ServerAppGenerator'
+import FirebasePublish from '../model/FirebasePublish'
+import {valueLiteral} from './generatorHelpers'
+
+export type FileCollection = { [p: string]: { contents: string | Uint8Array } }
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourcePath = '/runtime/runtime.js'
 const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.js'
+
 export default class Builder {
 
     constructor(public project: Project, private elementoUrl: string) {}
@@ -20,28 +25,35 @@ export default class Builder {
     }
 
     get codeFileName() { return `${this.app.codeName}.js` }
-    async clientFiles(): Promise<{[path: string] : {text: string}}> {
-        return {
-            '/index.html':              {text: this.indexFile()},
-            //'/firebaseConfig.json':     // downloaded and inserted by build script
-            [`/${this.codeFileName}`]:  {text: this.codeFile()},
-            [`/${runtimeFileName}`]:    {text: await this.loadFile(runtimeFileSourcePath)},
-            [`/${runtimeFileName}.map`]: {text: await this.loadFile(runtimeFileSourcePath + '.map')}
+    async clientFiles(firebasePublish?: FirebasePublish): Promise<FileCollection> {
+        const config = {
+            '/index.html':              {contents: this.indexFile()},
+            [`/${this.codeFileName}`]:  {contents: this.codeFile()},
+            [`/${runtimeFileName}`]:    {contents: await this.loadFile(runtimeFileSourcePath)},
+            [`/${runtimeFileName}.map`]: {contents: await this.loadFile(runtimeFileSourcePath + '.map')}
         }
+
+        if (firebasePublish) {
+            const firebaseConfig = await firebasePublish.getConfig()
+            const configJson = JSON.stringify(firebaseConfig, null, 2)
+            config['/firebaseConfig.json'] = {contents: configJson}
+        }
+
+        return config
     }
 
-    async serverFiles(): Promise<{[path: string] : {text: string}}> {
+    async serverFiles(): Promise<FileCollection> {
         const gen = new ServerAppGenerator(this.serverApp)
-        const generatedFiles = Object.fromEntries( gen.output().files.map(({name, content}) => [name, {text: content}]) )
+        const generatedFiles = Object.fromEntries( gen.output().files.map(({name, contents}) => [name, {contents}]) )
         //console.log('generatedFiles', generatedFiles)
         const staticFiles = {
-            'serverRuntime.js': {text: await this.loadFile(serverRuntimeFileSourcePath)},
-            'serverRuntime.js.map': {text: await this.loadFile(serverRuntimeFileSourcePath + '.map')},
+            'serverRuntime.js': {contents: await this.loadFile(serverRuntimeFileSourcePath)},
+            'serverRuntime.js.map': {contents: await this.loadFile(serverRuntimeFileSourcePath + '.map')},
         }
         return {...generatedFiles, ...staticFiles}
     }
 
-    private codeFile() {
+    public codeFile() {
         const imports = [
             `import * as Elemento from "./${runtimeFileName}"`,
             `const {React} = Elemento`
@@ -75,12 +87,9 @@ export default class Builder {
   </style>
 </head>
 <body>
-
 <script type="module">
-    import * as Elemento from "/${runtimeFileName}"
-    import ${this.app.codeName} from "/${this.codeFileName}"
-
-    Elemento.run(${this.app.codeName})
+    import {runForDev} from "/${runtimeFileName}"
+    runForDev('/${this.codeFileName}')
 </script>
 
 </body>
@@ -88,4 +97,3 @@ export default class Builder {
 `
     }
 }
-

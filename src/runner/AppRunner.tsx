@@ -12,7 +12,7 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
     const containerRef = createRef()
 
     const selectionEventListener = (event: MouseEvent) => {
-        if (event.altKey) {
+        if (event.altKey && onComponentSelected) {
             event.preventDefault()
             event.stopPropagation()
             const target = event.target as HTMLElement
@@ -22,12 +22,8 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
             }
         }
     }
-    useEffect(() => (containerRef.current as HTMLElement).addEventListener('click', selectionEventListener) )
-    useEffect(() => {
-        if (selectedComponentId) {
-            highlightElement(selectedComponentId)
-        }
-    })
+    useEffect(() => (containerRef.current as HTMLElement).addEventListener('click', selectionEventListener), [] )
+    useEffect(() => highlightElement(selectedComponentId), [selectedComponentId])
     // @ts-ignore
     return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
 }

@@ -3,11 +3,11 @@ import fs from 'fs'
 import * as os from 'os'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/node'
-import {projectFileName} from '../../src/editor/LocalProjectStore'
 import {loadJSONFromString} from '../../src/model/loadJSON'
 import {Project} from '@playwright/test'
 import {wait, waitUntil} from '../testutil/testHelpers'
 import {Octokit} from 'octokit'
+import {projectFileName} from '../../src/shared/constants'
 
 jest.setTimeout(25000)
 

@@ -1,10 +1,10 @@
-import {ActionDef, ComponentType, ParentType, PropertyDef} from './Types'
+import {ActionDef, ComponentType, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import BaseElement, {actionDef, propDef} from './BaseElement'
 import Element from './Element'
 import Project from './Project'
 import FirebaseDeploy from '../editor/tools/FirebaseDeploy'
 
-type Properties = { firebaseProject?: string }
+type Properties = { firebaseProject?: string, firebaseConfiguration?: PropertyValueType<object> }
 
 export default class FirebasePublish extends BaseElement<Properties> implements Element {
 
@@ -16,6 +16,7 @@ export default class FirebasePublish extends BaseElement<Properties> implements 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('firebaseProject'),
+            propDef('firebaseConfiguration', 'expr', {multilineExpr: true}),
         ]
     }
 
@@ -36,8 +37,11 @@ export default class FirebasePublish extends BaseElement<Properties> implements 
         }
     }
 
-    async getConfig(project: Project) {
-        const deployer = new FirebaseDeploy(project, {firebaseProject: this.properties.firebaseProject!})
-        return await deployer.getConfig()
+    async getConfig() : Promise<object | undefined> {
+        const config = this.properties.firebaseConfiguration
+        if (!config) {
+            return undefined
+        }
+        return new Function('return ' + (config as PropertyExpr).expr)()
     }
 }

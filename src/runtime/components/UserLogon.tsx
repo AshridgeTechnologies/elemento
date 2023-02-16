@@ -5,7 +5,7 @@ import {createElement, useEffect, useState} from 'react'
 import * as auth from 'firebase/auth'
 import {StyledFirebaseAuth} from 'react-firebaseui'
 
-const {authIsReady, getAuth, onAuthChange, currentUser, signOut} = authentication
+const {authIsReady, getAuth, onAuthChange, currentUser, signOut, useSignedInState} = authentication
 
 function AuthDialog() {
     const uiConfig = {
@@ -38,14 +38,12 @@ export default function UserLogon() {
     }
 
     const [isAuthReady, setAuthReady] = useState(authIsReady)
+    const isSignedIn = useSignedInState()
     useEffect(() => onAuthChange( () => setAuthReady(authIsReady) ), [])
 
     if (!isAuthReady) {
         return <div>Connecting...</div>
     }
-
-    const isSignedIn = !!currentUser()
-
 
     const userPanel = isSignedIn ?
         <Box minWidth={300} margin={2}>

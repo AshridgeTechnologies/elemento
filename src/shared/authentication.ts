@@ -24,7 +24,7 @@ export const signIn = () => {
         .then((result) => {
             const credential = GithubAuthProvider.credentialFromResult(result);
             ghAccessToken = credential?.accessToken ?? null
-            ghUsername = (result.user as any).reloadUserInfo.screenName  // hack to get GitHib username from private field
+            ghUsername = (result.user as any).reloadUserInfo.screenName  // hack to get GitHub username from private field
         }).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -44,3 +44,5 @@ export const currentUser = () => getAuth().currentUser
 
 export const gitHubAccessToken = () => ghAccessToken
 export const gitHubUsername = () => ghUsername
+
+export const isSignedIn = () => gitHubUsername() && gitHubAccessToken()

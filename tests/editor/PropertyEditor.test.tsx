@@ -420,8 +420,28 @@ service cloud.firestore {
     expect(input('Security Rules').readOnly).toBe(true)
 })
 
-test('has fields and actions for FirebasePublish', () => {
-    const element = new FirebasePublish('id1', 'Firebase Publish 1', {firebaseProject: 'project-one'})
+test('has fields and actions for FirebasePublish', async () => {
+    const config = {
+        apiKey: "Abcde",
+        authDomain: "xyz.firebaseapp.com",
+        projectId: "xyz123",
+        storageBucket: "xyz123.appspot.com",
+        messagingSenderId: "222222222",
+        appId: "1:22222222:web:aaaabbbbccccdddd"
+    }
+    const configStr = `{
+        apiKey: "Abcde",
+        authDomain: "xyz.firebaseapp.com",
+        projectId: "xyz123",
+        storageBucket: "xyz123.appspot.com",
+        messagingSenderId: "222222222",
+        appId: "1:22222222:web:aaaabbbbccccdddd"
+    }
+    `
+    const element = new FirebasePublish('id1', 'Firebase Publish 1', {
+        firebaseProject: 'project-one',
+        firebaseConfiguration: {expr: configStr}
+    })
     element.publish = jest.fn()
     const project = new Project('id1', 'proj1', {})
     render(<ProjectContext.Provider value={project}>
@@ -429,10 +449,13 @@ test('has fields and actions for FirebasePublish', () => {
     </ProjectContext.Provider>)
     expect(nameInputValue()).toBe('Firebase Publish 1')
     expect(inputValue('Firebase Project')).toBe('project-one')
+    expect(inputValue('Firebase Configuration')).toBe(configStr)
 
     const publishButton = screen.getByText('Publish')
     fireEvent.click(publishButton)
     expect(element.publish).toHaveBeenCalledWith(project)
+
+    expect(await element.getConfig()).toStrictEqual(config)
 })
 
 test('shows errors for each property', () => {

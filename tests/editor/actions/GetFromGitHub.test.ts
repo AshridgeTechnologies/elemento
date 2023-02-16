@@ -26,12 +26,10 @@ beforeEach(() => {
         getFromGitHub: jest.fn().mockResolvedValue(undefined)
     } as unknown as EditorManager
 
-    uiManager = {
-        onClose: jest.fn(), showAlert: jest.fn()
-    } as UIManager
+    uiManager = new UIManager({onClose: jest.fn(), showAlert: jest.fn(), editorId: 'editor1'})
 
     onUpdate = jest.fn().mockImplementation( newState => state = newState)
-    state = new GetFromGitHubState({editorManager, uiManager}, onUpdate)
+    state = new GetFromGitHubState({editorManager}, onUpdate)
 })
 
 
@@ -73,13 +71,13 @@ test('validates project name not same as an existing name', async () => {
 test('can create when fields entered and no error', async () => {
     await wait(10) // wait for existing project names to load
 
-    expect(state.canCreate).toBe(false)
+    expect(state.canDoAction).toBe(false)
     state.setProjectName('Proj One')
-    expect(state.canCreate).toBe(false)
+    expect(state.canDoAction).toBe(false)
     state.setUrl('https://example.com/user/repo1')
-    expect(state.canCreate).toBe(true)
+    expect(state.canDoAction).toBe(true)
     state.setProjectName('Project B')
-    expect(state.canCreate).toBe(false)
+    expect(state.canDoAction).toBe(false)
 })
 
 test('calls onGet', async () => {
@@ -94,7 +92,7 @@ test('calls onGet and throws if error', async () => {
         getProjectNames: jest.fn().mockResolvedValue([]),
         getFromGitHub: jest.fn().mockRejectedValue(new Error('Cannot do this'))
     } as unknown as EditorManager
-    state = new GetFromGitHubState({editorManager, uiManager}, onUpdate)
+    state = new GetFromGitHubState({editorManager}, onUpdate)
 
     state.setProjectName('Proj One')
     state.setUrl('https://example.com/user/repo1')
@@ -114,6 +112,7 @@ test('dialog works with state', async () => {
 
     await user.type(screen.getByLabelText('Project Name'), '1')
     await user.click(screen.getByText('Get'))
+    await wait(10)
     expect(editorManager.getFromGitHub).toHaveBeenCalledWith('https://example.com/user/Project A', 'Project A1')
     expect(uiManager.onClose).toHaveBeenCalled()
 })
@@ -133,7 +132,7 @@ test('dialog shows alert if error in action', async () => {
         const user = userEvent.setup()
         await user.type(screen.getByLabelText('GitHub URL'), 'https://example.com/user/Project One')
         await user.click(screen.getByText('Get'))
-        expect(uiManager.showAlert).toHaveBeenCalledWith('Get project from GitHub', `Message: Cannot do this`, null, 'error')
+        expect(uiManager.showAlert).toHaveBeenCalledWith('Get project from GitHub', `Error: Cannot do this`, null, 'error')
         expect(uiManager.onClose).toHaveBeenCalled()
     } finally {
         expect(console.error).toHaveBeenCalledWith('Error in Get project from GitHub', error)

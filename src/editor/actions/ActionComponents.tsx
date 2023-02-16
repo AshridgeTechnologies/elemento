@@ -37,11 +37,11 @@ export function DialogTextField(props: TextFieldProps) {
     />
 }
 
-export function EditorActionDialog({title, content, fields, action, onClose}:
-                                 { title: string, content: React.ReactNode, fields: React.ReactNode, action: React.ReactNode, onClose: VoidFunction }) {
+export function EditorActionDialog({title, content, fields, action, onCancel}:
+                                 { title: string, content: React.ReactNode, fields: React.ReactNode, action: React.ReactNode, onCancel: VoidFunction }) {
     return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>{title} <CloseButton onClose={onClose}/></DialogTitle>
+        <Dialog onClose={onCancel} open={true}>
+            <DialogTitle>{title} <CloseButton onClose={onCancel}/></DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     {content}
@@ -50,7 +50,7 @@ export function EditorActionDialog({title, content, fields, action, onClose}:
             </DialogContent>
             <DialogActions>
                 {action}
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
+                <Button variant='outlined' onClick={onCancel}>Cancel</Button>
             </DialogActions>
         </Dialog>
     )

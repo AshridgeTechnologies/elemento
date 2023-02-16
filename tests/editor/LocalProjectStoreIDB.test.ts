@@ -1,7 +1,8 @@
 import 'fake-indexeddb/auto'
-import {LocalProjectStoreIDB, projectFileName, ASSET_DIR} from '../../src/editor/LocalProjectStore'
+import {LocalProjectStoreIDB} from '../../src/editor/LocalProjectStore'
 import {projectFixture1} from '../testutil/projectFixtures'
 import {FILES_ID} from '../../src/model/Project'
+import {ASSET_DIR, projectFileName} from '../../src/shared/constants'
 
 let store: LocalProjectStoreIDB
 globalThis.navigator = {} as any

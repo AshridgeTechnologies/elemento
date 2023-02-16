@@ -19,11 +19,11 @@ function zipText(text: string) {
 
 const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 
-type FileInfo = { name: string, content: string }
+type FileInfo = { name: string, contents: string | Uint8Array }
 
 function zipFiles(files: FileInfo[]) {
     const zip = new JSZip()
-    files.forEach( f => zip.file(f.name, f.content))
+    files.forEach( f => zip.file(f.name, f.contents))
     return zip.generateAsync({type: 'uint8array'})
 }
 
@@ -133,8 +133,8 @@ export default class FirebaseDeploy {
         const generatedFiles = gen.output().files
         console.log('generatedFiles', generatedFiles)
         const staticFiles = [
-            {name: 'serverRuntime.js', content: await this.loadFile(serverRuntimeFileSourceUrl)},
-            {name: 'serverRuntime.js.map', content: await this.loadFile(serverRuntimeFileSourceUrl + '.map')},
+            {name: 'serverRuntime.js', contents: await this.loadFile(serverRuntimeFileSourceUrl)},
+            {name: 'serverRuntime.js.map', contents: await this.loadFile(serverRuntimeFileSourceUrl + '.map')},
         ]
         const files = [...generatedFiles, ...staticFiles]
         const sourceZipData = await zipFiles(files)

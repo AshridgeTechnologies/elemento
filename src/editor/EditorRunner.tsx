@@ -1,5 +1,5 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -23,15 +23,15 @@ import ProjectFileStore from './ProjectFileStore'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
-import {ASSET_DIR, LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
+import {LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
 import {editorEmptyProject} from '../util/initialProjects'
-import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
+import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
-import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
-import {UIManager, validateProjectName} from './actions/actionHelpers'
-import EditorManager from './actions/EditorManager'
+import {PopupMessage, validateProjectName} from './actions/actionHelpers'
+import {WebContainer} from '@webcontainer/api'
+import {previewClientFiles, previewCodeFile, previewFiles} from './previewFiles'
+import {ASSET_DIR} from '../shared/constants'
 
 
 declare global {
@@ -144,91 +144,116 @@ function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: 
         </Dialog>
     )
 }
-
-
-function CreateGitHubRepoDialog({onCreate, onClose, defaultName}: { onCreate: (repoName: string) => Promise<void>, onClose: VoidFunction, defaultName: string }) {
-    const [repoName, setRepoName] = useState<string>(defaultName)
-    const onChangeRepoName = (event: ChangeEvent) => setRepoName((event.target as HTMLInputElement).value)
-    const canCreate = !!repoName
-
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Create GitHub repository <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a name for the new repository
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="repositoryName"
-                    label="Repository name"
-                    fullWidth
-                    variant="standard"
-                    value={repoName}
-                    onChange={onChangeRepoName}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCreate(repoName)} disabled={!canCreate}>Create</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
-function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) => Promise<void>, onClose: VoidFunction }) {
-    const [commitMessage, setCommitMessage] = useState<string>('')
-    const onChangeCommitMessage = (event: ChangeEvent) => setCommitMessage((event.target as HTMLInputElement).value)
-    const canCommit = !!commitMessage
-
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Save to GitHub <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a description of the changes made
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="commitMessage"
-                    label="Changes made"
-                    fullWidth
-                    variant="standard"
-                    value={commitMessage}
-                    onChange={onChangeCommitMessage}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCommit(commitMessage)} disabled={!canCommit}>Save</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
 export default function EditorRunner() {
+    const [editorId] = useState(Date.now())
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectFileStore] = useState<ProjectFileStore>(new ProjectFileStore(projectHandler))
     const [localProjectStore] = useState<LocalProjectStore>(new LocalProjectStoreIDB())
+    const webContainerRef = useRef<WebContainer>()
+    const serverProcessRef = useRef<any>()
+    const [webContainerUrl, setWebContainerUrl] = useState<string>('')
+    const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [project, setProject] = useState<Project>(projectHandler.current)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
+    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    // const [popup, setPopup] = useState<Window | null>(null)
+    const popupRef = useRef(false)
     const removeDialog = () => setDialog(null)
+
     const updateProjectAndSave = () => {
-        setProject(projectHandler.current)
-        localProjectStore.writeProjectFile(projectHandler.name, projectHandler.current.withoutFiles())
+        const updatedProject = projectHandler.current
+        setProject(updatedProject)
+        localProjectStore.writeProjectFile(projectHandler.name, updatedProject.withoutFiles())
+
+        const [path, fileContents] = previewCodeFile(updatedProject)
+        webContainerRef.current!.fs.writeFile(path, fileContents, {encoding: 'utf8'}).then( ()=> {
+            sendMessage({type: 'refreshCode'})
+        })
     }
 
-    const updateProjectHandler = (proj: Project, name: string) => {
+    const updateProjectHandler = async (proj: Project, name: string) => {
         projectHandler.setProject(proj)
         projectHandler.name = name
         setProject(proj)
+        const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
+        console.log('re-mounting files', filesToMount)
+        await webContainerRef.current!.fs.rm('public', { force: true, recursive: true });
+        await webContainerRef.current!.fs.mkdir('public');
+        await webContainerRef.current!.mount(filesToMount, {mountPoint: 'public'})
+        setUpdateTime(Date.now())
+
         const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
-        gitProjectStore.getOriginRemote(name).then( setGitHubUrl )
+        gitProjectStore.getOriginRemote(name).then(setGitHubUrl)
+    }
+
+    async function openOrUpdateProject(name: string) {
+        const projectWorkingCopy = await localProjectStore.getProject(name)
+        const project = projectWorkingCopy.projectWithFiles
+        await updateProjectHandler(project, name)
+    }
+    async function sendMessage(message: object) {
+        const serverProcess = serverProcessRef.current
+        if (!serverProcess) return
+        const writableStream = serverProcess.input
+        const defaultWriter = writableStream.getWriter();
+        await defaultWriter.ready
+        await defaultWriter.write('WS:' + JSON.stringify(message) + '\n')
+        await defaultWriter.ready
+        defaultWriter.releaseLock()
+    }
+
+    const initWebContainer = () => {
+        const doInit = async function () {
+            const webContainer = await WebContainer.boot()
+            console.log('webContainer', webContainer)
+            const filesToMount = await previewFiles(projectHandler.current, projectHandler.name, window.location.origin)
+            console.log('filesToMount', filesToMount)
+            await webContainer.mount(filesToMount)
+
+            console.log('Starting server')
+            const serverProcess = await webContainer.spawn('node', ['devServer.cjs'])
+
+            async function receiveMessagesFromServerOutput() {
+                const reader = serverProcess!.output.getReader()
+                let value = null, done = false
+                const escapeCodeRegex = /\[\w\w\w?/g
+                const startingNonPrintableRegex = /^\W*/
+                for (; !done; {value, done} = await reader.read()) {
+                    const line = value?.trim().replace(escapeCodeRegex, '').replace(startingNonPrintableRegex, '')
+                    if (line && line.length > 1) {
+                        if (line.startsWith('WS:')) {
+                            const messageLine = line.replace(/^WS: */, '')
+                            const message = JSON.parse(messageLine)
+                            if (message.type === 'componentSelected') {
+                                const {id} = message
+                                const selectedItem = projectHandler.current.findElementByPath(id)
+                                onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
+                            }
+                        } else {
+                            console.log('Server output:', line?.trim())
+                        }
+                    }
+                }
+
+            }
+
+            receiveMessagesFromServerOutput()
+
+            webContainer.on('server-ready', (port, url) => {
+                console.log('Server ready', 'port', port, 'url', url)
+                webContainerRef.current = webContainer
+                serverProcessRef.current = serverProcess
+                setWebContainerUrl(url)
+                // window.wcfs = webContainer.fs
+            })
+            webContainer.on('error', error => console.error('Error in webcontainer', error))
+        }
+        if (!webContainerRef.current) {
+            doInit().then( ()=> console.log('Web container initialized'))
+        }
     }
 
     useEffect( () => {
@@ -238,6 +263,33 @@ export default function EditorRunner() {
         }
         window.getProject = () => projectHandler.current
     })
+    useEffect( initWebContainer, [] )
+
+    useEffect(() => {
+        const checkForMessages = () => {
+            if (!popupRef.current) return // message only expected if popup open
+            const messageKey = 'msg_' + editorId
+            const messageJSON = window.localStorage.getItem(messageKey)
+            if (messageJSON) {
+                const message = JSON.parse(messageJSON) as PopupMessage
+                switch(message.type) {
+                    case 'openProject':
+                        openOrUpdateProject(message.projectName)
+                        break
+                    case 'updateProject':
+                        openOrUpdateProject(message.projectName)
+                        break
+                    case 'operationCancelled':
+                        break
+                }
+                popupRef.current = false
+                window.localStorage.removeItem(messageKey)
+            }
+        }
+
+        window.addEventListener('focus', checkForMessages)
+        return ()=> window.removeEventListener('focus', checkForMessages)
+    }, [])
 
     const isFileElement = (id: ElementId) => projectHandler.current.findElement(id)?.kind === 'File'
 
@@ -318,7 +370,7 @@ export default function EditorRunner() {
         const existingProjectNames = await localProjectStore.getProjectNames()
         const onProjectCreated = async (name: string) => {
             await localProjectStore.createProject(name)
-            updateProjectHandler(editorEmptyProject().withFiles(), name)
+            await updateProjectHandler(editorEmptyProject().withFiles(), name)
             await localProjectStore.writeProjectFile(name, projectHandler.current.withoutFiles())
             removeDialog()
         }
@@ -329,9 +381,7 @@ export default function EditorRunner() {
     const onOpen = async () => {
         const names = await localProjectStore.getProjectNames()
         const onProjectSelected = async (name: string) => {
-            const projectWorkingCopy = await localProjectStore.getProject(name)
-            const project = projectWorkingCopy.projectWithFiles
-            updateProjectHandler(project, name)
+            await openOrUpdateProject(name)
             removeDialog()
         }
 
@@ -339,77 +389,22 @@ export default function EditorRunner() {
     }
 
 
-    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(localProjectStore, projectHandler, setGitHubUrl)}
-                                                                 uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
-
-    const onUpdateFromGitHub = async() => {
-        console.log('Update from GitHub')
-        const fs = localProjectStore.fileSystem
-        const store =  new GitProjectStore(fs, http)
-        const projectName = projectHandler.name
-        try {
-            await store.pull(projectName)
-            showAlert('Project updated from GitHub', '', null, 'success')
-        } catch(e: any) {
-            console.error('Error in pull', e)
-            showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
-        }
-        const projectWorkingCopy = await localProjectStore.getProject(projectName)
-        updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
-    }
-
     const onExport = async () => {
         await projectFileStore.saveFileAs()
     }
 
-    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
+    const onGetFromGitHub = () => openGitHubPopup('get')
 
-    function pushToGitHub(gitProjectStore: GitProjectStore) {
-        const onPush = async (commitMessage: string) => {
-            try {
-                await gitProjectStore.commitAndPush(projectHandler.name, commitMessage)
-                showAlert('Saved to GitHub', '', null, 'success')
-            } catch (e: any) {
-                console.error('Error in pushing to GitHub repo', e)
-                showAlert('Problem saving to GitHub', `Message: ${e.message}`, null, 'error')
-            }
-            removeDialog()
-        }
-        setDialog(<CommitDialog onClose={removeDialog} onCommit={onPush}/>)
-    }
+    const onUpdateFromGitHub = async() => openGitHubPopup('update', projectHandler.name)
+    const onSaveToGitHub = () => openGitHubPopup('save', projectHandler.name)
 
-    const onSaveToGitHub = async () => {
-        if (!isSignedIn()) {
-            await signIn()
-        }
-        if (!isSignedIn()) {
-            window.alert('Please sign in to GitHub to save this project')
-            return
-        }
-        const fs = localProjectStore.fileSystem
-        const gitProjectStore = new GitProjectStore(fs, http, gitHubUsername(), gitHubAccessToken())
-        const projectName = projectHandler.name
-        if (await gitProjectStore.isConnectedToGitHubRepo(projectName)) {
-            pushToGitHub(gitProjectStore)
-        } else {
-            if (!(await isGitWorkingCopy(fs, projectName))) {
-                await gitProjectStore.init(projectName)
-            }
-
-            const onCreate = async (repoName: string) => {
-                try {
-                    const createdRepoName = await gitProjectStore.createGitHubRepo(projectName, repoName)
-                    setGitHubUrl(await gitProjectStore.getOriginRemote(projectName))
-                    showAlert('Created GitHub repository', `Created repository ${createdRepoName}`, null, 'success')
-                    pushToGitHub(gitProjectStore)
-                } catch (e: any) {
-                    console.error('Error in creating GitHub repo', e)
-                    showAlert('Problem creating GitHub repository', `Message: ${e.message}`, null, 'error')
-                    removeDialog()
-                }
-            }
-            setDialog(<CreateGitHubRepoDialog onClose={removeDialog} onCreate={onCreate} defaultName={projectName}/>)
-        }
+    const openGitHubPopup = (action: string, projectName: string = '') => {
+        const popupWidth = 600
+        const popupLeft = window.screenX + window.outerWidth/2 - popupWidth/2
+        const popupTop = window.screenY + 200
+        const popup = window.open(`/studio/github.html?editorId=${editorId}&action=${action}&projectName=${projectName}`,
+            'elemento_github', `popup,left=${popupLeft},top=${popupTop},width=${popupWidth},height=600`)
+        popupRef.current = true
     }
     const showAlert = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => {
         const removeAlert = () => setAlertMessage(null)
@@ -418,6 +413,12 @@ export default function EditorRunner() {
             <p id="alertMessage">{message}</p>
             <p>{detail}</p>
         </Alert>)
+    }
+
+    const onSelectedItemsChange = (ids: string[]) => {
+        setSelectedItemIds(ids)
+        const pathIds = ids.map( id => projectHandler.current.findElementPath(id))
+        sendMessage({type: 'selectedItems', ids: pathIds})
     }
 
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
@@ -430,7 +431,8 @@ export default function EditorRunner() {
                     onNew={onNew} onOpen={onOpen}
                     onExport={onExport}
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
-                    runUrl={runUrl}
+                    runUrl={runUrl} previewUrl={updateTime ? `${webContainerUrl}?v=${updateTime}` : 'about:blank'}
+                    selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
             />
         </ThemeProvider>
 }
