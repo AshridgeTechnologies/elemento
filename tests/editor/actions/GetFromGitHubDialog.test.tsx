@@ -1,29 +1,12 @@
 import React from 'react'
-import { test, expect } from '@playwright/experimental-ct-react';
-import EditorManager from '../../../src/editor/actions/EditorManager'
-import {UIManager} from '../../../src/editor/actions/actionHelpers'
-import {GetFromGitHubDialog} from '../../../src/editor/actions/GetFromGitHub'
+import {expect, test} from '@playwright/experimental-ct-react';
+import GetFromGitHubDialog_wrapper from './GetFromGitHubDialog_wrapper'
 
 test.use({ viewport: { width: 800, height: 800 } });
 
-test('should work', async ({ mount }) => {
-    let editorManager: EditorManager
-    let uiManager: UIManager
+test('should work', async ({ mount, page }) => {
 
-        editorManager = {
-            getProjectNames: () => Promise.resolve(['Project A', 'Project B']),
-            getFromGitHub: () => Promise.resolve()
-        } as unknown as EditorManager
-
-        uiManager = {
-            onClose: () => {}, showAlert: () => {}
-        } as UIManager
-
-    const component = await mount(<GetFromGitHubDialog editorManager={{
-        getProjectNames: () => Promise.resolve(['Project A', 'Project B']),
-        getFromGitHub: () => Promise.resolve()
-    }} uiManager={{
-        onClose: () => {}, showAlert: () => {}
-    }}/>)
-    await expect(component).toContainText('Please enter the GitHub URL')
+    await page.pause()
+    const component = await mount(<GetFromGitHubDialog_wrapper/>)
+    await expect(page.locator('.MuiDialog-paper')).toContainText('Please enter the GitHub URL')
 })
