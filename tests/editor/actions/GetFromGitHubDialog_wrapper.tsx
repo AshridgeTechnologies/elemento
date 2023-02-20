@@ -1,11 +1,15 @@
-import {GetFromGitHubDialog} from '../../../src/editor/actions/GetFromGitHub'
 import React from 'react'
+import {GetFromGitHubDialog} from '../../../src/editor/actions/GetFromGitHub'
+import EditorManager from '../../../src/editor/actions/EditorManager'
 
 export default function GetFromGitHubDialog_wrapper() {
-    return <GetFromGitHubDialog editorManager={{
+    const editorManager = {
         getProjectNames: () => Promise.resolve(['Project A', 'Project B']),
-        getFromGitHub: () => Promise.resolve()
-    }} uiManager={{
+        getFromGitHub: () => Promise.resolve(),
+    } as unknown as EditorManager
+
+    const uiManager = {
         onClose: () => {}, showAlert: () => {}
-    }}/>
+    }
+    return <GetFromGitHubDialog editorManager={editorManager} uiManager={uiManager}/>
 }

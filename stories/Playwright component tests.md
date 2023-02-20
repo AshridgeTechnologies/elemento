@@ -20,8 +20,10 @@ Technical
 
 - To debug, use PWDEBUG=console
 - If the mount fails, also need a page.pause() at the start of the script
+- page.pause() appears to have no effect unless debugging, so can leave it in
 - Remember dialogs are not actually within the component that creates them
 - There are two processes running: the test, in Node, and the component in the browser
 - SO you are restricted in what you can pass into the component from the test
 - Functions, and objects with functions, will NOT work, but they may be substituted by a function that returns undefined
 - Workaround is to create a wrapper component and mount _that_ in the test
+- 

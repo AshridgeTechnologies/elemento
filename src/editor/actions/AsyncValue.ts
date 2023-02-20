@@ -7,9 +7,7 @@ export default class AsyncValue<T> {
 
     init(getValueFn: () => Promise<T>, notifyFn: (value: T) => void) {
         if (!this.promise) {
-            const valuePromise = getValueFn()
-            console.log('valuePromise', valuePromise)
-            this.promise = valuePromise.then(value => {
+            this.promise = getValueFn().then(value => {
                 this._value = value
                 this.notifyFn?.(value)
             })

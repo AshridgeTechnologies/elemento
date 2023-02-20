@@ -1,13 +1,13 @@
 import {Page as PWPage} from 'playwright-core'
 import {Page} from '@playwright/test'
+import {treeItemTitleSelector} from '../editor/Selectors.js'
 
-const treeItemSelector = '.rc-tree-list .rc-tree-node-content-wrapper'
 const treeExpandControlSelector = '.rc-tree-switcher'
 
 export const ex = ([s]: TemplateStringsArray) => ({expr: s})
 export const loadProject = (page: PWPage, projectToLoad: any) => page.evaluate((project: string) => window.setProject(project), JSON.stringify(projectToLoad))
-export const treeItem = (n: number) => `${treeItemSelector} >> nth=${n}`
-export const treeItemText = (text: string) => `${treeItemSelector}:has-text("${text}")`
+export const treeItem = (n: number) => `${treeItemTitleSelector} >> nth=${n}`
+export const treeItemText = (text: string) => `${treeItemTitleSelector}:has-text("${text}")`
 export const treeExpand = (n: number) => `${treeExpandControlSelector} >> nth=${n}`
 export const pageFunctions = (page: Page) => {
     const functions = ['goto', 'click', 'fill', 'press', 'locator', 'waitForSelector', 'textContent'] as Array<keyof Page>

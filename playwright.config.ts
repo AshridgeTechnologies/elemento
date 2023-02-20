@@ -1,5 +1,4 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
+import {defineConfig, devices} from '@playwright/experimental-ct-react';
 
 /**
  * Read environment variables from file.
@@ -14,9 +13,11 @@ console.log('baseUrl: ', baseURL)
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const config: PlaywrightTestConfig = {
-  testDir: './tests/functional',
-  /* Maximum time one test can run for. */
+export default defineConfig({
+  testDir: './tests',
+  testMatch: [/.*\.(test|pwtest)\.(ts|tsx)/],
+  /* The base directory, relative to the config file, for snapshot files created with toMatchSnapshot and toHaveScreenshot. */
+  snapshotDir: './tests/__pw_snapshots__',
   timeout: 10 * 1000,
   expect: {
     /**
@@ -34,7 +35,7 @@ const config: PlaywrightTestConfig = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  //reporter: 'html',
+  reporter: [['html', { outputFolder: 'playwright/report', open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -44,6 +45,9 @@ const config: PlaywrightTestConfig = {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* Port to use for Playwright component endpoint. */
+    ctPort: 3100,
   },
 
   /* Configure projects for major browsers */
@@ -115,6 +119,4 @@ const config: PlaywrightTestConfig = {
   //   command: 'npm run start',
   //   port: 3000,
   // },
-};
-
-export default config;
+})

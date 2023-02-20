@@ -90,7 +90,7 @@ export const serverapp1 = onRequest(app)`)
         expect(packageFile.content).toBe(`{
   "type": "module",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "main": "index.js",
   "dependencies": {

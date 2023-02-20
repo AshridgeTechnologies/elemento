@@ -12,5 +12,5 @@ coverage
 /functions/lib/
 /.proxyrc.json
 /test-results/
-/playwright-report/
 /playwright/.cache/
+/playwright/
