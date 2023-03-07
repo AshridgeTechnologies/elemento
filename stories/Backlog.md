@@ -20,11 +20,11 @@ Stories
 -------
 
 ### WebContainer server
-- Serve preview from WebContainer
 - Serve server apps from WebContainer
 
 ### Move to GitHub
 - Deploy from GitHub
+- Project directory in disk files
 - Can use private GitHub repos
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
@@ -183,6 +183,7 @@ Done
 - Get or update working copy from GitHub
 - Asset files stored in working copy
 - Image component loaded from asset file
+- Serve preview from WebContainer
 
 Bugs fixed
 ----------
