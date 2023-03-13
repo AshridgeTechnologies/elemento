@@ -67,6 +67,7 @@ Stories
 - Preview improvements - screen size, scrolling, etc
 
 ### Priority 1
+- Deploy multiple versions - for testing, canary deployment and instant rollback
 - Export working copy to directory - or zip?
 - Import working copy from directory - or zip?
 - Add deferred desirable features from previous stories
@@ -102,6 +103,7 @@ Epics
 Tech debt
 ---------
 
+- Revisit user-private - using sub-collections in Firebase is non-portable
 - Flaky EditorRunner and AppMain tests
 - Refactor Editor etc so could swap in different Editor, outer component generates and previews
 - Refactor EditorRunner into visual and project handling parts
