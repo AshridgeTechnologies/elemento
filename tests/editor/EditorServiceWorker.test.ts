@@ -127,3 +127,12 @@ test('sends highlight message from editor', async () => {
     expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'selectedItems', ids: ['Page1.Title']})
     expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'selectedItems', ids: ['Page1.Title']})
 })
+
+test('sends highlight message to editor', async () => {
+    const event = {data: {type: 'componentSelected', id: 'Page1.Text1'}} as ExtendableMessageEvent
+    worker.message(event)
+    // @ts-ignore
+    await wait(10)
+    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'componentSelected', id: 'Page1.Text1'})
+    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'componentSelected', id: 'Page1.Text1'})
+})

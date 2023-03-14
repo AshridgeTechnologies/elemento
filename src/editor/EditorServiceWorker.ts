@@ -27,6 +27,10 @@ export default class EditorServiceWorker {
         if (data?.type === 'editorHighlight') {
             this.sendEditorHighlight(data.ids)
         }
+
+        if (data?.type === 'componentSelected') {
+            this.sendClientHighlight(data.id)
+        }
     }
 
     install = (event: ExtendableEvent) => {
@@ -104,5 +108,9 @@ export default class EditorServiceWorker {
 
     async sendEditorHighlight(ids: string[]) {
         await this.sendToClients('selectedItems', {ids})
+    }
+
+    async sendClientHighlight(id: string) {
+        await this.sendToClients('componentSelected', {id})
     }
 }

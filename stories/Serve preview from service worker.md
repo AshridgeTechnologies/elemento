@@ -30,10 +30,10 @@ Technical
 - ✅ SW sends update message to all preview clients after write
 - ✅ Preview handles update message
 - ✅ SW handles editor highlight message, sends to all preview clients
-- SW handles preview highlight message, send to editor
 - ✅ Editor sends highlight message
-- Preview sends highlight message
-- Editor receives client highlight message
+- ✅ SW handles preview highlight message, send to editor
+- ✅ Preview sends highlight message
+- ✅ Editor receives client highlight message
 
 
 To do

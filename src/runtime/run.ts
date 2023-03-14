@@ -44,7 +44,7 @@ export const runForDev = (url: string) => {
     }
 
     function onComponentSelected(id: string) {
-        //webSocket.send(JSON.stringify({type: 'componentSelected', id}))
+        navigator.serviceWorker.controller?.postMessage({type: 'componentSelected', id})
     }
 
     navigator.serviceWorker.onmessage = (event) => {

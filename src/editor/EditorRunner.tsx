@@ -272,6 +272,15 @@ export default function EditorRunner() {
             const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
             console.log('filesToMount', filesToMount)
             mountFiles(filesToMount)
+            navigator.serviceWorker.onmessage = (event) => {
+                const message = event.data
+                if (message.type === 'componentSelected') {
+                    const {id} = message
+                    const selectedItem = projectHandler.current.findElementByPath(id)
+                    onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
+                }
+            }
+
         }
 
         waitUntil( ()=> navigator.serviceWorker.controller, 500, 10000 ).then(doInit).catch(() => {
