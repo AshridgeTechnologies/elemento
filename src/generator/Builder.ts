@@ -88,8 +88,8 @@ export default class Builder {
 </head>
 <body>
 <script type="module">
-    import {runForDev} from "/${runtimeFileName}"
-    runForDev('/${this.codeFileName}')
+    import {runForDev} from "./${runtimeFileName}"
+    runForDev('./${this.codeFileName}')
 </script>
 
 </body>

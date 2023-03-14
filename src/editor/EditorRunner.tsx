@@ -32,6 +32,7 @@ import {PopupMessage, validateProjectName} from './actions/actionHelpers'
 import {WebContainer} from '@webcontainer/api'
 import {previewClientFiles, previewCodeFile, previewFiles} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
+import {waitUntil} from '../util/helpers'
 
 
 declare global {
@@ -180,9 +181,10 @@ export default function EditorRunner() {
         setProject(proj)
         const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
         console.log('re-mounting files', filesToMount)
-        await webContainerRef.current!.fs.rm('public', { force: true, recursive: true });
-        await webContainerRef.current!.fs.mkdir('public');
-        await webContainerRef.current!.mount(filesToMount, {mountPoint: 'public'})
+        mountFiles(filesToMount)
+        // await webContainerRef.current!.fs.rm('public', { force: true, recursive: true });
+        // await webContainerRef.current!.fs.mkdir('public');
+        // await webContainerRef.current!.mount(filesToMount, {mountPoint: 'public'})
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
@@ -256,6 +258,26 @@ export default function EditorRunner() {
         }
     }
 
+    function mountFiles(filesToMount: FileSystemTree) {
+        navigator.serviceWorker.controller.postMessage({
+            type: 'mount', fileSystem: filesToMount
+        })
+    }
+
+    const initServiceWorker = () => {
+
+
+        const doInit = async () => {
+            const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
+            console.log('filesToMount', filesToMount)
+            mountFiles(filesToMount)
+        }
+
+        waitUntil( ()=> navigator.serviceWorker.controller, 500, 10000 ).then(doInit).catch(() => {
+            window.location.reload()
+        })
+    }
+
     useEffect( () => {
         window.setProject = (project: string|Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
@@ -263,7 +285,7 @@ export default function EditorRunner() {
         }
         window.getProject = () => projectHandler.current
     })
-    useEffect( initWebContainer, [] )
+    useEffect( initServiceWorker, [] )
 
     useEffect(() => {
         const checkForMessages = () => {
@@ -423,6 +445,7 @@ export default function EditorRunner() {
 
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
     const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
+    const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
     return <ThemeProvider theme={theme}>
             {alertMessage}
             {dialog}
@@ -431,7 +454,7 @@ export default function EditorRunner() {
                     onNew={onNew} onOpen={onOpen}
                     onExport={onExport}
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
-                    runUrl={runUrl} previewUrl={updateTime ? `${webContainerUrl}?v=${updateTime}` : 'about:blank'}
+                    runUrl={runUrl} previewUrl={previewUrl}
                     selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
             />
         </ThemeProvider>

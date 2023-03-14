@@ -19,8 +19,10 @@ Bugs
 Stories
 -------
 
-### WebContainer server
-- Serve server apps from WebContainer
+### Preview server
+- Serve preview from service worker
+- Simulate server apps
+
 
 ### Move to GitHub
 - Deploy from GitHub

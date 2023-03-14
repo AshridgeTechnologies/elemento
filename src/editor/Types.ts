@@ -25,3 +25,17 @@ export type OnInsertWithSelectedFn = (insertPosition: InsertPosition, targetElem
 export type OnMoveFn = (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => void
 export type OnActionFn = (ids: ElementId[], action: AppElementAction) => Promise<ElementId | null | void>
 export type MenuItemFn = VoidFn
+
+
+// As used in WebContainer
+export interface FileSystemTree {
+    [name: string]: DirectoryNode | FileNode
+}
+export interface DirectoryNode {
+    directory: FileSystemTree
+}
+export interface FileNode {
+    file: {
+        contents: string | Uint8Array;
+    }
+}

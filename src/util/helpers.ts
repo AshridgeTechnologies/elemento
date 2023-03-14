@@ -41,3 +41,33 @@ export const parseParam = (param: string) => {
 
     return param
 }
+
+export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5000): Promise<T> => {
+    const startTime = new Date().getTime();
+    try {
+        const result = await fn()
+        if (result) {
+            return Promise.resolve(result)
+        } else {
+            return new Promise((resolve, reject) => {
+                const timer = setInterval(async () => {
+                    try {
+                        const result = await fn()
+                        if (result) {
+                            clearInterval(timer);
+                            resolve(result);
+                        } else if (new Date().getTime() - startTime > timeout) {
+                            clearInterval(timer);
+                            reject(new Error('Max wait reached for ' + fn.toString()));
+                        }
+                    } catch (e) {
+                        clearInterval(timer);
+                        reject(e);
+                    }
+                }, intervalTime);
+            });
+        }
+    } catch (e) {
+        return Promise.reject(e);
+    }
+}
