@@ -69,6 +69,7 @@
     "@types/jest": "^29.2.3",
     "@types/jsdom": "^20.0.1",
     "@types/lodash": "^4.14.189",
+    "@types/mime-types": "^2.1.1",
     "@types/papaparse": "^5.3.5",
     "@types/ramda": "^0.28.20",
     "@types/react": "^18.0.25",

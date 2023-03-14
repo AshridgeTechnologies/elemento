@@ -25,14 +25,15 @@ Technical
 - ✅ SW is a unit-testable class with message handler and emitters
 - ✅ SW handles requests for top-level files
 - ✅ SW handles requests for asset files
-- SW handles write message to update a file
-- Editor writes updated file
-- SW sends update message to all preview clients after write
-- Preview handles update message
-- SW handles editor highlight message, sends to all preview clients
+- ✅ SW handles write message to update a file
+- ✅ Editor writes updated file
+- ✅ SW sends update message to all preview clients after write
+- ✅ Preview handles update message
+- ✅ SW handles editor highlight message, sends to all preview clients
 - SW handles preview highlight message, send to editor
-- Editor sends highlight message
+- ✅ Editor sends highlight message
 - Preview sends highlight message
+- Editor receives client highlight message
 
 
 To do

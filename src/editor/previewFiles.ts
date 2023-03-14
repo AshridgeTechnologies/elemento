@@ -55,7 +55,7 @@ const previewAssetFiles = async (projectName: string): Promise<FileCollection> =
 
 export const previewCodeFile = (project: Project): [path: string, contents: string] => {
     const builder = new Builder(project, '')
-    return [`${rootDir}/${builder.codeFileName}`, builder.codeFile()]
+    return [`${builder.codeFileName}`, builder.codeFile()]
 
 }
 

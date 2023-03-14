@@ -3,7 +3,7 @@ import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {AppElementAction, AppElementActionName} from './Types'
+import {AppElementAction, AppElementActionName, FileSystemTree} from './Types'
 import {
     Alert,
     AlertColor,
@@ -170,9 +170,7 @@ export default function EditorRunner() {
         localProjectStore.writeProjectFile(projectHandler.name, updatedProject.withoutFiles())
 
         const [path, fileContents] = previewCodeFile(updatedProject)
-        webContainerRef.current!.fs.writeFile(path, fileContents, {encoding: 'utf8'}).then( ()=> {
-            sendMessage({type: 'refreshCode'})
-        })
+        writeFile(path, fileContents)
     }
 
     const updateProjectHandler = async (proj: Project, name: string) => {
@@ -182,9 +180,6 @@ export default function EditorRunner() {
         const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
         console.log('re-mounting files', filesToMount)
         mountFiles(filesToMount)
-        // await webContainerRef.current!.fs.rm('public', { force: true, recursive: true });
-        // await webContainerRef.current!.fs.mkdir('public');
-        // await webContainerRef.current!.mount(filesToMount, {mountPoint: 'public'})
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
@@ -259,9 +254,15 @@ export default function EditorRunner() {
     }
 
     function mountFiles(filesToMount: FileSystemTree) {
-        navigator.serviceWorker.controller.postMessage({
-            type: 'mount', fileSystem: filesToMount
-        })
+        navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
+    }
+
+    function writeFile(path: string, contents: Uint8Array | string) {
+        navigator.serviceWorker.controller!.postMessage({type: 'write', path, contents})
+    }
+
+    function selectItemsInPreview(ids: string[]) {
+        navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids})
     }
 
     const initServiceWorker = () => {
@@ -439,8 +440,8 @@ export default function EditorRunner() {
 
     const onSelectedItemsChange = (ids: string[]) => {
         setSelectedItemIds(ids)
-        const pathIds = ids.map( id => projectHandler.current.findElementPath(id))
-        sendMessage({type: 'selectedItems', ids: pathIds})
+        const pathIds = ids.map( id => projectHandler.current.findElementPath(id)).filter(id => id !== null) as string[]
+        selectItemsInPreview(pathIds)
     }
 
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined

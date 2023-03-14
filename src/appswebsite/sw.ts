@@ -2,7 +2,7 @@ import EditorServiceWorker from '../editor/EditorServiceWorker'
 
 declare const self: ServiceWorkerGlobalScope
 
-const worker = new EditorServiceWorker()
+const worker = new EditorServiceWorker(self)
 self.addEventListener('install', worker.install)
 self.addEventListener('activate', event => {
     console.log('SW activated', event)

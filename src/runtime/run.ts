@@ -44,12 +44,11 @@ export const runForDev = (url: string) => {
     }
 
     function onComponentSelected(id: string) {
-        webSocket.send(JSON.stringify({type: 'componentSelected', id}))
+        //webSocket.send(JSON.stringify({type: 'componentSelected', id}))
     }
 
-    const webSocket = new WebSocket('wss://' + location.host)
-    webSocket.onmessage = (event) => {
-        const message = JSON.parse(event.data)
+    navigator.serviceWorker.onmessage = (event) => {
+        const message = event.data
         if (message.type === 'refreshCode') {
             refreshCode()
         }
@@ -58,8 +57,6 @@ export const runForDev = (url: string) => {
             runModule()
         }
     }
-    webSocket.onerror = event => console.error('Error', event)
-    webSocket.onclose = event => console.error('closed', event)
 
     return refreshCode()
 }
