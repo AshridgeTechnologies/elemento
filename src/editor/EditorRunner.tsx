@@ -269,9 +269,7 @@ export default function EditorRunner() {
 
 
         const doInit = async () => {
-            const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
-            console.log('filesToMount', filesToMount)
-            mountFiles(filesToMount)
+            console.log('Initializing service worker')
             navigator.serviceWorker.onmessage = (event) => {
                 const message = event.data
                 if (message.type === 'componentSelected') {
@@ -280,10 +278,10 @@ export default function EditorRunner() {
                     onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
                 }
             }
-
         }
 
-        waitUntil( ()=> navigator.serviceWorker.controller, 500, 10000 ).then(doInit).catch(() => {
+        waitUntil( ()=> navigator.serviceWorker.controller, 500, 5000 ).then(doInit).catch(() => {
+            console.log('Timed out waiting for service worker - reloading')
             window.location.reload()
         })
     }

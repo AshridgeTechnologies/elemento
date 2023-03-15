@@ -34,7 +34,8 @@ export default class EditorServiceWorker {
     }
 
     install = (event: ExtendableEvent) => {
-        event.waitUntil(Promise.resolve());
+        event.waitUntil(this.swSelf.skipWaiting().then( () => console.log('Skip waiting in install complete')))
+        console.log('Waiting at end of install')
     }
 
     async handleRequest(request: Request) {
