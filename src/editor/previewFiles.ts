@@ -1,4 +1,4 @@
-import {DirectoryNode, FileNode, FileSystemTree} from '@webcontainer/api'
+import {DirectoryNode, FileNode, FileSystemTree} from './Types'
 import Builder, {FileCollection} from '../generator/Builder'
 import Project from '../model/Project'
 import {LocalProjectStoreIDB} from './LocalProjectStore'
@@ -19,16 +19,6 @@ const asFileSystemTree = (files: FileCollection): FileSystemTree => {
 
     return Object.fromEntries(entries)
 }
-
-export const previewFiles = async (project: Project, projectName: string, elementoUrl: string): Promise<FileSystemTree> => {
-    const clientFiles = await previewClientFiles(project, projectName, elementoUrl)
-    const devServer_cjs = await loadFile('/devServer/devServer.cjs')
-    return {
-        'devServer.cjs': file(devServer_cjs),
-        [rootDir]: dir(clientFiles)
-    }
-}
-
 export const previewClientFiles = async (project: Project, projectName: string, elementoUrl: string): Promise<FileSystemTree> => {
     const builder = new Builder(project, elementoUrl)
     const firebasePublishForPreview = project.findChildElements(FirebasePublish)[0]

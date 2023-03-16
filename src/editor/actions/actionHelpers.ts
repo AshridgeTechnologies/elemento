@@ -8,11 +8,6 @@ export type Optional<T> = {
     [Property in keyof T]+?: T[Property];
 }
 
-type OpenProjectMessage  = { type: 'openProject', projectName: string, url: string }
-type UpdateProjectMessage  = { type: 'updateProject', projectName: string }
-type OperationCancelledMessage  = { type: 'operationCancelled' }
-export type PopupMessage = OpenProjectMessage | UpdateProjectMessage | OperationCancelledMessage
-
 export function validateProjectName(name: string, existingNames: string[]) {
     if (existingNames.includes(name)) return 'There is already a project with this name'
     const match = name.match(/[^\w \(\)#%&+=.-]/g)
@@ -23,35 +18,11 @@ export function validateProjectName(name: string, existingNames: string[]) {
 export const onChangeValue = (onChangeFn: (val: string) => void) => (event: ChangeEvent) => onChangeFn((event.target as HTMLInputElement).value)
 
 export class UIManager {
-    constructor(private props: {onClose: () => void, showAlert: ShowAlertFn, editorId: string}) {
-    }
-
-    get onClose() { return this.props.onClose }
-    get showAlert() { return this.props.showAlert }
-
-    sendMessageToEditor(message: PopupMessage) {
-        window.localStorage.setItem('msg_' + this.props.editorId, JSON.stringify(message))
-    }
-
-    doAction(description: string, actionFn: () => void) {
-        return async () => {
-            try {
-                await actionFn()
-                this.showAlert(description, 'Project downloaded', null, 'success')
-            } catch (e: any) {
-                console.error('Error in ' + description, e)
-                this.showAlert(description, `Error: ${e.message}`, null, 'error')
-            }
-            this.onClose()
-        }
-    }
-
-    onCancel(description: string) {
-        return () => {
-            this.showAlert(description, 'Operation cancelled', null, 'info')
-            this.sendMessageToEditor({type:'operationCancelled'})
-            this.onClose()
-        }
+    readonly onClose: () => void
+    readonly showAlert: ShowAlertFn
+    constructor(props: {onClose: () => void, showAlert: ShowAlertFn}) {
+        this.onClose = props.onClose
+        this.showAlert = props.showAlert
     }
 }
 
@@ -63,3 +34,12 @@ export function useDialogState<T>(stateClass: StateClass<T>, editorManager: Edit
     return state
 }
 
+export const doAction = (uiManager: UIManager, description: string, actionFn: () => (void)) => async () => {
+    try {
+        await actionFn()
+    } catch (e: any) {
+        console.error('Error in ' + description, e)
+        uiManager.showAlert(description, `Message: ${e.message}`, null, 'error')
+    }
+    uiManager.onClose()
+}

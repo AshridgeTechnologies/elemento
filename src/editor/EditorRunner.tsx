@@ -25,14 +25,17 @@ import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
 import {LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
 import {editorEmptyProject} from '../util/initialProjects'
-import GitProjectStore from './GitProjectStore'
+import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
+import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
+import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
-import {PopupMessage, validateProjectName} from './actions/actionHelpers'
+import {UIManager, validateProjectName} from './actions/actionHelpers'
 import {previewClientFiles, previewCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
+import EditorManager from './actions/EditorManager'
 
 
 declare global {
@@ -145,12 +148,74 @@ function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: 
         </Dialog>
     )
 }
+
+
+function CreateGitHubRepoDialog({onCreate, onClose, defaultName}: { onCreate: (repoName: string) => Promise<void>, onClose: VoidFunction, defaultName: string }) {
+    const [repoName, setRepoName] = useState<string>(defaultName)
+    const onChangeRepoName = (event: ChangeEvent) => setRepoName((event.target as HTMLInputElement).value)
+    const canCreate = !!repoName
+
+    return (
+        <Dialog onClose={onClose} open={true}>
+            <DialogTitle>Create GitHub repository <CloseButton onClose={onClose}/></DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please enter a name for the new repository
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="repositoryName"
+                    label="Repository name"
+                    fullWidth
+                    variant="standard"
+                    value={repoName}
+                    onChange={onChangeRepoName}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button variant='outlined' onClick={() => onCreate(repoName)} disabled={!canCreate}>Create</Button>
+                <Button variant='outlined' onClick={onClose}>Cancel</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
+function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) => Promise<void>, onClose: VoidFunction }) {
+    const [commitMessage, setCommitMessage] = useState<string>('')
+    const onChangeCommitMessage = (event: ChangeEvent) => setCommitMessage((event.target as HTMLInputElement).value)
+    const canCommit = !!commitMessage
+
+    return (
+        <Dialog onClose={onClose} open={true}>
+            <DialogTitle>Save to GitHub <CloseButton onClose={onClose}/></DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please enter a description of the changes made
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="commitMessage"
+                    label="Changes made"
+                    fullWidth
+                    variant="standard"
+                    value={commitMessage}
+                    onChange={onChangeCommitMessage}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button variant='outlined' onClick={() => onCommit(commitMessage)} disabled={!canCommit}>Save</Button>
+                <Button variant='outlined' onClick={onClose}>Cancel</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
 export default function EditorRunner() {
-    const [editorId] = useState(Date.now())
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectFileStore] = useState<ProjectFileStore>(new ProjectFileStore(projectHandler))
     const [localProjectStore] = useState<LocalProjectStore>(new LocalProjectStoreIDB())
-    const serverProcessRef = useRef<any>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
@@ -158,8 +223,7 @@ export default function EditorRunner() {
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
-    // const [popup, setPopup] = useState<Window | null>(null)
-    const popupRef = useRef(false)
+    useRef(false)
     const removeDialog = () => setDialog(null)
     
     const getOpenProject = (): Project => {
@@ -211,7 +275,6 @@ export default function EditorRunner() {
 
     const initServiceWorker = () => {
 
-
         const doInit = async () => {
             console.log('Initializing service worker')
             navigator.serviceWorker.onmessage = (event) => {
@@ -238,32 +301,6 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect( initServiceWorker, [] )
-
-    useEffect(() => {
-        const checkForMessages = () => {
-            if (!popupRef.current) return // message only expected if popup open
-            const messageKey = 'msg_' + editorId
-            const messageJSON = window.localStorage.getItem(messageKey)
-            if (messageJSON) {
-                const message = JSON.parse(messageJSON) as PopupMessage
-                switch(message.type) {
-                    case 'openProject':
-                        openOrUpdateProject(message.projectName)
-                        break
-                    case 'updateProject':
-                        openOrUpdateProject(message.projectName)
-                        break
-                    case 'operationCancelled':
-                        break
-                }
-                popupRef.current = false
-                window.localStorage.removeItem(messageKey)
-            }
-        }
-
-        window.addEventListener('focus', checkForMessages)
-        return ()=> window.removeEventListener('focus', checkForMessages)
-    }, [])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
 
@@ -363,22 +400,80 @@ export default function EditorRunner() {
     }
 
 
+    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(localProjectStore, openOrUpdateProject)}
+                                                                 uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
+
+    const onUpdateFromGitHub = async() => {
+        console.log('Update from GitHub')
+        const fs = localProjectStore.fileSystem
+        const store =  new GitProjectStore(fs, http)
+        const projectName = projectHandler.name!
+        try {
+            showAlert('Updating from GitHub', projectName, null, 'info')
+            await store.pull(projectName)
+            showAlert('Project updated from GitHub', '', null, 'success')
+        } catch(e: any) {
+            console.error('Error in pull', e)
+            showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
+        }
+        const projectWorkingCopy = await localProjectStore.getProject(projectName)
+        await updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
+    }
+
     const onExport = async () => {
         await projectFileStore.saveFileAs()
     }
 
-    const onGetFromGitHub = () => openGitHubPopup('get')
+    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
-    const onUpdateFromGitHub = async() => openGitHubPopup('update', projectHandler.name!)
-    const onSaveToGitHub = () => openGitHubPopup('save', projectHandler.name!)
+    function pushToGitHub(gitProjectStore: GitProjectStore) {
+        const onPush = async (commitMessage: string) => {
+            try {
+                await gitProjectStore.commitAndPush(projectHandler.name!, commitMessage)
+                showAlert('Saved to GitHub', '', null, 'success')
+            } catch (e: any) {
+                console.error('Error in pushing to GitHub repo', e)
+                const description = e?.data?.response ?? null
+                showAlert('Problem saving to GitHub', e.message, description, 'error')
+            }
+            removeDialog()
+        }
+        setDialog(<CommitDialog onClose={removeDialog} onCommit={onPush}/>)
+    }
 
-    const openGitHubPopup = (action: string, projectName: string = '') => {
-        const popupWidth = 600
-        const popupLeft = window.screenX + window.outerWidth/2 - popupWidth/2
-        const popupTop = window.screenY + 200
-        const popup = window.open(`/studio/github.html?editorId=${editorId}&action=${action}&projectName=${projectName}`,
-            'elemento_github', `popup,left=${popupLeft},top=${popupTop},width=${popupWidth},height=600`)
-        popupRef.current = true
+    const onSaveToGitHub = async () => {
+        const projectName = projectHandler.name!
+        if (!isSignedIn()) {
+            await signIn()
+        }
+        if (!isSignedIn()) {
+            showAlert(`Save ${projectName}`, 'You need to sign in to GitHub to save this project', null, 'error')
+            removeDialog()
+            return
+        }
+        const fs = localProjectStore.fileSystem
+        const gitProjectStore = new GitProjectStore(fs, http, gitHubUsername(), gitHubAccessToken())
+        if (await gitProjectStore.isConnectedToGitHubRepo(projectName)) {
+            pushToGitHub(gitProjectStore)
+        } else {
+            if (!(await isGitWorkingCopy(fs, projectName))) {
+                await gitProjectStore.init(projectName)
+            }
+
+            const onCreate = async (repoName: string) => {
+                try {
+                    const createdRepoName = await gitProjectStore.createGitHubRepo(projectName, repoName)
+                    setGitHubUrl(await gitProjectStore.getOriginRemote(projectName))
+                    showAlert(`Save ${projectName}`, `Created repository ${createdRepoName}`, null, 'success')
+                    pushToGitHub(gitProjectStore)
+                } catch (e: any) {
+                    console.error('Error in creating GitHub repo', e)
+                    showAlert('Problem creating GitHub repository', `Message: ${e.message}`, null, 'error')
+                    removeDialog()
+                }
+            }
+            setDialog(<CreateGitHubRepoDialog onClose={removeDialog} onCreate={onCreate} defaultName={projectName}/>)
+        }
     }
     const showAlert = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => {
         const removeAlert = () => setAlertMessage(null)

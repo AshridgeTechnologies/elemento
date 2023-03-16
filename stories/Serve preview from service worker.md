@@ -45,13 +45,24 @@ Open without project
 - ✅ Main window is instructions on what to do
 - ✅ Help Panel shows at bottom
 
+GitHub works in Editor without popup
+------------------------------------
+
+- ✅ Restore old GitHub stuff
+- ✅ Compare with GitHub runner for new features
+- ✅ Don't show cancelled alert
+- ✅ Better error message for unauthorised
+- ✅ Open project after Get from Github
+
 
 To do
 -----
 
+- Make sure service worker works in new browser profile
+- Make sure service worker can be updated
 - ✅ Try to get first load working better
 - ✅ Do not init WebContainer
-- Remove WebContainer stuff
+- ✅ Remove WebContainer stuff
 - Check out all the setProject stuff in EditorRunner
 - Work out how to set project in PW tests - maybe once have disk projects
-- Try to get files transferred as transferables
+- ~~Try to get files transferred as transferables~~

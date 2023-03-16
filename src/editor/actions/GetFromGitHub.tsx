@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button} from '@mui/material'
 import {DialogTextField, EditorActionDialog} from './ActionComponents'
-import {onChangeValue, Optional, UIManager, useDialogState, validateProjectName} from './actionHelpers'
+import {doAction, onChangeValue, Optional, UIManager, useDialogState, validateProjectName} from './actionHelpers'
 import EditorManager from './EditorManager'
 import AsyncValue from './AsyncValue'
 
@@ -12,7 +12,7 @@ export class GetFromGitHubState {
         existingProjectNames: new AsyncValue<Array<string>>()
     })
 
-    constructor(private props: {editorManager: EditorManager},
+    constructor(private props: {editorManager: EditorManager, uiManager: UIManager},
                 private onUpdate: (newState: GetFromGitHubState) => void,
                 private state = GetFromGitHubState.initialState()) {
         this.state.existingProjectNames.init( () => props.editorManager.getProjectNames(), () => this.setNewCopy())
@@ -62,10 +62,9 @@ export function GetFromGitHubDialog({editorManager, uiManager}: { editorManager:
     const onChangeProjectName = onChangeValue(state.setProjectName)
 
     const title = 'Get project from GitHub'
-    const getAndMessage = ()=> onGet().then( () => uiManager.sendMessageToEditor({type: 'openProject', projectName, url}) )
-    const onGetAction = uiManager.doAction(title, getAndMessage)
+    const onGetAction = doAction(uiManager, title, onGet)
     return <EditorActionDialog
-        onCancel={uiManager.onCancel(title)} title={title}
+        onCancel={uiManager.onClose} title={title}
         content='Please enter the GitHub URL and a name for the new project.'
         fields={<>
             <DialogTextField
