@@ -1,18 +1,22 @@
-import {LocalProjectStore} from '../LocalProjectStore'
 import GitProjectStore from '../GitProjectStore'
 import http from 'isomorphic-git/http/web'
+import {DiskProjectStore} from '../DiskProjectStore'
+import {editorEmptyProject} from '../../util/initialProjects'
 
 export default class EditorManager {
-    constructor(private localProjectStore: LocalProjectStore,
-                private openProjectFunction: (name: string) => Promise<void>)
+    constructor(private openProjectFunction: (name: string, projectStore: DiskProjectStore) => Promise<void>)
     {}
+    getFromGitHub = async (url: string, directory: FileSystemDirectoryHandle) => {
+        const projectStore = new DiskProjectStore(directory)
+        const gitStore =  new GitProjectStore(projectStore.fileSystem, http)
+        await gitStore.clone(url)
+        await this.openProjectFunction(directory.name, projectStore)
+    }
 
-    getProjectNames = async () => this.localProjectStore.getProjectNames()
-
-    getFromGitHub = async (url: string, projectName: string) => {
-        const fs = this.localProjectStore.fileSystem
-        const store =  new GitProjectStore(fs, http)
-        await store.clone(url, projectName)
-        await this.openProjectFunction(projectName)
+    newProject = async(directory: FileSystemDirectoryHandle) => {
+        const projectStore = new DiskProjectStore(directory)
+        await projectStore.createProject()
+        await projectStore.writeProjectFile(editorEmptyProject())
+        await this.openProjectFunction(directory.name, projectStore)
     }
 }

@@ -1,6 +1,7 @@
 import React, {ChangeEvent, useState} from 'react'
 import {AlertColor} from '@mui/material'
 import EditorManager from './EditorManager'
+import {projectFileName} from '../../shared/constants'
 
 export type ShowAlertFn = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => void
 
@@ -8,11 +9,29 @@ export type Optional<T> = {
     [Property in keyof T]+?: T[Property];
 }
 
-export function validateProjectName(name: string, existingNames: string[]) {
-    if (existingNames.includes(name)) return 'There is already a project with this name'
-    const match = name.match(/[^\w \(\)#%&+=.-]/g)
-    if (match) return 'Name contains invalid characters: ' + match.join('')
-    return null
+export async function chooseDirectory(): Promise<FileSystemDirectoryHandle | null> {
+    return window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'}).catch(e => {
+            if (userCancelledFilePick(e)) {
+                return null
+            }
+            throw e
+        })
+}
+
+export async function validateDirectory(directory: FileSystemDirectoryHandle | null) {
+    // @ts-ignore
+    const dirEntry = await directory?.keys().next()
+    return dirEntry.value ? 'Directory is not empty' : null
+}
+
+export async function validateDirectoryForOpen(directory: FileSystemDirectoryHandle | null) {
+    if (!directory) return null
+    try {
+        await directory.getFileHandle(projectFileName)
+        return null
+    } catch (e) {
+        return `Directory '${directory.name}' does not contain an Elemento project file`
+    }
 }
 
 export const onChangeValue = (onChangeFn: (val: string) => void) => (event: ChangeEvent) => onChangeFn((event.target as HTMLInputElement).value)
@@ -43,3 +62,4 @@ export const doAction = (uiManager: UIManager, description: string, actionFn: ()
     }
     uiManager.onClose()
 }
+export const userCancelledFilePick = (e: any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'

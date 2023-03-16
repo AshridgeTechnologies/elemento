@@ -1,39 +1,32 @@
 import React from 'react'
-import {Button} from '@mui/material'
-import {DialogTextField, EditorActionDialog} from './ActionComponents'
-import {doAction, onChangeValue, Optional, UIManager, useDialogState, validateProjectName} from './actionHelpers'
+import {Button, InputAdornment, Stack, TextField} from '@mui/material'
+import {DialogTextField, DirectoryInput, EditorActionDialog} from './ActionComponents'
+import {
+    doAction,
+    onChangeValue,
+    Optional,
+    UIManager,
+    useDialogState,
+    userCancelledFilePick,
+    validateDirectory
+} from './actionHelpers'
 import EditorManager from './EditorManager'
-import AsyncValue from './AsyncValue'
 
 export class GetFromGitHubState {
     static initialState = () => ({
         url: '',
-        projectName: '',
-        existingProjectNames: new AsyncValue<Array<string>>()
+        directory: null,
+        directoryError: null
     })
 
     constructor(private props: {editorManager: EditorManager, uiManager: UIManager},
                 private onUpdate: (newState: GetFromGitHubState) => void,
-                private state = GetFromGitHubState.initialState()) {
-        this.state.existingProjectNames.init( () => props.editorManager.getProjectNames(), () => this.setNewCopy())
+                private state: {url: string, directory: FileSystemDirectoryHandle | null, directoryError: string | null} = GetFromGitHubState.initialState()) {
     }
-
-    private projectNameFromUrl(newUrl: string) {
-        const nameFromUrl = (url: string) => {
-            const urlNoExt = url.replace(/\.g?i?t?$/, '')
-            const nameFromUrlRegex = /https:\/\/[^/]+\/[^/]+\/(.+)(\.git)?$/
-            return urlNoExt.match(nameFromUrlRegex)?.[1]
-        }
-
-        const oldNameFromUrl = nameFromUrl(this.url)
-        const nameFromNewUrl = nameFromUrl(newUrl)
-        return nameFromNewUrl && this.projectName === '' || this.projectName === oldNameFromUrl ? nameFromNewUrl : this.projectName
-    }
-    setUrl = (url: string) => this.updateWithChanges({url, projectName: this.projectNameFromUrl(url)})
-    setProjectName = (projectName: string) => this.updateWithChanges({projectName})
-
-    private setNewCopy() {
-        this.updateWithChanges({})
+    setUrl = (url: string) => this.updateWithChanges({url})
+    setDirectory = (directory: FileSystemDirectoryHandle | null) => {
+        return validateDirectory(directory)
+            .then(directoryError => this.updateWithChanges({directory, directoryError}))
     }
 
     private withChanges(changes: Optional<typeof this.state>) {
@@ -45,21 +38,19 @@ export class GetFromGitHubState {
     }
 
     get url() { return this.state.url }
-    get projectName() { return this.state.projectName }
-    private get existingProjectNames() { return this.state.existingProjectNames.value }
+    get directory() { return this.state.directory }
+    get directoryError() { return this.state.directoryError }
+    get canDoAction() { return !!(this.url && this.directory && !this.directoryError) }
 
-    get error() { return validateProjectName(this.projectName, this.existingProjectNames ?? []) }
-    get canDoAction() { return !!(this.url && this.projectName && !this.error) }
-
-    onGet = () => this.props.editorManager.getFromGitHub(this.state.url, this.state.projectName)
+    onGet = () => this.props.editorManager.getFromGitHub(this.state.url, this.state.directory!)
 }
 
 export function GetFromGitHubDialog({editorManager, uiManager}: { editorManager: EditorManager, uiManager: UIManager }) {
     const state = useDialogState(GetFromGitHubState, editorManager, uiManager)
-    const {url, projectName, error, canDoAction, onGet} = state
+    const {url, directory, directoryError, canDoAction, onGet} = state
 
     const onChangeUrl = onChangeValue(state.setUrl)
-    const onChangeProjectName = onChangeValue(state.setProjectName)
+    const onChangeDirectory = state.setDirectory
 
     const title = 'Get project from GitHub'
     const onGetAction = doAction(uiManager, title, onGet)
@@ -69,16 +60,17 @@ export function GetFromGitHubDialog({editorManager, uiManager}: { editorManager:
         fields={<>
             <DialogTextField
                 autoFocus
-                id="url"
-                label="GitHub URL"
+                id='url'
+                label='GitHub URL'
                 value={url}
                 onChange={onChangeUrl}/>
-            <DialogTextField
-                id="projectName"
-                label="Project Name"
-                value={projectName}
-                onChange={onChangeProjectName}
-                helperText={error}/>
+
+            <DirectoryInput
+                id='projectDirectory'
+                label='Folder for new project'
+                value={directory}
+                onChange={onChangeDirectory}
+                helperText={directoryError}/>
         </>}
         action={<Button variant='outlined' onClick={onGetAction} disabled={!canDoAction}>Get</Button>}
     />

@@ -119,6 +119,15 @@ test('updates single file from message', () => {
     expect(worker.getFileContents('dir1/stuff.js')).toBe('stuff.js updated contents')
 })
 
+test('renames single file from message', () => {
+    const event = {data: {type: 'rename', oldPath: 'dir1/stuff.js', newPath: 'dir1/stuff2.js'}} as ExtendableMessageEvent
+    worker.message(event)
+    // @ts-ignore
+    expect(worker.getFileContents('dir1/stuff.js')).toBe(null)
+    // @ts-ignore
+    expect(worker.getFileContents('dir1/stuff2.js')).toBe('stuff.js contents')
+})
+
 test('sends highlight message from editor', async () => {
     const event = {data: {type: 'editorHighlight', ids: ['Page1.Title']}} as ExtendableMessageEvent
     worker.message(event)

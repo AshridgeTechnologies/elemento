@@ -1,5 +1,5 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -16,92 +16,44 @@ import {
     DialogTitle,
     TextField,
 } from '@mui/material'
+import Element from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
-import ProjectFileStore from './ProjectFileStore'
-import List from '@mui/material/List'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemButton from '@mui/material/ListItemButton'
-import {LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
-import {editorEmptyProject} from '../util/initialProjects'
-import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
+import {DiskProjectStore} from './DiskProjectStore'
+import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
-import {UIManager, validateProjectName} from './actions/actionHelpers'
+import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
 import {previewClientFiles, previewCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-
+import {debounce} from 'lodash'
+import {NewProjectDialog} from './actions/NewProject'
 
 declare global {
     var getProject: () => Project | null
     var setProject: (project: string|Project) => void
+
+    var showDirectoryPicker: (options: object) => Promise<FileSystemDirectoryHandle>
 }
 
-function OpenDialog({names, onClose, onSelect}: { names: string[], onClose: () => void, onSelect: (name: string) => void }) {
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Open project <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                {names.length ?
-                <List dense={true} sx={{pt: 0, minWidth: '25em'}}>
-                    {names.map((name) => (
-                        <ListItemButton onClick={() => onSelect(name)} key={name}>
-                            <ListItemText primary={name}/>
-                        </ListItemButton>
-                    ))}
-                </List> :
-                <DialogContentText>
-                    No projects found on this computer.<br/>
-                    Please use File - New to create a project.
-                </DialogContentText>
-                }
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
+const safeJsonParse = (text: string) => {
+    try {
+        return JSON.parse(text)
+    } catch(e: any) {
+        return e.message ?? e
+    }
 }
 
-function NewDialog({onClose, onCreate, existingNames}: { onClose: () => void, onCreate: (name: string) => void, existingNames: string[] }) {
-    const [name, setName] = useState<string>('')
-    const onChange = (event: ChangeEvent) => setName((event.target as HTMLInputElement).value)
 
-    const error = validateProjectName(name, existingNames)
-    const canCreate = name && !error
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>New project <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a name for the new project.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Project Name"
-                    fullWidth
-                    variant="standard"
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCreate(name)} disabled={!canCreate}>Create</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
+const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
+    projectStore.writeProjectFile(updatedProject.withoutFiles())
+}, 1000)
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -214,8 +166,7 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
 
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
-    const [projectFileStore] = useState<ProjectFileStore>(new ProjectFileStore(projectHandler))
-    const [localProjectStore] = useState<LocalProjectStore>(new LocalProjectStoreIDB())
+    const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
@@ -223,7 +174,6 @@ export default function EditorRunner() {
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
-    useRef(false)
     const removeDialog = () => setDialog(null)
     
     const getOpenProject = (): Project => {
@@ -237,32 +187,36 @@ export default function EditorRunner() {
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
-        localProjectStore.writeProjectFile(projectHandler.name!, updatedProject.withoutFiles())
+        debouncedSave(updatedProject, projectStore!)
 
         const [path, fileContents] = previewCodeFile(updatedProject)
         writeFile(path, fileContents)
     }
-
-    const updateProjectHandler = async (proj: Project, name: string) => {
+    const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         projectHandler.setProject(proj)
         projectHandler.setName(name)
         setProject(proj)
-        const filesToMount = await previewClientFiles(getOpenProject(), projectHandler.name!, window.location.origin)
+        const filesToMount = await previewClientFiles(getOpenProject(), projectStore, window.location.origin)
         console.log('re-mounting files', filesToMount)
         mountFiles(filesToMount)
         setUpdateTime(Date.now())
 
-        const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
-        gitProjectStore.getOriginRemote(name).then(setGitHubUrl)
+        const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
+        gitProjectStore.getOriginRemote().then(setGitHubUrl)
+    }
+    async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
+        setProjectStore(projectStore)
+        const projectWorkingCopy = await projectStore.getProject()
+        const project = projectWorkingCopy.projectWithFiles
+        await updateProjectHandlerFromStore(project, name, projectStore)
     }
 
-    async function openOrUpdateProject(name: string) {
-        const projectWorkingCopy = await localProjectStore.getProject(name)
-        const project = projectWorkingCopy.projectWithFiles
-        await updateProjectHandler(project, name)
-    }
     function mountFiles(filesToMount: FileSystemTree) {
         navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
+    }
+
+    function renameFile(oldPath: string, newPath: string) {
+        navigator.serviceWorker.controller!.postMessage({type: 'rename', oldPath, newPath})
     }
 
     function writeFile(path: string, contents: Uint8Array | string) {
@@ -296,7 +250,7 @@ export default function EditorRunner() {
     useEffect( () => {
         window.setProject = (project: string|Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
-            updateProjectHandler(proj, 'Test project')
+            updateProjectHandlerFromStore(proj, 'Test project', projectStore!)
         }
         window.getProject = () => projectHandler.current
     })
@@ -304,13 +258,19 @@ export default function EditorRunner() {
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
 
+    async function renameAsset(element: Element, value: any) {
+        const oldName = element.name
+        const newName = value
+        await projectStore!.renameAsset(oldName, newName)
+        renameFile(ASSET_DIR + '/' + oldName, ASSET_DIR + '/' + newName)
+        const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
+        await gitProjectStore.rename(ASSET_DIR + '/' + oldName, ASSET_DIR + '/' + newName)
+    }
+
     const onPropertyChange = async (id: ElementId, propertyName: string, value: any) => {
         const element = getOpenProject().findElement(id)!
         if (element.kind === 'File' && propertyName === 'name') {
-            const projectName = projectHandler.name!
-            await localProjectStore.renameAsset(projectName, element.name, value)
-            const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
-            await gitProjectStore.rename(projectName, ASSET_DIR + '/' + element.name, ASSET_DIR + '/' + value)
+            await renameAsset(element, value)
         }
         projectHandler.setProperty(id, propertyName, value)
         updateProjectAndSave()
@@ -330,7 +290,8 @@ export default function EditorRunner() {
     const onUpload = async (targetElementId: ElementId): Promise<ElementId | null> => {
         return new Promise(resolve => {
             const onFileUploaded = async (name: string, data: Uint8Array) => {
-                await localProjectStore.writeAssetFile(projectHandler.name!, name, data)
+                await projectStore!.writeAssetFile(name, data)
+                writeFile(ASSET_DIR + '/' + name, data)
                 const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
                 updateProjectAndSave()
                 removeDialog()
@@ -348,14 +309,13 @@ export default function EditorRunner() {
 
     const deleteFilesWhereNecessary = (ids: ElementId[]) => {
         const fileIds = ids.filter( isFileElement )
-        const projectName = projectHandler.name!
-        const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
+        const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
 
         return Promise.all(fileIds.map( async id => {
             const filename = getOpenProject().findElement(id)?.name
             if (filename) {
-                await localProjectStore.deleteAssetFile(projectName, filename)
-                await gitProjectStore.deleteFile(projectName , ASSET_DIR + '/' + filename)
+                await projectStore!.deleteAssetFile(filename)
+                await gitProjectStore.deleteFile(ASSET_DIR + '/' + filename)
             }
         }))
     }
@@ -377,59 +337,47 @@ export default function EditorRunner() {
         }
     }
 
-    const onNew = async () => {
-        const existingProjectNames = await localProjectStore.getProjectNames()
-        const onProjectCreated = async (name: string) => {
-            await localProjectStore.createProject(name)
-            await updateProjectHandler(editorEmptyProject().withFiles(), name)
-            await localProjectStore.writeProjectFile(name, getOpenProject().withoutFiles())
-            removeDialog()
-        }
-
-        setDialog(<NewDialog onClose={removeDialog} onCreate={onProjectCreated} existingNames={existingProjectNames}/>)
-    }
+    const onNew = () => setDialog(<NewProjectDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+                                                       uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onOpen = async () => {
-        const names = await localProjectStore.getProjectNames()
-        const onProjectSelected = async (name: string) => {
-            await openOrUpdateProject(name)
-            removeDialog()
+        const dirHandle = await chooseDirectory()
+        if (dirHandle) {
+            const error = await validateDirectoryForOpen(dirHandle)
+            if (error) {
+                showAlert('Open project', error, null, 'error')
+            } else {
+                const projectStore = new DiskProjectStore(dirHandle)
+                await openOrUpdateProjectFromStore(projectStore.name, projectStore)
+            }
         }
-
-        setDialog(<OpenDialog names={names} onClose={removeDialog} onSelect={onProjectSelected}/>)
     }
 
-
-    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(localProjectStore, openOrUpdateProject)}
+    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                                  uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onUpdateFromGitHub = async() => {
         console.log('Update from GitHub')
-        const fs = localProjectStore.fileSystem
+        const fs = projectStore!.fileSystem
         const store =  new GitProjectStore(fs, http)
         const projectName = projectHandler.name!
         try {
             showAlert('Updating from GitHub', projectName, null, 'info')
-            await store.pull(projectName)
+            await store.pull()
             showAlert('Project updated from GitHub', '', null, 'success')
-        } catch(e: any) {
+        } catch (e: any) {
             console.error('Error in pull', e)
             showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
+            }
+        const projectWorkingCopy = await projectStore!.getProject()
+        await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore!)
         }
-        const projectWorkingCopy = await localProjectStore.getProject(projectName)
-        await updateProjectHandler(projectWorkingCopy.projectWithFiles, projectName)
-    }
-
-    const onExport = async () => {
-        await projectFileStore.saveFileAs()
-    }
-
     const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
     function pushToGitHub(gitProjectStore: GitProjectStore) {
         const onPush = async (commitMessage: string) => {
             try {
-                await gitProjectStore.commitAndPush(projectHandler.name!, commitMessage)
+                await gitProjectStore.commitAndPush(commitMessage)
                 showAlert('Saved to GitHub', '', null, 'success')
             } catch (e: any) {
                 console.error('Error in pushing to GitHub repo', e)
@@ -451,19 +399,19 @@ export default function EditorRunner() {
             removeDialog()
             return
         }
-        const fs = localProjectStore.fileSystem
+        const fs = projectStore!.fileSystem
         const gitProjectStore = new GitProjectStore(fs, http, gitHubUsername(), gitHubAccessToken())
-        if (await gitProjectStore.isConnectedToGitHubRepo(projectName)) {
+        if (await gitProjectStore.isConnectedToGitHubRepo()) {
             pushToGitHub(gitProjectStore)
         } else {
-            if (!(await isGitWorkingCopy(fs, projectName))) {
-                await gitProjectStore.init(projectName)
+            if (!(await gitProjectStore.isGitWorkingCopy())) {
+                await gitProjectStore.init()
             }
 
             const onCreate = async (repoName: string) => {
                 try {
-                    const createdRepoName = await gitProjectStore.createGitHubRepo(projectName, repoName)
-                    setGitHubUrl(await gitProjectStore.getOriginRemote(projectName))
+                    const createdRepoName = await gitProjectStore.createGitHubRepo(repoName)
+                    setGitHubUrl(await gitProjectStore.getOriginRemote())
                     showAlert(`Save ${projectName}`, `Created repository ${createdRepoName}`, null, 'success')
                     pushToGitHub(gitProjectStore)
                 } catch (e: any) {
@@ -500,7 +448,6 @@ export default function EditorRunner() {
             <Editor project={getOpenProject()} projectStoreName={projectHandler.name!}
                     onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
                     onNew={onNew} onOpen={onOpen}
-                    onExport={onExport}
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
                     runUrl={runUrl} previewUrl={previewUrl}
                     selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}

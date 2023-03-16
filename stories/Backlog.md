@@ -4,7 +4,7 @@ Elemento Backlog
 Bugs
 ----
 - Changes really slow on large list
-- Select element in page has stopped working
+- Full review of asset files, multiple dirs, rename, move, GitHub save/update
 - DateFormat blows up on some bad values eg a string
 - Studio: Show errors in server side apps
 - Big error storm in preview when load app that uses firebase config
@@ -25,7 +25,6 @@ Stories
 
 ### Move to GitHub
 - Deploy from GitHub
-- Project directory in disk files
 - Can use private GitHub repos
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
@@ -188,6 +187,8 @@ Done
 - Image component loaded from asset file
 - Serve preview from WebContainer
 - Serve preview from service worker
+- Project directory in disk files
+
 
 Bugs fixed
 ----------

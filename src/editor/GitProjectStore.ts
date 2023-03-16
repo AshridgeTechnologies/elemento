@@ -25,61 +25,59 @@ const exists = async (fileSystem: Fs, filepath: string) => {
         }
     }
 }
-export const isGitWorkingCopy = async (fileSystem: Fs, localDirPath: string) => {
-    const configFilePath = `/${localDirPath}/.git/config`
-    const configFileExists = await exists(fileSystem, configFilePath)
-    return configFileExists
-}
-
 export default class GitProjectStore {
     constructor(private fs: Fs, private http: HttpClient,
                 private username: string | null = null, private accessToken: string | null = null, private workingDirRoot: string = '') {
     }
 
-    async init(localName: string) {
+    async init() {
         const {fs} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.init({ fs, dir, defaultBranch: 'main' })
     }
 
-    async createGitHubRepo(localName: string, repoName: string) {
+    async createGitHubRepo(repoName: string) {
         const octokit = new Octokit({ auth: this.accessToken })
         const response = await octokit.rest.repos.createForAuthenticatedUser({
             name: repoName,
         })
         const {html_url: repoUrl, name: actualRepoName} = response.data
         // console.log('Created repo', repoUrl)
-        await this.setOriginRemote(localName, repoUrl)
+        await this.setOriginRemote(repoUrl)
         return actualRepoName
     }
 
-    async getOriginRemote(localName: string) {
+    async isGitWorkingCopy(): Promise<boolean> {
+        return await exists(this.fs, `${this.workingDirRoot}/.git/config`)
+    }
+
+    async getOriginRemote() {
         const {fs} = this
-        const dir = `${this.workingDirRoot}/${localName}`
-        if (await isGitWorkingCopy(fs, dir)) {
+        const dir = `${this.workingDirRoot}/`
+        if (await this.isGitWorkingCopy()) {
             return (await git.getConfig({fs, dir, path: 'remote.origin.url'})) ?? null
         }
 
         return null
     }
 
-    async setOriginRemote(localName: string, url: string) {
+    async setOriginRemote(url: string) {
         const {fs} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.setConfig({fs, dir, path: 'remote.origin.url', value: url})
         await git.setConfig({fs, dir, path: 'remote.origin.fetch', value: '+refs/heads/*:refs/remotes/origin/*'})
     }
 
-    async isConnectedToGitHubRepo(localName: string) {
-        return !! await this.getOriginRemote(localName)
+    async isConnectedToGitHubRepo() {
+        return !! await this.getOriginRemote()
     }
 
-    async commitAndPush(localName: string, message: string = defaultMessage(), author: string = defaultAuthor()) {
+    async commitAndPush(message: string = defaultMessage(), author: string = defaultAuthor()) {
         if (!(this.username && this.accessToken)) {
             throw new Error('Must be signed in to push')
         }
         const {fs, http} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.add({ fs, dir, filepath: '.' })
         await git.commit({ fs, dir, message, author: {name: author} })
 
@@ -92,9 +90,9 @@ export default class GitProjectStore {
         })
     }
 
-    async clone(url: string, localName: string) {
+    async clone(url: string) {
         const {fs, http} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         return await git.clone({
             fs,
             http,
@@ -106,9 +104,9 @@ export default class GitProjectStore {
         })
     }
 
-    async pull(localName: string) {
+    async pull() {
         const {fs, http} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.add({ fs, dir, filepath: '.' })
         await git.commit({ fs, dir, message: 'Save changes before update', author: {name: defaultAuthor()} })
         await git.pull({
@@ -121,19 +119,18 @@ export default class GitProjectStore {
         })
     }
 
-    async deleteFile(localName: string, filepath: string) {
+    async deleteFile(filepath: string) {
         const {fs} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.remove({ fs, dir, filepath })
     }
 
-    async rename(localName: string, oldFilepath: string, newFilepath: string) {
+    async rename(oldFilepath: string, newFilepath: string) {
         const {fs} = this
-        const dir = `${this.workingDirRoot}/${localName}`
+        const dir = `${this.workingDirRoot}/`
         await git.add({ fs, dir, filepath: newFilepath })
         await git.remove({ fs, dir, filepath: oldFilepath })
     }
-
     // async status(localName: string) {
     //     const {fs, http} = this
     //     const dir = `${this.workingDirRoot}/${localName}`
@@ -142,6 +139,6 @@ export default class GitProjectStore {
     //         const status = await git.status({fs, dir, filepath: file})
     //         return [file, status].join(': ')
     //     }))
-    // }
 
+    // }
 }

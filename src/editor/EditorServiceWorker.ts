@@ -24,6 +24,11 @@ export default class EditorServiceWorker {
             this.sendUpdate(data.path)
         }
 
+        if (data?.type === 'rename') {
+            this.renameFile(data.oldPath, data.newPath)
+            this.sendUpdate(data.path)
+        }
+
         if (data?.type === 'editorHighlight') {
             this.sendEditorHighlight(data.ids)
         }
@@ -88,6 +93,17 @@ export default class EditorServiceWorker {
             dir[filename] = {
                 file: {contents}
             }
+        }
+    }
+    private renameFile(oldPath: string, newPath: string) {
+        const [oldDir, oldFilename] = this.getLastDirAndFilename(oldPath)
+        const [newDir, newFilename] = this.getLastDirAndFilename(newPath)
+
+        if (oldDir && oldFilename && newDir && newFilename) {
+            newDir[newFilename] = oldDir[oldFilename]
+            delete oldDir[oldFilename]
+        } else {
+            throw new Error(`Cannot move ${oldPath} to ${newPath}`)
         }
     }
 
