@@ -17,7 +17,9 @@ export function editorInitialProject() {
 export function editorEmptyProject() {
     return new Project('project_1', 'New Project', {}, [
         new App('app1', 'New App', {}, [
-            new Page('page_1', 'Main Page', {}, [])
+            new Page('page_1', 'Main Page', {}, [
+                new Text('text_1', 'Title', {content: 'The New App', fontSize: 24})
+            ])
         ])])
 }
 

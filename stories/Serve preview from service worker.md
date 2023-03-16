@@ -39,17 +39,17 @@ Technical
 Open without project
 --------------------
 
-- ProjectHandler can be empty
-- If no current project, display ProjectOpener instead of Editor
-- Project Opener menu has File->New/Open/GetFromGitHub, and Help
-- Main window is instructions on what to do
-- Help Panel shows at bottom
+- ✅ ProjectHandler can be empty
+- ✅ If no current project, display ProjectOpener instead of Editor
+- ✅ Project Opener menu has File->New/Open/GetFromGitHub, and Help
+- ✅ Main window is instructions on what to do
+- ✅ Help Panel shows at bottom
 
 
 To do
 -----
 
-- Try to get first load working better
+- ✅ Try to get first load working better
 - ✅ Do not init WebContainer
 - Remove WebContainer stuff
 - Check out all the setProject stuff in EditorRunner

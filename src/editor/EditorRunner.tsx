@@ -29,14 +29,14 @@ import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {CloseButton} from './actions/ActionComponents'
 import {PopupMessage, validateProjectName} from './actions/actionHelpers'
-import {WebContainer} from '@webcontainer/api'
-import {previewClientFiles, previewCodeFile, previewFiles} from './previewFiles'
+import {previewClientFiles, previewCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
+import ProjectOpener from './ProjectOpener'
 
 
 declare global {
-    var getProject: () => Project
+    var getProject: () => Project | null
     var setProject: (project: string|Project) => void
 }
 
@@ -150,24 +150,30 @@ export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectFileStore] = useState<ProjectFileStore>(new ProjectFileStore(projectHandler))
     const [localProjectStore] = useState<LocalProjectStore>(new LocalProjectStoreIDB())
-    const webContainerRef = useRef<WebContainer>()
     const serverProcessRef = useRef<any>()
-    const [webContainerUrl, setWebContainerUrl] = useState<string>('')
     const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
-    const [project, setProject] = useState<Project>(projectHandler.current)
+    const [,setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     // const [popup, setPopup] = useState<Window | null>(null)
     const popupRef = useRef(false)
     const removeDialog = () => setDialog(null)
+    
+    const getOpenProject = (): Project => {
+        if (!projectHandler.current) {
+            throw new Error('No current project open')
+        }
+        
+        return projectHandler.current
+    }
 
     const updateProjectAndSave = () => {
-        const updatedProject = projectHandler.current
+        const updatedProject = getOpenProject()
         setProject(updatedProject)
-        localProjectStore.writeProjectFile(projectHandler.name, updatedProject.withoutFiles())
+        localProjectStore.writeProjectFile(projectHandler.name!, updatedProject.withoutFiles())
 
         const [path, fileContents] = previewCodeFile(updatedProject)
         writeFile(path, fileContents)
@@ -175,9 +181,9 @@ export default function EditorRunner() {
 
     const updateProjectHandler = async (proj: Project, name: string) => {
         projectHandler.setProject(proj)
-        projectHandler.name = name
+        projectHandler.setName(name)
         setProject(proj)
-        const filesToMount = await previewClientFiles(projectHandler.current, projectHandler.name, window.location.origin)
+        const filesToMount = await previewClientFiles(getOpenProject(), projectHandler.name!, window.location.origin)
         console.log('re-mounting files', filesToMount)
         mountFiles(filesToMount)
         setUpdateTime(Date.now())
@@ -191,68 +197,6 @@ export default function EditorRunner() {
         const project = projectWorkingCopy.projectWithFiles
         await updateProjectHandler(project, name)
     }
-    async function sendMessage(message: object) {
-        const serverProcess = serverProcessRef.current
-        if (!serverProcess) return
-        const writableStream = serverProcess.input
-        const defaultWriter = writableStream.getWriter();
-        await defaultWriter.ready
-        await defaultWriter.write('WS:' + JSON.stringify(message) + '\n')
-        await defaultWriter.ready
-        defaultWriter.releaseLock()
-    }
-
-    const initWebContainer = () => {
-        const doInit = async function () {
-            const webContainer = await WebContainer.boot()
-            console.log('webContainer', webContainer)
-            const filesToMount = await previewFiles(projectHandler.current, projectHandler.name, window.location.origin)
-            console.log('filesToMount', filesToMount)
-            await webContainer.mount(filesToMount)
-
-            console.log('Starting server')
-            const serverProcess = await webContainer.spawn('node', ['devServer.cjs'])
-
-            async function receiveMessagesFromServerOutput() {
-                const reader = serverProcess!.output.getReader()
-                let value = null, done = false
-                const escapeCodeRegex = /\[\w\w\w?/g
-                const startingNonPrintableRegex = /^\W*/
-                for (; !done; {value, done} = await reader.read()) {
-                    const line = value?.trim().replace(escapeCodeRegex, '').replace(startingNonPrintableRegex, '')
-                    if (line && line.length > 1) {
-                        if (line.startsWith('WS:')) {
-                            const messageLine = line.replace(/^WS: */, '')
-                            const message = JSON.parse(messageLine)
-                            if (message.type === 'componentSelected') {
-                                const {id} = message
-                                const selectedItem = projectHandler.current.findElementByPath(id)
-                                onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
-                            }
-                        } else {
-                            console.log('Server output:', line?.trim())
-                        }
-                    }
-                }
-
-            }
-
-            receiveMessagesFromServerOutput()
-
-            webContainer.on('server-ready', (port, url) => {
-                console.log('Server ready', 'port', port, 'url', url)
-                webContainerRef.current = webContainer
-                serverProcessRef.current = serverProcess
-                setWebContainerUrl(url)
-                // window.wcfs = webContainer.fs
-            })
-            webContainer.on('error', error => console.error('Error in webcontainer', error))
-        }
-        if (!webContainerRef.current) {
-            doInit().then( ()=> console.log('Web container initialized'))
-        }
-    }
-
     function mountFiles(filesToMount: FileSystemTree) {
         navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
     }
@@ -274,7 +218,7 @@ export default function EditorRunner() {
                 const message = event.data
                 if (message.type === 'componentSelected') {
                     const {id} = message
-                    const selectedItem = projectHandler.current.findElementByPath(id)
+                    const selectedItem = getOpenProject().findElementByPath(id)
                     onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
                 }
             }
@@ -321,12 +265,12 @@ export default function EditorRunner() {
         return ()=> window.removeEventListener('focus', checkForMessages)
     }, [])
 
-    const isFileElement = (id: ElementId) => projectHandler.current.findElement(id)?.kind === 'File'
+    const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
 
     const onPropertyChange = async (id: ElementId, propertyName: string, value: any) => {
-        const element = projectHandler.current.findElement(id)!
+        const element = getOpenProject().findElement(id)!
         if (element.kind === 'File' && propertyName === 'name') {
-            const projectName = projectHandler.name
+            const projectName = projectHandler.name!
             await localProjectStore.renameAsset(projectName, element.name, value)
             const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
             await gitProjectStore.rename(projectName, ASSET_DIR + '/' + element.name, ASSET_DIR + '/' + value)
@@ -349,7 +293,7 @@ export default function EditorRunner() {
     const onUpload = async (targetElementId: ElementId): Promise<ElementId | null> => {
         return new Promise(resolve => {
             const onFileUploaded = async (name: string, data: Uint8Array) => {
-                await localProjectStore.writeAssetFile(projectHandler.name, name, data)
+                await localProjectStore.writeAssetFile(projectHandler.name!, name, data)
                 const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
                 updateProjectAndSave()
                 removeDialog()
@@ -367,11 +311,11 @@ export default function EditorRunner() {
 
     const deleteFilesWhereNecessary = (ids: ElementId[]) => {
         const fileIds = ids.filter( isFileElement )
-        const projectName = projectHandler.name
+        const projectName = projectHandler.name!
         const gitProjectStore = new GitProjectStore(localProjectStore.fileSystem, http, null, null)
 
         return Promise.all(fileIds.map( async id => {
-            const filename = projectHandler.current.findElement(id)?.name
+            const filename = getOpenProject().findElement(id)?.name
             if (filename) {
                 await localProjectStore.deleteAssetFile(projectName, filename)
                 await gitProjectStore.deleteFile(projectName , ASSET_DIR + '/' + filename)
@@ -401,7 +345,7 @@ export default function EditorRunner() {
         const onProjectCreated = async (name: string) => {
             await localProjectStore.createProject(name)
             await updateProjectHandler(editorEmptyProject().withFiles(), name)
-            await localProjectStore.writeProjectFile(name, projectHandler.current.withoutFiles())
+            await localProjectStore.writeProjectFile(name, getOpenProject().withoutFiles())
             removeDialog()
         }
 
@@ -425,8 +369,8 @@ export default function EditorRunner() {
 
     const onGetFromGitHub = () => openGitHubPopup('get')
 
-    const onUpdateFromGitHub = async() => openGitHubPopup('update', projectHandler.name)
-    const onSaveToGitHub = () => openGitHubPopup('save', projectHandler.name)
+    const onUpdateFromGitHub = async() => openGitHubPopup('update', projectHandler.name!)
+    const onSaveToGitHub = () => openGitHubPopup('save', projectHandler.name!)
 
     const openGitHubPopup = (action: string, projectName: string = '') => {
         const popupWidth = 600
@@ -447,7 +391,7 @@ export default function EditorRunner() {
 
     const onSelectedItemsChange = (ids: string[]) => {
         setSelectedItemIds(ids)
-        const pathIds = ids.map( id => projectHandler.current.findElementPath(id)).filter(id => id !== null) as string[]
+        const pathIds = ids.map( id => getOpenProject().findElementPath(id)).filter(id => id !== null) as string[]
         selectItemsInPreview(pathIds)
     }
 
@@ -455,15 +399,18 @@ export default function EditorRunner() {
     const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
     const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
     return <ThemeProvider theme={theme}>
-            {alertMessage}
-            {dialog}
-            <Editor project={projectHandler.current} projectStoreName={projectHandler.name}
+        {alertMessage}
+        {dialog}
+        { projectHandler.current ?
+            <Editor project={getOpenProject()} projectStoreName={projectHandler.name!}
                     onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
                     onNew={onNew} onOpen={onOpen}
                     onExport={onExport}
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
                     runUrl={runUrl} previewUrl={previewUrl}
                     selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
-            />
+            /> :
+            <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
+        }
         </ThemeProvider>
 }

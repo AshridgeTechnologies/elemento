@@ -12,7 +12,7 @@ export class InsertAction {
 }
 
 export type AppElementAction = ConfirmAction | InsertAction | AppElementActionName
-type VoidFn = () => void
+export type VoidFn = () => void
 export type OnOpenFn = VoidFn
 export type OnExportFn = VoidFn
 export type OnNewFn = VoidFn
