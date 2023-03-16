@@ -23,9 +23,24 @@ Requirements
 Technical
 ---------
 
-- New project store implementation
-- Base on Local project store
-- Need an fs implementation that does just enough
-- ProjectStore implementation will need the directory handle, not the project name
-- So separate Project store for each project
-- Functions like getProjectNames will not be available
+- ✅ New project store implementation
+- ✅ Base on Local project store
+- ✅ Need fs implementation that does just enough
+- ✅ ProjectStore implementation will need the directory handle, not the project name
+- ✅ So separate Project store for each project
+- ✅ Functions like getProjectNames will not be available
+- onOpen sets up new store
+- onNew sets up new store
+
+To do
+-----
+
+- ✅ Handle paths in getFileNames
+- ✅ Use the new localProjectStore, not the previous one
+- ✅ Check out path in exists() - GitProjectStore should not add local name to path
+- ✅ Handle directories
+- ✅ Debounce file writes
+- Check out uploads, renames
+- NEXT ==> Work out how to use GitProjectStore with DiskProjectStore in the GitHub popup
+- Test with GitHub
+- 
