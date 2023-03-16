@@ -20,7 +20,6 @@ Stories
 -------
 
 ### Preview server
-- Serve preview from service worker
 - Simulate server apps
 
 
@@ -188,6 +187,7 @@ Done
 - Asset files stored in working copy
 - Image component loaded from asset file
 - Serve preview from WebContainer
+- Serve preview from service worker
 
 Bugs fixed
 ----------
