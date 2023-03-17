@@ -9,6 +9,12 @@ interface ProjectWorkingCopy {
     get projectWithFiles(): Project
 }
 
+class FileError extends Error {
+    constructor(path: string, description: string, public code: string) {
+        super(`Path ${path}: ${description}`)
+    }
+}
+
 export interface DiskProjectStoreInterface {
 
     getProject(): Promise<ProjectWorkingCopy>
@@ -52,7 +58,22 @@ export class DirectoryFS  {
     init(_name: string, _options?: FS.Options): void {}
 
     async mkdir(filepath: string, _options?: FS.MKDirOptions): Promise<void> {
-        await this.directoryHandle.getDirectoryHandle(adjustPath(filepath), {create: true})
+        const pathSegments = this.pathSegments(filepath)
+        const lastDirSegment = pathSegments.slice(-1)[0]
+        const parentSegments = pathSegments.slice(0, -1)
+        const parentDirHandle =  await this.resolveDirHandle(parentSegments)
+        let alreadyExists = false
+        try {
+            await parentDirHandle.getDirectoryHandle(lastDirSegment, {create: false})
+            alreadyExists = true
+        } catch (e) {
+        }
+
+        if (alreadyExists) {
+            throw new FileError(filepath, 'already exists', 'EEXIST')
+        }
+        await parentDirHandle.getDirectoryHandle(lastDirSegment, {create: true})
+
     }
 
     /**
@@ -61,7 +82,21 @@ export class DirectoryFS  {
      * @param options
      */
     async rmdir(filepath: string, options?: undefined): Promise<void> {
-        await this.directoryHandle.removeEntry(adjustPath(filepath), {recursive: true})
+        const pathSegments = this.pathSegments(filepath)
+        const lastDirSegment = pathSegments.slice(-1)[0]
+        const parentSegments = pathSegments.slice(0, -1)
+        const parentDirHandle =  await this.resolveDirHandle(parentSegments)
+        let exists = false
+        try {
+            await parentDirHandle.getDirectoryHandle(lastDirSegment, {create: false})
+            exists = true
+        } catch (e) {
+        }
+
+        if (!exists) {
+            throw new FileError(filepath, 'not found', 'ENOENT')
+        }
+        await parentDirHandle.removeEntry(lastDirSegment, {recursive: true})
     }
 
     /**
@@ -103,7 +138,21 @@ export class DirectoryFS  {
      * @param options
      */
     async unlink(filepath: string, options?: undefined): Promise<void> {
-        await this.directoryHandle.removeEntry(adjustPath(filepath))
+        const pathSegments = this.pathSegments(filepath)
+        const fileSegment = pathSegments.slice(-1)[0]
+        const parentSegments = pathSegments.slice(0, -1)
+        const parentDirHandle =  await this.resolveDirHandle(parentSegments)
+        let exists = false
+        try {
+            await parentDirHandle.getFileHandle(fileSegment, {create: false})
+            exists = true
+        } catch (e) {
+        }
+
+        if (!exists) {
+            throw new FileError(filepath, 'not found', 'ENOENT')
+        }
+        await parentDirHandle.removeEntry(fileSegment)
     }
 
     /**
@@ -120,25 +169,36 @@ export class DirectoryFS  {
 
     /**
      * The result is a Stat object similar to the one used by Node but with fewer and slightly different properties and methods.
-     * @param filepath
+     * @param path
      * @param options
      */
-    async stat(filepath: string, options?: undefined): Promise<FS.Stats> {
-        const fileHandle = await this.getFileHandle(filepath)
-        const file = await fileHandle.getFile()
+    async stat(path: string, options?: undefined): Promise<FS.Stats> {
+        let type: 'file' | 'dir'
+        let size = 0, lastModified = 0
+        try {
+            await this.getDirectoryHandle(path)
+            type = 'dir'
+        } catch (e) {
+            const fileHandle = await this.getFileHandle(path)
+            const file = await fileHandle.getFile()
+            type = 'file'
+            size = file.size
+            lastModified = file.lastModified
+        }
+
         return {
-            type: 'file',
+            type,
             mode: 0,
-            size: file.size,
+            size: size,
             ino: 0,
-            mtimeMs: file.lastModified,
+            mtimeMs: lastModified,
             ctimeMs: 0,
             uid: 1,
             gid: 1,
             dev: 1,
-            isFile() {return true},
-            isDirectory() {return false},
-            isSymbolicLink() {return false}
+            isFile() {return type === "file"},
+            isDirectory() { return type === "dir" },
+            isSymbolicLink() { return false }
         }
     }
 
@@ -186,7 +246,11 @@ export class DirectoryFS  {
         const fileSegment = pathSegments.slice(-1)[0]
         const dirSegments = pathSegments.slice(0, -1)
         const dirHandle =  await this.resolveDirHandle(dirSegments)
-        return await dirHandle.getFileHandle(fileSegment, options)
+        try {
+            return await dirHandle.getFileHandle(fileSegment, options)
+        } catch (e) {
+            throw new FileError(filepath, 'not found', 'ENOENT')
+        }
     }
 
     private pathSegments(filepath: string) {
@@ -196,8 +260,12 @@ export class DirectoryFS  {
 
     private async resolveDirHandle(dirSegments: string[]) {
         let handle = this.directoryHandle
-        for (const dir of dirSegments) {
-            handle = await handle.getDirectoryHandle(dir)
+        try {
+            for (const dir of dirSegments) {
+                handle = await handle.getDirectoryHandle(dir)
+            }
+        } catch (e) {
+            throw new FileError(dirSegments.join('/'), 'not found', 'ENOENT')
         }
         return handle
     }
