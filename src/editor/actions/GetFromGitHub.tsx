@@ -24,7 +24,7 @@ export class GetFromGitHubState {
                 private state: {url: string, directory: FileSystemDirectoryHandle | null, directoryError: string | null} = GetFromGitHubState.initialState()) {
     }
     setUrl = (url: string) => this.updateWithChanges({url})
-    setDirectory = (directory: FileSystemDirectoryHandle) => {
+    setDirectory = (directory: FileSystemDirectoryHandle | null) => {
         return validateDirectory(directory)
             .then(directoryError => this.updateWithChanges({directory, directoryError}))
     }

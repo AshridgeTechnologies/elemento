@@ -26,7 +26,13 @@ import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
-import {UIManager, userCancelledFilePick} from './actions/actionHelpers'
+import {
+    chooseDirectory,
+    UIManager,
+    userCancelledFilePick,
+    validateDirectory,
+    validateDirectoryForOpen
+} from './actions/actionHelpers'
 import {previewClientFiles, previewCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
@@ -344,13 +350,14 @@ export default function EditorRunner() {
                                                        uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onOpen = async () => {
-        try {
-            const dirHandle = await window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'})
-            const projectStore = new DiskProjectStore(dirHandle)
-            await openOrUpdateProjectFromStore(projectStore.name, projectStore)
-        } catch (e: any) {
-            if (!userCancelledFilePick(e)) {
-                throw e
+        const dirHandle = await chooseDirectory()
+        if (dirHandle) {
+            const error = await validateDirectoryForOpen(dirHandle)
+            if (error) {
+                showAlert('Open project', error, null, 'error')
+            } else {
+                const projectStore = new DiskProjectStore(dirHandle)
+                await openOrUpdateProjectFromStore(projectStore.name, projectStore)
             }
         }
     }

@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import Close from '@mui/icons-material/Close'
 import React from 'react'
-import {userCancelledFilePick} from './actionHelpers'
+import {chooseDirectory} from './actionHelpers'
 
 export function CloseButton(props: { onClose: () => void }) {
     return <IconButton
@@ -64,21 +64,11 @@ export function DirectoryInput(props: {
     id: string,
     label: string,
     value: FileSystemDirectoryHandle | null,
-    onChange: (dir: FileSystemDirectoryHandle) => void,
+    onChange: (dir: FileSystemDirectoryHandle | null) => any,
     helperText: string | null
 }) {
 
-    const chooseDir = () => {
-        window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'}).then(props.onChange)
-            .catch(e => {
-                if (userCancelledFilePick(e)) {
-                    return null
-                }
-                throw e
-            })
-
-    }
-
+    const chooseDir = () => chooseDirectory().then(props.onChange)
     const inputProps = {
         readOnly: true,
         endAdornment:
