@@ -21,7 +21,6 @@ import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
 import ProjectFileStore from './ProjectFileStore'
 import {DiskProjectStore} from './DiskProjectStore'
-import {editorEmptyProject} from '../util/initialProjects'
 import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
@@ -34,6 +33,7 @@ import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import {debounce} from 'lodash'
+import {NewProjectDialog} from './actions/NewProject'
 
 declare global {
     var getProject: () => Project | null
@@ -54,38 +54,6 @@ const safeJsonParse = (text: string) => {
 const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
-function NewDialog({onClose, onCreate, existingNames}: { onClose: () => void, onCreate: (name: string) => void, existingNames: string[] }) {
-    const [name, setName] = useState<string>('')
-    const onChange = (event: ChangeEvent) => setName((event.target as HTMLInputElement).value)
-
-    const canCreate = name && !error
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>New project <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a name for the new project.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Project Name"
-                    fullWidth
-                    variant="standard"
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCreate(name)} disabled={!canCreate}>Create</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -251,13 +219,6 @@ export default function EditorRunner() {
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
-
-    async function openOrUpdateProject(name: string) {
-        const projectWorkingCopy = await localProjectStore!.getProject()
-        const project = projectWorkingCopy.projectWithFiles
-        await updateProjectHandler(project, name)
-    }
-
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
         setLocalProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
@@ -311,7 +272,6 @@ export default function EditorRunner() {
     const onPropertyChange = async (id: ElementId, propertyName: string, value: any) => {
         const element = getOpenProject().findElement(id)!
         if (element.kind === 'File' && propertyName === 'name') {
-            const projectName = projectHandler.name!
             await localProjectStore!.renameAsset(element.name, value)
             const gitProjectStore = new GitProjectStore(localProjectStore!.fileSystem, http, null, null)
             await gitProjectStore.rename(ASSET_DIR + '/' + element.name, ASSET_DIR + '/' + value)
@@ -352,7 +312,6 @@ export default function EditorRunner() {
 
     const deleteFilesWhereNecessary = (ids: ElementId[]) => {
         const fileIds = ids.filter( isFileElement )
-        const projectName = projectHandler.name!
         const gitProjectStore = new GitProjectStore(localProjectStore!.fileSystem, http, null, null)
 
         return Promise.all(fileIds.map( async id => {
@@ -381,19 +340,8 @@ export default function EditorRunner() {
         }
     }
 
-    const onNew = async () => {
-        try {
-            const dirHandle = await window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'})
-            const projectStore = new DiskProjectStore(dirHandle)
-            await projectStore.createProject()
-            await projectStore.writeProjectFile(editorEmptyProject())
-            await openOrUpdateProjectFromStore(projectStore.name, projectStore)
-        } catch (e: any) {
-            if (!userCancelledFilePick(e)) {
-                throw e
-            }
-        }
-    }
+    const onNew = () => setDialog(<NewProjectDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+                                                       uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onOpen = async () => {
         try {

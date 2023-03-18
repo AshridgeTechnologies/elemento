@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button, InputAdornment, Stack, TextField} from '@mui/material'
-import {DialogTextField, EditorActionDialog} from './ActionComponents'
+import {DialogTextField, DirectoryInput, EditorActionDialog} from './ActionComponents'
 import {
     doAction,
     onChangeValue,
@@ -43,45 +43,6 @@ export class GetFromGitHubState {
     get canDoAction() { return !!(this.url && this.directory && !this.directoryError) }
 
     onGet = () => this.props.editorManager.getFromGitHub(this.state.url, this.state.directory!)
-}
-
-function DirectoryInput(props: {id: string,
-    label: string,
-    value: FileSystemDirectoryHandle | null,
-    onChange: (dir: FileSystemDirectoryHandle) => void,
-    helperText: string | null
-}) {
-
-    const chooseDir = () => {
-        window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'}).then( props.onChange )
-            .catch( e => {
-                if (userCancelledFilePick(e)) {
-                    return null
-                }
-                throw e
-            })
-
-    }
-
-    const inputProps = {
-        readOnly: true,
-        endAdornment:
-            <InputAdornment position="end">
-                <Button aria-label="choose folder" onClick={chooseDir}>Choose</Button>
-            </InputAdornment>
-    }
-    return <Stack direction='row'>
-        <TextField
-            id = {props.id} label={props.label}
-            margin="dense"
-            fullWidth
-            variant="standard"
-            value={props.value?.name ?? ''}
-            error={!!props.helperText}
-            helperText={props.helperText}
-            InputProps={inputProps}
-        />
-    </Stack>
 }
 
 export function GetFromGitHubDialog({editorManager, uiManager}: { editorManager: EditorManager, uiManager: UIManager }) {

@@ -23,6 +23,7 @@ Requirements
 Detailed requirements
 ---------------------
 
+- ✅ New project shows a directory picker and checks it is empty
 - ✅ Get from GitHub works
 - ✅ Get from GitHub shows picker for directory
 - ✅ Update from GitHub works
