@@ -8,11 +8,10 @@ export type Optional<T> = {
     [Property in keyof T]+?: T[Property];
 }
 
-export function validateProjectName(name: string, existingNames: string[]) {
-    if (existingNames.includes(name)) return 'There is already a project with this name'
-    const match = name.match(/[^\w \(\)#%&+=.-]/g)
-    if (match) return 'Name contains invalid characters: ' + match.join('')
-    return null
+export async function validateDirectory(directory: FileSystemDirectoryHandle | null) {
+    // @ts-ignore
+    const dirEntry = await directory?.keys().next()
+    return dirEntry.value ? 'Directory is not empty' : null
 }
 
 export const onChangeValue = (onChangeFn: (val: string) => void) => (event: ChangeEvent) => onChangeFn((event.target as HTMLInputElement).value)
@@ -43,3 +42,4 @@ export const doAction = (uiManager: UIManager, description: string, actionFn: ()
     }
     uiManager.onClose()
 }
+export const userCancelledFilePick = (e: any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'

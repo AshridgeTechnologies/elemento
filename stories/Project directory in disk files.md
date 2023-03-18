@@ -16,7 +16,7 @@ Requirements
 - ✅ New project shows a directory picker
 - ✅ Ask for readwrite mode on directory so user can provide all permissions in one go
 - ✅ Save and Update with GitHub use the disk files
-- Error if try to create a project in a directory with an existing ElementoProject.json
+- ✅ Error if try to create a project in a directory that is not empty
 - Error if try to open a project in a directory with no ElementoProject.json
 - IDB Local project store is removed
 
@@ -24,6 +24,7 @@ Detailed requirements
 ---------------------
 
 - ✅ Get from GitHub works
+- ✅ Get from GitHub shows picker for directory
 - ✅ Update from GitHub works
 - ✅ Save to GitHub creating repo works
 - ✅ Save to existing repo works
@@ -57,5 +58,5 @@ To do
 - ✅ Handle directories
 - ✅ Debounce file writes
 - Check out uploads, renames
-- Test with GitHub
+- ✅ Test with GitHub
 - 

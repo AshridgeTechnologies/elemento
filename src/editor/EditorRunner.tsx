@@ -1,5 +1,5 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -20,10 +20,6 @@ import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
 import ProjectFileStore from './ProjectFileStore'
-import List from '@mui/material/List'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemButton from '@mui/material/ListItemButton'
-import {LocalProjectStore, LocalProjectStoreIDB} from './LocalProjectStore'
 import {DiskProjectStore} from './DiskProjectStore'
 import {editorEmptyProject} from '../util/initialProjects'
 import GitProjectStore, {isGitWorkingCopy} from './GitProjectStore'
@@ -31,7 +27,7 @@ import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
-import {UIManager, validateProjectName} from './actions/actionHelpers'
+import {UIManager, userCancelledFilePick} from './actions/actionHelpers'
 import {previewClientFiles, previewCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
@@ -43,7 +39,7 @@ declare global {
     var getProject: () => Project | null
     var setProject: (project: string|Project) => void
 
-    var showDirectoryPicker: (options: object) => FileSystemDirectoryHandle
+    var showDirectoryPicker: (options: object) => Promise<FileSystemDirectoryHandle>
 }
 
 const safeJsonParse = (text: string) => {
@@ -55,8 +51,6 @@ const safeJsonParse = (text: string) => {
 }
 
 
-const userCancelledFilePick = (e:any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'
-
 const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
@@ -64,7 +58,6 @@ function NewDialog({onClose, onCreate, existingNames}: { onClose: () => void, on
     const [name, setName] = useState<string>('')
     const onChange = (event: ChangeEvent) => setName((event.target as HTMLInputElement).value)
 
-    const error = validateProjectName(name, existingNames)
     const canCreate = name && !error
     return (
         <Dialog onClose={onClose} open={true}>
@@ -266,6 +259,7 @@ export default function EditorRunner() {
     }
 
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
+        setLocalProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
         await updateProjectHandlerFromStore(project, name, projectStore)
@@ -391,7 +385,6 @@ export default function EditorRunner() {
         try {
             const dirHandle = await window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'})
             const projectStore = new DiskProjectStore(dirHandle)
-            setLocalProjectStore(projectStore)
             await projectStore.createProject()
             await projectStore.writeProjectFile(editorEmptyProject())
             await openOrUpdateProjectFromStore(projectStore.name, projectStore)
@@ -406,7 +399,6 @@ export default function EditorRunner() {
         try {
             const dirHandle = await window.showDirectoryPicker({id: 'elemento_editor', mode: 'readwrite'})
             const projectStore = new DiskProjectStore(dirHandle)
-            setLocalProjectStore(projectStore)
             await openOrUpdateProjectFromStore(projectStore.name, projectStore)
         } catch (e: any) {
             if (!userCancelledFilePick(e)) {
@@ -415,7 +407,7 @@ export default function EditorRunner() {
         }
     }
 
-    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(localProjectStore!, openOrUpdateProject)}
+    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                                  uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onUpdateFromGitHub = async() => {

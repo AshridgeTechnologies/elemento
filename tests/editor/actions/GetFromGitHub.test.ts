@@ -35,37 +35,37 @@ beforeEach(() => {
 
 test('state sets project name', () => {
     state.setProjectName('Proj One')
-    expect(state.projectName).toBe('Proj One')
+    expect(state.directory).toBe('Proj One')
 })
 
 test('state sets url and leaves project name empty if not found', () => {
     state.setUrl('http://example.com')
     expect(state.url).toBe('http://example.com')
-    expect(state.projectName).toBe('')
+    expect(state.directory).toBe('')
 })
 
 test('state sets url and updates project name if empty or same as url', () => {
     state.setUrl('https://example.com/user/repo1')
     expect(state.url).toBe('https://example.com/user/repo1')
-    expect(state.projectName).toBe('repo1')
+    expect(state.directory).toBe('repo1')
     state.setUrl('https://example.com/user/repo12')
     expect(state.url).toBe('https://example.com/user/repo12')
-    expect(state.projectName).toBe('repo12')
+    expect(state.directory).toBe('repo12')
 })
 
 test('state sets url and leaves project name if different to url', () => {
     state.setProjectName('Proj One')
     state.setUrl('https://example.com/user/repo1')
     expect(state.url).toBe('https://example.com/user/repo1')
-    expect(state.projectName).toBe('Proj One')
+    expect(state.directory).toBe('Proj One')
 })
 
 test('validates project name not same as an existing name', async () => {
     await wait(10) // wait for xisting project names to load
     state.setProjectName('Proj One')
-    expect(state.error).toBeNull()
+    expect(state.directoryError).toBeNull()
     state.setProjectName('Project B')
-    expect(state.error).toBe('There is already a project with this name')
+    expect(state.directoryError).toBe('There is already a project with this name')
 })
 
 test('can create when fields entered and no error', async () => {
