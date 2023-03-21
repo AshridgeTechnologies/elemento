@@ -29,6 +29,12 @@ Stories
 - Handle merge conflicts
 - Functional test covering Get and Update - and others
 
+### Priority for internal apps
+- Types (consider Zod, ArkType)
+- Validation
+- Model-driven components (consider zorm and other Zod integrations)
+- Firestore access rules
+
 ### Priority for customer-facing apps
 - JavaScript functions
 - Payments
@@ -38,12 +44,6 @@ Stories
 - Email
 - Uploaded files
 - Web file datastores
-
-### Priority for internal apps
-- Types (consider Zod, ArkType)
-- Validation
-- Model-driven components (consider zorm and other Zod integrations)
-- Firestore access rules
 
 ### Priority for education and games
 - Event actions
