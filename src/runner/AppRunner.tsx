@@ -1,5 +1,5 @@
 import React, {createRef, useEffect} from 'react'
-import {StoreProvider} from '../runtime/appData'
+import {AppStoreHook, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
@@ -29,11 +29,11 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
 }
 
 type Properties = {appFunction: React.FunctionComponent<any>, appContext: AppContext, resourceUrl?: string,
-    onComponentSelected: (id: string) => void, selectedComponentId?: string }
+    onComponentSelected: (id: string) => void, selectedComponentId?: string, appStoreHook?: AppStoreHook }
 
-export default function AppRunner({appFunction, appContext, resourceUrl, onComponentSelected, selectedComponentId}: Properties) {
+export default function AppRunner({appFunction, appContext, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook}: Properties) {
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
-        <StoreProvider>
+        <StoreProvider appStoreHook={appStoreHook}>
             <AppUtilsContext.Provider value={new AppUtils(resourceUrl)}>
                 <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
                     {React.createElement(appFunction, {appContext})}

@@ -125,6 +125,7 @@ export default function Editor({
         <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport}
                   onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub} onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
         <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
+        <Button id='downloads' href='/downloads'>Downloads</Button>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
 

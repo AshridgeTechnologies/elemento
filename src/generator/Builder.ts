@@ -10,7 +10,9 @@ export type FileCollection = { [p: string]: { contents: string | Uint8Array } }
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourcePath = '/runtime/runtime.js'
-const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.js'
+const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.cjs'
+
+export const findServerApp = (project: Project) => project.elementArray().find(el => el.kind === 'ServerApp') as ServerApp
 
 export default class Builder {
 
@@ -21,14 +23,16 @@ export default class Builder {
     }
 
     get serverApp() {
-        return this.project.elementArray().find( el => el.kind === 'ServerApp') as ServerApp
+        return findServerApp(this.project)
     }
 
     get codeFileName() { return `${this.app.codeName}.js` }
+    get serverCodeFileName() { return `${this.serverApp.codeName}.mjs` }
+
     async clientFiles(firebasePublish?: FirebasePublish): Promise<FileCollection> {
         const config = {
             '/index.html':              {contents: this.indexFile()},
-            [`/${this.codeFileName}`]:  {contents: this.codeFile()},
+            [`/${this.codeFileName}`]:  {contents: this.clientCodeFile()},
             [`/${runtimeFileName}`]:    {contents: await this.loadFile(runtimeFileSourcePath)},
             [`/${runtimeFileName}.map`]: {contents: await this.loadFile(runtimeFileSourcePath + '.map')}
         }
@@ -47,19 +51,25 @@ export default class Builder {
         const generatedFiles = Object.fromEntries( gen.output().files.map(({name, contents}) => [name, {contents}]) )
         //console.log('generatedFiles', generatedFiles)
         const staticFiles = {
-            'serverRuntime.js': {contents: await this.loadFile(serverRuntimeFileSourcePath)},
-            'serverRuntime.js.map': {contents: await this.loadFile(serverRuntimeFileSourcePath + '.map')},
+            'serverRuntime.cjs': {contents: await this.loadFile(serverRuntimeFileSourcePath)},
+            'serverRuntime.cjs.map': {contents: await this.loadFile(serverRuntimeFileSourcePath + '.map')},
         }
         return {...generatedFiles, ...staticFiles}
     }
 
-    public codeFile() {
+    public clientCodeFile() {
         const imports = [
             `import * as Elemento from "./${runtimeFileName}"`,
             `const {React} = Elemento`
         ]
 
         return generate(this.app, this.project, imports).code
+    }
+
+    public serverCodeFile() {
+        const gen = new ServerAppGenerator(this.serverApp)
+        const {contents} = gen.serverApp()
+        return contents
     }
 
     private loadFile(path: string) {  // path must start with /

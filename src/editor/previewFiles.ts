@@ -44,7 +44,12 @@ const previewAssetFiles = async (projectStore: DiskProjectStore): Promise<FileCo
 
 export const previewCodeFile = (project: Project): [path: string, contents: string] => {
     const builder = new Builder(project, '')
-    return [builder.codeFileName, builder.codeFile()]
+    return [builder.codeFileName, builder.clientCodeFile()]
+}
+
+export const previewServerCodeFile = (project: Project): [path: string, contents: string] => {
+    const builder = new Builder(project, '')
+    return [builder.serverCodeFileName, builder.serverCodeFile()]
 }
 
 const loadFile = (path: string) => {  // path must start with /

@@ -27,13 +27,16 @@ import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authenticatio
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
-import {previewClientFiles, previewCodeFile} from './previewFiles'
+import {previewClientFiles, previewCodeFile, previewServerCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
+import {findServerApp} from '../generator/Builder'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import {debounce} from 'lodash'
 import {NewProjectDialog} from './actions/NewProject'
+import ServerApp from '../model/ServerApp'
+import ServerAppConnector from '../model/ServerAppConnector'
 
 declare global {
     var getProject: () => Project | null
@@ -41,6 +44,8 @@ declare global {
 
     var showDirectoryPicker: (options: object) => Promise<FileSystemDirectoryHandle>
 }
+
+const devServerUrl = 'http://localhost:4444'
 
 const safeJsonParse = (text: string) => {
     try {
@@ -54,6 +59,19 @@ const safeJsonParse = (text: string) => {
 const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
+
+async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
+    try {
+        const response = await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
+        console.log('Updated server file', serverAppName, path)
+        afterUpdate()
+    } catch (error) {
+        console.error('Error updating server file', error);
+    }
+}
+
+const debouncedUpdateServerFile = debounce( updateServerFile, 1000 )
+
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -168,12 +186,14 @@ export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
+    const [serverAppCode, setServerAppCode] = useState<string | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [,setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+
     const removeDialog = () => setDialog(null)
     
     const getOpenProject = (): Project => {
@@ -191,6 +211,14 @@ export default function EditorRunner() {
 
         const [path, fileContents] = previewCodeFile(updatedProject)
         writeFile(path, fileContents)
+
+        const [serverPath, newServerAppCode] = previewServerCodeFile(updatedProject)
+        if (newServerAppCode && newServerAppCode !== serverAppCode) {
+            const serverAppName = findServerApp(updatedProject).codeName
+            debouncedUpdateServerFile(serverAppName, serverPath, newServerAppCode, () => updatePreviewServerAppConnectors(serverAppName))
+                ?.catch(e => console.error('Could not update server file', e))
+            setServerAppCode(newServerAppCode)
+        }
     }
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         projectHandler.setProject(proj)
@@ -211,6 +239,14 @@ export default function EditorRunner() {
         await updateProjectHandlerFromStore(project, name, projectStore)
     }
 
+
+    function updatePreviewServerAppConnectors(serverAppName: string) {
+        const project = getOpenProject()
+        const selectConnector = (el: Element) => el.kind === 'ServerAppConnector' && (el as ServerAppConnector).serverApp?.expr === serverAppName
+        const connectors = project.findElementsBy( selectConnector)
+        connectors.forEach( conn => callFunctionInPreview(project.findElementPath(conn.id)!, 'Refresh'))
+    }
+
     function mountFiles(filesToMount: FileSystemTree) {
         navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
     }
@@ -227,7 +263,16 @@ export default function EditorRunner() {
         navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids})
     }
 
+    function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {
+        navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
+    }
+
     const initServiceWorker = () => {
+
+        if (!navigator.serviceWorker) {
+            console.error('navigator.serviceWorker not available')
+            return
+        }
 
         const doInit = async () => {
             console.log('Initializing service worker')

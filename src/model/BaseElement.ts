@@ -152,6 +152,12 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return null
     }
 
+    findElementsBy(selectorFn: (el: Element) => boolean) : Element[] {
+        const fromSelf = selectorFn(this) ? [this as Element] : [] as Element[]
+        const fromChildren = this.elementArray().map( childEl => childEl.findElementsBy(selectorFn))
+        return [fromSelf, ...fromChildren].flat()
+    }
+
     set(id: ElementId, propertyName: string, value: any): this {
         if (id === this.id) {
             if (propertyName === 'name') {

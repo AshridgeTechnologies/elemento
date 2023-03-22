@@ -10,7 +10,7 @@ import ServerAppGenerator from '../../generator/ServerAppGenerator'
 
 const runtimeFileName = 'runtime.js'
 const runtimeFileSourceUrl = '/runtime/runtime.js'
-const serverRuntimeFileSourceUrl = '/serverRuntime/serverRuntime.js'
+const serverRuntimeFileSourceUrl = '/serverRuntime/serverRuntime.cjs'
 
 function zipText(text: string) {
     const uint8array = new TextEncoder().encode(text)
@@ -133,8 +133,8 @@ export default class FirebaseDeploy {
         const generatedFiles = gen.output().files
         console.log('generatedFiles', generatedFiles)
         const staticFiles = [
-            {name: 'serverRuntime.js', contents: await this.loadFile(serverRuntimeFileSourceUrl)},
-            {name: 'serverRuntime.js.map', contents: await this.loadFile(serverRuntimeFileSourceUrl + '.map')},
+            {name: 'serverRuntime.cjs', contents: await this.loadFile(serverRuntimeFileSourceUrl)},
+            {name: 'serverRuntime.cjs.map', contents: await this.loadFile(serverRuntimeFileSourceUrl + '.map')},
         ]
         const files = [...generatedFiles, ...staticFiles]
         const sourceZipData = await zipFiles(files)

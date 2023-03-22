@@ -55,6 +55,8 @@ Tasks
 - Remove unnecessary dependencies in Generator library
 - ✅ Ensure icons still OK in studio
 - All necessary build and deploy scripts are in the generated codebase
+- Remove FirebaseDeploy functionality
+- Remove Elemento functions dir and config etc
 
 Steps to set up action
 ----------------------

@@ -336,7 +336,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{
                 appName: '${serverApp.name}',
-                url: ${serverUrlExpr || `'/${serverApp.codeName.toLowerCase()}'`},
+                url: ${serverUrlExpr || `'/capi/${serverApp.codeName}'`},
                 functions: ${valueLiteral(Object.fromEntries( serverApp.functions.map( fn => [fn.codeName, functionInfo(fn)])))}
             }`
 

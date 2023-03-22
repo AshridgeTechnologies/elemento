@@ -36,6 +36,10 @@ export default class EditorServiceWorker {
         if (data?.type === 'componentSelected') {
             this.sendClientHighlight(data.id)
         }
+
+        if (data?.type === 'callFunction') {
+            this.sendCallFunction(data.componentId, data.functionName, data.args)
+        }
     }
 
     install = (event: ExtendableEvent) => {
@@ -47,6 +51,10 @@ export default class EditorServiceWorker {
 
         const url = new URL(request.url)
         const pathname = decodeURIComponent(url.pathname)
+
+        if (pathname.startsWith('/capi/')) {
+            return fetch(`http://localhost:4444${url.pathname}${url.search}`)
+        }
 
         const [, filepath] = pathname.match(new RegExp(`^\/preview\/(.*)$`)) ?? []
         if (filepath !== undefined) {
@@ -63,6 +71,7 @@ export default class EditorServiceWorker {
                 }
             })
         }
+
         return fetch(request)
     }
 
@@ -129,5 +138,9 @@ export default class EditorServiceWorker {
 
     async sendClientHighlight(id: string) {
         await this.sendToClients('componentSelected', {id})
+    }
+
+    async sendCallFunction(componentId: string, functionName: string, args: any[]) {
+        await this.sendToClients('callFunction', {componentId, functionName, args})
     }
 }

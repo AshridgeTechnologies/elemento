@@ -139,6 +139,21 @@ test('can find child elements by type', () => {
     expect(project.findChildElements(FirebasePublish)).toStrictEqual([publish1, publish2])
 })
 
+test('can find elements under project by selector function', () => {
+    const {project, text2, text5} = testProject()
+    expect(project.findElementsBy( el => el.name === 'Text 3')).toStrictEqual([text2, text5])
+})
+
+test('can find elements under page by selector function', () => {
+    const {page1, text2} = testProject()
+    expect(page1.findElementsBy( el => el.name === 'Text 3')).toStrictEqual([text2])
+})
+
+test('can find elements including page by selector function', () => {
+    const {page1, text2} = testProject()
+    expect(page1.findElementsBy( el => el.name === 'Text 3' || el.kind === 'Page')).toStrictEqual([page1, text2])
+})
+
 test('creates an updated object with a property set to a new value', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])

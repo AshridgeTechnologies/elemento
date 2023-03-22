@@ -3,14 +3,18 @@ import React from 'react'
 import {DefaultAppContext} from './AppContext'
 import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
+import {AppStore, AppStoreHook, fixPath} from './appData'
+import {StoreApi} from 'zustand'
+import {ComponentState} from './components/ComponentState'
 
 let root: Root
 
 type ComponentSelectedFn = (id: string) => void
 
 export const run = (elementType: React.FunctionComponent,
-                    selectedComponentId: string | undefined = undefined,
-                    onComponentSelected: ComponentSelectedFn | undefined = undefined,
+                    selectedComponentId?: string,
+                    onComponentSelected?: ComponentSelectedFn,
+                    appStoreHook?: AppStoreHook,
                     containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
@@ -25,7 +29,7 @@ export const run = (elementType: React.FunctionComponent,
     }
     const appContext = new DefaultAppContext(null)
     // @ts-ignore
-    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl: ASSET_DIR, selectedComponentId, onComponentSelected})
+    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl: ASSET_DIR, selectedComponentId, onComponentSelected, appStoreHook})
     root.render(appRunner)
 }
 
@@ -34,8 +38,15 @@ let selectedComponentIds: string[] = []
 let appModule: any
 
 export const runForDev = (url: string) => {
+    let appStore: StoreApi<AppStore>
+    const appStoreHook: AppStoreHook = {
+        setAppStore(sa: StoreApi<AppStore>){
+            appStore = sa
+        }
+    }
+
     function runModule() {
-        run(appModule.default, selectedComponentIds[0], onComponentSelected)
+        run(appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
     }
 
     async function refreshCode() {
@@ -55,6 +66,14 @@ export const runForDev = (url: string) => {
         if (message.type === 'selectedItems') {
             selectedComponentIds = message.ids
             runModule()
+        }
+        if (message.type === 'callFunction') {
+            const {componentId, functionName, args = []} = message
+            const state = appStore.getState()
+            const pathInState = fixPath(componentId)
+            const componentState = state.select(pathInState)
+            const func = (componentState as any)[functionName]
+            func.apply(componentState, args)
         }
     }
 

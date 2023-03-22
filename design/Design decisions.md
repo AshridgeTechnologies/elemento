@@ -1,6 +1,16 @@
 Design decisions
 ================
 
+Server function paths
+---------------------
+
+- Problem: how should server function paths be formed?
+- Decision: /capi/<server-app-name>/<function-name> for internal,  /api/etc for external
+- Reasons:
+  - api calls will be handled differently in most deployments
+  - api calls will be handled differently in the preview service worker
+  - internal and external apis will be handled differently
+
 Image src URL adjustments
 -------------------------
 

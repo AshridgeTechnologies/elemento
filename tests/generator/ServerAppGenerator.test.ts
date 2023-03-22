@@ -19,8 +19,8 @@ describe('generates files', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('ServerApp1.js')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
-import {globalFunctions} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
+import {globalFunctions} from './serverRuntime.cjs'
 
 const {Sum} = globalFunctions
 
@@ -45,9 +45,9 @@ async function HideMe(where) {
 }
 
 return {
-    Plus: Plus,
-    Mult: Mult,
-    Total: Total
+    Plus: {func: Plus, update: false, argNames: ['a', 'b']},
+    Mult: {func: Mult, update: false, argNames: ['c', 'd']},
+    Total: {func: Total, update: false, argNames: ['x', 'y', 'z']}
 }
 }
 
@@ -56,23 +56,10 @@ export default ServerApp1`)
 
     test('express app file', () => {
         expect(expressAppFile.name).toBe('ServerApp1Express.js')
-        expect(expressAppFile.contents).toBe(`import express from 'express'
-import {expressUtils} from './serverRuntime.js'
-import baseApp from './ServerApp1.js'
+        expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
+import baseAppFactory from './ServerApp1.js'
 
-const {checkUser, handlerApp, requestHandler, errorHandler} = expressUtils
-
-const app = express()
-
-app.use(checkUser)
-app.use(handlerApp(baseApp))
-app.use(express.json())
-
-app.get('/serverapp1/Plus', requestHandler('a', 'b'))
-app.get('/serverapp1/Mult', requestHandler('c', 'd'))
-app.get('/serverapp1/Total', requestHandler('x', 'y', 'z'))
-
-app.use(errorHandler)
+const app = expressApp(baseAppFactory)
 
 export default app`)
     })
@@ -122,9 +109,9 @@ describe('generates files using data components in dependency order', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.js')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
-import {appFunctions} from './serverRuntime.js'
-import {components} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
+import {appFunctions} from './serverRuntime.cjs'
+import {components} from './serverRuntime.cjs'
 
 const {Get, Update} = appFunctions
 const {Collection, FirestoreDataStore} = components
@@ -150,9 +137,9 @@ async function GetSprocket(id) {
 }
 
 return {
-    GetWidget: GetWidget,
-    UpdateWidget: UpdateWidget,
-    GetSprocket: GetSprocket
+    GetWidget: {func: GetWidget, update: false, argNames: ['id']},
+    UpdateWidget: {func: UpdateWidget, update: true, argNames: ['id', 'changes']},
+    GetSprocket: {func: GetSprocket, update: false, argNames: ['id']}
 }
 }
 
@@ -161,23 +148,10 @@ export default WidgetApp`)
 
     test('express app file', () => {
         expect(expressAppFile.name).toBe('WidgetAppExpress.js')
-        expect(expressAppFile.contents).toBe(`import express from 'express'
-import {expressUtils} from './serverRuntime.js'
-import baseApp from './WidgetApp.js'
+        expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
+import baseAppFactory from './WidgetApp.js'
 
-const {checkUser, handlerApp, requestHandler, errorHandler} = expressUtils
-
-const app = express()
-
-app.use(checkUser)
-app.use(handlerApp(baseApp))
-app.use(express.json())
-
-app.get('/widgetapp/GetWidget', requestHandler('id'))
-app.post('/widgetapp/UpdateWidget', requestHandler('id', 'changes'))
-app.get('/widgetapp/GetSprocket', requestHandler('id'))
-
-app.use(errorHandler)
+const app = expressApp(baseAppFactory)
 
 export default app`)
     })
@@ -214,9 +188,9 @@ describe('handles errors and special cases', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.js')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.js'
-import {globalFunctions} from './serverRuntime.js'
-import {components} from './serverRuntime.js'
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
+import {globalFunctions} from './serverRuntime.cjs'
+import {components} from './serverRuntime.cjs'
 
 const {Log, Select, If, Sum} = globalFunctions
 const {Collection, FirestoreDataStore} = components
@@ -272,9 +246,9 @@ async function UnexpectedNumber() {
 }
 
 return {
-    SayHello: SayHello,
-    SelectStuff: SelectStuff,
-    AssignmentsToEquals: AssignmentsToEquals
+    SayHello: {func: SayHello, update: false, argNames: ['id']},
+    SelectStuff: {func: SelectStuff, update: false, argNames: ['min']},
+    AssignmentsToEquals: {func: AssignmentsToEquals, update: true, argNames: ['foo']}
 }
 }
 

@@ -67,7 +67,7 @@ export default class ServerAppGenerator {
         }).join('\n')
     }
 
-    private serverApp() {
+    public serverApp() {
         const generateFunction = (fn: FunctionDef) => {
             const paramList = fn.inputs.join(', ')
             const exprType = fn.action ? 'action' : 'singleExpression'
@@ -76,6 +76,10 @@ export default class ServerAppGenerator {
             return `async function ${fn.codeName}(${paramList}) {
     ${functionBody}
 }`
+        }
+
+        const generateFunctionMetadata = (fn: FunctionDef) => {
+            return `{func: ${fn.codeName}, update: ${!!fn.action}, argNames: [${fn.inputs.map(quote).join(', ')}]}`
         }
 
         const globalFunctionNames = this.parser.allGlobalFunctionIdentifiers()
@@ -87,10 +91,10 @@ export default class ServerAppGenerator {
         const hasComponents = !!componentNames.length
 
         const imports = [
-            `import {runtimeFunctions} from './serverRuntime.js'`,
-            hasGlobalFunctions && `import {globalFunctions} from './serverRuntime.js'`,
-            hasAppFunctions && `import {appFunctions} from './serverRuntime.js'`,
-            hasComponents && `import {components} from './serverRuntime.js'`,
+            `import {runtimeFunctions} from './serverRuntime.cjs'`,
+            hasGlobalFunctions && `import {globalFunctions} from './serverRuntime.cjs'`,
+            hasAppFunctions && `import {appFunctions} from './serverRuntime.cjs'`,
+            hasComponents && `import {components} from './serverRuntime.cjs'`,
         ].filter(isTruthy).join('\n')
 
         const globalImports = hasGlobalFunctions && `const {${globalFunctionNames.join(', ')}} = globalFunctions`
@@ -107,7 +111,7 @@ function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 ${functionDeclarations}
 
 return {
-${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n')}
+${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata(f)}`).join(',\n')}
 }
 }`
         const exportDeclaration = `export default ${this.app.codeName}`
@@ -120,33 +124,18 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${f.codeName}`).join(',\n'
             exportDeclaration
         ].filter(isTruthy).join('\n\n')
 
-        return {name: `${this.app.codeName}.js`, contents: serverAppCode}
+        return {name: `${this.app.codeName}.mjs`, contents: serverAppCode}
     }
 
     private expressApp() {
-        const generateRoute = (fn: FunctionDef) => {
-            const paramList = fn.inputs.map(quote).join(', ')
-            const pathPrefix = this.app.codeName.toLowerCase()
-            const method = fn.action ? 'post' : 'get'
-            return `app.${method}('/${pathPrefix}/${fn.codeName}', requestHandler(${paramList}))`
-        }
-
         const imports = [
-            `import express from 'express'`,
-            `import {expressUtils} from './serverRuntime.js'`,
-            `import baseApp from './${this.app.codeName}.js'`,
+            `import {expressApp} from './serverRuntime.cjs'`,
+            `import baseAppFactory from './${this.app.codeName}.mjs'`,
         ].join('\n')
-        const importDeclarations = `const {checkUser, handlerApp, requestHandler, errorHandler} = expressUtils`
-        const appDeclaration = `const app = express()`
-        const useCheckUser = `app.use(checkUser)`
-        const useHandlerApp = `app.use(handlerApp(baseApp))`
-        const useJson = `app.use(express.json())`
-        const useError = `app.use(errorHandler)`
-        const useCalls = [useCheckUser, useHandlerApp, useJson].join('\n')
-        const appConfigurations = this.publicFunctions().map(generateRoute).join('\n')
+        const appDeclaration = `const app = expressApp(baseAppFactory)`
         const theExports = `export default app`
         const code = [
-            imports, importDeclarations, appDeclaration, useCalls, appConfigurations, useError, theExports
+            imports, appDeclaration, theExports
         ].join('\n\n')
 
         return {name: `${this.app.codeName}Express.js`, contents: code}

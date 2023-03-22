@@ -16,6 +16,8 @@ export interface AppStateForObject {
     updateVersion: (newVersion: any) => void
 }
 
+export type AppStoreHook = {setAppStore(sa: StoreApi<AppStore>): void}
+
 const fixPath = (path: string) => {
     if (path === '') return path
     const [, ...remainingSegments] = path.split('.')
@@ -127,10 +129,10 @@ const useGetObjectState = <T>(elementPath: string): T => {
     return storedState
 }
 
-const StoreProvider = ({children, appStoreHook = {setAppStore(x: any){}}}: {children: React.ReactNode, appStoreHook?: {setAppStore(sa: StoreApi<AppStore>): void}} ) => {
+const StoreProvider = ({children, appStoreHook}: {children: React.ReactNode, appStoreHook?: AppStoreHook} ) => {
     const store = useRef(createStore(baseStore))
-    appStoreHook.setAppStore(store.current)
+    appStoreHook?.setAppStore(store.current)
     return React.createElement(StoreContext.Provider, {value: store.current, children})
 }
-export {StoreProvider, useObjectState, useGetObjectState}
+export {StoreProvider, useObjectState, useGetObjectState, fixPath}
 
