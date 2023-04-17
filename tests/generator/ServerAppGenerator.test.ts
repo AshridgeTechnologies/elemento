@@ -18,7 +18,7 @@ describe('generates files', () => {
     const [serverAppFile, expressAppFile, functionFile, packageFile] = files
 
     test('app file', () => {
-        expect(serverAppFile.name).toBe('ServerApp1.js')
+        expect(serverAppFile.name).toBe('ServerApp1.mjs')
         expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
 import {globalFunctions} from './serverRuntime.cjs'
 
@@ -57,7 +57,7 @@ export default ServerApp1`)
     test('express app file', () => {
         expect(expressAppFile.name).toBe('ServerApp1Express.js')
         expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
-import baseAppFactory from './ServerApp1.js'
+import baseAppFactory from './ServerApp1.mjs'
 
 const app = expressApp(baseAppFactory)
 
@@ -108,7 +108,7 @@ describe('generates files using data components in dependency order', () => {
     const [serverAppFile, expressAppFile] = files
 
     test('app file', () => {
-        expect(serverAppFile.name).toBe('WidgetApp.js')
+        expect(serverAppFile.name).toBe('WidgetApp.mjs')
         expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
 import {appFunctions} from './serverRuntime.cjs'
 import {components} from './serverRuntime.cjs'
@@ -149,7 +149,7 @@ export default WidgetApp`)
     test('express app file', () => {
         expect(expressAppFile.name).toBe('WidgetAppExpress.js')
         expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
-import baseAppFactory from './WidgetApp.js'
+import baseAppFactory from './WidgetApp.mjs'
 
 const app = expressApp(baseAppFactory)
 
@@ -187,7 +187,7 @@ describe('handles errors and special cases', () => {
     const [serverAppFile] = files
 
     test('app file', () => {
-        expect(serverAppFile.name).toBe('WidgetApp.js')
+        expect(serverAppFile.name).toBe('WidgetApp.mjs')
         expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
 import {globalFunctions} from './serverRuntime.cjs'
 import {components} from './serverRuntime.cjs'

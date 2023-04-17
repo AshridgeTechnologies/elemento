@@ -19,10 +19,6 @@ Bugs
 Stories
 -------
 
-### Preview server
-- Simulate server apps
-
-
 ### Move to GitHub
 - Deploy from GitHub
 - Can use private GitHub repos
@@ -46,7 +42,9 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
+- Speech recognition
 - Event actions
+- Speech synthesis
 - Shapes, drawing, animation
 
 ### Priority for learning
@@ -68,8 +66,6 @@ Stories
 
 ### Priority 1
 - Deploy multiple versions - for testing, canary deployment and instant rollback
-- Export working copy to directory - or zip?
-- Import working copy from directory - or zip?
 - Add deferred desirable features from previous stories
 - Google Sheets datastore
 - Formula improvements Part 3
@@ -188,6 +184,7 @@ Done
 - Serve preview from WebContainer
 - Serve preview from service worker
 - Project directory in disk files
+- Simulate server apps
 
 
 Bugs fixed
