@@ -5,7 +5,7 @@ import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui
 import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-
+import {format, isDate} from 'date-fns'
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
@@ -33,6 +33,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 return isNumeric(input) ? Number(input) : input
             case 'boolean':
                 return input === 'true'
+            case 'date':
+                return new Date(input)
             default:
                 throw new UnsupportedValueError(type as never)
         }
@@ -55,6 +57,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             return value.expr
         } else if (isArray(value)) {
             return value.join(', ')
+        } else if (value instanceof Date) {
+            return format(value, 'yyyy-MM-dd')
         } else {
             return value.toString()
         }
@@ -69,13 +73,29 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
         onChange(elementId, name, newValue)
     }
 
+    const fixedButtonLabel = () => {
+        if (isArray(type)) return 'sel'
+        switch (type) {
+            case 'date':
+                return 'dmy'
+            case 'number':
+                return '123'
+            case 'boolean':
+                return 'y/n'
+            case 'string|number':
+                return 'a12'
+            default:
+                return 'abc'
+        }
+    }
+
     const numericProps = (type === 'number' && !expr) ? {type: 'number', inputProps: {min: 0}, sx: { minWidth: 120, flex: 0 }} : {}
+    const dateProps = (type === 'date' && !expr) ? {type: 'date', InputLabelProps:{ shrink: true }, sx: { minWidth: 150, flex: 0 }} : {}
     const label = startCase(name)
     const fixedButtonColor = 'primary'
     const exprButtonColor = 'secondary'
     const exprButtonLabel = 'fx='
-    const fixedButtonLabel = type === 'number' ? '123' : type === 'boolean' ? 'y/n' : type === 'string|number' ? 'a12' : isArray(type) ? 'sel' : 'abc'
-    const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel
+    const buttonLabel = expr ? exprButtonLabel : fixedButtonLabel()
     const buttonColor = expr ? exprButtonColor : fixedButtonColor
     const buttonMessage = expr ? 'Expression.  Click to change to fixed value' : 'Fixed value.  Click to change to expression'
     const errorProps = error ? {error: true, helperText: error} : {}
@@ -134,6 +154,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 multiline={type === 'string multiline' || expr}
                 inputProps={{readOnly}}
                 {...numericProps}
+                {...dateProps}
                 {...errorProps}
                 onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
         }

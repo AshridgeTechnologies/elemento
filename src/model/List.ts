@@ -1,7 +1,7 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
-import {elementOfType} from './elements'
+import {elementHasParentTypeOf} from './createElement'
 
 type Properties = {
     items?: PropertyValueType<any[]>, selectedItem?: PropertyValueType<any>,
@@ -35,12 +35,6 @@ export default class List extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return this.elementHasParentTypeOfThis(elementType)
-    }
-
-
-    private elementHasParentTypeOfThis(elementType: ElementType) {
-        const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind || parentType === 'any'
+        return elementHasParentTypeOf(elementType, this)
     }
 }

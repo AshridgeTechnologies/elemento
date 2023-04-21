@@ -2,6 +2,7 @@ import Element from './Element'
 import BaseElement from './BaseElement'
 import {ComponentType, ElementType, PropertyDef} from './Types'
 import {elementOfType} from './elements'
+import {elementHasParentTypeOf} from './createElement'
 
 type Properties = {}
 
@@ -12,8 +13,7 @@ export default class Page extends BaseElement<Properties> implements Element {
     type(): ComponentType { return 'statefulUI' }
 
     canContain(elementType: ElementType) {
-        const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind || parentType === 'any'
+        return elementHasParentTypeOf(elementType, this)
     }
 
     static get parentType(): ElementType | 'any' | null { return 'App' }

@@ -9,8 +9,6 @@ export async function buildProject(projectDir: string, outputDir: string, elemen
     console.log('buildProject', projectDir, outputDir)
     const clientDir = `${outputDir}/client`
     const serverDir = `${outputDir}/server`
-    fs.mkdirSync(clientDir, {recursive: true})
-    fs.mkdirSync(serverDir, {recursive: true})
 
     const projectJson = fs.readFileSync(`${projectDir}/${projectFileName}`, 'utf8')
     const project = loadJSONFromString(projectJson) as Project
@@ -21,8 +19,12 @@ export async function buildProject(projectDir: string, outputDir: string, elemen
         }
     }
 
+    fs.mkdirSync(clientDir, {recursive: true})
     writeFiles(await builder.clientFiles(), clientDir)
-    writeFiles(await builder.serverFiles(), serverDir)
+    if (builder.serverApp) {
+        fs.mkdirSync(serverDir, {recursive: true})
+        writeFiles(await builder.serverFiles(), serverDir)
+    }
 
     if (fs.existsSync(`${projectDir}/files`)) {
         fs.cpSync(`${projectDir}/files`, `${clientDir}/files`, {recursive: true, preserveTimestamps: true})

@@ -77,7 +77,8 @@ test('can contain types apart from Project, App, Page', () => {
     expect(layout.canContain('FileDataStore')).toBe(false)
     expect(layout.canContain('Text')).toBe(true)
     expect(layout.canContain('Button')).toBe(true)
-})
+    expect(layout.canContain('DataTypes')).toBe(false)
+    expect(layout.canContain('TrueFalseType')).toBe(false)})
 
 
 test('finds itself and children in a page', () => {

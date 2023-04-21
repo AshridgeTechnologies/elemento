@@ -12,7 +12,10 @@ const runtimeFileName = 'runtime.js'
 const runtimeFileSourcePath = '/runtime/runtime.js'
 const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.cjs'
 
-export const findServerApp = (project: Project) => project.elementArray().find(el => el.kind === 'ServerApp') as ServerApp
+export const findServerApp = (project: Project) => {
+    const element = project.elementArray().find(el => el.kind === 'ServerApp')
+    return element as (ServerApp | undefined)
+}
 
 export default class Builder {
 
@@ -27,7 +30,7 @@ export default class Builder {
     }
 
     get codeFileName() { return `${this.app.codeName}.js` }
-    get serverCodeFileName() { return `${this.serverApp.codeName}.mjs` }
+    get serverCodeFileName() { return this.serverApp && `${this.serverApp.codeName}.mjs` }
 
     async clientFiles(firebasePublish?: FirebasePublish): Promise<FileCollection> {
         const config = {
@@ -47,7 +50,7 @@ export default class Builder {
     }
 
     async serverFiles(): Promise<FileCollection> {
-        const gen = new ServerAppGenerator(this.serverApp)
+        const gen = new ServerAppGenerator(this.serverApp!)
         const generatedFiles = Object.fromEntries( gen.output().files.map(({name, contents}) => [name, {contents}]) )
         //console.log('generatedFiles', generatedFiles)
         const staticFiles = {
@@ -67,7 +70,7 @@ export default class Builder {
     }
 
     public serverCodeFile() {
-        const gen = new ServerAppGenerator(this.serverApp)
+        const gen = new ServerAppGenerator(this.serverApp!)
         const {contents} = gen.serverApp()
         return contents
     }

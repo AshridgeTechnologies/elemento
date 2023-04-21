@@ -47,9 +47,9 @@ export const previewCodeFile = (project: Project): [path: string, contents: stri
     return [builder.codeFileName, builder.clientCodeFile()]
 }
 
-export const previewServerCodeFile = (project: Project): [path: string, contents: string] => {
+export const previewServerCodeFile = (project: Project): [path?: string, contents?: string] => {
     const builder = new Builder(project, '')
-    return [builder.serverCodeFileName, builder.serverCodeFile()]
+    return builder.serverApp ? [builder.serverCodeFileName, builder.serverCodeFile()] : [undefined, undefined]
 }
 
 const loadFile = (path: string) => {  // path must start with /

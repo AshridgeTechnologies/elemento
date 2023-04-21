@@ -213,8 +213,8 @@ export default function EditorRunner() {
         writeFile(path, fileContents)
 
         const [serverPath, newServerAppCode] = previewServerCodeFile(updatedProject)
-        if (newServerAppCode && newServerAppCode !== serverAppCode) {
-            const serverAppName = findServerApp(updatedProject).codeName
+        if (serverPath && newServerAppCode && newServerAppCode !== serverAppCode) {
+            const serverAppName = findServerApp(updatedProject)!.codeName
             debouncedUpdateServerFile(serverAppName, serverPath, newServerAppCode, () => updatePreviewServerAppConnectors(serverAppName))
                 ?.catch(e => console.error('Could not update server file', e))
             setServerAppCode(newServerAppCode)

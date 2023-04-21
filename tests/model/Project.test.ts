@@ -372,14 +372,14 @@ test('finds max id for element type', ()=> {
     expect(project.findMaxId('TextInput')).toBe(0)
 })
 
-
-
 test('can contain App, not other types', () => {
     const project = new Project('id1', 'Project 1', {}, [])
     expect(project.canContain('App')).toBe(true)
+    expect(project.canContain('ServerApp')).toBe(true)
     expect(project.canContain('Page')).toBe(false)
     expect(project.canContain('Project')).toBe(false)
     expect(project.canContain('Text')).toBe(false)
+    expect(project.canContain('DataTypes')).toBe(true)
 })
 
 test('finds element types that can insert for a position and target element', () => {

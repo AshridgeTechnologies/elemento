@@ -1,9 +1,9 @@
 export type ElementId = string
-export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility'
+export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
 export type ChoiceList = readonly string[]
-export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'expr' | ChoiceList | EventActionPropertyDef
+export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'expr' | ChoiceList | EventActionPropertyDef
 export type PropertyExpr = {expr: string}
-export type PropertyValue = string | number | boolean | string[] | PropertyExpr
+export type PropertyValue = string | number | boolean | string[] | Date | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr
 
 export type InsertPosition = 'before' | 'after' | 'inside'
@@ -56,6 +56,16 @@ export type ElementType =
     'ServerApp' |
     'ServerAppConnector' |
     'File' |
-    'FileFolder'
+    'FileFolder' |
+    // Types
+    'DataTypes' |
+    'Rule' |
+    'TextType' |
+    'NumberType' |
+    'DateType' |
+    'EnumType' |
+    'RecordType' |
+    'ListType' |
+    'TrueFalseType'
 
 export type ParentType = ElementType | 'any' | null

@@ -1,9 +1,21 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
 import {elementOfType} from './elements'
+import {parseISO} from 'date-fns'
 
 
 type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
+
+const isoDateReviver = (key: string, value: any) => {
+    if (typeof value === 'string') {
+        const date = parseISO(value)
+        if (!Number.isNaN(date.getTime())) {
+            return date
+        }
+    }
+
+    return value
+}
 
 function loadJSONElement({id, kind, name, properties, elements}: ElementJson): Element {
 
@@ -21,5 +33,5 @@ export function loadJSON(json: ElementJson | ElementJson[]): Element | Element[]
 }
 
 export function loadJSONFromString(json: string): Element | Element[] {
-    return loadJSON(JSON.parse(json))
+    return loadJSON(JSON.parse(json, isoDateReviver))
 }

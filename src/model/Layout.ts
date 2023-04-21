@@ -2,6 +2,7 @@ import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
+import {elementHasParentTypeOf} from './createElement'
 
 type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>,
     backgroundColor?: PropertyValueType<string>, wrap?: PropertyValueType<boolean> }
@@ -29,8 +30,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
 
 
     canContain(elementType: ElementType) {
-        const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind || parentType === 'any'
+        return elementHasParentTypeOf(elementType, this)
     }
 
 }

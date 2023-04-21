@@ -75,7 +75,7 @@ export default class Project extends BaseElement<Properties> implements Element 
 
     canContain(elementType: ElementType) {
         const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind
+        return parentType === this.kind || ['DataTypes'].includes(elementType)
     }
 
     withFiles(fileNames: string[] = []) {

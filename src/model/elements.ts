@@ -28,6 +28,15 @@ import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
 import File from './File'
 import FileFolder from './FileFolder'
+import TrueFalseType from './types/TrueFalseType'
+import DataTypes from './types/DataTypes'
+import TextType from './types/TextType'
+import RecordType from './types/RecordType'
+import ListType from './types/ListType'
+import Rule from './types/Rule'
+import NumberType from './types/NumberType'
+import DateType from './types/DateType'
+import EnumType from './types/EnumType'
 
 export const elementTypes = () => {
     return {
@@ -60,6 +69,15 @@ export const elementTypes = () => {
         ServerAppConnector: ServerAppConnector,
         File: File,
         FileFolder: FileFolder,
+        DataTypes: DataTypes,
+        TrueFalseType: TrueFalseType,
+        TextType: TextType,
+        NumberType: NumberType,
+        DateType: DateType,
+        EnumType: EnumType,
+        RecordType: RecordType,
+        ListType: ListType,
+        Rule: Rule,
     }
 }
 

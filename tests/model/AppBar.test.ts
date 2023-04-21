@@ -40,7 +40,8 @@ test('can contain types apart from Project, App, Page, DataStore, Collection', (
     expect(appBar.canContain('MemoryDataStore')).toBe(false)
     expect(appBar.canContain('Text')).toBe(true)
     expect(appBar.canContain('Button')).toBe(true)
-})
+    expect(appBar.canContain('DataTypes')).toBe(false)
+    expect(appBar.canContain('RecordType')).toBe(false)})
 
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

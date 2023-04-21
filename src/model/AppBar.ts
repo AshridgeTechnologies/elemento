@@ -2,6 +2,7 @@ import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
+import {elementHasParentTypeOf} from './createElement'
 
 type Properties = { title?: PropertyValueType<string> }
 
@@ -15,8 +16,7 @@ export default class AppBar extends BaseElement<Properties> implements Element {
     get title() { return this.properties.title }
 
     canContain(elementType: ElementType) {
-        const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind || parentType === 'any'
+        return elementHasParentTypeOf(elementType, this)
     }
 
     get propertyDefs(): PropertyDef[] {

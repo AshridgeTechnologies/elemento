@@ -4,6 +4,7 @@ import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
 import {loadJSONFromString} from '../../src/model/loadJSON'
 import {ex} from '../testutil/testHelpers'
+import DateType from '../../src/model/types/DateType'
 
 // tests for loadJSON are in the test for each model class
 
@@ -26,4 +27,11 @@ test('converts array of elements from JSON string', ()=> {
     const elements = [text1, page1, text3]
     const newElements = loadJSONFromString(JSON.stringify(elements))
     expect(newElements).toStrictEqual(elements)
+})
+
+test('converts ISO date string to Date', () => {
+    const date1 = new Date('2020-04-05')
+    const dateType1 = new DateType('id1', 'DateType 1', {description: 'Desc 1', max: date1})
+    const newDateType = loadJSONFromString(JSON.stringify(dateType1))
+    expect(newDateType).toStrictEqual<DateType>(dateType1)
 })

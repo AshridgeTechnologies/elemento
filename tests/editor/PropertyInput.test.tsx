@@ -42,6 +42,16 @@ test('shows fixed value control for string property if current value is empty', 
     expect(label().textContent).toBe('Length')
 })
 
+test('shows fixed value control for date property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='start' type='date' value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('dmy')
+    expect(input().type).toBe('date')
+    expect(input().id).toBe('start')
+    expect(input().value).toBe('')
+    expect(componentProps(input()).value).toBe('')
+    expect(label().textContent).toBe('Start')
+})
+
 test('shows fixed value control for string or number property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('a12')
@@ -123,6 +133,17 @@ test('shows fixed value control for number property if current value is a number
     expect(input().id).toBe('length')
     expect(input().value).toBe('10')
     expect(label().textContent).toBe('Length')
+})
+
+test('shows fixed value control for date property if current value is a Date', () => {
+    const date1 = new Date('2023-05-04');
+    ({container} = render(<PropertyInput elementId='el1' name='start' type='date' value={date1} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('dmy')
+    expect(input().type).toBe('date')
+    expect(input().id).toBe('start')
+    expect(input().value).toBe('2023-05-04')
+    expect(input().valueAsDate).toStrictEqual(date1)
+    expect(label().textContent).toBe('Start')
 })
 
 test('shows fixed value control for boolean property if current value is a boolean', () => {
@@ -241,6 +262,14 @@ test('calls onChange with new number fixed value', () => {
 
     fireEvent.input(input(), {target: {value: '21'}})
     expect(newValue).toBe(21)
+})
+
+test('calls onChange with new date fixed value', () => {
+    const date1 = new Date('2023-05-04');
+    ({container} = render(<PropertyInput elementId='el1' name='start' type='date' value={date1} onChange={onChange}/>))
+
+    fireEvent.input(input(), {target: {value: '2024-02-03'}})
+    expect(newValue).toStrictEqual(new Date('2024-02-03'))
 })
 
 test('calls onChange with new string list fixed value and ignores spaces around values', () => {

@@ -17,3 +17,8 @@ export function createElement(elementType: ElementType, newIdSeq: number, proper
 
     return new elementClass(id, elementName, elementProps, [])
 }
+
+export const elementHasParentTypeOf = (elementType: ElementType, thisEl: any) => {
+    const parentType = elementOfType(elementType).parentType
+    return parentType === thisEl.kind || parentType === 'any'
+}

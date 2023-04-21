@@ -328,3 +328,4 @@ export const newIdTransformer = (existingElement: Element) => {
         return element.create(id, element.name, element.properties, transformedChildElements)
     }
 }
+
