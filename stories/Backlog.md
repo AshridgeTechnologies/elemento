@@ -26,9 +26,10 @@ Stories
 - Functional test covering Get and Update - and others
 
 ### Priority for internal apps
-- Types (consider Zod, ArkType)
-- Validation
-- Model-driven components (consider zorm and other Zod integrations)
+- Model types in studio
+- Type expressions
+- Input validation
+- Form generation
 - Firestore access rules
 
 ### Priority for customer-facing apps
