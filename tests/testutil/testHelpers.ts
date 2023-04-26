@@ -48,6 +48,16 @@ export function ex([s]: TemplateStringsArray) {
     return {expr: s}
 }
 
+export function trimText([s]: TemplateStringsArray) {
+    const trimmedText = s.replace(/^\n/, '').replace(/ *$/, '')
+    const lines = trimmedText.split('\n')
+    const nonBlankLines = lines.filter( l => l.trim())
+    const indentLength = (l: string): number => l.match(/^ */)?.[0]?.length ?? 0
+    const shortestIndent = Math.min(...nonBlankLines.map(indentLength))
+    const linesWithoutIndent = lines.map( l => l.slice(shortestIndent))
+    return linesWithoutIndent.join('\n')
+}
+
 export const treeItemLabels = (container: any) => {
     const treeNodesShown = container.querySelectorAll(treeItemTitleSelector)
     return [...treeNodesShown.values()].map((it: any) => it.textContent)

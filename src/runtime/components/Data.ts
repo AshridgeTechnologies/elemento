@@ -3,7 +3,7 @@ import {valueLiteral} from '../runtimeFunctions'
 import {mergeRight} from 'ramda'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {isPlainObject} from 'lodash'
+import lodash from 'lodash'; const {isPlainObject} = lodash;
 
 type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}

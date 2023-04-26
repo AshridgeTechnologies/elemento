@@ -1,5 +1,5 @@
 import Observable from 'zen-observable'
-import {matches} from 'lodash'
+import lodash from 'lodash'; const {matches} = lodash;
 
 export type Criteria = object
 

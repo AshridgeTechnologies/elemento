@@ -2,8 +2,7 @@ import NumberType from '../../../src/model/types/NumberType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
 import Page from '../../../src/model/Page'
-import Rule from '../../../src/model/types/Rule'
-import RecordType from '../../../src/model/types/RecordType'
+import Rule, {BuiltInRule} from '../../../src/model/types/Rule'
 import {standardOptionalRule, standardRequiredRule} from '../../../src/model/types/BaseTypeElement'
 
 test('NumberType has expected properties', () => {
@@ -20,20 +19,20 @@ test('NumberType has expected properties', () => {
 })
 
 test('has validation rules from shorthand properties', () => {
-    const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'The amount', required: true, min: 5, max: 20, format: 'currency'})
+    const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'The amount', required: true, min: 5, max: 20, format: 'integer'})
 
     expect(numberType1.rules).toStrictEqual([
+        new BuiltInRule('Minimum 5'),
+        new BuiltInRule('Maximum 20'),
+        new BuiltInRule('Must be a whole number'),
         standardRequiredRule,
-        new Rule('_', '_min', {description: 'Minimum 5', formula: 'min(5)'}),
-        new Rule('_', '_max', {description: 'Maximum 20', formula: 'max(20)'}),
-        new Rule('_', '_format', {description: 'Must be a currency amount', formula: 'currency()'}),
     ])
 
     expect(numberType1.ruleDescriptions).toStrictEqual([
-        standardRequiredRule.description,
         'Minimum 5',
         'Maximum 20',
-        'Must be a currency amount'
+        'Must be a whole number',
+        standardRequiredRule.description
     ])
 })
 
@@ -43,15 +42,15 @@ test('can have additional validation rules',  () => {
     ])
 
     expect(numberType1.rules).toStrictEqual([
-        standardOptionalRule,
-        new Rule('_', '_format', {description: 'Must be a whole number', formula: 'integer()'}),
-        new Rule('r1', 'Multiple of 10', {formula: '$value % 10 === 0', description: 'Must be a multiple of 10'})
+        new BuiltInRule('Must be a whole number'),
+        new Rule('r1', 'Multiple of 10', {formula: '$value % 10 === 0', description: 'Must be a multiple of 10'}),
+        standardOptionalRule
     ])
 
     expect(numberType1.ruleDescriptions).toStrictEqual([
-        standardOptionalRule.description,
         'Must be a whole number',
-        'Must be a multiple of 10'
+        'Must be a multiple of 10',
+        standardOptionalRule.description
     ])
 })
 
@@ -103,7 +102,7 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'Desc 1', min: 5, max: 2000, format: 'currency'}, [
+    const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'Desc 1', min: 5, max: 2000, format: 'integer'}, [
         new Rule('r1', 'Even', {formula: '$value % 2 === 0', description: "Must be even"})
     ])
     const plainObj = asJSON(numberType1)

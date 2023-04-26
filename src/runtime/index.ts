@@ -1,6 +1,7 @@
 import * as components from './components'
+import * as types from './types'
 import {globalFunctions} from './globalFunctions'
-export {components, globalFunctions}
+export {components, globalFunctions, types}
 
 export {default as React} from 'react'
 export {default as ReactDOM} from 'react-dom/client'

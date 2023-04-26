@@ -31,6 +31,9 @@ Stories
 - Input validation
 - Form generation
 - Firestore access rules
+- Precise decimals
+- Date literals
+- Date picker control
 
 ### Priority for customer-facing apps
 - JavaScript functions
@@ -64,8 +67,10 @@ Stories
 - General usability Part 2
 - Debugger Part 1
 - Preview improvements - screen size, scrolling, etc
+- Search in project - consider Fuse.js
 
 ### Priority 1
+- Function parameter types and validation
 - Deploy multiple versions - for testing, canary deployment and instant rollback
 - Add deferred desirable features from previous stories
 - Google Sheets datastore
@@ -100,6 +105,8 @@ Epics
 Tech debt
 ---------
 
+- Consider a better bundler - esbuild, rspack, Rome
+- Consider using decorators
 - Revisit user-private - using sub-collections in Firebase is non-portable
 - Flaky EditorRunner and AppMain tests
 - Refactor Editor etc so could swap in different Editor, outer component generates and previews

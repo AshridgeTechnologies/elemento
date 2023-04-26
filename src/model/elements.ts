@@ -36,9 +36,9 @@ import ListType from './types/ListType'
 import Rule from './types/Rule'
 import NumberType from './types/NumberType'
 import DateType from './types/DateType'
-import EnumType from './types/EnumType'
+import ChoiceType from './types/ChoiceType'
 
-export const elementTypes = () => {
+export const elementTypes = (): {[key in ElementType]: any} => {
     return {
         Project: Project,
         App: App,
@@ -74,7 +74,7 @@ export const elementTypes = () => {
         TextType: TextType,
         NumberType: NumberType,
         DateType: DateType,
-        EnumType: EnumType,
+        ChoiceType: ChoiceType,
         RecordType: RecordType,
         ListType: ListType,
         Rule: Rule,

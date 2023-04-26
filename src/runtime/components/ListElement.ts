@@ -4,7 +4,7 @@ import List from '@mui/material/List'
 import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {debounce} from 'lodash'
+import lodash from 'lodash'; const {debounce} = lodash;
 import { isNil } from 'ramda'
 
 type Properties = {

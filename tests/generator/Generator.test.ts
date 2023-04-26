@@ -1,4 +1,5 @@
 import Generator, {generate} from '../../src/generator/Generator'
+import Element from '../../src/model/Element';
 import App from '../../src/model/App';
 import Text from '../../src/model/Text';
 import Button from '../../src/model/Button'
@@ -25,7 +26,7 @@ import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
 
-const dummyProject = new Project('proj1', 'Project 1', {})
+const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
 test('generates main app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
@@ -39,7 +40,7 @@ test('generates main app and all page output files', ()=> {
             ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
 
     expect(gen.output().files[0].name).toBe('Page1.js')
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
@@ -88,7 +89,7 @@ test('can get all code in one string from the output with imports and export', f
             ]
         )])
 
-    const output = generate(app, dummyProject)
+    const output = generate(app, project(app))
 
     expect(output.code).toBe(`import React from 'react'
 import Elemento from 'elemento-runtime'
@@ -138,7 +139,7 @@ test('generates App Bar elements with contents', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[1].content).toBe(`export default function Test1(props) {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
@@ -163,7 +164,7 @@ test('generates TextInput elements with initial value', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
@@ -188,7 +189,7 @@ test('generates Text elements with multiline content', ()=> {
             ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
@@ -209,7 +210,7 @@ test('generates Text elements with escaped quotes', ()=> {
             ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     const output = gen.output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -231,7 +232,7 @@ test('generates NumberInput elements with initial value', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, NumberInput} = Elemento.components
@@ -257,7 +258,7 @@ test('generates SelectInput elements with initial value', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, SelectInput} = Elemento.components
@@ -283,7 +284,7 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TrueFalseInput} = Elemento.components
@@ -309,7 +310,7 @@ test('generates Button elements with properties', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
@@ -330,7 +331,7 @@ test('generates User Logon elements with properties', ()=> {
     ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, UserLogon} = Elemento.components
@@ -352,7 +353,7 @@ test('generates Menu element with items', () => {
             ]
         )])
 
-    const output = generate(app, dummyProject)
+    const output = generate(app, project(app))
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Menu, MenuItem} = Elemento.components
@@ -377,7 +378,7 @@ test('generates Data elements with initial value and no errors on object express
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Data} = Elemento.components
@@ -406,7 +407,7 @@ test('generates Collection elements with initial value and no errors on object e
         new FileDataStore('fds1', 'Store1', {})
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Collection} = Elemento.components
@@ -654,7 +655,7 @@ test('sorts state entries into dependency order', () => {
         new FileDataStore('fds1', 'Store1', {})
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
 
     expect(output.files[0].content).toBe(`function Page1_WidgetListItem(props) {
     const pathWith = name => props.path + '.' + name
@@ -706,7 +707,7 @@ test('generates elements under App used in Page', ()=> {
         new FirestoreDataStore('fsds1', 'Store 4', {collections: 'Cheques: userPrivate\nPostings: creator, techs'}),
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, NumberInput} = Elemento.components
@@ -754,7 +755,7 @@ test('generates codeGenerationError for unknown names in elements under App used
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, NumberInput} = Elemento.components
@@ -806,7 +807,7 @@ test('generates List element with separate child component and global functions 
         ),
     ])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
 
     expect(gen.output().files[0].content).toBe(`function Page1_List1Item(props) {
     const pathWith = name => props.path + '.' + name
@@ -854,7 +855,7 @@ test('generates List element with no items expression if undefined', ()=> {
         ),
     ])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
 
     expect(gen.output().files[0].content).toBe(`function Page2_List1Item(props) {
     const pathWith = name => props.path + '.' + name
@@ -894,7 +895,7 @@ test('generates Layout element with properties and children', ()=> {
             ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, NumberInput, Layout, TextElement, TextInput, SelectInput, Button} = Elemento.components
@@ -926,7 +927,7 @@ test('transforms expressions to functions where needed', () => {
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Data} = Elemento.components
@@ -955,7 +956,7 @@ test('generates local user defined functions in a page', () => {
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Data, NumberInput} = Elemento.components
@@ -988,7 +989,7 @@ test('generates local user defined functions in the app', () => {
             ]
         )])
 
-    const gen = new Generator(app, dummyProject)
+    const gen = new Generator(app, project(app))
     expect(gen.output().files[1].content).toBe(`export default function Test1(props) {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
@@ -1024,7 +1025,7 @@ test('generates local user defined functions in a list item that use a page item
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
     ])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1_WidgetListItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
@@ -1069,7 +1070,7 @@ test('generates error for syntax error in expression', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
@@ -1094,7 +1095,7 @@ test('generates error on correct line for syntax error in multiline content expr
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.files[0].content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
@@ -1120,7 +1121,7 @@ test('global functions available in content expression', ()=> {
             ]
         )])
 
-    const content = new Generator(app, dummyProject).output().files[0].content
+    const content = new Generator(app, project(app)).output().files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
@@ -1128,6 +1129,31 @@ test('global functions available in content expression', ()=> {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Sum(2, 3, 4)),
+    )
+}
+`)
+})
+
+test('built-in names available in content expression', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`undefined`}),
+                new Text('id2', 't2', {content: ex`null`}),
+                new Text('id3', 't3', {content: ex`new Date(2020, 3, 4)`}),
+                new Text('id4', 't4', {content: ex`Math.sqrt(2)`}),
+            ]
+        )])
+
+    const content = new Generator(app, project(app)).output().files[0].content
+    expect(content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('t1')}, undefined),
+        React.createElement(TextElement, {path: pathWith('t2')}, null),
+        React.createElement(TextElement, {path: pathWith('t3')}, new Date(2020, 3, 4)),
+        React.createElement(TextElement, {path: pathWith('t4')}, Math.sqrt(2)),
     )
 }
 `)
@@ -1144,7 +1170,7 @@ test('app state functions and Page names available in expression', ()=> {
             ]
         )])
 
-    const content = new Generator(app, dummyProject).output().files[0].content
+    const content = new Generator(app, project(app)).output().files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
@@ -1167,7 +1193,7 @@ test('page elements available in content expression', ()=> {
             ]
         )])
 
-    const content = new Generator(app, dummyProject).output().files[0].content
+    const content = new Generator(app, project(app)).output().files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, TextInput} = Elemento.components
@@ -1190,7 +1216,7 @@ test('unknown global functions generate error', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1216,7 +1242,7 @@ test('return statement in expression generates error', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1242,7 +1268,7 @@ test('syntax error statement in initialValue generates error into state defaults
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1269,7 +1295,7 @@ test('statement not expression generates error', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({
         id1: {
             content: 'Error: Invalid expression'
@@ -1284,7 +1310,7 @@ test('multiple statements in value expression generates error', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({
         id1: {
             content: 'Error: Must be a single expression'
@@ -1300,7 +1326,7 @@ test('multiple statements in action expression is ok', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({})
 })
 
@@ -1311,7 +1337,7 @@ test('assignment at top level is treated as comparison', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1334,7 +1360,7 @@ test('assignment in function argument is treated as comparison', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1358,7 +1384,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1382,7 +1408,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1406,7 +1432,7 @@ test('property shorthand to name of property reports error and generates an erro
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     const content = output.files[0].content
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
@@ -1432,7 +1458,7 @@ test('Unexpected number error in expression generates error', ()=> {
             ]
         )])
 
-    const output = new Generator(app, dummyProject).output()
+    const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({
         id1: {
             content: 'Error: Unexpected token 1'

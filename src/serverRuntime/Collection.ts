@@ -1,4 +1,4 @@
-import {isNumber, isString} from 'lodash'
+import lodash from 'lodash'; const {isNumber, isString} = lodash;
 import {omit} from 'ramda'
 import {BasicDataStore, CollectionName, Criteria, Id} from '../runtime/DataStore'
 import {toArray} from '../util/helpers'

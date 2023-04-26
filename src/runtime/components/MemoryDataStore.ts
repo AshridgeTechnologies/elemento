@@ -1,5 +1,5 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, UpdateNotification} from '../DataStore'
-import {clone} from 'lodash'
+import lodash from 'lodash'; const {clone} = lodash;
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'
 

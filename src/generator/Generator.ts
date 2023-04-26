@@ -11,9 +11,10 @@ import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {last, omit} from 'ramda'
 import Parser from './Parser'
-import {allElements, ExprType, ListItem, runtimeElementName} from './Types'
+import {ExprType, GeneratorOutput, ListItem, runtimeElementName} from './Types'
 import {trimParens} from '../util/helpers'
 import {
+    allElements,
     DefinedFunction,
     objectLiteral,
     objectLiteralEntries,
@@ -62,6 +63,8 @@ export default class Generator {
 
     constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
+        app.pages.forEach(page => this.parser.parseComponent(page))
+        this.parser.parseComponent(app)
     }
 
     static prettyPrint(code: string) {
@@ -79,11 +82,11 @@ export default class Generator {
         }
 
         const imports = this.imports.join('\n') + '\n\n'
-        return {
+        return <GeneratorOutput>{
             files: [...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
             get code() {
-                return imports + this.files.map( f => `// ${f.name}\n${f.content}` ).join('\n')
+                return imports + this.files.map(f => `// ${f.name}\n${f.content}`).join('\n')
             }
         }
     }
@@ -275,6 +278,18 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'ServerAppConnector':
             case 'File':
             case 'FileFolder':
+                return ''
+
+            // Types done in TypesGenerator
+            case 'DataTypes':
+            case 'Rule':
+            case 'TextType':
+            case 'NumberType':
+            case 'DateType':
+            case 'ChoiceType':
+            case 'RecordType':
+            case 'ListType':
+            case 'TrueFalseType':
                 return ''
 
             default:

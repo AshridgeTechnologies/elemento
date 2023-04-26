@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import {idOf, valueLiteral} from '../runtimeFunctions'
-import {clone, isArray, isNumber, isObject, isString} from 'lodash'
+import lodash from 'lodash'; const {clone, isArray, isNumber, isObject, isString} = lodash;
 import {map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
 import DataStore, {
     CollectionName,

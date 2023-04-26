@@ -9,7 +9,7 @@ import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree
 import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 import {actWait} from '../testutil/rtlHelpers'
 import {AppElementAction, ConfirmAction, InsertAction} from '../../src/editor/Types'
 

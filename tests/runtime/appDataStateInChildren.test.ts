@@ -13,10 +13,8 @@ let stateInParent: any = null
 let stateInChild: any = null
 
 class Thing extends BaseComponentState<{a: number, b: string}>{
-
-    mergeProps(newState: typeof this) {
-        return equals(this.props, newState.props) ? this : new Thing(newState.props)
-    }
+    get a() { return this.props.a }
+    get b() { return this.props.b }
 }
 
 function Child(props: object) {
@@ -31,7 +29,8 @@ function Parent(props: object) {
 
 test('Child can get state set by parent with the same class', () => {
     testContainer(createElement(StoreProvider, null, createElement(Parent)))
-    expect(stateInParent).toMatchObject(new Thing({a: 10, b: 'Bee'}))
-    expect(stateInParent).toBeInstanceOf(Thing)
+    expect(stateInChild).toBeInstanceOf(Thing)
+    expect(stateInChild.a).toBe(10)
+    expect(stateInChild.b).toBe('Bee')
     expect(stateInChild).toBe(stateInParent)
 })

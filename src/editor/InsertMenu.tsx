@@ -1,5 +1,5 @@
 import MenuItem from '@mui/material/MenuItem'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
 import {PopoverOrigin} from '@mui/material'

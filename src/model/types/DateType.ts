@@ -1,16 +1,17 @@
 import Element from '../Element'
 import {propDef} from '../BaseElement'
-import {PropertyDef} from '../Types'
-import Rule from './Rule'
+import {PropertyDef, PropertyValueType} from '../Types'
+import {BuiltInRule, RuleWithDescription} from './Rule'
 import BaseTypeElement, {BaseTypeProperties} from './BaseTypeElement'
 import {format} from 'date-fns'
+import {isExpr} from '../../util/helpers'
 
 type Properties = BaseTypeProperties & {
-    readonly min?: Date,
-    readonly max?: Date,
+    readonly min?: PropertyValueType<Date>,
+    readonly max?: PropertyValueType<Date>,
 }
 
-export default class NumberType extends BaseTypeElement<Properties> implements Element {
+export default class DateType extends BaseTypeElement<Properties> implements Element {
 
     static kind = 'DateType'
     static get iconClass() { return 'calendar_today_outlined' }
@@ -18,14 +19,13 @@ export default class NumberType extends BaseTypeElement<Properties> implements E
     get min() {return this.properties.min}
     get max() {return this.properties.max}
 
-    get shorthandRules() {
+    get rulesFromProperties() {
         const {min, max} = this
-        const formatDisplay = (date: Date) => format(date, 'dd MMM yyyy')
-        const dateExpr = (date: Date) => `new Date('${format(date, 'yyyy-MM-dd')}')`
+        const formatDisplay = (date: PropertyValueType<Date>) => isExpr(date) ? date.expr : format(date, 'dd MMM yyyy')
         return [
-            min && new Rule('_', '_min', {description: `Earliest ${formatDisplay(min)}`, formula: `min(${dateExpr(min)})`}),
-            max && new Rule('_', '_max', {description: `Latest ${formatDisplay(max)}`, formula: `max(${dateExpr(max)})`}),
-        ].filter(el => !!el) as Rule[]
+            min && new BuiltInRule(`Earliest ${formatDisplay(min)}`),
+            max && new BuiltInRule(`Latest ${formatDisplay(max)}`),
+        ].filter(el => !!el) as RuleWithDescription[]
     }
 
     get propertyDefs(): PropertyDef[] {

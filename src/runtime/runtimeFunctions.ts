@@ -1,4 +1,4 @@
-import {isArray, isObject, isPlainObject} from 'lodash'
+import lodash from 'lodash'; const {isArray, isObject, isPlainObject} = lodash;
 import {map} from 'ramda'
 
 export function codeGenerationError(_expr: string, _err: string) {

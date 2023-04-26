@@ -47,12 +47,12 @@ test('can have additional validation rules',  () => {
     const rule1 = new Rule('r1', 'Min length', {formula: '$value.length >= 3', description: 'Must have at least three elements'})
     const listType1 = new ListType('id1', 'ListType 1', {description: 'A list'}, [rule1, text1, ])
 
-    expect(listType1.rules).toStrictEqual([standardOptionalRule, rule1])
+    expect(listType1.rules).toStrictEqual([rule1, standardOptionalRule])
     expect(listType1.elementType).toStrictEqual(text1)
 
     expect(listType1.ruleDescriptions).toStrictEqual([
-        standardOptionalRule.description,
-        'Must have at least three elements'
+        'Must have at least three elements',
+        standardOptionalRule.description
     ])
 })
 

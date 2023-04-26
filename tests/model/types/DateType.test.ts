@@ -1,8 +1,8 @@
 import DateType from '../../../src/model/types/DateType'
-import {loadJSON, loadJSONFromString} from '../../../src/model/loadJSON'
+import {loadJSONFromString} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
 import Page from '../../../src/model/Page'
-import Rule from '../../../src/model/types/Rule'
+import Rule, {BuiltInRule} from '../../../src/model/types/Rule'
 import {standardOptionalRule, standardRequiredRule} from '../../../src/model/types/BaseTypeElement'
 
 const date1 = new Date('2020-04-05')
@@ -24,15 +24,15 @@ test('has validation rules from shorthand properties', () => {
     const dateType1 = new DateType('id1', 'DateType 1', {description: 'The amount', required: true, min: date1, max: date2})
 
     expect(dateType1.rules).toStrictEqual([
+        new BuiltInRule('Earliest 05 Apr 2020'),
+        new BuiltInRule('Latest 20 Apr 2020'),
         standardRequiredRule,
-        new Rule('_', '_min', {description: 'Earliest 05 Apr 2020', formula: `min(new Date('2020-04-05'))`}),
-        new Rule('_', '_max', {description: 'Latest 20 Apr 2020', formula: `max(new Date('2020-04-20'))`}),
     ])
 
     expect(dateType1.ruleDescriptions).toStrictEqual([
-        standardRequiredRule.description,
         'Earliest 05 Apr 2020',
         'Latest 20 Apr 2020',
+        standardRequiredRule.description,
     ])
 })
 
@@ -42,15 +42,15 @@ test('can have additional validation rules',  () => {
     ])
 
     expect(dateType1.rules).toStrictEqual([
-        standardOptionalRule,
-        new Rule('_', '_min', {description: 'Earliest 05 Apr 2020', formula: `min(new Date('2020-04-05'))`}),
-        new Rule('r1', 'Not 1st', {formula: '$value.getUTCDate() !== 1', description: 'Must not be the first day of a month'})
+        new BuiltInRule('Earliest 05 Apr 2020'),
+        new Rule('r1', 'Not 1st', {formula: '$value.getUTCDate() !== 1', description: 'Must not be the first day of a month'}),
+        standardOptionalRule
     ])
 
     expect(dateType1.ruleDescriptions).toStrictEqual([
-        standardOptionalRule.description,
         'Earliest 05 Apr 2020',
-        'Must not be the first day of a month'
+        'Must not be the first day of a month',
+        standardOptionalRule.description
     ])
 })
 

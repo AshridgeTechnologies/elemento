@@ -4,7 +4,7 @@ import {Box, Button, Stack, TextField, TextFieldProps, Typography} from '@mui/ma
 import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 import Project, {FILES_ID} from '../model/Project'
 import {ProjectContext} from './Editor'
 

@@ -9,7 +9,7 @@ import {elementOfType} from '../model/elements'
 import {AppElementAction, ConfirmAction, InsertAction} from './Types'
 import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 
 export class ModelTreeItem implements DataNode {
     constructor(public id: string,

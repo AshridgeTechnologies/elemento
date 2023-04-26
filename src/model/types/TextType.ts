@@ -1,7 +1,7 @@
 import Element from '../Element'
 import {propDef} from '../BaseElement'
 import {PropertyDef} from '../Types'
-import Rule from './Rule'
+import Rule, {BuiltInRule, RuleWithDescription} from './Rule'
 import BaseTypeElement, {BaseTypeProperties} from './BaseTypeElement'
 
 const formatChoices = ['email', 'url', 'multiline'] as const
@@ -21,13 +21,13 @@ export default class TextType extends BaseTypeElement<Properties> implements Ele
     get maxLength() {return this.properties.maxLength}
     get format() {return this.properties.format}
 
-    get shorthandRules() {
+    get rulesFromProperties() {
         const {minLength, maxLength, format} = this
         return [
-            minLength && new Rule('_', '_minLength', {description: `Minimum length ${minLength}`, formula: `minLength(${minLength})`}),
-            maxLength && new Rule('_', '_maxLength', {description: `Maximum length ${maxLength}`, formula: `maxLength(${maxLength})`}),
-            format && new Rule('_', '_format', {description: `Must be a valid ${format}`, formula: `${format}()`}),
-        ].filter(el => !!el) as Rule[]
+            minLength && new BuiltInRule(`Minimum length ${minLength}`),
+            maxLength && new BuiltInRule(`Maximum length ${maxLength}`),
+            format && new BuiltInRule(`Must be a valid ${format}`),
+        ].filter(el => !!el) as RuleWithDescription[]
     }
 
     get propertyDefs(): PropertyDef[] {

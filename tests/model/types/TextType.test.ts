@@ -2,7 +2,7 @@ import TextType from '../../../src/model/types/TextType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
 import Page from '../../../src/model/Page'
-import Rule from '../../../src/model/types/Rule'
+import Rule, {BuiltInRule} from '../../../src/model/types/Rule'
 import {standardOptionalRule, standardRequiredRule} from '../../../src/model/types/BaseTypeElement'
 
 test('TextType has default properties', () => {
@@ -34,35 +34,35 @@ test('has validation rules from shorthand properties', () => {
     const textType1 = new TextType('id1', 'TextType 1', {description: 'The blurb', required: true, minLength: 5, maxLength: 20, format: 'email'})
 
     expect(textType1.rules).toStrictEqual([
-        standardRequiredRule,
-        new Rule('_', '_minLength', {description: 'Minimum length 5', formula: 'minLength(5)'}),
-        new Rule('_', '_maxLength', {description: 'Maximum length 20', formula: 'maxLength(20)'}),
-        new Rule('_', '_format', {description: 'Must be a valid email', formula: 'email()'}),
+        new BuiltInRule('Minimum length 5'),
+        new BuiltInRule('Maximum length 20'),
+        new BuiltInRule('Must be a valid email'),
+        standardRequiredRule
     ])
 
     expect(textType1.ruleDescriptions).toStrictEqual([
-        standardRequiredRule.description,
         'Minimum length 5',
         'Maximum length 20',
-        'Must be a valid email'
+        'Must be a valid email',
+        standardRequiredRule.description
     ])
 })
 
-test('can have additional validation rules',  () => {
+test('can have additional validation rules and description defauts to name',  () => {
     const textType1 = new TextType('id1', 'TextType 1', {description: 'The blurb', format: 'url'}, [
-        new Rule('r1', 'Dot Com', {formula: '$value.endsWith(".com")', description: 'Must end with .com'})
+        new Rule('r1', 'Dot Com', {formula: '$item.endsWith(".com")'})
     ])
 
     expect(textType1.rules).toStrictEqual([
-        standardOptionalRule,
-        new Rule('_', '_format', {description: 'Must be a valid url', formula: 'url()'}),
-        new Rule('r1', 'Dot Com', {formula: '$value.endsWith(".com")', description: 'Must end with .com'})
+        new BuiltInRule('Must be a valid url'),
+        new Rule('r1', 'Dot Com', {formula: '$item.endsWith(".com")'}),
+        standardOptionalRule
     ])
 
     expect(textType1.ruleDescriptions).toStrictEqual([
-        standardOptionalRule.description,
         'Must be a valid url',
-        'Must end with .com'
+        'Dot Com',
+        standardOptionalRule.description
     ])
 })
 
@@ -103,7 +103,7 @@ test('can be based on another type name', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const rule1 = new Rule('r1', 'Dot Com', {formula: '$value.endsWith(".com")', description: "Must end with .com"})
+    const rule1 = new Rule('r1', 'Dot Com', {formula: '$item.endsWith(".com")', description: "Must end with .com"})
     const textType1 = new TextType('id1', 'TextType 1', {description: 'Desc 1', minLength: 5, maxLength: 2000, format: 'multiline'},[
         rule1
     ])
@@ -120,7 +120,7 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object', ()=> {
     const textType1 = new TextType('id1', 'TextType 1', {description: 'Desc 1', minLength: 5, maxLength: 2000, format: 'multiline'}, [
-        new Rule('r1', 'Dot Com', {formula: '$value.endsWith(".com")', description: "Must end with .com"})
+        new Rule('r1', 'Dot Com', {formula: '$item.endsWith(".com")', description: "Must end with .com"})
     ])
     const plainObj = asJSON(textType1)
     const newTextType = loadJSON(plainObj)

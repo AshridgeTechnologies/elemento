@@ -63,7 +63,7 @@ export type ElementType =
     'TextType' |
     'NumberType' |
     'DateType' |
-    'EnumType' |
+    'ChoiceType' |
     'RecordType' |
     'ListType' |
     'TrueFalseType'

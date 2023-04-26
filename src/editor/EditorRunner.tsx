@@ -33,7 +33,7 @@ import {waitUntil} from '../util/helpers'
 import {findServerApp} from '../generator/Builder'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-import {debounce} from 'lodash'
+import lodash from 'lodash'; const {debounce} = lodash;
 import {NewProjectDialog} from './actions/NewProject'
 import ServerApp from '../model/ServerApp'
 import ServerAppConnector from '../model/ServerAppConnector'

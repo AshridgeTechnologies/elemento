@@ -1,6 +1,6 @@
 import React from 'react'
 import {Typography} from '@mui/material'
-import {isArray, isFunction, isPlainObject, isString} from 'lodash'
+import lodash from 'lodash'; const {isArray, isFunction, isPlainObject, isString} = lodash;
 import {valueLiteral, valueOfProps} from '../runtimeFunctions'
 import {flatten} from 'ramda'
 

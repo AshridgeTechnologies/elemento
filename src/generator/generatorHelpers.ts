@@ -1,5 +1,12 @@
 import Topo from '@hapi/topo'
-import {isArray, isPlainObject} from 'lodash'
+import lodash from 'lodash';
+import Element from '../model/Element'
+import App from '../model/App'
+import {flatten} from 'ramda'
+import List from '../model/List'
+import {ListItem} from './Types'
+
+const {isArray, isPlainObject} = lodash;
 
 function safeKey(name: string) {
     return name.match(/\W/) ? `'${name}'` : name
@@ -41,4 +48,19 @@ export const valueLiteral = function (propertyValue: any): string {
     } else {
         return String(propertyValue)
     }
+}
+export const allElements = (component: Element | ListItem): Element[] => {
+    if (component instanceof App) {
+        return flatten(component.otherComponents.map(el => [el, allElements(el)]))
+    }
+    if (component instanceof ListItem) {
+        const childElements = component.list.elements || []
+        return flatten(childElements.map(el => [el, allElements(el)]))
+    }
+    if (component instanceof List) {
+        return []
+    }
+
+    const childElements = component.elements || []
+    return flatten(childElements.map(el => [el, allElements(el)]))
 }

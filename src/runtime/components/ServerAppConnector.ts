@@ -4,7 +4,7 @@ import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
 import {valueOf} from '../runtimeFunctions'
 import auth from './authentication'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 
 type Properties = {path: string}
 

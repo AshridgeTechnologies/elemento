@@ -14,7 +14,7 @@ import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
 import {mapObjIndexed} from 'ramda'
 import Dexie, {Table} from 'dexie'
-import {matches} from 'lodash'
+import lodash from 'lodash'; const {matches} = lodash;
 
 type Properties = {databaseName: string, collectionNames: string[]}
 export default class IdbDataStoreImpl implements DataStore {

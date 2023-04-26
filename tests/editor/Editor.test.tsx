@@ -5,7 +5,7 @@
 import React, {useState} from 'react'
 import Editor from '../../src/editor/Editor'
 import {act, fireEvent, render, screen, within} from '@testing-library/react/pure'
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 import {
     ex,
     stopSuppressingRcTreeJSDomError,

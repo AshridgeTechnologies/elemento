@@ -4,7 +4,7 @@ import {asJSON, ex} from '../../testutil/testHelpers'
 import Page from '../../../src/model/Page'
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
 import TextType from '../../../src/model/types/TextType'
-import Rule from '../../../src/model/types/Rule'
+import Rule, {BuiltInRule} from '../../../src/model/types/Rule'
 import {standardRequiredRule} from '../../../src/model/types/BaseTypeElement'
 
 const text1 = new TextType('tt1', 'Name', {description: 'What it\'s called'})
@@ -60,13 +60,13 @@ test('can have additional validation rules',  () => {
     const recordType1 = new RecordType('id1', 'RecordType 1', {description: 'A record'}, [text1, text2, rule1])
 
     expect(recordType1.rules).toStrictEqual([
-        new Rule('_', '_notRequired', {description: `Optional`, formula: `optional()`}),
-        rule1
+        rule1,
+        new BuiltInRule(`Optional`)
     ])
 
     expect(recordType1.ruleDescriptions).toStrictEqual([
-        'Optional',
-        'Name cannot be the same as Location'
+        'Name cannot be the same as Location',
+        'Optional'
     ])
 })
 

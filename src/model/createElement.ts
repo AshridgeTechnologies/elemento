@@ -1,4 +1,4 @@
-import {startCase} from 'lodash'
+import lodash from 'lodash'; const {startCase} = lodash;
 import {elementId} from '../util/helpers'
 
 import {elementOfType} from './elements'

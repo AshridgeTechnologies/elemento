@@ -1,5 +1,5 @@
 import {ElementType, PropertyExpr, PropertyValue} from '../model/Types'
-import {isObject} from 'lodash'
+import lodash from 'lodash'; const {isObject} = lodash;
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
 

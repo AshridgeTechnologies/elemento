@@ -11,17 +11,15 @@ import {ElementId, ElementType, EventActionPropertyDef, PropertyValue} from '../
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {last, without} from 'ramda'
-import {allElements, ExprType, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
+import {AllErrors, ExprType, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
-import {valueLiteral} from './generatorHelpers'
+import {allElements, valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
 import {elementTypes} from '../model/elements'
 
 type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
-type ElementErrors = {[propertyName: string]: string}
-type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
 const appFunctions = appFunctionsNames()
@@ -32,7 +30,7 @@ const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponent = (name: string) => runtimeElementTypes().includes(name)
-const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
+const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 
 function parseExpr(expr: string) {
@@ -45,16 +43,10 @@ export default class Parser {
     private readonly errors: AllErrors
     private readonly identifiers: ElementIdentifiers
     private readonly stateEntryIdentifiers: ElementIdentifiers
-    constructor(private app: App, private project: Project) {
+    constructor(private globalScopeElement: Element, private project: Project) {
         this.identifiers = {} as ElementIdentifiers
         this.stateEntryIdentifiers = {} as ElementIdentifiers
         this.errors = {} as AllErrors
-        this.init()
-    }
-
-    init() {
-        this.app.pages.forEach( page => this.parseComponent(this.app, page))
-        this.parseComponent(this.app, this.app)
     }
 
     propertyError(elementId: ElementId, propertyName: string): string | undefined {
@@ -87,8 +79,16 @@ export default class Parser {
         return this.stateEntryIdentifiers[elementId]
     }
 
+    getAst(elementId: ElementId, propertyName: string): any {
+        const expr = this.getExpression(elementId, propertyName)
+        if (expr === undefined) {
+            return undefined
+        }
+        return parseExpr(expr)
+    }
+
     getExpression(elementId: ElementId, propertyName: string): any {
-        const element = this.app.findElement(elementId)!
+        const element = this.project.findElement(elementId)!
         const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
         if (propertyValue === undefined) {
             return undefined
@@ -101,14 +101,6 @@ export default class Parser {
         }
     }
 
-    getAst(elementId: ElementId, propertyName: string): any {
-        const expr = this.getExpression(elementId, propertyName)
-        if (expr === undefined) {
-            return undefined
-        }
-        return parseExpr(expr)
-    }
-
     private addError(elementId: ElementId, propertyName: string, error: string) {
         if (!(elementId in this.errors)) {
             this.errors[elementId] = {}
@@ -117,38 +109,35 @@ export default class Parser {
         this.errors[elementId][propertyName] = error
     }
 
-    private parseComponent(app: App, component: Page | App | ListItem, containingComponent?: Page) {
+    parseComponent(component: Element | ListItem, containingComponent?: Page) {
         const componentIsPage = component instanceof Page
         const identifierSet = new Set<string>()
         const topLevelFunctions = new Set<string>()
-        const allPages = app.pages
         const allComponentElements = allElements(component)
         const allContainerElements = containingComponent ? allElements(containingComponent) : []
         const isServerApp = (name: string) => this.project.elementArray().some(el => el.kind === 'ServerApp' && el.codeName === name)
-        const isAppElement = (name: string) => app.otherComponents.some(el => el.codeName === name)
+        const isAppElement = (name: string) => (this.globalScopeElement.elements ?? []).some(el => el.codeName === name)
         const isComponentElement = (name: string) => !!allComponentElements.find(el => el.codeName === name )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
-        const isPageName = (name: string) => !!allPages.find(p => p.codeName === name )
         const isKnown = (name: string) => isGlobalFunction(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
             || isComponentElement(name)
-            || isPageName(name)
             || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
             || isServerApp(name)
             || isAppElement(name)
             || isContainerElement(name)
             || isBuiltIn(name)
-        this.parseElement(component, app, identifierSet, topLevelFunctions, isKnown, componentIsPage ? containingComponent : undefined)
+        this.parseElement(component, identifierSet, topLevelFunctions, isKnown, componentIsPage ? containingComponent : undefined)
 
         this.identifiers[component.id] = Array.from(identifierSet.values())
     }
 
-    private parseElement(element: Element | ListItem, app: App, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, containingComponent?: Page) {
+    private parseElement(element: Element | ListItem, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, containingComponent?: Page) {
 
         const parseChildren = (element: Element, containingComponent?: Page) => {
             const elementArray = element.elements ?? []
-            elementArray.forEach(p => this.parseElement(p, app, identifiers, topLevelFunctions, isKnown, containingComponent))
+            elementArray.forEach(p => this.parseElement(p, identifiers, topLevelFunctions, isKnown, containingComponent))
         }
 
         const parseProperties = (element: Element) => {
@@ -170,8 +159,7 @@ export default class Parser {
         switch (element.kind) {
             case 'App': {
                 const app = element as App
-                app.topChildren.forEach(p => this.parseElement(p, app, identifiers, topLevelFunctions, isKnown))
-                app.bottomChildren.forEach(p => this.parseElement(p, app, identifiers, topLevelFunctions, isKnown))
+                app.otherComponents.forEach(p => this.parseElement(p, identifiers, topLevelFunctions, isKnown))
                 parseProperties(element)
                 return
             }
@@ -185,7 +173,7 @@ export default class Parser {
 
             case 'List': {
                 const list = element as List
-                this.parseComponent(app, new ListItem(list), containingComponent)
+                this.parseComponent(new ListItem(list), containingComponent)
                 parseProperties(element)
                 return
             }
