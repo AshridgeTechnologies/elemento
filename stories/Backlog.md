@@ -32,7 +32,7 @@ Stories
 - Form generation
 - Firestore access rules
 - Precise decimals
-- Date literals
+- Date literals - in element property values and formulas
 - Date picker control
 
 ### Priority for customer-facing apps

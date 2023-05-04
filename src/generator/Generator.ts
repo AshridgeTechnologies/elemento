@@ -28,6 +28,7 @@ import ServerApp from '../model/ServerApp'
 import {EventActionPropertyDef} from '../model/Types'
 import {loadJSONFromString} from '../model/loadJSON'
 import ServerAppGenerator from './ServerAppGenerator'
+import TypesGenerator from './TypesGenerator'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -46,6 +47,10 @@ export function generate(app: App, project: Project, imports: string[] = DEFAULT
 }
 export function generateServerApp(app: ServerApp) {
     return new ServerAppGenerator(app).output()
+}
+
+export function generateTypes(project: Project) {
+    return new TypesGenerator(project).output()
 }
 
 export function generateFromJson(projectJson: string) {

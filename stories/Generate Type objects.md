@@ -22,8 +22,12 @@ Requirements
 Requirements Part 2
 -------------------
 
-- Need a 'None' option in Formats
-- Errors shown in Editor
+- ✅ Need a 'default' option in Formats
+- ✅ Errors shown in Editor
+
+Requirements Part 3
+-------------------
+
 - Types can be referred to in component properties and expressions throughout the app, using name prefixed by name of the DataTypes
 - Types within others can be referred to by dot notation
 - Types can refer to each other by name within a DataTypes collection

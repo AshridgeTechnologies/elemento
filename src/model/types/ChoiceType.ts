@@ -1,10 +1,10 @@
 import Element from '../Element'
 import {propDef} from '../BaseElement'
-import {PropertyDef} from '../Types'
+import {PropertyDef, PropertyValueType} from '../Types'
 import BaseTypeElement, {BaseTypeProperties} from './BaseTypeElement'
 type Properties = BaseTypeProperties & {
-    readonly values?: string[],
-    readonly valueNames?: string[],
+    readonly values?: PropertyValueType<string[]>,
+    readonly valueNames?: PropertyValueType<string[]>,
 }
 
 export default class ChoiceType extends BaseTypeElement<Properties> implements Element {

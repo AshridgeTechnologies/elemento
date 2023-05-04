@@ -132,7 +132,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                     value={initialInputValue()}
                     onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
                 >
-                    <MenuItem><em>default</em></MenuItem>
+                    <MenuItem value={''}><em>default</em></MenuItem>
                     <MenuItem value={'true'}>Yes</MenuItem>
                     <MenuItem value={'false'}>No</MenuItem>
                 </Select>
@@ -146,6 +146,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                     value={initialInputValue()}
                     onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
                 >
+                    <MenuItem value={''}><em>default</em></MenuItem>
                     {type.map( choiceVal => <MenuItem value={choiceVal} key={choiceVal}>{startCase(choiceVal)}</MenuItem>)}
                 </Select>
             </FormControl>

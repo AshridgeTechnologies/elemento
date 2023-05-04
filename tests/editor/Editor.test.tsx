@@ -20,6 +20,12 @@ import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
 import {actWait} from '../testutil/rtlHelpers'
+import DateType from '../../src/model/types/DateType'
+import DataTypes from '../../src/model/types/DataTypes'
+import NumberType from '../../src/model/types/NumberType'
+import NumberInput from '../../src/model/NumberInput'
+import ServerApp from '../../src/model/ServerApp'
+import FunctionDef from '../../src/model/FunctionDef'
 
 jest.mock('../../src/shared/authentication')
 
@@ -122,7 +128,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
     expect(maxLengthInput.value).toBe('50')
 })
 
-test('shows errors for properties', async () => {
+test('shows errors for properties of main client app', async () => {
     const projectWithErrors = new Project('pr1', 'Project Bad', {}, [new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
             new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, maxLength: ex`BadName + 30`}),
@@ -142,6 +148,92 @@ test('shows errors for properties', async () => {
     const maxLengthInput = screen.getByLabelText('Max Length') as HTMLInputElement
     expect(maxLengthInput.value).toBe('BadName + 30')
     const maxLengthError = container.querySelector(`[id="maxLength-helper-text"]`)
+    expect(maxLengthError.textContent).toBe('Unknown names: BadName')
+})
+
+test('shows errors for properties of all client apps', async () => {
+    const app1 = new App('app1', 'App One', {}, [
+        new Page('page_1', 'Main Page', {}, [
+            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `}),
+        ]),
+    ])
+
+    const app2 = new App('app2', 'App Two', {}, [
+        new Page('page_2', 'Main Page', {}, [
+            new NumberInput('numberInput_1', 'Number Input', {label: ex`BadName + 'x'`}),
+        ]),
+    ])
+
+    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [app1, app2])
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    await clickExpandControl(0, 1, 2)
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page'])
+
+    fireEvent.click(screen.getByText('First Text Input'))
+    const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
+    expect(initialValueInput.value).toBe('"A text value" + ')
+    const initialValueError = container.querySelector(`[id="initialValue-helper-text"]`)
+    expect(initialValueError.textContent).toBe('Error: Line 1: Unexpected end of input')
+
+    await clickExpandControl(5)
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page', 'Number Input'])
+
+    fireEvent.click(screen.getByText('Number Input'))
+    const labelInput = screen.getByLabelText('Label') as HTMLInputElement
+    expect(labelInput.value).toBe(`BadName + 'x'`)
+    const labelError = container.querySelector(`[id="label-helper-text"]`)
+    expect(labelError.textContent).toBe('Unknown names: BadName')
+})
+
+test('shows errors for properties of all server apps', async () => {
+    const serverApp1 = new ServerApp('serverApp1', 'Server App One', {}, [
+        new FunctionDef('func1', 'Add What', {calculation: ex`22 + `}),
+    ])
+
+    const serverApp2 = new ServerApp('serverApp2', 'Server App Two', {}, [
+        new FunctionDef('func2', 'Add Bad', {calculation: ex`BadName + 22`}),
+    ])
+    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [serverApp1, serverApp2 ])
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    await clickExpandControl(0, 1)
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'Server App One', 'Add What', 'Server App Two', 'Add Bad'])
+
+    fireEvent.click(screen.getByText('Add What'))
+    const calculationInput = screen.getByLabelText('Calculation') as HTMLInputElement
+    expect(calculationInput.value).toBe('22 + ')
+    const calculationError = container.querySelector(`[id="calculation-helper-text"]`)
+    expect(calculationError.textContent).toBe('Error: Line 1: Unexpected end of input')
+
+    fireEvent.click(screen.getByText('Add Bad'))
+    const calculation2Input = screen.getByLabelText('Calculation') as HTMLInputElement
+    expect(calculation2Input.value).toBe('BadName + 22')
+    const calculation2Error = container.querySelector(`[id="calculation-helper-text"]`)
+    expect(calculation2Error.textContent).toBe('Unknown names: BadName')
+})
+
+test('shows errors for properties of type objects', async () => {
+    const numberType1 = new NumberType('id1', 'Number 1', {description: 'The amount', min: ex`BadName + 30`, max: ex`5 + `}, )
+    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [
+        new App('app1', 'App One', {}, [
+            new Page('page_1', 'Main Page', {}, []),
+        ]),
+        new DataTypes('dt1', 'My Types', {}, [numberType1])
+    ])
+
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    await clickExpandControl(0, 1, 3)
+
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'My Types', 'Number 1'])
+
+    fireEvent.click(screen.getByText('Number 1'))
+    const initialValueInput = screen.getByLabelText('Max') as HTMLInputElement
+    expect(initialValueInput.value).toBe('5 + ')
+    const initialValueError = container.querySelector(`[id="max-helper-text"]`)
+    expect(initialValueError.textContent).toBe('Error: Line 1: Unexpected end of input')
+
+    const maxLengthInput = screen.getByLabelText('Min') as HTMLInputElement
+    expect(maxLengthInput.value).toBe('BadName + 30')
+    const maxLengthError = container.querySelector(`[id="min-helper-text"]`)
     expect(maxLengthError.textContent).toBe('Unknown names: BadName')
 })
 

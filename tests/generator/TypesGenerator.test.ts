@@ -215,6 +215,30 @@ test('finds errors in expressions for type object properties', () => {
     `)
 })
 
+test('finds parsing errors in expressions for type object properties', () => {
+    const dateType1 = new DateType('id1', 'Date 1', {description: 'The start', max: ex`Fri Apr 21 2023`}, )
+
+    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [dateType1])])
+
+    const generator = new TypesGenerator(project)
+    const output = generator.output()
+    const theTypesFile = output.files[0]
+
+    expect(output.errors).toStrictEqual({
+        id1: {max: 'Error: Line 1: Unexpected identifier'}
+    })
+    expect(theTypesFile.content).toBe(trimText`
+        import {types} from 'elemento-runtime'
+        const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
+        
+        const Date1 = new DateType('Date 1', {description: 'The start', required: false, max: Elemento.codeGenerationError(\`Fri Apr 21 2023\`, 'Error: Line 1: Unexpected identifier')})
+        
+        export const MyTypes = {
+            Date1
+        }
+    `)
+})
+
 test('finds errors in expressions for rule formulas and descriptions', () => {
     const textType1 = new TextType('id1', 'TextType 1', {description: 'The blurb',}, [
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(XX)`, description: ex`'Must end with ' + YY()`})

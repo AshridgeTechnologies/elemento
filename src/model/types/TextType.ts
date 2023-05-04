@@ -1,14 +1,14 @@
 import Element from '../Element'
 import {propDef} from '../BaseElement'
-import {PropertyDef} from '../Types'
-import Rule, {BuiltInRule, RuleWithDescription} from './Rule'
+import {PropertyDef, PropertyValueType} from '../Types'
+import {BuiltInRule, RuleWithDescription} from './Rule'
 import BaseTypeElement, {BaseTypeProperties} from './BaseTypeElement'
 
 const formatChoices = ['email', 'url', 'multiline'] as const
 type Format = typeof formatChoices[number]
 type Properties = BaseTypeProperties & {
-    readonly minLength?: number,
-    readonly maxLength?: number,
+    readonly minLength?: PropertyValueType<number>,
+    readonly maxLength?: PropertyValueType<number>,
     readonly format?: Format,
 }
 

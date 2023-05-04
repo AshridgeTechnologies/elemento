@@ -84,7 +84,12 @@ export default class Parser {
         if (expr === undefined) {
             return undefined
         }
-        return parseExpr(expr)
+        try {
+            return parseExpr(expr)
+        } catch (e: any) {
+            console.error('Error parsing expression', elementId, propertyName, '"'+ expr + '"', e.message)
+            return undefined
+        }
     }
 
     getExpression(elementId: ElementId, propertyName: string): any {

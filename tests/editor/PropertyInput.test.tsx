@@ -71,6 +71,15 @@ test('shows fixed value control for string list property if current value is emp
     expect(label().textContent).toBe('Color')
 })
 
+test('shows fixed value control for ChoiceList property if current value is empty', () => {
+    ({container} = render(<PropertyInput elementId='el1' name='color' type={['red', 'green', 'blue']} value={undefined} onChange={() => {} }/>))
+    expect(kindButton().textContent).toBe('sel')
+    expect(input().type).toBe('text')
+    expect(input().previousSibling.id).toBe('color')
+    expect(input().value).toBe('')
+    expect(label().textContent).toBe('Color')
+})
+
 test('shows expression-only control for action property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='theAction' type={eventAction()} value={undefined} onChange={() => {} }/>))
     expect(kindButton().textContent).toBe('fx=')
