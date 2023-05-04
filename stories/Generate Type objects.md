@@ -15,14 +15,19 @@ Requirements
 - ✅ Rules can use formulas for the validation expression and description
 - ✅ Record type cross-field constraints can refer to values within the object
 - ✅ Errors in type generation refer to appropriate field of type or Rule
-- Errors shown in Editor
-- Types can be referred to in component properties and expressions throughout the app, using name prefixed by name of the DataTypes
-- Types within others can be referred to by dot notation
 - ✅ Generate a types module for each DataTypes object
 - ✅ Correct JavaScript code(!)
 - ✅ Runtime types validate values correctly
+
+Requirements Part 2
+-------------------
+
+- Errors shown in Editor
+- Types can be referred to in component properties and expressions throughout the app, using name prefixed by name of the DataTypes
+- Types within others can be referred to by dot notation
 - Types can refer to each other by name within a DataTypes collection
 - Type objects that refer to each other are defined in the right order
+
 Technical
 ---------
 
