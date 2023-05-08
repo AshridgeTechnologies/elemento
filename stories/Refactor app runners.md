@@ -10,13 +10,13 @@ Aims
 Requirements
 ------------
 
-- Generate a code file for each app that exports the app component (as now)
-- Generate HTML runner file for each app that imports the runtime, the app and runs it
-- DataTypes needed are included in each app code file
-- The code file is named after the app
-- The runner file for the first app is index.html, <appname>.html for the others
-- The DataTypes files are named after their source DataTypes
-- All code in same top-level directory - review later
+- ✅ Generate a code file for each app that exports the app component (as now)
+- ✅ Generate HTML runner file for each app that imports the runtime, the app and runs it
+- All DataTypes are included in each app code file
+- ✅ The code file is named after the app
+- ✅ The runner file for the first app is index.html, <appname>.html for the others
+- All client code in same top-level directory - review later
+- Multiple server apps generated - dir structure TBC
 - Files in files dir
 - Runs in preview
 - Runs from GitHub
@@ -56,3 +56,7 @@ Notes
 -----
 
 - Editor uses generators to get errors and code
+
+To do
+-----
+

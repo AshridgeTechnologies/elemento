@@ -67,11 +67,14 @@ export function generateFromJson(projectJson: string) {
 
 export default class Generator {
     private parser
+    private typesGenerator
 
     constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
+        this.parser.parseComponent(project.dataTypesContainer)
         app.pages.forEach(page => this.parser.parseComponent(page))
         this.parser.parseComponent(app)
+        this.typesGenerator = new TypesGenerator(project)
     }
 
     static prettyPrint(code: string) {
@@ -79,6 +82,7 @@ export default class Generator {
     }
 
     output() {
+        const {files: typesFiles, typesClassNames} = this.typesGenerator.output()
         const pageFiles = this.app.pages.map(page => ({
             name: `${(page.codeName)}.js`,
             contents: this.generateComponent(this.app, page)
@@ -89,8 +93,9 @@ export default class Generator {
         }
 
         const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
+        const typesConstants = typesFiles.length ? `const {types: {${typesClassNames.join(', ')}}} = Elemento\n\n` : ''
         return <GeneratorOutput>{
-            files: [...pageFiles, appMainFile],
+            files: [...typesFiles, ...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
             get code() {
                 return imports + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')

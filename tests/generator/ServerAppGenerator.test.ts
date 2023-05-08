@@ -92,6 +92,90 @@ export const serverapp1 = onRequest(app)`)
 
 })
 
+describe.skip('generates files for multiple apps', () => {
+    const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
+    const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
+    const app1 = new ServerApp('sa1', 'Server App 1', {}, [plusFn])
+    const app2 = new ServerApp('sa2', 'Server App 2', {}, [multFn])
+    const gen = new ServerAppGenerator(app1)
+    const {files} = gen.output()
+    const [serverAppFile, expressAppFile, functionFile, packageFile] = files
+
+    test('app file', () => {
+        expect(serverAppFile.name).toBe('ServerApp1.mjs')
+        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
+import {globalFunctions} from './serverRuntime.cjs'
+
+const {Sum} = globalFunctions
+
+const ServerApp1 = (user) => {
+
+function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
+
+async function Plus(a, b) {
+    return Sum(a, b)
+}
+
+async function Mult(c, d) {
+    return c * d
+}
+
+async function Total(x, y, z) {
+    return await Mult(y, await Plus(x, z))
+}
+
+async function HideMe(where) {
+    return where + ' - there'
+}
+
+return {
+    Plus: {func: Plus, update: false, argNames: ['a', 'b']},
+    Mult: {func: Mult, update: false, argNames: ['c', 'd']},
+    Total: {func: Total, update: false, argNames: ['x', 'y', 'z']}
+}
+}
+
+export default ServerApp1`)
+    })
+
+    test('express app file', () => {
+        expect(expressAppFile.name).toBe('ServerApp1Express.js')
+        expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
+import baseAppFactory from './ServerApp1.mjs'
+
+const app = expressApp(baseAppFactory)
+
+export default app`)
+    })
+
+    test('function file', () => {
+        expect(functionFile.name).toBe('index.js')
+        expect(functionFile.contents).toBe(`import {onRequest} from 'firebase-functions/v2/https'
+import app from './ServerApp1Express.js'
+
+export const serverapp1 = onRequest(app)`)
+    })
+
+    test('package json file', () => {
+        expect(packageFile.name).toBe('package.json')
+        expect(packageFile.contents).toBe(`{
+  "type": "module",
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.1",
+    "firebase-functions": "^3.23.0",
+    "firebase-admin": "^11.0.1"
+  },
+  "private": true
+}`)
+
+    })
+
+})
+
 describe('generates files using data components in dependency order', () => {
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const updateWidgetFn = new FunctionDef('fn2', 'UpdateWidget', {input1: 'id', input2: 'changes', action: true, calculation: ex`Update(Widgets, id, changes)`})

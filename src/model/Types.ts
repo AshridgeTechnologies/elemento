@@ -1,3 +1,13 @@
+import ChoiceType from './types/ChoiceType'
+import DataTypes from './types/DataTypes'
+import DateType from './types/DateType'
+import ListType from './types/ListType'
+import NumberType from './types/NumberType'
+import RecordType from './types/RecordType'
+import TextType from './types/TextType'
+import TrueFalseType from './types/TrueFalseType'
+import Rule from './types/Rule'
+
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
 export type ChoiceList = readonly string[]
@@ -26,6 +36,17 @@ export type PropertyDef = {
 export type ActionDef = {
     name: string,
 }
+
+export type DataTypeElementType =
+    'ChoiceType' |
+    'DataTypes' |
+    'DateType' |
+    'ListType' |
+    'NumberType' |
+    'RecordType' |
+    'TextType' |
+    'TrueFalseType' |
+    'Rule'
 
 export type ElementType =
     'Project' |
@@ -59,15 +80,6 @@ export type ElementType =
     'ServerAppConnector' |
     'File' |
     'FileFolder' |
-    // Types
-    'DataTypes' |
-    'Rule' |
-    'TextType' |
-    'NumberType' |
-    'DateType' |
-    'ChoiceType' |
-    'RecordType' |
-    'ListType' |
-    'TrueFalseType'
+    DataTypeElementType
 
 export type ParentType = ElementType | 'any' | null

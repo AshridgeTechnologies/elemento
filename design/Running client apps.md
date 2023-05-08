@@ -56,5 +56,6 @@ Decisions - 5 May 23
 - The code file is named after the app
 - The runner file for the first app is index.html, <appname>.html for the others
 - The DataTypes files are named after their source DataTypes BUT included in app code files
+- All DataTypes files are included in each app, as it is very complex to follow dependencies and find which ones needed
 - All code in same top-level directory - review later
 - Asset files in files dir

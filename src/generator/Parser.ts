@@ -120,11 +120,13 @@ export default class Parser {
         const topLevelFunctions = new Set<string>()
         const allComponentElements = allElements(component)
         const allContainerElements = containingComponent ? allElements(containingComponent) : []
+        const isDataTypes = (name: string) => this.project.dataTypes.some( el => el.codeName === name )
         const isServerApp = (name: string) => this.project.elementArray().some(el => el.kind === 'ServerApp' && el.codeName === name)
         const isAppElement = (name: string) => (this.globalScopeElement.elements ?? []).some(el => el.codeName === name)
         const isComponentElement = (name: string) => !!allComponentElements.find(el => el.codeName === name )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
         const isKnown = (name: string) => isGlobalFunction(name)
+            || isDataTypes(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
             || isComponentElement(name)

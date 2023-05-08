@@ -25,6 +25,9 @@ import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
+import DataTypes from '../../src/model/types/DataTypes'
+import TextType from '../../src/model/types/TextType'
+import NumberType from '../../src/model/types/NumberType'
 import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
 
@@ -127,6 +130,72 @@ export default function App1(props) {
     return React.createElement(App, {path: 'App1', },)
 }
 `)
+})
+
+test('includes all DataTypes files', () => {
+    const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})
+    const itemAmount = new NumberType('nt1', 'Item Amount', {max: 10})
+    const dataTypes1 = new DataTypes('dt1', 'Types 1', {}, [name])
+    const dataTypes2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
+
+    const app1 = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: ex`"Uses Data Types 2" + Types2.ItemAmount.max`}),
+            ]
+        )
+    ])
+    const app2 = new App('app2', 'App 2', {}, [
+        new Page('p2', 'Page 1', {}, [
+                new Text('id2', 'Text 1', {content: ex`"Uses Data Types 1" + Types1.Name.maxLength`}),
+            ]
+        )
+    ])
+
+    const project = new Project('proj1', 'Project 1', {}, [app1, app2, dataTypes1, dataTypes2])
+
+    const output = generate(app1, project)
+
+    expect(output.code).toBe(`import React from 'react'
+import Elemento from 'elemento-runtime'
+
+const {types: {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
+
+// Types1.js
+const Name = new TextType('Name', {required: true, maxLength: 20})
+
+const Types1 = {
+    Name
+}
+
+// Types2.js
+const ItemAmount = new NumberType('Item Amount', {required: false, max: 10})
+
+const Types2 = {
+    ItemAmount
+}
+
+// Page1.js
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, "Uses Data Types 2" + Types2.ItemAmount.max),
+    )
+}
+
+// appMain.js
+export default function App1(props) {
+    const pathWith = name => 'App1' + '.' + name
+    const {App} = Elemento.components
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+
+    return React.createElement(App, {path: 'App1', },)
+}
+`)
+
 })
 
 test('generates html runner file', () => {
