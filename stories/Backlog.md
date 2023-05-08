@@ -93,6 +93,7 @@ Stories
 - Tutorial Real World 1
 - Tutorial enhancements Part 1
 - Validate App Model loaded from JSON
+- Use all input types and attributes
 - Load time optimisation
 - Splash screens - editor and app
 - Back and forward in Help
@@ -113,6 +114,7 @@ Tech debt
 
 - Consider a better bundler - esbuild, rspack, Rome
 - Consider using decorators
+- Consider oclif for CLI and dev server (or combine them)
 - Revisit user-private - using sub-collections in Firebase is non-portable
 - Flaky EditorRunner and AppMain tests
 - Refactor Editor etc so could swap in different Editor, outer component generates and previews

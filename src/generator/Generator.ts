@@ -11,7 +11,7 @@ import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {last, omit} from 'ramda'
 import Parser from './Parser'
-import {ExprType, GeneratorOutput, ListItem, runtimeElementName} from './Types'
+import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName} from './Types'
 import {trimParens} from '../util/helpers'
 import {
     allElements,
@@ -79,13 +79,13 @@ export default class Generator {
     }
 
     output() {
-        const pageFiles = this.app.pages.map( page => ({
+        const pageFiles = this.app.pages.map(page => ({
             name: `${(page.codeName)}.js`,
-            content: this.generateComponent(this.app, page)
+            contents: this.generateComponent(this.app, page)
         }))
         const appMainFile = {
             name: 'appMain.js',
-            content: this.generateComponent(this.app, this.app)
+            contents: this.generateComponent(this.app, this.app)
         }
 
         const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
@@ -93,8 +93,9 @@ export default class Generator {
             files: [...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
             get code() {
-                return imports + this.files.map(f => `// ${f.name}\n${f.content}`).join('\n')
-            }
+                return imports + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
+            },
+            html: this.htmlRunnerFile()
         }
     }
 
@@ -121,7 +122,7 @@ export default class Generator {
         const appContext = componentIsApp ? `    const {appContext} = props` : ''
         const appStateDeclaration = componentIsApp
             ? `    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))`
-            :  appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
+            : appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id)
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
@@ -141,17 +142,17 @@ export default class Generator {
             containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState(parentPathWith('${ident}'))`).join('\n')
         }
         const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appContext,
-            appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter( d => d !== '').join('\n').trimEnd()
+            appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
-        const statefulComponents = allComponentElements.filter( el => el.type() === 'statefulUI' || el.type() === 'background')
+        const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
-        const stateEntries = statefulComponents.map( (el): StateEntry => {
+        const stateEntries = statefulComponents.map((el): StateEntry => {
             const entry = this.initialStateEntry(el, topLevelFunctions)
             const identifiers = this.parser.stateIdentifiers(el.id)
-            const stateComponentIdentifiersUsed = identifiers.filter( id => isStatefulComponentName(id) && id !== el.codeName)
+            const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
             return [el.codeName, entry, stateComponentIdentifiersUsed]
-        }).filter( ([,entry]) => !!entry )
-        const stateBlock = topoSort(stateEntries).map( ([name, entry]) => {
+        }).filter(([, entry]) => !!entry)
+        const stateBlock = topoSort(stateEntries).map(([name, entry]) => {
             const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
             return entry instanceof DefinedFunction
                 ? `    const ${name} = ${entry.functionDef}`
@@ -159,13 +160,13 @@ export default class Generator {
         }).join('\n')
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
-        const backgroundFixedDeclarations = backgroundFixedComponents.map( comp => {
+        const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
             const entry = this.initialStateEntry(comp, topLevelFunctions)
             return `    const [${comp.codeName}] = React.useState(${entry})`
         }).join('\n')
 
         const pathWith = componentIsApp ? `    const pathWith = name => '${component.codeName}' + '.' + name`
-                                        : `    const pathWith = name => props.path + '.' + name`
+            : `    const pathWith = name => props.path + '.' + name`
         const parentPathWith = containingComponent ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
         const extraDeclarations = component instanceof ListItem ? '    const {$item} = props' : ''
@@ -174,7 +175,7 @@ export default class Generator {
         const declarations = [
             pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
             backgroundFixedDeclarations, stateBlock
-        ].filter( d => d !== '').join('\n')
+        ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
         const componentFunction = `${exportClause}function ${functionName}(props) {
 ${declarations}
@@ -195,18 +196,18 @@ ${declarations}
         }
 
         if (element instanceof ListItem) {
-             return `React.createElement(React.Fragment, null,
+            return `React.createElement(React.Fragment, null,
 ${generateChildren(element.list)}
     )`
-         }
+        }
 
         const path = `pathWith('${(element.codeName)}')`
 
         const modelProperties = () => {
-            const propertyDefs = element.propertyDefs.filter(def => !def.state )
+            const propertyDefs = element.propertyDefs.filter(def => !def.state)
             const propertyExprs = propertyDefs.map(def => {
                 const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
-                const exprType: ExprType = isEventAction ? 'action': 'singleExpression'
+                const exprType: ExprType = isEventAction ? 'action' : 'singleExpression'
                 const exprArgNames = isEventAction ? (def.type as EventActionPropertyDef).argumentNames : undefined
                 const expr = this.getExpr(element, def.name, exprType, exprArgNames)
                 return [def.name, expr]
@@ -264,8 +265,7 @@ ${generateChildren(page, indentLevel2, page)}
 
             case 'Menu':
             case 'AppBar':
-            case 'Layout':
-            {
+            case 'Layout': {
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())},
 ${generateChildren(element, indentLevel3, containingComponent)}
     )`
@@ -314,7 +314,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector): string | DefinedFunction {
 
         const modelProperties = () => {
-            const propertyExprs = element.propertyDefs.filter( ({state}) => state ).map(def => {
+            const propertyExprs = element.propertyDefs.filter(({state}) => state).map(def => {
                 const expr = this.getExpr(element, def.name)
                 return [def.name, expr]
             }).filter(([, expr]) => !!expr)
@@ -357,16 +357,19 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             configExpr = '{}'
             configFunctionName = 'configServerApp'
         } else {
-            const serverApp = this.project.elementArray().find( el => el.kind === 'ServerApp' && el.codeName === serverAppName ) as ServerApp
+            const serverApp = this.project.elementArray().find(el => el.kind === 'ServerApp' && el.codeName === serverAppName) as ServerApp
             configFunctionName = serverApp ? `config${serverApp.codeName}` : `configServerApp`
             if (serverApp) {
-                const functionInfo = (fn: FunctionDef) => fn.action ? {params: fn.inputs, action: true} : {params: fn.inputs}
+                const functionInfo = (fn: FunctionDef) => fn.action ? {
+                    params: fn.inputs,
+                    action: true
+                } : {params: fn.inputs}
 
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{
                 appName: '${serverApp.name}',
                 url: ${serverUrlExpr || `'/capi/${serverApp.codeName}'`},
-                functions: ${valueLiteral(Object.fromEntries( serverApp.functions.map( fn => [fn.codeName, functionInfo(fn)])))}
+                functions: ${valueLiteral(Object.fromEntries(serverApp.functions.map(fn => [fn.codeName, functionInfo(fn)])))}
             }`
 
             } else {
@@ -457,5 +460,29 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
     private getExprWithoutParens(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
         return trimParens(this.getExpr(element, propertyName, exprType))
+    }
+
+    private htmlRunnerFile() {
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <title>${this.app.name}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    body { margin: 0; padding: 0}
+    #main { height: calc(100vh - 8px); width: calc(100vw - 8px); margin: 4px }
+  </style>
+</head>
+<body>
+<script type="module">
+    import {runForDev} from './${runtimeFileName}'
+    runForDev('./${this.app.codeName}.js')
+</script>
+</body>
+</html>
+`
     }
 }

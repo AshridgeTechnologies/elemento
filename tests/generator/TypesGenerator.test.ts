@@ -23,7 +23,7 @@ test('generates types without constraints in a DataTypes', () => {
     expect(output.files.length === 1)
     const theTypesFile = output.files[0]
     expect(theTypesFile.name).toBe('MyTypes.js')
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -52,7 +52,7 @@ test('generates a file for each DataTypes', () => {
     const [types1File, types2File] = output.files
     expect(types1File.name).toBe('Types1.js')
     expect(types2File.name).toBe('Types2.js')
-    expect(types1File.content).toBe(trimText`
+    expect(types1File.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -63,7 +63,7 @@ test('generates a file for each DataTypes', () => {
         }
     `)
 
-    expect(types2File.content).toBe(trimText`
+    expect(types2File.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -89,7 +89,7 @@ test('generates TextType with built in and ad-hoc rules', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -112,7 +112,7 @@ test('generates NumberType with built in and ad-hoc rules using expressions', ()
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -135,7 +135,7 @@ test('generates DateType with built in rules', () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -166,7 +166,7 @@ test('generates RecordType with all types', () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -203,7 +203,7 @@ test('finds errors in expressions for type object properties', () => {
     expect(output.errors).toStrictEqual({
         id1: {max: 'Unknown names: XX'}
     })
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -227,7 +227,7 @@ test('finds parsing errors in expressions for type object properties', () => {
     expect(output.errors).toStrictEqual({
         id1: {max: 'Error: Line 1: Unexpected identifier'}
     })
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         
@@ -256,7 +256,7 @@ test('finds errors in expressions for rule formulas and descriptions', () => {
             formula: 'Unknown names: XX',
         }
     })
-    expect(theTypesFile.content).toBe(trimText`
+    expect(theTypesFile.contents).toBe(trimText`
         import {types} from 'elemento-runtime'
         const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
         

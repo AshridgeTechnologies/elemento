@@ -7,13 +7,14 @@ import ControlReference from '../docs/reference/ControlReference'
 import FunctionReference from '../docs/reference/FunctionReference'
 import React from 'react'
 
-const EditorHelpPanel = (props: {onClose: () => void}) => <HelpPanel onClose={props.onClose}>
-    <WhatIsElemento/>
-    <ElementoStudio/>
-    <Controls/>
-    <Formulas/>
-    <ControlReference/>
-    <FunctionReference/>
+const EditorHelpPanel = (props: {onClose: () => void}) =>
+    <HelpPanel onClose={props.onClose}>
+        <WhatIsElemento/>
+        <ElementoStudio/>
+        <Controls/>
+        <Formulas/>
+        <ControlReference/>
+        <FunctionReference/>
     </HelpPanel>
 
 export default EditorHelpPanel

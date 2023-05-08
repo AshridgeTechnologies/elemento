@@ -92,8 +92,8 @@ export default class TypesGenerator {
         const dataTypeElements = this.project.findChildElements(DataTypes)
         const generateTypeFile = (dataTypes: DataTypes) => {
             const name = dataTypes.codeName + '.js'
-            const content = this.typeFileContent(dataTypes)
-            return {name, content}
+            const contents = this.typeFileContent(dataTypes)
+            return {name, contents}
         }
         const files = dataTypeElements.map( generateTypeFile )
 

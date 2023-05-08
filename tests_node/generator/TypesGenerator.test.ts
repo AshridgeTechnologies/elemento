@@ -43,7 +43,7 @@ test('generates TextType with expected validation', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {TextType1}} = theTypes
 
     expect(check(TextType1, "http://xyz.com")).toBe(null)
@@ -63,7 +63,7 @@ test('generates NumberType with expected validation', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {NumberType1}} = theTypes
 
     expect(check(NumberType1, 10)).toBe(null)
@@ -83,7 +83,7 @@ test('generates DateType with expected validation', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {DateType1}} = theTypes
 
     const date1 = new Date('2022-07-04')
@@ -118,7 +118,7 @@ test('generates RecordType with expected validation', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {Place}} = theTypes
 
     const validRecord = {
@@ -148,7 +148,7 @@ test('generates ListType with expected validation', async () => {
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {PlaceList}} = theTypes
 
     const validRecord = {

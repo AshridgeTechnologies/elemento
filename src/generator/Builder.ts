@@ -1,16 +1,12 @@
 import Project from '../model/Project'
 import App from '../model/App'
-import {generate} from './Generator'
+import {generate, generateTypes} from './Generator'
 import ServerApp from '../model/ServerApp'
 import ServerAppGenerator from './ServerAppGenerator'
 import FirebasePublish from '../model/FirebasePublish'
-import {valueLiteral} from './generatorHelpers'
+import {runtimeFileName, runtimeFileSourcePath, serverRuntimeFileSourcePath} from './Types'
 
 export type FileCollection = { [p: string]: { contents: string | Uint8Array } }
-
-const runtimeFileName = 'runtime.js'
-const runtimeFileSourcePath = '/runtime/runtime.js'
-const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.cjs'
 
 export const findServerApp = (project: Project) => {
     const element = project.elementArray().find(el => el.kind === 'ServerApp')
@@ -32,10 +28,18 @@ export default class Builder {
     get codeFileName() { return `${this.app.codeName}.js` }
     get serverCodeFileName() { return this.serverApp && `${this.serverApp.codeName}.mjs` }
 
+    dataTypesFiles() {
+        const {files} = generateTypes(this.project)
+        const fileEntries = files.map( ({contents, name}) => [name, {contents}])
+        return Object.fromEntries(fileEntries)
+    }
+
     async clientFiles(firebasePublish?: FirebasePublish): Promise<FileCollection> {
+        const typesFiles: FileCollection = this.dataTypesFiles()
         const config = {
             '/index.html':              {contents: this.indexFile()},
             [`/${this.codeFileName}`]:  {contents: this.clientCodeFile()},
+            ...typesFiles,
             [`/${runtimeFileName}`]:    {contents: await this.loadFile(runtimeFileSourcePath)},
             [`/${runtimeFileName}.map`]: {contents: await this.loadFile(runtimeFileSourcePath + '.map')}
         }
@@ -52,7 +56,6 @@ export default class Builder {
     async serverFiles(): Promise<FileCollection> {
         const gen = new ServerAppGenerator(this.serverApp!)
         const generatedFiles = Object.fromEntries( gen.output().files.map(({name, contents}) => [name, {contents}]) )
-        //console.log('generatedFiles', generatedFiles)
         const staticFiles = {
             'serverRuntime.cjs': {contents: await this.loadFile(serverRuntimeFileSourcePath)},
             'serverRuntime.cjs.map': {contents: await this.loadFile(serverRuntimeFileSourcePath + '.map')},
