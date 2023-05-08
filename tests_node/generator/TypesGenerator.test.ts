@@ -8,26 +8,36 @@ import test from 'node:test'
 import {expect} from 'expect'
 import NumberType from '../../src/model/types/NumberType'
 import DateType from '../../src/model/types/DateType'
-import BaseType from '../../src/runtime/types/BaseType'
+import BaseType from '../../src/shared/types/BaseType'
 import {ex} from '../../tests/testutil/testHelpers'
 import ChoiceType from '../../src/model/types/ChoiceType'
 import TrueFalseType from '../../src/model/types/TrueFalseType'
 import ListType from '../../src/model/types/ListType'
 import RecordType from '../../src/model/types/RecordType'
+import BaseTypeElement from '../../src/model/types/BaseTypeElement'
 
 let fileSeq = 0
 const nextTempFileName = () => `TypesGenerator.${++fileSeq}.temp.js`
+
+const dataTypesName = 'MyTypes'
 async function importCode(code: string) {
     const filename = nextTempFileName()
     const testModulePath = `./tempTestFiles/${filename}`
     const testModuleRelativePath = `../../tempTestFiles/${filename}`
-    const codeWithLocalImports = code.replace(/from 'elemento-runtime'/, `from '../devDist/runtime/runtime.js'`)
+    const testImports = `import {types} from '../devDist/runtime/runtime.js'\n`
+        + `const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types`
+    const testExports = `export {${dataTypesName}}`
+    const codeWithLocalImports = testImports + '\n\n' + code + '\n\n' + testExports
     fs.writeFileSync(testModulePath, codeWithLocalImports)
     return await import(testModuleRelativePath)
 }
 
 const check = (validator: BaseType<any, any>, item: any) => validator.validate(item)
 const errors = (validator: BaseType<any, any>, item: any) => check(validator, item) as string[]
+
+function aProject(type: BaseTypeElement<any>) {
+    return new Project('p1', 'The Project', {}, [new DataTypes('dt1', dataTypesName, {}, [type])])
+}
 
 test('generates TextType with expected validation', async () => {
     const textType1 = new TextType('id1', 'TextType 1', {
@@ -39,12 +49,10 @@ test('generates TextType with expected validation', async () => {
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(".com")`, description: 'Must end with .com'})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [textType1])])
-
-    const generator = new TypesGenerator(project)
+    const generator = new TypesGenerator(aProject(textType1))
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
-    const {MyTypes: {TextType1}} = theTypes
+    const theTypes = await importCode(theTypesFile.contents)
+    const {TextType1} = theTypes[dataTypesName]
 
     expect(check(TextType1, "http://xyz.com")).toBe(null)
 
@@ -58,13 +66,10 @@ test('generates NumberType with expected validation', async () => {
     const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'The amount', format: 'integer', min: 5, max: 20}, [
         new Rule('r1', 'Multiple of 10', {formula: ex`$item % 10 === 0`, description: 'Must be a multiple of 10'})
     ])
-
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [numberType1])])
-
-    const generator = new TypesGenerator(project)
+    const generator = new TypesGenerator(aProject(numberType1))
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
-    const {MyTypes: {NumberType1}} = theTypes
+    const theTypes = await importCode(theTypesFile.contents)
+    const {NumberType1} = theTypes[dataTypesName]
 
     expect(check(NumberType1, 10)).toBe(null)
 
@@ -79,12 +84,10 @@ test('generates DateType with expected validation', async () => {
         new Rule('r1', 'Monday-Tuesday', {formula: ex`\$item.getDay() === 1 || \$item.getDay() === 2`, description: 'Must be a Monday or a Tuesday'})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [dateType])])
-
-    const generator = new TypesGenerator(project)
+    const generator = new TypesGenerator(aProject(dateType))
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
-    const {MyTypes: {DateType1}} = theTypes
+    const theTypes = await importCode(theTypesFile.contents)
+    const {DateType1} = theTypes[dataTypesName]
 
     const date1 = new Date('2022-07-04')
     const tooEarly = new Date('2022-07-03')
@@ -113,12 +116,9 @@ function placeRecordType() {
 }
 
 test('generates RecordType with expected validation', async () => {
-    const placeRecord = placeRecordType()
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [placeRecord])])
-
-    const generator = new TypesGenerator(project)
+    const generator = new TypesGenerator(aProject(placeRecordType()))
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
+    const theTypes = await importCode(theTypesFile.contents)
     const {MyTypes: {Place}} = theTypes
 
     const validRecord = {
@@ -144,12 +144,11 @@ test('generates RecordType with expected validation', async () => {
 test('generates ListType with expected validation', async () => {
     const placeRecord = placeRecordType()
     const placeList = new ListType('lt1', 'Place List', {description: 'A place to visit', required: true}, [placeRecord])
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [placeList])])
 
-    const generator = new TypesGenerator(project)
+    const generator = new TypesGenerator(aProject(placeList))
     const theTypesFile = generator.output().files[0]
-    const theTypes = await importCode(theTypesFile.content)
-    const {MyTypes: {PlaceList}} = theTypes
+    const theTypes = await importCode(theTypesFile.contents)
+    const {PlaceList} = theTypes[dataTypesName]
 
     const validRecord = {
         Name: 'Mont Blanc',

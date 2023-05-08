@@ -5,28 +5,25 @@ import Rule from '../model/types/Rule'
 import BaseTypeElement from '../model/types/BaseTypeElement'
 import {objectLiteral, quote} from './generatorHelpers'
 import Element from '../model/Element'
-import {last} from 'ramda'
+import {last, without} from 'ramda'
 import {print, types} from 'recast'
 import {visit} from 'ast-types'
 import {functionArgIndexes} from '../runtime/globalFunctions'
 import Parser from './Parser'
-import BaseElement from '../model/BaseElement'
-import {ComponentType, EventActionPropertyDef} from '../model/Types'
+import {EventActionPropertyDef} from '../model/Types'
+import {dataTypeElementTypes} from '../model/elements'
 
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel1 = '    '
 
-
-class DataTypesContainer extends BaseElement<{}> {
-    get propertyDefs() { return [] }
-    type() { return 'DataTypesContainer' as ComponentType }
+export function generateTypes(project: Project) {
+    return new TypesGenerator(project).output()
 }
 
 export default class TypesGenerator {
     private parser
     constructor(private project: Project) {
-        const dataTypes = project.findChildElements(DataTypes)
-        const dataTypesContainer = new DataTypesContainer('_dt1', 'DataTypes Container', {}, dataTypes)
+        const dataTypesContainer = project.dataTypesContainer
         this.parser = new Parser(dataTypesContainer, project)
         this.parser.parseComponent(dataTypesContainer)
     }
@@ -80,26 +77,26 @@ export default class TypesGenerator {
     }
 
     private typeFileContent(dataTypes: DataTypes): string {
-        const imports = `import {types} from 'elemento-runtime'\nconst {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types`
         const typeNames = dataTypes.elementArray().map( t => t.codeName )
         const typeElements = dataTypes.elementArray() as BaseTypeElement<any>[]
         const typeDeclarations = typeElements.map( t => `const ${t.codeName} = ${this.generateTypeExpr(t)}` ).join('\n')
-        const exportStmt = `export const ${dataTypes.codeName} = {\n${typeNames.map( name => indentLevel1 + name).join(',\n')}\n}`
-        return [imports, typeDeclarations, exportStmt].join('\n\n') + '\n'
+        const dataTypesObject = `const ${dataTypes.codeName} = {\n${typeNames.map( name => indentLevel1 + name).join(',\n')}\n}`
+        return [typeDeclarations, dataTypesObject].join('\n\n') + '\n'
     }
 
     output() {
         const dataTypeElements = this.project.findChildElements(DataTypes)
         const generateTypeFile = (dataTypes: DataTypes) => {
             const name = dataTypes.codeName + '.js'
-            const content = this.typeFileContent(dataTypes)
-            return {name, content}
+            const contents = this.typeFileContent(dataTypes)
+            return {name, contents}
         }
         const files = dataTypeElements.map( generateTypeFile )
 
         return {
             files,
             errors: this.parser.allErrors(),
+            typesClassNames: without(['DataTypes'], Object.keys(dataTypeElementTypes()))
         }
     }
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {

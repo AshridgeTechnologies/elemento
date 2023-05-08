@@ -1,5 +1,5 @@
-import TrueFalseType from '../../../src/runtime/types/TrueFalseType'
-import Rule from '../../../src/runtime/types/Rule'
+import TrueFalseType from '../../../src/shared/types/TrueFalseType'
+import Rule from '../../../src/shared/types/Rule'
 import {expect} from 'expect'
 
 test('has expected properties', () => {

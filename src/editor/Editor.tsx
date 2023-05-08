@@ -24,22 +24,19 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementTypes} from '../model/elements'
 
 import {Box, Button, Grid} from '@mui/material'
-import HelpPanel from './HelpPanel'
-import WhatIsElemento from '../docs/overview/WhatIsElemento'
-import ElementoStudio from '../docs/overview/ElementoStudio'
-import Controls from '../docs/overview/Controls'
-import Formulas from '../docs/overview/Formulas'
-import ControlReference from '../docs/reference/ControlReference'
-import FunctionReference from '../docs/reference/FunctionReference'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import {generate, generateServerApp, generateTypes} from '../generator/Generator'
+import {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 import PreviewPanel from './PreviewPanel'
 import FirebasePublish from '../model/FirebasePublish'
 import ServerApp from '../model/ServerApp'
 import {AllErrors} from '../generator/Types'
+import EditorHelpPanel from './EditorHelpPanel'
+import {noop} from '../util/helpers'
+import {generateServerApp} from '../generator/ServerAppGenerator'
+import {generateTypes} from '../generator/TypesGenerator'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -89,7 +86,7 @@ export default function Editor({
 
         const serverApps = project.elementArray().filter( el => el.kind === 'ServerApp') as ServerApp[]
         serverApps.forEach( app => {
-            const {errors: appErrors} = generateServerApp(app)
+            const {errors: appErrors} = generateServerApp(app, project)
             errors = {...errors, ...appErrors}
         })
 
@@ -152,15 +149,6 @@ export default function Editor({
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
     </MenuBar>
 
-    const EditorHelpPanel = () => <HelpPanel onClose={onHelp}>
-        <WhatIsElemento/>
-        <ElementoStudio/>
-        <Controls/>
-        <Formulas/>
-        <ControlReference/>
-        <FunctionReference/>
-    </HelpPanel>
-
     const appBarTitle = `Elemento Studio - ${projectStoreName}`
     const OverallAppBar = <Box flex='0'>
         <AppBar title={appBarTitle}/>
@@ -196,7 +184,7 @@ export default function Editor({
                         </Box>
                         {helpVisible ?
                             <Box flex='1' maxHeight='50%'>
-                                <EditorHelpPanel/>
+                                <EditorHelpPanel onClose={noop}/>
                             </Box> : null
                         }
                     </Box>

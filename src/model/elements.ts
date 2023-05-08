@@ -21,7 +21,7 @@ import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Collection from './Collection'
 import Layout from './Layout'
-import {ElementType} from './Types'
+import {DataTypeElementType, ElementType} from './Types'
 import FirebasePublish from './FirebasePublish'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
@@ -39,6 +39,20 @@ import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
 import SpeechInput from "./SpeechInput";
 import FunctionImport from "./FunctionImport";
+
+export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
+    return {
+        ChoiceType: ChoiceType,
+        DataTypes: DataTypes,
+        DateType: DateType,
+        ListType: ListType,
+        NumberType: NumberType,
+        RecordType: RecordType,
+        TextType: TextType,
+        TrueFalseType: TrueFalseType,
+        Rule: Rule,
+    }
+}
 
 export const elementTypes = (): {[key in ElementType]: any} => {
     return {
@@ -73,15 +87,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         ServerAppConnector: ServerAppConnector,
         File: File,
         FileFolder: FileFolder,
-        DataTypes: DataTypes,
-        TrueFalseType: TrueFalseType,
-        TextType: TextType,
-        NumberType: NumberType,
-        DateType: DateType,
-        ChoiceType: ChoiceType,
-        RecordType: RecordType,
-        ListType: ListType,
-        Rule: Rule,
+        ...dataTypeElementTypes()
     }
 }
 

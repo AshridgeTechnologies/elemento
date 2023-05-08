@@ -22,7 +22,12 @@ export type ElementErrors = { [propertyName: string]: string }
 export type AllErrors = { [elementId: ElementId]: ElementErrors }
 
 export interface GeneratorOutput {
-    files: { name: string; content: string }[]
+    files: { name: string; contents: string }[]
     errors: AllErrors
     code: string
+    html: string
 }
+
+export const runtimeFileName = 'runtime.js'
+export const runtimeFileSourcePath = '/runtime/runtime.js'
+export const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.cjs'

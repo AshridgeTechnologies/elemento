@@ -35,10 +35,10 @@ test('generated app can be shown in runner page', async ()=> {
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
-    await act( () => runAppFromWindowUrl('/web/some.funky.app'))
+    await act( () => runAppFromWindowUrl('/web/some.funky.app', 'main1'))
     await act( () => wait(20) )
 
-    const {expectEl} = containerFunctions(document.getElementById('main') as HTMLElement)
+    const {expectEl} = containerFunctions(document.getElementById('main1') as HTMLElement)
     expectEl('Text1').toHaveTextContent('Hi there!')
     expectEl('Text2').toHaveTextContent(/^4$/)
 })
@@ -59,10 +59,10 @@ test('generated code includes types which can be referenced in the app', async (
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
-    await act( () => runAppFromWindowUrl('/web/some.funky.app'))
+    await act( () => runAppFromWindowUrl('/web/some.funky.app', 'main2'))
     await act( () => wait(20) )
 
-    const {expectEl} = containerFunctions(document.getElementById('main') as HTMLElement)
+    const {expectEl} = containerFunctions(document.getElementById('main2') as HTMLElement)
     expectEl('Text1').toHaveTextContent('Enter up to 20 characters')
-    expectEl('TextInput').toHaveAttribute('maxlength', '20')
+    expectEl('TextInput_textInput2').toHaveAttribute('maxlength', '20')
 })

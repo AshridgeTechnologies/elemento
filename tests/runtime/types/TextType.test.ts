@@ -1,5 +1,5 @@
-import TextType from '../../../src/runtime/types/TextType'
-import Rule from '../../../src/runtime/types/Rule'
+import TextType from '../../../src/shared/types/TextType'
+import Rule from '../../../src/shared/types/Rule'
 import {expect} from 'expect'
 
 test('has expected properties', () => {

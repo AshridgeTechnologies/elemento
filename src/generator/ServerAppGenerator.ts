@@ -4,29 +4,37 @@ import ServerAppParser from './ServerAppParser'
 import Element from '../model/Element'
 import {functionArgIndexes} from '../serverRuntime/globalFunctions'
 import {ExprType} from './Types'
-import {last} from 'ramda'
+import {last, project} from 'ramda'
 import {print, types} from 'recast'
 import {visit} from 'ast-types'
 import {isTruthy} from '../util/helpers'
 import {objectLiteral, quote, StateEntry, topoSort} from './generatorHelpers'
+import TypesGenerator from './TypesGenerator'
+import Project from '../model/Project'
 
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel2 = '        '
 
+export function generateServerApp(app:ServerApp, project: Project) {
+    return new ServerAppGenerator(app, project).output()
+}
+
 export default class ServerAppGenerator {
     private parser
-    constructor(public app: ServerApp) {
+    private typesGenerator
+
+
+    constructor(private readonly app: ServerApp, private readonly project: Project) {
         this.parser = new ServerAppParser(app)
+        this.typesGenerator = new TypesGenerator(project)
     }
 
     output() {
         const serverApp = this.serverApp()
         const expressApp = this.expressApp()
-        const cloudFunction = this.cloudFunction()
-        const packageJson = this.packageJson()
 
         return {
-            files: [serverApp, expressApp, cloudFunction, packageJson],
+            files: [serverApp, expressApp],
             errors: this.parser.allErrors(),
         }
     }
@@ -85,25 +93,31 @@ export default class ServerAppGenerator {
         const globalFunctionNames = this.parser.allGlobalFunctionIdentifiers()
         const appFunctionNames = this.parser.allAppFunctionIdentifiers()
         const componentNames = this.parser.allComponentIdentifiers()
+        const {files: typesFiles, typesClassNames} = this.typesGenerator.output()
 
         const hasGlobalFunctions = !!globalFunctionNames.length
         const hasAppFunctions = !!appFunctionNames.length
         const hasComponents = !!componentNames.length
+        const hasTypes = !!typesFiles.length
 
         const imports = [
             `import {runtimeFunctions} from './serverRuntime.cjs'`,
             hasGlobalFunctions && `import {globalFunctions} from './serverRuntime.cjs'`,
             hasAppFunctions && `import {appFunctions} from './serverRuntime.cjs'`,
             hasComponents && `import {components} from './serverRuntime.cjs'`,
+            hasTypes && `import {types} from './serverRuntime.cjs'`,
         ].filter(isTruthy).join('\n')
 
         const globalImports = hasGlobalFunctions && `const {${globalFunctionNames.join(', ')}} = globalFunctions`
         const appFunctionImports = hasAppFunctions && `const {${appFunctionNames.join(', ')}} = appFunctions`
         const componentImports = hasComponents && `const {${componentNames.join(', ')}} = components`
-        const importedDeclarations = [globalImports, appFunctionImports, componentImports].filter(isTruthy).join('\n')
+        const typesConstants = hasTypes && `const {${typesClassNames.join(', ')}} = types`
+
+        const importedDeclarations = [globalImports, appFunctionImports, componentImports, typesConstants].filter(isTruthy).join('\n')
 
         const componentDeclarations = this.generateComponents()
         const functionDeclarations = this.functions().map(generateFunction).join('\n\n')
+        const typeDeclarations = typesFiles.map(f => `// ${f.name}\n${f.contents}`).join('\n')
         const appFactoryDeclaration = `const ${this.app.codeName} = (user) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
@@ -120,6 +134,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
             imports,
             importedDeclarations,
             componentDeclarations,
+            typeDeclarations,
             appFactoryDeclaration,
             exportDeclaration
         ].filter(isTruthy).join('\n\n')
@@ -139,34 +154,6 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
         ].join('\n\n')
 
         return {name: `${this.app.codeName}Express.js`, contents: code}
-    }
-
-    private cloudFunction() {
-        const imports = `import {onRequest} from 'firebase-functions/v2/https'\nimport app from './${this.app.codeName}Express.js'`
-        const theExports = `export const ${this.app.codeName.toLowerCase()} = onRequest(app)`
-        const code = [
-            imports, theExports
-        ].join('\n\n')
-
-        return {name: `index.js`, contents: code}
-
-    }
-
-    private packageJson() {
-        return {name: `package.json`, contents: `{
-  "type": "module",
-  "engines": {
-    "node": "18"
-  },
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.18.1",
-    "firebase-functions": "^3.23.0",
-    "firebase-admin": "^11.0.1"
-  },
-  "private": true
-}`}
-
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {

@@ -24,6 +24,7 @@ export const toArray = (value: any) => Array.isArray(value) ? value : [value]
 export const noSpaces = (s: string) => s.replace(/ /g, '')
 
 export const isTruthy = (x: any) => !!x
+export const noop = () => {}
 export const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 export const parseParam = (param: string) => {
     if (isNumeric(param)) {

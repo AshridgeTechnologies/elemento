@@ -7,10 +7,17 @@ import {toArray} from '../util/helpers'
 import {elementOfType} from './elements'
 import FileFolder from './FileFolder'
 import {AppElementAction, ConfirmAction, InsertAction} from '../editor/Types'
+import Page from './Page'
+import DataTypes from './types/DataTypes'
 
 type Properties = { author?: PropertyValue }
 
 export const FILES_ID = '_FILES'
+
+class DataTypesContainer extends BaseElement<{}> {
+    get propertyDefs() { return [] }
+    type() { return 'DataTypesContainer' as ComponentType }
+}
 
 export default class Project extends BaseElement<Properties> implements Element {
 
@@ -18,6 +25,11 @@ export default class Project extends BaseElement<Properties> implements Element 
     static get iconClass() { return 'web' }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
+
+    get dataTypes() {return this.findChildElements(DataTypes)}
+    get dataTypesContainer() {
+        return new DataTypesContainer('_dt1', 'DataTypes Container', {}, this.dataTypes)
+    }
 
     get propertyDefs(): PropertyDef[] {
         return [
