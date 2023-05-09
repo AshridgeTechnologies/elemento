@@ -13,7 +13,7 @@ Bugs
 - With a new browser database, new items added to a collection cannot be selected
 - Full review of asset files, multiple dirs, rename, move, GitHub save/update
 - DateFormat blows up on some bad values eg a string
-- Studio: Show errors in server side apps
+- Studio: Stop Objects are not valid as a React child errors when have an object as the only thing in a formula eg a Server App Connector
 - Big error storm in preview when load app that uses firebase config
 - Asks for login to gapi on every keystroke when a Firebase Publisher exists
 - Studio: Show errors in server side apps (just needs a test)

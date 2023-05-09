@@ -45,6 +45,8 @@ const onUpdateFromGitHub = jest.fn()
 const onInsert = ()=> '123'
 
 const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub}
+const errors = {}
+const previewCode = 'Preview code'
 
 let selectedItemIds: string[] = []
 const selected = {selectedItemIds, onSelectedItemsChange: (ids: string[]) => selectedItemIds = ids}
@@ -74,8 +76,9 @@ afterEach( async () => await act(() => {
 function EditorTestWrapper(props: any) {
     const [selectedItemIds, onSelectedItemsChange] = useState<string[]>([])
     // @ts-ignore
-    return <Editor {...{selectedItemIds, onSelectedItemsChange}} {...onFunctions} {...props}/>
+    return <Editor {...{selectedItemIds, onSelectedItemsChange}} {...onFunctions} {...{previewCode, errors}} {...props}/>
 }
+
 test("renders tree with app elements",  async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} projectStoreName='Stored Project' />)))
     await clickExpandControl(0, 1, 2)
@@ -134,7 +137,14 @@ test('shows errors for properties of main client app', async () => {
             new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, maxLength: ex`BadName + 30`}),
         ]),
     ]) ])
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    const errors = {
+        textInput_1: {
+            initialValue: 'Error: Line 1: Unexpected end of input',
+            maxLength: 'Unknown names: BadName'
+        },
+    }
+
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 2)
 
     expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input'])
@@ -165,7 +175,16 @@ test('shows errors for properties of all client apps', async () => {
     ])
 
     const projectWithErrors = new Project('pr1', 'Project Bad', {}, [app1, app2])
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    const errors = {
+        textInput_1: {
+            initialValue: 'Error: Line 1: Unexpected end of input',
+        },
+        numberInput_1: {
+            label: 'Unknown names: BadName',
+        },
+    }
+
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 2)
     expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page'])
 
@@ -194,7 +213,16 @@ test('shows errors for properties of all server apps', async () => {
         new FunctionDef('func2', 'Add Bad', {calculation: ex`BadName + 22`}),
     ])
     const projectWithErrors = new Project('pr1', 'Project Bad', {}, [serverApp1, serverApp2 ])
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    const errors = {
+        func1: {
+            calculation: 'Error: Line 1: Unexpected end of input',
+        },
+        func2: {
+            calculation: 'Unknown names: BadName',
+        },
+    }
+
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1)
     expect(itemLabels()).toStrictEqual(['Project Bad', 'Server App One', 'Add What', 'Server App Two', 'Add Bad'])
 
@@ -219,8 +247,14 @@ test('shows errors for properties of type objects', async () => {
         ]),
         new DataTypes('dt1', 'My Types', {}, [numberType1])
     ])
+    const errors = {
+        id1: {
+            max: 'Error: Line 1: Unexpected end of input',
+            min: 'Unknown names: BadName',
+        },
+    }
 
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors}/>)))
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 3)
 
     expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'My Types', 'Number 1'])

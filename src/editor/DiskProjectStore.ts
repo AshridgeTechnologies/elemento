@@ -21,9 +21,10 @@ export interface DiskProjectStoreInterface {
 
     createProject(): Promise<void>
 
-    readFile(fileName: string): Promise<Uint8Array>
+    getFileNames(dirName: string): Promise<string[]>
+    readFile(path: string): Promise<Uint8Array>
 
-    writeFile(fileName: string, fileData: Uint8Array): Promise<void>
+    writeFile(path: string, fileData: Uint8Array): Promise<void>
 
     readTextFile(path: string): Promise<string>
 

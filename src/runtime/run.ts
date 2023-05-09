@@ -5,7 +5,6 @@ import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
-import {ComponentState} from './components/ComponentState'
 
 let root: Root
 

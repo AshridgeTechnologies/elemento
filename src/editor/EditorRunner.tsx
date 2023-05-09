@@ -1,9 +1,9 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {AppElementAction, AppElementActionName, FileSystemTree} from './Types'
+import {AppElementAction, AppElementActionName} from './Types'
 import {
     Alert,
     AlertColor,
@@ -27,16 +27,20 @@ import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authenticatio
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
-import {previewClientFiles, previewCodeFile, previewServerCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
-import {findServerApp} from '../generator/Builder'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-import lodash from 'lodash'; const {debounce} = lodash;
+import lodash from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
-import ServerApp from '../model/ServerApp'
-import ServerAppConnector from '../model/ServerAppConnector'
+import ProjectBuilder from "../generator/ProjectBuilder";
+import BrowserProjectLoader from "../generator/BrowserProjectLoader";
+import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
+import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
+import PostMessageFileWriter from "./PostMessageFileWriter";
+import HttpFileWriter from "./HttpFileWriter";
+
+const {debounce} = lodash;
 
 declare global {
     var getProject: () => Project | null
@@ -62,16 +66,14 @@ const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProj
 
 async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
     try {
-        const response = await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
+        await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
         console.log('Updated server file', serverAppName, path)
         afterUpdate()
     } catch (error) {
         console.error('Error updating server file', error);
     }
 }
-
-const debouncedUpdateServerFile = debounce( updateServerFile, 1000 )
-
+debounce( updateServerFile, 1000 );
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -182,17 +184,23 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
     )
 }
 
+const previewCodeBundle = (codeFiles: {[p: string] : string}) =>
+    Object.entries(codeFiles).map(([name, code]) => `// File: ${name}\n\n${code}`).join(`\n\n\n`)
+
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
-    const [serverAppCode, setServerAppCode] = useState<string | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [,setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const projectBuilderRef = useRef<ProjectBuilder>()
+
+    const elementoUrl = () => window.location.origin
 
     const removeDialog = () => setDialog(null)
     
@@ -208,47 +216,34 @@ export default function EditorRunner() {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
         debouncedSave(updatedProject, projectStore!)
-
-        const [path, fileContents] = previewCodeFile(updatedProject)
-        writeFile(path, fileContents)
-
-        const [serverPath, newServerAppCode] = previewServerCodeFile(updatedProject)
-        if (serverPath && newServerAppCode && newServerAppCode !== serverAppCode) {
-            const serverAppName = findServerApp(updatedProject)!.codeName
-            debouncedUpdateServerFile(serverAppName, serverPath, newServerAppCode, () => updatePreviewServerAppConnectors(serverAppName))
-                ?.catch(e => console.error('Could not update server file', e))
-            setServerAppCode(newServerAppCode)
-        }
+        projectBuilderRef.current?.updateProject()
     }
+
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         projectHandler.setProject(proj)
         projectHandler.setName(name)
         setProject(proj)
-        const filesToMount = await previewClientFiles(getOpenProject(), projectStore, window.location.origin)
-        console.log('re-mounting files', filesToMount)
-        mountFiles(filesToMount)
+        await projectBuilderRef.current?.build()
+
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
+
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
         setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
+        const newProjectBuilder = new ProjectBuilder({
+            projectLoader: new BrowserProjectLoader( () => getOpenProject() ),
+            fileLoader: new DiskProjectStoreFileLoader(projectStore),
+            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
+            clientFileWriter: new PostMessageFileWriter(navigator.serviceWorker.controller!),
+            serverFileWriter: new HttpFileWriter(devServerUrl)
+        })
+        projectBuilderRef.current = newProjectBuilder
         await updateProjectHandlerFromStore(project, name, projectStore)
-    }
-
-
-    function updatePreviewServerAppConnectors(serverAppName: string) {
-        const project = getOpenProject()
-        const selectConnector = (el: Element) => el.kind === 'ServerAppConnector' && (el as ServerAppConnector).serverApp?.expr === serverAppName
-        const connectors = project.findElementsBy( selectConnector)
-        connectors.forEach( conn => callFunctionInPreview(project.findElementPath(conn.id)!, 'Refresh'))
-    }
-
-    function mountFiles(filesToMount: FileSystemTree) {
-        navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
     }
 
     function renameFile(oldPath: string, newPath: string) {
@@ -398,6 +393,8 @@ export default function EditorRunner() {
         }
     }
 
+    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
+
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                                  uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
@@ -416,8 +413,7 @@ export default function EditorRunner() {
             }
         const projectWorkingCopy = await projectStore!.getProject()
         await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore!)
-        }
-    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
+    }
 
     function pushToGitHub(gitProjectStore: GitProjectStore) {
         const onPush = async (commitMessage: string) => {
@@ -486,6 +482,8 @@ export default function EditorRunner() {
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
     const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
     const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
+    const errors = projectBuilderRef.current?.errors ?? {}
+    const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
     return <ThemeProvider theme={theme}>
         {alertMessage}
         {dialog}
@@ -496,6 +494,7 @@ export default function EditorRunner() {
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
                     runUrl={runUrl} previewUrl={previewUrl}
                     selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
+                    errors = {errors} previewCode={previewCode}
             /> :
             <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
         }

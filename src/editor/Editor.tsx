@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react'
-import App from '../model/App'
 
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
@@ -26,17 +25,13 @@ import {elementTypes} from '../model/elements'
 import {Box, Button, Grid} from '@mui/material'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 import PreviewPanel from './PreviewPanel'
 import FirebasePublish from '../model/FirebasePublish'
-import ServerApp from '../model/ServerApp'
 import {AllErrors} from '../generator/Types'
 import EditorHelpPanel from './EditorHelpPanel'
 import {noop} from '../util/helpers'
-import {generateServerApp} from '../generator/ServerAppGenerator'
-import {generateTypes} from '../generator/TypesGenerator'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -65,38 +60,17 @@ export default function Editor({
     runUrl,
     previewUrl,
     selectedItemIds,
-    onSelectedItemsChange
+    onSelectedItemsChange,
+    errors,
+    previewCode
 }: { project: Project, projectStoreName?: string, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
                                     onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn,
                                     onSaveToGitHub: OnSaveToGitHubFn, onGetFromGitHub: OnGetFromGitHubFn, onUpdateFromGitHub?: OnUpdateFromGitHubFn,
-                                    runUrl?: string, previewUrl?: string, selectedItemIds: string[], onSelectedItemsChange: (ids: string[]) => void}) {
+                                    runUrl?: string, previewUrl?: string, selectedItemIds: string[], onSelectedItemsChange: (ids: string[]) => void,
+                                    errors: AllErrors, previewCode: string}) {
     const firstSelectedItemId = selectedItemIds[0]
     const [helpVisible, setHelpVisible] = useState(false)
     const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
-
-
-    const getErrorsAndCode = (): [AllErrors, string] => {
-        let code = '', errors: AllErrors = {}
-        const apps = project.elementArray().filter( el => el.kind === 'App') as App[]
-        apps.forEach( app => {
-            const {errors: appErrors, code: appCode} = generate(app, project)
-            code += appCode + '\n\n'
-            errors = {...errors, ...appErrors}
-        })
-
-        const serverApps = project.elementArray().filter( el => el.kind === 'ServerApp') as ServerApp[]
-        serverApps.forEach( app => {
-            const {errors: appErrors} = generateServerApp(app, project)
-            errors = {...errors, ...appErrors}
-        })
-
-        const {errors: typesErrors} = generateTypes(project)
-        errors = {...errors, ...typesErrors}
-
-        return [errors, code]
-    }
-
-    const [errors, allCode] = getErrorsAndCode()
 
     const propertyArea = () => {
         if (firstSelectedItemId) {
@@ -199,7 +173,7 @@ export default function Editor({
                                      fontSize: 12,
                                      lineHeight: 1.5,
                                      fontFamily: 'Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New'
-                                 }}>{allCode}
+                                 }}>{previewCode}
                                     </pre>}
                     configName={firebaseConfigName} runUrl={runUrl}/>
                 </Grid>

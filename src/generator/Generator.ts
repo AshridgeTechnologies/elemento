@@ -26,8 +26,6 @@ import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {EventActionPropertyDef} from '../model/Types'
-import {loadJSONFromString} from '../model/loadJSON'
-import {generateServerApp} from './ServerAppGenerator'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
@@ -39,8 +37,8 @@ const indentLevel2 = '        '
 const indentLevel3 = '            '
 
 export const DEFAULT_IMPORTS = [
-    `import React from 'react'`,
-    `import Elemento from 'elemento-runtime'`
+    `import * as Elemento from './runtime.js'`,
+    `import {React} from './runtime.js'`
 ]
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {

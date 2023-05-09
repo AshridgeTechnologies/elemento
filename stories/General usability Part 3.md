@@ -25,6 +25,9 @@ General usability Part 3
 - Show URL of preview frame
 - Stop functions showing as toString when don't have braces
 - Can edit text elements content in place if fixed value (use contentEditable)
+- Store project as separate YAML files
+- Direct editing of YAML in Studio
+- Reload project from disk
 
 Help
 ----

@@ -1,6 +1,10 @@
 import mime from 'mime-types'
 import {DirectoryNode, FileNode, FileSystemTree} from './Types'
+import assert from "assert";
 
+
+const pathSegments = (path: string) => path.split('/')
+const dirName = (path: string) => pathSegments(path).slice(0, -1).join('/')
 
 export default class EditorServiceWorker {
 
@@ -13,11 +17,6 @@ export default class EditorServiceWorker {
 
     message = (event: ExtendableMessageEvent) => {
         const {data} = event
-        // console.log('SW', data)
-
-        if (data?.type === 'mount') {
-            this.mount(data.fileSystem)
-        }
 
         if (data?.type === 'write') {
             this.writeFile(data.path, data.contents)
@@ -76,9 +75,8 @@ export default class EditorServiceWorker {
     }
 
     private getLastDirAndFilename(path: string) : [dir: FileSystemTree | null, filename: string | null] {
-        const pathSegments = path.split('/')
-        const dirNames = pathSegments.slice(0, -1)
-        const filename = pathSegments.at(-1) ?? null
+        const dirNames = pathSegments(path).slice(0, -1)
+        const filename = pathSegments(path).at(-1) ?? null
         let dir = this.fileSystem
         for (const name of dirNames) {
             dir = (dir[name] as DirectoryNode)?.directory ?? null
@@ -95,13 +93,25 @@ export default class EditorServiceWorker {
         return (dir && filename && (dir[filename] as FileNode)?.file.contents) ?? null
     }
 
-    private writeFile(path: string, contents: string | Uint8Array) {
-        const [dir, filename] = this.getLastDirAndFilename(path)
+    private makeDir(path: string) {
+        const dirNames = pathSegments(path)
+        let dir = this.fileSystem
 
-        if (dir && filename) {
-            dir[filename] = {
-                file: {contents}
-            }
+        for (const name of dirNames) {
+            const nextDirNode = (dir[name] as DirectoryNode ?? (dir[name] = ({directory: {}})))
+            dir = nextDirNode.directory
+        }
+    }
+
+    private writeFile(path: string, contents: string | Uint8Array) {
+        const dirPath = dirName(path);
+        if (dirPath !== '') {
+            this.makeDir(dirPath)
+        }
+        const [dir, filename] = this.getLastDirAndFilename(path)
+        assert(dir && filename)
+        dir[filename] = {
+            file: {contents}
         }
     }
     private renameFile(oldPath: string, newPath: string) {
