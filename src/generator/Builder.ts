@@ -55,7 +55,7 @@ export default class Builder {
     }
 
     async serverFiles(): Promise<FileCollection> {
-        const gen = new ServerAppGenerator(this.serverApp!)
+        const gen = new ServerAppGenerator(this.serverApp!, project)
         const generatedFiles = Object.fromEntries( gen.output().files.map(({name, contents}) => [name, {contents}]) )
         const staticFiles = {
             'serverRuntime.cjs': {contents: await this.loadFile(serverRuntimeFileSourcePath)},
@@ -74,7 +74,7 @@ export default class Builder {
     }
 
     public serverCodeFile() {
-        const gen = new ServerAppGenerator(this.serverApp!)
+        const gen = new ServerAppGenerator(this.serverApp!, project)
         const {contents} = gen.serverApp()
         return contents
     }

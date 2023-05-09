@@ -86,7 +86,7 @@ export default function Editor({
 
         const serverApps = project.elementArray().filter( el => el.kind === 'ServerApp') as ServerApp[]
         serverApps.forEach( app => {
-            const {errors: appErrors} = generateServerApp(app)
+            const {errors: appErrors} = generateServerApp(app, project)
             errors = {...errors, ...appErrors}
         })
 

@@ -1,5 +1,5 @@
 import * as components from './components'
-import * as types from './types'
+import * as types from '../shared/types'
 import {globalFunctions} from './globalFunctions'
 export {components, globalFunctions, types}
 

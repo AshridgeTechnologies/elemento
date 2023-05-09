@@ -7,7 +7,7 @@ export default class ServerFirebaseGenerator {
     constructor(public project: Project) {}
 
     output() {
-        const serverAppOutputs = this.serverApps.map( generateServerApp )
+        const serverAppOutputs = this.serverApps.map( app => generateServerApp(app, this.project) )
         const serverAppFiles = flatten(serverAppOutputs.map( ({files}) => files))
         const cloudFunction = this.cloudFunction()
         const packageJson = this.packageJson()

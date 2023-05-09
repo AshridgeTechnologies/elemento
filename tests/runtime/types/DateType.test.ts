@@ -1,5 +1,5 @@
-import DateType from '../../../src/runtime/types/DateType'
-import Rule from '../../../src/runtime/types/Rule'
+import DateType from '../../../src/shared/types/DateType'
+import Rule from '../../../src/shared/types/Rule'
 import {expect} from 'expect'
 
 const date1 = new Date('2020-04-06')

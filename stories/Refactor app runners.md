@@ -12,7 +12,7 @@ Requirements
 
 - ✅ Generate a code file for each app that exports the app component (as now)
 - ✅ Generate HTML runner file for each app that imports the runtime, the app and runs it
-- All DataTypes are included in each app code file
+- ✅ All DataTypes are included in each app code file, client and server
 - ✅ The code file is named after the app
 - ✅ The runner file for the first app is index.html, <appname>.html for the others
 - ✅ All client code in same top-level directory - review later

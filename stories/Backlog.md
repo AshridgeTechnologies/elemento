@@ -113,6 +113,7 @@ Tech debt
 ---------
 
 - Consider a better bundler - esbuild, rspack, Rome
+- Look for ways to have imports that update dynamically in preview, both client and server
 - Consider using decorators
 - Consider oclif for CLI and dev server (or combine them)
 - Revisit user-private - using sub-collections in Firebase is non-portable

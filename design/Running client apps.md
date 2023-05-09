@@ -33,7 +33,8 @@ Forces
 - Continual updating without page refresh needed in preview
 - No updating of imported files needed in normal running
 - BUT do need to update imported files in preview
-- AND imports never update once loaded
+- AND imports never update once loaded SO data types cannot be imported in preview
+- Simplest to have exactly the same code in preview as in production
 
 Possibilities
 -------------

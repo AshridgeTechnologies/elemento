@@ -4,8 +4,16 @@ import FunctionDef from '../../src/model/FunctionDef'
 import {ex} from '../testutil/testHelpers'
 import Collection from '../../src/model/Collection'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
+import TextType from '../../src/model/types/TextType'
+import NumberType from '../../src/model/types/NumberType'
+import DataTypes from '../../src/model/types/DataTypes'
+import Project from '../../src/model/Project'
 
-describe('generates files for app and exposes public functions', () => {
+describe('generates files for app and exposes public functions and includes data types', () => {
+    const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})
+    const itemAmount = new NumberType('nt1', 'Item Amount', {max: 10})
+    const dataTypes1 = new DataTypes('dt1', 'Types 1', {}, [name])
+    const dataTypes2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
     const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
     const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
     const totalFn = new FunctionDef('fn3', 'Total', {input1: 'x', input2: 'y', input3: 'z', calculation: ex`Mult(y, Plus(x, z))`})
@@ -13,7 +21,8 @@ describe('generates files for app and exposes public functions', () => {
     const app = new ServerApp('sa1', 'Server App 1', {}, [
         plusFn, multFn, totalFn, privateFn
     ])
-    const gen = new ServerAppGenerator(app)
+    const project = new Project('proj1', 'Project 1', {}, [dataTypes1, dataTypes2, app])
+    const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
     const [serverAppFile, expressAppFile] = files
 
@@ -26,8 +35,25 @@ describe('generates files for app and exposes public functions', () => {
         expect(serverAppFile.name).toBe('ServerApp1.mjs')
         expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
 import {globalFunctions} from './serverRuntime.cjs'
+import {types} from './serverRuntime.cjs'
 
 const {Sum} = globalFunctions
+const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
+
+// Types1.js
+const Name = new TextType('Name', {required: true, maxLength: 20})
+
+const Types1 = {
+    Name
+}
+
+// Types2.js
+const ItemAmount = new NumberType('Item Amount', {required: false, max: 10})
+
+const Types2 = {
+    ItemAmount
+}
+
 
 const ServerApp1 = (user) => {
 
@@ -81,7 +107,9 @@ describe('generates files using data components in dependency order', () => {
         getWidgetFn, updateWidgetFn, getSprocketFn,
         sprocketCollection, widgetCollection, dataStore
     ])
-    const gen = new ServerAppGenerator(app)
+    const project = new Project('proj1', 'Project 1', {}, [app])
+
+    const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
     const [serverAppFile, expressAppFile] = files
 
@@ -157,7 +185,9 @@ describe('handles errors and special cases', () => {
         selectFunction, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
     ])
-    const gen = new ServerAppGenerator(app)
+    const project = new Project('proj1', 'Project 1', {}, [app])
+
+    const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
     const [serverAppFile] = files
 

@@ -343,7 +343,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             configExpr = '{}'
             configFunctionName = 'configServerApp'
         } else {
-            const serverApp = this.project.elementArray().find(el => el.kind === 'ServerApp' && el.codeName === serverAppName) as ServerApp
+            const serverApp = this.project.findChildElements(ServerApp).find(el => el.codeName === serverAppName)
             configFunctionName = serverApp ? `config${serverApp.codeName}` : `configServerApp`
             if (serverApp) {
                 const functionInfo = (fn: FunctionDef) => fn.action ? {
