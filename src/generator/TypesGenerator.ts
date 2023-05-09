@@ -16,6 +16,10 @@ import {dataTypeElementTypes} from '../model/elements'
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel1 = '    '
 
+export function generateTypes(project: Project) {
+    return new TypesGenerator(project).output()
+}
+
 export default class TypesGenerator {
     private parser
     constructor(private project: Project) {

@@ -11,7 +11,8 @@ import DataTypes from '../../src/model/types/DataTypes'
 import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
 import ServerApp from '../../src/model/ServerApp'
-import {generateServerApp} from '../../src/generator/Generator'
+import ServerAppGenerator, {generateServerApp} from '../../src/generator/ServerAppGenerator'
+import ServerFirebaseGenerator from '../../src/generator/ServerFirebaseGenerator'
 
 const name = new TextType('id1', 'Name', {required: true})
 const itemAmount = new NumberType('id2', 'Item Amount', {})
@@ -64,7 +65,7 @@ test('writes client files generated from Project for all apps', async () => {
     ])
 })
 
-test.skip('writes server files generated from Project for all apps', async () => {
+test('writes server files generated from Project for all apps', async () => {
     const serverWriterMock: MockedFunction<any> = jest.fn()
     const serverFileWriter = {
         writeFile: serverWriterMock
@@ -72,7 +73,7 @@ test.skip('writes server files generated from Project for all apps', async () =>
     const builder = new ProjectBuilder({projectLoader, clientFileWriter: dummyWriter, serverFileWriter})
     await builder.build()
 
-    const expectedServerFiles = generateServerApp(serverApp1).files
+    const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
     const expectedWriterCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
     expect(serverWriterMock.mock.calls).toStrictEqual(expectedWriterCalls)
 })

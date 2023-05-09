@@ -15,8 +15,8 @@ Requirements
 - All DataTypes are included in each app code file
 - ✅ The code file is named after the app
 - ✅ The runner file for the first app is index.html, <appname>.html for the others
-- All client code in same top-level directory - review later
-- Multiple server apps generated - dir structure TBC
+- ✅ All client code in same top-level directory - review later
+- ✅ Multiple server apps generated into same top-level dir with common Firebase files
 - Files in files dir
 - Runs in preview
 - Runs from GitHub

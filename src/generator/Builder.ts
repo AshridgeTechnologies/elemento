@@ -1,10 +1,11 @@
 import Project from '../model/Project'
 import App from '../model/App'
-import {generate, generateTypes} from './Generator'
+import {generate} from './Generator'
 import ServerApp from '../model/ServerApp'
 import ServerAppGenerator from './ServerAppGenerator'
 import FirebasePublish from '../model/FirebasePublish'
 import {runtimeFileName, runtimeFileSourcePath, serverRuntimeFileSourcePath} from './Types'
+import {generateTypes} from './TypesGenerator'
 
 export type FileCollection = { [p: string]: { contents: string | Uint8Array } }
 

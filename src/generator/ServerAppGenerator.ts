@@ -13,20 +13,22 @@ import {objectLiteral, quote, StateEntry, topoSort} from './generatorHelpers'
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel2 = '        '
 
+export function generateServerApp(app:ServerApp) {
+    return new ServerAppGenerator(app).output()
+}
+
 export default class ServerAppGenerator {
     private parser
-    constructor(public app: ServerApp) {
+    constructor(public app:ServerApp) {
         this.parser = new ServerAppParser(app)
     }
 
     output() {
         const serverApp = this.serverApp()
         const expressApp = this.expressApp()
-        const cloudFunction = this.cloudFunction()
-        const packageJson = this.packageJson()
 
         return {
-            files: [serverApp, expressApp, cloudFunction, packageJson],
+            files: [serverApp, expressApp],
             errors: this.parser.allErrors(),
         }
     }
@@ -139,34 +141,6 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
         ].join('\n\n')
 
         return {name: `${this.app.codeName}Express.js`, contents: code}
-    }
-
-    private cloudFunction() {
-        const imports = `import {onRequest} from 'firebase-functions/v2/https'\nimport app from './${this.app.codeName}Express.js'`
-        const theExports = `export const ${this.app.codeName.toLowerCase()} = onRequest(app)`
-        const code = [
-            imports, theExports
-        ].join('\n\n')
-
-        return {name: `index.js`, contents: code}
-
-    }
-
-    private packageJson() {
-        return {name: `package.json`, contents: `{
-  "type": "module",
-  "engines": {
-    "node": "18"
-  },
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.18.1",
-    "firebase-functions": "^3.23.0",
-    "firebase-admin": "^11.0.1"
-  },
-  "private": true
-}`}
-
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {

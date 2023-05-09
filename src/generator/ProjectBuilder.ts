@@ -1,7 +1,7 @@
 import Project from '../model/Project'
-import {generate, generateServerApp} from './Generator'
+import {generate} from './Generator'
 import App from '../model/App'
-import ServerApp from '../model/ServerApp'
+import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 
 export interface ProjectLoader {
     getProject(): Promise<Project>
@@ -18,9 +18,8 @@ export default class ProjectBuilder {
         const project = await this.props.projectLoader.getProject()
         const apps = project.findChildElements(App)
         const clientFileWrites = apps.map( async (app, index) => this.buildClientFiles(app, project, index) )
-        const serverApps = project.findChildElements(ServerApp)
-        const serverFileWrites = serverApps.map( async (app, index) => this.buildServerFiles(app))
-        await Promise.all([...clientFileWrites, ...serverFileWrites])
+        const serverFileWrites = this.buildServerFiles(project)
+        await Promise.all([...clientFileWrites, serverFileWrites])
     }
 
     private async buildClientFiles(app: App, project: Project, appIndex: number) {
@@ -31,9 +30,9 @@ export default class ProjectBuilder {
         await Promise.all([clientFileWriter.writeFile(appName, code), clientFileWriter.writeFile(htmlRunnerFileName, html)])
     }
 
-    private async buildServerFiles(app: ServerApp) {
+    private async buildServerFiles(project: Project) {
         const {serverFileWriter} = this.props
-        const {files} = generateServerApp(app)
+        const files = new ServerFirebaseGenerator(project).output().files
         await Promise.all(files.map( ({name, contents}) => serverFileWriter.writeFile(name, contents)))
     }
 }

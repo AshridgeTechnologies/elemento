@@ -27,7 +27,7 @@ import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {EventActionPropertyDef} from '../model/Types'
 import {loadJSONFromString} from '../model/loadJSON'
-import ServerAppGenerator from './ServerAppGenerator'
+import {generateServerApp} from './ServerAppGenerator'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
@@ -38,7 +38,6 @@ const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map(
 const indentLevel2 = '        '
 const indentLevel3 = '            '
 
-
 export const DEFAULT_IMPORTS = [
     `import React from 'react'`,
     `import Elemento from 'elemento-runtime'`
@@ -47,24 +46,6 @@ export const DEFAULT_IMPORTS = [
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
     return new Generator(app, project, imports).output()
 }
-export function generateServerApp(app: ServerApp) {
-    return new ServerAppGenerator(app).output()
-}
-
-export function generateTypes(project: Project) {
-    return new TypesGenerator(project).output()
-}
-
-export function generateFromJson(projectJson: string) {
-    const project = loadJSONFromString(projectJson) as Project
-    const clientAppSources = project.elementArray().filter(el => el.kind === 'App') as App[]
-    const serverAppSources = project.elementArray().filter(el => el.kind === 'ServerApp') as ServerApp[]
-
-    const clientApps = Object.fromEntries(clientAppSources.map(app => [app.codeName, generate(app, project)]))
-    const serverApps = Object.fromEntries(serverAppSources.map(app => [app.codeName, generateServerApp(app)]))
-    return {clientApps, serverApps}
-}
-
 export default class Generator {
     private parser
     private typesGenerator
