@@ -129,7 +129,7 @@ export default class FirebaseDeploy {
 
     async deployFunctions(gapi: any) {
         console.log('Deploying functions')
-        const gen = new ServerAppGenerator(this.serverApp, project)
+        const gen = new ServerAppGenerator(this.serverApp, this.project)
         const generatedFiles = gen.output().files
         console.log('generatedFiles', generatedFiles)
         const staticFiles = [
