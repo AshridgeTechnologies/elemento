@@ -55,7 +55,7 @@ Technical
 Notes
 -----
 
-- Editor uses generators to get errors and code
+- Editor uses errors and code from the builder in the EditorRunner
 
 To do
 -----
