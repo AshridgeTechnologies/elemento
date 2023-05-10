@@ -62,7 +62,7 @@ const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProj
 
 async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
     try {
-        const response = await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
+        await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
         console.log('Updated server file', serverAppName, path)
         afterUpdate()
     } catch (error) {

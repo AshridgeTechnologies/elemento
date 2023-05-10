@@ -43,45 +43,45 @@ test('compares state props correctly', () => {
     expect(state.updateFrom(newState)).toBe(state)
 })
 
-test('creates its own data store if not supplied', () => {
+test('creates its own data store if not supplied', async () => {
     const state = new BrowserDataStore.State()
     const result = state.add('Widgets', 'w1', {a: 99})
-    expect(result).resolves.toBeUndefined()
+    await expect(result).resolves.toBeUndefined()
 })
 
-test('delegates add to data store', () => {
+test('delegates add to data store', async () => {
     const result = state.add('Widgets', 'w1', {a: 99})
-    expect(result).resolves.toBeUndefined()
+    await expect(result).resolves.toBeUndefined()
     expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'w1', {a: 99})
 })
 
-test('delegates addAll to data store', () => {
-    const result = state.addAll('Widgets', {w1: {a: 99}, w2: {a:100}})
-    expect(result).resolves.toBeUndefined()
-    expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {w1: {a: 99}, w2: {a:100}})
+test('delegates addAll to data store', async () => {
+    const result = state.addAll('Widgets', {w1: {a: 99}, w2: {a: 100}})
+    await expect(result).resolves.toBeUndefined()
+    expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {w1: {a: 99}, w2: {a: 100}})
 })
 
-test('delegates update to data store', () => {
+test('delegates update to data store', async () => {
     const result = state.update('Widgets', 'w1', {a: 99})
-    expect(result).resolves.toBeUndefined()
+    await expect(result).resolves.toBeUndefined()
     expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'w1', {a: 99})
 })
 
-test('delegates remove to data store', () => {
+test('delegates remove to data store', async () => {
     const result = state.remove('Widgets', 'w1')
-    expect(result).resolves.toBeUndefined()
+    await expect(result).resolves.toBeUndefined()
     expect(dataStore.remove).toHaveBeenCalledWith('Widgets', 'w1')
 })
 
-test('delegates getById to data store', () => {
+test('delegates getById to data store', async () => {
     const result = state.getById('Widgets', 'w1')
-    expect(result).resolves.toStrictEqual({a: 77})
+    await expect(result).resolves.toStrictEqual({a: 77})
     expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'w1')
 })
 
-test('delegates query to data store', () => {
+test('delegates query to data store', async () => {
     const result = state.query('Widgets', {a: 33})
-    expect(result).resolves.toStrictEqual([{a: 77}])
+    await expect(result).resolves.toStrictEqual([{a: 77}])
     expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 33})
 })
 

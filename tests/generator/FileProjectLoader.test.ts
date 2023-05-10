@@ -4,7 +4,7 @@ import os from 'os'
 import fs from 'fs'
 import {projectFileName} from '../../src/shared/constants'
 
-test('gets Project loaded from directory', () => {
+test('gets Project loaded from directory', async () => {
     const projectName = 'Project ' + Date.now()
     const project = new Project('p1', projectName, {}, [])
     const tempDir = os.tmpdir()
@@ -14,5 +14,5 @@ test('gets Project loaded from directory', () => {
     fs.writeFileSync(`${localDirPath}/${projectFileName}`, JSON.stringify(project, null, 2), 'utf8')
 
     const loader = new FileProjectLoader(localDirPath)
-    expect(loader.getProject()).resolves.toHaveProperty('name', projectName)
+    await expect(loader.getProject()).resolves.toHaveProperty('name', projectName)
 })

@@ -42,8 +42,7 @@ Technical
   - File writer: Service worker, HTTP Put and file system
 - Builder dependency injections:
   - Project file loader
-  - Asset file directory reader
-  - Asset file loader
+  - Asset file directory reader and file loader
   - Runtime file loader
   - Client file writer
   - Server file writer

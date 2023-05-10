@@ -5,7 +5,7 @@ import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
 import ServerApp from '../model/ServerApp'
 
-type FileContents = Uint8Array | string
+export type FileContents = Uint8Array | string
 export interface ProjectLoader {
     getProject(): Promise<Project>
 }
@@ -15,6 +15,10 @@ export interface FileLoader {
     readFile(filePath: string): Promise<FileContents>
 }
 
+export interface RuntimeLoader {
+    getFile(filename: string): Promise<string>
+}
+
 export interface FileWriter {
     writeFile(filepath: string, contents: FileContents): Promise<void>
 }
@@ -22,7 +26,7 @@ export interface FileWriter {
 type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
-    runtimeLoader: any,
+    runtimeLoader: RuntimeLoader,
     clientFileWriter: FileWriter,
     serverFileWriter: FileWriter
 }
@@ -77,5 +81,4 @@ export default class ProjectBuilder {
         const serverFileWrites = hasServerApps ? ['serverRuntime.js', 'serverRuntime.js.map'].map( copyFile(serverFileWriter) ) : []
         await Promise.all([...clientFileWrites, ...serverFileWrites])
     }
-
 }
