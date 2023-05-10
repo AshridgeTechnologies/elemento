@@ -17,7 +17,7 @@ Requirements
 - ✅ The runner file for the first app is index.html, <appname>.html for the others
 - ✅ All client code in same top-level directory - review later
 - ✅ Multiple server apps generated into same top-level dir with common Firebase files
-- Files in files dir
+- ✅ Files in files dir
 - Runs in preview
 - Runs from GitHub
 - Runs from Firebase hosting
