@@ -4,6 +4,7 @@ import App from '../model/App'
 import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
 import ServerApp from '../model/ServerApp'
+import lodash from 'lodash'; const {debounce} = lodash;
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -32,14 +33,21 @@ type Properties = {
 }
 
 export default class ProjectBuilder {
-    constructor(private props: Properties) {}
+    private debouncedUpdateProject: () => Promise<void> | undefined
+    constructor(private props: Properties) {
+        this.debouncedUpdateProject = debounce( () => this.internalUpdateProject(), 100 )
+    }
 
     async build() {
         const project = await this.props.projectLoader.getProject()
         return Promise.all([this.writeProjectFiles(project), this.copyAssetFiles(), this.copyRuntimeFiles(project)])
     }
 
-    async updateProject() {
+    updateProject() {
+        this.debouncedUpdateProject()
+    }
+
+    private async internalUpdateProject() {
         const project = await this.props.projectLoader.getProject()
         await this.writeProjectFiles(project)
     }

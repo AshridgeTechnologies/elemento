@@ -7,7 +7,7 @@ import {generate} from '../../src/generator/index'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
-import {ex} from '../testutil/testHelpers'
+import {ex, wait} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
 import ServerApp from '../../src/model/ServerApp'
 import ServerFirebaseGenerator from '../../src/generator/ServerFirebaseGenerator'
@@ -114,13 +114,7 @@ test('writes server files generated from Project for all apps', async () => {
 })
 
 test('copies runtime files only to client build if no server app', async () => {
-    const builder = new ProjectBuilder({
-        projectLoader: getProjectLoader(projectClientOnly),
-        fileLoader: getFileLoader(),
-        runtimeLoader,
-        clientFileWriter,
-        serverFileWriter
-    })
+    const builder = new ProjectBuilder({projectLoader: getProjectLoader(projectClientOnly), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
     await builder.build()
 
     expect(runtimeLoader.getFile.mock.calls).toStrictEqual([['runtime.js'], ['runtime.js.map'] ])
@@ -146,7 +140,8 @@ test('updates files generated from project', async () => {
     clearMocks()
     const project1Updated = project1.set('text1', 'name', 'Text 1 Updated')
     projectLoader.project = project1Updated
-    await builder.updateProject()
+    builder.updateProject()
+    await wait(110)  // updateProject is throttled
     const updatedApp1 = project1Updated.findElement('app1') as App
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App1.js', expectedClientCode(updatedApp1)],
@@ -158,6 +153,33 @@ test('updates files generated from project', async () => {
     const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual(expectedGeneratedCalls)
     expect(runtimeLoader.getFile).not.toHaveBeenCalled()
+})
+
+test('updates from project are throttled to one update every 100ms', async () => {
+    const project = projectClientOnly
+    const projectLoader = getProjectLoader(project)
+    const builder = new ProjectBuilder({projectLoader, fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
+    await builder.build()
+
+    clearMocks()
+
+    let updateCount = 0
+    let updatedProject = project
+    for (; updateCount < 5; ++updateCount) {
+        updatedProject = updatedProject.set('text3', 'content', `Text 3 Updated ${updateCount}`)
+        projectLoader.project = updatedProject
+        builder.updateProject()
+        await wait(10)
+    }
+    expect(clientFileWriter.writeFile).not.toHaveBeenCalled()
+
+    await wait(110)
+    const updatedApp3 = projectLoader.project!.findElement('app3') as App
+    expect(clientFileWriter.writeFile.mock.calls.length).toBe(2)
+    expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
+        ['App3.js', expectedClientCode(updatedApp3, updatedProject)],
+        ['index.html', expectedIndexFile(updatedApp3, updatedProject)],
+    ])
 })
 
 test('updates an asset file', async () => {

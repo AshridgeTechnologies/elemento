@@ -34,6 +34,7 @@ Forces
 - Runtimes will rarely change
 - Asset files will rarely change content
 - Asset files may be renamed, but very rarely
+- Throttling only needed for project updates
 - Old versions of renamed files will rarely cause trouble
 - Bugs that cause files to be not updated when they should be will be very annoying
 
@@ -45,15 +46,14 @@ Possibilities
 - Builder regenerates all files that could change after a project or asset file change
 - File writers may implement ways to avoid unnecessary writes
 - A cache of writes and content in the writers would be fairly easy to do
-- Throttling could also be updated in the writers
+- Throttling could also be implemented in the writers
+- Throttling could be done in builder, only for updateProject
 - Could pass a hint to writer about whether file may change
 
 Decisions
 ---------
 
 - Builder regenerates all files that could change after a project or asset file change
-- Builder does no other updated checking or throttling
+- Builder does throttling on updating project generated files
 - Deploy writers have no updated check or throttling
-- Preview writers have throttling
-- Throttling must be _per file_
-- Preview writers have no caching to start with
+- Preview writers have no caching to start with, could add later
