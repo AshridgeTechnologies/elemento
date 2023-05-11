@@ -113,6 +113,39 @@ test('writes server files generated from Project for all apps', async () => {
     ])
 })
 
+test('has code generated from Project for all apps', async () => {
+    const builder = new ProjectBuilder({projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
+    await builder.build()
+
+    const expectedClientEntries = [
+        ['App1.js', expectedClientCode(app1)],
+        ['index.html', expectedIndexFile(app1)],
+        ['App2.js', expectedClientCode(app2)],
+        ['App2.html', expectedIndexFile(app2)]
+    ]
+    const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
+    const expectedServerEntries = expectedServerFiles.map(({name, contents}) => [name, contents])
+    const expectedCode = Object.fromEntries([...expectedClientEntries, ...expectedServerEntries])
+    expect(builder.code).toStrictEqual(expectedCode)
+})
+
+test('has errors generated from Project for all apps', async () => {
+    const projectWithErrors = project1
+        .set('text1', 'content', ex`Badname + 'x'`)
+        .set('fn2', 'calculation', ex`'x' +`)
+    const builder = new ProjectBuilder({projectLoader: getProjectLoader(projectWithErrors), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
+    await builder.build()
+
+    expect(builder.errors).toStrictEqual({
+        text1: {
+            content: 'Unknown names: Badname'
+        },
+        fn2:   {
+            calculation: 'Error: Line 1: Unexpected end of input'
+        },
+    })
+})
+
 test('copies runtime files only to client build if no server app', async () => {
     const builder = new ProjectBuilder({projectLoader: getProjectLoader(projectClientOnly), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
     await builder.build()

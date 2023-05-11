@@ -34,21 +34,21 @@ Technical
 ---------
 
 - First: Refactor Builder, build.ts, previewFiles.ts and usages in Editor and EditorRunner
-- Possible components: 
+- ✅ Possible components: 
   - Project loader: Node, browser
   - File loader: Node, browser
   - File directory reader: Node, browser
   - HTTP loader: Node, browser
   - File writer: Service worker, HTTP Put and file system
-- Builder dependency injections:
+- ✅ Builder dependency injections:
   - Project file loader
   - Asset file directory reader and file loader
   - Runtime file loader
   - Client file writer
   - Server file writer
-- Builder actions: build, update project, update files
-- Builder accessors: code, errors
-- EditorRunner owns builder, pass code and errors into Editor
+- ✅ Builder actions: build, update project, update files
+- ✅ Builder accessors: code, errors
+- EditorRunner owns builder, passes code and errors into Editor
 
 
 Notes

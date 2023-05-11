@@ -4,7 +4,8 @@ import App from '../model/App'
 import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
 import ServerApp from '../model/ServerApp'
-import lodash from 'lodash'; const {debounce} = lodash;
+import lodash from 'lodash';
+import {AllErrors} from "./Types"; const {debounce} = lodash;
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -33,14 +34,16 @@ type Properties = {
 }
 
 export default class ProjectBuilder {
-    private debouncedUpdateProject: () => Promise<void> | undefined
+    private readonly debouncedUpdateProject: () => Promise<void> | undefined
+    private readonly generatedCode: {[name: string]: string} = {}
+    private generatedErrors: AllErrors = {}
     constructor(private props: Properties) {
         this.debouncedUpdateProject = debounce( () => this.internalUpdateProject(), 100 )
     }
 
     async build() {
         const project = await this.props.projectLoader.getProject()
-        return Promise.all([this.writeProjectFiles(project), this.copyAssetFiles(), this.copyRuntimeFiles(project)])
+        return Promise.all([this.buildProjectFiles(project), this.copyAssetFiles(), this.copyRuntimeFiles(project)])
     }
 
     updateProject() {
@@ -49,36 +52,46 @@ export default class ProjectBuilder {
 
     private async internalUpdateProject() {
         const project = await this.props.projectLoader.getProject()
-        await this.writeProjectFiles(project)
+        await this.buildProjectFiles(project)
     }
 
     async updateAssetFile(path: string) {
         await this.copyAssetFile(path)
     }
 
-    private async writeProjectFiles(project: Project) {
+    get code() { return {...this.generatedCode}}
+    get errors() { return {...this.generatedErrors}}
+
+    private async buildProjectFiles(project: Project) {
+        const errors: AllErrors = {}
         const hasServerApps = project.findChildElements(ServerApp).length > 0
         const apps = project.findChildElements(App)
-        const clientFileWrites = apps.map(async (app, index) => this.buildAppFiles(app, project, index))
-        const serverFileWrites = hasServerApps ? [this.buildServerFiles(project)] : []
+        const clientFileWrites = apps.map(async (app, index) => this.buildAppFiles(app, project, index, errors))
+        const serverFileWrites = hasServerApps ? [this.buildServerFiles(project, errors)] : []
         await Promise.all([...clientFileWrites, ...serverFileWrites])
+        this.generatedErrors = errors
     }
 
-    private async buildAppFiles(app: App, project: Project, appIndex: number) {
+    private async buildAppFiles(app: App, project: Project, appIndex: number, errorCollector: AllErrors) {
         const {clientFileWriter} = this.props
-        const {code, html} = generate(app, project)
+        const {code, html, errors} = generate(app, project)
         const appName = app.codeName + '.js'
         const htmlRunnerFileName = appIndex === 0 ? 'index.html' : app.codeName + '.html'
+        this.generatedCode[appName] = code
+        this.generatedCode[htmlRunnerFileName] = html
         await Promise.all([
             clientFileWriter.writeFile(appName, code),
             clientFileWriter.writeFile(htmlRunnerFileName, html),
         ])
+        Object.assign(errorCollector, errors)
     }
 
-    private async buildServerFiles(project: Project) {
+    private async buildServerFiles(project: Project, errorCollector: AllErrors) {
         const {serverFileWriter} = this.props
-        const files = new ServerFirebaseGenerator(project).output().files
+        const {files, errors} = new ServerFirebaseGenerator(project).output()
+        files.forEach( ({name, contents}) => this.generatedCode[name] = contents )
         await Promise.all(files.map( ({name, contents}) => serverFileWriter.writeFile(name, contents)))
+        Object.assign(errorCollector, errors)
     }
 
     private async copyAssetFile(filename: string) {

@@ -37,6 +37,7 @@ Forces
 - Throttling only needed for project updates
 - Old versions of renamed files will rarely cause trouble
 - Bugs that cause files to be not updated when they should be will be very annoying
+- Builder needs to hold code anyway for preview - if we keep preview
 
 Possibilities
 -------------
