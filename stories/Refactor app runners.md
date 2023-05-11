@@ -46,7 +46,7 @@ Technical
   - Runtime file loader
   - Client file writer
   - Server file writer
-- Builder actions: build, update project, update asset
+- Builder actions: build, update project, update files
 - Builder accessors: code, errors
 - EditorRunner owns builder, pass code and errors into Editor
 

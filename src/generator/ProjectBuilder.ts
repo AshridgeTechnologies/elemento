@@ -36,11 +36,24 @@ export default class ProjectBuilder {
 
     async build() {
         const project = await this.props.projectLoader.getProject()
+        return Promise.all([this.writeProjectFiles(project), this.copyAssetFiles(), this.copyRuntimeFiles(project)])
+    }
+
+    async updateProject() {
+        const project = await this.props.projectLoader.getProject()
+        await this.writeProjectFiles(project)
+    }
+
+    async updateAssetFile(path: string) {
+        await this.copyAssetFile(path)
+    }
+
+    private async writeProjectFiles(project: Project) {
         const hasServerApps = project.findChildElements(ServerApp).length > 0
         const apps = project.findChildElements(App)
-        const clientFileWrites = apps.map( async (app, index) => this.buildAppFiles(app, project, index) )
+        const clientFileWrites = apps.map(async (app, index) => this.buildAppFiles(app, project, index))
         const serverFileWrites = hasServerApps ? [this.buildServerFiles(project)] : []
-        await Promise.all([...clientFileWrites, this.copyAssetFiles(), ...serverFileWrites, this.copyRuntimeFiles(hasServerApps)])
+        await Promise.all([...clientFileWrites, ...serverFileWrites])
     }
 
     private async buildAppFiles(app: App, project: Project, appIndex: number) {
@@ -60,18 +73,20 @@ export default class ProjectBuilder {
         await Promise.all(files.map( ({name, contents}) => serverFileWriter.writeFile(name, contents)))
     }
 
-    private async copyAssetFiles() {
+    private async copyAssetFile(filename: string) {
         const {fileLoader, clientFileWriter} = this.props
-        const files = await fileLoader.listFiles(ASSET_DIR)
-        const copyFile = async (filename: string) => {
-            const filepath = `${ASSET_DIR}/${filename}`
-            const fileContents = await fileLoader.readFile(filepath)
-            await clientFileWriter.writeFile(filepath, fileContents)
-        }
-        await Promise.all(files.map( copyFile ))
+        const filepath = `${ASSET_DIR}/${filename}`
+        const fileContents = await fileLoader.readFile(filepath)
+        await clientFileWriter.writeFile(filepath, fileContents)
     }
 
-    private async copyRuntimeFiles(hasServerApps: boolean) {
+    private async copyAssetFiles() {
+        const files = await this.props.fileLoader.listFiles(ASSET_DIR)
+        await Promise.all(files.map( f => this.copyAssetFile(f) ))
+    }
+
+    private async copyRuntimeFiles(project: Project) {
+        const hasServerApps = project.findChildElements(ServerApp).length > 0
         const {runtimeLoader, clientFileWriter, serverFileWriter} = this.props
         const copyFile = (writer: FileWriter) => async (filename: string) => {
             const fileContents = await runtimeLoader.getFile(filename)
