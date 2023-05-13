@@ -25,6 +25,7 @@ import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
+import SpeechInput from '../../src/model/SpeechInput';
 
 const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
 test('generates main app and all page output files', ()=> {
@@ -244,6 +245,26 @@ test('generates NumberInput elements with initial value', ()=> {
         React.createElement(NumberInput, {path: pathWith('t1'), label: 'Number Input One'}),
         React.createElement(NumberInput, {path: pathWith('t2'), label: 't2'}),
         React.createElement(NumberInput, {path: pathWith('t3'), label: 't3'}),
+    )
+}
+`)
+})
+
+test('generates SpeechInput elements with language and phrases', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new SpeechInput('id1', 't1', {language: 'fr', expectedPhrases: ['One', 'Two']}),
+    ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, SpeechInput} = Elemento.components
+    const t1 = Elemento.useObjectState(pathWith('t1'), new SpeechInput.State({language: 'fr', expectedPhrases: ['One', 'Two']}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(SpeechInput, {path: pathWith('t1')}),
     )
 }
 `)

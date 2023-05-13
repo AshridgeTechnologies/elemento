@@ -46,7 +46,6 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Speech recognition
 - Event actions
 - Speech synthesis
 - Shapes, drawing, animation
@@ -193,6 +192,7 @@ Done
 - Serve preview from service worker
 - Project directory in disk files
 - Simulate server apps
+- Speech recognition
 
 
 Bugs fixed

@@ -245,6 +245,7 @@ ${generateChildren(page, indentLevel2, page)}
             case 'NumberInput':
             case 'SelectInput':
             case 'TrueFalseInput':
+            case 'SpeechInput':
             case 'Button':
             case 'Icon':
             case 'Image':

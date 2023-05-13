@@ -37,6 +37,7 @@ import Rule from './types/Rule'
 import NumberType from './types/NumberType'
 import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
+import SpeechInput from "./SpeechInput";
 
 export const elementTypes = (): {[key in ElementType]: any} => {
     return {
@@ -49,6 +50,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
+        SpeechInput: SpeechInput,
         Button: Button,
         Image: Image,
         Icon: Icon,
