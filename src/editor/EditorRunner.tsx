@@ -1,5 +1,5 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -27,16 +27,22 @@ import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authenticatio
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
-import {previewClientFiles, previewCodeFile, previewServerCodeFile} from './previewFiles'
+import {previewCodeFile, previewServerCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
 import {findServerApp} from '../generator/Builder'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-import lodash from 'lodash'; const {debounce} = lodash;
+import lodash from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
-import ServerApp from '../model/ServerApp'
 import ServerAppConnector from '../model/ServerAppConnector'
+import ProjectBuilder, {FileWriter} from "../generator/ProjectBuilder";
+import BrowserProjectLoader from "../generator/BrowserProjectLoader";
+import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
+import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
+import PostMessageFileWriter from "./PostMessageFileWriter";
+
+const {debounce} = lodash;
 
 declare global {
     var getProject: () => Project | null
@@ -193,6 +199,9 @@ export default function EditorRunner() {
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const projectBuilderRef = useRef<ProjectBuilder>()
+
+    const elementoUrl = () => window.location.origin
 
     const removeDialog = () => setDialog(null)
     
@@ -208,6 +217,7 @@ export default function EditorRunner() {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
         debouncedSave(updatedProject, projectStore!)
+        projectBuilderRef.current?.updateProject()
 
         const [path, fileContents] = previewCodeFile(updatedProject)
         writeFile(path, fileContents)
@@ -224,9 +234,11 @@ export default function EditorRunner() {
         projectHandler.setProject(proj)
         projectHandler.setName(name)
         setProject(proj)
-        const filesToMount = await previewClientFiles(getOpenProject(), projectStore, window.location.origin)
-        console.log('re-mounting files', filesToMount)
-        mountFiles(filesToMount)
+        await projectBuilderRef.current?.build()
+
+        // const filesToMount = await previewClientFiles(getOpenProject(), projectStore, window.location.origin)
+        // console.log('re-mounting files', filesToMount)
+        // mountFiles(filesToMount)
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
@@ -236,6 +248,19 @@ export default function EditorRunner() {
         setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
+        const dummyFileWriter: FileWriter = {
+            writeFile(filepath: string, contents: any): Promise<void> {
+                return Promise.resolve(undefined);
+            }
+        }
+        const newProjectBuilder = new ProjectBuilder({
+            projectLoader: new BrowserProjectLoader( () => getOpenProject() ),
+            fileLoader: new DiskProjectStoreFileLoader(projectStore),
+            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
+            clientFileWriter: new PostMessageFileWriter(navigator.serviceWorker.controller!),
+            serverFileWriter: dummyFileWriter
+        })
+        projectBuilderRef.current = newProjectBuilder
         await updateProjectHandlerFromStore(project, name, projectStore)
     }
 

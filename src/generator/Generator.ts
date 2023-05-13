@@ -39,8 +39,8 @@ const indentLevel2 = '        '
 const indentLevel3 = '            '
 
 export const DEFAULT_IMPORTS = [
-    `import React from 'react'`,
-    `import Elemento from 'elemento-runtime'`
+    `import * as Elemento from './runtime.js'`,
+    `import {React} from './runtime.js'`
 ]
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {

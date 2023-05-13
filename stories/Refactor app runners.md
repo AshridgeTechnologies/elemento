@@ -49,6 +49,7 @@ Technical
 - ✅ Builder actions: build, update project, update files
 - ✅ Builder accessors: code, errors
 - EditorRunner owns builder, passes code and errors into Editor
+- Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
 
 
 Notes
@@ -59,3 +60,13 @@ Notes
 To do
 -----
 
+- ✅ Create ProjectBuilder in EditorRunner with dummy outputs
+- ✅ Check it builds OK and has code and errors
+- ✅ Check it updates OK and has code and errors
+- ✅ Replace client preview initial mount and updates with builder
+- ✅ Make the imports in the app JS file work
+- Replace server preview initial mount and updates with builder
+- Editor uses code and errors passed in props from EditorRunner
+
+
+Next: find the reason for rendering errors
