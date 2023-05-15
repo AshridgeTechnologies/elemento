@@ -56,9 +56,15 @@ export class SpeechInputState extends BaseComponentState<ExternalProperties, Sta
         recognition.onspeechend = (event: SpeechRecognitionEvent) => {
             logEvent(event)
             recognition.stop()
+            // this.updateState({recording: false})
         }
 
-        recognition.onerror = (event: SpeechRecognitionErrorEvent) => console.error('Speech recognition', 'error', event.error)
+        recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+            console.error('Speech recognition', 'error', event.error);
+            recognition.abort()
+            this.updateState({recording: false, value: undefined, confidence: null})
+        }
+
         recognition.onaudiostart = logEvent
         recognition.onaudioend = logEvent
         recognition.onend = logEvent

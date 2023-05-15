@@ -14,6 +14,18 @@ exports[`TextElement adds line break before line ends 1`] = `
 </p>
 `;
 
+exports[`TextElement element produces normal output with display true 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  Hello
+  where are you
+</p>
+`;
+
+exports[`TextElement element produces null output with display false 1`] = `null`;
+
 exports[`TextElement element produces output containing ReactElement children 1`] = `
 <p
   className="MuiTypography-root MuiTypography-body1 css-d7cqv5-MuiTypography-root"

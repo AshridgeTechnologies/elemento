@@ -10,7 +10,8 @@ type Properties = {
     readonly input5?: string,
     readonly action?: boolean,
     readonly calculation?: PropertyExpr,
-    readonly private?: boolean
+    readonly private?: boolean,
+    readonly javascript?: boolean
 }
 
 export default class FunctionDef extends BaseElement<Properties> implements Element {
@@ -28,6 +29,7 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
     get action() { return this.properties.action}
     get calculation() { return this.properties.calculation}
     get private() { return this.properties.private}
+    get javascript() { return this.properties.javascript}
 
     get propertyDefs(): PropertyDef[] {
         return [
@@ -39,6 +41,7 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
             propDef('action', 'boolean', {fixedOnly: true}),
             propDef('calculation', 'expr', {state: true, multilineExpr: true}),
             propDef('private', 'boolean', {fixedOnly: true}),
+            propDef('javascript', 'boolean', {fixedOnly: true}),
         ]
     }
 

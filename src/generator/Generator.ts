@@ -373,6 +373,35 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
+        const errorMessage = this.parser.propertyError(element.id, propertyName)
+        if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
+            return `Elemento.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
+        }
+
+        const ast = this.parser.getAst(element.id, propertyName)
+        if (ast === undefined) {
+            return undefined
+        }
+        const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
+        if (!isJavascriptFunctionBody) {
+            this.convertAstToValidJavaScript(ast, exprType);
+        }
+
+        const exprCode = print(ast).code.replace(/;$/, '')
+
+        switch (exprType) {
+            case 'singleExpression':
+                return exprCode
+            case 'action':
+                const argList = (argumentNames ?? []).join(', ')
+                return `(${argList}) => {${exprCode}}`
+            case 'multilineExpression': {
+                return `{\n${indent(exprCode, '        ')}\n    }`
+            }
+        }
+    }
+
+    private convertAstToValidJavaScript(ast:any, exprType: "singleExpression" | "action" | "multilineExpression") {
         function isShorthandProperty(node: any) {
             return node.shorthand
         }
@@ -382,16 +411,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             const lastStatement = last(bodyStatements)
             const b = types.builders
             ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
-        }
-
-        const errorMessage = this.parser.propertyError(element.id, propertyName)
-        if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
-            return `Elemento.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
-        }
-
-        const ast = this.parser.getAst(element.id, propertyName)
-        if (ast === undefined) {
-            return undefined
         }
 
         visit(ast, {
@@ -411,12 +430,12 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             },
 
             visitCallExpression(path) {
+                const b = types.builders
                 const node = path.value
                 const functionName = node.callee.name
                 const argsToTransform = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
                 argsToTransform?.forEach(index => {
-                    const bodyExpr = node.arguments[index]
-                    const b = types.builders
+                    const bodyExpr = node.arguments[index] ?? b.nullLiteral()
                     node.arguments[index] = b.arrowFunctionExpression([b.identifier('$item')], bodyExpr)
                 })
                 this.traverse(path)
@@ -425,18 +444,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
         if (exprType === 'multilineExpression') {
             addReturnStatement(ast)
-        }
-
-        const exprCode = print(ast).code.replace(/;$/, '')
-        switch (exprType) {
-            case 'singleExpression':
-                return exprCode
-            case 'action':
-                const argList = (argumentNames ?? []).join(', ')
-                return `(${argList}) => {${exprCode}}`
-            case 'multilineExpression': {
-                return `{\n${indent(exprCode, '        ')}\n    }`
-            }
         }
     }
 

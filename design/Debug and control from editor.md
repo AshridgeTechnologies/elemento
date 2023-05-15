@@ -21,6 +21,7 @@ Forces
 - Access to the state may be all that is required
 - StoreProvider already has a hook for testing that it sets the current app store in
 - App is running in a separate window to editor, so objects need to be cloneable, and contain type id
+- For some devs, debugging in browser dev tools would be useful
 
 
 Possibilities
@@ -28,6 +29,12 @@ Possibilities
 - Can pass through app store hook in runForDev
 - Editor sends component id, function, params via service worker postMessage
 - Can start with one-way communication
+- Include element id from which code generated in comments
+- Preview inserts debugger statements 
+- Generator inserts debugger statements
+- Actions log the parameters they were called with
+- Data elements have a type, validate the value they are given - maybe use in code
+- In multiline actions/expressions, separate the definitions from the actions/result, show without executing
 
 Decisions
 ---------

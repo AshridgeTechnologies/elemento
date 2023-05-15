@@ -225,6 +225,7 @@ export default class Parser {
             return undefined
         }
 
+        const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
         function checkIsExpression(ast: any) {
             const bodyStatements = ast.program.body as any[]
             if (exprType === 'singleExpression') {
@@ -257,8 +258,12 @@ export default class Parser {
         if (isExpr(propertyValue)) {
             const {expr} = propertyValue
             try {
-                const ast = parseExpr(expr)
-                checkIsExpression(ast)
+                const exprToParse = isJavascriptFunctionBody ? `const x = function() {\n${expr}\n}` : expr
+                const ast = parseExpr(exprToParse)
+
+                if (!isJavascriptFunctionBody) {
+                    checkIsExpression(ast)
+                }
                 checkErrors(ast)
                 const thisIdentifiers = new Set<string>()
                 const variableIdentifiers = new Set<string>()
@@ -294,7 +299,7 @@ export default class Parser {
                 const identifierNames = Array.from(thisIdentifiers.values())
                 const isLocal = (id: string) => variableIdentifiers.has(id)
                 const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id))
-                if (unknownIdentifiers.length) {
+                if (unknownIdentifiers.length && !isJavascriptFunctionBody) {
                     const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
                     onError(errorMessage)
                 }

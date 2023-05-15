@@ -937,11 +937,12 @@ test('generates Layout element with properties and children', ()=> {
 `)
 })
 
-test('transforms expressions to functions where needed', () => {
+test('transforms expressions to functions where needed and does not fail where no expression present', () => {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), \$item.height > 10)`}),
                 new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), \$item.height + 10)`}),
+                new Data('d3', 'NoWidgets', {initialValue: ex`Select(Widgets.getAllData())`}),
             ]
         ),
         new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
@@ -956,10 +957,12 @@ test('transforms expressions to functions where needed', () => {
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => \$item.height > 10)}))
     const TallerWidgets = Elemento.useObjectState(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), \$item => \$item.height + 10)}))
+    const NoWidgets = Elemento.useObjectState(pathWith('NoWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => null)}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
         React.createElement(Data, {path: pathWith('TallerWidgets'), display: false}),
+        React.createElement(Data, {path: pathWith('NoWidgets'), display: false}),
     )
 }
 `)
@@ -994,6 +997,82 @@ test('generates local user defined functions in a page', () => {
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
         React.createElement(NumberInput, {path: pathWith('MinHeight'), label: 'Min Height'}),
+    )
+}
+`)
+})
+
+test('generates javascript functions in a page that can use global functions', () => {
+    const javascriptCode =
+`let y = 10
+for (let i = 1; i < 10; i++) {
+    y += Sum(widget, 10)
+}
+return y
+`
+    const app = new App('app1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new FunctionDef('f1', 'WidgetHeight', {input1: 'widget', calculation: {expr: javascriptCode}, javascript: true}),
+            ]
+        )
+    ])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page} = Elemento.components
+    const {Sum} = Elemento.globalFunctions
+    const WidgetHeight = (widget) => {
+        let y = 10
+        for (let i = 1; i < 10; i++) {
+            y += Sum(widget, 10)
+        }
+        return y
+    }
+
+    return React.createElement(Page, {id: props.path},
+
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+})
+
+test('generates javascript functions in a page that can have nested functions', () => {
+    const javascriptCode =
+`function generateClause(placeholder) {
+    const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)
+    
+    let args = subFormulaArgs.map( arg => words[arg] || arg )
+    return factory.call(null, args)
+}
+return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
+`
+    const app = new App('app1', 'App1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new FunctionDef('f1', 'WidgetHeight', {input1: 'words', input2: 'factory', input3: 'formula', calculation: {expr: javascriptCode}, javascript: true}),
+            ]
+        )
+    ])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({})
+
+    expect(output.files[0].content).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page} = Elemento.components
+    const WidgetHeight = (words, factory, formula) => {
+        function generateClause(placeholder) {
+            const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)
+            
+            let args = subFormulaArgs.map( arg => words[arg] || arg )
+            return factory.call(null, args)
+        }
+        return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
+    }
+
+    return React.createElement(Page, {id: props.path},
+
     )
 }
 `)

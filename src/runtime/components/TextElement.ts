@@ -6,7 +6,8 @@ import {flatten} from 'ramda'
 
 type Properties = {path: string, children?: any
     fontSize?: string | number, fontFamily?: string, color?: string, backgroundColor?: string,
-    border?: number, borderColor?: string, width?: number, height?: number, marginBottom?: string | number
+    border?: number, borderColor?: string, width?: number, height?: number, marginBottom?: string | number,
+    display?: boolean
     }
 
 function asText(content: any) {
@@ -27,5 +28,6 @@ function asText(content: any) {
 export default function TextElement({children, path, ...props}: Properties) {
     const childArray = isArray(children) ? children : [children]
     const propVals = valueOfProps(props)
-    return React.createElement(Typography, {id: path, ...propVals}, ...childArray.map(asText))
+    const display = 'display' in propVals ? propVals.display : true
+    return display ? React.createElement(Typography, {id: path, ...propVals}, ...childArray.map(asText)) : null
 }

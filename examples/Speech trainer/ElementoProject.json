@@ -1,0 +1,1129 @@
+{
+  "id": "project_1",
+  "name": "Speech Trainer Project",
+  "kind": "Project",
+  "properties": {},
+  "elements": [
+    {
+      "id": "app1",
+      "name": "Speech Trainer",
+      "kind": "App",
+      "properties": {},
+      "elements": [
+        {
+          "id": "appbar_1",
+          "name": "App Bar",
+          "kind": "AppBar",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_6",
+              "name": "App Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Speech Trainer",
+                "fontSize": 20
+              }
+            },
+            {
+              "id": "button_8",
+              "name": "Home Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Home",
+                "appearance": "filled",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(HomePage)"
+                }
+              }
+            },
+            {
+              "id": "button_14",
+              "name": "Play Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Play",
+                "appearance": "filled",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(PlayPage)"
+                }
+              }
+            },
+            {
+              "id": "button_7",
+              "name": "Words Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Words",
+                "appearance": "filled",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(WordDetailsPage)"
+                }
+              }
+            },
+            {
+              "id": "button_13",
+              "name": "Questions Button",
+              "kind": "Button",
+              "properties": {
+                "content": "Questions",
+                "appearance": "filled",
+                "filled": true,
+                "action": {
+                  "expr": "ShowPage(QuestionDetailsPage)"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "page_1",
+          "name": "Home Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_1",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Speech Trainer",
+                "fontSize": 24
+              }
+            }
+          ]
+        },
+        {
+          "id": "page_4",
+          "name": "Play Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "collection_3",
+              "name": "All Words",
+              "kind": "Collection",
+              "properties": {
+                "initialValue": {
+                  "expr": "Words.Query({})"
+                },
+                "display": false
+              },
+              "elements": []
+            },
+            {
+              "id": "collection_4",
+              "name": "All Questions",
+              "kind": "Collection",
+              "properties": {
+                "initialValue": {
+                  "expr": "Questions.Query({})"
+                },
+                "display": false
+              },
+              "elements": []
+            },
+            {
+              "id": "data_5",
+              "name": "Current Question",
+              "kind": "Data",
+              "properties": {
+                "display": false
+              },
+              "elements": []
+            },
+            {
+              "id": "text_13",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Play",
+                "fontSize": 20
+              },
+              "elements": []
+            },
+            {
+              "id": "text_15",
+              "name": "Instructions",
+              "kind": "Text",
+              "properties": {
+                "content": "Say in French:"
+              },
+              "elements": []
+            },
+            {
+              "id": "text_14",
+              "name": "Question",
+              "kind": "Text",
+              "properties": {
+                "content": {
+                  "expr": "CurrentQuestion.Question"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "textinput_24",
+              "name": "Answer",
+              "kind": "TextInput",
+              "properties": {
+                "width": "100%",
+                "initialValue": {
+                  "expr": "AnswerSpeechInput"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "speechinput_1",
+              "name": "Answer Speech Input",
+              "kind": "SpeechInput",
+              "properties": {
+                "language": "fr-FR"
+              },
+              "elements": []
+            },
+            {
+              "id": "text_16",
+              "name": "Expected Answer",
+              "kind": "Text",
+              "properties": {
+                "content": {
+                  "expr": "\"Expected answer:   \" + CurrentQuestion.Answer"
+                },
+                "display": {
+                  "expr": "AnswerChecked"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "text_17",
+              "name": "Correct",
+              "kind": "Text",
+              "properties": {
+                "content": {
+                  "expr": "If(And(AnswerChecked, CheckAnswer(Answer.value, CurrentQuestion.Answer)), 'CORRECT', 'WRONG!!')"
+                },
+                "display": {
+                  "expr": "AnswerChecked"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "data_6",
+              "name": "Answer Checked",
+              "kind": "Data",
+              "properties": {
+                "initialValue": {
+                  "expr": "false"
+                },
+                "display": false
+              },
+              "elements": []
+            },
+            {
+              "id": "layout_14",
+              "name": "Button Layout",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              },
+              "elements": [
+                {
+                  "id": "button_15",
+                  "name": "Next Question",
+                  "kind": "Button",
+                  "properties": {
+                    "content": "Next Question",
+                    "appearance": "outline",
+                    "action": {
+                      "expr": "Reset(AnswerSpeechInput)\nReset(Answer)\nSet(CurrentQuestion,  GenerateQuestion())\nSet(AnswerChecked, false)\nAnswerSpeechInput.Start()"
+                    }
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "button_16",
+                  "name": "Check Answer",
+                  "kind": "Button",
+                  "properties": {
+                    "content": "Check Answer",
+                    "appearance": "outline",
+                    "action": {
+                      "expr": "Set(AnswerChecked, true)"
+                    }
+                  },
+                  "elements": []
+                }
+              ]
+            },
+            {
+              "id": "function_9",
+              "name": "Language Factory En",
+              "kind": "Function",
+              "properties": {
+                "javascript": true,
+                "calculation": {
+                  "expr": "    const personTypes = ['1s', '2s', '3s', '1p', '2p', '3p']\n    function hasTag(word, tag) { return word.Tags.split(/ +/).includes(tag) }\n    function isMasculine(word) { return hasTag(word, 'person') && hasTag(word, 'masc') }\n    function isFeminine(word) { return hasTag(word, 'person') && hasTag(word, 'fem') }\n    function startsWithVowel(word) { return word.toLowerCase().match(/^[aeiouyh]/) }\n    function getPersonIndex(person) { return personTypes.findIndex(p => p === person) }\n    function getEnding(person, endingsString) {return getPersonForm(person, endingsString)}\n    function getPersonForm(person, forms) { return forms.split(',')[getPersonIndex(person)] || '??' }\n\n    const commands = {\n        SingOrPlural(word, plural) {\n            const noun = word.LangEn\n            if (plural) {\n                return noun + 's'  //simple start\n            } else {\n                return noun\n            }\n        },\n\n        DefArtNoun(word, plural) {\n            const noun = this.SingOrPlural(word, plural)\n            return `the ${noun}`\n        },\n\n        Present(word, person) {\n            const infinitive = word.LangEn\n            const stem = infinitive\n            if (person === '3s') {\n                if (stem.match(/(sh|ch|s|x|z)$/)) {\n                    return stem + 'es'\n                }\n                if (stem.match(/y$/) && !stem.match.match(/[aeiou]y$/)) {\n                    return stem.substring(0, stem.length - 1) + 'ies'\n                }\n\n                return stem + 's'\n            }\n            return stem\n        },\n\n        Future(word, person) {\n            const infinitive = word.LangEn\n            const stem = infinitive\n            return 'will' + ' ' + stem\n        },\n\n        SubjectPronoun(personType) {\n            return getPersonForm(personType, 'I,you,she,we,you[pl],they')\n        },\n        ObjectPronoun(word, plural) {\n            return plural ? 'them' : this.isMasculine(word) ? 'him' : this.isFeminine(word) ? 'her' : 'it'\n        }\n    }\n\n    const [commandName, ...commandArgs] = args\n    const command = commands[commandName]\n    return command ? commands[commandName](...commandArgs) : `[??? ${args}.join(' ')]`\n"
+                },
+                "input1": "args"
+              },
+              "elements": []
+            },
+            {
+              "id": "function_10",
+              "name": "Language Factory Fr",
+              "kind": "Function",
+              "properties": {
+                "javascript": true,
+                "calculation": {
+                  "expr": "    const personTypes = ['1s', '2s', '3s', '1p', '2p', '3p']\n    function hasTag(word, tag) { return word.Tags.split(/ +/).includes(tag) }\n    function isMasculine(word) { return hasTag(word, 'masc') }\n    function isFeminine(word) { return hasTag(word, 'fem') }\n    function startsWithVowel(word) { return word.toLowerCase().match(/^[aeiouyh]/) }\n    function getPersonIndex(person) { return personTypes.findIndex(p => p === person) }\n    function getEnding(person, endingsString) {return getPersonForm(person, endingsString)}\n    function getPersonForm(person, forms) { return forms.split(',')[getPersonIndex(person)] || '??' }\n\n    const commands = {\n\n        DefArt(word, plural, withSpace = false) {\n            const noun = word.LangFr\n            const spacing = withSpace ? ' ' : ''\n            if (plural) return 'les' + spacing\n            if (startsWithVowel(noun)) return 'l\\''  //no spacing\n            if (hasTag(word, 'masc')) return 'le' + spacing\n            return 'la' + spacing\n        },\n\n        SingOrPlural(word, plural) {\n            const noun = word.LangFr\n            if (plural) {\n                return noun + 's'  //simple start\n            } else {\n                return noun\n            }\n        },\n\n        DefArtNoun(word, plural) {\n            let noun = this.SingOrPlural(word, plural)\n            const article = this.DefArt(word, plural, true)\n            return `${article}${noun}`\n        },\n\n        Present(word, person) {\n            const infinitive = word.LangFr\n            if (infinitive.endsWith('er')) {\n                const stem = infinitive.replace(/er$/, '')\n                const ending = getEnding(person, 'e,es,e,ons,ez,ent')\n                return stem + ending\n            }\n            if (infinitive === 'voir') {\n                const stem = infinitive.replace(/ir$/, '')\n                const ending = getEnding(person, 'is,is,it,yons,yez,ient')\n                return stem + ending\n            }\n            if (infinitive === 'venir') {\n                return getPersonForm(person, 'viens,viens,vient,venons,venez,viennent')\n            }\n        },\n\n        Future(word, person) {\n            const infinitive = word.LangFr\n            let stem\n            if (infinitive.endsWith('er')) {\n                stem = infinitive\n            }\n            if (infinitive === 'voir') {\n                stem = 'verr'\n            }\n            if (infinitive === 'venir') {\n                stem = 'viendr'\n            }\n            const ending = getEnding(person, 'ai,as,a,ons,ez,ont')\n            return stem + ending\n        },\n\n        SubjectPronoun(personType) { return getPersonForm(personType, 'je,tu,elle,nous,vous,ils')},\n        ObjectPronoun(word, plural) { return plural ? 'les' : this.isMasculine(word) ? 'le' : 'la' },\n\n        ADefArtNoun(word, withSpace = false) {\n            const noun = word.LangFr\n            const spacing = withSpace && !this.startsWithVowel(noun) ? ' ' : ''\n            const article = this.startsWithVowel(noun) ? 'à l\\'' : hasTag(word, 'masc') ? 'au' : 'à la'\n            return article + spacing + noun\n        },\n\n\n        Join(word1, word2) {\n            if (word1.endsWith('que') && this.startsWithVowel(word2)) {\n                return word1.slice(0, -1) + '\\'' + word2\n            }\n\n            return word1 + ' ' + word2\n        }\n    }\n\n    const [commandName, ...commandArgs] = args\n    const command = commands[commandName]\n    return command ? commands[commandName](...commandArgs) : `[??? ${args.map(JSON.stringify).join(' ')}]`\n"
+                },
+                "input1": "args"
+              },
+              "elements": []
+            },
+            {
+              "id": "function_8",
+              "name": "Has Tags",
+              "kind": "Function",
+              "properties": {
+                "input1": "word",
+                "input2": "tags",
+                "calculation": {
+                  "expr": "let tagList = tags.split(/ +/)\nIf(tagList.length, Select(tagList, word.Tags.includes($item)).length === tagList.length)"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "function_5",
+              "name": "Get Random Word",
+              "kind": "Function",
+              "properties": {
+                "input1": "tags",
+                "calculation": {
+                  "expr": "let possibleWords = Select(GetAll(AllWords), HasTags($item, tags))\nlet random = Math.floor(Math.random() * possibleWords.length)\npossibleWords[random]"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "function_4",
+              "name": "Get Words",
+              "kind": "Function",
+              "properties": {
+                "input1": "question",
+                "calculation": {
+                  "expr": "let word1 = GetRandomWord(question.Tags1)\nlet word2 = GetRandomWord(question.Tags2)\nlet word3 = GetRandomWord(question.Tags3)\nRecord(question.WordName1, word1, question.WordName2, word2, question.WordName3, word3)"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "function_7",
+              "name": "Fill Template",
+              "kind": "Function",
+              "properties": {
+                "input1": "factory",
+                "input2": "formula",
+                "calculation": {
+                  "expr": "function generateClause(placeholder) {\n    const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)\n\n   let args = subFormulaArgs.map( arg => words[arg] || arg )\n    return factory.call(null, args)\n}\nreturn formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause) \n\n\n\n"
+                },
+                "input3": "words",
+                "javascript": true
+              },
+              "elements": []
+            },
+            {
+              "id": "function_6",
+              "name": "Make Question",
+              "kind": "Function",
+              "properties": {
+                "input1": "question",
+                "calculation": {
+                  "expr": "let words =  GetWords(question)\nlet questionText = FillTemplate(LanguageFactoryEn, question.FormulaEn, words)\nlet answerText = FillTemplate(LanguageFactoryFr, question.FormulaFr, words)\nRecord('Question', questionText, 'Answer', answerText)"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "function_3",
+              "name": "Generate Question",
+              "kind": "Function",
+              "properties": {
+                "calculation": {
+                  "expr": "let random = Math.floor(Math.random() * GetAll(AllQuestions).length)\nlet template = GetAll(AllQuestions)[random]\nlet question = MakeQuestion(template)\nquestion"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "function_11",
+              "name": "CheckAnswer",
+              "kind": "Function",
+              "properties": {
+                "input1": "answer",
+                "input2": "expected",
+                "calculation": {
+                  "expr": "let cleanAnswer = answer && answer.trim().toLowerCase().replaceAll(/[!?]/g, '')\nlet cleanExpected = expected && expected.trim().toLowerCase().replaceAll(/[!?]/g, '')\ncleanAnswer === cleanExpected"
+                }
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "page_2",
+          "name": "Word Details Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "layout_5",
+              "name": "Page Layout ",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              },
+              "elements": [
+                {
+                  "id": "layout_1",
+                  "name": "List Layout",
+                  "kind": "Layout",
+                  "properties": {},
+                  "elements": [
+                    {
+                      "id": "textinput_1",
+                      "name": "WordFilter",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "16em",
+                        "label": "Filter words"
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "list_1",
+                      "name": "WordList",
+                      "kind": "List",
+                      "properties": {
+                        "items": {
+                          "expr": "Sort(FilteredWords(), $item.LangEn.toString().toLowerCase())"
+                        },
+                        "selectedItem": {
+                          "expr": "CurrentUrl().pathSections[0]"
+                        },
+                        "selectAction": {
+                          "expr": "ShowPage(WordDetailsPage, $item.id)"
+                        },
+                        "selectable": false
+                      },
+                      "elements": [
+                        {
+                          "id": "text_2",
+                          "name": "ListWord",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.LangEn"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "function_1",
+                      "name": "FilteredWords",
+                      "kind": "Function",
+                      "properties": {
+                        "calculation": {
+                          "expr": "Select(Words.Query({}), Or($item.LangEn && $item.LangEn.toString().toLowerCase().includes(WordFilter.value.toLowerCase()), $item.LangFr && $item.LangFr.toString().toLowerCase().includes(WordFilter.value.toLowerCase())))"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                },
+                {
+                  "id": "layout_4",
+                  "name": "Word Form",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": false
+                  },
+                  "elements": [
+                    {
+                      "id": "data_1",
+                      "name": "WordId",
+                      "kind": "Data",
+                      "properties": {
+                        "display": false,
+                        "initialValue": {
+                          "expr": "CurrentUrl().pathSections[0]"
+                        }
+                      }
+                    },
+                    {
+                      "id": "data_2",
+                      "name": "TheWord",
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "WordId.value && Get(Words, WordId.value)"
+                        },
+                        "display": false
+                      }
+                    },
+                    {
+                      "id": "layout_2",
+                      "name": "Title Layout",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true
+                      },
+                      "elements": [
+                        {
+                          "id": "text_3",
+                          "name": "Page name",
+                          "kind": "Text",
+                          "properties": {
+                            "content": "Word details",
+                            "fontSize": 21
+                          }
+                        },
+                        {
+                          "id": "text_4",
+                          "name": "IdDisplay",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "WordId"
+                            },
+                            "display": false,
+                            "color": "gray",
+                            "width": 160,
+                            "fontSize": 12
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "textinput_2",
+                      "name": "Lang En",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheWord.LangEn"
+                        },
+                        "label": "English"
+                      }
+                    },
+                    {
+                      "id": "textinput_3",
+                      "name": "Lang Fr",
+                      "kind": "TextInput",
+                      "properties": {
+                        "multiline": true,
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheWord.LangFr"
+                        },
+                        "label": "French"
+                      }
+                    },
+                    {
+                      "id": "textinput_10",
+                      "name": "Tags",
+                      "kind": "TextInput",
+                      "properties": {
+                        "label": "Tags",
+                        "initialValue": {
+                          "expr": "TheWord.Tags"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "layout_3",
+                      "name": "Page Buttons",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "wrap": true,
+                        "width": "100%"
+                      },
+                      "elements": [
+                        {
+                          "id": "button_1",
+                          "name": "Update Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Save",
+                            "appearance": "outline",
+                            "display": {
+                              "expr": "!!WordId.value"
+                            },
+                            "action": {
+                              "expr": "Update(Words, WordId, Record('LangEn', LangEn, 'LangFr', LangFr, 'Tags', Tags))\nReset(LangEn, LangFr, Tags)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_2",
+                          "name": "Cancel Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Cancel",
+                            "appearance": "outline",
+                            "action": {
+                              "expr": "Reset(LangEn, LangFr)"
+                            },
+                            "display": {
+                              "expr": "!!WordId.value"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_3",
+                          "name": "Delete Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Delete",
+                            "appearance": "outline",
+                            "action": {
+                              "expr": "Remove(Words, WordId)\nReset(WordList)\nReset(LangEn, LangFr)"
+                            },
+                            "display": {
+                              "expr": "!!WordId.value"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "text_5",
+                      "name": "New word title",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "New word",
+                        "fontSize": 19
+                      }
+                    },
+                    {
+                      "id": "textinput_7",
+                      "name": "New Lang En",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "label": "English"
+                      }
+                    },
+                    {
+                      "id": "textinput_8",
+                      "name": "New Lang Fr",
+                      "kind": "TextInput",
+                      "properties": {
+                        "multiline": true,
+                        "width": "100%",
+                        "label": "French"
+                      }
+                    },
+                    {
+                      "id": "textinput_9",
+                      "name": "New Tags",
+                      "kind": "TextInput",
+                      "properties": {
+                        "label": "Tags"
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_4",
+                      "name": "Add Word Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Add",
+                        "appearance": "outline",
+                        "display": true,
+                        "action": {
+                          "expr": "let newId = 'w' + Timestamp()\nlet newWord = Record('id', newId, 'LangEn', NewLangEn, 'LangFr', NewLangFr, 'Tags', NewTags);\nAdd(Words, newWord);\nShowPage(WordDetailsPage, newId)\nReset(NewLangEn, NewLangFr, NewTags);\n"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "page_3",
+          "name": "Question Details Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "layout_10",
+              "name": "Page Layout ",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true
+              },
+              "elements": [
+                {
+                  "id": "layout_6",
+                  "name": "List Layout",
+                  "kind": "Layout",
+                  "properties": {},
+                  "elements": [
+                    {
+                      "id": "textinput_11",
+                      "name": "QuestionFilter",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "16em",
+                        "label": "Filter questions"
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "list_2",
+                      "name": "QuestionList",
+                      "kind": "List",
+                      "properties": {
+                        "items": {
+                          "expr": "Sort(FilteredQuestions(), $item.Name.toString().toLowerCase())"
+                        },
+                        "selectedItem": {
+                          "expr": "CurrentUrl().pathSections[0]"
+                        },
+                        "selectAction": {
+                          "expr": "ShowPage(QuestionDetailsPage, $item.id)"
+                        },
+                        "selectable": false
+                      },
+                      "elements": [
+                        {
+                          "id": "text_7",
+                          "name": "ListWord",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.Name"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "function_2",
+                      "name": "FilteredQuestions",
+                      "kind": "Function",
+                      "properties": {
+                        "calculation": {
+                          "expr": "Select(Questions.Query({}), Or($item.Name && $item.Name.toString().toLowerCase().includes(QuestionFilter.value.toLowerCase()), $item.Description && $item.Description.toString().toLowerCase().includes(QuestionFilter.value.toLowerCase())))"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                },
+                {
+                  "id": "layout_9",
+                  "name": "Question Form",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": false
+                  },
+                  "elements": [
+                    {
+                      "id": "data_3",
+                      "name": "QuestionId",
+                      "kind": "Data",
+                      "properties": {
+                        "display": false,
+                        "initialValue": {
+                          "expr": "CurrentUrl().pathSections[0]"
+                        }
+                      }
+                    },
+                    {
+                      "id": "data_4",
+                      "name": "TheQuestion",
+                      "kind": "Data",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "QuestionId.value && Get(Questions, QuestionId.value)"
+                        },
+                        "display": false
+                      }
+                    },
+                    {
+                      "id": "layout_7",
+                      "name": "Title Layout",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true
+                      },
+                      "elements": [
+                        {
+                          "id": "text_8",
+                          "name": "Page name",
+                          "kind": "Text",
+                          "properties": {
+                            "content": "Question details",
+                            "fontSize": 21
+                          }
+                        },
+                        {
+                          "id": "text_9",
+                          "name": "IdDisplay",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "QuestionId"
+                            },
+                            "display": false,
+                            "color": "gray",
+                            "width": 160,
+                            "fontSize": 12
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "textinput_12",
+                      "name": "Name",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheQuestion.Name"
+                        }
+                      }
+                    },
+                    {
+                      "id": "textinput_13",
+                      "name": "Description",
+                      "kind": "TextInput",
+                      "properties": {
+                        "multiline": true,
+                        "width": "100%",
+                        "initialValue": {
+                          "expr": "TheQuestion.Description"
+                        }
+                      }
+                    },
+                    {
+                      "id": "text_11",
+                      "name": "Text 11",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "Word selections",
+                        "fontSize": 18
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "layout_11",
+                      "name": "Word Layout 1",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "width": "100%",
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "textinput_16",
+                          "name": "Word Name 1",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.WordName1"
+                            },
+                            "maxLength": 10,
+                            "width": "25%",
+                            "label": "Word 1"
+                          },
+                          "elements": []
+                        },
+                        {
+                          "id": "textinput_17",
+                          "name": "Tags 1",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.Tags1"
+                            },
+                            "width": "71%"
+                          },
+                          "elements": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "layout_12",
+                      "name": "Word Layout 2",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "width": "100%",
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "textinput_18",
+                          "name": "Word Name 2",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.WordName2"
+                            },
+                            "maxLength": 10,
+                            "width": "25%",
+                            "label": "Word 2"
+                          },
+                          "elements": []
+                        },
+                        {
+                          "id": "textinput_19",
+                          "name": "Tags 2",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.Tags2"
+                            },
+                            "width": "71%"
+                          },
+                          "elements": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "layout_13",
+                      "name": "Word Layout 3",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "width": "100%",
+                        "wrap": true
+                      },
+                      "elements": [
+                        {
+                          "id": "textinput_20",
+                          "name": "Word Name 3",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.WordName3"
+                            },
+                            "maxLength": 10,
+                            "width": "25%",
+                            "label": "Word 3"
+                          },
+                          "elements": []
+                        },
+                        {
+                          "id": "textinput_21",
+                          "name": "Tags 3",
+                          "kind": "TextInput",
+                          "properties": {
+                            "initialValue": {
+                              "expr": "TheQuestion.Tags3"
+                            },
+                            "width": "71%"
+                          },
+                          "elements": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "text_12",
+                      "name": "Text 12",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "Question Formulas",
+                        "fontSize": 18
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "textinput_22",
+                      "name": "Formula En",
+                      "kind": "TextInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheQuestion.FormulaEn"
+                        },
+                        "width": "100%",
+                        "label": "Formula - English",
+                        "multiline": true
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "textinput_23",
+                      "name": "Formula Fr",
+                      "kind": "TextInput",
+                      "properties": {
+                        "initialValue": {
+                          "expr": "TheQuestion.FormulaFr"
+                        },
+                        "width": "100%",
+                        "label": "Formula - French",
+                        "multiline": true
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "layout_8",
+                      "name": "Page Buttons",
+                      "kind": "Layout",
+                      "properties": {
+                        "horizontal": true,
+                        "wrap": true,
+                        "width": "100%"
+                      },
+                      "elements": [
+                        {
+                          "id": "button_9",
+                          "name": "Update Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Save",
+                            "appearance": "outline",
+                            "display": {
+                              "expr": "!!QuestionId.value"
+                            },
+                            "action": {
+                              "expr": "Update(Questions, QuestionId, Record('Name', Name, 'Description', Description, 'WordName1', WordName1, 'Tags1', Tags1, 'WordName2', WordName2, 'Tags2', Tags2, 'WordName3', WordName3, 'Tags3', Tags3, 'FormulaEn',FormulaEn, 'FormulaFr', FormulaFr))\nReset(Name, Description, WordName1, Tags1, WordName2, Tags2, WordName3, Tags3, FormulaEn, FormulaFr)"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_10",
+                          "name": "Cancel Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Cancel",
+                            "appearance": "outline",
+                            "action": {
+                              "expr": "Reset(Name, Description, WordName1, Tags1, WordName2, Tags2, WordName3, Tags3, FormulaEn, FormulaFr)"
+                            },
+                            "display": {
+                              "expr": "!!QuestionId.value"
+                            }
+                          }
+                        },
+                        {
+                          "id": "button_11",
+                          "name": "Delete Button",
+                          "kind": "Button",
+                          "properties": {
+                            "content": "Delete",
+                            "appearance": "outline",
+                            "action": {
+                              "expr": "Remove(Questions, QuestionId)\nReset(QuestionList)\nReset(Name, Description, WordName1, Tags1, WordName2, Tags2, WordName3, Tags3, FormulaEn, FormulaFr)"
+                            },
+                            "display": {
+                              "expr": "!!QuestionId.value"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "text_10",
+                      "name": "New question title",
+                      "kind": "Text",
+                      "properties": {
+                        "content": "New question",
+                        "fontSize": 19
+                      }
+                    },
+                    {
+                      "id": "textinput_15",
+                      "name": "New Name",
+                      "kind": "TextInput",
+                      "properties": {
+                        "width": "100%",
+                        "label": "Name"
+                      }
+                    },
+                    {
+                      "id": "button_12",
+                      "name": "Add Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Add",
+                        "appearance": "outline",
+                        "display": true,
+                        "action": {
+                          "expr": "let newId = 'w' + Timestamp()\nlet newQuestion = Record('id', newId, 'Name', NewName);\nAdd(Questions, newQuestion);\nShowPage(QuestionDetailsPage, newId)\nReset(NewName);\n"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "collection_1",
+          "name": "Words",
+          "kind": "Collection",
+          "properties": {
+            "collectionName": "Words",
+            "dataStore": {
+              "expr": "BrowserDataStore1"
+            },
+            "display": false
+          }
+        },
+        {
+          "id": "collection_2",
+          "name": "Questions",
+          "kind": "Collection",
+          "properties": {
+            "collectionName": "Questions",
+            "dataStore": {
+              "expr": "BrowserDataStore1"
+            },
+            "display": false
+          }
+        },
+        {
+          "id": "memorydatastore_1",
+          "name": "Memory Data Store 1",
+          "kind": "MemoryDataStore",
+          "properties": {
+            "display": false
+          },
+          "elements": []
+        },
+        {
+          "id": "browserdatastore_1",
+          "name": "Browser Data Store 1",
+          "kind": "BrowserDataStore",
+          "properties": {
+            "collectionNames": [
+              "Words",
+              "Questions"
+            ],
+            "databaseName": "SpeechTrainer"
+          },
+          "elements": []
+        }
+      ]
+    }
+  ]
+}

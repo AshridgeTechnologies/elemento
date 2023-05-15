@@ -4,12 +4,19 @@ Elemento Backlog
 Bugs
 ----
 - Changes really slow on large list
+- Copy/Paste multiple not working
+- Select element on preview not highlighting
+- Query with MemoryDataStore not updating 
+- Query without DataStore does nothing
+- Runtime error (eg Sort with function $item => $item.Word.toString() when Word null) blows up preview
+- Browser data store fails to add new collection
+- With a new browser database, new items added to a collection cannot be selected
 - Full review of asset files, multiple dirs, rename, move, GitHub save/update
 - DateFormat blows up on some bad values eg a string
 - Studio: Show errors in server side apps
 - Big error storm in preview when load app that uses firebase config
 - Asks for login to gapi on every keystroke when a Firebase Publisher exists
-- Studio: Show errors in server side apps
+- Studio: Show errors in server side apps (just needs a test)
 - Clear preview and state when load new app
 - Dependencies error while editing blows up editor
 - No code generation error for unknown name in text element
@@ -22,11 +29,9 @@ Stories
 ### Move to GitHub
 - Deploy from GitHub
 - Can use private GitHub repos
-- Handle merge conflicts
-- Functional test covering Get and Update - and others
+
 
 ### Priority for internal apps
-- Model types in studio
 - Type expressions
 - Input validation
 - Form generation
@@ -36,7 +41,7 @@ Stories
 - Date picker control
 
 ### Priority for customer-facing apps
-- JavaScript functions
+- Import functions
 - Payments
 - API calls from browser
 - External API calls (eg for webhook)
@@ -77,6 +82,10 @@ Stories
 - Read-only calculations
 - Complex calculation entry
 - Embedded apps
+- Handle merge conflicts
+- Functional test covering Get and Update - and others
+- Cut/paste/export/import data as JSON
+- Simple way of opening file datastores
 
 ### The Rest
 - Slick quick apps
@@ -93,8 +102,7 @@ Stories
 - Highlight in Help
 - Persistent help position
 - Editor deep links - use in help examples
-- Save and load project on apps website
-- List apps
+
 
 Epics
 -----
@@ -193,6 +201,7 @@ Done
 - Project directory in disk files
 - Simulate server apps
 - Speech recognition
+- Model types in studio
 
 
 Bugs fixed
@@ -209,3 +218,4 @@ Bugs fixed
 - Text inputs: jump to end, slow rendering, unusual characters
 - Select in copied page selects the corresponding element in the page copied from
 - Select does not respond to alt-click to highlight
+- Bug: Incomplete Select blows up editor - see file

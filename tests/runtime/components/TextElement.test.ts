@@ -13,6 +13,14 @@ test('TextElement element produces output containing string children',
     snapshot(createElement(TextElement, {path: 'page1.para1'}, 'Hello', 'where are you'))
 )
 
+test('TextElement element produces normal output with display true',
+    snapshot(createElement(TextElement, {path: 'page1.para1', display: true}, 'Hello', 'where are you'))
+)
+
+test('TextElement element produces null output with display false',
+    snapshot(createElement(TextElement, {path: 'page1.para1', display: false}, 'Hello', 'where are you'))
+)
+
 test('TextElement element produces output containing undefined children',
     snapshot(createElement(TextElement, {path: 'page1.para1'}, undefined))
 )

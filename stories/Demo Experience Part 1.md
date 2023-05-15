@@ -11,7 +11,7 @@ Requirements
 ------------
 
 ### Home Page clearer
-- ✅ Learn-Create-Run 3-column design
+- Learn-Create-Gallery 3-column design
 - ✅ Title and graphic
 - ✅ Graphic and summary for each section
 - Favicon

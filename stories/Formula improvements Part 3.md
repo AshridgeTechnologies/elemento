@@ -1,6 +1,16 @@
 Formula improvements Part 3
 ===========================
 
+- Need either a Random Number element or a RandomNumber function to get a random integer
+- Random function to do any of: 
+  - pick from arg list
+  - pick from an array
+  - pick from a collection
+  - pick a random integer between 0 and a single given value
+  - random fraction 0 to 1 with no args
+- Random element that gives the same value from its input until it is Reset OR until the value changes
+- Functions inside functions
+- Functions fix their arguments to get valueOf
 - Click on a control in Navigator to add it to a formula
 - Auto-complete to give a selection of possible names
 - Runtime errors reported in the editor, with link to control

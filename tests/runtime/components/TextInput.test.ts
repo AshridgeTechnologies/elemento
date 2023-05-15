@@ -3,7 +3,7 @@
  */
 
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -63,6 +63,11 @@ test('TextInput shows initial value when state value is set to undefined and ini
     expect(el`app.page1.widget1`.value).toBe('Axe')
 })
 
+test('TextInput shows initial value when state value is set to undefined and initial value is a value object', () => {
+    const {el} = testContainer(textInput('app.page1.widget1', {value: valueObj('Axe')}))
+    expect(el`app.page1.widget1`.value).toBe('Axe')
+})
+
 test('TextInput shows empty value when state value is set to null and initial value exists', () => {
     const {el} = testContainer(textInput('app.page1.widget1', new TextInput.State({value: 'Axe'})._withStateForTest({value: null})))
     expect(el`app.page1.widget1`.value).toBe('')
@@ -94,3 +99,15 @@ test('State class has correct properties and functions', () => {
     state.Reset()
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined}))
 })
+
+test('State class gives correct value when its value is a value object', () => {
+    const state = new TextInput.State({value: valueObj('car')})
+    expect(state.value).toBe('car')
+})
+
+test('State class gives correct value when its value is another value whose value is a value object', () => {
+    const state1 = new TextInput.State({value: valueObj('car')})
+    const state2 = new TextInput.State({value: state1})
+    expect(state2.value).toBe('car')
+})
+

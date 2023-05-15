@@ -17,10 +17,11 @@ test('FunctionDef has correct properties with default values', ()=> {
     expect(function1.action).toBe(undefined)
     expect(function1.calculation).toBe(undefined)
     expect(function1.private).toBe(undefined)
+    expect(function1.javascript).toBe(undefined)
 })
 
 test('Function has correct properties with specified values', ()=> {
-    const function1 = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true})
+    const function1 = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true, javascript: true})
 
     expect(function1.id).toBe('id1')
     expect(function1.name).toBe('Function 1')
@@ -30,8 +31,8 @@ test('Function has correct properties with specified values', ()=> {
     expect(function1.input4).toBe('in4')
     expect(function1.input5).toBe('in5')
     expect(function1.action).toBe(true)
-    expect(function1.action).toBe(true)
     expect(function1.calculation).toStrictEqual(ex`doIt()`)
+    expect(function1.javascript).toBe(true)
 })
 
 test('tests if an object is this type', ()=> {
@@ -74,7 +75,7 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const functionDef = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true})
+    const functionDef = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true, javascript: true})
     expect(asJSON(functionDef)).toStrictEqual({
         kind: 'Function',
         id: 'id1',
@@ -84,7 +85,7 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const functionDef = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true})
+    const functionDef = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true, javascript: true})
     const plainObj = asJSON(functionDef)
     const newFunction = loadJSON(plainObj)
     expect(newFunction).toStrictEqual<FunctionDef>(functionDef)
