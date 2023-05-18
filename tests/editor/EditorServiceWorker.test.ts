@@ -102,7 +102,19 @@ test('serves index.html if path empty', async () => {
     expect(await result.text()).toBe('index.html contents')
 })
 
-test('writes single new file from message', async () => {
+test('writes single new file in top-level directory from message', async () => {
+    const event = {data: {type: 'write', path: 'morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
+    worker.message(event)
+    // @ts-ignore
+    expect(worker.getFileContents('morestuff.js')).toBe('morestuff.js contents')
+    await wait(10)
+    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'morestuff.js'})
+    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'morestuff.js'})
+    // @ts-ignore
+    expect(worker.fileSystem['']).toBeUndefined()
+})
+
+test('writes single new file in existing directory from message', async () => {
     const event = {data: {type: 'write', path: 'dir1/morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
     worker.message(event)
     // @ts-ignore
@@ -110,6 +122,16 @@ test('writes single new file from message', async () => {
     await wait(10)
     expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir1/morestuff.js'})
     expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir1/morestuff.js'})
+})
+
+test('writes single new file to new directory', async () => {
+    const event = {data: {type: 'write', path: 'dir2/morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
+    worker.message(event)
+    // @ts-ignore
+    expect(worker.getFileContents('dir2/morestuff.js')).toBe('morestuff.js contents')
+    await wait(10)
+    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir2/morestuff.js'})
+    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir2/morestuff.js'})
 })
 
 test('updates single file from message', () => {

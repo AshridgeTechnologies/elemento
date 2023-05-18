@@ -35,6 +35,8 @@ Possibilities
 - Actions log the parameters they were called with
 - Data elements have a type, validate the value they are given - maybe use in code
 - In multiline actions/expressions, separate the definitions from the actions/result, show without executing
+- To debug in browser tools, couls use the latest cache-busted import in the sources list
+- If use script element instead, could recreate with a debugger statement at the start so it stops when runs and can set breakpoints
 
 Decisions
 ---------

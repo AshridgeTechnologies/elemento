@@ -96,8 +96,8 @@ test('can get all code in one string from the output with imports and export', f
 
     const output = generate(app, project(app))
 
-    expect(output.code).toBe(`import React from 'react'
-import Elemento from 'elemento-runtime'
+    expect(output.code).toBe(`import * as Elemento from './runtime.js'
+import {React} from './runtime.js'
 
 // Page1.js
 function Page1(props) {
@@ -155,8 +155,8 @@ test('includes all DataTypes files', () => {
 
     const output = generate(app1, project)
 
-    expect(output.code).toBe(`import React from 'react'
-import Elemento from 'elemento-runtime'
+    expect(output.code).toBe(`import * as Elemento from './runtime.js'
+import {React} from './runtime.js'
 
 const {types: {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
 
@@ -362,7 +362,7 @@ test('generates SpeechInput elements with language and phrases', ()=> {
         )])
 
     const gen = new Generator(app, project(app))
-    expect(gen.output().files[0].content).toBe(`function Page1(props) {
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, SpeechInput} = Elemento.components
     const t1 = Elemento.useObjectState(pathWith('t1'), new SpeechInput.State({language: 'fr', expectedPhrases: ['One', 'Two']}))
@@ -1122,7 +1122,7 @@ return y
     ])
 
     const output = new Generator(app, project(app)).output()
-    expect(output.files[0].content).toBe(`function Page1(props) {
+    expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page} = Elemento.components
     const {Sum} = Elemento.globalFunctions
@@ -1162,7 +1162,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
     const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({})
 
-    expect(output.files[0].content).toBe(`function Page1(props) {
+    expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page} = Elemento.components
     const WidgetHeight = (words, factory, formula) => {
