@@ -50,7 +50,7 @@ const expectedIndexFile = (app: App, project: Project = project1) => generate(ap
 
 const getProjectLoader = (project: Project):ProjectLoader & {project: Project} => ({
     project,
-    getProject() { return Promise.resolve(this.project) }
+    getProject() { return this.project }
 })
 
 const clientFileWriter = {
@@ -59,20 +59,21 @@ const clientFileWriter = {
 const serverFileWriter = {
     writeFile: jest.fn()
 }
+const runtimeLoader = {
+    getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
+}
+
 const getFileLoader = (dirContents: object = {}) => ({
     listFiles: jest.fn().mockResolvedValue(Object.keys(dirContents)),
     readFile: jest.fn().mockImplementation((filepath: string) => Promise.resolve(dirContents[filepath.split('/')[1] as keyof typeof dirContents]))
 })
-
-const runtimeLoader = {
-    getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
-}
 
 const clearMocks = () => {
     clientFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
     runtimeLoader.getFile.mockClear()
 }
+
 beforeEach(clearMocks)
 
 test('writes client files for all apps to client build with one copy of asset', async () => {
@@ -146,6 +147,25 @@ test('has errors generated from Project for all apps', async () => {
     })
 })
 
+test('updates errors and code generated from Project immediately', async () => {
+    const projectLoader = getProjectLoader(project1)
+    const builder = new ProjectBuilder({projectLoader, fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
+    await builder.build()
+    expect(builder.errors).toStrictEqual({})
+
+    clearMocks()
+    const project1WithErrors = project1.set('text1', 'content', ex`Badname + 'x'`)
+    projectLoader.project = project1WithErrors
+    builder.updateProject()  // no wait for debounced update
+
+    expect(builder.errors).toStrictEqual({
+        text1: {
+            content: 'Unknown names: Badname'
+        },
+    })
+    expect(builder.code['App1.js']).toContain(`Badname + 'x'`)
+})
+
 test('copies runtime files only to client build if no server app', async () => {
     const builder = new ProjectBuilder({projectLoader: getProjectLoader(projectClientOnly), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
     await builder.build()
@@ -166,15 +186,27 @@ test('updates files generated from project', async () => {
         'File1.txt': 'File 1',
     }
 
+    const clientFileWriter = {
+        writeFile: jest.fn()
+    }
+    const serverFileWriter = {
+        writeFile: jest.fn()
+    }
+    const runtimeLoader = {
+        getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
+    }
     const projectLoader = getProjectLoader(project1)
     const builder = new ProjectBuilder({projectLoader, fileLoader: getFileLoader(dirContents), runtimeLoader, clientFileWriter, serverFileWriter})
     await builder.build()
 
-    clearMocks()
+    clientFileWriter.writeFile.mockClear()
+    serverFileWriter.writeFile.mockClear()
+    runtimeLoader.getFile.mockClear()
+
     const project1Updated = project1.set('text1', 'name', 'Text 1 Updated')
     projectLoader.project = project1Updated
-    builder.updateProject()
-    await wait(110)  // updateProject is throttled
+    await builder.updateProject()
+    await wait(110)  // writes are throttled
     const updatedApp1 = project1Updated.findElement('app1') as App
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App1.js', expectedClientCode(updatedApp1)],

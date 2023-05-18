@@ -18,10 +18,6 @@ export default class EditorServiceWorker {
     message = (event: ExtendableMessageEvent) => {
         const {data} = event
 
-        if (data?.type === 'mount') {
-            this.mount(data.fileSystem)
-        }
-
         if (data?.type === 'write') {
             this.writeFile(data.path, data.contents)
             this.sendUpdate(data.path)

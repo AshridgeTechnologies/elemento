@@ -5,10 +5,11 @@ import path from 'path'
 import {projectFileName} from '../shared/constants'
 import {loadJSONFromString} from '../model/loadJSON'
 
-export default class FileProjectLoader implements ProjectLoader{
+export default class FileProjectLoader implements ProjectLoader {
     constructor(private readonly projectDir: string) {}
 
     getProject() {
-        return fs.promises.readFile(path.join(this.projectDir, projectFileName), 'utf8').then( text => loadJSONFromString(text) as Project)
+        const fileText = fs.readFileSync(path.join(this.projectDir, projectFileName), 'utf8')
+        return loadJSONFromString(fileText) as Project
     }
 }

@@ -188,6 +188,10 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
     )
 }
 
+const previewCodeBundle = (codeFiles: {[p: string] : string}) =>
+    Object.entries(codeFiles).map(([name, code]) => `// File: ${name}\n\n${code}`).join(`\n\n\n`)
+
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
@@ -219,9 +223,6 @@ export default function EditorRunner() {
         debouncedSave(updatedProject, projectStore!)
         projectBuilderRef.current?.updateProject()
 
-        const [path, fileContents] = previewCodeFile(updatedProject)
-        writeFile(path, fileContents)
-
         const [serverPath, newServerAppCode] = previewServerCodeFile(updatedProject)
         if (serverPath && newServerAppCode && newServerAppCode !== serverAppCode) {
             const serverAppName = findServerApp(updatedProject)!.codeName
@@ -236,9 +237,6 @@ export default function EditorRunner() {
         setProject(proj)
         await projectBuilderRef.current?.build()
 
-        // const filesToMount = await previewClientFiles(getOpenProject(), projectStore, window.location.origin)
-        // console.log('re-mounting files', filesToMount)
-        // mountFiles(filesToMount)
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
@@ -270,10 +268,6 @@ export default function EditorRunner() {
         const selectConnector = (el: Element) => el.kind === 'ServerAppConnector' && (el as ServerAppConnector).serverApp?.expr === serverAppName
         const connectors = project.findElementsBy( selectConnector)
         connectors.forEach( conn => callFunctionInPreview(project.findElementPath(conn.id)!, 'Refresh'))
-    }
-
-    function mountFiles(filesToMount: FileSystemTree) {
-        navigator.serviceWorker.controller!.postMessage({type: 'mount', fileSystem: filesToMount})
     }
 
     function renameFile(oldPath: string, newPath: string) {
@@ -511,6 +505,8 @@ export default function EditorRunner() {
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
     const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
     const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
+    const errors = projectBuilderRef.current?.errors ?? {}
+    const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
     return <ThemeProvider theme={theme}>
         {alertMessage}
         {dialog}
@@ -521,6 +517,7 @@ export default function EditorRunner() {
                     onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
                     runUrl={runUrl} previewUrl={previewUrl}
                     selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
+                    errors = {errors} previewCode={previewCode}
             /> :
             <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
         }

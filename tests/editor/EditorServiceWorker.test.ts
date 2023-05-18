@@ -89,14 +89,6 @@ test('passes through non-preview request', async () => {
     }
 })
 
-test('mounts files from message', () => {
-    const worker = new EditorServiceWorker(dummySWScope())
-    const event = {data: {type: 'mount', fileSystem: files}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.fileSystem['index.html'].file.contents).toBe('index.html contents')
-})
-
 test('serves index.html if path empty', async () => {
     const result = await worker.handleRequest(request('https://example.com/preview/'))
     expect(await result.text()).toBe('index.html contents')

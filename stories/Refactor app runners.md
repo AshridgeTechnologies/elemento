@@ -67,6 +67,3 @@ To do
 - ✅ Make the imports in the app JS file work
 - Replace server preview initial mount and updates with builder
 - Editor uses code and errors passed in props from EditorRunner
-
-
-Next: find the reason for rendering errors
