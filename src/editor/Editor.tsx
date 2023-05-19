@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react'
-import App from '../model/App'
 
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
@@ -26,17 +25,13 @@ import {elementTypes} from '../model/elements'
 import {Box, Button, Grid} from '@mui/material'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import {generate} from '../generator/Generator'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 import PreviewPanel from './PreviewPanel'
 import FirebasePublish from '../model/FirebasePublish'
-import ServerApp from '../model/ServerApp'
 import {AllErrors} from '../generator/Types'
 import EditorHelpPanel from './EditorHelpPanel'
 import {noop} from '../util/helpers'
-import {generateServerApp} from '../generator/ServerAppGenerator'
-import {generateTypes} from '../generator/TypesGenerator'
 
 const treeData = (project: Project): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {

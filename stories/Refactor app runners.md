@@ -18,7 +18,7 @@ Requirements
 - ✅ All client code in same top-level directory - review later
 - ✅ Multiple server apps generated into same top-level dir with common Firebase files
 - ✅ Files in files dir
-- Runs in preview
+- ✅ Runs in preview
 - Runs from GitHub
 - Runs from Firebase hosting
 - Remove AppRunnerFromStorage, AppRunnerFromUrl
@@ -33,7 +33,7 @@ Requirements Part 2
 Technical
 ---------
 
-- First: Refactor Builder, build.ts, previewFiles.ts and usages in Editor and EditorRunner
+- ✅ First: Refactor Builder, build.ts, previewFiles.ts and usages in Editor and EditorRunner
 - ✅ Possible components: 
   - Project loader: Node, browser
   - File loader: Node, browser
@@ -48,7 +48,7 @@ Technical
   - Server file writer
 - ✅ Builder actions: build, update project, update files
 - ✅ Builder accessors: code, errors
-- EditorRunner owns builder, passes code and errors into Editor
+- ✅ EditorRunner owns builder, passes code and errors into Editor
 - Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
 
 
@@ -65,5 +65,6 @@ To do
 - ✅ Check it updates OK and has code and errors
 - ✅ Replace client preview initial mount and updates with builder
 - ✅ Make the imports in the app JS file work
-- Replace server preview initial mount and updates with builder
-- Editor uses code and errors passed in props from EditorRunner
+- ✅ Replace server preview initial mount and updates with builder
+- ✅ Editor uses code and errors passed in props from EditorRunner
+- Remove Builder, build.ts

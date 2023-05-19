@@ -26,8 +26,6 @@ import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {EventActionPropertyDef} from '../model/Types'
-import {loadJSONFromString} from '../model/loadJSON'
-import {generateServerApp} from './ServerAppGenerator'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";

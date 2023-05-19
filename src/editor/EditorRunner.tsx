@@ -3,7 +3,7 @@ import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {AppElementAction, AppElementActionName, FileSystemTree} from './Types'
+import {AppElementAction, AppElementActionName} from './Types'
 import {
     Alert,
     AlertColor,
@@ -27,20 +27,18 @@ import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authenticatio
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
-import {previewCodeFile, previewServerCodeFile} from './previewFiles'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
-import {findServerApp} from '../generator/Builder'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
-import ServerAppConnector from '../model/ServerAppConnector'
-import ProjectBuilder, {FileWriter} from "../generator/ProjectBuilder";
+import ProjectBuilder from "../generator/ProjectBuilder";
 import BrowserProjectLoader from "../generator/BrowserProjectLoader";
 import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
 import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
 import PostMessageFileWriter from "./PostMessageFileWriter";
+import HttpFileWriter from "./HttpFileWriter";
 
 const {debounce} = lodash;
 
@@ -75,9 +73,7 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
         console.error('Error updating server file', error);
     }
 }
-
-const debouncedUpdateServerFile = debounce( updateServerFile, 1000 )
-
+debounce( updateServerFile, 1000 );
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -196,7 +192,6 @@ export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
-    const [serverAppCode, setServerAppCode] = useState<string | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [,setProject] = useState<Project | null>(null)
@@ -222,15 +217,8 @@ export default function EditorRunner() {
         setProject(updatedProject)
         debouncedSave(updatedProject, projectStore!)
         projectBuilderRef.current?.updateProject()
-
-        const [serverPath, newServerAppCode] = previewServerCodeFile(updatedProject)
-        if (serverPath && newServerAppCode && newServerAppCode !== serverAppCode) {
-            const serverAppName = findServerApp(updatedProject)!.codeName
-            debouncedUpdateServerFile(serverAppName, serverPath, newServerAppCode, () => updatePreviewServerAppConnectors(serverAppName))
-                ?.catch(e => console.error('Could not update server file', e))
-            setServerAppCode(newServerAppCode)
-        }
     }
+
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         projectHandler.setProject(proj)
         projectHandler.setName(name)
@@ -242,32 +230,20 @@ export default function EditorRunner() {
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
+
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
         setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
-        const dummyFileWriter: FileWriter = {
-            writeFile(filepath: string, contents: any): Promise<void> {
-                return Promise.resolve(undefined);
-            }
-        }
         const newProjectBuilder = new ProjectBuilder({
             projectLoader: new BrowserProjectLoader( () => getOpenProject() ),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
             runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
             clientFileWriter: new PostMessageFileWriter(navigator.serviceWorker.controller!),
-            serverFileWriter: dummyFileWriter
+            serverFileWriter: new HttpFileWriter(devServerUrl)
         })
         projectBuilderRef.current = newProjectBuilder
         await updateProjectHandlerFromStore(project, name, projectStore)
-    }
-
-
-    function updatePreviewServerAppConnectors(serverAppName: string) {
-        const project = getOpenProject()
-        const selectConnector = (el: Element) => el.kind === 'ServerAppConnector' && (el as ServerAppConnector).serverApp?.expr === serverAppName
-        const connectors = project.findElementsBy( selectConnector)
-        connectors.forEach( conn => callFunctionInPreview(project.findElementPath(conn.id)!, 'Refresh'))
     }
 
     function renameFile(oldPath: string, newPath: string) {
@@ -417,6 +393,8 @@ export default function EditorRunner() {
         }
     }
 
+    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
+
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                                  uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
@@ -435,8 +413,7 @@ export default function EditorRunner() {
             }
         const projectWorkingCopy = await projectStore!.getProject()
         await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore!)
-        }
-    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
+    }
 
     function pushToGitHub(gitProjectStore: GitProjectStore) {
         const onPush = async (commitMessage: string) => {
