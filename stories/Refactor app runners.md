@@ -30,8 +30,8 @@ Requirements Part 2
 - GitHub action builds and commits to a build branch on each commit
 - App can be run from built code via GitHub pages
 
-Technical
----------
+Preparation
+-----------
 
 - ✅ First: Refactor Builder, build.ts, previewFiles.ts and usages in Editor and EditorRunner
 - ✅ Possible components: 
@@ -51,20 +51,34 @@ Technical
 - ✅ EditorRunner owns builder, passes code and errors into Editor
 - Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
 
+App Runner rework - client side
+-------------------------------
+
+- Builder writes generated code to disk
+- App runner gets built code from GitHub
+- App runner can use specified version
+
+App Runner rework - server side
+-------------------------------
+
+- App server running in a Firebase function
+- Index.html in FB hosting
+- App server can pull code from GitHub
+- App server can accept PUTs from editor
+- App server serves preview code
+- App server can use specific version
+- Builder writes to app server
+- App server protects preview PUT and GET with secret key
+- Builder writes Firebase boilerplate to project directory
+- Firebase deploy sets everything up correctly
+- Remove preview window
+- Remove old Builder and build.ts
 
 Notes
 -----
 
-- Editor uses errors and code from the builder in the EditorRunner
 
 To do
 -----
 
-- ✅ Create ProjectBuilder in EditorRunner with dummy outputs
-- ✅ Check it builds OK and has code and errors
-- ✅ Check it updates OK and has code and errors
-- ✅ Replace client preview initial mount and updates with builder
-- ✅ Make the imports in the app JS file work
-- ✅ Replace server preview initial mount and updates with builder
-- ✅ Editor uses code and errors passed in props from EditorRunner
-- Remove Builder, build.ts
+
