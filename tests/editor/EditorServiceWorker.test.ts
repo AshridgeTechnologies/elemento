@@ -48,31 +48,31 @@ beforeEach(() => {
 })
 
 test('can get response for mounted file at top level', async () => {
-    const result = await worker.handleRequest(request('http://example.com/preview/index.html'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/index.html'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
     expect(await result.text()).toBe('index.html contents')
 })
 
 test('can get response for mounted file in sub-directory', async () => {
-    const result = await worker.handleRequest(request('http://example.com/preview/dir1/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir1/stuff.js'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.text()).toBe('stuff.js contents')
 })
 
 test('can get not found response for non-existent top-level file', async () => {
-    const result = await worker.handleRequest(request('http://example.com/preview/xxx.html'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/xxx.html'))
     expect(result.status).toBe(404)
 })
 
 test('can get not found response for non-existent file in sub dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/preview/dir1/xxx.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir1/xxx.js'))
     expect(result.status).toBe(404)
 })
 
 test('can get not found response for non-existent dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/preview/dir2/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir2/stuff.js'))
     expect(result.status).toBe(404)
 })
 
@@ -81,7 +81,7 @@ test('passes through non-preview request', async () => {
     globalThis.fetch = jest.fn()
 
     try {
-        const req = request('http://example.com/otherthing/stuff.js')
+        const req = request('http://example.com/studio/otherthing/stuff.js')
         await worker.handleRequest(req)
         expect(globalThis.fetch).toHaveBeenCalledWith(req)
     } finally {
@@ -90,7 +90,7 @@ test('passes through non-preview request', async () => {
 })
 
 test('serves index.html if path empty', async () => {
-    const result = await worker.handleRequest(request('https://example.com/preview/'))
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/'))
     expect(await result.text()).toBe('index.html contents')
 })
 

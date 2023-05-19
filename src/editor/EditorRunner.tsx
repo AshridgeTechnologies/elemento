@@ -39,6 +39,9 @@ import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
 import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
 import PostMessageFileWriter from "./PostMessageFileWriter";
 import HttpFileWriter from "./HttpFileWriter";
+import MultiFileWriter from '../generator/MultiFileWriter'
+import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
+import App from '../model/App'
 
 const {debounce} = lodash;
 
@@ -73,7 +76,7 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
         console.error('Error updating server file', error);
     }
 }
-debounce( updateServerFile, 1000 );
+
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -231,18 +234,29 @@ export default function EditorRunner() {
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
 
+    const newProjectBuilder = (projectStore: DiskProjectStore) => {
+        const clientFileWriter = new MultiFileWriter(
+            new PostMessageFileWriter(navigator.serviceWorker.controller!),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/client')
+        )
+        const serverFileWriter = new MultiFileWriter(
+            new HttpFileWriter(devServerUrl),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/server')
+        )
+        return new ProjectBuilder({
+            projectLoader: new BrowserProjectLoader(() => getOpenProject()),
+            fileLoader: new DiskProjectStoreFileLoader(projectStore),
+            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
+            clientFileWriter,
+            serverFileWriter
+        })
+    }
+
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
         setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
-        const newProjectBuilder = new ProjectBuilder({
-            projectLoader: new BrowserProjectLoader( () => getOpenProject() ),
-            fileLoader: new DiskProjectStoreFileLoader(projectStore),
-            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
-            clientFileWriter: new PostMessageFileWriter(navigator.serviceWorker.controller!),
-            serverFileWriter: new HttpFileWriter(devServerUrl)
-        })
-        projectBuilderRef.current = newProjectBuilder
+        projectBuilderRef.current = newProjectBuilder(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
     }
 
@@ -480,8 +494,9 @@ export default function EditorRunner() {
     }
 
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-    const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
-    const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
+    const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
+    const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
+    const previewUrl = updateTime ? `/studio/preview/?v=${updateTime}` : '/studio/preview/'
     const errors = projectBuilderRef.current?.errors ?? {}
     const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
     return <ThemeProvider theme={theme}>

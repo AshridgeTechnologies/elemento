@@ -1,9 +1,5 @@
 import {createElement} from 'react'
 import {createRoot} from 'react-dom/client'
-import AppRunnerFromUrl from './AppRunnerFromUrl'
-import AppRunnerFromCode from './AppRunnerFromCode'
-import {welcomeAppCode} from '../util/initialProjects'
-import AppRunnerFromStorage from './AppRunnerFromStorage'
 import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 
@@ -13,22 +9,14 @@ const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContex
 
 export default function AppMain({windowUrlPath}: Properties) {
     const path = decodeURIComponent(windowUrlPath)
-    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)/)
-    const webMatch = path.match(/\/web\/(.+)$/)
-    const appsMatch = path.match(/\/(apps\/.+)$/)
+    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-\w]+)/)
     if (githubMatch) {
-        const [, firstPart, username, repo] = githubMatch
+        const [, firstPart, username, repo, appName] = githubMatch
         const pathPrefix = `${firstPart}/gh/${username}/${repo}`
-        return createElement(AppRunnerFromGitHub, {username, repo, appContext: getAppContext(pathPrefix)})
-    } else if (webMatch) {
-        const appCodeUrl = `https://${webMatch[1]}`
-        return createElement(AppRunnerFromUrl, {appCodeUrl, appContext: getAppContext()})
-    } else if (appsMatch) {
-        const appCodePath = appsMatch[1]
-        return createElement(AppRunnerFromStorage, {appCodePath, appContext: getAppContext()})
-    } else {
-        return createElement(AppRunnerFromCode, {appCode: welcomeAppCode(), appContext: getAppContext()})
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, appContext: getAppContext(pathPrefix)})
     }
+
+    return createElement('h1', 'Sorry - we could not find the Elemento app you are trying to run')
 }
 
 export const runAppFromWindowUrl = (windowUrlPath: string = location.pathname, containerElementId = 'main') => {

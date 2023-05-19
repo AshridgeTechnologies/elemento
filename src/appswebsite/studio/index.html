@@ -20,7 +20,7 @@
             }
             try {
                 const registration = await navigator.serviceWorker.register(new URL('../sw.ts', import.meta.url), {
-                    scope: '/', type: 'module'
+                    scope: '/studio', type: 'module'
                 });
 
                 if (registration.installing) {

@@ -6,6 +6,7 @@ Aims
 
 - Clean up app running
 - Allow types to be used in apps
+- Replace "push" deploy from GitHub with a flexible "pull" approach
 
 Requirements
 ------------
@@ -19,9 +20,9 @@ Requirements
 - ✅ Multiple server apps generated into same top-level dir with common Firebase files
 - ✅ Files in files dir
 - ✅ Runs in preview
-- Runs from GitHub
+- ✅ Runs from GitHub
 - Runs from Firebase hosting
-- Remove AppRunnerFromStorage, AppRunnerFromUrl
+- ✅ Remove AppRunnerFromStorage, AppRunnerFromUrl
 
 Requirements Part 2
 -------------------
@@ -30,8 +31,8 @@ Requirements Part 2
 - GitHub action builds and commits to a build branch on each commit
 - App can be run from built code via GitHub pages
 
-Technical
----------
+Preparation
+-----------
 
 - ✅ First: Refactor Builder, build.ts, previewFiles.ts and usages in Editor and EditorRunner
 - ✅ Possible components: 
@@ -51,20 +52,66 @@ Technical
 - ✅ EditorRunner owns builder, passes code and errors into Editor
 - Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
 
+App Runner rework - client side
+-------------------------------
+
+- ✅ Editor ProjectBuilder writes generated code to disk
+- ✅ App runner gets built code from GitHub
+- ✅ App runner does not use service worker
+- Review run and runForDev in index.html for prod and preview
+
+App Runner rework - server side
+-------------------------------
+
+- App server running in a Firebase function
+- Index.html in FB hosting
+- ✅ server can pull code from GitHub
+- App server can accept PUTs from editor
+- App server serves preview code
+- Builder writes to app server
+- App server protects preview PUT and GET with secret key or Firebase login
+- Builder or Firebase deploy writes Firebase boilerplate to project directory
+- Firebase deploy sets everything up correctly
+- OR Runner can be installed as a Firebase extension
+- Remove preview window
+- Remove old Builder and build.ts
+- Don't load runtimes and other unnecessary files into GitHub
+
+Further requirements
+--------------------
+- App runner finds default main app name from index.html
+- App runner can use specified version
+- App runner gets default from tag
+- Server App server can use specific version or tag
 
 Notes
 -----
 
-- Editor uses errors and code from the builder in the EditorRunner
 
 To do
 -----
 
-- ✅ Create ProjectBuilder in EditorRunner with dummy outputs
-- ✅ Check it builds OK and has code and errors
-- ✅ Check it updates OK and has code and errors
-- ✅ Replace client preview initial mount and updates with builder
-- ✅ Make the imports in the app JS file work
-- ✅ Replace server preview initial mount and updates with builder
-- ✅ Editor uses code and errors passed in props from EditorRunner
-- Remove Builder, build.ts
+
+Technical
+---------
+
+- Server app runner is a Firebase function running an express app
+- Configured in hosting to run on <hostname>/capi
+- It is set up to serve apps from one GitHub repo (how? - function config? Hard coded constant?)
+- First part of path is version: _ for latest, tag, commit id
+- Next part is the app name
+- Final part of the path name is the function to call
+- Request handling procedure:
+  - Get the current user
+  - Construct the path of the app module and version on GitHub
+  - Check if file exists in disk module store
+  - If not:
+    - Construct GitHub or jsDelivr path
+    - Retrieve text
+    - Write to file with the app module path
+  - Dynamic import the server app modue from the file
+  - Call the default export function with the current user to get the app instance for the request
+  - Get the function and parameters from the request
+  - Call the function
+  - Send the result
+

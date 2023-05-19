@@ -53,6 +53,7 @@ Stories
 - Event actions
 - Speech synthesis
 - Shapes, drawing, animation
+- Dynamic elements from a list
 
 ### Priority for learning
 - Tutorials
@@ -73,6 +74,8 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Import components with typed property editing
+- Import API client component with type property editing
 - Function parameter types and validation
 - Deploy multiple versions - for testing, canary deployment and instant rollback
 - Add deferred desirable features from previous stories
@@ -116,6 +119,7 @@ Tech debt
 - Look for ways to have imports that update dynamically in preview, both client and server
 - Consider using decorators
 - Consider oclif for CLI and dev server (or combine them)
+- Consider a curl-installed server like firebase-tools standalone
 - Revisit user-private - using sub-collections in Firebase is non-portable
 - Flaky EditorRunner and AppMain tests
 - Refactor Editor etc so could swap in different Editor, outer component generates and previews

@@ -24,11 +24,11 @@ export interface DiskProjectStoreInterface {
     getFileNames(dirName: string): Promise<string[]>
     readFile(path: string): Promise<Uint8Array>
 
-    writeFile(path: string, fileData: Uint8Array): Promise<void>
+    writeFile(path: string, fileData: Uint8Array, createDirs?: boolean): Promise<void>
 
     readTextFile(path: string): Promise<string>
 
-    writeTextFile(path: string, text: string): Promise<void>
+    writeTextFile(path: string, text: string, createDirs?: boolean): Promise<void>
 
     writeProjectFile(project: Project): Promise<void>
 
@@ -118,8 +118,8 @@ export class DirectoryFS  {
         return result
     }
 
-    async writeFile(filepath: string, data: Uint8Array | string, options?: FS.WriteFileOptions | string): Promise<void> {
-        const fileHandle = await this.getFileHandle(filepath, {create: true})
+    async writeFile(filepath: string, data: Uint8Array | string, options?: FS.WriteFileOptions | string, createDirs?: boolean): Promise<void> {
+        const fileHandle = await this.getFileHandle(filepath, {create: true}, createDirs)
         // @ts-ignore
         const writable = await fileHandle.createWritable()
         await writable.write(data)
@@ -242,11 +242,11 @@ export class DirectoryFS  {
         return await this.resolveDirHandle(dirSegments)
     }
 
-    private async getFileHandle(filepath: string, options: FileSystemGetFileOptions = {}): Promise<FileSystemFileHandle> {
+    private async getFileHandle(filepath: string, options: FileSystemGetFileOptions = {}, createDirs?: boolean): Promise<FileSystemFileHandle> {
         const pathSegments = this.pathSegments(filepath)
         const fileSegment = pathSegments.slice(-1)[0]
         const dirSegments = pathSegments.slice(0, -1)
-        const dirHandle =  await this.resolveDirHandle(dirSegments)
+        const dirHandle =  await this.resolveDirHandle(dirSegments, createDirs)
         try {
             return await dirHandle.getFileHandle(fileSegment, options)
         } catch (e) {
@@ -259,14 +259,18 @@ export class DirectoryFS  {
         return path.split('/').filter(seg => !!seg)
     }
 
-    private async resolveDirHandle(dirSegments: string[]) {
+    private async resolveDirHandle(dirSegments: string[], createDirs = false) {
         let handle = this.directoryHandle
-        try {
-            for (const dir of dirSegments) {
+        for (const dir of dirSegments) {
+            try {
                 handle = await handle.getDirectoryHandle(dir)
+            } catch (e) {
+                if (createDirs) {
+                    handle = await handle.getDirectoryHandle(dir, {create: true})
+                } else {
+                    throw new FileError(dirSegments.join('/'), 'not found', 'ENOENT')
+                }
             }
-        } catch (e) {
-            throw new FileError(dirSegments.join('/'), 'not found', 'ENOENT')
         }
         return handle
     }
@@ -315,8 +319,8 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
         return this.fs.readFile(`/${path}`, 'utf8') as Promise<string>
     }
 
-    writeTextFile(path: string, text: string) {
-        return this.fs.writeFile(`/${path}`, text, 'utf8')
+    writeTextFile(path: string, text: string, createDirs = false) {
+        return this.fs.writeFile(`/${path}`, text, 'utf8', createDirs)
     }
 
     writeProjectFile(project: Project) {
@@ -335,8 +339,8 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
         return this.fs
     }
 
-    writeFile(path: string, fileData: Uint8Array) {
-        return this.fs.writeFile(`/${path}`, fileData)
+    writeFile(path: string, fileData: Uint8Array, createDirs = false) {
+        return this.fs.writeFile(`/${path}`, fileData, undefined, createDirs)
     }
 
     readFile(path: string) {

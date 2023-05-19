@@ -37,8 +37,9 @@ const indentLevel2 = '        '
 const indentLevel3 = '            '
 
 export const DEFAULT_IMPORTS = [
-    `import * as Elemento from './runtime.js'`,
-    `import {React} from './runtime.js'`
+    `const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\``,
+    `const Elemento = await import(runtimeUrl)`,
+    `const {React} = Elemento`
 ]
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
@@ -77,16 +78,27 @@ export default class Generator {
             files: [...typesFiles, ...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
             get code() {
-                return imports + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
+                return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
             },
             html: this.htmlRunnerFile()
         }
     }
 
     private generateImports(app: App) {
-        const importSource = ({source, codeName}: FunctionImport) => source?.match(/^https?:\/\//) ? source : `./${ASSET_DIR}/${source ?? codeName + '.js'}`
-        const exportName = ({exportName}: FunctionImport) => exportName ? `, '${exportName}'` : ''
-        return app.findChildElements(FunctionImport).map( f => `const ${f.codeName} = await Elemento.importModule('${importSource(f)}'${exportName(f)})`)
+        const generateImport = ({source, codeName, exportName}: FunctionImport) => {
+            const isHttp = source?.match(/^https?:\/\//)
+            if (isHttp) {
+                const exportNameArg = exportName ? `, '${exportName}'` : ''
+                return `const ${codeName} = await importModule('${source}'${exportNameArg})`
+            } else {
+                const exportNameArg = exportName ? `'${exportName}'` : ''
+                const importPath = `./${ASSET_DIR}/${source ?? codeName + '.js'}`
+                return `const ${codeName} = await import('${importPath}').then(...importHandlers(${exportNameArg}))`
+            }
+        }
+
+        const functionImports = app.findChildElements(FunctionImport)
+        return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 
     private generateComponent(app: App, component: Page | App | ListItem, containingComponent?: Page) {
@@ -462,8 +474,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 </head>
 <body>
 <script type="module">
-    import {runForDev} from './${runtimeFileName}'
-    runForDev('./${this.app.codeName}.js')
+    import {runForDev} from '/runtime/${runtimeFileName}'
+    runForDev('/studio/preview/${this.app.codeName}.js')
 </script>
 </body>
 </html>

@@ -46,7 +46,7 @@ export default class ProjectBuilder {
     }
 
     async build() {
-        return Promise.all([this.buildAndWriteProjectFiles(), this.copyAssetFiles(), this.copyRuntimeFiles()])
+        return Promise.all([this.buildAndWriteProjectFiles(), this.copyAssetFiles()])
     }
 
     updateProject() {
