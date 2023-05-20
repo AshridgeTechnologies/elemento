@@ -54,9 +54,10 @@ Preparation
 App Runner rework - client side
 -------------------------------
 
-- Builder writes generated code to disk
+- ✅ Editor ProjectBuilder writes generated code to disk
 - App runner gets built code from GitHub
 - App runner can use specified version
+- App runner gets default from tag
 
 App Runner rework - server side
 -------------------------------

@@ -10,7 +10,7 @@ beforeAll(() => {
     rootDirPath = `${tempDir}/${localName}`
     subDirName = 'somefiles'
     subDirPath = `${rootDirPath}/${subDirName}`
-    fs.rmSync(subDirPath, {recursive: true})
+    fs.rmSync(subDirPath, {recursive: true, force: true})
     fs.mkdirSync(subDirPath, {recursive: true})
     fs.writeFileSync(`${subDirPath}/file1.jpg`, new Uint8Array([1,2,3]))
     fs.writeFileSync(`${subDirPath}/file2.md`, 'File 2', 'utf8')

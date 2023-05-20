@@ -39,6 +39,8 @@ import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
 import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
 import PostMessageFileWriter from "./PostMessageFileWriter";
 import HttpFileWriter from "./HttpFileWriter";
+import MultiFileWriter from '../generator/MultiFileWriter'
+import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 
 const {debounce} = lodash;
 
@@ -231,18 +233,29 @@ export default function EditorRunner() {
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
 
+    const newProjectBuilder = (projectStore: DiskProjectStore) => {
+        const clientFileWriter = new MultiFileWriter(
+            new PostMessageFileWriter(navigator.serviceWorker.controller!),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/client')
+        )
+        const serverFileWriter = new MultiFileWriter(
+            new HttpFileWriter(devServerUrl),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/server')
+        )
+        return new ProjectBuilder({
+            projectLoader: new BrowserProjectLoader(() => getOpenProject()),
+            fileLoader: new DiskProjectStoreFileLoader(projectStore),
+            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
+            clientFileWriter,
+            serverFileWriter
+        })
+    }
+
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
         setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
-        const newProjectBuilder = new ProjectBuilder({
-            projectLoader: new BrowserProjectLoader( () => getOpenProject() ),
-            fileLoader: new DiskProjectStoreFileLoader(projectStore),
-            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
-            clientFileWriter: new PostMessageFileWriter(navigator.serviceWorker.controller!),
-            serverFileWriter: new HttpFileWriter(devServerUrl)
-        })
-        projectBuilderRef.current = newProjectBuilder
+        projectBuilderRef.current = newProjectBuilder(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
     }
 
