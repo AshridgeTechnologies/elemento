@@ -37,8 +37,9 @@ const indentLevel2 = '        '
 const indentLevel3 = '            '
 
 export const DEFAULT_IMPORTS = [
-    `import * as Elemento from './runtime.js'`,
-    `import {React} from './runtime.js'`
+    `const importUrl = \`\${window.location.origin}/runtime/runtime.js\``,
+    `const Elemento = await import(importUrl)`,
+    `const {React} = Elemento`
 ]
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
@@ -462,8 +463,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 </head>
 <body>
 <script type="module">
-    import {runForDev} from './${runtimeFileName}'
-    runForDev('./${this.app.codeName}.js')
+    import {runForDev} from '/runtime/${runtimeFileName}'
+    runForDev('/preview/${this.app.codeName}.js')
 </script>
 </body>
 </html>

@@ -96,8 +96,9 @@ test('can get all code in one string from the output with imports and export', f
 
     const output = generate(app, project(app))
 
-    expect(output.code).toBe(`import * as Elemento from './runtime.js'
-import {React} from './runtime.js'
+    expect(output.code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(importUrl)
+const {React} = Elemento
 
 // Page1.js
 function Page1(props) {
@@ -155,8 +156,9 @@ test('includes all DataTypes files', () => {
 
     const output = generate(app1, project)
 
-    expect(output.code).toBe(`import * as Elemento from './runtime.js'
-import {React} from './runtime.js'
+    expect(output.code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(importUrl)
+const {React} = Elemento
 
 const {types: {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
 
@@ -224,8 +226,8 @@ test('generates html runner file', () => {
 </head>
 <body>
 <script type="module">
-    import {runForDev} from './runtime.js'
-    runForDev('./App1.js')
+    import {runForDev} from '/runtime/runtime.js'
+    runForDev('/preview/App1.js')
 </script>
 </body>
 </html>

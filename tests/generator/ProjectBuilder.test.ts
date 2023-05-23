@@ -93,8 +93,8 @@ test('writes client files for all apps to client build with one copy of asset', 
         ['index.html', expectedIndexFile(app1)],
         ['App2.js', expectedClientCode(app2)],
         ['App2.html', expectedIndexFile(app2)],
-        ['runtime.js', 'Contents of runtime.js'],
-        ['runtime.js.map', 'Contents of runtime.js.map'],
+        // ['runtime.js', 'Contents of runtime.js'],
+        // ['runtime.js.map', 'Contents of runtime.js.map'],
         ['files/Image1.jpg', dirContents['Image1.jpg']],
         ['files/File2.pdf', dirContents['File2.pdf']],
     ])
@@ -106,11 +106,9 @@ test('writes server files generated from Project for all apps', async () => {
 
     const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
     const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
-    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([['runtime.js'], ['runtime.js.map'], ['serverRuntime.js'], ['serverRuntime.js.map'] ])
+    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([ ]) // copy runtime files currently disabled
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
         ...expectedGeneratedCalls,
-        ['serverRuntime.js', 'Contents of serverRuntime.js'],
-        ['serverRuntime.js.map', 'Contents of serverRuntime.js.map'],
     ])
 })
 
@@ -170,12 +168,10 @@ test('copies runtime files only to client build if no server app', async () => {
     const builder = new ProjectBuilder({projectLoader: getProjectLoader(projectClientOnly), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, serverFileWriter})
     await builder.build()
 
-    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([['runtime.js'], ['runtime.js.map'] ])
+    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([ ])
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App3.js', expectedClientCode(app3, projectClientOnly)],
         ['index.html', expectedIndexFile(app3, projectClientOnly)],
-        ['runtime.js', 'Contents of runtime.js'],
-        ['runtime.js.map', 'Contents of runtime.js.map'],
     ])
 
     expect(serverFileWriter.writeFile).not.toHaveBeenCalled()

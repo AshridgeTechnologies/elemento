@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="../run.css"/>
 </head>
 <body>
-  <script src="../../runner/runApp.ts" type="module"></script>
+  <script type="module">
+    import * as runtime from '/runtime/runtime.js'
+    await runtime.runAppFromWindowUrl()
+  </script>
 </body>
 </html>

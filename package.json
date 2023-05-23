@@ -9,8 +9,8 @@
     "test": "jest",
     "testcoverage": "yarn test --coverage",
     "nodetest": "NODE_OPTIONS=\"--es-module-specifier-resolution=node\" ts-node --esm --swc tests_node/generator/TypesGenerator.nodetest.ts",
-    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build 'src/appswebsite/**/*.html'",
-    "serve": "parcel --dist-dir devDist 'src/appswebsite/**/*.html' ",
+    "build": "NODE_OPTIONS=--no-experimental-fetch parcel build .",
+    "serve": "mkdir -p devDist/run && cp src/appswebsite/run/index.html devDist/run/ && parcel --dist-dir devDist .",
     "functest": "playwright test tests/functional",
     "functestprod": "PW_BASE_URL=https://elemento-apps.web.app playwright test tests/functional",
     "buildRuntime": "esbuild src/runtime/index.ts --bundle --sourcemap --format=esm  --minify --outfile=dist/runtime/runtime.js --define:process.env.NODE_ENV=\\\"development\\\"",
@@ -21,6 +21,14 @@
     "syncDev": "./scripts/syncDev.sh",
     "test-ct": "playwright test -c playwright-ct.config.ts"
   },
+  "source": [
+    "src/appswebsite/index.html",
+    "src/appswebsite/downloads/index.html",
+    "src/appswebsite/learn/index.html",
+    "src/appswebsite/privacy/index.html",
+    "src/appswebsite/studio/index.html",
+    "src/appswebsite/terms/index.html"
+  ],
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",

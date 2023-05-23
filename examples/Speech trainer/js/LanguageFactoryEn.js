@@ -1,4 +1,4 @@
-function LanguageFactoryEn(args) {
+export default function LanguageFactoryEn(...args) {
 
     const personTypes = ['1s', '2s', '3s', '1p', '2p', '3p']
     function hasTag(word, tag) { return word.Tags.split(/ +/).includes(tag) }
@@ -56,5 +56,5 @@ function LanguageFactoryEn(args) {
 
     const [commandName, ...commandArgs] = args
     const command = commands[commandName]
-    return command ? commands[commandName](...commandArgs) : `[??? ${args}.join(' ')]`
+    return command ? commands[commandName](...commandArgs) : `[??? ${args.join(' ')}]`
 }

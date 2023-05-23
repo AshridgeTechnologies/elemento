@@ -58,6 +58,7 @@ App Runner rework - client side
 - App runner gets built code from GitHub
 - App runner can use specified version
 - App runner gets default from tag
+- App runner does not use service worker
 
 App Runner rework - server side
 -------------------------------
@@ -74,6 +75,10 @@ App Runner rework - server side
 - Firebase deploy sets everything up correctly
 - Remove preview window
 - Remove old Builder and build.ts
+
+Further requirements
+--------------------
+- App runner finds default main app name from index.html
 
 Notes
 -----

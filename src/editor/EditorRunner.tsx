@@ -41,6 +41,7 @@ import PostMessageFileWriter from "./PostMessageFileWriter";
 import HttpFileWriter from "./HttpFileWriter";
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
+import App from '../model/App'
 
 const {debounce} = lodash;
 
@@ -75,7 +76,7 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
         console.error('Error updating server file', error);
     }
 }
-debounce( updateServerFile, 1000 );
+
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {target} = event
@@ -493,7 +494,8 @@ export default function EditorRunner() {
     }
 
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-    const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}` : undefined
+    const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
+    const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
     const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
     const errors = projectBuilderRef.current?.errors ?? {}
     const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})

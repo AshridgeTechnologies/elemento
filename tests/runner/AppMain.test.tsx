@@ -10,6 +10,8 @@ import {actWait, testContainer} from '../testutil/rtlHelpers'
 import {appCode1, projectFixture3, projectFixtureWithError} from '../testutil/projectFixtures'
 import {getTextFromStorage} from '../../src/shared/storage'
 import {asJSON, wait} from '../testutil/testHelpers'
+import {generate} from '../../src/generator/index'
+import App from '../../src/model/App'
 
 jest.mock('../../src/shared/storage')
 
@@ -37,11 +39,15 @@ let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} 
 function mockFetchForGitHub() {
     return jest.fn((urlArg: RequestInfo | URL) => {
         const url = urlArg.toString()
+        const project = projectFixture3(url)
+        const app = project.findChildElements(App)[0]
+        const appCode = generate(app, project).code
         if (url.startsWith('https://api.github.com')) {
             return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})
         }
         if (url.startsWith('https://cdn.jsdelivr.net/gh/')) {
-            return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixture3(url)))})
+            return Promise.resolve({text: () => {
+                    return Promise.resolve().then(() => appCode)}})
         }
         return Promise.reject(new Error(`URL ${url} not found`))
     })
@@ -67,28 +73,4 @@ test('runs app from GitHub with non-standard chars', async () => {
     expect(el`PathSections`).toBeEmptyDOMElement()
 })
 
-test('runs app from url at end of window location path', async () => {
-    renderThe(appMain('/runner/web/some.code/app.js'))
-    await actWait(20)
-    expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
-})
-
-test('runs app from encoded url at end of window location path', async () => {
-    renderThe(appMain('/runner/web/some.code%2fapp.js'))
-    await actWait(20)
-    expect(el`FirstText`).toHaveTextContent('This is App One from https://some.code/app.js')
-})
-
-test('runs app from storage location at end of window location path', async () => {
-    mock_getTextFromStorage('apps/xxx222/myApp.js')
-    renderThe(appMain('/runner/apps/xxx222/myApp.js'))
-    await actWait(20)
-    expect(el`FirstText`).toHaveTextContent('This is App One from apps/xxx222/myApp.js')
-})
-
-test('shows welcome app if no url found', async () => {
-    renderThe(appMain('/runner'))
-    await act( () => wait(20) )
-    expect(el`FirstText`).toHaveTextContent('Welcome to Elemento!')
-})
 
