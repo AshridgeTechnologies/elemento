@@ -1,9 +1,5 @@
 import {createElement} from 'react'
 import {createRoot} from 'react-dom/client'
-//import AppRunnerFromUrl from './AppRunnerFromUrl'
-//import AppRunnerFromCode from './AppRunnerFromCode'
-//import {welcomeAppCode} from '../util/initialProjects'
-//import AppRunnerFromStorage from './AppRunnerFromStorage'
 import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 

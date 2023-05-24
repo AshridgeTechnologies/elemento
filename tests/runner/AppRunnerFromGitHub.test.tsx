@@ -7,29 +7,33 @@ import AppRunnerFromGitHub from '../../src/runner/AppRunnerFromGitHub'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import {projectFixture3, projectFixtureWithError} from '../testutil/projectFixtures'
+import {projectFixture3} from '../testutil/projectFixtures'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
-import {asJSON, wait} from '../testutil/testHelpers'
+import {wait} from '../testutil/testHelpers'
+import App from '../../src/model/App'
+import {generate} from '../../src/generator/index'
+import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
 
-beforeEach(() => {
-    // @ts-ignore
-    global.fetch = jest.fn((urlArg: URL) => {
+jest.mock('../../src/runner/loadModuleHttp', ()=> ({
+    loadModuleHttp: jest.fn().mockResolvedValue({
+        default: () => {
+            return React.createElement('h1', {id: 'appone.mainpage.FirstText'}, 'App from GitHub')
+        }
+    })
+}))
+
+function mockFetchForGitHub() {
+    return jest.fn((urlArg: RequestInfo | URL) => {
         const url = urlArg.toString()
         if (url.startsWith('https://api.github.com')) {
-            return Promise.resolve({json: () => wait(10).then(() => ([
-                        {sha: 'abc123'},
-                        {sha: 'xyz123'},
-                    ]
-                ))})
-        }
-        //TODO mystery test bug - fails if include a wait(10) at the start of the json function in the response
-        if (url.startsWith('https://cdn.jsdelivr.net/gh/mickey')) {
-            if (url.includes('badjson')) return Promise.resolve({json: () => Promise.resolve().then(() => {throw new Error('Not JSON')})})
-            if (url.includes('badsource')) return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixtureWithError()))})
-            return Promise.resolve({json: () => Promise.resolve().then(() => asJSON(projectFixture3(url)))})
+            return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})
         }
         return Promise.reject(new Error(`URL ${url} not found`))
     })
+}
+beforeEach(() => {
+    // @ts-ignore
+    global.fetch = mockFetchForGitHub()
 })
 
 afterEach(() => {
@@ -44,58 +48,26 @@ const appContext: AppContext = {
     goBack(): void {}
 }
 
-const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse') => createElement(AppRunnerFromGitHub, {username, repo, appContext})
+const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
     ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
+
     renderThe(appRunnerFromGitHub())
 })
 
 test('shows loading until app loads then shows app on page', async () => {
     expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
     await actWait(500)
-    expectEl('FirstText').toHaveTextContent('From https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/ElementoProject.json')
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne.js')
+    expectEl('FirstText').toHaveTextContent('App from GitHub')
 })
 
-test('only fetches github and app source once for a url', async () => {
+test('only fetches github commits once for a url', async () => {
     await act( () => wait(50) )
     renderThe(appRunnerFromGitHub()) // second render
     await act( () => wait(50) )
     expect(global.fetch).toHaveBeenCalledWith('https://api.github.com/repos/mickey/mouse/commits')
-    expect(global.fetch).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/ElementoProject.json')
-    expect(global.fetch).toHaveBeenCalledTimes(2)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
 })
-
-test('updates app source for a new url', async () => {
-    await actWait(50)
-    expectEl('FirstText').toHaveTextContent('From https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/ElementoProject.json')
-    expect(global.fetch).toHaveBeenCalledTimes(2)
-
-    renderThe(appRunnerFromGitHub('mickey', 'mordor'))
-    await actWait(50)
-    expectEl('FirstText').toHaveTextContent('From https://cdn.jsdelivr.net/gh/mickey/mordor@abc123/ElementoProject.json')
-    expect(global.fetch).toHaveBeenCalledTimes(4)
-})
-
-test('shows error if app source cannot be loaded', async () => {
-    renderThe(appRunnerFromGitHub('manston', 'mordor'))
-    await actWait(20)
-    expectEl('errorMessage').toHaveTextContent('Elemento was unable to load an app from this location:')
-    expectEl('errorMessage').toHaveTextContent('URL https://cdn.jsdelivr.net/gh/manston/mordor@abc123/ElementoProject.json not found')
-})
-
-test('shows error if app source cannot be read', async () => {
-    renderThe(appRunnerFromGitHub('mickey', 'badjson'))
-    await actWait(50)
-    expectEl('errorMessage').toHaveTextContent('Elemento was unable to load an app from this location:')
-    expectEl('errorMessage').toHaveTextContent('mickey/badjson')
-    expectEl('errorMessage').toHaveTextContent('Not JSON')
-})
-test('shows error if app source contains an error', async () => {
-    renderThe(appRunnerFromGitHub('mickey', 'badsource'))
-    await actWait(50)
-    expectEl('errorMessage').toHaveTextContent('Elemento was unable to load an app from this location:')
-    expectEl('errorMessage').toHaveTextContent('Errors found in the app: { "text_1": { "content": "Unknown names: nowhere" } }')
-})
-

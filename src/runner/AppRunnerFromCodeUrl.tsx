@@ -2,6 +2,7 @@ import React, {FunctionComponent, useState} from 'react'
 import AppRunner from './AppRunner'
 import AppContext from '../runtime/AppContext'
 import AppLoadError from './AppLoadError'
+import {loadModuleHttp} from './loadModuleHttp'
 
 type Properties = {url: string, appContext: AppContext, resourceUrl?: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 
@@ -11,9 +12,7 @@ export default function AppRunnerFromCodeUrl({url, appContext, resourceUrl, onCo
     const [error, setError] = useState<Error | null>(null)
 
     if (appFetched !== url) {
-        // hack to work around Parcel bug, suggested in https://github.com/parcel-bundler/parcel/issues/8316#issuecomment-1545787533
-        const importPromise = new Function('url', `return import(url)`)(url) as Promise<any>
-        importPromise.then( module => setAppComponent(() => module.default))
+        loadModuleHttp(url).then((module:any) => setAppComponent(() => module.default)).catch( setError )
         setAppFetched(url)
     }
 

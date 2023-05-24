@@ -19,9 +19,9 @@ Requirements
 - ✅ Multiple server apps generated into same top-level dir with common Firebase files
 - ✅ Files in files dir
 - ✅ Runs in preview
-- Runs from GitHub
+- ✅ Runs from GitHub
 - Runs from Firebase hosting
-- Remove AppRunnerFromStorage, AppRunnerFromUrl
+- ✅ Remove AppRunnerFromStorage, AppRunnerFromUrl
 
 Requirements Part 2
 -------------------
@@ -55,10 +55,9 @@ App Runner rework - client side
 -------------------------------
 
 - ✅ Editor ProjectBuilder writes generated code to disk
-- App runner gets built code from GitHub
-- App runner can use specified version
-- App runner gets default from tag
+- ✅ App runner gets built code from GitHub
 - App runner does not use service worker
+- Review run and runForDev in index.html for prod and preview
 
 App Runner rework - server side
 -------------------------------
@@ -68,7 +67,6 @@ App Runner rework - server side
 - App server can pull code from GitHub
 - App server can accept PUTs from editor
 - App server serves preview code
-- App server can use specific version
 - Builder writes to app server
 - App server protects preview PUT and GET with secret key
 - Builder writes Firebase boilerplate to project directory
@@ -79,6 +77,9 @@ App Runner rework - server side
 Further requirements
 --------------------
 - App runner finds default main app name from index.html
+- App runner can use specified version
+- App runner gets default from tag
+- Server App server can use specific version or tag
 
 Notes
 -----
