@@ -41,7 +41,6 @@ Stories
 - Date picker control
 
 ### Priority for customer-facing apps
-- Import functions
 - Payments
 - API calls from browser
 - External API calls (eg for webhook)
@@ -202,7 +201,7 @@ Done
 - Simulate server apps
 - Speech recognition
 - Model types in studio
-
+- Import modules
 
 Bugs fixed
 ----------

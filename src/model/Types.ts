@@ -50,6 +50,7 @@ export type ElementType =
     'BrowserDataStore' |
     'MemoryDataStore' |
     'Function' |
+    'FunctionImport' |
     'Collection' |
     'Layout' |
     'FirebasePublish' |

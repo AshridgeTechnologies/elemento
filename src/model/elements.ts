@@ -38,6 +38,7 @@ import NumberType from './types/NumberType'
 import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
 import SpeechInput from "./SpeechInput";
+import FunctionImport from "./FunctionImport";
 
 export const elementTypes = (): {[key in ElementType]: any} => {
     return {
@@ -64,6 +65,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         FirestoreDataStore: FirestoreDataStore,
         MemoryDataStore: MemoryDataStore,
         Function: Function,
+        FunctionImport: FunctionImport,
         Collection: Collection,
         Layout: Layout,
         FirebasePublish: FirebasePublish,

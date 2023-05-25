@@ -245,7 +245,7 @@ test('shows allowed items in context insert menu of a page item', async () => {
     await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
     await actWait(() => fireEvent.click(screen.getByText('Insert before')))
 
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Function Import', 'Collection', 'Layout'])
 })
 
 test('notifies upload action from context menu of the files item', async () => {
@@ -278,11 +278,11 @@ test('shows allowed items in menu bar insert menu', async () => {
     fireEvent.click(screen.getByText('Second Text'))
     await wait(10)
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function',  'Function Import', 'Collection', 'Layout'])
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['App Bar', 'Page', 'File Data Store', 'Browser Data Store', 'Firestore Data Store', 'Memory Data Store', 'Function', 'Collection', 'Server App Connector'])
+    expect(optionsShown()).toStrictEqual(['App Bar', 'Page', 'File Data Store', 'Browser Data Store', 'Firestore Data Store', 'Memory Data Store', 'Function', 'Function Import', 'Collection', 'Server App Connector'])
 })
 
 test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Menu', 'List', 'Data', 'Collection', 'Layout', 'Function'])

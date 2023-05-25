@@ -26,6 +26,7 @@ import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
 import SpeechInput from '../../src/model/SpeechInput';
+import FunctionImport from "../../src/model/FunctionImport";
 
 const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
 test('generates main app and all page output files', ()=> {
@@ -1159,6 +1160,50 @@ function Page1(props) {
         React.createElement(NumberInput, {path: pathWith('MinHeight'), label: 'Min Height'}),
         React.createElement(ListElement, {path: pathWith('WidgetList'), itemContentComponent: Page1_WidgetListItem, items: Widgets.Query({})}),
     )
+}
+`)
+})
+
+test('generates function imports in the app', () => {
+    const app = new App('app1', 'Test1', {}, [
+        new FunctionImport('f1', 'Get Name', {source: 'Function1.js'}),
+        new FunctionImport('f2', 'Calc Tax', {source: 'https://cdn.example.com/CalcStuff.js'}),
+        new FunctionImport('f3', 'Do Stuff', {}),
+        new FunctionImport('f4', 'Get Amount', {source: 'Functions.js', exportName: 'amount'}),
+        new FunctionImport('fAll', 'Calcs', {source: 'Functions.js', exportName: '*'}),
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz') + DoStuff()`}),
+            ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().code).toBe(`import React from 'react'
+import Elemento from 'elemento-runtime'
+const GetName = await Elemento.importModule('./files/Function1.js')
+const CalcTax = await Elemento.importModule('https://cdn.example.com/CalcStuff.js')
+const DoStuff = await Elemento.importModule('./files/DoStuff.js')
+const GetAmount = await Elemento.importModule('./files/Functions.js', 'amount')
+const Calcs = await Elemento.importModule('./files/Functions.js', '*')
+
+// Page1.js
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'This is ' + GetName('xyz') + DoStuff()),
+    )
+}
+
+// appMain.js
+export default function Test1(props) {
+    const pathWith = name => 'Test1' + '.' + name
+    const {App} = Elemento.components
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+
+    return React.createElement(App, {path: 'Test1', },)
 }
 `)
 })

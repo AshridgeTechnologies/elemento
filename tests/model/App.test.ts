@@ -173,7 +173,7 @@ test('finds max id for element type', ()=> {
 
 })
 
-test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', 'Function'])('can contain %s not other types', (elementType) => {
+test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', 'Function', 'FunctionImport'])('can contain %s not other types', (elementType) => {
     const app = new App('id1', 'App 1', {}, [])
     expect(app.canContain(elementType as ElementType)).toBe(true)
     expect(app.canContain('Text')).toBe(false)

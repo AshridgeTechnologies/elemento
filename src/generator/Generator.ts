@@ -29,6 +29,8 @@ import {EventActionPropertyDef} from '../model/Types'
 import {loadJSONFromString} from '../model/loadJSON'
 import ServerAppGenerator from './ServerAppGenerator'
 import TypesGenerator from './TypesGenerator'
+import FunctionImport from "../model/FunctionImport";
+import {ASSET_DIR} from "../shared/constants";
 
 type FunctionCollector = {add(s: string): void}
 
@@ -86,7 +88,7 @@ export default class Generator {
             content: this.generateComponent(this.app, this.app)
         }
 
-        const imports = this.imports.join('\n') + '\n\n'
+        const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
         return <GeneratorOutput>{
             files: [...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
@@ -96,6 +98,11 @@ export default class Generator {
         }
     }
 
+    private generateImports(app: App) {
+        const importSource = ({source, codeName}: FunctionImport) => source?.match(/^https?:\/\//) ? source : `./${ASSET_DIR}/${source ?? codeName + '.js'}`
+        const exportName = ({exportName}: FunctionImport) => exportName ? `, '${exportName}'` : ''
+        return app.findChildElements(FunctionImport).map( f => `const ${f.codeName} = await Elemento.importModule('${importSource(f)}'${exportName(f)})`)
+    }
 
     private generateComponent(app: App, component: Page | App | ListItem, containingComponent?: Page) {
         const componentIsApp = component instanceof App
@@ -104,7 +111,7 @@ export default class Generator {
         const allPages = app.pages
         const allComponentElements = allElements(component)
         const allContainerElements = containingComponent ? allElements(containingComponent) : []
-        const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name )
+        const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
         const uiElementCode = this.generateElement(component, app, topLevelFunctions, componentIsPage ? containingComponent : undefined)
         const identifiers = this.parser.elementIdentifiers(component.id)
@@ -279,6 +286,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'BrowserDataStore':
             case 'FirestoreDataStore':
             case 'Function':
+            case 'FunctionImport':
             case 'FirebasePublish':
             case 'ServerApp':
             case 'ServerAppConnector':

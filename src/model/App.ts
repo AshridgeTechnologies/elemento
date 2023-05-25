@@ -28,7 +28,7 @@ export default class App extends BaseElement<Properties> implements Element {
     }
 
     canContain(elementType: ElementType) {
-        return elementOfType(elementType).parentType === this.kind || ['Collection', 'Function'].includes(elementType)
+        return elementOfType(elementType).parentType === this.kind || ['Collection', 'Function', 'FunctionImport'].includes(elementType)
     }
 
     static get parentType(): ParentType { return 'Project' }

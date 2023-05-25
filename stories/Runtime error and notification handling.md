@@ -41,3 +41,7 @@ From design note _Error and info notifications_
 - Use Snackbars at bottom left, containing Alerts, to show messages
 
 
+Specific situations needing error messages
+------------------------------------------
+
+- Function import fails

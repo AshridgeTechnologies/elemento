@@ -24,7 +24,7 @@ type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
 const appFunctions = appFunctionsNames()
 const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
-const runtimeElementTypes = () => Object.keys(elementTypes()).filter(key => key !== 'Function').map( key => runtimeElementTypeName(key as ElementType))
+const runtimeElementTypes = () => Object.keys(elementTypes()).filter(key => key !== 'Function' && key !== 'FunctionImport').map( key => runtimeElementTypeName(key as ElementType))
 
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)

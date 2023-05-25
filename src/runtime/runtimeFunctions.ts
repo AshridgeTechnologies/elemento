@@ -5,6 +5,26 @@ export function codeGenerationError(_expr: string, _err: string) {
     return undefined
 }
 
+export async function importModule(moduleName: string, exportName = 'default'): Promise<Function> {
+    const noopFunction = () => undefined;
+    try {
+        const module = await import(moduleName)
+        if (exportName === '*'){
+            return module
+        }
+        const func = module[exportName]
+        if (!func) {
+            console.error(`Error in import ${moduleName} - name '${exportName}' not found`)
+            return noopFunction
+        }
+        return func
+    } catch (e: any) {
+        console.error(`Error in import ${moduleName}`, e)
+        return noopFunction
+    }
+
+}
+
 // copy of function used in Generator to avoid additional dependencies for runtime code
 export const valueLiteral = function (propertyValue: any): string {
     if (isPlainObject(propertyValue)) {
