@@ -1,28 +1,36 @@
 import lodash from 'lodash'; const {isArray, isObject, isPlainObject} = lodash;
 import {map} from 'ramda'
+import * as Module from "module";
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined
 }
 
-export async function importModule(moduleName: string, exportName = 'default'): Promise<Function> {
-    const noopFunction = () => undefined;
-    try {
-        const module = await import(moduleName)
-        if (exportName === '*'){
+export function importHandlers(exportName = 'default', moduleName = '') {
+    const noopFunction = () => undefined
+
+    function handleModule(module: Module) {
+        if (exportName === '*') {
             return module
         }
-        const func = module[exportName]
+        const func = module[exportName as keyof Module]
         if (!func) {
             console.error(`Error in import ${moduleName} - name '${exportName}' not found`)
             return noopFunction
         }
         return func
-    } catch (e: any) {
+    }
+
+    function handleError(e: any) {
         console.error(`Error in import ${moduleName}`, e)
         return noopFunction
     }
 
+    return [ handleModule, handleError ]
+}
+
+export function importModule(moduleName: string, exportName = 'default'): Promise<Function> {
+    return import(moduleName).then(...importHandlers(exportName, moduleName))
 }
 
 // copy of function used in Generator to avoid additional dependencies for runtime code

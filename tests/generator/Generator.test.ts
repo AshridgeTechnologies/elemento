@@ -96,8 +96,8 @@ test('can get all code in one string from the output with imports and export', f
 
     const output = generate(app, project(app))
 
-    expect(output.code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
-const Elemento = await import(importUrl)
+    expect(output.code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 
 // Page1.js
@@ -156,8 +156,8 @@ test('includes all DataTypes files', () => {
 
     const output = generate(app1, project)
 
-    expect(output.code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
-const Elemento = await import(importUrl)
+    expect(output.code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 
 const {types: {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
@@ -1282,14 +1282,15 @@ test('generates function imports in the app', () => {
         )])
 
     const gen = new Generator(app, project(app))
-    expect(gen.output().code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
-const Elemento = await import(importUrl)
+    expect(gen.output().code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(runtimeUrl)
 const {React} = Elemento
-const GetName = await Elemento.importModule('./files/Function1.js')
-const CalcTax = await Elemento.importModule('https://cdn.example.com/CalcStuff.js')
-const DoStuff = await Elemento.importModule('./files/DoStuff.js')
-const GetAmount = await Elemento.importModule('./files/Functions.js', 'amount')
-const Calcs = await Elemento.importModule('./files/Functions.js', '*')
+const {importModule, importHandlers} = Elemento
+const GetName = await import('./files/Function1.js').then(...importHandlers())
+const CalcTax = await importModule('https://cdn.example.com/CalcStuff.js')
+const DoStuff = await import('./files/DoStuff.js').then(...importHandlers())
+const GetAmount = await import('./files/Functions.js').then(...importHandlers('amount'))
+const Calcs = await import('./files/Functions.js').then(...importHandlers('*'))
 
 // Page1.js
 function Page1(props) {
