@@ -1,9 +1,6 @@
 import {asArray} from '../../src/runtime'
 import {valueObj} from '../testutil/testHelpers'
-import {importModule, parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
-import os from "os";
-import path from "path";
-import fs from "fs";
+import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
 
 test('gets correct valueOf for date, object, primitive', () => {
     expect(valueOf({valueOf() { return 42}})).toBe(42)

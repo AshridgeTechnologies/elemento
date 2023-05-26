@@ -1282,8 +1282,9 @@ test('generates function imports in the app', () => {
         )])
 
     const gen = new Generator(app, project(app))
-    expect(gen.output().code).toBe(`import React from 'react'
-import Elemento from 'elemento-runtime'
+    expect(gen.output().code).toBe(`const importUrl = \`\${window.location.origin}/runtime/runtime.js\`
+const Elemento = await import(importUrl)
+const {React} = Elemento
 const GetName = await Elemento.importModule('./files/Function1.js')
 const CalcTax = await Elemento.importModule('https://cdn.example.com/CalcStuff.js')
 const DoStuff = await Elemento.importModule('./files/DoStuff.js')

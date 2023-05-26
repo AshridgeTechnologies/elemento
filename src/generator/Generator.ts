@@ -78,7 +78,7 @@ export default class Generator {
             files: [...typesFiles, ...pageFiles, appMainFile],
             errors: this.parser.allErrors(),
             get code() {
-                return imports + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
+                return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
             },
             html: this.htmlRunnerFile()
         }

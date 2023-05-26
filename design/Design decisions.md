@@ -1,6 +1,13 @@
 Design decisions
 ================
 
+Rendering approach
+------------------
+
+- React fits with the functional approach of the tool
+- There are tradeoffs with signals: https://www.builder.io/blog/reactivity-across-frameworks?ck_subscriber_id=1691077560#tradeoffs
+
+
 Server function paths
 ---------------------
 
