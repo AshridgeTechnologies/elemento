@@ -227,7 +227,7 @@ test('generates html runner file', () => {
 <body>
 <script type="module">
     import {runForDev} from '/runtime/runtime.js'
-    runForDev('/preview/App1.js')
+    runForDev('/studio/preview/App1.js')
 </script>
 </body>
 </html>

@@ -496,7 +496,7 @@ export default function EditorRunner() {
     const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
     const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
     const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-    const previewUrl = updateTime ? `/preview/?v=${updateTime}` : '/preview/'
+    const previewUrl = updateTime ? `/studio/preview/?v=${updateTime}` : '/studio/preview/'
     const errors = projectBuilderRef.current?.errors ?? {}
     const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
     return <ThemeProvider theme={theme}>

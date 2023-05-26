@@ -56,7 +56,7 @@ App Runner rework - client side
 
 - ✅ Editor ProjectBuilder writes generated code to disk
 - ✅ App runner gets built code from GitHub
-- App runner does not use service worker
+- ✅ App runner does not use service worker
 - Review run and runForDev in index.html for prod and preview
 
 App Runner rework - server side
@@ -68,7 +68,7 @@ App Runner rework - server side
 - App server can accept PUTs from editor
 - App server serves preview code
 - Builder writes to app server
-- App server protects preview PUT and GET with secret key
+- App server protects preview PUT and GET with secret key or Firebase login
 - Builder writes Firebase boilerplate to project directory
 - Firebase deploy sets everything up correctly
 - Remove preview window

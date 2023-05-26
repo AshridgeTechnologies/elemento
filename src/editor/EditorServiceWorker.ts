@@ -55,7 +55,7 @@ export default class EditorServiceWorker {
             return fetch(`http://localhost:4444${url.pathname}${url.search}`)
         }
 
-        const [, filepath] = pathname.match(new RegExp(`^\/preview\/(.*)$`)) ?? []
+        const [, filepath] = pathname.match(new RegExp(`^\/studio\/preview\/(.*)$`)) ?? []
         if (filepath !== undefined) {
             const requestFilepath = filepath === '' ? 'index.html' : filepath
             const file = this.getFileContents(requestFilepath)

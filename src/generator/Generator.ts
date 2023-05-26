@@ -475,7 +475,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 <body>
 <script type="module">
     import {runForDev} from '/runtime/${runtimeFileName}'
-    runForDev('/preview/${this.app.codeName}.js')
+    runForDev('/studio/preview/${this.app.codeName}.js')
 </script>
 </body>
 </html>
