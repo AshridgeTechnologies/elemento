@@ -6,6 +6,7 @@ Aims
 
 - Clean up app running
 - Allow types to be used in apps
+- Replace "push" deploy from GitHub with a flexible "pull" approach
 
 Requirements
 ------------
@@ -64,15 +65,17 @@ App Runner rework - server side
 
 - App server running in a Firebase function
 - Index.html in FB hosting
-- App server can pull code from GitHub
+- ✅ server can pull code from GitHub
 - App server can accept PUTs from editor
 - App server serves preview code
 - Builder writes to app server
 - App server protects preview PUT and GET with secret key or Firebase login
-- Builder writes Firebase boilerplate to project directory
+- Builder or Firebase deploy writes Firebase boilerplate to project directory
 - Firebase deploy sets everything up correctly
+- OR Runner can be installed as a Firebase extension
 - Remove preview window
 - Remove old Builder and build.ts
+- Don't load runtimes and other unnecessary files into GitHub
 
 Further requirements
 --------------------
@@ -88,4 +91,27 @@ Notes
 To do
 -----
 
+
+Technical
+---------
+
+- Server app runner is a Firebase function running an express app
+- Configured in hosting to run on <hostname>/capi
+- It is set up to serve apps from one GitHub repo (how? - function config? Hard coded constant?)
+- First part of path is version: _ for latest, tag, commit id
+- Next part is the app name
+- Final part of the path name is the function to call
+- Request handling procedure:
+  - Get the current user
+  - Construct the path of the app module and version on GitHub
+  - Check if file exists in disk module store
+  - If not:
+    - Construct GitHub or jsDelivr path
+    - Retrieve text
+    - Write to file with the app module path
+  - Dynamic import the server app modue from the file
+  - Call the default export function with the current user to get the app instance for the request
+  - Get the function and parameters from the request
+  - Call the function
+  - Send the result
 

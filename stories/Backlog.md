@@ -53,6 +53,7 @@ Stories
 - Event actions
 - Speech synthesis
 - Shapes, drawing, animation
+- Dynamic elements from a list
 
 ### Priority for learning
 - Tutorials
@@ -73,6 +74,8 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Import components with typed property editing
+- Import API client component with type property editing
 - Function parameter types and validation
 - Deploy multiple versions - for testing, canary deployment and instant rollback
 - Add deferred desirable features from previous stories
