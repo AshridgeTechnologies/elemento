@@ -1,4 +1,4 @@
-import {AppFactory, setupExpressApp} from '../serverRuntime/expressUtils'
+import {AppFactory, errorHandler, requestHandler} from '../serverRuntime/expressUtils'
 import express from 'express'
 
 import fs from 'fs'
@@ -49,7 +49,9 @@ export async function run(elementoHost: string, elementoDirPath: string) {
         res.send()
     })
 
-    setupExpressApp(devServer, appFactory)
+    devServer.use(express.json())
+    devServer.use('/capi', requestHandler(appFactory))
+    devServer.use(errorHandler)
 
     const port = 4444
     devServer.listen(port, () => console.log('Elemento Development server started on port', port))

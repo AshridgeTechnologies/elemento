@@ -10,6 +10,11 @@ module.exports = function (app) {
                 res.end(runHtml)
                 return
             }
+            if (req.url === '/studio') {
+                const html = fs.readFileSync('devDist/studio/index.html', 'utf8')
+                res.end(html)
+                return
+            }
             next()
         }
     )

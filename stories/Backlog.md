@@ -35,10 +35,10 @@ Stories
 - Type expressions
 - Input validation
 - Form generation
-- Firestore access rules
 - Precise decimals
-- Date literals - in element property values and formulas
-- Date picker control
+- Date function
+- Date input element
+
 
 ### Priority for customer-facing apps
 - Payments
@@ -68,6 +68,7 @@ Stories
 
 ### Priority for usability
 - Runtime error and notification handling
+- Function editing and validation
 - General usability Part 2
 - Debugger Part 1
 - Preview improvements - screen size, scrolling, etc
@@ -76,7 +77,7 @@ Stories
 ### Priority 1
 - Import components with typed property editing
 - Import API client component with type property editing
-- Function parameter types and validation
+- Firestore access rules
 - Deploy multiple versions - for testing, canary deployment and instant rollback
 - Add deferred desirable features from previous stories
 - Google Sheets datastore
@@ -115,7 +116,9 @@ Epics
 Tech debt
 ---------
 
+- Consider Temporal
 - Consider a better bundler - esbuild, rspack, Rome
+- Reduce size of serverRuntime, consider firebase-admin external
 - Look for ways to have imports that update dynamically in preview, both client and server
 - Consider using decorators
 - Consider oclif for CLI and dev server (or combine them)

@@ -24,8 +24,12 @@ Needs
 - Default current version
 - Current version can be changed quickly by dev, up or down
 - Other versions can easily be accessed by devs and general users eg with tag in URL
+- Security around which users can access other versions
 - Run from general app runner with app url in path
 - Run from custom domain, still with versioning
+- Allow multiple hosting environments connected to same GitHub repo, for testing
+- Run preview of server apps with immediate update
+- Preview server apps only available from editor with security
 
 Forces
 ------
@@ -33,7 +37,7 @@ Forces
 - Setting up permissions to deploy code to Firebase is hard
 - Setting up permissions to access private GitHub repo is easier - just create an API key
 - Storing secrets in GitHub is fairly easy
-- Storing secrets in Firebase is hard
+- Storing secrets in Firebase is ~~hard~~ easy if using an Extension
 - Secrets for other services may be needed in deployed apps
 - Continually accessing files direct from GitHub would lead to problems
 - Local dev server gives possibilities for deploying to Firebase
@@ -71,6 +75,9 @@ Possibilities
 - Can avoid builds if only use modules directly imported from npm via jsDelivr
 - !!! The Firebase server could be the dev server instead of running locally!
 - Potential to run a shared dev server for public use
+- Firebase extension to install app server function
+- Secret key shared between app server and editor for preview
+- App server has list of users (by email address?) that can access preview and/or other versions
 
 Decisions 20 May 23
 -------------------
@@ -82,6 +89,12 @@ Decisions 20 May 23
 - Server app runner can import different versions of server apps and run each concurrently
 - Server app runner Firebase function is written to disk in the project directory
 - Dev can install standalone firebase tools and deploy the server app runner from command line
+
+Update 30 May 23
+----------------
+
+- Server app runner is in an extension, with configs for repo and keys/permissions
+- Use Cloud Storage to cache downloaded code
 
 Later
 -----

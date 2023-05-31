@@ -1,5 +1,5 @@
-import express, {Express} from 'express'
-import {getAuth, DecodedIdToken} from 'firebase-admin/auth'
+import express from 'express'
+import {DecodedIdToken, getAuth} from 'firebase-admin/auth'
 import {map} from 'ramda'
 import {parseParam} from '../util/helpers'
 import {getApp} from './firebaseApp'
@@ -7,7 +7,8 @@ import {getApp} from './firebaseApp'
 export type ServerAppHandler = {
     [key: string]: {func: (...args: Array<any>) => any, update: boolean, argNames: string[]}
 }
-export type AppFactory = (appName: string, user: DecodedIdToken | null) => Promise<ServerAppHandler>
+export const LATEST = '_'
+export type AppFactory = (appName: string, user: DecodedIdToken | null, version?: string) => Promise<ServerAppHandler>
 
 export function parseQueryParams(req: {query: { [key: string]: string; }}): object {
     return map(parseParam, req.query as any) as object
@@ -61,15 +62,11 @@ export const requestHandler = (appFactory: AppFactory) => async (req: any, res: 
     }
 }
 
-export function setupExpressApp(app: Express, appFactory: AppFactory) {
+export function expressApp(appFactory: AppFactory) {
+    const app = express()
     app.use(express.json())
     app.use('/capi', requestHandler(appFactory))
     app.use(errorHandler)
-}
-
-export function expressApp(appFactory: AppFactory) {
-    const app = express()
-    setupExpressApp(app, appFactory)
 
     return app
 }

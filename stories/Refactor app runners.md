@@ -63,29 +63,36 @@ App Runner rework - client side
 App Runner rework - server side
 -------------------------------
 
-- App server running in a Firebase function
-- Index.html in FB hosting
-- ✅ server can pull code from GitHub
-- App server can accept PUTs from editor
-- App server serves preview code
-- Builder writes to app server
+- ✅ App server running in a Firebase function
+- ✅ App server can be configured for a GitHub repo
+- ✅ server can get code from GitHub
+- ✅ server can use private repo with access token 
+- ✅ Runner can be installed as a Firebase extension
+- ✅ App server can accept PUTs from editor
+- ✅ App server serves preview code
+- ✅ App runner can use specified version
+- Builder writes preview to app server
+- Server app preview works
 - App server protects preview PUT and GET with secret key or Firebase login
-- Builder or Firebase deploy writes Firebase boilerplate to project directory
-- Firebase deploy sets everything up correctly
-- OR Runner can be installed as a Firebase extension
+- Use secret for access token extension param, check all permissions and ordering for using secrets
+- ✅ Index.html and client JS can be served with correct content type
 - Remove preview window
 - Remove old Builder and build.ts
 - Don't load runtimes and other unnecessary files into GitHub
 
 Further requirements
 --------------------
+- Set the Firebase function location and stop it changing on reconfiguration
 - App runner finds default main app name from index.html
-- App runner can use specified version
 - App runner gets default from tag
-- Server App server can use specific version or tag
+- Preview and specified versions can run from app server on any device without being open in editor
 
 Notes
 -----
+
+- Preview service worker can intercept capi calls
+- Will need to inject password or ask for it when load page
+- 
 
 
 To do
