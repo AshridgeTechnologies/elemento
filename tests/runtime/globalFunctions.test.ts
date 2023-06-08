@@ -4,7 +4,7 @@ import {valueObj} from '../testutil/testHelpers'
 
 const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Record, List, Select, ForEach, First, Last, Sort,
-    Timestamp, Now, Today, TimeBetween, DaysBetween, DateFormat, DateAdd,
+    Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -322,6 +322,40 @@ describe('Today', function () {
         expect(today.getUTCHours()).toBe(0)
         expect(today.getUTCMinutes()).toBe(0)
         expect(today.getUTCSeconds()).toBe(0)
+    })
+})
+
+describe('Date', function () {
+    test('null or blank to null', () => {
+        expect(DateVal()).toBe(null)
+        expect(DateVal('')).toBe(null)
+        expect(DateVal(null)).toBe(null)
+    })
+
+    test('converts year month day to Date', () => {
+        expect(DateVal(2022, 2, 20)).toStrictEqual(new Date(2022, 1, 20))
+    })
+
+    test('converts ISO date string', () => {
+        expect(DateVal('2022-02-20')).toStrictEqual(new Date(2022, 1, 20))
+    })
+
+    test('converts date with format string', () => {
+        expect(DateVal('28 Oct 2020', 'dd MMM yyyy')).toStrictEqual(new Date(2020, 9, 28))
+        expect(DateVal('2/28/21', 'M/d/yy')).toStrictEqual(new Date(2021, 1, 28))
+    })
+
+    test('converts date string with no format by JS rules', () => {
+        expect(DateVal('28 Oct 2020')).toStrictEqual(new Date(2020, 9, 28))
+        expect(DateVal('2/28/21')).toStrictEqual(new Date(2021, 1, 28))
+    })
+
+    test('converts timestamp to date', () => {
+        expect(DateVal(1603843200000)).toStrictEqual(new Date(2020, 9, 28))
+    })
+
+    test('returns invalid date if no conversion possible', () => {
+        expect(DateVal('George W Bush')?.getTime()).toBeNaN()
     })
 })
 

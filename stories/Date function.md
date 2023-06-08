@@ -10,7 +10,7 @@ Aims
 Requirements
 ------------
 
-- Date function converts year, month, day arguments to a JS Date
-- Date function converts ISO string argument to a JS Date
-- Date function converts other string to best guess JS Date
-- Date function converts other string, format to JS Date
+- ✅ DateVal function converts year, month, day arguments to a JS Date
+- ✅ DateVal function converts ISO string argument to a JS Date
+- ✅ DateVal function converts other string to best guess JS Date
+- ✅ DateVal function converts other string, format to JS Date

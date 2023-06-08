@@ -8,7 +8,8 @@ import {
     differenceInMonths,
     differenceInSeconds,
     differenceInYears,
-    format,
+    format, isValid,
+    parse,
     parseISO
 } from 'date-fns'
 import Papa, {ParseConfig} from 'papaparse'
@@ -155,6 +156,22 @@ export const globalFunctions = {
 
     Now() {
         return new Date()
+    },
+
+    DateVal(arg1?: string | number | null, arg2?: string | number, arg3?: number) {
+        if (!arg1) return null
+
+        if (arguments.length === 3) {
+            return new Date(arg1 as number, arg2 as number - 1, arg3)
+        }
+        if (arguments.length === 2) {
+            return parse(arg1 as string, arg2 as string, new Date())
+        }
+        if (typeof arg1 === 'string') {
+            const isoDate = parseISO(arg1 as string)
+            if (isValid(isoDate)) return isoDate
+        }
+        return new Date(arg1)
     },
 
     Today(date = new Date()) {
