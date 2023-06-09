@@ -80,7 +80,7 @@ test('State class has correct properties', () => {
     expect(state.value).toBe(true)
 
     state.Reset()
-    const resetState = state._withStateForTest({value: undefined})
+    const resetState = state._withStateForTest({value: undefined, errorsShown: false})
     expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
     expect(resetState.value).toBe(true)
     expect(resetState._controlValue).toBe(true)

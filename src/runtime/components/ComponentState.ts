@@ -47,7 +47,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return newVersion
     }
 
-    protected updateState(changes: object) {
+    protected updateState(changes: Partial<StateProps>) {
         const newState = Object.assign({}, this.state, changes) as StateProps
         this._appStateInterface!.updateVersion(this.withState(newState))
     }

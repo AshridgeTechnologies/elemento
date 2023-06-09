@@ -240,8 +240,8 @@ test('generates App Bar elements with contents', ()=> {
             new Text('id0', 'Text 0', {width: 200, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, multiline: true, label: "Text Input One", width: 150}),
-            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, maxLength: ex`5 + 5`}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", width: 150}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
             new TextInput('id2', 't3', {}),
     ]
         )])
@@ -265,8 +265,8 @@ test('generates App Bar elements with contents', ()=> {
 test('generates TextInput elements with initial value', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', maxLength: 10, multiline: true, label: "Text Input One", width: 150, readOnly: true}),
-            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, maxLength: ex`5 + 5`}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", width: 150, readOnly: true}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, width: ex`50 + 50`}),
             new TextInput('id3', 't3', {}),
     ]
         )])
@@ -280,8 +280,8 @@ test('generates TextInput elements with initial value', ()=> {
     const t3 = Elemento.useObjectState(pathWith('t3'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', maxLength: 10, width: 150, multiline: true, readOnly: true}),
-        React.createElement(TextInput, {path: pathWith('t2'), label: 't2', maxLength: 5 + 5}),
+        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', readOnly: true, width: 150, multiline: true}),
+        React.createElement(TextInput, {path: pathWith('t2'), label: 't2', width: 50 + 50}),
         React.createElement(TextInput, {path: pathWith('t3'), label: 't3'}),
     )
 }

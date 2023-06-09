@@ -4,13 +4,14 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
 test('SelectInput has correct properties', ()=> {
-    const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`Select One`})
+    const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`Select One`, dataType: ex`dataType1`})
 
     expect(selectInput.id).toBe('t1')
     expect(selectInput.name).toBe('Select Input 1')
     expect(selectInput.values).toStrictEqual(['Green', 'Blue', 'Pink'])
     expect(selectInput.initialValue).toStrictEqual(ex`Blue`)
     expect(selectInput.label).toStrictEqual(ex`Select One`)
+    expect(selectInput.dataType).toStrictEqual(ex`dataType1`)
 })
 
 test('SelectInput has correct default values', ()=> {
@@ -22,6 +23,7 @@ test('SelectInput has correct default values', ()=> {
     expect(selectInput.initialValue).toBeUndefined()
     expect(selectInput.label).toBe('Select Input 1')
     expect(selectInput.properties.label).toBeUndefined()
+    expect(selectInput.dataType).toBeUndefined()
 })
 
 test('tests if an object is this type', ()=> {
@@ -33,7 +35,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'values'])
+    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'values'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -58,7 +60,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const select = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`"The Select"`})
+    const select = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`"The Select"`, dataType: ex`dataType1`})
     expect(asJSON(select)).toStrictEqual({
         kind: 'SelectInput',
         id: 't1',
@@ -81,7 +83,7 @@ test('converts from plain object', ()=> {
     const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<SelectInput>(selectInput)
 
-    const selectInput2 = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Green', label: 'The Select'})
+    const selectInput2 = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Green', label: 'The Select', dataType: ex`dataType1`})
     const plainObj2 = asJSON(selectInput2)
     const newObj2 = loadJSON(plainObj2)
     expect(newObj2).toStrictEqual<SelectInput>(selectInput2)

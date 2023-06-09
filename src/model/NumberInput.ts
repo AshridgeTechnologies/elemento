@@ -1,11 +1,10 @@
 import Element from './Element'
-import {PropertyType, PropertyValueType} from './Types'
-import BaseInputElement from './BaseInputElement'
+import {PropertyType} from './Types'
+import BaseInputElement, {BaseInputProperties} from './BaseInputElement'
 
-export type Properties = {
-    readonly initialValue?: PropertyValueType<number>,
-    readonly label?: PropertyValueType<string>
+export type Properties = BaseInputProperties<number> & {
 }
+
 export default class NumberInput extends BaseInputElement<Properties> implements Element {
 
     static kind = 'NumberInput'

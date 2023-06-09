@@ -127,20 +127,20 @@ test('shows TextInput element selected in tree in property editor', async () => 
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
     expect(initialValueInput.value).toBe('"Type the text"')
 
-    const maxLengthInput = screen.getByLabelText('Max Length') as HTMLInputElement
+    const maxLengthInput = screen.getByLabelText('Width') as HTMLInputElement
     expect(maxLengthInput.value).toBe('50')
 })
 
 test('shows errors for properties of main client app', async () => {
     const projectWithErrors = new Project('pr1', 'Project Bad', {}, [new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, maxLength: ex`BadName + 30`}),
+            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, width: ex`BadName + 30`}),
         ]),
     ]) ])
     const errors = {
         textInput_1: {
             initialValue: 'Error: Line 1: Unexpected end of input',
-            maxLength: 'Unknown names: BadName'
+            width: 'Unknown names: BadName'
         },
     }
 
@@ -155,10 +155,10 @@ test('shows errors for properties of main client app', async () => {
     const initialValueError = container.querySelector(`[id="initialValue-helper-text"]`)
     expect(initialValueError.textContent).toBe('Error: Line 1: Unexpected end of input')
 
-    const maxLengthInput = screen.getByLabelText('Max Length') as HTMLInputElement
-    expect(maxLengthInput.value).toBe('BadName + 30')
-    const maxLengthError = container.querySelector(`[id="maxLength-helper-text"]`)
-    expect(maxLengthError.textContent).toBe('Unknown names: BadName')
+    const widthInput = screen.getByLabelText('Width') as HTMLInputElement
+    expect(widthInput.value).toBe('BadName + 30')
+    const widthError = container.querySelector(`[id="width-helper-text"]`)
+    expect(widthError.textContent).toBe('Unknown names: BadName')
 })
 
 test('shows errors for properties of all client apps', async () => {

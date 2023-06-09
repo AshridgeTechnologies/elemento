@@ -6,7 +6,7 @@ const SpeechGrammarList = globalThis.SpeechGrammarList || globalThis.webkitSpeec
 
 type Properties = {path: string}
 type ExternalProperties = {language?: string, expectedPhrases?: string[]}
-type StateProperties = {speechRecognition: any, recording: boolean, value: string, confidence: number}
+type StateProperties = {speechRecognition: any, recording: boolean, value: string, confidence: number | null}
 
 type SpeechRecognitionExt = SpeechRecognition
     & {onaudiostart: any, onaudioend: any, onstart: any, onend: any, onsoundstart: any, onsoundend: any, onspeechstart: any, onspeechend: any}

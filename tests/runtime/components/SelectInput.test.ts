@@ -7,6 +7,7 @@ import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/tes
 import {fireEvent, render, within} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
+import {ChoiceType, NumberType} from '../../../src/shared/types'
 
 const [selectInput, appStoreHook] = wrappedTestElement(SelectInput, SelectInputState)
 
@@ -22,6 +23,18 @@ test('SelectInput element produces output with properties supplied',
 test('SelectInput element produces output with default values where properties omitted',
     snapshot(selectInput('app.page1.height', {value: undefined}))
 )
+
+test('SelectInput takes values from data type', () => {
+    const selectType = new ChoiceType('ct1', {description: 'A select input for choosing something', values: ['Green', 'Blue', 'Pink']})
+    const {container} = render(selectInput('app.page1.description', {value: 'Green', dataType: selectType}, {label: 'Color'}))
+    expect(container.innerHTML).toMatchSnapshot()
+})
+
+test('SelectInput element produces output with description info from data type', () => {
+    const selectType = new ChoiceType('ct1', {description: 'A select input for choosing something'})
+    const {container} = render(selectInput('app.page1.description', {value: 'Green', dataType: selectType}, {label: 'Color', values: ['Green', 'Red']}))
+    expect(container.innerHTML).toMatchSnapshot()
+})
 
 test('SelectInput shows value from the state supplied', () => {
     container = testContainer(selectInput('app.page1.widget1', {value: 'Red',}, {values: ['Green', 'Red'],}))
@@ -90,5 +103,5 @@ test('State class has correct properties', () => {
     expect(state.defaultValue).toBe('')
 
     state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined, errorsShown: false}))
 })

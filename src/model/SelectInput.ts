@@ -1,13 +1,11 @@
 import Element from './Element'
 import {PropertyType, PropertyValueType} from './Types'
-import BaseInputElement from './BaseInputElement'
+import BaseInputElement, {BaseInputProperties} from './BaseInputElement'
 import {propDef} from './BaseElement'
 
-export type Properties = Readonly<{
-    values?: PropertyValueType<string[]>,
-    initialValue?: PropertyValueType<string>,
-    label?: PropertyValueType<string>
-}>
+export type Properties = BaseInputProperties<string> & {
+    values?: PropertyValueType<string[]>
+}
 
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 

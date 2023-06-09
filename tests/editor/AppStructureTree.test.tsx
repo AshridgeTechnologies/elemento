@@ -150,7 +150,7 @@ test("renders tree with all types of model elements",  async () => {
 
     await clickExpandControl(2)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
-    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "toggle_on", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
+    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "check_box_outlined", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
 })
 
 test("can expand and collapse branches and show",  async () => {

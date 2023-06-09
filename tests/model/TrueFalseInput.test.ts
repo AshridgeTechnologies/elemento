@@ -2,14 +2,16 @@ import TrueFalseInput from '../../src/model/TrueFalseInput'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
+import SelectInput from '../../src/model/SelectInput'
 
 test('TrueFalseInput has correct properties', ()=> {
-    const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`True-False One`})
+    const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`True-False One`, dataType: ex`dataType1`})
 
     expect(trueFalseInput.id).toBe('t1')
     expect(trueFalseInput.name).toBe('True-False Input 1')
     expect(trueFalseInput.initialValue).toStrictEqual(ex`true`)
     expect(trueFalseInput.label).toStrictEqual(ex`True-False One`)
+    expect(trueFalseInput.dataType).toStrictEqual(ex`dataType1`)
 })
 
 test('TrueFalseInput has correct defaults', ()=> {
@@ -19,6 +21,7 @@ test('TrueFalseInput has correct defaults', ()=> {
     expect(trueFalseInput.name).toBe('True-False Input 1')
     expect(trueFalseInput.initialValue).toBeUndefined()
     expect(trueFalseInput.label).toBe('True-False Input 1')
+    expect(trueFalseInput.dataType).toBe(undefined)
 })
 
 test('tests if an object is this type', ()=> {
@@ -28,6 +31,11 @@ test('tests if an object is this type', ()=> {
     expect(TrueFalseInput.is(trueFalseInput)).toBe(true)
     expect(TrueFalseInput.is(page)).toBe(false)
 })
+
+test('has correct property names', () => {
+    expect(new TrueFalseInput('t1', 'True False Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
+})
+
 
 test('creates an updated object with a property set to a new value', ()=> {
     const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`})
@@ -51,7 +59,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const trueFalse = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`"The True-False"`})
+    const trueFalse = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`"The True-False"`, dataType: ex`dataType1`})
     expect(asJSON(trueFalse)).toStrictEqual({
         kind: 'TrueFalseInput',
         id: 't1',
@@ -74,7 +82,7 @@ test('converts from plain object', ()=> {
     const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<TrueFalseInput>(trueFalseInput)
 
-    const trueFalseInput2 = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: true, label: 'The True-False'})
+    const trueFalseInput2 = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: true, label: 'The True-False', dataType: ex`dataType1`})
     const plainObj2 = asJSON(trueFalseInput2)
     const newObj2 = loadJSON(plainObj2)
     expect(newObj2).toStrictEqual<TrueFalseInput>(trueFalseInput2)

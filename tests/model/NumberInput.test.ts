@@ -2,14 +2,16 @@ import NumberInput from '../../src/model/NumberInput'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
+import SelectInput from '../../src/model/SelectInput'
 
 test('NumberInput has correct properties', ()=> {
-    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`})
+    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`, dataType: ex`dataType1`})
 
     expect(numberInput.id).toBe('t1')
     expect(numberInput.name).toBe('Number Input 1')
     expect(numberInput.initialValue).toStrictEqual({expr: '40'})
     expect(numberInput.label).toStrictEqual(ex`Number One`)
+    expect(numberInput.dataType).toStrictEqual(ex`dataType1`)
 })
 
 test('NumberInput has default values', ()=> {
@@ -20,8 +22,8 @@ test('NumberInput has default values', ()=> {
     expect(numberInput.initialValue).toBeUndefined()
     expect(numberInput.label).toBe(`Number Input 1`)
     expect(numberInput.properties.label).toBeUndefined()
+    expect(numberInput.dataType).toBeUndefined()
 })
-
 
 test('tests if an object is this type', ()=> {
     const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}})
@@ -29,6 +31,10 @@ test('tests if an object is this type', ()=> {
 
     expect(NumberInput.is(numberInput)).toBe(true)
     expect(NumberInput.is(page)).toBe(false)
+})
+
+test('has correct property names', () => {
+    expect(new NumberInput('t1', 'Number Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -53,7 +59,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('converts to JSON', ()=> {
-    const number = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`"The Number"`})
+    const number = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`"The Number"`, dataType: ex`dataType1`})
     expect(asJSON(number)).toStrictEqual({
         kind: 'NumberInput',
         id: 't1',
@@ -71,7 +77,7 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}})
+    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, dataType: ex`dataType1`})
     const plainObj = asJSON(numberInput)
     const newObj = loadJSON(plainObj)
     expect(newObj).toStrictEqual<NumberInput>(numberInput)

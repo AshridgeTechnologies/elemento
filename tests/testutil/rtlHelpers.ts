@@ -40,7 +40,7 @@ export const containerFunctions = (container: HTMLElement) => {
         return containingEl.querySelector(selector) as HTMLElement
         ?? containingEl.querySelector(`[id$="${selector}"]`) as HTMLElement
             ?? renderResult.queryByLabelText(selector)
-            ?? renderResult.getByText(selector)
+            ?? renderResult.queryByText(selector)
             // ?? screen.getByText(selector)
     }
     const element = (elOrSelector: ElOrSel): HTMLElement => elOrSelector instanceof HTMLElement ? elOrSelector : elIn(container, elOrSelector)

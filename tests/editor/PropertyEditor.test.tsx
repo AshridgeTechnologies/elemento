@@ -223,19 +223,19 @@ test('has fields for AppBar', () => {
 test('has fields for TextInput', () => {
     const element = new TextInput('id1', 'Text Input 1', {
         initialValue: ex`"Hi!"`,
-        maxLength: ex`10`,
         multiline: ex`true || false`,
         width: ex`22`,
-        label: ex`"Text One"`
+        label: ex`"Text One"`,
+        dataType: ex`theType`
     })
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(typeField().textContent).toBe('Text Input')
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
-    expect(inputValue('Max Length')).toBe('10')
     expect(inputValue('Width')).toBe('22')
     expect(inputValue('Multiline')).toBe('true || false')
+    expect(inputValue('Data Type')).toBe('theType')
 })
 
 test('has fields for TextInput with default values', () => {
@@ -244,10 +244,10 @@ test('has fields for TextInput with default values', () => {
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('')
     expect(inputValue('Initial Value')).toBe('')
-    expect(inputValue('Max Length')).toBe('')
     expect(inputValue('Width')).toBe('')
     expect(inputValue('Multiline')).toBe(undefined)
     expect(inputValue('Read Only')).toBe(undefined)
+    expect(inputValue('Data Type')).toBe('')
 })
 
 test('has fields for NumberInput', () => {

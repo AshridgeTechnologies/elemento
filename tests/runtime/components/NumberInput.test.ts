@@ -5,9 +5,11 @@
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import '@testing-library/jest-dom'
-import {testContainer} from '../../testutil/rtlHelpers'
+import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'
+import {NumberType, TextType} from '../../../src/shared/types'
+import {render} from '@testing-library/react'
 
 const [numberInput, appStoreHook] = wrappedTestElement(NumberInput, NumberInputState)
 
@@ -20,6 +22,12 @@ test('NumberInput element produces output with properties supplied',
 test('NumberInput element produces output with default values where properties omitted',
     snapshot(numberInput('app.page1.height'))
 )
+
+test('NumberInput element produces output with description info', () => {
+    const numberType = new NumberType('tt1', {description: 'A number input for entering numbers'})
+    const {container} = render(numberInput('app.page1.description', {value: 27, dataType: numberType}, {label: 'Width'}))
+    expect(container.innerHTML).toMatchSnapshot()
+})
 
 test('NumberInput shows value from the state supplied', () => {
     const {el} = testContainer(numberInput('app.page1.widget1', {value: 27}))
@@ -63,7 +71,20 @@ test('NumberInput stores null value in the app store when cleared', async () => 
     const inputEl = el`app.page1.sprocket`
     await user.clear(inputEl)
     expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
-} )
+})
+
+test('NumberInput uses properties from dataType', async () => {
+    const {el} = testContainer(numberInput('app.page1.sprocket2', {value: 27}, {label: 'The Input'}))
+
+    const numberType = new NumberType('nt1', {min: 2, max: 10, format: 'currency'})
+    await actWait(10)
+    await actWait( () => stateAt('app.page1.sprocket2').props.dataType = numberType )
+
+    await actWait( () => stateAt('app.page1.sprocket2').Reset() )
+    expect(el`input`.min).toBe('2')
+    expect(el`input`.max).toBe('10')
+    expect(el`input`.type).toBe('number')
+})
 
 test('State class has correct properties', () => {
     const emptyState = new NumberInput.State({})
@@ -77,7 +98,7 @@ test('State class has correct properties', () => {
     expect(state.defaultValue).toBe(0)
 
     state.Reset()
-    const resetState = state._withStateForTest({value: undefined})
+    const resetState = state._withStateForTest({value: undefined, errorsShown: false})
     expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
     expect(resetState.value).toBe(77)
     expect(resetState._controlValue).toBe(77)

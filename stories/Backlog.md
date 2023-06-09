@@ -36,7 +36,6 @@ Stories
 - Input validation
 - Form generation
 - Precise decimals
-- Date function
 - Date input element
 
 
@@ -75,6 +74,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Readonly elements - for all types and styled clearly
 - Import components with typed property editing
 - Import API client component with type property editing
 - Firestore access rules
@@ -212,6 +212,7 @@ Done
 - Speech recognition
 - Model types in studio
 - Import modules
+- Date function
 
 Bugs fixed
 ----------
