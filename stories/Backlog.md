@@ -33,7 +33,6 @@ Stories
 
 ### Priority for internal apps
 - Type expressions
-- Input validation
 - Form generation
 - Precise decimals
 - Date input element
@@ -213,6 +212,7 @@ Done
 - Model types in studio
 - Import modules
 - Date function
+- Input validation
 
 Bugs fixed
 ----------
