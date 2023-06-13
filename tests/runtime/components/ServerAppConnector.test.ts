@@ -35,7 +35,7 @@ const mock_getIdToken = auth.getIdToken as jest.MockedFunction<any>
 let mockFetch: jest.MockedFunction<any>
 const initConnector = ():[any, AppStateForObject] => {
     const state = new ServerAppConnectorState({configuration, fetch: mockFetch})
-    const appInterface = testAppInterface(state); state.init(appInterface)
+    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
 
     return [state, appInterface]
 }

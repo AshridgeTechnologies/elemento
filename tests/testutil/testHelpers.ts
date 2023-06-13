@@ -1,11 +1,12 @@
 import renderer from 'react-test-renderer'
-import React, {createElement, FunctionComponent} from 'react'
+import React, {ComponentState, createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import enGB from 'date-fns/locale/en-GB'
+import {isArray} from 'lodash'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -142,8 +143,8 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
 
-export const testAppInterface = (initialVersion: any = null): AppStateForObject => {
-    let _latest:any = initialVersion
+export const testAppInterface = (initialVersion: any = null, childStateValues: object = {}): AppStateForObject => {
+    let _latest: any = initialVersion
 
     const appInterface = {
         latest() {
@@ -152,7 +153,12 @@ export const testAppInterface = (initialVersion: any = null): AppStateForObject 
         updateVersion: jest.fn().mockImplementation((newVersion: any) => {
             _latest = newVersion
             _latest.init(appInterface)
-        })
+        }),
+        getChildState: (subPath: string) => {
+            const childStateValue = childStateValues[subPath as keyof object]
+            return childStateValue && {value: childStateValue} as ComponentState
+        }
+
     }
     return appInterface
 }
@@ -187,7 +193,9 @@ export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<
 
     const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, children?: React.ReactNode) => {
         const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
-        const component = createElement(componentClass as any, {path, ...componentProps}, children)
+        const component = isArray(children)
+            ? createElement(componentClass as any, {path, ...componentProps}, ...children)
+            : createElement(componentClass as any, {path, ...componentProps}, children)
         return createElement(StoreProvider, {appStoreHook, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB},
                 createElement(TestWrapper, {path, state}, component)
@@ -215,4 +223,4 @@ export function mockImplementation(fn: any, impl: any) {
 
 export const doNothing = () => {
 }
-export const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
+export const wait = (time: number = 1): Promise<void> => new Promise(resolve => setTimeout(resolve, time))

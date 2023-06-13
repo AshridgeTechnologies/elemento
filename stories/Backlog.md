@@ -79,7 +79,9 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Scheduled jobs
 - Readonly elements - for all types and styled clearly
+- Import components from web (GitHub repos or npm) - esm.sh bundling? esbuild in browser?
 - Import components with typed property editing
 - Import API client component with type property editing
 - Firestore access rules

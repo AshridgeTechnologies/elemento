@@ -9,6 +9,8 @@ export default interface Element {
     type() : ComponentType
     get propertyDefs() : PropertyDef[]
     get actionDefs() : ActionDef[]
+
+    getPropertyDef(propertyName: string): PropertyDef
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

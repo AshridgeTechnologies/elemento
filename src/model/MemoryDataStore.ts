@@ -1,6 +1,6 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,
@@ -23,6 +23,6 @@ export default class MemoryDataStore extends BaseElement<Properties> implements 
         ]
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'App' }
+    static get parentType(): ParentType { return 'App' }
 
 }

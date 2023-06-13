@@ -1,17 +1,7 @@
-import ChoiceType from './types/ChoiceType'
-import DataTypes from './types/DataTypes'
-import DateType from './types/DateType'
-import ListType from './types/ListType'
-import NumberType from './types/NumberType'
-import RecordType from './types/RecordType'
-import TextType from './types/TextType'
-import TrueFalseType from './types/TrueFalseType'
-import Rule from './types/Rule'
-
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
 export type ChoiceList = readonly string[]
-export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'expr' | ChoiceList | EventActionPropertyDef
+export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'object' | 'expr' | ChoiceList | EventActionPropertyDef
 export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | Date | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr
@@ -61,6 +51,7 @@ export type ElementType =
     'DateInput' |
     'SpeechInput' |
     'Button' |
+    'Form' |
     'Icon' |
     'Image' |
     'UserLogon' |
@@ -83,4 +74,4 @@ export type ElementType =
     'FileFolder' |
     DataTypeElementType
 
-export type ParentType = ElementType | 'any' | null
+export type ParentType = ElementType | ElementType[] | 'any' | null

@@ -106,7 +106,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const updatedState2 = state._withStateForTest({currentUrl: appContext.getUrl()})
     expect(updatedState2.currentPage).toBe(Page2)
 
-    const appInterface = testAppInterface(state); state.init(appInterface)
+    const appInterface = testAppInterface(state); state.init(appInterface, 'test')
     const {ShowPage} = state
 
     ShowPage('Page2')
@@ -132,7 +132,7 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const updatedState = state._withStateForTest({currentUrl: appContext.getUrl()})
     expect(updatedState.currentPage).toBe(Page2)
 
-    const appInterface = testAppInterface(state); state.init(appInterface)
+    const appInterface = testAppInterface(state); state.init(appInterface, 'test')
     const {ShowPage} = state
     const theDateStr = '2023-10-22T12:34:56.123Z'
     const theDate = new Date(theDateStr)
@@ -207,7 +207,7 @@ test('App.State responds to app context url changes', () => {
     const pages = {Page1, Page2, Page3}
     const state0 = new App.State({pages, appContext})
     expect(state0.currentPage).toBe(Page1)
-    const appInterface = testAppInterface(state0); state0.init(appInterface)
+    const appInterface = testAppInterface(state0); state0.init(appInterface, 'testPath')
 
     appContext.updateUrl('/Page2', null, null)
     const state1 = state0.latest()
@@ -227,7 +227,7 @@ test('App.State responds to browser history changes', () => {
     const pages = {Page1, Page2, Page3}
     const [appContext, history] = getRealAppContext('/Page1/abc')
     const state0 = new App.State({pages, appContext})
-    const appInterface = testAppInterface(state0); state0.init(appInterface)
+    const appInterface = testAppInterface(state0); state0.init(appInterface, 'testPath')
     expect(state0.CurrentUrl().page).toBe('Page1')
     expect(state0.CurrentUrl().pathSections[0]).toBe('abc')
 

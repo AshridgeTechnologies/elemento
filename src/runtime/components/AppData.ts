@@ -1,7 +1,7 @@
 import AppContext, {UrlType} from '../AppContext'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {AppStateForObject} from '../appData'
-import shallow from 'zustand/shallow'
+import {shallow} from 'zustand/shallow'
 import Url, {asQueryObject} from '../Url'
 import {valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
@@ -17,8 +17,8 @@ type StateInternalProps = {
 
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
 
-    init(asi: AppStateForObject): void {
-        super.init(asi)
+    init(asi: AppStateForObject, path: string): void {
+        super.init(asi, path)
         const {appContext} = this.props
         const {subscription} = this.state
 

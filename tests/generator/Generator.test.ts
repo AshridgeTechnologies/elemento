@@ -31,6 +31,7 @@ import NumberType from '../../src/model/types/NumberType'
 import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
 import DateInput from '../../src/model/DateInput'
+import Form from '../../src/model/Form';
 
 const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
 test('generates main app and all page output files', ()=> {
@@ -470,10 +471,13 @@ test('generates Button elements with properties', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const {Log} = Elemento.globalFunctions
+    const b1_action = React.useCallback(() => {
+        const message = "You clicked me!"; Log(message)
+            Log("Didn't you?")
+    }, [])
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && "filled", display: false, action: () => {const message = "You clicked me!"; Log(message)
-    Log("Didn't you?")}}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && "filled", display: false, action: b1_action}),
     )
 }
 `)
@@ -513,10 +517,13 @@ test('generates Menu element with items', () => {
     const pathWith = name => props.path + '.' + name
     const {Page, Menu, MenuItem} = Elemento.components
     const {Log} = Elemento.globalFunctions
+    const Item1_action = React.useCallback(() => {
+        Log('I am Item One')
+    }, [])
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Menu, {path: pathWith('Menu1'), label: 'Stuff to do', filled: true},
-            React.createElement(MenuItem, {path: pathWith('Item1'), label: 'Do it', action: () => {Log('I am Item One')}}),
+            React.createElement(MenuItem, {path: pathWith('Item1'), label: 'Do it', action: Item1_action}),
             React.createElement(MenuItem, {path: pathWith('Item2'), label: 'Say it'}),
     ),
     )
@@ -604,9 +611,12 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const Connector1 = Elemento.useGetObjectState('app.Connector1')
+    const DoItButton_action = React.useCallback(() => {
+        Connector1.DoStuff('Number1')
+    }, [])
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('DoItButton'), content: 'Go on, do it!', appearance: 'outline', action: () => {Connector1.DoStuff('Number1')}}),
+        React.createElement(Button, {path: pathWith('DoItButton'), content: 'Go on, do it!', appearance: 'outline', action: DoItButton_action}),
     )
 }
 `)
@@ -953,7 +963,7 @@ test('generates List element with separate child component and global functions 
             new TextInput('id4', 'Text Input 1', {}),
             new Layout('la1', 'Layout 1', {}, [
                 new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200, selectAction: ex`Log(\$item.id)`}, [
-                    new Text('id1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
+                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
                 ])
@@ -973,11 +983,14 @@ test('generates List element with separate child component and global functions 
     const {Update} = Elemento.appFunctions
     const TextInput1 = Elemento.useGetObjectState(parentPathWith('TextInput1'))
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: "from " + Left($item, 3)}))
+    const ButtonUpdate_action = React.useCallback(() => {
+        Update('Things', '123', {done: true})
+    }, [])
 
     return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Text1')}, "Hi there " + TextInput2 + " in " + TextInput1),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
-        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: () => {Update('Things', '123', {done: true})}}),
+        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
 }
 
@@ -988,11 +1001,14 @@ function Page1(props) {
     const {Log} = Elemento.globalFunctions
     const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
+    const List1_selectAction = React.useCallback(($item) => {
+        Log($item.id)
+    }, [])
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], width: 200, selectAction: (\$item) => {Log(\$item.id)}, style: 'color: red'}),
+            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], width: 200, selectAction: List1_selectAction, style: 'color: red'}),
     ),
     )
 }
@@ -1066,6 +1082,198 @@ test('generates Layout element with properties and children', ()=> {
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),
             React.createElement(Button, {path: pathWith('B1'), content: 'Click here!', appearance: 'outline'}),
     ),
+    )
+}
+`)
+})
+
+test('generates simple Form element with separate child component', ()=> {
+    const app = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`},
+                    [
+                    new TextInput('id2', 'Text Input 2', {}),
+                    new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
+                ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app, project(app))
+
+    expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Form, TextInput, NumberInput} = Elemento.components
+    const \$form = Elemento.useGetObjectState(props.path)
+    const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: \$form.originalValue?.TextInput2}))
+    const NumberInput1 = Elemento.useObjectState(pathWith('NumberInput1'), new NumberInput.State({value: 5 + 3}))
+    \$form._updateValue()
+
+    return React.createElement(Form, props,
+        React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
+        React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
+    )
+}
+
+
+Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
+    fieldNames = ['TextInput2', 'NumberInput1']
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page} = Elemento.components
+    const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27})}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'Details Form', horizontal: false, wrap: false}),
+    )
+}
+`)
+})
+
+test('generates nested Form elements', ()=> {
+    const app = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}}`},
+                    [
+                        new TextInput('id2', 'Text Input 2', {}),
+                        new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
+                        new Form('form2', 'Further Details', {horizontal: true}, [
+                            new TextInput('ti2', 'Description', {}),
+                            new NumberInput('ni2', 'Size', {}),
+                        ])
+                    ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app, project(app))
+
+    expect(gen.output().files[0].contents).toBe(`function DetailsForm_FurtherDetails(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Form, TextInput, NumberInput} = Elemento.components
+    const \$form = Elemento.useGetObjectState(props.path)
+    const Description = Elemento.useObjectState(pathWith('Description'), new TextInput.State({value: \$form.originalValue?.Description}))
+    const Size = Elemento.useObjectState(pathWith('Size'), new NumberInput.State({value: \$form.originalValue?.Size}))
+    \$form._updateValue()
+
+    return React.createElement(Form, props,
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description'}),
+        React.createElement(NumberInput, {path: pathWith('Size'), label: 'Size'}),
+    )
+}
+
+
+DetailsForm_FurtherDetails.State = class DetailsForm_FurtherDetails_State extends Elemento.components.BaseFormState {
+    fieldNames = ['Description', 'Size']
+}
+
+
+function Page1_DetailsForm(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Form, TextInput, NumberInput} = Elemento.components
+    const \$form = Elemento.useGetObjectState(props.path)
+    const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: \$form.originalValue?.TextInput2}))
+    const NumberInput1 = Elemento.useObjectState(pathWith('NumberInput1'), new NumberInput.State({value: 5 + 3}))
+    const FurtherDetails = Elemento.useObjectState(pathWith('FurtherDetails'), new DetailsForm_FurtherDetails.State({value: \$form.originalValue?.FurtherDetails}))
+    \$form._updateValue()
+
+    return React.createElement(Form, props,
+        React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
+        React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
+        React.createElement(DetailsForm_FurtherDetails, {path: pathWith('FurtherDetails'), label: 'Further Details', horizontal: true, wrap: false}),
+    )
+}
+
+
+Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
+    fieldNames = ['TextInput2', 'NumberInput1', 'FurtherDetails']
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page} = Elemento.components
+    const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}})}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'Details Form', horizontal: false, wrap: false}),
+    )
+}
+`)
+})
+
+test('generates Form element with separate child component', ()=> {
+    const app = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new TextInput('id0', 'Text Input 1', {}),
+                new TrueFalseInput('tf1', 'TF Input 1', {}),
+                new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`, label: 'The Details',
+                    width: '93%', horizontal: true, wrap: false,
+                        keyAction: ex`Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit)`,
+                        submitAction: ex`Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)`},
+                    [
+                    new TextInput('id2', 'Text Input 2', {}),
+                    new Text('id1', 'Text 1', {content: ex`"Hi there " + Left(TextInput2, 2)`}),
+                    new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
+                    new Text('id5', 'Text 2', {content: ex`"Number is " + \$form.value.NumberInput1`}),
+                    new Button('id4', 'Button Update', {content: 'Update', action: ex`\$form.Submit('normal')`}),
+                ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app, project(app))
+
+    expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Form, TextInput, TextElement, NumberInput, Button} = Elemento.components
+    const {Left} = Elemento.globalFunctions
+    const \$form = Elemento.useGetObjectState(props.path)
+    const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: \$form.originalValue?.TextInput2}))
+    const NumberInput1 = Elemento.useObjectState(pathWith('NumberInput1'), new NumberInput.State({value: 5 + 3}))
+    \$form._updateValue()
+    const ButtonUpdate_action = React.useCallback(() => {
+        \$form.Submit('normal')
+    }, [\$form])
+
+    return React.createElement(Form, props,
+        React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
+        React.createElement(TextElement, {path: pathWith('Text1')}, "Hi there " + Left(TextInput2, 2)),
+        React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
+        React.createElement(TextElement, {path: pathWith('Text2')}, "Number is " + \$form.value.NumberInput1),
+        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
+    )
+}
+
+
+Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
+    fieldNames = ['TextInput2', 'NumberInput1']
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextInput, TrueFalseInput} = Elemento.components
+    const {Log, If} = Elemento.globalFunctions
+    const {Update} = Elemento.appFunctions
+    const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
+    const TFInput1 = Elemento.useObjectState(pathWith('TFInput1'), new TrueFalseInput.State({}))
+    const DetailsForm_submitAction = React.useCallback((\$form, \$data) => {
+        Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)
+    }, [TextInput1, TFInput1])
+    const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27}), submitAction: DetailsForm_submitAction}))
+    const DetailsForm_keyAction = React.useCallback((\$event) => {
+        const \$key = \$event.key
+        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit)
+    }, [])
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
+        React.createElement(TrueFalseInput, {path: pathWith('TFInput1'), label: 'TF Input 1'}),
+        React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'The Details', horizontal: true, width: '93%', wrap: false, keyAction: DetailsForm_keyAction}),
     )
 }
 `)
@@ -1456,9 +1664,12 @@ test('app state functions and Page names available in expression', ()=> {
     const {Page, Button} = Elemento.components
     const app = Elemento.useGetObjectState('app')
     const {ShowPage} = app
+    const b1_action = React.useCallback(() => {
+        ShowPage(Page2)
+    }, [])
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', appearance: 'outline', action: () => {ShowPage(Page2)}}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', appearance: 'outline', action: b1_action}),
     )
 }
 `)
@@ -1694,11 +1905,14 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
+    const b1_action = React.useCallback(() => {
+        let a = If(true, 10, Sum(Log == 12, 3, 4))
+            let b = If(Sum == 42, 10, 20)
+            Sum == 1
+    }, [])
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', appearance: 'outline', action: () => {let a = If(true, 10, Sum(Log == 12, 3, 4))
-    let b = If(Sum == 42, 10, 20)
-    Sum == 1}}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', appearance: 'outline', action: b1_action}),
     )
 }
 `)

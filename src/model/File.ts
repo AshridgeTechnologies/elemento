@@ -1,4 +1,4 @@
-import {ComponentType, ElementType, PropertyDef} from './Types'
+import {ComponentType, ParentType, PropertyDef} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
 
@@ -18,6 +18,6 @@ export default class File extends BaseElement<Properties> implements Element {
         return 'background'
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'FileFolder' }
+    static get parentType(): ParentType { return 'FileFolder' }
 
 }

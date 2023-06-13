@@ -68,10 +68,10 @@ export default class ServerAppGenerator {
             const entry = this.componentExpression(el)
             const identifiers = this.parser.elementIdentifiers(el.id)
             const componentIdentifiersUsed = identifiers.filter(isComponentName)
-            return [el.codeName, entry, componentIdentifiersUsed]
+            return [el, entry, componentIdentifiersUsed]
         }).filter( ([,expr]) => !!expr )
-        return topoSort(componentEntries).map(([name, expr]) => {
-            return `const ${name} = ${expr}`
+        return topoSort(componentEntries).map(([el, expr]) => {
+            return `const ${el.codeName} = ${expr}`
         }).join('\n')
     }
 

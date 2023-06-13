@@ -1,0 +1,867 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form element produces output containing children 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.form1"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form 1
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.form1.Description"
+        id="app.page1.form1.Description-label"
+      >
+        Description
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Description"
+          maxLength={10}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="text"
+          value="Big"
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Description
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.form1.Size"
+        id="app.page1.form1.Size-label"
+      >
+        Size
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Size"
+          max={20}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="number"
+          value={17}
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Size
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Form element produces output containing nested form 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.formNested"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form 1
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.formNested.Description"
+        id="app.page1.formNested.Description-label"
+      >
+        Description
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.formNested.Description"
+          maxLength={10}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="text"
+          value="Big"
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Description
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.formNested.Size"
+        id="app.page1.formNested.Size-label"
+      >
+        Size
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.formNested.Size"
+          max={20}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="number"
+          value={17}
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Size
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiBox-root css-0"
+      id="app.page1.formNested.Extra"
+    >
+      <h6
+        className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+      >
+        Extra
+      </h6>
+      <div
+        className="css-a5tkhr-MuiStack-root"
+        sz={
+          {
+            "alignItems": "flex-start",
+            "boxSizing": "border-box",
+            "maxHeight": "100%",
+            "minHeight": "3em",
+            "overflow": "scroll",
+            "padding": 1,
+            "py": 1,
+          }
+        }
+      >
+        <div
+          className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink={true}
+            htmlFor="app.page1.formNested.Extra.Description"
+            id="app.page1.formNested.Extra.Description-label"
+          >
+            Description
+          </label>
+          <div
+            className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              autoFocus={false}
+              className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+              disabled={false}
+              id="app.page1.formNested.Extra.Description"
+              maxLength={10}
+              onAnimationStart={[Function]}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="text"
+              value="Extra Big"
+            />
+            <fieldset
+              aria-hidden={true}
+              className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                className="css-14lo706"
+              >
+                <span>
+                  Description
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Form element produces output from data type with extra and override children 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.form1"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form 1
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root css-1g1iitx-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.form1.Description"
+        id="app.page1.form1.Description-label"
+      >
+        Description of the thing
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Description"
+          maxLength={10}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="text"
+          value="Big"
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Description of the thing
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.form1.Size"
+        id="app.page1.form1.Size-label"
+      >
+        Size
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Size"
+          max={20}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="number"
+          value={17}
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-14lo706"
+          >
+            <span>
+              Size
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
+        htmlFor="app.page1.form1.Count"
+        id="app.page1.form1.Count-label"
+      >
+        Count
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Count"
+          max={20}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="number"
+          value=""
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-yjsfm1"
+          >
+            <span>
+              Count
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.form1.Feedback"
+    >
+      Size is 17
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Form element produces output with all types of children and description 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.form1"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form 1
+    <button
+      aria-label="The record type with them all"
+      aria-labelledby={null}
+      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+      data-mui-internal-clone-element={true}
+      disabled={false}
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      type="button"
+    >
+      <span
+        aria-hidden={true}
+        aria-label="Help"
+        className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1rapajh-MuiIcon-root"
+      >
+        info_outlined
+      </span>
+      <span
+        className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      onClick={[Function]}
+      onMouseUp={[Function]}
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
+        htmlFor="app.page1.form1.Start Date"
+        id="app.page1.form1.Start Date-label"
+      >
+        Start Date
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoComplete="off"
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.form1.Start Date"
+          inputMode="text"
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onPaste={[Function]}
+          placeholder="DD MMMM YYYY"
+          readOnly={false}
+          required={false}
+          type="text"
+          value=""
+        />
+        <div
+          className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-1laqsz7-MuiInputAdornment-root"
+        >
+          <button
+            aria-label="Choose date"
+            className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onContextMenu={[Function]}
+            onDragLeave={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            <svg
+              aria-hidden={true}
+              className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+              data-testid="CalendarIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+              />
+            </svg>
+            <span
+              className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-yjsfm1"
+          >
+            <span>
+              Start Date
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      className="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        id="app.page1.form1.Region_label"
+      >
+        Region
+      </label>
+      <div
+        className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-llrb4p-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+        onClick={[Function]}
+      >
+        <div
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-labelledby="app.page1.form1.Region_label app.page1.form1.Region"
+          className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
+          id="app.page1.form1.Region"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onMouseDown={[Function]}
+          role="button"
+          tabIndex={0}
+        >
+          Central
+        </div>
+        <input
+          aria-hidden={true}
+          className="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+          disabled={false}
+          onAnimationStart={[Function]}
+          onChange={[Function]}
+          required={false}
+          tabIndex={-1}
+          value="Central"
+        />
+        <svg
+          aria-hidden={true}
+          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+          data-testid="ArrowDropDownIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M7 10l5 5 5-5z"
+          />
+        </svg>
+      </div>
+      <p
+        className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-k4qjio-MuiFormHelperText-root"
+      />
+    </div>
+    <div
+      className="MuiBox-root css-1yp4ln"
+    >
+      <div
+        className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
+      >
+        <label
+          className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart Mui-error css-1f2kvjf-MuiFormControlLabel-root"
+          htmlFor="app.page1.form1.Internal"
+        >
+          <span
+            className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+            onBlur={[Function]}
+            onContextMenu={[Function]}
+            onDragLeave={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex={null}
+          >
+            <input
+              checked={true}
+              className="PrivateSwitchBase-input css-1m9pwf3"
+              data-indeterminate={false}
+              disabled={false}
+              id="app.page1.form1.Internal"
+              onChange={[Function]}
+              type="checkbox"
+            />
+            <svg
+              aria-hidden={true}
+              className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+              data-testid="CheckBoxIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+              />
+            </svg>
+            <span
+              className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </span>
+          <span
+            className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+          >
+            Internal
+          </span>
+        </label>
+        <p
+          className="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+        />
+      </div>
+      <button
+        aria-label="Internal sign up"
+        aria-labelledby={null}
+        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        data-mui-internal-clone-element={true}
+        disabled={false}
+        onBlur={[Function]}
+        onContextMenu={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseOver={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        type="button"
+      >
+        <span
+          aria-hidden={true}
+          aria-label="Help"
+          className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1rapajh-MuiIcon-root"
+        >
+          info_outlined
+        </span>
+        <span
+          className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Form element produces output with no children 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.formEmpty"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form Empty
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  />
+</div>
+`;
+
+exports[`Form element produces output with one child 1`] = `
+<div
+  className="MuiBox-root css-0"
+  id="app.page1.formSingle"
+>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    Test Form One Element
+  </h6>
+  <div
+    className="css-a5tkhr-MuiStack-root"
+    sz={
+      {
+        "alignItems": "flex-start",
+        "boxSizing": "border-box",
+        "maxHeight": "100%",
+        "minHeight": "3em",
+        "overflow": "scroll",
+        "padding": 1,
+        "py": 1,
+      }
+    }
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
+        htmlFor="app.page1.formSingle.Description"
+        id="app.page1.formSingle.Description-label"
+      >
+        Description
+      </label>
+      <div
+        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          autoFocus={false}
+          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+          disabled={false}
+          id="app.page1.formSingle.Description"
+          maxLength={10}
+          onAnimationStart={[Function]}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          type="text"
+          value=""
+        />
+        <fieldset
+          aria-hidden={true}
+          className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        >
+          <legend
+            className="css-yjsfm1"
+          >
+            <span>
+              Description
+            </span>
+          </legend>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+`;

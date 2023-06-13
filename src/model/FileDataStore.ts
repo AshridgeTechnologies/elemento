@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, PropertyDef} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 
 type Properties = {
 }
@@ -15,5 +15,5 @@ export default class FileDataStore extends BaseElement<Properties> implements El
         return []
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'App' }
+    static get parentType(): ParentType { return 'App' }
 }

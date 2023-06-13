@@ -9,15 +9,16 @@ import {functionArgIndexes} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
-import {last, omit} from 'ramda'
+import {flatten, identity, last, omit} from 'ramda'
 import Parser from './Parser'
 import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName} from './Types'
-import {trimParens} from '../util/helpers'
+import {notBlank, notEmpty, trimParens} from '../util/helpers'
 import {
     allElements,
     DefinedFunction,
     objectLiteral,
     objectLiteralEntries,
+    quote,
     StateEntry,
     topoSort,
     valueLiteral
@@ -25,16 +26,19 @@ import {
 import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
-import {EventActionPropertyDef} from '../model/Types'
+import {EventActionPropertyDef, PropertyDef} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
+import Form from '../model/Form'
 
 type FunctionCollector = {add(s: string): void}
 
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel2 = '        '
 const indentLevel3 = '            '
+
+const isActionProperty = (def: PropertyDef) => (def.type as EventActionPropertyDef).type === 'Action'
 
 export const DEFAULT_IMPORTS = [
     `const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\``,
@@ -52,7 +56,6 @@ export default class Generator {
     constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
         this.parser.parseComponent(project.dataTypesContainer)
-        app.pages.forEach(page => this.parser.parseComponent(page))
         this.parser.parseComponent(app)
         this.typesGenerator = new TypesGenerator(project)
     }
@@ -101,17 +104,18 @@ export default class Generator {
         return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 
-    private generateComponent(app: App, component: Page | App | ListItem, containingComponent?: Page) {
+    private generateComponent(app: App, component: Page | App | Form | ListItem, containingComponent?: Page) {
         const componentIsApp = component instanceof App
-        const componentIsPage = component instanceof Page
+        const canUseContainerElements = component instanceof ListItem && containingComponent
+        const componentIsForm = component instanceof Form
         const topLevelFunctions = new Set<string>()
         const allPages = app.pages
-        const allComponentElements = allElements(component)
-        const allContainerElements = containingComponent ? allElements(containingComponent) : []
+        const allComponentElements = allElements(component, true)
+        const allContainerElements = canUseContainerElements ? allElements(containingComponent, true) : []
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
-        const uiElementCode = this.generateElement(component, app, topLevelFunctions, componentIsPage ? containingComponent : undefined)
-        const identifiers = this.parser.elementIdentifiers(component.id)
+        const uiElementCode = this.generateComponentCode(component, app, topLevelFunctions)
+        const identifiers = this.parser.componentIdentifiers(component.id)
 
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
@@ -133,44 +137,94 @@ export default class Generator {
             appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState('app.${ident}')`).join('\n')
         }
         let containerDeclarations
-        if (containingComponent) {
+        if (canUseContainerElements) {
             const containerIdentifiers = identifiers.filter(isContainerElement)
             containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState(parentPathWith('${ident}'))`).join('\n')
         }
         const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appContext,
             appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
+        const actionHandler = (el: Element, def: PropertyDef) => {
+            const actionDef = def.type as EventActionPropertyDef
+            const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
+            const functionName = `${el.codeName}_${def.name}`
+            const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
+            const dependencies = identifiers.filter(id => id !== el.codeName && (isStatefulComponentName(id) || (componentIsForm && id === '$form')))
+             return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
+        }
+
+        const uiElementActionHandlers = (el: Element) => {
+            return el.propertyDefs
+                .filter( def => !def.state )
+                .filter(isActionProperty)
+                .map( (def) => actionHandler(el, def))
+                .filter( notEmpty )
+        }
+
+        const stateActionHandlers = (el: Element) => {
+            return el.propertyDefs
+                .filter( def => def.state )
+                .filter(isActionProperty)
+                .map( (def) => actionHandler(el, def))
+                .filter( notEmpty )
+        }
+
+        const generateActionHandlers = (elements: ReadonlyArray<Element>, actionHandlerFn: any) => {
+            const actions = flatten(elements.map(  actionHandlerFn) as string[][])
+            return actions.join('\n')
+        }
+
         const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
         const stateEntries = statefulComponents.map((el): StateEntry => {
-            const entry = this.initialStateEntry(el, topLevelFunctions)
+            const entry = this.initialStateEntry(el, topLevelFunctions, component instanceof ListItem ? component.list : component)
             const identifiers = this.parser.stateIdentifiers(el.id)
             const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
-            return [el.codeName, entry, stateComponentIdentifiersUsed]
+            return [el, entry, stateComponentIdentifiersUsed]
         }).filter(([, entry]) => !!entry)
-        const stateBlock = topoSort(stateEntries).map(([name, entry]) => {
+
+        const inlineStateBlock = () => topoSort(stateEntries).map(([el, entry]) => {
+            const name = el.codeName
             const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
-            return entry instanceof DefinedFunction
-                ? `    const ${name} = ${entry.functionDef}`
-                : `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
+            if (entry instanceof DefinedFunction) {
+                return `    const ${name} = ${entry.functionDef}`
+            } else {
+                const actionFunctions = stateActionHandlers(el).filter( notBlank ).join('\n')
+                const stateObjectDeclaration = `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
+                return [actionFunctions, stateObjectDeclaration].filter( notBlank ).join('\n')
+            }
         }).join('\n')
+
+        const formState = () => {
+            return `    const \$form = Elemento.useGetObjectState(props.path)` + '\n'
+                 + inlineStateBlock() + '\n'
+                 + `    \$form._updateValue()`
+
+        }
+
+        const stateBlock = componentIsForm ? formState() : inlineStateBlock()
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
-            const entry = this.initialStateEntry(comp, topLevelFunctions)
+            const entry = this.initialStateEntry(comp, topLevelFunctions, component instanceof ListItem ? component.list : component)
             return `    const [${comp.codeName}] = React.useState(${entry})`
         }).join('\n')
 
         const pathWith = componentIsApp ? `    const pathWith = name => '${component.codeName}' + '.' + name`
             : `    const pathWith = name => props.path + '.' + name`
-        const parentPathWith = containingComponent ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
+        const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
         const extraDeclarations = component instanceof ListItem ? '    const {$item} = props' : ''
-        const functionNamePrefix = containingComponent ? containingComponent.codeName + '_' : ''
+
+
+
+        const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
+        const functionNamePrefix = this.functionNamePrefix(containingComponent)
         const functionName = functionNamePrefix + (component instanceof ListItem ? component.list.codeName + 'Item' : component.codeName)
+
         const declarations = [
             pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
-            backgroundFixedDeclarations, stateBlock
+            backgroundFixedDeclarations, stateBlock, uiElementActionFunctions
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
         const componentFunction = `${exportClause}function ${functionName}(props) {
@@ -179,12 +233,34 @@ ${declarations}
     return ${uiElementCode}
 }
 `.trimStart()
-        return [...topLevelFunctions, componentFunction].join('\n\n')
+
+        const stateNames = statefulComponents.map( el => el.codeName )
+        const stateClass = componentIsForm ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseFormState {
+    fieldNames = [${stateNames.map(quote).join(', ')}]
+}
+`.trimStart() : ''
+
+        return [...topLevelFunctions, componentFunction, stateClass].filter(identity).join('\n\n')
     }
 
-    private generateElement(element: Element | ListItem, app: App, topLevelFunctions: FunctionCollector, containingComponent?: Page): string {
+    private functionNamePrefix(containingComponent: Element | undefined) {
+        return containingComponent ? containingComponent.codeName + '_' : ''
+    }
 
-        const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page) => {
+    private modelProperties = (element: Element) => {
+        const propertyDefs = element.propertyDefs.filter(def => !def.state)
+        const propertyExprs = propertyDefs.map(def => {
+            const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
+            const expr = this.getExpr(element, def.name, exprType)
+            return [def.name, expr]
+        })
+
+        return Object.fromEntries(propertyExprs.filter(([, expr]) => !!expr))
+    }
+
+    private generateComponentCode(element: Element | ListItem, app: App, topLevelFunctions: FunctionCollector): string {
+
+        const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
             const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, containingComponent))
             const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
@@ -197,29 +273,6 @@ ${generateChildren(element.list)}
     )`
         }
 
-        const path = `pathWith('${(element.codeName)}')`
-
-        const modelProperties = () => {
-            const propertyDefs = element.propertyDefs.filter(def => !def.state)
-            const propertyExprs = propertyDefs.map(def => {
-                const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
-                const exprType: ExprType = isEventAction ? 'action' : 'singleExpression'
-                const exprArgNames = isEventAction ? (def.type as EventActionPropertyDef).argumentNames : undefined
-                const expr = this.getExpr(element, def.name, exprType, exprArgNames)
-                return [def.name, expr]
-            })
-
-            return Object.fromEntries(propertyExprs.filter(([, expr]) => !!expr))
-        }
-
-        const getReactProperties = () => {
-            return {path, ...(modelProperties())}
-        }
-
-        if (element.kind === 'Project') {
-            throw new Error('Cannot generate code for Project')
-        }
-
         switch (element.kind) {
             case 'App': {
                 const app = element as App
@@ -228,7 +281,7 @@ ${generateChildren(element.list)}
                 const bottomChildrenElements = app.bottomChildren.map(p => `        ${this.generateElement(p, app, topLevelFunctions)}`).filter(line => !!line.trim()).join(',\n')
                 const bottomChildren = bottomChildrenElements ? `\n${bottomChildrenElements}\n    ` : ''
 
-                return `React.createElement(App, {path: '${app.codeName}', ${objectLiteralEntries(modelProperties(), ',')}${topChildren}},${bottomChildren})`
+                return `React.createElement(App, {path: '${app.codeName}', ${objectLiteralEntries(this.modelProperties(element), ',')}${topChildren}},${bottomChildren})`
             }
 
             case 'Page': {
@@ -236,6 +289,40 @@ ${generateChildren(element.list)}
                 return `React.createElement(Page, {id: props.path},
 ${generateChildren(page, indentLevel2, page)}
     )`
+            }
+
+            case 'Form': {
+                const form = element as Form
+                return `React.createElement(Form, props,
+${generateChildren(form, indentLevel2, form)}
+    )`
+            }
+
+        }
+
+        throw new Error('Cannot generate component code for ' + element.kind)
+    }
+
+    private generateElement(element: Element, app: App, topLevelFunctions: FunctionCollector, containingComponent?: Page): string {
+
+        const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page) => {
+            const elementArray = element.elements ?? []
+            const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, containingComponent))
+            const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
+            return generatedUiElementLines.join('\n')
+        }
+
+        const path = `pathWith('${(element.codeName)}')`
+
+        const getReactProperties = () => {
+            return {path, ...(this.modelProperties(element))}
+        }
+
+        switch (element.kind) {
+            case 'Project':
+            case 'App':
+            case 'Page': {
+                throw new Error('Cannot generate element code for ' + element.kind)
             }
 
             case 'Text': {
@@ -274,8 +361,17 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                 topLevelFunctions.add(listItemCode)
                 const itemContentComponent = containingComponent!.codeName + '_' + list.codeName + 'Item'
 
-                const reactProperties = {path, itemContentComponent, ...modelProperties()}
+                const reactProperties = {path, itemContentComponent, ...this.modelProperties(element)}
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(reactProperties)})`
+            }
+
+            case 'Form': {
+                const form = element as Form
+                const formCode = this.generateComponent(app, form, containingComponent)
+                topLevelFunctions.add(formCode)
+                const formComponentName = containingComponent!.codeName + '_' + form.codeName
+
+                return `React.createElement(${formComponentName}, ${objectLiteral(getReactProperties())})`
             }
 
             case 'MemoryDataStore':
@@ -308,15 +404,23 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
     }
 
-    private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector): string | DefinedFunction {
+    private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | DefinedFunction {
 
         const modelProperties = () => {
-            const propertyExprs = element.propertyDefs.filter(({state}) => state).map(def => {
-                const expr = this.getExpr(element, def.name)
-                return [def.name, expr]
-            }).filter(([, expr]) => !!expr)
+            const propertyExprs = element.propertyDefs
+                .filter(({state}) => state)
+                .map(def => {
+                    const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
+                    const expr = this.getExpr(element, def.name, exprType)
+                    return [def.name, expr]
+                })
+                .filter(([, expr]) => !!expr)
                 .map(([prop, expr]) => [prop === 'initialValue' ? 'value' : prop, expr])
-            return Object.fromEntries(propertyExprs)
+            const props = Object.fromEntries(propertyExprs)
+            if (containingElement.kind === 'Form' && props.value === undefined) {
+                props.value = `\$form.originalValue?.${element.codeName}`
+            }
+            return props
         }
 
         if (element.kind === 'Project') {
@@ -334,6 +438,11 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             const [configFunction, configFunctionName] = this.serverAppConfigFunction(connector)
             topLevelFunctions.add(configFunction)
             return `new ${runtimeElementName(element)}.State({configuration: ${configFunctionName}()})`
+        }
+
+        if (element.kind === 'Form') {
+            const formName = this.functionNamePrefix(containingElement) + element.codeName
+            return `new ${formName}.State(${objectLiteral(modelProperties())})`
         }
 
         if (element.type() === 'statefulUI' || element.type() === 'background') {
@@ -400,16 +509,21 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         switch (exprType) {
             case 'singleExpression':
                 return exprCode
-            case 'action':
+            case 'action': {
                 const argList = (argumentNames ?? []).join(', ')
-                return `(${argList}) => {${exprCode}}`
+                const body = propertyName === 'keyAction' ? `const \$key = \$event.key\n${exprCode}` : exprCode
+                return `(${argList}) => {\n${indent(body, '        ')}\n    }`
+            }
             case 'multilineExpression': {
                 return `{\n${indent(exprCode, '        ')}\n    }`
+            }
+            case 'reference': {
+                return `${element.codeName}_${propertyName}`
             }
         }
     }
 
-    private convertAstToValidJavaScript(ast:any, exprType: "singleExpression" | "action" | "multilineExpression") {
+    private convertAstToValidJavaScript(ast:any, exprType: ExprType) {
         function isShorthandProperty(node: any) {
             return node.shorthand
         }

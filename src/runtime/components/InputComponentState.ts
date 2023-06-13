@@ -2,17 +2,21 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import {PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../../shared/types/BaseType'
 
-type InputProps<T, DT extends BaseType<T, any>> = {value?: PropVal<T> | null, dataType?: DT}
-type StateProps<T> = {value?: T | null, errorsShown?: boolean}
+export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
+type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean}
 
-export default abstract class InputComponentState<T, DT extends BaseType<T, any>>
-    extends BaseComponentState<InputProps<T, DT>, StateProps<T>>
-    implements ComponentState<InputComponentState<T, DT>> {
+export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
+    extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
+    implements ComponentState<InputComponentState<T, DT, Props>> {
 
     abstract defaultValue: T | null
 
     get value() {
         return this.propsOrStateValue ?? this.defaultValue
+    }
+
+    get originalValue() {
+        return valueOf(this.props.value)
     }
 
     get valid() {
@@ -24,7 +28,9 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     }
 
     get modified() {
-        return this.state.value !== undefined && this.state.value !== this.props.value
+        const stateValue = this.state.value
+        return stateValue !== undefined
+            && (stateValue ?? null) !== (this.originalValue ?? null)
     }
 
     get errorsShown() {
@@ -37,8 +43,8 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
 
     get dataType() { return this.props.dataType }
 
-    private get propsOrStateValue() {
-        return this.state.value !== undefined ? this.state.value : valueOf(this.props.value)
+    protected get propsOrStateValue() {
+        return this.state.value !== undefined ? this.state.value : this.originalValue
     }
 
     _setValue(value: T | null) {

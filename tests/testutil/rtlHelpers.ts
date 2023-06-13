@@ -55,9 +55,10 @@ export const containerFunctions = (container: HTMLElement) => {
             })
         )
     }
+    const keyDown = (elOrSel: ElOrSel, key: string) => actWait(() => fireEvent.keyDown(element(elOrSel), {key}))
 
     const el = ([s]: TemplateStringsArray): any => element(s)
     const querySelector = (selector: string): HTMLElement => container.querySelector(selector)!
     const user = userEvent.setup()
-    return {domContainer: container, renderThe, elIn, el, element, querySelector, expectEl, user, enter, click}
+    return {domContainer: container, renderThe, elIn, el, element, querySelector, expectEl, user, enter, click, keyDown}
 }

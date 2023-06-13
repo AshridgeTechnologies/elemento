@@ -4,7 +4,7 @@ Form state and actions
 Aims
 ----
 
-- Make forms collecting data and invoking actions:
+- Make _Editor_ forms collecting data and invoking actions:
   - easier to test
   - simpler to write
   - more maintainable

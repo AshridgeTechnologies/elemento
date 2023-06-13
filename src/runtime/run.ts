@@ -69,8 +69,8 @@ export const runForDev = (url: string) => {
         if (message.type === 'callFunction') {
             const {componentId, functionName, args = []} = message
             const state = appStore.getState()
-            const pathInState = fixPath(componentId)
-            const componentState = state.select(pathInState)
+            const pathInState = fixPath(componentId, undefined)
+            const componentState = state.select(pathInState)[pathInState]
             const func = (componentState as any)[functionName]
             func.apply(componentState, args)
         }

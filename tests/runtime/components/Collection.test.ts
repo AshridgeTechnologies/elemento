@@ -39,7 +39,7 @@ beforeEach( () => {
 
 const initState = (initialCollection: object):[CollectionState, AppStateForObject] => {
     const state = new Collection.State({value: initialCollection, dataStore, collectionName: 'Widgets'})
-    const appInterface = testAppInterface(state); state.init(appInterface)
+    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
 
     return [state, appInterface]
 }
@@ -137,7 +137,7 @@ describe('Update', () => {
 
     test('updates state correctly', () => {
         const state = new CollectionState({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
 
         state.Update('x1', {a:20, b:'Cee'})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
@@ -150,7 +150,7 @@ describe('Update', () => {
 
     test('cannot update id', () => {
         const state = new CollectionState({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
 
         state.Update('x1', {id: 'xxx333', a: 50, b: 'Bee'})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
@@ -169,7 +169,7 @@ describe('Add', () => {
     }
     test('inserts a new object with id into a collection', () => {
         const state = new CollectionState({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add({id: 'x3', a: 30})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
@@ -182,7 +182,7 @@ describe('Add', () => {
 
     test('inserts a new item without id into a collection and adds the id', () => {
         const state = new Collection.State({value: {}})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add({a: 30})
         const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
         const entries = Object.entries(newState.value)
@@ -194,7 +194,7 @@ describe('Add', () => {
 
     test('inserts a new simple value into a collection', () => {
         const state = new Collection.State({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add('green')
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
@@ -207,7 +207,7 @@ describe('Add', () => {
 
     test('inserts multiple objects into a collection', () => {
         const state = new CollectionState({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add([{id: 'x3', a: 30}, {id: 'x4', a: 40}])
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
@@ -221,7 +221,7 @@ describe('Add', () => {
 
     test('inserts multiple objects without ids into a collection', () => {
         const state = new CollectionState({})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add([{a: 30}, {a: 40}, {a: 50}])
         const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
         const entries = Object.entries(newState.value)
@@ -237,7 +237,7 @@ describe('Add', () => {
 
     test('inserts multiple simple values into a collection', () => {
         const state = new Collection.State({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Add(['green', 'blue'])
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
@@ -260,7 +260,7 @@ describe('Remove', () => {
 
     test('removes an item from a collection', () => {
         const state = new Collection.State({value: initialCollection})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         state.Remove('x1')
         const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
         expect(newState).toStrictEqual(state._withStateChanges({
@@ -634,7 +634,7 @@ describe('subscribe with external data store', () => {
         const subscription = {}
         const dataStore = mockDataStore()
         const state = new Collection.State({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({subscription})
-        const appInterface = testAppInterface(); state.init(appInterface)
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
         expect(dataStore.observable).not.toHaveBeenCalled()
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
     })
@@ -644,7 +644,7 @@ describe('subscribe with external data store', () => {
             value: {id1: {a:10}},
             queries: { '{"a":10}': [{a:10}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface)
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
 
         testObservable.send({collection: 'Widgets', type: InvalidateAll})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {}, queries: {}}))
@@ -655,7 +655,7 @@ describe('subscribe with external data store', () => {
             value: {id1: {a:10}},
             queries: { '{"a":10}': [{a:10}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
 
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {id1: {a:10}}, queries: {}}))
@@ -666,7 +666,7 @@ describe('subscribe with external data store', () => {
             value: {},
             queries: {'{"a":10}': [{a: 10}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         (dataStore.getById as jest.MockedFunction<any>)
             .mockResolvedValueOnce({a: 10, b: 'Bee'});
 
@@ -689,7 +689,7 @@ describe('subscribe with external data store', () => {
             '{"b":true}': [{id: 'w1', a: 10, b: true, c: 'Foo'}],
             '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
@@ -713,7 +713,7 @@ describe('subscribe with external data store', () => {
                     {id: 'w2', a: 10, b: false, c: 'Bar'}
                 ]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
@@ -736,7 +736,7 @@ describe('subscribe with external data store', () => {
                 '{"b":true}': [{id: 'w1', a: 10, b: true, c: 'Foo'}],
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         testObservable.send({collection: 'Widgets', type: Remove, id: 'w2'})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
@@ -761,7 +761,7 @@ describe('subscribe with external data store', () => {
                 '{"b":true}': [{id: 'w1', a: 10, b: true, c: 'Foo'}],
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {b: true}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
@@ -787,7 +787,7 @@ describe('subscribe with external data store', () => {
                 '{"b":true}': [{id: 'w1', a: 10, b: true, c: 'Foo'}],
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]}
         })
-        const appInterface = testAppInterface(state); state.init(appInterface);
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath');
         testObservable.send({collection: 'Widgets', type: Add, id: 'w3', changes: {id: 'w3', a: 10, b: true, c: 'Three'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)

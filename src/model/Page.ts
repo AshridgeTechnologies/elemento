@@ -1,7 +1,6 @@
 import Element from './Element'
 import BaseElement from './BaseElement'
-import {ComponentType, ElementType, PropertyDef} from './Types'
-import {elementOfType} from './elements'
+import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
 type Properties = {}
@@ -16,7 +15,7 @@ export default class Page extends BaseElement<Properties> implements Element {
         return elementHasParentTypeOf(elementType, this)
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'App' }
+    static get parentType(): ParentType { return 'App' }
 
     get propertyDefs(): PropertyDef[] { return [] }
 

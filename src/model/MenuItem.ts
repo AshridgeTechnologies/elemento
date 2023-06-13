@@ -1,4 +1,12 @@
-import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {
+    ComponentType,
+    ElementType,
+    eventAction,
+    ParentType,
+    PropertyDef,
+    PropertyExpr,
+    PropertyValueType
+} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
@@ -26,6 +34,7 @@ export default class MenuItem extends BaseElement<Properties> implements Element
         ]
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'Menu' }
+    static get parentType():
+        ParentType { return 'Menu' }
 
 }

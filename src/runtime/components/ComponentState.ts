@@ -1,9 +1,9 @@
 import {AppStateForObject} from '../appData'
-import shallow from 'zustand/shallow'
+import {shallow} from 'zustand/shallow'
 import {equals, omit} from 'ramda'
 
 export interface ComponentState<T> {
-    init(asi: AppStateForObject): void
+    init(asi: AppStateForObject, path: string): void
 
     updateFrom(newObj: T): T
 
@@ -16,12 +16,13 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject): void {
+    init(asi: AppStateForObject, path: string): void {
         this._appStateInterface = asi
     }
 
     updateFrom(newObj: this): this {
-        return this.isEqualTo(newObj) ? this : new this.thisConstructor(newObj.props).withState(this.state)
+        const sameType = this.constructor === newObj.constructor
+        return sameType && this.isEqualTo(newObj) ? this : newObj.withState(this.state)
     }
 
     latest(): this {

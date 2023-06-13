@@ -88,8 +88,8 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         return newVersion
     }
 
-    init(asi: AppStateForObject): void {
-        super.init(asi)
+    init(asi: AppStateForObject, path: string): void {
+        super.init(asi, path)
         const {dataStore, collectionName} = this.props
         const {subscription} = this.state
 

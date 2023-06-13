@@ -1,4 +1,4 @@
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash, {isArray} from 'lodash'; const {startCase} = lodash;
 import {elementId} from '../util/helpers'
 
 import {elementOfType} from './elements'
@@ -20,5 +20,5 @@ export function createElement(elementType: ElementType, newIdSeq: number, proper
 
 export const elementHasParentTypeOf = (elementType: ElementType, thisEl: any) => {
     const parentType = elementOfType(elementType).parentType
-    return parentType === thisEl.kind || parentType === 'any'
+    return parentType === 'any' || parentType === thisEl.kind || isArray(parentType) && parentType.includes(thisEl.kind)
 }

@@ -1,6 +1,6 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
 import {elementOfType} from './elements'
 import {elementHasParentTypeOf} from './createElement'
 
@@ -25,6 +25,7 @@ export default class AppBar extends BaseElement<Properties> implements Element {
         ]
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'App' }
+    static get parentType():
+        ParentType { return 'App' }
 
 }

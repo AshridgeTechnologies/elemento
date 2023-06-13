@@ -76,6 +76,14 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return []
     }
 
+    getPropertyDef(propertyName: string): PropertyDef {
+        const def = this.propertyDefs.find( pd => pd.name === propertyName)
+        if (!def) {
+            throw new Error(`Element of kind ${this.kind} does not have a propertyDef ${propertyName}`)
+        }
+        return def
+    }
+
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
     }
@@ -203,7 +211,7 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return Math.max(ownMax(), ...this.elementArray().map(el => el.findMaxId(elementType)))
     }
 
-    static get parentType(): ParentType {
+    static get parentType(): ParentType | ParentType[] {
         return 'any'
     }
 

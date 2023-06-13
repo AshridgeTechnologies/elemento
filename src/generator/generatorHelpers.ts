@@ -5,6 +5,7 @@ import App from '../model/App'
 import {flatten} from 'ramda'
 import List from '../model/List'
 import {ListItem} from './Types'
+import Form from '../model/Form'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -23,7 +24,7 @@ export function objectLiteral(obj: object) {
     return `{${objectLiteralEntries(obj)}}`
 }
 
-export type StateEntry = [name: string, code: string | DefinedFunction, dependencies: string[]]
+export type StateEntry = [el: Element, code: string | DefinedFunction, dependencies: string[]]
 
 export class DefinedFunction {
     constructor(public functionDef: string) {
@@ -33,8 +34,8 @@ export class DefinedFunction {
 export const topoSort = (entries: StateEntry[]): StateEntry[] => {
     const sorter = new Topo.Sorter<StateEntry>()
     entries.forEach(entry => {
-        const [name, , dependencies] = entry
-        sorter.add([entry], {after: dependencies, group: name})  // if add plain tuple, sorter treats it as an array
+        const [el, , dependencies] = entry
+        sorter.add([entry], {after: dependencies, group: el.codeName})  // if add plain tuple, sorter treats it as an array
     })
     return sorter.nodes
 }
@@ -51,7 +52,7 @@ export const valueLiteral = function (propertyValue: any): string {
         return String(propertyValue)
     }
 }
-export const allElements = (component: Element | ListItem): Element[] => {
+export const allElements = (component: Element | ListItem, isTopLevel = false): Element[] => {
     if (component instanceof App) {
         return flatten(component.otherComponents.map(el => [el, allElements(el)]))
     }
@@ -60,6 +61,10 @@ export const allElements = (component: Element | ListItem): Element[] => {
         return flatten(childElements.map(el => [el, allElements(el)]))
     }
     if (component instanceof List) {
+        return []
+    }
+
+    if (component instanceof Form && !isTopLevel) {
         return []
     }
 

@@ -9,6 +9,8 @@ export class ListItem {
     get id() {
         return this.list.id
     }
+
+    elementArray() { return this.list.elementArray() }
 }
 
 const runtimeNames = {
@@ -17,7 +19,7 @@ const runtimeNames = {
 }
 export const runtimeElementName = (element: Element) => runtimeElementTypeName(element.kind)
 export const runtimeElementTypeName = (elementType: ElementType) => runtimeNames[elementType as keyof typeof runtimeNames] ?? elementType
-export type ExprType = 'singleExpression' | 'action' | 'multilineExpression'
+export type ExprType = 'singleExpression' | 'action' | 'multilineExpression' | 'reference'
 export type ElementErrors = { [propertyName: string]: string }
 export type AllErrors = { [elementId: ElementId]: ElementErrors }
 

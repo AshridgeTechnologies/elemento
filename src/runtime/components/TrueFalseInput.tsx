@@ -45,6 +45,13 @@ export default function TrueFalseInput({path, ...props}: Properties) {
 
 export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseType> {
     defaultValue = false
+
+    get modified() {
+        const stateValue = this.state.value
+        return stateValue !== undefined
+            && (stateValue ?? false) !== (this.originalValue ?? false)
+    }
+
 }
 
 TrueFalseInput.State = TrueFalseInputState

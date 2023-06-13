@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, PropertyDef} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 
 type Properties = {}
 
@@ -20,7 +20,7 @@ export default class FileFolder extends BaseElement<Properties> implements Eleme
         return ['File'].includes(elementType)
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'Project' }
+    static get parentType(): ParentType { return 'Project' }
 
 
 }

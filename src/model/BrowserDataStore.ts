@@ -1,4 +1,4 @@
-import {ComponentType, ElementType, PropertyDef} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
@@ -23,6 +23,6 @@ export default class BrowserDataStore extends BaseElement<Properties> implements
         ]
     }
 
-    static get parentType(): ElementType | 'any' | null { return 'App' }
+    static get parentType(): ParentType { return 'App' }
 }
 

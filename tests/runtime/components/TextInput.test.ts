@@ -183,7 +183,7 @@ test('TextInput overrides properties from dataType', async () => {
 
 test('State class has correct properties and functions', () => {
     const state = new TextInput.State({value: 'car'})
-    const appInterface = testAppInterface(); state.init(appInterface)
+    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
     expect(state.value).toBe('car')
     expect(state.defaultValue).toBe('')
 
@@ -194,6 +194,7 @@ test('State class has correct properties and functions', () => {
 test('State class gives correct value when its value is a value object', () => {
     const state = new TextInput.State({value: valueObj('car')})
     expect(state.value).toBe('car')
+    expect(state.originalValue).toBe('car')
 })
 
 test('State class gives correct value when its value is another value whose value is a value object', () => {
@@ -219,13 +220,26 @@ test('State is valid when its value is valid for the data type', () => {
     expect(stateInvalid.errors).toStrictEqual(['Minimum length 3'])
 })
 
-test('State is modified only when its value is different to its empty initial value', () => {
+test('State is modified only when its value is not null and different to its empty initial value', () => {
     const state = new TextInput.State({})
     expect(state.modified).toBe(false)
     const updatedState = state._withStateForTest({value: 'new car'})
     expect(updatedState.modified).toBe(true)
     const updatedAgainState = updatedState._withStateForTest({value: undefined})
     expect(updatedAgainState.modified).toBe(false)
+    const updatedToNullState = updatedState._withStateForTest({value: null})
+    expect(updatedToNullState.modified).toBe(false)
+})
+
+test('State is modified only when its value is not null and different to its null initial value', () => {
+    const state = new TextInput.State({value: null})
+    expect(state.modified).toBe(false)
+    const updatedState = state._withStateForTest({value: 'new car'})
+    expect(updatedState.modified).toBe(true)
+    const updatedAgainState = updatedState._withStateForTest({value: undefined})
+    expect(updatedAgainState.modified).toBe(false)
+    const updatedToNullState = updatedState._withStateForTest({value: null})
+    expect(updatedToNullState.modified).toBe(false)
 })
 
 test('State is modified only when its value is different to its initial value', () => {
@@ -235,9 +249,11 @@ test('State is modified only when its value is different to its initial value', 
     expect(updatedState.modified).toBe(true)
     const updatedAgainState = updatedState._withStateForTest({value: 'car'})
     expect(updatedAgainState.modified).toBe(false)
+    const updatedToNullState = updatedState._withStateForTest({value: null})
+    expect(updatedToNullState.modified).toBe(true)
 })
 
-test('State stores errorShown', () => {
+test('State stores errorsShown', () => {
     const state = new TextInput.State({value: 'car'})
     expect(state.errorsShown).toBe(false)
     const updatedState = state._withStateForTest({errorsShown: true})

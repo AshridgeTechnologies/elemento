@@ -2,7 +2,7 @@ import IdbDataStoreImpl from './IdbDataStoreImpl'
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import shallow from 'zustand/shallow'
+import {shallow} from 'zustand/shallow'
 
 type Properties = {path: string}
 type ExternalProperties = {databaseName: string, collectionNames: string[]}

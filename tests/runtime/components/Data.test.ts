@@ -26,7 +26,7 @@ test('Data element produces empty output with default value for display', () => 
 
 test('Set returns correct update', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface(); state.init(appInterface)
+    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Set({a:20, b:'Cee'})
@@ -37,7 +37,7 @@ test('Set returns correct update', () => {
 
 test('Update returns correct update', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface(); state.init(appInterface)
+    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Update({a:20, b:'Cee'})
