@@ -39,6 +39,7 @@
     "@mui/material": "^5.11.0",
     "@types/mui-image": "^1.0.1",
     "axios": "^1.2.0",
+    "bignumber.js": "^9.1.1",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
     "dexie": "^4.0.0-alpha.4",

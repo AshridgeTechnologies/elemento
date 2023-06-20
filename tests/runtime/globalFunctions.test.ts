@@ -1,8 +1,10 @@
 import {Pending} from '../../src/runtime/DataStore'
-import {globalFunctions} from '../../src/runtime/globalFunctions'
+import {DecimalType, globalFunctions} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
 
-const {Sum, Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
+const {Decimal, D, Add, Sub, Mult, Sum, Div,
+    Gt, Gte, Lt, Lte, Eq,
+    Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Record, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     CsvToRecords} = globalFunctions
@@ -21,6 +23,78 @@ describe('valueOf', () => {
     test.each([10])('returns the same value for primitives', (x: any) => expect(valueOf(x)).toBe(x))
 })
 
+describe('Decimals', () => {
+    test('produced by Decimal function from string, number, other Decimal', () => {
+        const dec1 = Decimal(1234.567)
+        const dec2 = Decimal('1234.567')
+        const dec3 = Decimal(dec1)
+
+        expect(dec1.toString()).toBe('1234.567')
+        expect(dec2.eq(dec1)).toBe(true)
+        expect(dec3.eq(dec1)).toBe(true)
+    })
+
+    test('produced by Decimal function from value object', () => {
+        const dec1 = Decimal(valueObj('1234.567'))
+        expect(dec1.toString()).toBe('1234.567')
+    })
+
+    test('D shorthand works with template strings or values', () => {
+        const dec1 = D(1234.567)
+        const dec2 = D`1234.567`
+        expect(dec1.toString()).toBe('1234.567')
+        expect(dec2.eq(dec1)).toBe(true)
+    })
+})
+
+describe('Decimal arithmetic', () => {
+    test('adds numbers from any source with decimal result', () => {
+        expect(Add(1, 2, '3', D(4.5))).toStrictEqual(D`10.5`)
+    })
+
+    test('subtracts all numbers from first one from any source with decimal result', () => {
+        expect(Sub(1, '2.5', D`3`)).toStrictEqual(D`-4.5`)
+    })
+
+    test('multiplies all numbers from any source with decimal result', () => {
+        expect(Mult(1, '2.5', D`-3`)).toStrictEqual(D`-7.5`)
+    })
+
+    test('multiplies Decimals without rounding errors', () => {
+        expect(Mult(4.015, 100)).toBe(401.49999999999994)
+        expect(Mult(4.015, D`100`)).toStrictEqual(D`401.5`)
+        expect((Mult('4.015', 100) as DecimalType).eq(401.5)).toBe(true)
+    })
+
+    test('divides all numbers from any source with decimal result', () => {
+        expect(Div(10, '2', D`-20`)).toStrictEqual(D`-0.25`)
+        expect(Div(1000000, '3')).toStrictEqual(D`333333.33333333333333333333`)
+    })
+
+    test('compares numbers from any source', () => {
+        expect(Gt(10, '2')).toBe(true)
+        expect(Gt('10', D`10`)).toBe(false)
+        expect(Gt('10', D`10.000001`)).toBe(false)
+
+        expect(Gte(10, '2')).toBe(true)
+        expect(Gte('10', D`10`)).toBe(true)
+        expect(Gte('10', D`10.000001`)).toBe(false)
+
+        expect(Lt(valueObj(10), '2')).toBe(false)
+        expect(Lt('10', D`10`)).toBe(false)
+        expect(Lt('10', D`10.000001`)).toBe(true)
+
+        expect(Lte(10, '2')).toBe(false)
+        expect(Lte(valueObj('10'), D`10`)).toBe(true)
+        expect(Lte('10', D`10.000001`)).toBe(true)
+
+        expect(Eq(10, '2')).toBe(false)
+        expect(Eq('10', D`10`)).toBe(true)
+        expect(Eq('10', valueObj(D`10.000001`))).toBe(false)
+
+    })
+})
+
 describe('Sum', () => {
     test('adds all arguments or zero if empty', ()=> {
         expect(Sum(1,2,3)).toBe(6)
@@ -28,13 +102,19 @@ describe('Sum', () => {
     })
 
     test('uses valueOf all arguments', ()=> {
-        const obj = valueObj(10)
-        expect(Sum(obj,2,obj)).toBe(22)
+        const numberObj = valueObj(10)
+        expect(Sum(numberObj,2,numberObj)).toBe(22)
+        const decimalObj = valueObj(D`10`)
+        expect(Sum(decimalObj,2,decimalObj)).toStrictEqual(D`22`)
     })
 
-    test('concatenates string arguments with a leading zero', ()=> {
-        // @ts-ignore
-        expect(Sum("aa", 10, "bb")).toBe("0aa10bb")
+    test('Decimal result if any argument is a Decimal or a string', ()=> {
+        expect(Sum(D`10`, 20)).toStrictEqual(D`30`)
+        expect(Sum('10', 20)).toStrictEqual(D`30`)
+    })
+
+    test('adds string arguments to decimal result', ()=> {
+        expect(Sum("20", 10, D`30`)).toStrictEqual(D`60`)
     })
 
 })
@@ -141,14 +221,20 @@ describe('Max', () => {
     test('errors for no arguments', () => expect(() => Max()).toThrow('Wrong number of arguments to Max. Expected at least 1 argument.'))
     test('returns the argument for single argument', () => expect(Max(3)).toBe(3))
     test('returns the max argument for multiple arguments', () => expect(Max(3, -1, 4, 0)).toBe(4))
+    test('returns a Decimal argument for mixed arguments', () => expect(Max(3, '-1', D`4`, 0)).toStrictEqual(D`4`))
+    test('returns a Decimal argument for mixed arguments even if Max is a number', () => expect(Max(5, '-1', D`4`, 0)).toStrictEqual(D`5`))
     test('Gets value of objects', ()=> expect(Max(valueObj(3), valueObj(2))).toBe(3))
+    test('Gets value of objects with Decimal', ()=> expect(Max(valueObj(3), valueObj(D`2`))).toStrictEqual(D`3`))
 })
 
 describe('Min', () => {
     test('errors for no arguments', () => expect(() => Min()).toThrow('Wrong number of arguments to Min. Expected at least 1 argument.'))
     test('returns the argument for single argument', () => expect(Min(3)).toBe(3))
     test('returns the min argument for multiple arguments', () => expect(Min(3, -1, 4, 0)).toBe(-1))
+    test('returns a Decimal argument for mixed arguments', () => expect(Min(3, '-1', D`4`, 0)).toStrictEqual(D`-1`))
+    test('returns a Decimal argument for mixed arguments even if Min is a number', () => expect(Min(5, '-1', D`4`, 0)).toStrictEqual(D`-1`))
     test('Gets value of objects', ()=> expect(Min(valueObj(3), valueObj(2))).toBe(2))
+    test('Gets value of objects with Decimal', ()=> expect(Min(valueObj(3), valueObj(D`2`))).toStrictEqual(D`2`))
 })
 
 describe('Record', () => {

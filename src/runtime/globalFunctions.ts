@@ -15,15 +15,90 @@ import {
 import Papa, {ParseConfig} from 'papaparse'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
+import BigNumber from 'bignumber.js'
+import {isArray} from 'lodash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
 
+export type DecimalType = BigNumber
+type DecimalOrNumber = DecimalType | number
+type DecimalVal = Value<string | number | BigNumber>
+type OpType = 'plus' | 'minus' | 'times' | 'div'
+type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
+
+function Decimal(arg: DecimalVal) {
+    return new BigNumber(valueOf(arg))
+}
+
+function decimalOp(op: OpType, initialValue: number | undefined, ...args: DecimalVal[]): DecimalOrNumber {
+    const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
+        const [accVal, valVal] = valuesOf(acc, val)
+        if (typeof accVal === 'number' && typeof valVal === 'number') {
+            switch(op) {
+                case 'plus': return accVal + valVal
+                case 'minus': return accVal - valVal
+                case 'times': return accVal * valVal
+                case 'div': return accVal / valVal
+            }
+        }
+        return Decimal(acc)[op](Decimal(val))
+    }
+    return initialValue !== undefined ? <BigNumber>args.reduce(reducer, initialValue) : <BigNumber>args.reduce(reducer)
+}
+
+function comparisonOp(op: ComparisonOpType, arg1: DecimalVal, arg2: DecimalVal): boolean {
+    return Decimal(arg1)[op](Decimal(arg2))
+}
+
 export const globalFunctions = {
     valueOf,
 
-    Sum(...args: Value<number>[]) {
-        return args.reduce( (acc, val) => (acc as number) + (val as number), 0)
+    Decimal,
+
+    D(s: DecimalVal | TemplateStringsArray) {
+        return isArray(s) ? Decimal(s[0]) : Decimal(s as DecimalVal)
+    },
+
+    Add(...args: DecimalVal[]): DecimalOrNumber {
+        return decimalOp('plus', 0, ...args)
+    },
+
+    Sub(...args: DecimalVal[]): DecimalOrNumber {
+        return decimalOp('minus', undefined, ...args)
+
+    },
+
+    Mult(...args: DecimalVal[]): DecimalOrNumber {
+        return decimalOp('times', 1, ...args)
+    },
+
+    Div(...args: DecimalVal[]): DecimalOrNumber {
+        return decimalOp('div', undefined, ...args)
+    },
+
+    Gt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+        return comparisonOp('gt', arg1, arg2)
+    },
+
+    Gte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+        return comparisonOp('gte', arg1, arg2)
+    },
+
+    Lt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+        return comparisonOp('lt', arg1, arg2)
+    },
+
+    Lte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+        return comparisonOp('lte', arg1, arg2)
+    },
+
+    Eq(arg1: DecimalVal, arg2: DecimalVal): boolean {
+        return comparisonOp('eq', arg1, arg2)
+    },
+
+    Sum(...args: DecimalVal[]) {
+        return decimalOp('plus', 0, ...args)
     },
 
     Log(...args: any[]) {
@@ -68,15 +143,24 @@ export const globalFunctions = {
         return sVal.replace(new RegExp(toReplaceVal, 'g'), replaceWithVal)
     },
 
-    Max(...args: Value<number>[]) {
+    Max(...args: DecimalVal[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Max. Expected at least 1 argument.')
-        return Math.max(...args as number[])
+        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
+            const [accVal, valVal] = valuesOf(acc, val)
+            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.max(accVal, valVal)
+            return Decimal(acc).gte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        }
+        return <BigNumber>args.reduce(reducer, Number.MIN_VALUE)
     },
 
-    Min(...args: Value<number>[]) {
+    Min(...args: DecimalVal[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
-        return Math.min(...args as number[])
-    },
+        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
+            const [accVal, valVal] = valuesOf(acc, val)
+            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.min(accVal, valVal)
+            return Decimal(acc).lte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        }
+        return <BigNumber>args.reduce(reducer, Number.MAX_VALUE)    },
 
     Record(...args: Value<any>[]) {
         if (args.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')
