@@ -2,6 +2,7 @@ declare global {
     var google: any
 }
 
+// these are unique but non-secret identifiers - see https://firebase.google.com/docs/projects/learn-more#config-files-objects
 const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
 const API_KEY = 'AIzaSyBt5DsD6YG2naMDe2tsaZcOjL8G81dR8-c'
 

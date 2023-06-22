@@ -1,5 +1,6 @@
 import {initializeApp} from 'firebase/app'
 
+// these are unique but non-secret identifiers - see https://firebase.google.com/docs/projects/learn-more#config-files-objects
 const config = {
     apiKey: 'AIzaSyBt5DsD6YG2naMDe2tsaZcOjL8G81dR8-c',
     authDomain: 'elemento-apps.firebaseapp.com',
