@@ -15,6 +15,7 @@ import {
 import Papa, {ParseConfig} from 'papaparse'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
+import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {isArray} from 'lodash'
 
@@ -161,6 +162,18 @@ export const globalFunctions = {
             return Decimal(acc).lte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
         }
         return <BigNumber>args.reduce(reducer, Number.MAX_VALUE)    },
+
+    Round(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
+        return round(valueOf(n), valueOf(decimalDigits))
+    },
+
+    Ceiling(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
+        return ceil(valueOf(n), valueOf(decimalDigits))
+    },
+
+    Floor(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
+        return floor(valueOf(n), valueOf(decimalDigits))
+    },
 
     Record(...args: Value<any>[]) {
         if (args.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')

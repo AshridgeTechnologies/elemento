@@ -5,6 +5,7 @@ import {valueObj} from '../testutil/testHelpers'
 const {Decimal, D, Add, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
+    Round, Ceiling, Floor,
     Record, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     CsvToRecords} = globalFunctions
@@ -235,6 +236,39 @@ describe('Min', () => {
     test('returns a Decimal argument for mixed arguments even if Min is a number', () => expect(Min(5, '-1', D`4`, 0)).toStrictEqual(D`-1`))
     test('Gets value of objects', ()=> expect(Min(valueObj(3), valueObj(2))).toBe(2))
     test('Gets value of objects with Decimal', ()=> expect(Min(valueObj(3), valueObj(D`2`))).toStrictEqual(D`2`))
+})
+
+describe('Round', () => {
+    test('zero for no arguments', () => expect(Round()).toBe(0))
+    test('same for integer with default precision', () => expect(Round(2)).toBe(2))
+    test('rounds to integer with default precision', () => expect(Round(2.4999999)).toBe(2))
+    test('rounds up to integer with default precision', () => expect(Round(2.5)).toBe(3))
+    test('rounds to given dec places', () => expect(Round(2.5454, 2)).toBe(2.55))
+    test('rounds to given negative dec places', () => expect(Round(20060, -2)).toBe(20100))
+    test('gets value of objects', () => expect(Round(valueObj(20060), valueObj(-2))).toBe(20100))
+    test('rounds negative integer with default precision', () => expect(Round(-2.50001)).toBe(-3))
+})
+
+describe('Ceiling', () => {
+    test('zero for no arguments', () => expect(Ceiling()).toBe(0))
+    test('same for integer with default precision', () => expect(Ceiling(2)).toBe(2))
+    test('rounds up to integer with default precision', () => expect(Ceiling(2.01)).toBe(3))
+    test('rounds up to integer with default precision', () => expect(Ceiling(2.5)).toBe(3))
+    test('rounds up to given dec places', () => expect(Ceiling(2.454, 2)).toBe(2.46))
+    test('rounds up to given negative dec places', () => expect(Ceiling(20040, -2)).toBe(20100))
+    test('gets value of objects', () => expect(Ceiling(valueObj(20040), valueObj(-2))).toBe(20100))
+    test('rounds up to negative integer with default precision', () => expect(Ceiling(-2.4)).toBe(-2))
+})
+
+describe('Floor', () => {
+    test('zero for no arguments', () => expect(Floor()).toBe(0))
+    test('same for integer with default precision', () => expect(Floor(2)).toBe(2))
+    test('rounds down to integer with default precision', () => expect(Floor(2.01)).toBe(2))
+    test('rounds down to integer with default precision', () => expect(Floor(2.6)).toBe(2))
+    test('rounds down to given dec places', () => expect(Floor(2.454, 2)).toBe(2.45))
+    test('rounds down to given negative dec places', () => expect(Floor(20040, -2)).toBe(20000))
+    test('gets value of objects', () => expect(Floor(valueObj(20040), valueObj(-2))).toBe(20000))
+    test('rounds down to negative integer with default precision', () => expect(Floor(-2.4)).toBe(-3))
 })
 
 describe('Record', () => {
