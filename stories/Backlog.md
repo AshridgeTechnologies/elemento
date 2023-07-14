@@ -4,6 +4,7 @@ Elemento Backlog
 Bugs
 ----
 - Changes really slow on large list
+- Initial value not showing on Number input
 - Copy/Paste multiple not working
 - Select element on preview not highlighting
 - Query with MemoryDataStore not updating 
@@ -25,6 +26,9 @@ Bugs
 
 Stories
 -------
+
+### Urgent features
+- More math functions like Round, Floor etc
 
 ### Move to GitHub
 - Deploy from GitHub
@@ -58,6 +62,8 @@ Stories
 - Example apps
 
 ### Priority for credibility
+- Dependency vulnerability review
+- Supply-chain review - https://github.com/readme/guides/dependency-risk
 - Security review
 - Revision aid example
 - E-commerce example
@@ -115,6 +121,7 @@ Epics
 Tech debt
 ---------
 
+- Use radash wherever possible, try to remove lodash
 - Consider Temporal
 - Consider a better bundler - esbuild, rspack, Rome
 - Reduce size of serverRuntime, consider firebase-admin external
