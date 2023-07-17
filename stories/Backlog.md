@@ -123,6 +123,8 @@ Tech debt
 
 - Use radash wherever possible, try to remove lodash
 - Consider Temporal
+- Consider TinyBase
+- Consider escodegen in generator
 - Consider a better bundler - esbuild, rspack, Rome
 - Reduce size of serverRuntime, consider firebase-admin external
 - Look for ways to have imports that update dynamically in preview, both client and server
