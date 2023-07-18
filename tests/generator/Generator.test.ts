@@ -30,6 +30,7 @@ import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
+import DateInput from '../../src/model/DateInput'
 
 const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
 test('generates main app and all page output files', ()=> {
@@ -351,6 +352,33 @@ test('generates NumberInput elements with initial value', ()=> {
         React.createElement(NumberInput, {path: pathWith('t1'), label: 'Number Input One'}),
         React.createElement(NumberInput, {path: pathWith('t2'), label: 't2'}),
         React.createElement(NumberInput, {path: pathWith('t3'), label: 't3'}),
+    )
+}
+`)
+})
+
+test('generates DateInput elements with initial value', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new DateInput('id1', 't1', {initialValue: new Date('2022-04-05'), label: "Date Input One"}),
+            new DateInput('id2', 't2', {initialValue: ex`DateVal('2022-02-03')`}),
+            new DateInput('id3', 't3', {}),
+    ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, DateInput} = Elemento.components
+    const {DateVal} = Elemento.globalFunctions
+    const t1 = Elemento.useObjectState(pathWith('t1'), new DateInput.State({value: new Date('2022-04-05T00:00:00.000Z')}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new DateInput.State({value: DateVal('2022-02-03')}))
+    const t3 = Elemento.useObjectState(pathWith('t3'), new DateInput.State({}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(DateInput, {path: pathWith('t1'), label: 'Date Input One'}),
+        React.createElement(DateInput, {path: pathWith('t2'), label: 't2'}),
+        React.createElement(DateInput, {path: pathWith('t3'), label: 't3'}),
     )
 }
 `)

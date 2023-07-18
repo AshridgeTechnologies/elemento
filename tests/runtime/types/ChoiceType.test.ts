@@ -61,3 +61,15 @@ test('rule description message only includes first 10 choices', () => {
     expect(type.values).toStrictEqual(values)
     expect(type.ruleDescriptions).toStrictEqual(['Optional', 'One of: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...'])
 })
+
+test('checks correct data type', () => {
+    const type = new ChoiceType('Something', {values: []}, [])
+    const clazz = class A {}
+    expect(type.isCorrectDataType(10)).toBe(true)
+    expect(type.isCorrectDataType('a string')).toBe(true)
+    expect(type.isCorrectDataType(true)).toBe(true)
+    expect(type.isCorrectDataType(new Date())).toBe(true)
+    expect(type.isCorrectDataType(new String('x'))).toBe(false)
+    expect(type.isCorrectDataType({a: 10})).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})

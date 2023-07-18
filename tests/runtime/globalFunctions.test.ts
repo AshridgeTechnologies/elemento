@@ -13,6 +13,7 @@ const {valueOf} = globalFunctions
 
 const undefinedDate = undefined as unknown as Date
 const nullDate = null as unknown as Date
+const invalidDate = new Date(NaN)
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valueObj(10))).toBe(10))
@@ -600,6 +601,7 @@ describe('DateFormat', () => {
 
     test('formats date with custom string', () => {
         expect(DateFormat(date, 'HH:mm:ss')).toBe('20:05:11')
+        expect(DateFormat(date, 'dd MMM yyyy')).toBe('01 Jul 2021')
     })
 
     test('formats date from object value', () => {
@@ -609,6 +611,11 @@ describe('DateFormat', () => {
     test('formats null or undefined as empty string', () => {
         expect(DateFormat(undefinedDate, 'HH:mm:ss')).toBe('')
         expect(DateFormat(nullDate, 'HH:mm:ss')).toBe('')
+        expect(DateFormat(valueObj(nullDate), 'HH:mm:ss')).toBe('')
+    })
+
+    test('formats invalid date as "Invalid Date"', () => {
+        expect(DateFormat(valueObj(invalidDate), 'dd MMM yyyy')).toBe('Invalid Date')
     })
 })
 

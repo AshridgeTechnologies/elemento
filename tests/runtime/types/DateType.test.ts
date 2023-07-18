@@ -7,6 +7,7 @@ const date2 = new Date('2020-04-21')
 const tooEarly = new Date('2020-04-04')
 const justRight = new Date('2020-04-14')
 const wrongDay = new Date('2020-04-08')
+const invalidDate = new Date(NaN)
 const type = new DateType('Start date', {required: true, min: date1, max: date2, description: 'Date when the employee starts'}, [
     new Rule('Monday-Tuesday', (item: Date) => item.getDay() === 1 || item.getDay() === 2, {description: 'Must be a Monday or a Tuesday'})
 ])
@@ -27,6 +28,7 @@ test('validates null ok if optional', () => {
 
 test('validates using all rules', () => {
     expect(type.validate(null)).toStrictEqual(['Required'])
+    expect(type.validate(invalidDate)).toStrictEqual(['Required'])
     expect(type.validate(date1)).toBe(null)
     expect(type.validate(justRight)).toBe(null)
     expect(type.validate(date2)).toBe(null)

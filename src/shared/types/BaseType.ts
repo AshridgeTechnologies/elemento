@@ -9,17 +9,18 @@ export type BaseProperties = Partial<Readonly<{
     required: boolean,
 }>>
 
-const isRequiredRule = new Rule('Required', (item: any) => !isNil(item), {description: 'Required'})
-const isOptionalRule = new Rule('Optional', (_: any) => true, {description: 'Optional'})
-const requiredRule = (required: boolean) => required ? isRequiredRule : isOptionalRule
-
 export default abstract class BaseType<T, PropertiesType extends BaseProperties> {
     constructor(public readonly kind: Kind, public readonly name: string, protected readonly properties: PropertiesType, private readonly rules: Rule[] = []) {}
 
     get description() { return this.properties.description }
     get required() { return this.properties.required ?? false}
 
-    private get requiredRule() { return requiredRule(this.required)}
+    private get requiredRule() {
+        const isRequiredRule = new Rule('Required', (item: any) => !isNil(item) && this.isCorrectDataType(item), {description: 'Required'})
+        const isOptionalRule = new Rule('Optional', (_: any) => true, {description: 'Optional'})
+        return this.required ? isRequiredRule : isOptionalRule
+    }
+
     protected get shorthandRules(): Rule[] {return []
     }
 
@@ -37,8 +38,14 @@ export default abstract class BaseType<T, PropertiesType extends BaseProperties>
     validate(item: T | null): ValidationErrors {
         const requiredError = this.requiredRule.check(item)
         if (requiredError) return [requiredError]
-        if (isNil(item)) return null
+        if (isNil(item) || !this.isCorrectDataType(item)) return null
         const errors = this.nonNullRules.map( r => r.check(item)).filter( err => err !== null ) as string[]
         return errors.length ? errors : null
     }
+
+    /**
+     * Can the item be considered as a possible value for this data type, before checking other constraints
+     * @param item
+     */
+    abstract isCorrectDataType(item: any): boolean
 }

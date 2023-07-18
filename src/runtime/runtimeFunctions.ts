@@ -98,7 +98,7 @@ export const highlightElement = (id: string | undefined) => {
     }
 }
 
-export type Value<T> = T | { valueOf: () => T }
+export type Value<T>   = T | { valueOf: () => T }
 export type PropVal<T> = T | { valueOf: () => T }
 
 export function valueOf<T>(x: Value<T>): T {

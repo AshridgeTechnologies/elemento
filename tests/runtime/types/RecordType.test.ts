@@ -45,3 +45,11 @@ test('validates across fields', () => {
         }
     )
 })
+
+test('checks correct data type', () => {
+    const clazz = class A {}
+    expect(type.isCorrectDataType({a: 10})).toBe(true)
+    expect(type.isCorrectDataType(10)).toBe(false)
+    expect(type.isCorrectDataType(new Date())).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})

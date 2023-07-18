@@ -308,8 +308,10 @@ export const globalFunctions = {
     },
 
     DateFormat(date: Value<Date>, pattern: string) {
-        if (!date) return ''
-        return format(valueOf(date), pattern)
+        const dateVal = valueOf(date)
+        if (!dateVal) return ''
+        if (!isValid(dateVal)) return 'Invalid Date'
+        return format(dateVal, pattern)
     },
 
     CsvToRecords(csvText: string, columnNames?: string[]) {

@@ -9,7 +9,7 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     extends BaseComponentState<InputProps<T, DT>, StateProps<T>>
     implements ComponentState<InputComponentState<T, DT>> {
 
-    abstract defaultValue: T
+    abstract defaultValue: T | null
 
     get value() {
         return this.propsOrStateValue ?? this.defaultValue

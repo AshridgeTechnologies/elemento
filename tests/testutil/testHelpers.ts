@@ -3,6 +3,9 @@ import React, {createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
+import {LocalizationProvider} from '@mui/x-date-pickers'
+import enGB from 'date-fns/locale/en-GB'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -185,10 +188,11 @@ export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<
     const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, children?: React.ReactNode) => {
         const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
         const component = createElement(componentClass as any, {path, ...componentProps}, children)
-        return createElement(StoreProvider, {
-            appStoreHook,
-            children: createElement(TestWrapper, {path, state}, component)
-        })
+        return createElement(StoreProvider, {appStoreHook, children:
+            createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB},
+                createElement(TestWrapper, {path, state}, component)
+            )}
+        )
     }
     return [testElementCreatorFn, appStoreHook]
 }

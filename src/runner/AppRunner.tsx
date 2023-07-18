@@ -1,4 +1,7 @@
 import React, {createRef, useEffect} from 'react'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import enGB from 'date-fns/locale/en-GB'
 import {AppStoreHook, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
@@ -36,7 +39,9 @@ export default function AppRunner({appFunction, appContext, resourceUrl, onCompo
         <StoreProvider appStoreHook={appStoreHook}>
             <AppUtilsContext.Provider value={new AppUtils(resourceUrl)}>
                 <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
-                    {React.createElement(appFunction, {appContext})}
+                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+                        {React.createElement(appFunction, {appContext})}
+                    </LocalizationProvider>
                 </SelectionProvider>
             </AppUtilsContext.Provider>
         </StoreProvider>

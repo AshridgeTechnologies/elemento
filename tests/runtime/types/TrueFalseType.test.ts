@@ -30,3 +30,14 @@ test('validates using all rules', () => {
     expect(type.validate(false)).toStrictEqual(['It must be true!'])
     expect(type.validate(true)).toBe(null)
 })
+
+test('checks correct data type', () => {
+    const type = new TrueFalseType('tft1')
+    const clazz = class A {}
+    expect(type.isCorrectDataType({a: 10})).toBe(false)
+    expect(type.isCorrectDataType(10)).toBe(false)
+    expect(type.isCorrectDataType('10')).toBe(false)
+    expect(type.isCorrectDataType(false)).toBe(true)
+    expect(type.isCorrectDataType(new Date())).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})

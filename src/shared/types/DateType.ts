@@ -1,6 +1,6 @@
 import Rule from './Rule'
 import BaseType, {BaseProperties} from './BaseType'
-import {format} from 'date-fns'
+import {format, isValid} from 'date-fns'
 
 type Properties = Partial<Readonly<BaseProperties & {
     min: Date,
@@ -24,5 +24,9 @@ export default class DateType extends BaseType<Date, Properties>{
             min && new Rule('_min', (item: any) => item >= min, {description: `Earliest ${formatDisplay(min)}`}),
             max && new Rule('_max', (item: any) => dateLessThanOrEqual(item, max), {description: `Latest ${formatDisplay(max)}`}),
         ].filter(el => !!el) as Rule[]
+    }
+
+    isCorrectDataType(item: any): boolean {
+        return isValid(item)
     }
 }

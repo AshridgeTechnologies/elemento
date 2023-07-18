@@ -33,4 +33,8 @@ export default class TextType extends BaseType<string, Properties> {
             format    && new Rule('_format',    (item: any) => formats[format](item), {description: `Must be a valid ${format}`}),
         ].filter(el => !!el) as Rule[]
     }
+
+    isCorrectDataType(item: any): boolean {
+        return typeof item === 'string'
+    }
 }

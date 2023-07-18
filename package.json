@@ -37,6 +37,7 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.109",
     "@mui/material": "^5.11.0",
+    "@mui/x-date-pickers": "^6.10.0",
     "@types/mui-image": "^1.0.1",
     "axios": "^1.2.0",
     "bignumber.js": "^9.1.1",

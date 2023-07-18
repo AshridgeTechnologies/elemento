@@ -32,4 +32,8 @@ export default class NumberType extends BaseType<number, Properties>{
             format    && new Rule('_format',    (item: any) => formats[format].valFn(item), {description: `Must be ${formats[format].desc}`}),
         ].filter(el => !!el) as Rule[]
     }
+
+    isCorrectDataType(item: any): boolean {
+        return typeof item === 'number'
+    }
 }

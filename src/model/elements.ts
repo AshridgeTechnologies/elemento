@@ -39,6 +39,7 @@ import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
 import SpeechInput from "./SpeechInput";
 import FunctionImport from "./FunctionImport";
+import DateInput from './DateInput'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -65,6 +66,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
+        DateInput: DateInput,
         SpeechInput: SpeechInput,
         Button: Button,
         Image: Image,

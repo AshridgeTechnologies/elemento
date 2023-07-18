@@ -45,6 +45,8 @@ export const valueLiteral = function (propertyValue: any): string {
         return `[${propertyValue.map(valueLiteral).join(', ')}]`
     } else if (typeof propertyValue === 'string') {
         return propertyValue.includes('\n') ? `\`${propertyValue}\`` : `'${propertyValue.replace(/'/g, "\\'")}'`
+    } else if (propertyValue instanceof Date) {
+        return `new Date('${propertyValue.toISOString()}')`
     } else {
         return String(propertyValue)
     }

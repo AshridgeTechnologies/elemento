@@ -36,3 +36,13 @@ test('validates currency format', () => {
     expect(currencyType.validate(20.10)).toBe(null)
     expect(currencyType.validate(20.11)).toBe(null)
 })
+
+test('checks correct data type', () => {
+    const clazz = class A {}
+    expect(type.isCorrectDataType({a: 10})).toBe(false)
+    expect(type.isCorrectDataType(10)).toBe(true)
+    expect(type.isCorrectDataType('10')).toBe(false)
+    expect(type.isCorrectDataType(true)).toBe(false)
+    expect(type.isCorrectDataType(new Date())).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})

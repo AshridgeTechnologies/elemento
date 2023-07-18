@@ -49,3 +49,14 @@ test('validates all items and own rules', () => {
         },
     })
 })
+
+test('checks correct data type', () => {
+    const clazz = class A {}
+    expect(type.isCorrectDataType(['x'])).toBe(true)
+    expect(type.isCorrectDataType({a: 10})).toBe(false)
+    expect(type.isCorrectDataType('10')).toBe(false)
+    expect(type.isCorrectDataType(10)).toBe(false)
+    expect(type.isCorrectDataType(true)).toBe(false)
+    expect(type.isCorrectDataType(new Date())).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})

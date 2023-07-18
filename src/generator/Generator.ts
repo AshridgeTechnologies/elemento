@@ -247,6 +247,7 @@ ${generateChildren(page, indentLevel2, page)}
 
             case 'TextInput':
             case 'NumberInput':
+            case 'DateInput':
             case 'SelectInput':
             case 'TrueFalseInput':
             case 'SpeechInput':

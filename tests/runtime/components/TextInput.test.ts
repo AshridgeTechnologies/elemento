@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {NumberInput, TextInput} from '../../../src/runtime/components/index'
+import {DateInput, TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
 import '@testing-library/jest-dom'

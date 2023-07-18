@@ -58,6 +58,7 @@ export type ElementType =
     'NumberInput' |
     'SelectInput' |
     'TrueFalseInput' |
+    'DateInput' |
     'SpeechInput' |
     'Button' |
     'Icon' |

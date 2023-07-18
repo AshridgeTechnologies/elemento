@@ -5,7 +5,7 @@ export function InputWithInfo({description, width, formControl}:
                                   {
                                       description?: string,
                                       width?: string | number,
-                                      formControl: React.FunctionComponentElement<any>
+                                      formControl: React.ReactElement
                                   }) {
     return description
         ? <Box sx={{display: 'flex', alignItems: 'flex-start', width}}>

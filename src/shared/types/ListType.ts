@@ -1,6 +1,7 @@
 import BaseType, {BaseProperties, type ValidationErrors} from './BaseType'
 import Rule from './Rule'
 import BaseStructuredType from './BaseStructuredType'
+import {isArray} from 'lodash'
 
 type Properties = BaseProperties
 export default class ListType extends BaseStructuredType<any[], Properties> {
@@ -11,5 +12,9 @@ export default class ListType extends BaseStructuredType<any[], Properties> {
 
     itemErrorsUnfiltered(item: any): [string, ValidationErrors][] {
         return item.map( (it: any, index: number) => [index.toString(), this.itemType.validate(it)])
+    }
+
+    override isCorrectDataType(item: any): boolean {
+        return isArray(item)
     }
 }

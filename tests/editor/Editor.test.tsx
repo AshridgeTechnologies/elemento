@@ -5,7 +5,7 @@
 import React, {useState} from 'react'
 import Editor from '../../src/editor/Editor'
 import {act, fireEvent, render, screen, within} from '@testing-library/react/pure'
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash from 'lodash';
 import {
     ex,
     stopSuppressingRcTreeJSDomError,
@@ -20,12 +20,13 @@ import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
 import {actWait} from '../testutil/rtlHelpers'
-import DateType from '../../src/model/types/DateType'
 import DataTypes from '../../src/model/types/DataTypes'
 import NumberType from '../../src/model/types/NumberType'
 import NumberInput from '../../src/model/NumberInput'
 import ServerApp from '../../src/model/ServerApp'
 import FunctionDef from '../../src/model/FunctionDef'
+
+const {startCase} = lodash;
 
 jest.mock('../../src/shared/authentication')
 
@@ -279,7 +280,7 @@ test('shows allowed items in context insert menu of a page item', async () => {
     await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
     await actWait(() => fireEvent.click(screen.getByText('Insert before')))
 
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Function Import', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Function', 'Function Import', 'Collection', 'Layout'])
 })
 
 test('notifies upload action from context menu of the files item', async () => {
@@ -312,7 +313,7 @@ test('shows allowed items in menu bar insert menu', async () => {
     fireEvent.click(screen.getByText('Second Text'))
     await wait(10)
     fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function',  'Function Import', 'Collection', 'Layout'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data',  'Function',  'Function Import', 'Collection', 'Layout'])
 
     fireEvent.click(screen.getByText('Main Page'))
     fireEvent.click(screen.getByText('Insert'))

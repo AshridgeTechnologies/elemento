@@ -7,4 +7,8 @@ export default class TrueFalseType extends BaseType<boolean, Properties>{
     constructor(name: string, properties: Properties = {}, rules: Rule[] = []) {
         super('TrueFalse', name, properties, rules)
     }
+
+    isCorrectDataType(item: any): boolean {
+        return typeof item === 'boolean'
+    }
 }

@@ -1,6 +1,7 @@
 import BaseType, {BaseProperties, type ValidationErrors} from './BaseType'
 import Rule from './Rule'
 import {isEmpty} from 'ramda'
+import {isPlainObject} from 'lodash'
 
 type Properties = BaseProperties
 export default abstract class BaseStructuredType<T extends object | any[], PropertiesType extends BaseProperties> extends BaseType<T, Properties> {

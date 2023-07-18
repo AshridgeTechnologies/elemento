@@ -36,3 +36,14 @@ test('validates url format', () => {
     expect(urlType.validate('ws://xyz.com')).toStrictEqual(['Must be a valid url'])
     expect(urlType.validate('http://xyz.com')).toBe(null)
 })
+
+test('checks correct data type', () => {
+    const type = new TextType('tt1')
+    const clazz = class A {}
+    expect(type.isCorrectDataType({a: 10})).toBe(false)
+    expect(type.isCorrectDataType('10')).toBe(true)
+    expect(type.isCorrectDataType(10)).toBe(false)
+    expect(type.isCorrectDataType(true)).toBe(false)
+    expect(type.isCorrectDataType(new Date())).toBe(false)
+    expect(type.isCorrectDataType(clazz)).toBe(false)
+})
