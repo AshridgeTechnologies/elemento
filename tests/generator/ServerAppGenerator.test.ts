@@ -15,11 +15,11 @@ describe('generates files for app and exposes public functions and includes data
     const dataTypes1 = new DataTypes('dt1', 'Types 1', {}, [name])
     const dataTypes2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
     const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
-    const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
-    const totalFn = new FunctionDef('fn3', 'Total', {input1: 'x', input2: 'y', input3: 'z', calculation: ex`Mult(y, Plus(x, z))`})
+    const timesFn = new FunctionDef('fn2', 'Times', {input1: 'c', input2: 'd', calculation: ex`c * d`})
+    const totalFn = new FunctionDef('fn3', 'Total', {input1: 'x', input2: 'y', input3: 'z', calculation: ex`Times(y, Plus(x, z))`})
     const privateFn = new FunctionDef('fn4', 'HideMe', {input1: 'where', calculation: ex`where + ' - there'`, private: true})
     const app = new ServerApp('sa1', 'Server App 1', {}, [
-        plusFn, multFn, totalFn, privateFn
+        plusFn, timesFn, totalFn, privateFn
     ])
     const project = new Project('proj1', 'Project 1', {}, [dataTypes1, dataTypes2, app])
     const gen = new ServerAppGenerator(app, project)
@@ -63,12 +63,12 @@ async function Plus(a, b) {
     return Sum(a, b)
 }
 
-async function Mult(c, d) {
+async function Times(c, d) {
     return c * d
 }
 
 async function Total(x, y, z) {
-    return await Mult(y, await Plus(x, z))
+    return await Times(y, await Plus(x, z))
 }
 
 async function HideMe(where) {
@@ -77,7 +77,7 @@ async function HideMe(where) {
 
 return {
     Plus: {func: Plus, update: false, argNames: ['a', 'b']},
-    Mult: {func: Mult, update: false, argNames: ['c', 'd']},
+    Times: {func: Times, update: false, argNames: ['c', 'd']},
     Total: {func: Total, update: false, argNames: ['x', 'y', 'z']}
 }
 }

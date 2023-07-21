@@ -27,9 +27,6 @@ Bugs
 Stories
 -------
 
-### Urgent features
-- More math functions like Round, Floor etc
-
 ### Move to GitHub
 - Deploy from GitHub
 - Can use private GitHub repos
@@ -37,9 +34,7 @@ Stories
 
 ### Priority for internal apps
 - Type expressions
-- Form generation
 - Precise decimals
-- Date input element
 
 
 ### Priority for customer-facing apps
@@ -224,6 +219,9 @@ Done
 - Import modules
 - Date function
 - Input validation
+- Form generation
+- Date input element
+- More math functions like Round, Floor etc
 
 Bugs fixed
 ----------
