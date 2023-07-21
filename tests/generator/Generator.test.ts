@@ -162,7 +162,7 @@ test('includes all DataTypes files', () => {
 const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 
-const {types: {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
+const {types: {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
 
 // Types1.js
 const Name = new TextType('Name', {required: true, maxLength: 20})

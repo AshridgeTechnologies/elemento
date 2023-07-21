@@ -33,6 +33,7 @@ export type DataTypeElementType =
     'DateType' |
     'ListType' |
     'NumberType' |
+    'DecimalType' |
     'RecordType' |
     'TextType' |
     'TrueFalseType' |

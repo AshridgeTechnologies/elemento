@@ -38,7 +38,7 @@ import {globalFunctions} from './serverRuntime.cjs'
 import {types} from './serverRuntime.cjs'
 
 const {Sum} = globalFunctions
-const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types
+const {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule} = types
 
 // Types1.js
 const Name = new TextType('Name', {required: true, maxLength: 20})

@@ -4,7 +4,6 @@ import BaseType, {BaseProperties} from './BaseType'
 
 const formats = {
     integer: {valFn: (item: number) => validator.isInt(item.toString()), desc: 'a whole number' },
-    currency: {valFn: (item: number) => validator.isCurrency(item.toString(), {digits_after_decimal: [1, 2]}), desc: 'a currency amount'},
 }
 
 type Format = keyof typeof formats

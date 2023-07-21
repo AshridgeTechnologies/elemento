@@ -14,6 +14,8 @@ import TrueFalseInput, {TrueFalseInputState} from './TrueFalseInput'
 import DateInput, {DateInputState} from './DateInput'
 import {isNil, last, without} from 'ramda'
 import {InfoButton, InputWithInfo} from './InputWithInfo'
+import DecimalType from '../../shared/types/DecimalType'
+import BigNumber from 'bignumber.js'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -33,6 +35,9 @@ const formField = (parentPath: string, type: BaseType<any, any>) => {
         return <TextInput path={path} label={name} key={path}/>
     }
     if (type.kind === 'Number') {
+        return <NumberInput path={path} label={name} key={path}/>
+    }
+    if (type.kind === 'Decimal') {
         return <NumberInput path={path} label={name} key={path}/>
     }
     if (type.kind === 'Choice') {
@@ -60,6 +65,9 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>) => 
     }
     if (type instanceof NumberType) {
         return new NumberInputState({dataType: type, value: value as PropVal<number>})
+    }
+    if (type instanceof DecimalType) {
+        return new NumberInputState({dataType: type, value: value as PropVal<BigNumber>})
     }
     if (type instanceof ChoiceType) {
         return new SelectInputState({dataType: type, value: value as PropVal<string>})

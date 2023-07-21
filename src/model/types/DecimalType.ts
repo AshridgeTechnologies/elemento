@@ -4,32 +4,30 @@ import {PropertyDef, PropertyValueType} from '../Types'
 import {BuiltInRule, RuleWithDescription} from './Rule'
 import BaseTypeElement, {BaseTypeProperties} from './BaseTypeElement'
 
-const formatChoices = ['integer'] as const
-type Format = typeof formatChoices[number]
 type Properties = BaseTypeProperties & {
     readonly min?: PropertyValueType<number>,
     readonly max?: PropertyValueType<number>,
-    readonly format?: Format,
+    readonly decimalPlaces?: number,
 }
 
-export default class NumberType extends BaseTypeElement<Properties> implements Element {
+export default class DecimalType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'NumberType'
+    static kind = 'DecimalType'
     static get iconClass() { return 'pin_outlined' }
 
     get min() {return this.properties.min}
     get max() {return this.properties.max}
-    get format() {return this.properties.format}
+    get decimalPlaces() {return this.properties.decimalPlaces}
 
     get rulesFromProperties() {
-        const {min, max, format} = this
+        const {min, max, decimalPlaces} = this
         const formatDescriptions = {
             integer: 'a whole number',
         }
         return [
             min && new BuiltInRule(`Minimum ${min}`),
             max && new BuiltInRule(`Maximum ${max}`),
-            format && new BuiltInRule(`Must be ${formatDescriptions[format]}`),
+            decimalPlaces && new BuiltInRule(`${decimalPlaces} decimal places`),
         ].filter(el => !!el) as RuleWithDescription[]
     }
 
@@ -37,7 +35,7 @@ export default class NumberType extends BaseTypeElement<Properties> implements E
         return super.propertyDefs.concat([
             propDef('min', 'number'),
             propDef('max', 'number'),
-            propDef('format', formatChoices),
+            propDef('decimalPlaces', 'number'),
         ])
     }
 }

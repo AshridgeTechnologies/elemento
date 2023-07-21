@@ -20,7 +20,7 @@ test('has list of all Types class names', () => {
     const generator = new TypesGenerator(project)
     const output = generator.output()
 
-    expect(output.typesClassNames).toStrictEqual(['ChoiceType', 'DateType', 'ListType', 'NumberType', 'RecordType', 'TextType', 'TrueFalseType', 'Rule'])
+    expect(output.typesClassNames).toStrictEqual(['ChoiceType', 'DateType', 'ListType', 'NumberType', 'DecimalType', 'RecordType', 'TextType', 'TrueFalseType', 'Rule'])
 })
 
 test('generates types without constraints in a DataTypes', () => {

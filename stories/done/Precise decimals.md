@@ -17,8 +17,9 @@ Requirements
 - ✅ Gt, Lte, Gte, Lte, Eq functions also take Decimal or ordinary numbers, boolean or value object
 - ✅ Decimal calculations are always done with precise digits, unless recurring
 - ✅ Other functions like Sum, Max, Min accept Decimal arguments
-- NumberType can be Decimal, also have a quick DecimalType function
-- Number Input converts its value to Decimal if its Type is DecimalType
+- ✅ ~~NumberType can be Decimal, also have a quick~~ DecimalType object
+- ✅ Number Input converts its value to Decimal if its Type is DecimalType
+- ✅ Form generation creates a NumberInput for a DecimalType
 
 Further requirements
 --------------------

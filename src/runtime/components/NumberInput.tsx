@@ -7,6 +7,8 @@ import {useGetObjectState} from '../appData'
 import {NumberType} from '../../shared/types'
 import {pick} from 'ramda'
 import {InputWithInfo} from './InputWithInfo'
+import BigNumber from 'bignumber.js'
+import DecimalType from '../../shared/types/DecimalType'
 
 type Properties = {path: string, label?: PropVal<string>, }
 
@@ -29,8 +31,12 @@ export default function NumberInput({path, ...props}: Properties) {
 
     const onChange = (event: ChangeEvent) => {
         const controlValue = (event.target as any).value
-        const updateValue = controlValue !== '' ? Number(controlValue) : null
-        state._setValue(updateValue)
+        const updateValue = () => {
+            if (controlValue === '') return null
+            if (dataType?.kind === 'Decimal') return new BigNumber(controlValue)
+            return Number(controlValue)
+        }
+        state._setValue(updateValue())
     }
     const onBlur = (_event: FocusEvent) => state.ShowErrors(true)
 
@@ -51,7 +57,7 @@ export default function NumberInput({path, ...props}: Properties) {
     return InputWithInfo({description: dataType?.description, formControl})
 }
 
-export class NumberInputState extends InputComponentState<number, NumberType>  {
+export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {
     defaultValue = 0
 }
 

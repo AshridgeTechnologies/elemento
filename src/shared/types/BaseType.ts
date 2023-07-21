@@ -1,7 +1,7 @@
 import {isNil} from 'ramda'
 import Rule from './Rule'
 
-export type Kind = 'Text' | 'Number' | 'Date' | 'Choice' | 'TrueFalse' | 'Record' | 'List'
+export type Kind = 'Text' | 'Number' | 'Decimal' | 'Date' | 'Choice' | 'TrueFalse' | 'Record' | 'List'
 
 export type ValidationErrors = string[] | { [name: string]: string[] } | null
 export type BaseProperties = Partial<Readonly<{

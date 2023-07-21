@@ -8,8 +8,10 @@ import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'
-import {NumberType, TextType} from '../../../src/shared/types'
+import {NumberType} from '../../../src/shared/types'
 import {render} from '@testing-library/react'
+import BigNumber from 'bignumber.js'
+import DecimalType from '../../../src/shared/types/DecimalType'
 
 const [numberInput, appStoreHook] = wrappedTestElement(NumberInput, NumberInputState)
 
@@ -32,6 +34,11 @@ test('NumberInput element produces output with description info', () => {
 test('NumberInput shows value from the state supplied', () => {
     const {el} = testContainer(numberInput('app.page1.widget1', {value: 27}))
     expect(el`app.page1.widget1`.value).toBe('27')
+})
+
+test('NumberInput shows Decimal value from the state supplied', () => {
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: new BigNumber('27.34')}))
+    expect(el`app.page1.widget1`.value).toBe('27.34')
 })
 
 test('NumberInput element produces output with properties supplied as state objects', () => {
@@ -66,6 +73,13 @@ test('NumberInput stores updated values in the app store section for its path', 
     expect(stateAt('app.page1.sprocket').value).toBe(421)
 })
 
+test('NumberInput stores updated Decimal values in the app store section for its path if it has a DecimalType data type', async () => {
+    const decimalType1 = new DecimalType('dt1')
+    const {enter}  = testContainer(numberInput('app.page1.sprocket', {value: 27, dataType: decimalType1}))
+    await enter('sprocket', '421')
+    expect(stateAt('app.page1.sprocket').value).toStrictEqual(new BigNumber('421'))
+})
+
 test('NumberInput stores null value in the app store when cleared', async () => {
     const {el, user} = testContainer(numberInput('app.page1.sprocket', {value: 27}))
     const inputEl = el`app.page1.sprocket`
@@ -76,7 +90,7 @@ test('NumberInput stores null value in the app store when cleared', async () => 
 test('NumberInput uses properties from dataType', async () => {
     const {el} = testContainer(numberInput('app.page1.sprocket2', {value: 27}, {label: 'The Input'}))
 
-    const numberType = new NumberType('nt1', {min: 2, max: 10, format: 'currency'})
+    const numberType = new NumberType('nt1', {min: 2, max: 10, format: 'integer'})
     await actWait(10)
     await actWait( () => stateAt('app.page1.sprocket2').props.dataType = numberType )
 

@@ -26,17 +26,6 @@ test('validates using all rules', () => {
     expect(type.validate(51)).toStrictEqual(['Must be a multiple of 10'])
 })
 
-test('validates currency format', () => {
-    const currencyType = new NumberType('Total price', {format: 'currency'})
-
-    expect(currencyType.validate(null)).toBe(null)
-    expect(currencyType.validate(20.111)).toStrictEqual(['Must be a currency amount'])
-    expect(currencyType.validate(20)).toBe(null)
-    expect(currencyType.validate(20.1)).toBe(null)
-    expect(currencyType.validate(20.10)).toBe(null)
-    expect(currencyType.validate(20.11)).toBe(null)
-})
-
 test('checks correct data type', () => {
     const clazz = class A {}
     expect(type.isCorrectDataType({a: 10})).toBe(false)

@@ -22,6 +22,8 @@ import React, {KeyboardEventHandler} from 'react'
 import {withDots} from '../../../src/util/helpers'
 import {useGetObjectState} from '../../../src/runtime'
 import {useObjectStates} from '../../../src/runtime/appData'
+import BigNumber from 'bignumber.js'
+import DecimalType from '../../../src/shared/types/DecimalType'
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Size', {max: 20})
@@ -36,6 +38,7 @@ const recordType = new RecordType('rt1', {}, [
 
 const recordType2 = new RecordType('rt222', {description: 'The record type with them all'}, [], [
     new DateType('Start Date', {min: new Date('2010-06-05'), max: new Date('2020-03-04')}),
+    new DecimalType('Income', {min: 0, max: 100000, decimalPlaces: 2}),
     new ChoiceType('Region', {values: ['North', 'Central', 'South']}),
     new TrueFalseType('Internal', {description: 'Internal sign up'}),
     // new ListType('Things', {}, [], recordType),
@@ -99,6 +102,7 @@ test('Form element produces output with all types of children and description', 
         dataType: recordType2,
         value: {
             StartDate: new Date('2015-02-13'),
+            Income: new BigNumber('223344.55'),
             Region: 'Central',
             Internal: true,
             Things: [

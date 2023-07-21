@@ -1,12 +1,7 @@
 import Rule from './Rule'
-import validator from 'validator'
 import BaseType, {BaseProperties} from './BaseType'
 import {isValid as isValidDate} from 'date-fns'
 
-const formats = {
-    integer: {valFn: (item: number) => validator.isInt(item.toString()), desc: 'a whole number' },
-    currency: {valFn: (item: number) => validator.isCurrency(item.toString(), {digits_after_decimal: [1, 2]}), desc: 'a currency amount'},
-}
 type ChoiceValue = string | number | boolean | Date
 type Properties = Partial<Readonly<BaseProperties & {
     values: ChoiceValue[],

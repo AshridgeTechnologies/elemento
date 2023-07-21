@@ -34,7 +34,6 @@ Stories
 
 ### Priority for internal apps
 - Type expressions
-- Precise decimals
 
 
 ### Priority for customer-facing apps
@@ -222,6 +221,7 @@ Done
 - Form generation
 - Date input element
 - More math functions like Round, Floor etc
+- Precise decimals
 
 Bugs fixed
 ----------

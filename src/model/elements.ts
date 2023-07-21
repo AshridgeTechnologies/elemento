@@ -41,6 +41,7 @@ import SpeechInput from "./SpeechInput";
 import FunctionImport from "./FunctionImport";
 import Form from './Form'
 import DateInput from './DateInput'
+import DecimalType from './types/DecimalType'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -49,6 +50,7 @@ export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
         DateType: DateType,
         ListType: ListType,
         NumberType: NumberType,
+        DecimalType: DecimalType,
         RecordType: RecordType,
         TextType: TextType,
         TrueFalseType: TrueFalseType,
