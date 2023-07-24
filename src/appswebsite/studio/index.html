@@ -10,33 +10,9 @@
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="/studio/runEditor.css">
 </head>
 <body>
-    <script type="module">
-        const registerServiceWorker = async () => {
-            if (!navigator.serviceWorker) {
-                alert('This browser is unable to run Elemento Studio correctly\nService worker not available')
-                return
-            }
-            try {
-                const registration = await navigator.serviceWorker.register(new URL('../sw.ts', import.meta.url), {
-                    scope: '/studio', type: 'module'
-                });
-
-                if (registration.installing) {
-                    console.log("Service worker installing");
-                } else if (registration.waiting) {
-                    console.log("Service worker installed");
-                } else if (registration.active) {
-                    console.log("Service worker active");
-                }
-            } catch (error) {
-                console.error(`Service worker registration failed with ${error}`);
-            }
-        }
-
-        registerServiceWorker()
-    </script>
-    <script src="../../editor/runEditor.ts" type="module"></script>
+    <script src="/studio/runEditor.js" type="module"></script>
 </body>
 </html>

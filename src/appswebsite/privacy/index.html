@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
 </head>
 <body>
-  <script src="../components/runPrivacyPage.ts" type="module"></script>
+  <script type="module">
+      import {run} from './index.js'
+      import {PrivacyPolicyPage} from './index.js'
+      run(PrivacyPolicyPage)
+  </script>
 </body>
 </html>

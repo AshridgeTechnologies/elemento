@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Box, Button, IconButton, Link, Popover, Typography} from '@mui/material'
-import AccountCircle from '@mui/icons-material/AccountCircle'
+import {AccountCircle} from '@mui/icons-material'
 import {currentUser, signIn, signOut, useSignedInState} from './authentication'
 
 function UserPanel({isSignedIn, handleSignIn, handleSignOut}: { isSignedIn: boolean, handleSignIn: VoidFunction, handleSignOut: VoidFunction }) {

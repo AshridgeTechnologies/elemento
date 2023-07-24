@@ -4,15 +4,20 @@ import Element from './Element'
 import File from './File'
 import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
-import {elementOfType} from './elements'
+import {parentTypeOf} from './elements'
 import FileFolder from './FileFolder'
 import {AppElementAction, ConfirmAction, InsertAction} from '../editor/Types'
 import Page from './Page'
 import DataTypes from './types/DataTypes'
+import App from './App'
+import Text from './Text'
+import ToolFolder from './ToolFolder'
+import {fork} from 'radash'
 
 type Properties = { author?: PropertyValue }
 
 export const FILES_ID = '_FILES'
+export const TOOLS_ID = '_TOOLS'
 
 class DataTypesContainer extends BaseElement<{}> {
     get propertyDefs() { return [] }
@@ -21,7 +26,26 @@ class DataTypesContainer extends BaseElement<{}> {
 
 export default class Project extends BaseElement<Properties> implements Element {
 
+    private constructor(id: ElementId,
+                name: string,
+                properties: Properties,
+                elements: ReadonlyArray<Element>  = [],
+    ) {
+        const [toolFolders, otherElements] = fork(elements, el => el.kind === 'ToolFolder')
+        if (!toolFolders.length) toolFolders.push(Project.newToolFolder())
+        super(id, name, properties, [...otherElements, ...toolFolders])
+    }
     static kind = 'Project'
+    static new(elements: ReadonlyArray<Element> = [], id: ElementId = 'project_1',
+               name = 'New Project',
+               properties: Properties = {}) {
+        return new Project(id, name, properties, [...elements])
+    }
+
+    private static newToolFolder() {
+        return new ToolFolder(TOOLS_ID, 'Tools', {})
+    }
+
     static get iconClass() { return 'web' }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
@@ -41,21 +65,21 @@ export default class Project extends BaseElement<Properties> implements Element 
         return ''
     }
 
-    actionsAvailable(targetItemId: ElementId) {
+    actionsAvailable(targetItemId: ElementId): AppElementAction[] {
         const element = this.findElement(targetItemId)!
         const standardActionsAvailable = [
             new InsertAction('before'),
             new InsertAction('after'),
             new InsertAction('inside'),
             new ConfirmAction('delete'),
-            'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'] as AppElementAction[]
-        const fileFolderActions = ['upload'] as AppElementAction[]
-        const fileActions = ['delete'] as AppElementAction[]
-        switch(element.kind) {
-            case 'FileFolder': return fileFolderActions
-            case 'File': return fileActions
-            default: return standardActionsAvailable
+            'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate']
+        const specialActionsAvailable = {
+            ToolFolder: [new InsertAction('inside'), 'pasteInside'],
+            FileFolder: ['upload'],
+            File: ['delete'],
+            Tool: ['show', ...standardActionsAvailable],
         }
+        return (specialActionsAvailable[element.kind as keyof object] ?? standardActionsAvailable)
     }
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {
@@ -86,8 +110,9 @@ export default class Project extends BaseElement<Properties> implements Element 
     }
 
     canContain(elementType: ElementType) {
-        const parentType = elementOfType(elementType).parentType
-        return parentType === this.kind || ['DataTypes'].includes(elementType)
+        const parentType = parentTypeOf(elementType)
+        const canAdd = !['FileFolder', 'ToolFolder'].includes(elementType)
+        return canAdd && (parentType === this.kind || ['DataTypes'].includes(elementType))
     }
 
     withFiles(fileNames: string[] = []) {
@@ -109,4 +134,12 @@ export default class Project extends BaseElement<Properties> implements Element 
         const newIdSeq = this.findMaxId(elementType) + 1
         return createElement(elementType, newIdSeq, properties)
     }
+}
+
+export function editorEmptyProject() {
+    return Project.new([new App('app_1', 'New App', {}, [
+        new Page('page_1', 'Main Page', {}, [
+            new Text('text_1', 'Title', {content: 'The New App', fontSize: 24})
+        ])
+    ])])
 }

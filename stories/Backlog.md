@@ -118,6 +118,10 @@ Epics
 Tech debt
 ---------
 
+- Builder/runner: 
+  - Generator does not hard code runner location
+  - ProjectBuilder only writes updated files
+  - runForDev only refreshes code if a file in its path is changed
 - Use radash wherever possible, try to remove lodash
 - Consider Temporal
 - Consider TinyBase

@@ -6,6 +6,8 @@ import {flatten} from 'ramda'
 import List from '../model/List'
 import {ListItem} from './Types'
 import Form from '../model/Form'
+import Tool from '../model/Tool'
+import {BaseApp} from '../model/BaseApp'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -52,8 +54,13 @@ export const valueLiteral = function (propertyValue: any): string {
         return String(propertyValue)
     }
 }
+
+export function isAppLike(component: Element | ListItem): component is BaseApp {
+    return component instanceof BaseApp
+}
+
 export const allElements = (component: Element | ListItem, isTopLevel = false): Element[] => {
-    if (component instanceof App) {
+    if (isAppLike(component)) {
         return flatten(component.otherComponents.map(el => [el, allElements(el)]))
     }
     if (component instanceof ListItem) {

@@ -41,8 +41,9 @@ const standardActionsAvailable = () => [
     new ConfirmAction('delete'),
     'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'] as AppElementAction[]
 const fileActionsAvailable = () => ['upload'] as AppElementAction[]
+const toolActionsAvailable = () => ['show', ...standardActionsAvailable()] as AppElementAction[]
 
-const defaultFunctions = {onAction: noOp, insertMenuItemFn: noOp, onInsert: noOp, onMove: noOp, actionsAvailableFn: standardActionsAvailable}
+const defaultFunctions = {onAction: noOp, insertMenuItemFn: noOp, onInsert: noOp, onMove: noOp, onShow: noOp, actionsAvailableFn: standardActionsAvailable}
 
 const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
     new ModelTreeItem('app1', 'App One', 'App', [
@@ -71,6 +72,10 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
     new ModelTreeItem('_FILES', 'Files', 'FileFolder',[
         new ModelTreeItem('file_1', 'Duck.jpg', 'File'),
         new ModelTreeItem('file_2', 'Rules.pdf', 'File'),
+    ]),
+    new ModelTreeItem('_TOOLS', 'Tools', 'ToolFolder',[
+        new ModelTreeItem('tool_1', 'Do Stuff', 'Tool'),
+        new ModelTreeItem('tool2_2', 'Check Stuff', 'Tool'),
     ])
 ])
 
@@ -145,12 +150,12 @@ describe('ModelTreeItem', () => {
 test("renders tree with all types of model elements",  async () => {
     ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>))
     await clickExpandControl(0, 1)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
-    expect(itemIcons()).toStrictEqual([ "web", "web", "web", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
+    expect(itemIcons()).toStrictEqual([ "web", "web", "web", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file", 'home_repair_service_outlined', 'build_outlined', 'build_outlined'])
 
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf'])
-    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "check_box_outlined", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file"])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
+    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "check_box_outlined", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file", 'home_repair_service_outlined', 'build_outlined', 'build_outlined'])
 })
 
 test("can expand and collapse branches and show",  async () => {
@@ -263,20 +268,30 @@ test('only shows insert menu item if there are items to insert in that position'
     expect(screen.queryByText(`Insert inside`)).not.toBeNull()
 })
 
-test('notifies insert file', async () => {
+test('notifies insert Tool', async () => {
     const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockReturnValue(['File'])
+    const itemsFn = jest.fn().mockReturnValue(['Tool'])
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
                                                                          insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
-    await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Tools')))
     await actWait(() => fireEvent.click(screen.getByText(`Insert inside`)))
     expect(onInsert).not.toHaveBeenCalled()
 
-    await actWait(() => fireEvent.click(screen.getByText('File')))
-    expect(onInsert).toHaveBeenCalledWith('inside', '_FILES', 'File')
-    expect(screen.queryByText(`Add file`)).toBeNull()
+    await actWait(() => fireEvent.click(screen.getByText('Tool')))
+    expect(onInsert).toHaveBeenCalledWith('inside', '_TOOLS', 'Tool')
+    expect(screen.queryByText(`Insert inside`)).toBeNull()
+})
+
+test('notifies show Tool', async () => {
+    const onAction = jest.fn()
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions}
+                                                                         actionsAvailableFn={toolActionsAvailable} onAction={onAction} />)))
+    await clickExpandControl(1)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Check Stuff')))
+    await actWait(() => fireEvent.click(screen.getByText(`Show`)))
+    expect(onAction).toHaveBeenCalledWith({'action': 'show', 'ids': ['tool2_2'], 'itemNames': ['Check Stuff']})
 })
 
 test('notifies copy with clicked item id if not selected', async () => {

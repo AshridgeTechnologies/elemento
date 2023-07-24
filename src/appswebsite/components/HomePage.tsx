@@ -3,10 +3,12 @@ import {Box, Container, Link, Stack, Typography} from '@mui/material'
 import AppBar from '../../shared/AppBar'
 import {theme} from '../../shared/styling'
 import {ThemeProvider} from '@mui/material/styles'
-import LightbulbIcon from '@mui/icons-material/LightbulbTwoTone'
-import CreateIcon from '@mui/icons-material/CreateTwoTone'
-import AodIcon from '@mui/icons-material/AodTwoTone'
-import ArrowCircleRightTwoToneIcon from '@mui/icons-material/ArrowCircleRightTwoTone';
+import {
+    AodTwoTone as AodIcon,
+    ArrowCircleRightTwoTone as ArrowCircleIcon,
+    CreateTwoTone as CreateIcon,
+    LightbulbTwoTone as LightbulbIcon
+} from '@mui/icons-material'
 
 const primary = theme.palette.primary.main
 const secondary = theme.palette.secondary.main
@@ -28,7 +30,7 @@ function SectionLink(props: {title: string, href: string, icon: any, children: a
                 <Box textAlign='center'><Icon sx={{ fontSize: 180 }} /></Box>
                 <Link component='div' underline='hover' href={props.href} variant='h5' textAlign='center'>{props.title}</Link>
                 <Typography fontSize='20px' color='#555'>{props.children}</Typography>
-                <Box textAlign='center'><ArrowCircleRightTwoToneIcon sx={{ fontSize: 32, color: secondary }} /></Box>
+                <Box textAlign='center'><ArrowCircleIcon sx={{ fontSize: 32, color: secondary }} /></Box>
             </Stack>
         </Link>
     </Box>

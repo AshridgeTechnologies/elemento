@@ -42,6 +42,7 @@ export type DataTypeElementType =
 export type ElementType =
     'Project' |
     'App' |
+    'Tool' |
     'AppBar' |
     'Page' |
     'Text' |
@@ -73,6 +74,7 @@ export type ElementType =
     'ServerAppConnector' |
     'File' |
     'FileFolder' |
+    'ToolFolder' |
     DataTypeElementType
 
 export type ParentType = ElementType | ElementType[] | 'any' | null

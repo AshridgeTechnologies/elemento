@@ -7,7 +7,6 @@ import {
     AppElementAction,
     OnActionFn,
     OnChangeFn,
-    OnExportFn,
     OnGetFromGitHubFn,
     OnInsertWithSelectedFn,
     OnMoveFn,
@@ -53,7 +52,6 @@ export default function Editor({
     onAction,
     onNew,
     onOpen,
-    onExport,
     onSaveToGitHub,
     onGetFromGitHub,
     onUpdateFromGitHub,
@@ -64,7 +62,7 @@ export default function Editor({
     errors,
     previewCode
 }: { project: Project, projectStoreName?: string, onChange: OnChangeFn, onInsert: OnInsertWithSelectedFn, onMove: OnMoveFn, onAction: OnActionFn,
-                                    onOpen?: OnOpenFn, onExport?: OnExportFn, onNew?: OnNewFn,
+                                    onOpen?: OnOpenFn, onNew?: OnNewFn,
                                     onSaveToGitHub: OnSaveToGitHubFn, onGetFromGitHub: OnGetFromGitHubFn, onUpdateFromGitHub?: OnUpdateFromGitHubFn,
                                     runUrl?: string, previewUrl?: string, selectedItemIds: string[], onSelectedItemsChange: (ids: string[]) => void,
                                     errors: AllErrors, previewCode: string}) {
@@ -116,7 +114,7 @@ export default function Editor({
     }
     const signedIn = useSignedInState()
     const EditorMenuBar = () => <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen} onExport={onExport}
+        <FileMenu onNew={onNew} onOpen={onOpen}
                   onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub} onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
         <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
         <Button id='downloads' href='/downloads'>Downloads</Button>
@@ -137,9 +135,9 @@ export default function Editor({
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
                 <Grid item xs={10} height='100%'>
-                    {EditorHeader}
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
-                        <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
+                        {EditorHeader}
+                        <Box height='calc(100% - 49px)'>
                             <Grid container columns={10} spacing={0} height='100%'>
                                 <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'>
                                     <AppStructureTree treeData={treeData(project)} onSelect={onSelectedItemsChange}

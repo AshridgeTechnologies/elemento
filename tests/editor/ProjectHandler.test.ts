@@ -6,9 +6,9 @@ import {resetSaveFileCallData} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import {editorEmptyProject} from '../../src/util/initialProjects'
 import TextInput from '../../src/model/TextInput'
 import Text from '../../src/model/Text'
+import {editorEmptyProject} from '../../src/model/Project'
 
 const project = projectFixture1()
 

@@ -4,8 +4,8 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn, OnNewFn} from './Types'
 
-export default function FileMenu({onNew, onOpen, onExport, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
-    {onNew?: OnNewFn, onOpen?: MenuItemFn, onExport?: MenuItemFn,
+export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
+    {onNew?: OnNewFn, onOpen?: MenuItemFn,
         onSaveToGitHub?: MenuItemFn, onGetFromGitHub?: MenuItemFn, onUpdateFromGitHub?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
@@ -42,7 +42,6 @@ export default function FileMenu({onNew, onOpen, onExport, onSaveToGitHub, onGet
             >
                 {menuItem('New', onNew)}
                 {menuItem('Open', onOpen)}
-                {menuItem('Export', onExport)}
                 {menuItem('Get from GitHub', onGetFromGitHub)}
                 {menuItem('Update from GitHub', onUpdateFromGitHub)}
                 {menuItem('Save to GitHub', onSaveToGitHub)}

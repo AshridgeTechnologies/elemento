@@ -100,8 +100,9 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return null
     }
 
-    findChildElements<T extends Element>(elementClass: Class<T>): T[] {
-        return this.elementArray().filter(el => el instanceof elementClass) as T[]
+    findChildElements<T extends Element>(elementType: Class<T> | ElementType): T[] {
+        const filterFn = typeof elementType === 'function' ? (el: Element) => el instanceof elementType : (el: Element) => el.kind === elementType
+        return this.elementArray().filter(filterFn) as T[]
     }
 
     findParent(id: ElementId): Element | null {

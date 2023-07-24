@@ -23,7 +23,7 @@ import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
-import Project from '../../src/model/Project'
+import Project, {TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
@@ -32,9 +32,12 @@ import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
 import DateInput from '../../src/model/DateInput'
 import Form from '../../src/model/Form';
+import Tool from '../../src/model/Tool'
+import ToolFolder from '../../src/model/ToolFolder'
 
-const project = (el: Element) => new Project('proj1', 'Project 1', {}, [el])
-test('generates main app and all page output files', ()=> {
+const project = (el: Element) => Project.new([el], 'proj1', 'Project 1', {})
+
+test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
@@ -80,6 +83,43 @@ test('generates main app and all page output files', ()=> {
     const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
+}
+`)
+
+})
+
+test('generates Tool and all page output files', ()=> {
+    const tool = new Tool('tool1', 'Tool 1', {maxWidth: '60%'}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id2', 't2', {content: ex`23 + 45`}),
+            ]
+        )]
+    )
+
+    const gen = new Generator(tool, project(new ToolFolder(TOOLS_ID, 'Tools', {}, [tool])))
+
+    expect(gen.output().files[0].name).toBe('Page1.js')
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
+    )
+}
+`)
+
+    expect(gen.output().files[1].name).toBe('Tool1.js')
+    expect(gen.output().files[1].contents).toBe(`export default function Tool1(props) {
+    const pathWith = name => 'Tool1' + '.' + name
+    const {App} = Elemento.components
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+
+    return React.createElement(App, {path: 'Tool1', maxWidth: '60%',},)
 }
 `)
 
@@ -154,7 +194,7 @@ test('includes all DataTypes files', () => {
         )
     ])
 
-    const project = new Project('proj1', 'Project 1', {}, [app1, app2, dataTypes1, dataTypes2])
+    const project = Project.new([app1, app2, dataTypes1, dataTypes2], 'proj1', 'Project 1', {})
 
     const output = generate(app1, project)
 
@@ -229,7 +269,7 @@ test('generates html runner file', () => {
 <body>
 <script type="module">
     import {runForDev} from '/runtime/runtime.js'
-    runForDev('/studio/preview/App1.js')
+    runForDev('/studio/preview/App1/App1.js')
 </script>
 </body>
 </html>
@@ -603,7 +643,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
         getWidgetFn, updateWidgetFn, getSprocketFn,
     ])
-    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
 
     const output = new Generator(app, project).output()
 
@@ -671,7 +711,7 @@ test('generates ServerAppConnector elements with correct configuration if has sa
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
         getWidgetFn,
     ])
-    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
 
     const output = new Generator(app, project).output()
     expect(output.files[1].contents).toBe(`function configServerApp1() {
@@ -711,7 +751,7 @@ test('generates ServerAppConnector elements with specified URL', () => {
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
 
     const output = new Generator(app, project).output()
 
@@ -753,7 +793,7 @@ test('generates ServerAppConnector with code generation error if ServerApp not f
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
 
     const output = new Generator(app, project).output()
 
@@ -785,7 +825,7 @@ test('generates ServerAppConnector with empty config if ServerApp not specified'
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = new Project('proj1', 'The Project', {}, [app, serverApp])
+    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
 
     const output = new Generator(app, project).output()
 

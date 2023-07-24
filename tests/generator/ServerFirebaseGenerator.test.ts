@@ -2,14 +2,15 @@ import ServerApp from '../../src/model/ServerApp'
 import ServerFirebaseGenerator from '../../src/generator/ServerFirebaseGenerator'
 import FunctionDef from '../../src/model/FunctionDef'
 import {ex} from '../testutil/testHelpers'
-import Project from '../../src/model/Project'
+import Project1 from '../../src/model/Project'
+import Project2 from '../../src/model/Project'
 
 describe('generates files for multiple apps', () => {
     const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
     const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
     const app1 = new ServerApp('sa1', 'Server App 1', {}, [plusFn])
     const app2 = new ServerApp('sa2', 'Server App 2', {}, [multFn])
-    const project = new Project('proj1', 'Server Project', {}, [app1, app2])
+    const project = Project2.new([app1, app2], 'proj1', 'Server Project', {})
     const gen = new ServerFirebaseGenerator(project)
     const {files} = gen.output()
     const [serverApp1File, expressApp1File, serverApp2File, expressApp2File, functionFile, packageFile] = files
@@ -110,7 +111,7 @@ test('combines errors from multiple apps', () => {
 
     const app1 = new ServerApp('sa1', 'Server App 1', {}, [syntaxErrorFn])
     const app2 = new ServerApp('sa2', 'Server App 2', {}, [unknownNameErrorFn])
-    const project = new Project('proj1', 'Server Project', {}, [app1, app2])
+    const project = Project1.new([app1, app2], 'proj1', 'Server Project', {})
     const gen = new ServerFirebaseGenerator(project)
     expect(gen.output().errors).toStrictEqual({
         fn1: {

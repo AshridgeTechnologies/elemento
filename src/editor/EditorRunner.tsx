@@ -3,18 +3,21 @@ import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {AppElementAction, AppElementActionName} from './Types'
+import {AppElementAction, AppElementActionName, VoidFn} from './Types'
 import {
     Alert,
     AlertColor,
     AlertTitle,
+    Box,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Stack,
     TextField,
+    Typography,
 } from '@mui/material'
 import Element from '../model/Element'
 import Project from '../model/Project'
@@ -42,6 +45,11 @@ import HttpFileWriter from "./HttpFileWriter";
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
+import Tool from '../model/Tool'
+import IconButton from '@mui/material/IconButton'
+import {CancelOutlined} from '@mui/icons-material'
+import AppRunnerFromCodeUrl from '../runner/AppRunnerFromCodeUrl'
+import {DefaultAppContext} from '../runtime/AppContext'
 
 const {debounce} = lodash;
 
@@ -187,6 +195,32 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
     )
 }
 
+function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
+    const name = tool.name
+    // const codeUrl = `${location.origin}/studio/preview/tools/${tool.codeName}.js`
+    // const resourceUrl = `/studio/preview/tools/files`
+    // const appContext = new DefaultAppContext('/studio/preview')
+    const toolUrl = `${location.origin}/studio/preview/tools/${tool.codeName}/`
+    return <Stack height='100%'>
+        <Stack direction='row' spacing={1}
+               sx={{paddingLeft: '1.5em', height: '2em', color: 'white', backgroundColor: 'secondary.main'}}>
+            <Typography sx={{marginTop: '0.3em'}}>{name}</Typography>
+            <IconButton edge="start" color="inherit" aria-label="close" sx={{ml: 2}}
+                        onClick={onClose}><CancelOutlined/></IconButton>
+        </Stack>
+        <iframe name='toolFrame' src={toolUrl}
+                 style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
+    </Stack>
+
+    // const codeUrl = `${location.origin}/studio/preview/tools/${tool.codeName}.js`
+    // const resourceUrl = `/studio/preview/tools/files`
+    // const appContext = new DefaultAppContext('/studio/preview')
+    //<AppRunnerFromCodeUrl url={codeUrl} resourceUrl={resourceUrl} appContext={appContext}/>
+    // <iframe name='toolFrame' src={previewUrl}
+    //         style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
+
+}
+
 const previewCodeBundle = (codeFiles: {[p: string] : string}) =>
     Object.entries(codeFiles).map(([name, code]) => `// File: ${name}\n\n${code}`).join(`\n\n\n`)
 
@@ -200,6 +234,7 @@ export default function EditorRunner() {
     const [,setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
+    const [tool, setTool] = useState<Tool | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const projectBuilderRef = useRef<ProjectBuilder>()
 
@@ -239,6 +274,10 @@ export default function EditorRunner() {
             new PostMessageFileWriter(navigator.serviceWorker.controller!),
             new DiskProjectStoreFileWriter(projectStore, 'dist/client')
         )
+        const toolFileWriter = new MultiFileWriter(
+            new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools'),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/tools')
+        )
         const serverFileWriter = new MultiFileWriter(
             new HttpFileWriter(devServerUrl),
             new DiskProjectStoreFileWriter(projectStore, 'dist/server')
@@ -248,6 +287,7 @@ export default function EditorRunner() {
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
             runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
             clientFileWriter,
+            toolFileWriter,
             serverFileWriter
         })
     }
@@ -295,9 +335,11 @@ export default function EditorRunner() {
             }
         }
 
-        waitUntil( ()=> navigator.serviceWorker.controller, 500, 5000 ).then(doInit).catch(() => {
-            console.log('Timed out waiting for service worker - reloading')
-            window.location.reload()
+        waitUntil( ()=> navigator.serviceWorker.controller, 500, 5000 ).then(doInit)
+        .catch(() => {
+            console.error('Timed out waiting for service worker')
+            // console.log('Reloading')
+            // window.location.reload()
         })
     }
 
@@ -375,6 +417,9 @@ export default function EditorRunner() {
     }
 
     const onAction = async (ids: ElementId[], action: AppElementAction): Promise<ElementId | null | void> => {
+        if (action === 'show') {
+            return await onShow(ids[0])
+        }
         if (action === 'upload') {
             return await onUpload(ids[0])
         }
@@ -493,25 +538,47 @@ export default function EditorRunner() {
         selectItemsInPreview(pathIds)
     }
 
-    const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-    const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
-    const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-    const previewUrl = updateTime ? `/studio/preview/?v=${updateTime}` : '/studio/preview/'
-    const errors = projectBuilderRef.current?.errors ?? {}
-    const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
+    const onShow = (id: ElementId) => {
+        const tool = projectHandler.current?.findElement(id) as Tool
+        setTool(tool)
+    }
+
+    const onCloseToolWindow = ()=> setTool(null)
+
+    function mainContent() {
+        if (projectHandler.current) {
+            const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
+            const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
+            const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
+            const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
+            const errors = projectBuilderRef.current?.errors ?? {}
+            const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
+
+            return <Box display='flex' flexDirection='column' height='100%' width='100%'>
+                <Box flex='1' maxHeight={tool ? '60%' : '100%'}>
+                    <Editor project={getOpenProject()} projectStoreName={projectHandler.name!}
+                            onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
+                            onNew={onNew} onOpen={onOpen}
+                            onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
+                            runUrl={runUrl} previewUrl={previewUrl}
+                            selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
+                            errors = {errors} previewCode={previewCode}
+                    />
+                </Box>
+                {tool ?
+                    <Box flex='1' maxHeight='40%'>
+                        <ToolWindow tool={tool} onClose={onCloseToolWindow}/>
+                    </Box> : null
+                }
+            </Box>
+        } else {
+            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
+        }
+    }
+
     return <ThemeProvider theme={theme}>
         {alertMessage}
         {dialog}
-        { projectHandler.current ?
-            <Editor project={getOpenProject()} projectStoreName={projectHandler.name!}
-                    onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
-                    onNew={onNew} onOpen={onOpen}
-                    onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
-                    runUrl={runUrl} previewUrl={previewUrl}
-                    selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
-                    errors = {errors} previewCode={previewCode}
-            /> :
-            <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
-        }
+        {mainContent()}
         </ThemeProvider>
 }

@@ -12,30 +12,33 @@ import FirebasePublish from '../../src/model/FirebasePublish'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
 import {ConfirmAction, InsertAction} from '../../src/editor/Types'
+import ToolFolder from '../../src/model/ToolFolder'
+
+const newToolFolder = new ToolFolder('_TOOLS', 'Tools', {})
 
 test('Project has correct properties', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const page2 = new Page('p2', 'Page 2', {}, [])
     const app = new App('t1', 'test1', {}, [page1, page2])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
-    expect(project.id).toBe('pr1')
-    expect(project.name).toBe('proj1')
-    expect(project.elements!.map( c => c.id )).toStrictEqual(['t1'])
+    expect(project.id).toBe('project_1')
+    expect(project.name).toBe('New Project')
+    expect(project.elements!.map( c => c.id )).toStrictEqual(['t1', newToolFolder.id])
 })
 
 test('can find project itself by id', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const app = new App('a1', 'test1', {}, [page1])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
-    expect(project.findElement('pr1')).toBe(project)
+    expect(project.findElement('project_1')).toBe(project)
 })
 
 test('can find app by id', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const app = new App('a1', 'test1', {}, [page1])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
     expect(project.findElement('a1')).toBe(app)
 })
@@ -44,7 +47,7 @@ test('can find page by id', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const page2 = new Page('p2', 'Page 2', {}, [])
     const app = new App('t1', 'test1', {}, [page1, page2])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
     expect(project.findElement('p2')).toBe(page2)
 })
@@ -66,7 +69,7 @@ let testProject = function () {
     const button1 = new Button('b1', 'Button 1', {})
     const appBar = new AppBar('ab1', 'AppBar 1', {}, [button1])
     const app = new App('app1', 'App 1', {}, [page1, page2, appBar])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
     return {text1, text2, page1, text3, text4, text5, layout1, page2, app, appBar, button1, project}
 }
 
@@ -86,16 +89,16 @@ test('can find parent of element by id', ()=> {
 test('path of project itself is empty string', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const app = new App('a1', 'test1', {}, [page1])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
-    expect(project.findElementPath('pr1')).toBe('')
+    expect(project.findElementPath('project_1')).toBe('')
 })
 
 test('can find path of page by id', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
     const page2 = new Page('p2', 'Page 2', {}, [])
     const app = new App('app1', 'App 1', {}, [page1, page2])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
     expect(project.findElementPath('p2')).toBe('App1.Page2')
 })
@@ -112,7 +115,7 @@ test('can find path of element in a layout by id', ()=> {
     const layout = new Layout('lay1', 'Layout 1', {}, [text1, innerLayout])
     const page = new Page('p1', 'Page 1', {}, [layout])
     const app = new App('app1', 'App 1', {}, [page])
-    const project = new Project('proj1', 'Project 1', {}, [app])
+    const project = Project.new([app])
 
     expect(project.findElementPath(text1.id)).toBe('App1.Page1.Text1')
     expect(project.findElementPath(text2.id)).toBe('App1.Page1.Text2')
@@ -135,7 +138,7 @@ test('can find child elements by type', () => {
     const app = new App('app1', 'App 1', {}, [page1])
     const publish1 = new FirebasePublish('fp1', 'Live', {})
     const publish2 = new FirebasePublish('fp1', 'Live', {})
-    const project = new Project('pr1', 'proj1', {}, [app, publish1, publish2])
+    const project = Project.new([app, publish1, publish2])
     expect(project.findChildElements(FirebasePublish)).toStrictEqual([publish1, publish2])
 })
 
@@ -163,25 +166,25 @@ test('creates an updated object with a property set to a new value', ()=> {
 
     const app = new App('a1', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
 
-    const updatedProject = project.set('pr1', 'name', 'Proj 1A')
+    const updatedProject = project.set('project_1', 'name', 'Proj 1A')
     expect(updatedProject.name).toBe('Proj 1A')
-    expect(updatedProject.elements).toBe(project.elements)
-    expect(project.name).toBe('proj1')
+    expect(updatedProject.elements).toStrictEqual(project.elements)
+    expect(project.name).toBe('New Project')
 
-    const updatedProject2 = updatedProject.set('pr1', 'elements', [app, app2])
+    const updatedProject2 = updatedProject.set('project_1', 'elements', [app, app2])
     expect(updatedProject2.name).toBe('Proj 1A')
-    expect(updatedProject2.elements!).toStrictEqual([app, app2])
+    expect(updatedProject2.elements!).toStrictEqual([app, app2, newToolFolder])
     expect(updatedProject.name).toBe('Proj 1A')
-    expect(updatedProject.elements!).toStrictEqual([app])
+    expect(updatedProject.elements!).toStrictEqual([app, newToolFolder])
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const app = new App('a1', 'App 1', {}, [page1])
-    const project = new Project('pr1', 'proj1', {}, [app])
+    const project = Project.new([app])
     const updatedProject = project.set('x1', 'name', 'Proj 1A')
     expect(updatedProject).toBe(project)
 })
@@ -195,11 +198,11 @@ test('creates an updated object if a property in a contained object is changed a
 
     const app = new App('a1', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     const updatedProject = project.set('t4', 'content', '"Further text"')
-    expect(updatedProject.name).toBe('proj1')
-    expect(updatedProject.elements?.length).toBe(2)
+    expect(updatedProject.name).toBe('New Project')
+    expect(updatedProject.elements?.length).toBe(3)
     expect(updatedProject.elements![0]).toBe(app)
     expect(updatedProject.elements![1]).not.toBe(app2)
     expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as Text).content).toBe('"Further text"')
@@ -215,7 +218,7 @@ describe('Insert new element', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', ()=> {
 
@@ -274,7 +277,7 @@ describe('Insert element', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', () => {
 
@@ -300,7 +303,7 @@ describe('Move element', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     test('moves single element after another in the same page', () => {
         const originalPage1 = project.findElement('page_1')
@@ -349,7 +352,7 @@ test('creates an updated object on delete element on a page and preserves unchan
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     const updatedProject = project.delete(text3.id)
     expect((updatedProject.elements![1] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 4'])
@@ -365,7 +368,7 @@ test('finds max id for element type', ()=> {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     expect(project.findMaxId('Text')).toBe(7)
     expect(project.findMaxId('Page')).toBe(2)
@@ -373,13 +376,15 @@ test('finds max id for element type', ()=> {
 })
 
 test('can contain App, not other types', () => {
-    const project = new Project('id1', 'Project 1', {}, [])
+    const project = Project.new()
     expect(project.canContain('App')).toBe(true)
     expect(project.canContain('ServerApp')).toBe(true)
     expect(project.canContain('Page')).toBe(false)
     expect(project.canContain('Project')).toBe(false)
     expect(project.canContain('Text')).toBe(false)
     expect(project.canContain('DataTypes')).toBe(true)
+    expect(project.canContain('FileFolder')).toBe(false)
+    expect(project.canContain('ToolFolder')).toBe(false)
 })
 
 test('finds element types that can insert for a position and target element', () => {
@@ -391,7 +396,7 @@ test('finds element types that can insert for a position and target element', ()
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
 
     expect(project.canInsert('inside', 'page_2', 'Text')).toBe(true)
     expect(project.canInsert('inside', 'page_2', 'Page')).toBe(false)
@@ -420,7 +425,7 @@ test('gets actions available', () => {
     const app2 = new App('a2', 'App 2', {}, [page2])
     const file1 = new File('f1', 'Image1.jpg', {})
     const files = new FileFolder('_FILES', 'Files', {}, [file1])
-    const project = new Project('pr1', 'Project 1', {}, [app, app2, files])
+    const project = Project.new([app, app2, files])
 
     const actions = project.actionsAvailable('t1')
     expect(actions).toStrictEqual([
@@ -431,6 +436,7 @@ test('gets actions available', () => {
         'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'])
 
     expect( project.actionsAvailable('_FILES')).toStrictEqual(['upload'])
+    expect( project.actionsAvailable('_TOOLS')).toStrictEqual([new InsertAction('inside'), 'pasteInside'])
     expect( project.actionsAvailable('f1')).toStrictEqual(['delete'])
 })
 
@@ -441,7 +447,7 @@ test('adds Files element', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const bareProject = new Project('pr1', 'proj1', {}, [app, app2])
+    const bareProject = Project.new([app, app2])
 
     const project = bareProject.withFiles(['Image 1.jpg', 'Form 2.pdf'])
     expect(project.elementArray()[2]).toStrictEqual(new FileFolder('_FILES', 'Files', {}, [
@@ -460,14 +466,14 @@ test('converts to JSON, excludes Files', ()=> {
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
     const files = new FileFolder('_FILES', 'Files', {})
-    const project = new Project('pr1', 'Project 1', {}, [app, app2, files])
+    const project = Project.new([app, app2, files])
 
     expect(asJSON(project.withoutFiles())).toStrictEqual({
         kind: 'Project',
-        id: 'pr1',
-        name: 'Project 1',
+        id: 'project_1',
+        name: 'New Project',
         properties: project.properties,
-        elements: [asJSON(app), asJSON(app2)]
+        elements: [asJSON(app), asJSON(app2), asJSON(newToolFolder)]
     })
 
 })
@@ -481,7 +487,24 @@ test('converts from plain object', ()=> {
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project.new([app, app2])
     const newProject = loadJSON(asJSON(project))
     expect(newProject).toStrictEqual<Project>(project)
 })
+
+test('new project has ToolFolder', () => {
+    const project = Project.new()
+    expect(project.elementArray()).toStrictEqual([newToolFolder])
+})
+
+test('if no ToolsFolder in the elements of existing, adds one', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
+    const project = Project.new([app])
+    const json = asJSON(project)
+    json.elements = json.elements.filter( (el:any) => el.kind !== 'ToolFolder')
+    const loadedProject = loadJSON(json) as Project
+    expect(loadedProject.elementArray()).toStrictEqual([app, newToolFolder])
+})
+

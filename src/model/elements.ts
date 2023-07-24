@@ -42,6 +42,8 @@ import FunctionImport from "./FunctionImport";
 import Form from './Form'
 import DateInput from './DateInput'
 import DecimalType from './types/DecimalType'
+import ToolFolder from './ToolFolder'
+import Tool from './Tool'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -62,6 +64,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
     return {
         Project: Project,
         App: App,
+        Tool: Tool,
         AppBar: AppBar,
         Page: Page,
         Text: Text,
@@ -93,8 +96,10 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         ServerAppConnector: ServerAppConnector,
         File: File,
         FileFolder: FileFolder,
+        ToolFolder: ToolFolder,
         ...dataTypeElementTypes()
     }
 }
 
 export const elementOfType = (elementType: ElementType) => elementTypes()[elementType]
+export const parentTypeOf = (elementType: ElementType) => elementOfType(elementType).parentType

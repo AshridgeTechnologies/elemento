@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
+import {Menu} from '@mui/icons-material'
 import UserMenu from './UserMenu'
 
 type Properties = {title: string, userMenu?: boolean}
@@ -20,7 +20,7 @@ export default function AppBar({title, userMenu = true}: Properties) {
                         aria-label="menu"
                         sx={{ mr: 2 }}
                     >
-                        <MenuIcon />
+                        <Menu />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ fontSize: 16, flexGrow: 1 }}>
                         {title}

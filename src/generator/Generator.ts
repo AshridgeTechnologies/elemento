@@ -15,7 +15,7 @@ import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName
 import {notBlank, notEmpty, trimParens} from '../util/helpers'
 import {
     allElements,
-    DefinedFunction,
+    DefinedFunction, isAppLike,
     objectLiteral,
     objectLiteralEntries,
     quote,
@@ -31,6 +31,7 @@ import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
 import Form from '../model/Form'
+import Tool from '../model/Tool'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -53,7 +54,7 @@ export default class Generator {
     private parser
     private typesGenerator
 
-    constructor(public app: App, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
+    constructor(public app: App | Tool, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
         this.parser.parseComponent(project.dataTypesContainer)
         this.parser.parseComponent(app)
@@ -70,20 +71,23 @@ export default class Generator {
             name: `${(page.codeName)}.js`,
             contents: this.generateComponent(this.app, page)
         }))
-        const appMainFile = {
-            name: 'appMain.js',
+
+        const appFileName = this.app.kind === 'App' ? 'appMain.js' : `${this.app.codeName}.js`
+        const appFile = {
+            name: appFileName,
             contents: this.generateComponent(this.app, this.app)
         }
 
         const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
         const typesConstants = typesFiles.length ? `const {types: {${typesClassNames.join(', ')}}} = Elemento\n\n` : ''
+        const dirPrefix = this.app.kind === 'Tool' ? 'tools/' : ''
         return <GeneratorOutput>{
-            files: [...typesFiles, ...pageFiles, appMainFile],
+            files: [...typesFiles, ...pageFiles, appFile],
             errors: this.parser.allErrors(),
             get code() {
                 return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
             },
-            html: this.htmlRunnerFile()
+            html: this.htmlRunnerFile(dirPrefix)
         }
     }
 
@@ -105,7 +109,7 @@ export default class Generator {
     }
 
     private generateComponent(app: App, component: Page | App | Form | ListItem, containingComponent?: Page) {
-        const componentIsApp = component instanceof App
+        const componentIsApp = isAppLike(component)
         const canUseContainerElements = component instanceof ListItem && containingComponent
         const componentIsForm = component instanceof Form
         const topLevelFunctions = new Set<string>()
@@ -124,7 +128,7 @@ export default class Generator {
             ? `    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))`
             : appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
-        const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id)
+        const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(component.id)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
@@ -274,7 +278,8 @@ ${generateChildren(element.list)}
         }
 
         switch (element.kind) {
-            case 'App': {
+            case 'App':
+            case 'Tool': {
                 const app = element as App
                 const topChildrenElements = app.topChildren.map(p => `${this.generateElement(p, app, topLevelFunctions)}`).filter(line => !!line.trim()).join(',\n')
                 const topChildren = topChildrenElements.length ? `topChildren: React.createElement( React.Fragment, null, ${topChildrenElements})\n    ` : ''
@@ -321,6 +326,7 @@ ${generateChildren(form, indentLevel2, form)}
         switch (element.kind) {
             case 'Project':
             case 'App':
+            case 'Tool':
             case 'Page': {
                 throw new Error('Cannot generate element code for ' + element.kind)
             }
@@ -385,6 +391,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'ServerAppConnector':
             case 'File':
             case 'FileFolder':
+            case 'ToolFolder':
                 return ''
 
             // Types done in TypesGenerator
@@ -392,6 +399,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'Rule':
             case 'TextType':
             case 'NumberType':
+            case 'DecimalType':
             case 'DateType':
             case 'ChoiceType':
             case 'RecordType':
@@ -573,7 +581,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         return trimParens(this.getExpr(element, propertyName, exprType))
     }
 
-    private htmlRunnerFile() {
+    private htmlRunnerFile(dirPrefix: string) {
+        const appName = this.app.codeName
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -590,7 +599,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 <body>
 <script type="module">
     import {runForDev} from '/runtime/${runtimeFileName}'
-    runForDev('/studio/preview/${this.app.codeName}.js')
+    runForDev('/studio/preview/${dirPrefix}${appName}/${appName}.js')
 </script>
 </body>
 </html>

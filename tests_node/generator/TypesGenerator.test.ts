@@ -1,7 +1,7 @@
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import TypesGenerator from '../../src/generator/TypesGenerator'
-import Project from '../../src/model/Project'
+import Project1 from '../../src/model/Project'
 import Rule from '../../src/model/types/Rule'
 import fs from 'fs'
 import test from 'node:test'
@@ -36,7 +36,7 @@ const check = (validator: BaseType<any, any>, item: any) => validator.validate(i
 const errors = (validator: BaseType<any, any>, item: any) => check(validator, item) as string[]
 
 function aProject(type: BaseTypeElement<any>) {
-    return new Project('p1', 'The Project', {}, [new DataTypes('dt1', dataTypesName, {}, [type])])
+    return Project1.new([new DataTypes('dt1', dataTypesName, {}, [type])], 'p1', 'The Project', {})
 }
 
 test('generates TextType with expected validation', async () => {

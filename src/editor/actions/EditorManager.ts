@@ -1,7 +1,8 @@
 import GitProjectStore from '../GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {DiskProjectStore} from '../DiskProjectStore'
-import {editorEmptyProject} from '../../util/initialProjects'
+
+import {editorEmptyProject} from '../../model/Project'
 
 export default class EditorManager {
     constructor(private openProjectFunction: (name: string, projectStore: DiskProjectStore) => Promise<void>)

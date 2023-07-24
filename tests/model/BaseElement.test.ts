@@ -2,7 +2,7 @@ import Text from '../../src/model/Text'
 import {ex} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import Project from '../../src/model/Project'
+import Project1 from '../../src/model/Project'
 import {newIdTransformer} from '../../src/model/BaseElement'
 
 test('assigns new ids to a tree of elements', () => {
@@ -40,7 +40,7 @@ describe('Insert element with new ids', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = new Project('pr1', 'proj1', {}, [app, app2])
+    const project = Project1.new([app, app2], 'pr1', 'proj1', {})
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', () => {
 

@@ -1,7 +1,6 @@
-import Project from '../model/Project'
+import Project, {editorEmptyProject} from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {editorEmptyProject, editorInitialProject} from '../util/initialProjects'
 import {AppElementAction, AppElementActionName} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'

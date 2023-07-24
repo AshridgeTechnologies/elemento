@@ -4,10 +4,11 @@ type PostMessageTarget = {
     postMessage<T>(message: object): void
 }
 export default class PostMessageFileWriter implements FileWriter {
-    constructor(private readonly messageTarget: PostMessageTarget) {
+    constructor(private readonly messageTarget: PostMessageTarget, private readonly dirPath?: string) {
     }
 
     async writeFile(filePath: string, contents: FileContents): Promise<void> {
-        this.messageTarget.postMessage({type: 'write', path: filePath, contents})
+        const fullPath = this.dirPath ? `${this.dirPath}/${filePath}` : filePath
+        this.messageTarget.postMessage({type: 'write', path: fullPath, contents})
     }
 }

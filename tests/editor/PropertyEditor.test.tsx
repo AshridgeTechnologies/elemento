@@ -18,7 +18,8 @@ import List from '../../src/model/List'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
-import Project, {FILES_ID} from '../../src/model/Project'
+import Project1, {TOOLS_ID} from '../../src/model/Project'
+import Project2, {FILES_ID} from '../../src/model/Project'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
@@ -30,6 +31,7 @@ import {ProjectContext} from '../../src/editor/Editor'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
+import ToolFolder from '../../src/model/ToolFolder'
 
 
 let container: any
@@ -115,6 +117,16 @@ test('cannot change name of Files element', async () => {
     expect(changedValue).toBe(undefined)
 })
 
+test('cannot change name of Tools element', async () => {
+    const element = new ToolFolder(TOOLS_ID, 'Tools', {}, [])
+    render(<PropertyEditor element={element} onChange={onChange}/>)
+    const user = userEvent.setup()
+    await user.type(nameInput(), 'Tools 2')
+    expect(nameInputValue()).toBe('Tools')
+    await user.keyboard('[Enter]')
+    expect(changedValue).toBe(undefined)
+})
+
 test('updates other properties', () => {
     const element = new Text('id1', 'Text 1', {content: 'x', color: ex`funky`})
     render(<PropertyEditor element={element} onChange={onChange}/>)
@@ -124,7 +136,7 @@ test('updates other properties', () => {
 })
 
 test('has fields for Project', () => {
-    const element = new Project('id1', 'Project 1', {author: 'Me!'}, [])
+    const element = Project2.new([], 'id1', 'Project 1', {author: 'Me!'})
     render(<PropertyEditor element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Project 1')
@@ -443,7 +455,7 @@ test('has fields and actions for FirebasePublish', async () => {
         firebaseConfiguration: {expr: configStr}
     })
     element.publish = jest.fn()
-    const project = new Project('id1', 'proj1', {})
+    const project = Project1.new([], 'id1', 'proj1', {})
     render(<ProjectContext.Provider value={project}>
         <PropertyEditor element={element} onChange={onChange}/>
     </ProjectContext.Provider>)

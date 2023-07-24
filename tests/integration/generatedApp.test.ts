@@ -11,8 +11,8 @@ import {runAppFromWindowUrl} from '../../src/runner/AppMain'
 import '@testing-library/jest-dom'
 import {act} from '@testing-library/react'
 import {containerFunctions} from '../testutil/rtlHelpers'
-import Project from '../../src/model/Project'
-import DateType from '../../src/model/types/DateType'
+import Project1 from '../../src/model/Project'
+import Project2 from '../../src/model/Project'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import TextInput from '../../src/model/TextInput'
@@ -31,7 +31,7 @@ test.skip('generated app can be shown in runner page', async ()=> {
             new Text('text2', 'Text 2', {content: ex`2 + 2`}),
         ])])
 
-    const project = new Project('proj1', 'Project 1', {}, [app])
+    const project = Project2.new([app], 'proj1', 'Project 1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
@@ -56,7 +56,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     const textType1 = new TextType('tt1', 'Text 1', {description: 'The text', maxLength: 20}, )
     const dataTypes = new DataTypes('dt1', 'My Types', {}, [textType1])
 
-    const project = new Project('proj1', 'Project 1', {}, [app, dataTypes])
+    const project = Project1.new([app, dataTypes], 'proj1', 'Project 1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))

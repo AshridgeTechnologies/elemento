@@ -17,7 +17,7 @@ import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
 import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
-import Project from '../../src/model/Project'
+import Project, {TOOLS_ID} from '../../src/model/Project'
 import {treeExpandControlSelector} from './Selectors'
 import {actWait} from '../testutil/rtlHelpers'
 import DataTypes from '../../src/model/types/DataTypes'
@@ -25,6 +25,7 @@ import NumberType from '../../src/model/types/NumberType'
 import NumberInput from '../../src/model/NumberInput'
 import ServerApp from '../../src/model/ServerApp'
 import FunctionDef from '../../src/model/FunctionDef'
+import Tool from '../../src/model/Tool'
 
 const {startCase} = lodash;
 
@@ -36,6 +37,7 @@ const itemLabels = () => treeItemLabels(container)
 const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(container)(...indexes)
 
 const project = projectFixture1()
+const [projectWithTools] = project.insert('inside', TOOLS_ID, new Tool('tool_1', 'Tool 1', {}))
 
 const onChange = ()=> {}
 const onAction = jest.fn()
@@ -84,14 +86,14 @@ test("renders tree with app elements",  async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} projectStoreName='Stored Project' />)))
     await clickExpandControl(0, 1, 2)
     expect(container.querySelector('.MuiTypography-h6').textContent).toBe('Elemento Studio - Stored Project')
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page', 'Tools'])
 })
 
 test('shows Text element selected in tree in property editor', async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project}/>)))
     await clickExpandControl(0, 1, 2)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page', 'Tools'])
 
     fireEvent.click(screen.getByText('Second Text'))
     await wait(100)
@@ -102,7 +104,7 @@ test('property kind button state does not leak into other properties', async () 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project}/>)))
     await clickExpandControl(0, 1, 2)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page', 'Tools'])
 
     fireEvent.click(screen.getByText('Second Text'))
 
@@ -119,7 +121,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectFixture2()}/>)))
     await clickExpandControl(0, 1, 3)
 
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2', 'Files', 'Image 1.jpg'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Some Text', 'Another Text Input', 'Button 2', 'Files', 'Image 1.jpg', 'Tools'])
 
     fireEvent.click(screen.getByText('Another Text Input'))
 
@@ -133,11 +135,14 @@ test('shows TextInput element selected in tree in property editor', async () => 
 })
 
 test('shows errors for properties of main client app', async () => {
-    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [new App('app1', 'App One', {}, [
+    const projectWithErrors = Project.new([new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `, width: ex`BadName + 30`}),
+            new TextInput('textInput_1', 'First Text Input', {
+                initialValue: ex`"A text value" + `,
+                width: ex`BadName + 30`
+            }),
         ]),
-    ]) ])
+    ])], 'pr1', 'Project Bad', {})
     const errors = {
         textInput_1: {
             initialValue: 'Error: Line 1: Unexpected end of input',
@@ -148,7 +153,7 @@ test('shows errors for properties of main client app', async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 2)
 
-    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input'])
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'Tools'])
 
     fireEvent.click(screen.getByText('First Text Input'))
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
@@ -175,7 +180,7 @@ test('shows errors for properties of all client apps', async () => {
         ]),
     ])
 
-    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [app1, app2])
+    const projectWithErrors = Project.new([app1, app2], 'pr1', 'Project Bad', {})
     const errors = {
         textInput_1: {
             initialValue: 'Error: Line 1: Unexpected end of input',
@@ -187,7 +192,7 @@ test('shows errors for properties of all client apps', async () => {
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 2)
-    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page'])
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page', 'Tools'])
 
     fireEvent.click(screen.getByText('First Text Input'))
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement
@@ -196,7 +201,7 @@ test('shows errors for properties of all client apps', async () => {
     expect(initialValueError.textContent).toBe('Error: Line 1: Unexpected end of input')
 
     await clickExpandControl(5)
-    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page', 'Number Input'])
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'App Two', 'Main Page', 'Number Input', 'Tools'])
 
     fireEvent.click(screen.getByText('Number Input'))
     const labelInput = screen.getByLabelText('Label') as HTMLInputElement
@@ -213,7 +218,7 @@ test('shows errors for properties of all server apps', async () => {
     const serverApp2 = new ServerApp('serverApp2', 'Server App Two', {}, [
         new FunctionDef('func2', 'Add Bad', {calculation: ex`BadName + 22`}),
     ])
-    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [serverApp1, serverApp2 ])
+    const projectWithErrors = Project.new([serverApp1, serverApp2], 'pr1', 'Project Bad', {})
     const errors = {
         func1: {
             calculation: 'Error: Line 1: Unexpected end of input',
@@ -225,7 +230,7 @@ test('shows errors for properties of all server apps', async () => {
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1)
-    expect(itemLabels()).toStrictEqual(['Project Bad', 'Server App One', 'Add What', 'Server App Two', 'Add Bad'])
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'Server App One', 'Add What', 'Server App Two', 'Add Bad', 'Tools'])
 
     fireEvent.click(screen.getByText('Add What'))
     const calculationInput = screen.getByLabelText('Calculation') as HTMLInputElement
@@ -242,12 +247,12 @@ test('shows errors for properties of all server apps', async () => {
 
 test('shows errors for properties of type objects', async () => {
     const numberType1 = new NumberType('id1', 'Number 1', {description: 'The amount', min: ex`BadName + 30`, max: ex`5 + `}, )
-    const projectWithErrors = new Project('pr1', 'Project Bad', {}, [
+    const projectWithErrors = Project.new([
         new App('app1', 'App One', {}, [
             new Page('page_1', 'Main Page', {}, []),
         ]),
         new DataTypes('dt1', 'My Types', {}, [numberType1])
-    ])
+    ], 'pr1', 'Project Bad', {})
     const errors = {
         id1: {
             max: 'Error: Line 1: Unexpected end of input',
@@ -258,7 +263,7 @@ test('shows errors for properties of type objects', async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithErrors} errors={errors}/>)))
     await clickExpandControl(0, 1, 3)
 
-    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'My Types', 'Number 1'])
+    expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'My Types', 'Number 1', 'Tools'])
 
     fireEvent.click(screen.getByText('Number 1'))
     const initialValueInput = screen.getByLabelText('Max') as HTMLInputElement
@@ -290,13 +295,27 @@ test('notifies upload action from context menu of the files item', async () => {
     const onAction = jest.fn().mockImplementation(()=> Promise.resolve(notionalNewFileId))
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectFixture2()} onAction={onAction}/>)))
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Files', 'Image 1.jpg'])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Files', 'Image 1.jpg', 'Tools'])
 
     await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
     await actWait(() => fireEvent.click(screen.getByText('Upload')))
 
     expect(onAction).toHaveBeenCalledWith(['_FILES'], 'upload')
     expect(propertiesPanelName().value).toBe('Image 1.jpg')
+})
+
+test('notifies insert action from context menu of the tools item', async () => {
+    const notionalNewElementId = 'tool_1'
+    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
+    await clickExpandControl(0, 1, 2)
+
+    fireEvent.contextMenu(screen.getByText('Tools'))
+    fireEvent.click(screen.getByText('Insert inside'))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Tool'))
+
+    expect(onInsert).toHaveBeenCalledWith('inside', '_TOOLS', 'Tool')
 })
 
 test('shows allowed items in menu bar insert menu', async () => {
@@ -443,17 +462,20 @@ test('notifies Update from GitHub request and closes menu', async () => {
     expect(screen.queryByText('Update from GitHub')).toBeNull()
 })
 
-test('notifies export request', async () => {
-    const onExport = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onExport={onExport} />)))
-    fireEvent.click(screen.getByText('File'))
-    fireEvent.click(screen.getByText('Export'))
-    expect(onExport).toHaveBeenCalled()
+test(`notifies show action with item id`, async () => {
+    const onAction = jest.fn()
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithTools} onAction={onAction} />)))
+    await clickExpandControl(1)
+
+    await actWait(() => fireEvent.contextMenu(screen.getByText('Tool 1')))
+    await actWait(() => fireEvent.click(screen.getByText('Show')))
+
+    expect(onAction).toHaveBeenCalledWith(['tool_1'], 'show')
 })
 
 test('notifies new request', async () => {
     let onNew = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onExport={() => {}} onNew={onNew}/>)))
+    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onNew={onNew}/>)))
     fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('New'))
     expect(onNew).toHaveBeenCalled()

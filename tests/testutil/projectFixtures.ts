@@ -29,7 +29,7 @@ export function projectFixture1() {
         page1,
         page2
     ])
-    return new Project('project_1', 'Project One', {}, [app])
+    return Project.new([app], 'project_1', 'Project One', {})
 }
 
 export function projectFixture2() {
@@ -50,7 +50,7 @@ export function projectFixture2() {
     ])
     const file1 = new File('file_1', 'Image 1.jpg', {})
     const folder = new FileFolder('_FILES', 'Files', {}, [file1])
-    return new Project('project_1', 'Project One', {}, [app, folder])
+    return Project.new([app, folder], 'project_1', 'Project One', {})
 }
 
 export function projectFixture3(url: string) {
@@ -65,7 +65,7 @@ export function projectFixture3(url: string) {
     const app = new App('app1', 'App One', {}, [
         page1,
     ])
-    return new Project('project_1', 'Project One', {}, [app])
+    return Project.new([app], 'project_1', 'Project One', {})
 }
 
 export function projectFixtureWithError() {
@@ -76,7 +76,7 @@ export function projectFixtureWithError() {
     const app = new App('app1', 'App One', {}, [
         page1,
     ])
-    return new Project('project_1', 'Project One', {}, [app])
+    return Project.new([app], 'project_1', 'Project One', {})
 }
 
 export function projectFixtureWithList() {
@@ -91,17 +91,17 @@ export function projectFixtureWithList() {
         page1,
     ])
 
-    return new Project('project_1', 'Project One', {}, [app])
+    return Project.new([app], 'project_1', 'Project One', {})
 }
 
 export function welcomeProject() {
-    return new Project('project_1', 'Welcome to Elemento', {}, [
+    return Project.new([
         new App('app1', 'Welcome App', {}, [
             new Page('page_1', 'Main Page', {}, [
                 new Text('text1_1', 'First Text', {content: {'expr': '"Welcome to Elemento!"'}}),
                 new Text('text1_2', 'Second Text', {content: {'expr': '"The future of low code programming"'}}),
             ])
-        ])])
+        ])], 'project_1', 'Welcome to Elemento', {})
 
 }
 

@@ -5,7 +5,7 @@ import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
 import lodash from 'lodash'; const {startCase} = lodash;
-import Project, {FILES_ID} from '../model/Project'
+import Project, {FILES_ID, TOOLS_ID} from '../model/Project'
 import {ProjectContext} from './Editor'
 
 function NameTextField(props: TextFieldProps) {
@@ -59,7 +59,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
     }
 
     const children = propertyFieldsAndActions()
-    const readOnly = element.id === FILES_ID
+    const readOnly = element.id === FILES_ID || element.id === TOOLS_ID
     if (children) {
         const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)
         return <Box

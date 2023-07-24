@@ -3,7 +3,7 @@ import React, {createElement, useState} from 'react'
 import {DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Icon, ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import {ArrowRight} from '@mui/icons-material'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementOfType} from '../model/elements'
 import {AppElementAction, ConfirmAction, InsertAction} from './Types'
@@ -150,7 +150,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         const hasItemsToInsert = Boolean(insertMenuItemFn(position, actionNode!.id)?.length)
         return hasItemsToInsert ? (
             <MenuItem onClick={(event: React.MouseEvent) => showInsertMenu(event, position)} key={'insert_' + position}>
-                <ListItemText sx={{minWidth: 2}}>Insert {position}</ListItemText><ArrowRightIcon/>
+                <ListItemText sx={{minWidth: 2}}>Insert {position}</ListItemText><ArrowRight/>
             </MenuItem>
         ) : null
     }

@@ -2,7 +2,16 @@ import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import TypesGenerator from '../../src/generator/TypesGenerator'
-import Project from '../../src/model/Project'
+import Project1 from '../../src/model/Project'
+import Project2 from '../../src/model/Project'
+import Project3 from '../../src/model/Project'
+import Project4 from '../../src/model/Project'
+import Project5 from '../../src/model/Project'
+import Project6 from '../../src/model/Project'
+import Project7 from '../../src/model/Project'
+import Project8 from '../../src/model/Project'
+import Project9 from '../../src/model/Project'
+import Project10 from '../../src/model/Project'
 import {ex, trimText} from '../testutil/testHelpers'
 import Rule from '../../src/model/types/Rule'
 import DateType from '../../src/model/types/DateType'
@@ -15,7 +24,7 @@ test('has list of all Types class names', () => {
     const name = new TextType('id1', 'Name', {required: true})
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const theTypes = new DataTypes('dt1', 'My Types', {}, [name, itemAmount])
-    const project = new Project('p1', 'The Project', {}, [theTypes])
+    const project = Project10.new([theTypes], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -27,7 +36,7 @@ test('generates types without constraints in a DataTypes', () => {
     const name = new TextType('id1', 'Name', {required: true})
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const theTypes = new DataTypes('dt1', 'My Types', {}, [name, itemAmount])
-    const project = new Project('p1', 'The Project', {}, [theTypes])
+    const project = Project9.new([theTypes], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -51,7 +60,7 @@ test('generates a file for each DataTypes', () => {
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const types1 = new DataTypes('dt1', 'Types 1', {}, [name])
     const types2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
-    const project = new Project('p1', 'The Project', {}, [types1, types2])
+    const project = Project8.new([types1, types2], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -88,7 +97,7 @@ test('generates TextType with built in and ad-hoc rules', async () => {
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(".com")`, description: 'Must end with .com'})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [textType1])])
+    const project = Project7.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
@@ -108,7 +117,7 @@ test('generates NumberType with built in and ad-hoc rules using expressions', ()
         new Rule('r1', 'Multiple of Pi', {formula: ex`$item % Math.PI === 0`, description: 'Must be a multiple of Pi'})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [numberType1])])
+    const project = Project6.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
@@ -128,7 +137,7 @@ test('generates DateType with built in rules', () => {
         new Rule('r1', 'Monday-Tuesday', {formula: ex`\$item.getDay() === 1 || \$item.getDay() === 2`, description: 'Must be a Monday or a Tuesday'})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [dateType1])])
+    const project = Project5.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
@@ -156,7 +165,7 @@ test('generates RecordType with all types', () => {
     ])
     const rule1 = new Rule('r1', 'Name-Location', {description: 'Name must be different to Location', formula: ex`\$item.Name !== \$item.Location`})
     const placeRecord = new RecordType('rec1', 'Place', {description: 'A place to visit', required: true}, [text1, text2, choice1, number1, bool1, list1, rule1])
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [placeRecord])])
+    const project = Project4.new([new DataTypes('dt1', 'My Types', {}, [placeRecord])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
@@ -185,7 +194,7 @@ test('generates RecordType with all types', () => {
 test('finds errors in expressions for type object properties', () => {
     const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'The amount', format: 'integer', max: ex`XX * 10`}, )
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [numberType1])])
+    const project = Project3.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -206,7 +215,7 @@ test('finds errors in expressions for type object properties', () => {
 test('finds parsing errors in expressions for type object properties', () => {
     const dateType1 = new DateType('id1', 'Date 1', {description: 'The start', max: ex`Fri Apr 21 2023`}, )
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [dateType1])])
+    const project = Project2.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -229,7 +238,7 @@ test('finds errors in expressions for rule formulas and descriptions', () => {
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(XX)`, description: ex`'Must end with ' + YY()`})
     ])
 
-    const project = new Project('p1', 'The Project', {}, [new DataTypes('dt1', 'My Types', {}, [textType1])])
+    const project = Project1.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'p1', 'The Project', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()

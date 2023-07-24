@@ -11,10 +11,10 @@ export class InsertAction {
     constructor(public readonly position: InsertPosition) {}
 }
 
-export type AppElementAction = ConfirmAction | InsertAction | AppElementActionName
+export type AppElementAction = ConfirmAction | InsertAction | AppElementActionName | 'show'
 export type VoidFn = () => void
 export type OnOpenFn = VoidFn
-export type OnExportFn = VoidFn
+export type OnShowFn = (id: ElementId) => void
 export type OnNewFn = VoidFn
 export type OnSaveToGitHubFn = VoidFn
 export type OnGetFromGitHubFn = VoidFn

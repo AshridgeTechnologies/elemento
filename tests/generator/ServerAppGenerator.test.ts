@@ -7,7 +7,9 @@ import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
-import Project from '../../src/model/Project'
+import Project1 from '../../src/model/Project'
+import Project2 from '../../src/model/Project'
+import Project3 from '../../src/model/Project'
 
 describe('generates files for app and exposes public functions and includes data types', () => {
     const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})
@@ -21,7 +23,7 @@ describe('generates files for app and exposes public functions and includes data
     const app = new ServerApp('sa1', 'Server App 1', {}, [
         plusFn, timesFn, totalFn, privateFn
     ])
-    const project = new Project('proj1', 'Project 1', {}, [dataTypes1, dataTypes2, app])
+    const project = Project3.new([dataTypes1, dataTypes2, app], 'proj1', 'Project 1', {})
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
     const [serverAppFile, expressAppFile] = files
@@ -107,7 +109,7 @@ describe('generates files using data components in dependency order', () => {
         getWidgetFn, updateWidgetFn, getSprocketFn,
         sprocketCollection, widgetCollection, dataStore
     ])
-    const project = new Project('proj1', 'Project 1', {}, [app])
+    const project = Project2.new([app], 'proj1', 'Project 1', {})
 
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
@@ -185,7 +187,7 @@ describe('handles errors and special cases', () => {
         selectFunction, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
     ])
-    const project = new Project('proj1', 'Project 1', {}, [app])
+    const project = Project1.new([app], 'proj1', 'Project 1', {})
 
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()

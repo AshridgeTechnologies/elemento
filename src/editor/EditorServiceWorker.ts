@@ -57,7 +57,7 @@ export default class EditorServiceWorker {
 
         const [, filepath] = pathname.match(new RegExp(`^\/studio\/preview\/(.*)$`)) ?? []
         if (filepath !== undefined) {
-            const requestFilepath = filepath === '' ? 'index.html' : filepath
+            const requestFilepath = pathname.endsWith('/') ? filepath + 'index.html' : filepath
             const file = this.getFileContents(requestFilepath)
             if (!file) {
                 return new Response(null, {status: 404, statusText: 'File not found (in service worker)'})

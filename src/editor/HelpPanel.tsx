@@ -3,9 +3,7 @@ import {Box, IconButton, Typography} from '@mui/material'
 import Mui_AppBar from '@mui/material/AppBar'
 
 import {TreeItem, TreeView} from '@mui/lab'
-import Close from '@mui/icons-material/Close'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import {ChevronRight, Close, ExpandMore} from '@mui/icons-material'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
 
@@ -19,8 +17,8 @@ function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (
 
     return (<TreeView
         aria-label="help contents"
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
+        defaultCollapseIcon={<ExpandMore />}
+        defaultExpandIcon={<ChevronRight />}
         sx={{ height: '100%', overflowY: 'auto' }}
     >
         {items.map(treeItem) }

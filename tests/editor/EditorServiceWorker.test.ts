@@ -5,7 +5,7 @@ import {wait} from '../testutil/testHelpers'
 const files: FileSystemTree = {
     'index.html': {
         file: {
-            contents: 'index.html contents'
+            contents: 'top index.html contents'
         }
     },
     'dir1': {
@@ -19,7 +19,12 @@ const files: FileSystemTree = {
                 file: {
                     contents: 'another.file contents'
                 }
-            }
+            },
+            'index.html': {
+                file: {
+                    contents: 'dir1 index.html contents'
+                }
+            },
         }
     }
 }
@@ -51,7 +56,7 @@ test('can get response for mounted file at top level', async () => {
     const result = await worker.handleRequest(request('http://example.com/studio/preview/index.html'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
-    expect(await result.text()).toBe('index.html contents')
+    expect(await result.text()).toBe('top index.html contents')
 })
 
 test('can get response for mounted file in sub-directory', async () => {
@@ -89,9 +94,14 @@ test('passes through non-preview request', async () => {
     }
 })
 
-test('serves index.html if path empty', async () => {
+test('serves index.html if top-level path ends in /', async () => {
     const result = await worker.handleRequest(request('https://example.com/studio/preview/'))
-    expect(await result.text()).toBe('index.html contents')
+    expect(await result.text()).toBe('top index.html contents')
+})
+
+test('serves index.html if sub-dir path ends in /', async () => {
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/dir1/'))
+    expect(await result.text()).toBe('dir1 index.html contents')
 })
 
 test('writes single new file in top-level directory from message', async () => {
