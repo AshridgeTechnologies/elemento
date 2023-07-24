@@ -14,7 +14,7 @@ Forces
 - There is a straightforward list of events for each element type
 - Dealing with events is a slightly more advanced concept
 - Will want to update the underlying data in many cases eg to do list, or game with objects
-- For a game with objects, probably just use an im-memory data store
+- For a game with objects, probably just use an in-memory data store
 
 Possibilities
 -------------

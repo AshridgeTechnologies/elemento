@@ -51,8 +51,9 @@ Stories
 - Shapes, drawing, animation
 - Dynamic elements from a list
 
-### Priority for learning
-- Tutorials
+### Priority for learning Elemento
+- Tools
+- Rich text
 - Example apps
 
 ### Priority for credibility
