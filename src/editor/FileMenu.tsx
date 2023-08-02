@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn, OnNewFn} from './Types'
+import {editorElement, editorMenuPositionProps} from './Editor'
 
 export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
     {onNew?: OnNewFn, onOpen?: MenuItemFn,
@@ -17,6 +18,7 @@ export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub
             return null
         }
         const onClick = () => { action(); handleClose() }
+
         return <MenuItem onClick={onClick}>{label}</MenuItem>
     }
     return (
@@ -39,6 +41,8 @@ export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub
                 MenuListProps={{
                     'aria-labelledby': 'fileButton',
                 }}
+                container={editorElement()}
+                slotProps={editorMenuPositionProps}
             >
                 {menuItem('New', onNew)}
                 {menuItem('Open', onOpen)}

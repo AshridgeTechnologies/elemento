@@ -1,9 +1,12 @@
 import MenuItem from '@mui/material/MenuItem'
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash from 'lodash';
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
 import {PopoverOrigin} from '@mui/material'
 import {ElementType} from '../model/Types'
+import {editorElement, editorMenuPositionProps} from './Editor'
+
+const {startCase} = lodash;
 
 export function InsertMenu({anchorEl, anchorOrigin, open, items, onClose, onInsert, labelledBy}: {
     anchorEl: Element | null, labelledBy?: string, open: boolean,
@@ -22,6 +25,8 @@ export function InsertMenu({anchorEl, anchorOrigin, open, items, onClose, onInse
         open={open}
         onClose={onClose}
         MenuListProps={labelledBy ? {'aria-labelledby': labelledBy} : {}}
+        container={editorElement()}
+        slotProps={editorMenuPositionProps}
     >
         {React.Children.toArray(items.map(menuItem))}
     </Menu>

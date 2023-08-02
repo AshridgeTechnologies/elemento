@@ -92,7 +92,7 @@ test('generates Tool and all page output files', ()=> {
     const tool = new Tool('tool1', 'Tool 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
-                new Text('id2', 't2', {content: ex`23 + 45`}),
+                new Button('id2', 'Button 1', {content: 'Do It', action: ex`Editor.Highlight('menuItem+File')`}),
             ]
         )]
     )
@@ -102,11 +102,14 @@ test('generates Tool and all page output files', ()=> {
     expect(gen.output().files[0].name).toBe('Page1.js')
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextElement} = Elemento.components
+    const {Page, TextElement, Button} = Elemento.components
+    const Button1_action = React.useCallback(() => {
+        Editor.Highlight('menuItem+File')
+    }, [])
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
-        React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
+        React.createElement(Button, {path: pathWith('Button1'), content: 'Do It', appearance: 'outline', action: Button1_action}),
     )
 }
 `)

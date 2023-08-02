@@ -68,6 +68,9 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
         }
     })
 
+    const onScroll = (event: any) => {
+        console.log('Scroll', event.currentTarget?.scrollTop)
+    }
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
         <Box flex='0'>
             <HelpBar {...{onClose}}/>
@@ -77,7 +80,7 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
                 <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)'  paddingTop='1rem' sx={{backgroundColor: '#eee'}}>
                     <HelpContents items={helpItems} onSelected={(id) => setSelectedId(id)}/>
                 </Box>
-                <Box  flex='4' className='helpText' ref={helpTextPanel} height='100%'  padding='0 1rem' overflow='auto'>
+                <Box  flex='4' className='helpText' ref={helpTextPanel} height='100%'  padding='0 1rem' overflow='auto' onScroll={onScroll}>
                     {children}
                 </Box>
             </Box>

@@ -30,6 +30,7 @@ Forces
 - Specific functions for each editor item may be more obvious, but less flexible
 - This is more advanced than normal programming, so a little more complexity may be ok
 - Page object idea of working with intentions rather than just clicks and keystrokes
+- Simplest way for dev is just to give the type of element and the text associated with it
 
 Possibilities
 -------------
@@ -44,4 +45,17 @@ Possibilities
 - jQuery or similar selector engine as an alternative choice
 - Some functions can take multiple selectors to do one after the other
 - If selector returns multiple elements, do all if possible (eg Highlight) or first (eg Click)
+
+Spike
+-----
+
+- Experiments with selectors for elements in the editor show that the selections are quite complex
+- Often need to find elements within an outer wrapper where one holds the identifying text and another, at a different level, is the target
+
+Decisions - 3 Aug 23
+--------------------
+
+- Editor object has a set of specific element types that can be selected
+- Functions take the element type, text selector and index
+- Element types map to selector functions
 

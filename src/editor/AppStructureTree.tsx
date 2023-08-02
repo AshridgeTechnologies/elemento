@@ -1,5 +1,5 @@
 import Tree, {TreeNodeProps} from 'rc-tree'
-import React, {createElement, useState} from 'react'
+import React, {useState} from 'react'
 import {DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
 import {Icon, ListItemText, Menu, MenuItem, useTheme} from '@mui/material'
@@ -9,7 +9,10 @@ import {elementOfType} from '../model/elements'
 import {AppElementAction, ConfirmAction, InsertAction} from './Types'
 import {flatten, union, without} from 'ramda'
 import {InsertMenu} from './InsertMenu'
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash from 'lodash';
+import {editorElement, editorMenuPositionProps} from './Editor'
+
+const {startCase} = lodash;
 
 export class ModelTreeItem implements DataNode {
     constructor(public id: string,
@@ -180,6 +183,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         })
     }
 
+
     const contextMenuIfOpen = contextMenuOpen && (
         <Menu
             id="tree-context-menu"
@@ -188,6 +192,8 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
             onClose={closeMenus}
             anchorOrigin={{vertical: 'top', horizontal: 'right',}}
             transformOrigin={{vertical: 'top', horizontal: 'left',}}
+            container={editorElement()}
+            slotProps={editorMenuPositionProps}
         >
             {menuItems(actionsAvailableFn(actionNode!.id))}
         </Menu>
@@ -207,6 +213,8 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
                 vertical: 'top',
                 horizontal: 'left',
             }}
+            container={editorElement()}
+            slotProps={editorMenuPositionProps}
         >
             <MenuItem onClick={actionConfirmed}>Yes - {actionToConfirm!.action + ' ' + actionToConfirm!.itemNames.join(', ')}</MenuItem>
             <MenuItem onClick={closeMenus}>No - go back</MenuItem>

@@ -19,7 +19,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import Element from '../model/Element'
+import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
@@ -48,8 +48,7 @@ import App from '../model/App'
 import Tool from '../model/Tool'
 import IconButton from '@mui/material/IconButton'
 import {CancelOutlined} from '@mui/icons-material'
-import AppRunnerFromCodeUrl from '../runner/AppRunnerFromCodeUrl'
-import {DefaultAppContext} from '../runtime/AppContext'
+import {EditorController} from './EditorController'
 
 const {debounce} = lodash;
 
@@ -197,10 +196,17 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
 
 function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
     const name = tool.name
-    // const codeUrl = `${location.origin}/studio/preview/tools/${tool.codeName}.js`
-    // const resourceUrl = `/studio/preview/tools/files`
-    // const appContext = new DefaultAppContext('/studio/preview')
     const toolUrl = `${location.origin}/studio/preview/tools/${tool.codeName}/`
+    const toolFrameRef = useRef<HTMLIFrameElement>(null)
+    useEffect( () => {
+        const contentWindow = toolFrameRef.current?.contentWindow
+        if (contentWindow) {
+            // @ts-ignore
+            (contentWindow as Window).Editor = new EditorController()
+        } else {
+            console.error('Tool content window not present')
+        }
+    }, [])
     return <Stack height='100%'>
         <Stack direction='row' spacing={1}
                sx={{paddingLeft: '1.5em', height: '2em', color: 'white', backgroundColor: 'secondary.main'}}>
@@ -208,17 +214,9 @@ function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
             <IconButton edge="start" color="inherit" aria-label="close" sx={{ml: 2}}
                         onClick={onClose}><CancelOutlined/></IconButton>
         </Stack>
-        <iframe name='toolFrame' src={toolUrl}
+        <iframe name='toolFrame' src={toolUrl} ref={toolFrameRef}
                  style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
     </Stack>
-
-    // const codeUrl = `${location.origin}/studio/preview/tools/${tool.codeName}.js`
-    // const resourceUrl = `/studio/preview/tools/files`
-    // const appContext = new DefaultAppContext('/studio/preview')
-    //<AppRunnerFromCodeUrl url={codeUrl} resourceUrl={resourceUrl} appContext={appContext}/>
-    // <iframe name='toolFrame' src={previewUrl}
-    //         style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
-
 }
 
 const previewCodeBundle = (codeFiles: {[p: string] : string}) =>
@@ -354,7 +352,7 @@ export default function EditorRunner() {
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
 
-    async function renameAsset(element: Element, value: any) {
+    async function renameAsset(element: ModelElement, value: any) {
         const oldName = element.name
         const newName = value
         await projectStore!.renameAsset(oldName, newName)

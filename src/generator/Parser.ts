@@ -31,6 +31,7 @@ const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math'].includes(name)
+const isToolWindowGlobal = (name: string) => ['Editor'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 const isFormVar = (name: string) => name === '$form'
 
@@ -134,6 +135,7 @@ export default class Parser {
         const isAppElement = (name: string) => (this.globalScopeElement.elements ?? []).some(el => el.codeName === name)
         const isComponentElement = (name: string) => allComponentElements.some(el => el.codeName === name )
         const isContainerElement = (name: string) => allContainerElements.some(el => el.codeName === name )
+        const isInTool = this.globalScopeElement.kind === 'Tool'
         const isKnown = (name: string) => isGlobalFunction(name)
             || isDataTypes(name)
             || isAppFunction(name)
@@ -145,6 +147,7 @@ export default class Parser {
             || isAppElement(name)
             || isContainerElement(name)
             || isBuiltIn(name)
+            || (isInTool && isToolWindowGlobal(name))
 
         if (!(component instanceof ListItem)) {
             identifierSet.add(runtimeElementName(component))

@@ -113,33 +113,32 @@ export default function Editor({
         setFirebaseConfigName(projectFirebaseConfigName)
     }
     const signedIn = useSignedInState()
-    const EditorMenuBar = () => <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen}
-                  onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub} onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
-        <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
-        <Button id='downloads' href='/downloads'>Downloads</Button>
-        <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
-    </MenuBar>
-
     const appBarTitle = `Elemento Studio - ${projectStoreName}`
     const OverallAppBar = <Box flex='0'>
         <AppBar title={appBarTitle}/>
     </Box>
     const EditorHeader = <Box flex='0'>
-        <EditorMenuBar/>
+        <MenuBar>
+            <FileMenu onNew={onNew} onOpen={onOpen}
+                      onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub} onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
+            <InsertMenuWithButton onInsert={onMenuInsert} items={insertMenuItems('after', firstSelectedItemId)}/>
+            <Button id='downloads' href='/downloads'>Downloads</Button>
+            <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
+        </MenuBar>
     </Box>
 
+    /* Note on position attributes: Scrollable elements have position = 'relative' so EditorController can calculate pointer position */
     return <ProjectContext.Provider value={project}>
     <Box display='flex' flexDirection='column' height='100%' width='100%'>
         {OverallAppBar}
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
                 <Grid item xs={10} height='100%'>
-                    <Box display='flex' flexDirection='column' height='100%' width='100%'>
+                    <Box display='flex' flexDirection='column' height='100%' width='100%' id='editorMain' position='relative'>
                         {EditorHeader}
                         <Box height='calc(100% - 49px)'>
                             <Grid container columns={10} spacing={0} height='100%'>
-                                <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'>
+                                <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll'  position='relative'/* see comment above */>
                                     <AppStructureTree treeData={treeData(project)} onSelect={onSelectedItemsChange}
                                         selectedItemIds={selectedItemIds}
                                                       onAction={onTreeAction} onInsert={onContextMenuInsert}
@@ -147,7 +146,7 @@ export default function Editor({
                                                       actionsAvailableFn={actionsAvailable}
                                         onMove={onMove}/>
                                 </Grid>
-                                <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}}>
+                                <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}}  position='relative'/* see comment above */>
                                     <Box id='propertyPanel' width='100%' paddingLeft={1}>
                                         {propertyArea()}
                                     </Box>
@@ -159,6 +158,10 @@ export default function Editor({
                                 <EditorHelpPanel onClose={noop}/>
                             </Box> : null
                         }
+                        <svg viewBox='11.8 9 16 22' className='pointer' id='editorPointer'
+                             style={{width: '25px', top: 0, left: 0, position: 'absolute', zIndex: 2000, opacity: '0'}}>
+                            <path d='M20,21l4.5,8l-3.4,2l-4.6-8.1L12,29V9l16,12H20z'></path>
+                        </svg>
                     </Box>
                 </Grid>
                 <Grid item xs={10} height='100%' overflow='scroll'>
@@ -180,4 +183,11 @@ export default function Editor({
     </Box>
     </ProjectContext.Provider>
 
+}
+
+export const editorElement = () => document.getElementById('editorMain')
+export const editorPointerElement = () => document.getElementById('editorPointer')
+export const editorMenuPositionProps = {
+    root: {sx: {position: 'absolute'}},
+    backdrop: {sx: {position: 'absolute'}},
 }

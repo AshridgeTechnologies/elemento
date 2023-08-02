@@ -6,6 +6,7 @@ import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {format, isDate} from 'date-fns'
+import {editorElement, editorMenuPositionProps} from './Editor'
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
@@ -102,7 +103,9 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const button = () => {
         const commonProps = {
-            variant: 'outlined', disableElevation: true, size: 'small', sx:{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'}
+            variant: 'outlined', disableElevation: true, size: 'small',
+            sx:{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'},
+            'data-eltype': 'propertyTypeButton'
         } as any
         if (readOnly) {
             return null
@@ -121,6 +124,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const fixedBoolean = type === 'boolean' && !expr
     const fixedChoiceList = isArray(type) && !expr
+    const selectSlotProps = {root: {container: editorElement()}}
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button()}
         {fixedBoolean ?
@@ -131,6 +135,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                     id={name}
                     value={initialInputValue()}
                     onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
+                    MenuProps={{ container: editorElement(), slotProps: editorMenuPositionProps}}
                 >
                     <MenuItem value={''}><em>default</em></MenuItem>
                     <MenuItem value={'true'}>Yes</MenuItem>

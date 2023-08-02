@@ -29,6 +29,7 @@ Requirements - Part 3
 ---------------------
 
 - Tools can use Preview objects
+- Can set value of a checkbox
 - Preview object can inspect and manipulate the Preview app state
 - Preview object can inspect and manipulate the Preview app window
 

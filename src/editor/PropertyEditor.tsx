@@ -24,10 +24,12 @@ function NameTextField(props: TextFieldProps) {
     }
 
     return <TextField {...props}  value={changedValue ?? props.value}
+                      data-eltype='elementName'
+                      label='Name'
                       onChange={onChange}
                       onBlur={onFinishChange}
                       onKeyDown={onKeyDown}
-                        helperText={changedValue !== undefined ? 'Renaming - Enter to confirm' : undefined}
+                      helperText={changedValue !== undefined ? 'Renaming - Enter to confirm' : undefined}
     />
 }
 
