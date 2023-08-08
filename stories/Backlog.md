@@ -53,7 +53,6 @@ Stories
 
 ### Priority for learning Elemento
 - Tools
-- Rich text
 - Example apps
 
 ### Priority for credibility
@@ -75,6 +74,7 @@ Stories
 
 ### Priority 1
 - Scheduled jobs
+- Rich text
 - Readonly elements - for all types and styled clearly
 - Import components from web (GitHub repos or npm) - esm.sh bundling? esbuild in browser?
 - Import components with typed property editing
