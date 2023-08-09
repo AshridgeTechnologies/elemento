@@ -61,7 +61,6 @@ test('App element produces output containing page and additional components with
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
 
-
 test('App shows first page initially and other page when state changes', async () => {
 
     const [appContext] = getRealAppContext()

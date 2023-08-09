@@ -41,6 +41,8 @@ export const runForDev = (url: string) => {
     const appStoreHook: AppStoreHook = {
         setAppStore(sa: StoreApi<AppStore>){
             appStore = sa
+            // @ts-ignore
+            window.appStore = appStore
         }
     }
 

@@ -10,6 +10,12 @@ export default class AppState {
         return this.state.get(path)
     }
 
+    selectByEnding(pathEnding: string) {
+        const currentState = this.state
+        const stateEntry = Array.from(currentState.entries()).find( ([name]) => name.endsWith(pathEnding))
+        return stateEntry?.[1]
+    }
+
     update(path: string, stateObject: any): AppState {
         const existingStateAtPath = this.select(path)
 

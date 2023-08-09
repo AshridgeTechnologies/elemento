@@ -12,7 +12,7 @@ export default function Page({children, path, ...props}: Properties) {
         alignItems: 'flex-start',
         spacing: 2,
         height: '100%', width: '100%',
-        sx: {overflowY: 'scroll', padding: 1},
+        sx: {overflowY: 'scroll', padding: 1, position: 'relative'},
         ...propVals,
         children
     })

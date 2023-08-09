@@ -2,7 +2,7 @@ import ProjectHandler from './ProjectHandler'
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
-import Editor from './Editor'
+import Editor, {editorElement} from './Editor'
 import {AppElementAction, AppElementActionName, VoidFn} from './Types'
 import {
     Alert,
@@ -15,6 +15,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Grid,
     Stack,
     TextField,
     Typography,
@@ -48,7 +49,11 @@ import App from '../model/App'
 import Tool from '../model/Tool'
 import IconButton from '@mui/material/IconButton'
 import {CancelOutlined} from '@mui/icons-material'
-import {EditorController} from './EditorController'
+import EditorController from './EditorController'
+import PreviewController from './PreviewController'
+import PreviewPanel from './PreviewPanel'
+import AppBar from '../shared/AppBar'
+import FirebasePublish from '../model/FirebasePublish'
 
 const {debounce} = lodash;
 
@@ -68,7 +73,6 @@ const safeJsonParse = (text: string) => {
         return e.message ?? e
     }
 }
-
 
 const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
@@ -194,7 +198,7 @@ function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) =
     )
 }
 
-function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
+function ToolWindow({tool, previewFrame, onClose}: { tool: Tool, previewFrame: HTMLIFrameElement | null, onClose: VoidFn }) {
     const name = tool.name
     const toolUrl = `${location.origin}/studio/preview/tools/${tool.codeName}/`
     const toolFrameRef = useRef<HTMLIFrameElement>(null)
@@ -202,7 +206,14 @@ function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
         const contentWindow = toolFrameRef.current?.contentWindow
         if (contentWindow) {
             // @ts-ignore
-            (contentWindow as Window).Editor = new EditorController()
+            (contentWindow as Window).Editor = new EditorController(editorElement())
+            const previewWindow = previewFrame?.contentWindow
+                if(previewWindow) {
+                    // @ts-ignore
+                    (contentWindow as Window).Preview = new PreviewController(previewWindow)
+                } else {
+                    console.error('Preview frame not ready')
+                }
         } else {
             console.error('Tool content window not present')
         }
@@ -218,11 +229,6 @@ function ToolWindow({tool, onClose}: { tool: Tool, onClose: VoidFn }) {
                  style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
     </Stack>
 }
-
-const previewCodeBundle = (codeFiles: {[p: string] : string}) =>
-    Object.entries(codeFiles).map(([name, code]) => `// File: ${name}\n\n${code}`).join(`\n\n\n`)
-
-
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
@@ -234,6 +240,8 @@ export default function EditorRunner() {
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [tool, setTool] = useState<Tool | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
+
     const projectBuilderRef = useRef<ProjectBuilder>()
 
     const elementoUrl = () => window.location.origin
@@ -416,7 +424,7 @@ export default function EditorRunner() {
 
     const onAction = async (ids: ElementId[], action: AppElementAction): Promise<ElementId | null | void> => {
         if (action === 'show') {
-            return await onShow(ids[0])
+            return onShow(ids[0])
         }
         if (action === 'upload') {
             return await onUpload(ids[0])
@@ -544,28 +552,65 @@ export default function EditorRunner() {
     const onCloseToolWindow = ()=> setTool(null)
 
     function mainContent() {
+        const previewFrameRef = useRef<HTMLIFrameElement>(null)
+
         if (projectHandler.current) {
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
             const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
             const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
             const errors = projectBuilderRef.current?.errors ?? {}
-            const previewCode = previewCodeBundle(projectBuilderRef.current?.code ?? {})
+            const projectStoreName = projectHandler.name!
+            const firebasePublishForPreview = getOpenProject().findChildElements(FirebasePublish)[0]
+            const projectFirebaseConfigName = firebasePublishForPreview?.name
 
+            if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
+                setFirebaseConfigName(projectFirebaseConfigName)
+            }
+
+            const appBarTitle = `Elemento Studio - ${projectStoreName}`
+
+            const OverallAppBar = <Box flex='0'>
+                <AppBar title={appBarTitle}/>
+            </Box>
             return <Box display='flex' flexDirection='column' height='100%' width='100%'>
                 <Box flex='1' maxHeight={tool ? '60%' : '100%'}>
-                    <Editor project={getOpenProject()} projectStoreName={projectHandler.name!}
-                            onChange={onPropertyChange} onInsert={onInsert} onMove={onMove} onAction={onAction}
-                            onNew={onNew} onOpen={onOpen}
-                            onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub} onUpdateFromGitHub={onUpdateFromGitHubProp}
-                            runUrl={runUrl} previewUrl={previewUrl}
-                            selectedItemIds={selectedItemIds} onSelectedItemsChange={onSelectedItemsChange}
-                            errors = {errors} previewCode={previewCode}
-                    />
+                    <Box display='flex' flexDirection='column' height='100%' width='100%'>
+                        {OverallAppBar}
+                        <Box flex='1' minHeight={0}>
+                            <Grid container columns={20} spacing={0} height='100%'>
+                                <Grid item xs={10} height='100%'>
+                                    <Editor project={getOpenProject()}
+                                            onChange={onPropertyChange} onInsert={onInsert} onMove={onMove}
+                                            onAction={onAction}
+                                            onOpen={onOpen} onNew={onNew}
+                                            onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub}
+                                            onUpdateFromGitHub={onUpdateFromGitHubProp}
+                                            selectedItemIds={selectedItemIds}
+                                            onSelectedItemsChange={onSelectedItemsChange}
+                                            errors={errors}
+                                    />
+                                </Grid>
+                                <Grid item xs={10} height='100%' overflow='scroll'>
+                                    <PreviewPanel
+                                        preview={
+                                            <iframe name='appFrame' src={previewUrl} ref={previewFrameRef}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        border: 'none',
+                                                        backgroundColor: 'white'
+                                                    }}/>
+                                        }
+                                        configName={firebaseConfigName} runUrl={runUrl}/>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Box>
                 </Box>
                 {tool ?
                     <Box flex='1' maxHeight='40%'>
-                        <ToolWindow tool={tool} onClose={onCloseToolWindow}/>
+                        <ToolWindow tool={tool} previewFrame={previewFrameRef.current} onClose={onCloseToolWindow}/>
                     </Box> : null
                 }
             </Box>

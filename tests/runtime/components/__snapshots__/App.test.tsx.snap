@@ -15,7 +15,7 @@ exports[`App element produces output containing page 1`] = `
       className="MuiContainer-root MuiContainer-maxWidthLg css-vn2rje-MuiContainer-root"
     >
       <div
-        className="css-1k8f9y6-MuiStack-root"
+        className="css-1b8j02i-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -68,7 +68,7 @@ exports[`App element produces output containing page and additional components w
       className="MuiContainer-root MuiContainer-maxWidthLg css-vn2rje-MuiContainer-root"
     >
       <div
-        className="css-1k8f9y6-MuiStack-root"
+        className="css-1b8j02i-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -123,7 +123,7 @@ exports[`App element produces output with max width 1`] = `
       className="MuiContainer-root MuiContainer-maxWidthLg css-1lc1axi-MuiContainer-root"
     >
       <div
-        className="css-1k8f9y6-MuiStack-root"
+        className="css-1b8j02i-MuiStack-root"
         id="app1.page1"
       >
         <p

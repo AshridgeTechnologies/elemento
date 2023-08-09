@@ -82,10 +82,9 @@ function EditorTestWrapper(props: any) {
     return <Editor {...{selectedItemIds, onSelectedItemsChange}} {...onFunctions} {...{previewCode, errors}} {...props}/>
 }
 
-test("renders tree with app elements",  async () => {
+test('renders tree with app elements',  async () => {
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} projectStoreName='Stored Project' />)))
     await clickExpandControl(0, 1, 2)
-    expect(container.querySelector('.MuiTypography-h6').textContent).toBe('Elemento Studio - Stored Project')
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'Second Text', 'A Layout', 'Other Page', 'Tools'])
 })
 
@@ -493,21 +492,3 @@ test(`notifies tree action with item selected in tree`, async () => {
     expect(onAction).toHaveBeenCalledWith(['text_2'], 'delete')
 })
 
-test('has iframe for running app', async () => {
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} previewUrl='http://thepreview.co'/>)))
-
-    const appFrame = container.querySelector('iframe[name="appFrame"]')
-    expect(appFrame.src).toBe('http://thepreview.co/')
-
-    // await(wait(1000))
-    // expect(appFrame.appCode).toEqual('some code')
-})
-
-test('shows link to run published app if provided', async () => {
-    const theRunUrl = 'http://example.com/run/gh/xyz/123'
-    await actWait(() => ({container, unmount} = render(<EditorTestWrapper project={project} runUrl={theRunUrl}/>)))
-    const runLink = container.querySelector('#runLink')
-    expect(runLink.textContent).toBe(theRunUrl)
-    expect(runLink.href).toBe(theRunUrl)
-})

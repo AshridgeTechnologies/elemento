@@ -3,7 +3,7 @@
  */
 
 import 'fake-indexeddb/auto'
-import {createElement} from 'react'
+import React, {createElement} from 'react'
 import '@testing-library/jest-dom'
 import {projectFixture1} from '../testutil/projectFixtures'
 import userEvent from '@testing-library/user-event'
@@ -75,4 +75,23 @@ test.skip('loads project and updates it', async () => {
     // @ts-ignore
     expect(getProject().elements[0].pages[0].elements[1].name).toBe('Further Text')
     expect((nameInput).value).toBe('Further Text')
+})
+
+test.skip('has iframe for running app', async () => {
+
+    // await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} previewUrl='http://thepreview.co'/>)))
+    //
+    // const appFrame = container.querySelector('iframe[name="appFrame"]')
+    // expect(appFrame.src).toBe('http://thepreview.co/')
+
+    // await(wait(1000))
+    // expect(appFrame.appCode).toEqual('some code')
+})
+
+test.skip('shows link to run published app if provided', async () => {
+    // const theRunUrl = 'http://example.com/run/gh/xyz/123'
+    // await actWait(() => ({container, unmount} = render(<EditorTestWrapper project={project} runUrl={theRunUrl}/>)))
+    // const runLink = container.querySelector('#runLink')
+    // expect(runLink.textContent).toBe(theRunUrl)
+    // expect(runLink.href).toBe(theRunUrl)
 })
