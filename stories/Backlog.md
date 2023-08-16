@@ -53,6 +53,10 @@ Stories
 
 ### Priority for learning Elemento
 - Tools
+- Calculation
+- Menu improvements
+- Undo
+- Table of Contents
 - Example apps
 
 ### Priority for credibility
