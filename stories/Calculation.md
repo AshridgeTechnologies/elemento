@@ -12,13 +12,15 @@ Aims
 Requirements
 ------------
 
-- Calculation model element
-- Formula property - Formula only
-- Display property, default true, hides if false
-- Width property
-- State object with Value
-- Displays like readonly text input
-- Expands to as many lines as needed to show data - min 1
+- ✅ Calculation model element
+- ✅ Calculation property - Formula only
+- ✅ Display property, default true, hides if false
+- ✅ Width property
+- ✅ Label property
+- ✅ State object with Value
+- ✅ Displays like readonly text input
+- ✅ Expands to as many lines as needed to show data - min 1
+- ✅ Values displayed in readable form
 
 Technical
 ---------

@@ -44,6 +44,7 @@ import DateInput from './DateInput'
 import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
+import Calculation from './Calculation'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -83,6 +84,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         MenuItem: MenuItem,
         List: List,
         Data: Data,
+        Calculation: Calculation,
         FileDataStore: FileDataStore,
         BrowserDataStore: BrowserDataStore,
         FirestoreDataStore: FirestoreDataStore,

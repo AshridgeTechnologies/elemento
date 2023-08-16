@@ -1,10 +1,10 @@
-import {ComponentType, PropertyDef, PropertyValue} from './Types'
+import {ComponentType, PropertyDef, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
 type Properties = {
-    readonly initialValue?: PropertyValue,
-    readonly display?: PropertyValue,
+    readonly initialValue?: PropertyValueType<any>,
+    readonly display?: PropertyValueType<boolean>,
 }
 
 export default class Data extends BaseElement<Properties> implements Element {

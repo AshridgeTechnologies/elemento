@@ -350,6 +350,7 @@ ${generateChildren(form, indentLevel2, form)}
             case 'UserLogon':
             case 'MenuItem':
             case 'Data':
+            case 'Calculation':
             case 'Collection':
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())})`
 
@@ -414,16 +415,21 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
     private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | DefinedFunction {
 
+
+        const propName = (def: PropertyDef) => {
+            if (def.name === 'initialValue') return 'value'
+            if (element.kind === 'Calculation' && def.name === 'calculation') return 'value'
+            return def.name
+        }
         const modelProperties = () => {
             const propertyExprs = element.propertyDefs
                 .filter(({state}) => state)
                 .map(def => {
                     const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
                     const expr = this.getExpr(element, def.name, exprType)
-                    return [def.name, expr]
+                    return [propName(def), expr]
                 })
                 .filter(([, expr]) => !!expr)
-                .map(([prop, expr]) => [prop === 'initialValue' ? 'value' : prop, expr])
             const props = Object.fromEntries(propertyExprs)
             if (containingElement.kind === 'Form' && props.value === undefined) {
                 props.value = `\$form.originalValue?.${element.codeName}`

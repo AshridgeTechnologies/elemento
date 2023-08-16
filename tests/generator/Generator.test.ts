@@ -34,6 +34,7 @@ import DateInput from '../../src/model/DateInput'
 import Form from '../../src/model/Form';
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
+import Calculation from '../../src/model/Calculation'
 
 const project = (el: Element) => Project.new([el], 'proj1', 'Project 1', {})
 
@@ -595,6 +596,33 @@ test('generates Data elements with initial value and no errors on object express
         React.createElement(Data, {path: pathWith('t1'), display: false}),
         React.createElement(Data, {path: pathWith('t2'), display: true}),
         React.createElement(Data, {path: pathWith('t3'), display: false}),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+})
+
+test('generates Calculation elements with initial value and no errors on object expressions', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Calculation('id1', 't1', {calculation: ex`44 + 7`}),
+                new Calculation('id2', 't2', {calculation: ex`{a:10, b: "Bee"}`, display: true, label: 'My Calc', width: ex`3+100`}),
+                new Calculation('id3', 't3', {}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.files[0].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, Calculation} = Elemento.components
+    const t1 = Elemento.useObjectState(pathWith('t1'), new Calculation.State({value: 44 + 7}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new Calculation.State({value: ({a:10, b: "Bee"})}))
+    const t3 = Elemento.useObjectState(pathWith('t3'), new Calculation.State({}))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(Calculation, {path: pathWith('t1'), display: true}),
+        React.createElement(Calculation, {path: pathWith('t2'), label: 'My Calc', display: true, width: 3+100}),
+        React.createElement(Calculation, {path: pathWith('t3'), display: true}),
     )
 }
 `)
