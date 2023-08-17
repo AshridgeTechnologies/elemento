@@ -54,7 +54,6 @@ Stories
 ### Priority for learning Elemento
 - Tools
 - Menu improvements
-- Undo
 - Table of Contents
 - Example apps
 
@@ -231,6 +230,7 @@ Done
 - More math functions like Round, Floor etc
 - Precise decimals
 - Calculation
+- Undo
 
 
 Bugs fixed
