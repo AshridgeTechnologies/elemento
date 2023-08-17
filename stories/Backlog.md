@@ -53,7 +53,6 @@ Stories
 
 ### Priority for learning Elemento
 - Tools
-- Calculation
 - Menu improvements
 - Undo
 - Table of Contents
@@ -231,6 +230,8 @@ Done
 - Date input element
 - More math functions like Round, Floor etc
 - Precise decimals
+- Calculation
+
 
 Bugs fixed
 ----------
