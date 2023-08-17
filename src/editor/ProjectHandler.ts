@@ -1,65 +1,60 @@
 import Project, {editorEmptyProject} from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {AppElementAction, AppElementActionName} from './Types'
+import {AppElementActionName} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
 import {elementToJSON} from '../util/helpers'
 import {last} from 'ramda'
+import UndoRedoStack from './UndoRedoStack'
 
-export interface ProjectHolder {
-    get current(): Project | null
-    get name(): string | null
-    setName(n: string): void
-    setProject(project: Project): void
-    newProject(): void
-}
-
-export default class ProjectHandler implements ProjectHolder {
-    private project: Project | null
+export default class ProjectHandler {
+    private projectStack: UndoRedoStack<Project> | null
     private _name: string | null = null
 
     private getProject(): Project {
-        if (!this.project) {
+        if (!this.projectStack) {
             throw new Error('Cannot do this action - no current project')
         }
 
-        return this.project
+        return this.projectStack.current()
     }
 
     constructor(initialProject: Project | null = null) {
-        this.project = initialProject
+        this.projectStack = initialProject && new UndoRedoStack<Project>(initialProject)
     }
 
     get current() {
-        return this.project
+        return this.projectStack?.current() ?? null
     }
     get name() { return this._name }
 
     setProject(project: Project) {
-        this.project = project
+        this.projectStack = new UndoRedoStack<Project>(project)
     }
 
     setName(name: string) { this._name = name }
 
     setProperty(elementId: ElementId, propertyName: string, value: any) {
-        this.project = this.getProject().set(elementId, propertyName, value)
+        const newProject = this.getProject().set(elementId, propertyName, value)
+        this.projectStack!.update(newProject)
     }
 
     insertNewElement(insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType, properties: object = {}): ElementId {
         const [newProject, newElement] = this.getProject().insertNew(insertPosition, targetElementId, elementType, properties)
-        this.project = newProject
+        this.projectStack!.update(newProject)
         return newElement.id
     }
 
     insertElement(insertPosition: InsertPosition, targetElementId: ElementId, element: Element | Element[]): ElementId {
         const [newProject, newElements] = this.getProject().insert(insertPosition, targetElementId, element)
-        this.project = newProject
+        this.projectStack!.update(newProject)
         return newElements[0]?.id
     }
 
     move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
-        this.project = this.getProject().move(insertPosition, targetElementId, movedElementIds)
+        const newProject = this.getProject().move(insertPosition, targetElementId, movedElementIds)
+        this.projectStack!.update(newProject)
     }
 
     async elementAction(elementIds: ElementId[], action: AppElementActionName) {
@@ -75,7 +70,7 @@ export default class ProjectHandler implements ProjectHolder {
             switch (action) {
                 case 'copy': {
                     await copyElementsToClipboard()
-                    return this.project
+                    return null
                 }
                 case 'cut': {
                     await copyElementsToClipboard()
@@ -87,26 +82,30 @@ export default class ProjectHandler implements ProjectHolder {
                     const insertPosition = action.replace(/paste/, '').toLowerCase() as InsertPosition
                     const clipboardText = await navigator.clipboard.readText()
                     const elementsToInsert = loadJSONFromString(clipboardText)
-                    const [project] = this.getProject().insert(insertPosition, elementIds[0], elementsToInsert)
-                    return project
+                    const [newProject] = this.getProject().insert(insertPosition, elementIds[0], elementsToInsert)
+                    return newProject
                 }
                 case 'duplicate': {
                     const elements = elementIds.map(id => this.getProject().findElement(id)) as Element[]
                     const duplicateElements = elements.map(el => el.set(el.id, 'name', el.name + ' Copy'))
-                    const [project] = this.getProject().insert('after', last(elementIds) as string, duplicateElements)
-                    return project
+                    const [newProject] = this.getProject().insert('after', last(elementIds) as string, duplicateElements)
+                    return newProject
                 }
                 case 'delete':
                     return deleteElements()
                 case 'upload':
-                    return this.getProject()
+                    return null
                 default:
                     throw new UnsupportedValueError(action)
             }
         }
 
         try {
-            this.project = await doAction()
+            const newProject = await doAction()
+            if (newProject) {
+                this.projectStack!.update(newProject)
+            }
+
         } catch (e) {
             console.error(`Could not do ${action} on element(s) ${elementIds.join(', ')}`, e)
             throw e
@@ -114,6 +113,14 @@ export default class ProjectHandler implements ProjectHolder {
     }
 
     newProject() {
-        this.project = editorEmptyProject()
+        this.projectStack = new UndoRedoStack(editorEmptyProject())
+    }
+
+    undo() {
+        this.projectStack?.undo()
+    }
+
+    redo() {
+        this.projectStack?.redo()
     }
 }

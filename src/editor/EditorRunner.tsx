@@ -442,6 +442,15 @@ export default function EditorRunner() {
         }
     }
 
+    const onUndo = ()=> {
+        projectHandler.undo()
+        updateProjectAndSave()
+    }
+    const onRedo = ()=> {
+        projectHandler.redo()
+        updateProjectAndSave()
+    }
+
     const onNew = () => setDialog(<NewProjectDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                        uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
@@ -551,6 +560,17 @@ export default function EditorRunner() {
 
     const onCloseToolWindow = ()=> setTool(null)
 
+    const keyHandler = (event: React.KeyboardEvent) => {
+        if (event.key === 'z' && (event.metaKey || event.ctrlKey)) {
+            if (event.shiftKey) {
+                onRedo()
+            } else {
+                onUndo()
+            }
+            event.preventDefault()
+        }
+    }
+
     function mainContent() {
         const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
@@ -569,13 +589,12 @@ export default function EditorRunner() {
             }
 
             const appBarTitle = `Elemento Studio - ${projectStoreName}`
-
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
             return <Box display='flex' flexDirection='column' height='100%' width='100%'>
                 <Box flex='1' maxHeight={tool ? '60%' : '100%'}>
-                    <Box display='flex' flexDirection='column' height='100%' width='100%'>
+                    <Box display='flex' flexDirection='column' height='100%' width='100%' onKeyDown={keyHandler} tabIndex={-1}>
                         {OverallAppBar}
                         <Box flex='1' minHeight={0}>
                             <Grid container columns={20} spacing={0} height='100%'>
