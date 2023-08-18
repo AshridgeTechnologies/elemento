@@ -6,13 +6,14 @@ import {createElement} from './createElement'
 import {toArray} from '../util/helpers'
 import {parentTypeOf} from './elements'
 import FileFolder from './FileFolder'
-import {AppElementAction, ConfirmAction, InsertAction} from '../editor/Types'
+import {AppElementAction, ConfirmAction} from '../editor/Types'
 import Page from './Page'
 import DataTypes from './types/DataTypes'
 import App from './App'
 import Text from './Text'
 import ToolFolder from './ToolFolder'
 import {fork} from 'radash'
+import {intersection} from 'ramda'
 
 type Properties = { author?: PropertyValue }
 
@@ -65,21 +66,29 @@ export default class Project extends BaseElement<Properties> implements Element 
         return ''
     }
 
-    actionsAvailable(targetItemId: ElementId): AppElementAction[] {
-        const element = this.findElement(targetItemId)!
-        const standardActionsAvailable = [
-            new InsertAction('before'),
-            new InsertAction('after'),
-            new InsertAction('inside'),
-            new ConfirmAction('delete'),
-            'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate']
-        const specialActionsAvailable = {
-            ToolFolder: [new InsertAction('inside'), 'pasteInside'],
-            FileFolder: ['upload'],
-            File: ['delete'],
-            Tool: ['show', ...standardActionsAvailable],
+    actionsAvailable(targetItemIds: ElementId[]): AppElementAction[] {
+
+        const actionsForElement = (element: Element) => {
+            const isSingle = targetItemIds.length === 1
+            const pasteActions = isSingle ? ['pasteAfter', 'pasteBefore', 'pasteInside'] : []
+            const standardActionsAvailable = [
+                'insert',
+                new ConfirmAction('delete'),
+                'copy', 'cut', ...pasteActions, 'duplicate'] as AppElementAction[]
+            const specialActionsAvailable = {
+                ToolFolder: ['insert', 'pasteInside'],
+                FileFolder: ['upload'],
+                File: [new ConfirmAction('delete')],
+                Tool: ['show', ...standardActionsAvailable],
+            }
+            return (specialActionsAvailable[element.kind as keyof object] ?? standardActionsAvailable)
         }
-        return (specialActionsAvailable[element.kind as keyof object] ?? standardActionsAvailable)
+
+        const elements = targetItemIds.map( id => this.findElement(id)) as Element[]
+        const elementActionSets = elements.map( actionsForElement ) as AppElementAction[][]
+        const commonActions = elementActionSets.length ? elementActionSets.reduce( (acc, value) => intersection(acc, value)) : []
+        const nonItemSpecificActions = ['undo', 'redo'] as AppElementAction[]
+        return commonActions.concat(nonItemSpecificActions)
     }
 
     canInsert(insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType): boolean {

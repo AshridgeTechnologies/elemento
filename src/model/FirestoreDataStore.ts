@@ -54,13 +54,6 @@ export default class FirestoreDataStore extends BaseElement<Properties> implemen
         ]
     }
 
-    get actionDefs(): ActionDef[] {
-        return [
-            //actionDef('publishSecurityRules')
-        ]
-    }
-
-
     async publishSecurityRules(project: Project) {
         console.log('Security Rules')
         console.log(this.securityRules)

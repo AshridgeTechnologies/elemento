@@ -26,6 +26,8 @@ import NumberInput from '../../src/model/NumberInput'
 import ServerApp from '../../src/model/ServerApp'
 import FunctionDef from '../../src/model/FunctionDef'
 import Tool from '../../src/model/Tool'
+import {ElementId} from '../../src/model/Types'
+import {AppElementAction} from '../../src/editor/Types'
 
 const {startCase} = lodash;
 
@@ -49,10 +51,8 @@ const onInsert = ()=> '123'
 
 const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub}
 const errors = {}
-const previewCode = 'Preview code'
 
 let selectedItemIds: string[] = []
-const selected = {selectedItemIds, onSelectedItemsChange: (ids: string[]) => selectedItemIds = ids}
 
 const clickExpandControlFn = (container: any) => async (...indexes: number[]) => {
     for (const index of indexes) await actWait(() => fireEvent.click(container.querySelectorAll(treeExpandControlSelector)[index]))
@@ -78,8 +78,10 @@ afterEach( async () => await act(() => {
 
 function EditorTestWrapper(props: any) {
     const [selectedItemIds, onSelectedItemsChange] = useState<string[]>([])
+    const project: Project = props.project
+    const actionsAvailableFn = (ids: ElementId[]): AppElementAction[] => project.actionsAvailable(ids)
     // @ts-ignore
-    return <Editor {...{selectedItemIds, onSelectedItemsChange}} {...onFunctions} {...{previewCode, errors}} {...props}/>
+    return <Editor {...{selectedItemIds, onSelectedItemsChange,actionsAvailableFn}} {...onFunctions} {...{errors}} {...props}/>
 }
 
 test('renders tree with app elements',  async () => {
@@ -277,12 +279,12 @@ test('shows errors for properties of type objects', async () => {
 })
 
 test('shows allowed items in context insert menu of a page item', async () => {
-    const optionsShown = () => screen.queryByTestId('insertMenu') && within(screen.getByTestId('insertMenu')).queryAllByRole('menuitem').map( el => el.textContent)
+    const optionsShown = () => screen.queryByTestId('insertItems') && within(screen.getByTestId('insertItems')).queryAllByRole('menuitem').map( el => el.textContent)
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
-    await actWait(() => fireEvent.click(screen.getByText('Insert before')))
+    await actWait(() => fireEvent.click(screen.getByText('Insert')))
 
     expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Form', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Calculation', 'Function', 'Function Import', 'Collection', 'Layout'])
 })
@@ -311,48 +313,11 @@ test('notifies insert action from context menu of the tools item', async () => {
     await clickExpandControl(0, 1, 2)
 
     fireEvent.contextMenu(screen.getByText('Tools'))
-    fireEvent.click(screen.getByText('Insert inside'))
+    fireEvent.click(screen.getByText('Insert'))
+    fireEvent.click(screen.getByText('Inside'))
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Tool'))
 
     expect(onInsert).toHaveBeenCalledWith('inside', '_TOOLS', 'Tool')
-})
-
-test('shows allowed items in menu bar insert menu', async () => {
-    const optionsShown = () => screen.queryByTestId('insertMenu') && within(screen.getByTestId('insertMenu')).queryAllByRole('menuitem').map( el => el.textContent)
-    const warningMessage = () => screen.getByTestId('insertWarning')
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project}/>)))
-    fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toBeNull()
-    expect(warningMessage().textContent).toMatch(/Please select/)
-
-    await clickExpandControl(0, 1, 2)
-
-    fireEvent.click(screen.getByText('Second Text'))
-    await wait(10)
-    fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Form', 'Image', 'Icon', 'User Logon', 'Menu', 'List', 'Data', 'Calculation',  'Function',  'Function Import', 'Collection', 'Layout'])
-
-    fireEvent.click(screen.getByText('Main Page'))
-    fireEvent.click(screen.getByText('Insert'))
-    expect(optionsShown()).toStrictEqual(['App Bar', 'Page', 'File Data Store', 'Browser Data Store', 'Firestore Data Store', 'Memory Data Store', 'Function', 'Function Import', 'Collection', 'Server App Connector'])
-})
-
-test.each(['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Menu', 'List', 'Data', 'Collection', 'Layout', 'Function'])
-    (`notifies insert of %s with item selected in tree and selects new item`, async (elementType) => {
-    const notionalNewElementId = 'text_1'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
-    await clickExpandControl(0, 1, 2)
-
-    fireEvent.click(screen.getByText('Second Text'))
-    fireEvent.click(screen.getByText('Insert'))
-    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
-
-    expect(onInsert).toHaveBeenCalledWith('after', 'text_2', elementType)
-    const idText = screen.getByTestId('elementId') as HTMLElement
-    expect(idText.textContent).toBe(notionalNewElementId)
 })
 
 test.each([['Text', 'before'], ['TextInput', 'after']])
@@ -364,7 +329,8 @@ test.each([['Text', 'before'], ['TextInput', 'after']])
     await clickExpandControl(0, 1, 2)
 
     fireEvent.contextMenu(screen.getByText('Second Text'))
-    fireEvent.click(screen.getByText(`Insert ${position}`))
+    fireEvent.click(screen.getByText(`Insert`))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(position)))
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
     expect(onInsert).toHaveBeenCalledWith(position, 'text_2', elementType)
@@ -381,84 +347,13 @@ test.each([['NumberInput', 'inside']])
     await clickExpandControl(0, 1, 2)
 
     fireEvent.contextMenu(screen.getByText('Main Page'))
-    fireEvent.click(screen.getByText(`Insert ${position}`))
+    fireEvent.click(screen.getByText(`Insert`))
+    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(position)))
     fireEvent.click(within(screen.getByTestId('insertMenu')).getByText(startCase(elementType)))
 
     expect(onInsert).toHaveBeenCalledWith(position, 'page_1', elementType)
     const idText = screen.getByTestId('elementId') as HTMLElement
     expect(idText.textContent).toBe(notionalNewElementId)
-})
-
-test(`notifies insert of Page with item selected in tree and selects new item`, async () => {
-    const notionalNewElementId = 'page_2'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
-    await clickExpandControl(0, 1, 2)
-
-    fireEvent.click(screen.getByText('Main Page'))
-    fireEvent.click(screen.getByText('Insert'))
-    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Page'))
-
-    expect(onInsert).toHaveBeenCalledWith('after', 'page_1', 'Page')
-})
-
-test(`notifies insert of AppBar with item selected in tree and selects new item`, async () => {
-    const notionalNewElementId = 'page_2'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
-    await clickExpandControl(0, 1, 2)
-
-    fireEvent.click(screen.getByText('Main Page'))
-    fireEvent.click(screen.getByText('Insert'))
-    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('App Bar'))
-
-    expect(onInsert).toHaveBeenCalledWith('after', 'page_1', 'AppBar')
-})
-
-test(`notifies insert of DataStore under the App and selects new item`, async () => {
-    const notionalNewElementId = 'dataStore_2'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
-
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
-    await clickExpandControl(0, 1, 2)
-
-    fireEvent.click(screen.getByText('Other Page'))
-    fireEvent.click(screen.getByText('Insert'))
-    fireEvent.click(within(screen.getByTestId('insertMenu')).getByText('Memory Data Store'))
-
-    expect(onInsert).toHaveBeenCalledWith('after', 'page_2', 'MemoryDataStore')
-})
-
-test('notifies open request and closes menu', async () => {
-    let onOpen = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onOpen={onOpen}/>)))
-    await actWait(() => fireEvent.click(screen.getByText('File')) )
-    await actWait(() => fireEvent.click(screen.getByText('Open')) )
-    expect(onOpen).toHaveBeenCalled()
-    await actWait()
-    expect(screen.queryByText('Open')).toBeNull()
-})
-
-test('notifies Get from GitHub request and closes menu', async () => {
-    let onGetFromGitHub = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onGetFromGitHub={onGetFromGitHub}/>)))
-    await actWait(() => fireEvent.click(screen.getByText('File')) )
-    await actWait(() => fireEvent.click(screen.getByText('Get from GitHub')) )
-    expect(onGetFromGitHub).toHaveBeenCalled()
-    await actWait()
-    expect(screen.queryByText('Get from GitHub')).toBeNull()
-})
-
-test('notifies Update from GitHub request and closes menu', async () => {
-    let onUpdateFromGitHub = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onUpdateFromGitHub={onUpdateFromGitHub}/>)))
-    await actWait(() => fireEvent.click(screen.getByText('File')) )
-    await actWait(() => fireEvent.click(screen.getByText('Update from GitHub')) )
-    expect(onUpdateFromGitHub).toHaveBeenCalled()
-    await actWait()
-    expect(screen.queryByText('Update from GitHub')).toBeNull()
 })
 
 test(`notifies show action with item id`, async () => {
@@ -470,14 +365,6 @@ test(`notifies show action with item id`, async () => {
     await actWait(() => fireEvent.click(screen.getByText('Show')))
 
     expect(onAction).toHaveBeenCalledWith(['tool_1'], 'show')
-})
-
-test('notifies new request', async () => {
-    let onNew = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onNew={onNew}/>)))
-    fireEvent.click(screen.getByText('File'))
-    fireEvent.click(screen.getByText('New'))
-    expect(onNew).toHaveBeenCalled()
 })
 
 test(`notifies tree action with item selected in tree`, async () => {

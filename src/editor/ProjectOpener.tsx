@@ -46,7 +46,6 @@ export default function ProjectOpener({onNew, onOpen, onGetFromGitHub,}: { onOpe
     const EditorHeader = <Box flex='0'>
         <MenuBar>
             <FileMenu onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} signedIn={signedIn}/>
-            <Button id='downloads' href='/downloads'>Downloads</Button>
             <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
         </MenuBar>
     </Box>

@@ -11,7 +11,7 @@ import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabel
 import {InsertPosition} from '../../src/model/Types'
 import lodash from 'lodash'; const {startCase} = lodash;
 import {actWait} from '../testutil/rtlHelpers'
-import {AppElementAction, ConfirmAction, InsertAction} from '../../src/editor/Types'
+import {AppElementAction, ConfirmAction} from '../../src/editor/Types'
 
 let container: any, unmount: any
 
@@ -35,9 +35,7 @@ const selectedItemLabel = () => {
 const noOp = jest.fn()
 
 const standardActionsAvailable = () => [
-    new InsertAction('before'),
-    new InsertAction('after'),
-    new InsertAction('inside'),
+    'insert',
     new ConfirmAction('delete'),
     'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'] as AppElementAction[]
 const fileActionsAvailable = () => ['upload'] as AppElementAction[]
@@ -247,7 +245,8 @@ test.each(['before', 'after', 'inside'])('notifies insert %s with position, item
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
-    await actWait(() => fireEvent.click(screen.getByText(`Insert ${position}`)))
+    await actWait(() => fireEvent.click(screen.getByText(`Insert`)))
+    await actWait(() => fireEvent.click(screen.getByText(startCase(position))))
     expect(onInsert).not.toHaveBeenCalled()
 
     await actWait(() => fireEvent.click(screen.getByText('Text Input')))
@@ -255,17 +254,18 @@ test.each(['before', 'after', 'inside'])('notifies insert %s with position, item
     expect(screen.queryByText(`Insert ${position}`)).toBeNull()
 })
 
-test('only shows insert menu item if there are items to insert in that position', async () => {
+test('only shows insert menu items if there are items to insert in that position', async () => {
     const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockImplementation( (position: InsertPosition) => position === 'after' ? [] : ['Text'])
+    const itemsFn = jest.fn().mockImplementation( (position: InsertPosition) => (position === 'after' || position === 'before') ? ['Text'] : [])
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
                                                                          insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
-    expect(screen.queryByText(`Insert before`)).not.toBeNull()
-    expect(screen.queryByText(`Insert after`)).toBeNull()
-    expect(screen.queryByText(`Insert inside`)).not.toBeNull()
+    await actWait(() => fireEvent.click(screen.getByText(`Insert`)))
+    expect(screen.queryByText(`Before`, {exact: true})).not.toBeNull()
+    expect(screen.queryByText(`After`, {exact: true})).not.toBeNull()
+    expect(screen.queryByText(`Inside`, {exact: true})).toBeNull()
 })
 
 test('notifies insert Tool', async () => {
@@ -276,7 +276,8 @@ test('notifies insert Tool', async () => {
                                                                          insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('Tools')))
-    await actWait(() => fireEvent.click(screen.getByText(`Insert inside`)))
+    await actWait(() => fireEvent.click(screen.getByText(`Insert`)))
+    await actWait(() => fireEvent.click(screen.getByText(`Inside`)))
     expect(onInsert).not.toHaveBeenCalled()
 
     await actWait(() => fireEvent.click(screen.getByText('Tool')))
@@ -291,7 +292,7 @@ test('notifies show Tool', async () => {
     await clickExpandControl(1)
     await actWait(() => fireEvent.contextMenu(screen.getByText('Check Stuff')))
     await actWait(() => fireEvent.click(screen.getByText(`Show`)))
-    expect(onAction).toHaveBeenCalledWith({'action': 'show', 'ids': ['tool2_2'], 'itemNames': ['Check Stuff']})
+    expect(onAction).toHaveBeenCalledWith(['tool2_2'], 'show')
 })
 
 test('notifies copy with clicked item id if not selected', async () => {
@@ -305,7 +306,7 @@ test('notifies copy with clicked item id if not selected', async () => {
     await clickExpandControl(2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     await actWait(() => fireEvent.click(screen.getByText('Copy')))
-    expect(onAction).toHaveBeenCalledWith({action: 'copy', ids: ['textInput1_2'], itemNames: ['The Text Input']})
+    expect(onAction).toHaveBeenCalledWith(['textInput1_2'], 'copy')
 })
 
 test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item ids', async (action) => {
@@ -318,7 +319,7 @@ test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item
 
     await actWait(() => fireEvent.contextMenu(screen.getByText('Main Page')))
     await actWait(() => fireEvent.click(screen.getByText(startCase(action))))
-    expect(onAction).toHaveBeenCalledWith({action: action, ids: ['page_1', 'page_2'], itemNames: ['Main Page', 'Other Page']})
+    expect(onAction).toHaveBeenCalledWith(['page_1', 'page_2'], action)
 })
 
 test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['pasteInside', 'Paste Inside'],])
@@ -332,7 +333,7 @@ test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['paste
     await clickExpandControl(2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     await actWait(() => fireEvent.click(screen.getByText(actionLabel)))
-    expect(onAction).toHaveBeenCalledWith({action: action, ids: ['textInput1_2'], itemNames: ['The Text Input']})
+    expect(onAction).toHaveBeenCalledWith(['textInput1_2'], action)
 })
 
 test('notifies delete with clicked item id', async () => {
@@ -348,7 +349,7 @@ test('notifies delete with clicked item id', async () => {
     expect(onAction).not.toHaveBeenCalled()
 
     await actWait(() => fireEvent.click(screen.getByText('Yes', {exact: false})))
-    expect(onAction).toHaveBeenCalledWith({action: 'delete', ids: ['textInput1_2'], itemNames: ['The Text Input']})
+    expect(onAction).toHaveBeenCalledWith(['textInput1_2'], 'delete')
     expect(screen.queryByText('Delete')).toBeNull()
 })
 
@@ -367,7 +368,7 @@ test('notifies delete with all selected item ids if one is clicked', async () =>
     const yesOption = screen.getByText('Yes', {exact: false})
     expect(yesOption.textContent).toBe('Yes - delete The Text Input, The Number Input')
     await actWait(() => fireEvent.click(yesOption))
-    expect(onAction).toHaveBeenCalledWith({action: 'delete', ids: ['textInput1_2', 'numberInput1_2'], itemNames: ['The Text Input', 'The Number Input']})
+    expect(onAction).toHaveBeenCalledWith(['textInput1_2', 'numberInput1_2'], 'delete')
     expect(screen.queryByText('Delete')).toBeNull()
 })
 
@@ -388,6 +389,26 @@ test('abandons delete if do not confirm', async () => {
     expect(screen.queryByText('Delete')).toBeNull()
 })
 
+test('abandons insert if do not select an item', async () => {
+    const onInsert = jest.fn()
+    const itemsFn = jest.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn} />)))
+    await clickExpandControl(0, 1)
+    await actWait(() => fireEvent.click(screen.getByText('Main Page')))
+
+    await clickExpandControl(2)
+    await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
+    await actWait(() => fireEvent.click(screen.getByText('Insert')))
+    expect(onInsert).not.toHaveBeenCalled()
+
+    await actWait(() => fireEvent.click(document.body.querySelector('#insertMenu .MuiModal-backdrop')!))
+    expect(onInsert).not.toHaveBeenCalled()
+
+    await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
+    expect(container.querySelector('#insertMenu')).toBeNull()
+})
+
 test('notifies upload for files folder with clicked item id if not selected', async () => {
     const onAction = jest.fn()
 
@@ -399,7 +420,7 @@ test('notifies upload for files folder with clicked item id if not selected', as
     await actWait(() => fireEvent.contextMenu(screen.getByText('Files')))
     expect(screen.queryByText('Insert inside')).toBeNull()
     await actWait(() => fireEvent.click(screen.getByText('Upload')))
-    expect(onAction).toHaveBeenCalledWith({action: 'upload', ids: ['_FILES'], itemNames: ['Files']})
+    expect(onAction).toHaveBeenCalledWith(['_FILES'], 'upload')
 })
 
 

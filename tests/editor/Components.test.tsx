@@ -21,5 +21,5 @@ jest.mock("firebase/app", () => ({
 describe('Components', () => {
     snapshotTest(<AppBar title='The title'/>)
     snapshotTest(<MenuBar/>)
-    snapshotTest(<InsertMenuWithButton onInsert={() => {} } items={['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] }/>)
+    snapshotTest(<InsertMenuWithButton onInsert={() => {} } insertMenuItems={() => ['Text', 'TextInput', 'NumberInput','SelectInput', 'TrueFalseInput', 'Button', 'Data', 'Page'] } targetItemId={'id1'}/>)
 })

@@ -78,6 +78,22 @@ test('can undo and redo actions on the project', () => {
     expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
 })
 
+test('can undo and redo actions on the project with an action', async () => {
+    const originalContent = (project.findElement('text_3') as Text).content
+    handler.setProperty('text_3', 'content', 'New content')
+    const projectUpdated = handler.current
+    expect(projectUpdated).not.toBe(project)
+    expect((projectUpdated?.findElement('text_3') as Text).content).toBe('New content')
+
+    await handler.elementAction(['text_1'], 'undo')
+    expect(handler.current).toBe(project)
+    expect((handler.current?.findElement('text_3') as Text).content).toBe(originalContent)
+
+    await handler.elementAction([], 'redo')
+    expect(handler.current).toBe(projectUpdated)
+    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+})
+
 test('can create a new element in the project', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'Text')
     expect(handler.current).not.toBe(project)

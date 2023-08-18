@@ -95,6 +95,13 @@ export default class ProjectHandler {
                     return deleteElements()
                 case 'upload':
                     return null
+                case 'undo':
+                    this.undo()
+                    return null
+                case 'redo':
+                    this.redo()
+                    return null
+
                 default:
                     throw new UnsupportedValueError(action)
             }

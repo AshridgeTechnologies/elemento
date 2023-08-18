@@ -6,7 +6,8 @@ export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | Date | PropertyExpr
 export type PropertyValueType<T> = T | PropertyExpr
 
-export type InsertPosition = 'before' | 'after' | 'inside'
+export const InsertPositions = ['before', 'after', 'inside'] as const
+export type InsertPosition = typeof InsertPositions[number]
 
 export interface EventActionPropertyDef {
     type: 'Action',

@@ -11,7 +11,7 @@ import Layout from '../../src/model/Layout'
 import FirebasePublish from '../../src/model/FirebasePublish'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
-import {ConfirmAction, InsertAction} from '../../src/editor/Types'
+import {ConfirmAction} from '../../src/editor/Types'
 import ToolFolder from '../../src/model/ToolFolder'
 
 const newToolFolder = new ToolFolder('_TOOLS', 'Tools', {})
@@ -414,7 +414,7 @@ test('finds element types that can insert for a position and target element', ()
 
 })
 
-test('gets actions available', () => {
+test('gets actions available for a single item', () => {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
@@ -427,17 +427,49 @@ test('gets actions available', () => {
     const files = new FileFolder('_FILES', 'Files', {}, [file1])
     const project = Project.new([app, app2, files])
 
-    const actions = project.actionsAvailable('t1')
-    expect(actions).toStrictEqual([
-        new InsertAction('before'),
-        new InsertAction('after'),
-        new InsertAction('inside'),
+    const textActions = project.actionsAvailable(['t1'])
+    expect(textActions).toStrictEqual([
+        'insert',
         new ConfirmAction('delete'),
-        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate'])
+        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
+        'undo', 'redo'
+    ])
 
-    expect( project.actionsAvailable('_FILES')).toStrictEqual(['upload'])
-    expect( project.actionsAvailable('_TOOLS')).toStrictEqual([new InsertAction('inside'), 'pasteInside'])
-    expect( project.actionsAvailable('f1')).toStrictEqual(['delete'])
+    const pageActions = project.actionsAvailable(['p1'])
+    expect(pageActions).toStrictEqual([
+        'insert',
+        new ConfirmAction('delete'),
+        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
+        'undo', 'redo'
+    ])
+
+    expect( project.actionsAvailable(['_FILES'])).toStrictEqual(['upload', 'undo', 'redo'])
+    expect( project.actionsAvailable(['_TOOLS'])).toStrictEqual(['insert', 'pasteInside', 'undo', 'redo'])
+    expect( project.actionsAvailable(['f1'])).toStrictEqual([new ConfirmAction('delete'), 'undo', 'redo'])
+})
+
+test('gets actions available for multiple items', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const page1 = new Page('p1', 'Page 1', {}, [text1])
+
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
+    const file1 = new File('f1', 'Image1.jpg', {})
+    const files = new FileFolder('_FILES', 'Files', {}, [file1])
+    const project = Project.new([app, files])
+
+    const actions = project.actionsAvailable(['p1', 't1'])
+    expect(actions).toStrictEqual([
+        'insert',
+        new ConfirmAction('delete'),
+        'copy', 'cut', 'duplicate',
+        'undo', 'redo'
+    ])
+
+    const filePageActions = project.actionsAvailable(['p1', 'f1'])
+    expect(filePageActions).toStrictEqual([
+        new ConfirmAction('delete'),
+        'undo', 'redo'
+    ])
 })
 
 test('adds Files element', () => {

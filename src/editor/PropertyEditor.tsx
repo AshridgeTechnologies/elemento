@@ -6,7 +6,6 @@ import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
 import lodash from 'lodash'; const {startCase} = lodash;
 import Project, {FILES_ID, TOOLS_ID} from '../model/Project'
-import {ProjectContext} from './Editor'
 
 function NameTextField(props: TextFieldProps) {
     const [changedValue, setChangedValue] = useState<string | undefined>(undefined)
@@ -33,9 +32,7 @@ function NameTextField(props: TextFieldProps) {
     />
 }
 
-export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
-
-    const project = useContext(ProjectContext) as Project
+export default function PropertyEditor({project, element, onChange, errors = {}}: {project: Project, element: Element, onChange: OnChangeFn, errors?: object }) {
 
     function propertyField<T extends Element>(name: string, type: PropertyType = 'string', fixedOnly: boolean, readOnly: boolean) {
         const valueFromElement = element[name as keyof object] as unknown as PropertyValue

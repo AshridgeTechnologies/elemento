@@ -27,12 +27,10 @@ import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
 import FirebasePublish from '../../src/model/FirebasePublish'
-import {ProjectContext} from '../../src/editor/Editor'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
-
 
 let container: any
 let changedValue: any
@@ -63,10 +61,11 @@ const kindButton = (index: number) => {
     return Array.from(nodes)[index] as HTMLButtonElement
 }
 
+const project = Project1.new([], 'id1', 'proj1', {})
 
 test('shows type and id', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(typeField().textContent).toBe('Page')
     expect(nameInputValue()).toBe('Page 1')
@@ -74,7 +73,7 @@ test('shows type and id', () => {
 
 test('updates name on blur', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
     expect(nameInputValue()).toBe('Page One')
@@ -85,7 +84,7 @@ test('updates name on blur', () => {
 
 test('updates name on enter', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe('Page One')
@@ -93,7 +92,7 @@ test('updates name on enter', () => {
 
 test('does not update name if enter without typing', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe(undefined)
@@ -101,7 +100,7 @@ test('does not update name if enter without typing', () => {
 
 test('does not update name if new name is the same', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page 1'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe(undefined)
@@ -109,7 +108,7 @@ test('does not update name if new name is the same', () => {
 
 test('cannot change name of Files element', async () => {
     const element = new FileFolder(FILES_ID, 'Files', {}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     const user = userEvent.setup()
     await user.type(nameInput(), 'Files 2')
     expect(nameInputValue()).toBe('Files')
@@ -119,7 +118,7 @@ test('cannot change name of Files element', async () => {
 
 test('cannot change name of Tools element', async () => {
     const element = new ToolFolder(TOOLS_ID, 'Tools', {}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     const user = userEvent.setup()
     await user.type(nameInput(), 'Tools 2')
     expect(nameInputValue()).toBe('Tools')
@@ -129,7 +128,7 @@ test('cannot change name of Tools element', async () => {
 
 test('updates other properties', () => {
     const element = new Text('id1', 'Text 1', {content: 'x', color: ex`funky`})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(inputValue('Color')).toBe('funky')
     fireEvent.input(input('Color'), {target: {value: 'cool'}})
     expect(changedValue).toStrictEqual({expr: 'cool'})
@@ -137,7 +136,7 @@ test('updates other properties', () => {
 
 test('has fields for Project', () => {
     const element = Project2.new([], 'id1', 'Project 1', {author: 'Me!'})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Project 1')
     expect(inputValue('Formula Name')).toBe('Project1')
@@ -147,7 +146,7 @@ test('has fields for Project', () => {
 
 test('has fields for App', () => {
     const element = new App('id1', 'App 1', {author: ex`Me + You`, maxWidth: '50%'}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('App 1')
     expect(inputValue('Formula Name')).toBe('App1')
@@ -158,7 +157,7 @@ test('has fields for App', () => {
 
 test('has fields for Page', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Page 1')
     expect(inputValue('Formula Name')).toBe('Page1')
@@ -166,14 +165,14 @@ test('has fields for Page', () => {
 
 test('has fields for Text with literal value', () => {
     const element = new Text('id1', 'Text 1', {content: '', color: `clear`})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Text 1')
     expect(inputValue('Color')).toBe('clear')
 })
 
 test('shows controlled component for optional fields for Text', () => {
     const element = new Text('id1', 'Text 1', {content: ''})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(inputValue('Color')).toBe('')
     const colorInput = screen.getByLabelText('Color') as HTMLInputElement
     expect(componentProps(colorInput).value).toBe('')
@@ -193,7 +192,7 @@ test('has fields for Text', () => {
         marginBottom: 33,
         display: true
     })
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Text 1')
     expect(textareaValue('Content')).toBe('Hi!\nGood morning')
     expect(inputValue('Font Size')).toBe('44')
@@ -215,7 +214,7 @@ test('has fields for Layout', () => {
         backgroundColor: 'pink',
         wrap: false,
     }, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Layout 1')
     expect(selectValue('Horizontal')).toBe('true')
     expect(selectValue('Wrap')).toBe('false')
@@ -227,7 +226,7 @@ test('has fields for AppBar', () => {
     const element = new AppBar('id1', 'AppBar 1', {
         title: 'My App',
     }, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('AppBar 1')
     expect(inputValue('Title')).toBe('My App')
 })
@@ -240,7 +239,7 @@ test('has fields for TextInput', () => {
         label: ex`"Text One"`,
         dataType: ex`theType`
     })
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(typeField().textContent).toBe('Text Input')
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
@@ -252,7 +251,7 @@ test('has fields for TextInput', () => {
 
 test('has fields for TextInput with default values', () => {
     const element = new TextInput('id1', 'Text Input 1', {})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('')
     expect(inputValue('Initial Value')).toBe('')
@@ -264,7 +263,7 @@ test('has fields for TextInput with default values', () => {
 
 test('has fields for NumberInput', () => {
     const element = new NumberInput('id1', 'Number Input 1', {initialValue: ex`40`, label: ex`"Number Input One"`})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Number Input 1')
     expect(inputValue('Label')).toBe('"Number Input One"')
     expect(inputValue('Initial Value')).toBe('40')
@@ -275,7 +274,7 @@ test('has fields for TrueFalseInput', () => {
         initialValue: ex`true`,
         label: ex`"True False Input One"`
     })
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('True False Input 1')
     expect(inputValue('Label')).toBe('"True False Input One"')
     expect(inputValue('Initial Value')).toBe('true')
@@ -287,7 +286,7 @@ test('has fields for SelectInput', () => {
         initialValue: ex`"Green"`,
         label: ex`"Select Input One"`
     })
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('"Select Input One"')
     expect(inputValue('Values')).toBe('["Green", "Blue", "Pink"]')
@@ -300,7 +299,7 @@ test('has fields for SelectInput with fixed value', () => {
         initialValue: 'Green',
         label: 'Select Input One'
     })
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('Select Input One')
     expect(inputValue('Values')).toBe('Green, Blue, Pink')
@@ -309,7 +308,7 @@ test('has fields for SelectInput with fixed value', () => {
 
 test('has fields for Button', () => {
     const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, appearance: 'link', action: ex`doIt()`, display: false})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
@@ -321,7 +320,7 @@ test('has fields for Button', () => {
 
 test('has fields for Menu', () => {
     const element = new Menu('id1', 'Menu 1', {label: ex`"Hi!"`, filled: true}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Menu 1')
     expect(inputValue('Label')).toBe('"Hi!"')
     expect(selectValue('Filled')).toBe('true')
@@ -329,7 +328,7 @@ test('has fields for Menu', () => {
 
 test('has fields for MenuItem', () => {
     const element = new MenuItem('id1', 'Menu Item 1', {label: ex`"Hi!"`, action: ex`doIt()`, display: false})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Menu Item 1')
     expect(inputValue('Label')).toBe('"Hi!"')
     expect(selectValue('Display')).toBe('false')
@@ -341,7 +340,7 @@ test('has fields for MenuItem', () => {
 test('has fields for List', () => {
     const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, style: ex`funky`, width: '100%',
         selectable: true, selectAction: ex`Log(\$item.id)`}, [])
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('List 1')
     expect(inputValue('Formula Name')).toBe('List1')
@@ -358,7 +357,7 @@ test('has fields for List', () => {
 
 test('has fields for Data', () => {
     const element = new Data('id1', 'Data 1', {initialValue: ex`"Hi!"`})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Data 1')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(selectValue('Display')).toBe('')
@@ -366,7 +365,7 @@ test('has fields for Data', () => {
 
 test('has fields for Collection', () => {
     const element = new Collection('id1', 'Collection 1', {initialValue: ex`["green", "blue"]`, dataStore: ex`dataStore_1`, collectionName: 'Things'})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Collection 1')
     expect(inputValue('Initial Value')).toBe('["green", "blue"]')
     expect(kindButton(0).textContent).toBe('fx=')
@@ -380,7 +379,7 @@ test('has fields for Collection', () => {
 
 test('has fields for MemoryDataStore', () => {
     const element = new MemoryDataStore('id1', 'Memory Data Store 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Memory Data Store 1')
     expect(inputValue('Initial Value')).toBe('{ Widgets: { w1: {a: 10}} }')
     expect(kindButton(0).textContent).toBe('fx=')
@@ -390,7 +389,7 @@ test('has fields for MemoryDataStore', () => {
 
 test('has fields for FunctionDef', () => {
     const element = new FunctionDef('id1', 'Function 1', {input1: 'foo', input5: 'bar', calculation: ex`42`, private: true})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Function 1')
     expect(inputValue('Input 1')).toBe('foo')
     expect(inputValue('Input 2')).toBe('')
@@ -409,7 +408,7 @@ test('has fields for FunctionDef', () => {
 
 test('has fields for FileDataStore', () => {
     const element = new FileDataStore('id1', 'File Data Store 1', {})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('File Data Store 1')
 })
 
@@ -425,7 +424,7 @@ service cloud.firestore {
   }       
 }`
     const element = new FirestoreDataStore('id1', 'Firestore Data Store 1', {collections: 'Things: user-private'})
-    render(<PropertyEditor element={element} onChange={onChange}/>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Firestore Data Store 1')
     expect(inputValue('Collections')).toBe('Things: user-private')
     expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
@@ -455,10 +454,7 @@ test('has fields and actions for FirebasePublish', async () => {
         firebaseConfiguration: {expr: configStr}
     })
     element.publish = jest.fn()
-    const project = Project1.new([], 'id1', 'proj1', {})
-    render(<ProjectContext.Provider value={project}>
-        <PropertyEditor element={element} onChange={onChange}/>
-    </ProjectContext.Provider>)
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Firebase Publish 1')
     expect(inputValue('Firebase Project')).toBe('project-one')
     expect(inputValue('Firebase Configuration')).toBe(configStr)
@@ -482,7 +478,7 @@ test('shows errors for each property', () => {
         width: -100,
         height: 200
     })
-    render(<PropertyEditor element={element} onChange={onChange} errors={{
+    render(<PropertyEditor project={project} element={element} onChange={onChange} errors={{
         backgroundColor: 'Unknown name "Splurge"',
         width: 'Must be greater than or equal to zero'
     }}/>)

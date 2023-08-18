@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event'
-import {editorElement} from './Editor'
 import {
     ActionFn,
     ActionQueue,

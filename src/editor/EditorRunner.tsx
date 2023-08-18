@@ -2,8 +2,8 @@ import ProjectHandler from './ProjectHandler'
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
-import Editor, {editorElement} from './Editor'
-import {AppElementAction, AppElementActionName, VoidFn} from './Types'
+import Editor from './Editor'
+import {ActionsAvailableFn, AppElementAction, AppElementActionName, VoidFn} from './Types'
 import {
     Alert,
     AlertColor,
@@ -27,12 +27,12 @@ import {theme} from '../shared/styling'
 import {DiskProjectStore} from './DiskProjectStore'
 import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, signIn} from '../shared/authentication'
+import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
-import {waitUntil} from '../util/helpers'
+import {noop, waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash from 'lodash';
@@ -54,6 +54,11 @@ import PreviewController from './PreviewController'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
 import FirebasePublish from '../model/FirebasePublish'
+import EditorHelpPanel from './EditorHelpPanel'
+import {elementTypes} from '../model/elements'
+import EditorMenuBar from './EditorMenuBar'
+import {editorElement} from './EditorElement'
+import {without} from 'ramda'
 
 const {debounce} = lodash;
 
@@ -77,16 +82,6 @@ const safeJsonParse = (text: string) => {
 const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
-
-async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
-    try {
-        await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
-        console.log('Updated server file', serverAppName, path)
-        afterUpdate()
-    } catch (error) {
-        console.error('Error updating server file', error);
-    }
-}
 
 function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -135,6 +130,16 @@ function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: 
     )
 }
 
+
+async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
+    try {
+        await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
+        console.log('Updated server file', serverAppName, path)
+        afterUpdate()
+    } catch (error) {
+        console.error('Error updating server file', error);
+    }
+}
 
 function CreateGitHubRepoDialog({onCreate, onClose, defaultName}: { onCreate: (repoName: string) => Promise<void>, onClose: VoidFunction, defaultName: string }) {
     const [repoName, setRepoName] = useState<string>(defaultName)
@@ -229,6 +234,7 @@ function ToolWindow({tool, previewFrame, onClose}: { tool: Tool, previewFrame: H
                  style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
     </Stack>
 }
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
@@ -240,6 +246,7 @@ export default function EditorRunner() {
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [tool, setTool] = useState<Tool | null>(null)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const [helpVisible, setHelpVisible] = useState(false)
     const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
 
     const projectBuilderRef = useRef<ProjectBuilder>()
@@ -247,12 +254,12 @@ export default function EditorRunner() {
     const elementoUrl = () => window.location.origin
 
     const removeDialog = () => setDialog(null)
-    
+
     const getOpenProject = (): Project => {
         if (!projectHandler.current) {
             throw new Error('No current project open')
         }
-        
+
         return projectHandler.current
     }
 
@@ -359,6 +366,9 @@ export default function EditorRunner() {
     useEffect( initServiceWorker, [] )
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
+    const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id
+    const actionsAvailableFn: ActionsAvailableFn = (ids: ElementId[]): AppElementAction[] => getOpenProject().actionsAvailable(ids)
+    const actionsAvailableFnNoInsert: ActionsAvailableFn = (ids: ElementId[]): AppElementAction[] => without(['insert'], actionsAvailableFn(ids))
 
     async function renameAsset(element: ModelElement, value: any) {
         const oldName = element.name
@@ -467,6 +477,9 @@ export default function EditorRunner() {
         }
     }
 
+    const onHelp = () => setHelpVisible(!helpVisible)
+
+
     const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
@@ -571,18 +584,31 @@ export default function EditorRunner() {
         }
     }
 
+    const allElementTypes = Object.keys(elementTypes()) as ElementType[]
+
+    const onMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
+        const newElementId = onInsert(insertPosition, targetElementId, elementType)
+        onSelectedItemsChange([newElementId])
+    }
+
+    const signedIn = useSignedInState()
+
     function mainContent() {
         const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
         if (projectHandler.current) {
+            const project = getOpenProject()
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-            const appName = () => getOpenProject().findChildElements(App)[0]?.codeName
+            const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
             const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
-            const firebasePublishForPreview = getOpenProject().findChildElements(FirebasePublish)[0]
+            const firebasePublishForPreview = project.findChildElements(FirebasePublish)[0]
             const projectFirebaseConfigName = firebasePublishForPreview?.name
+            const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {
+                return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
+            }
 
             if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
                 setFirebaseConfigName(projectFirebaseConfigName)
@@ -592,23 +618,43 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
+            const EditorHeader = <Box flex='0'>
+                <EditorMenuBar {...{onNew, onOpen, onGetFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
+                    onInsert: onMenuInsert,
+                    insertMenuItems,
+                    onAction,
+                    actionsAvailableFn: actionsAvailableFnNoInsert,
+                    itemNameFn,
+                    selectedItemIds, onHelp}}/>
+            </Box>
+
             return <Box display='flex' flexDirection='column' height='100%' width='100%'>
                 <Box flex='1' maxHeight={tool ? '60%' : '100%'}>
-                    <Box display='flex' flexDirection='column' height='100%' width='100%' onKeyDown={keyHandler} tabIndex={-1}>
+                    <Box display='flex' flexDirection='column' height='100%' width='100%' onKeyDown={keyHandler}
+                         tabIndex={-1}>
                         {OverallAppBar}
                         <Box flex='1' minHeight={0}>
                             <Grid container columns={20} spacing={0} height='100%'>
                                 <Grid item xs={10} height='100%'>
-                                    <Editor project={getOpenProject()}
-                                            onChange={onPropertyChange} onInsert={onInsert} onMove={onMove}
-                                            onAction={onAction}
-                                            onOpen={onOpen} onNew={onNew}
-                                            onGetFromGitHub={onGetFromGitHub} onSaveToGitHub={onSaveToGitHub}
-                                            onUpdateFromGitHub={onUpdateFromGitHubProp}
-                                            selectedItemIds={selectedItemIds}
-                                            onSelectedItemsChange={onSelectedItemsChange}
-                                            errors={errors}
-                                    />
+                                    <Box display='flex' flexDirection='column' height='100%' width='100%'
+                                         id='editorMain' position='relative'>
+                                        {EditorHeader}
+                                        <Box height='calc(100% - 49px)'>
+                                            <Editor project={project}
+                                                    onChange={onPropertyChange} onInsert={onInsert} onMove={onMove}
+                                                    onAction={onAction}
+                                                    actionsAvailableFn={actionsAvailableFn}
+                                                    selectedItemIds={selectedItemIds}
+                                                    onSelectedItemsChange={onSelectedItemsChange}
+                                                    errors={errors}
+                                            />
+                                        </Box>
+                                        {helpVisible ?
+                                            <Box flex='1' maxHeight='50%'>
+                                                <EditorHelpPanel onClose={noop}/>
+                                            </Box> : null
+                                        }
+                                    </Box>
                                 </Grid>
                                 <Grid item xs={10} height='100%' overflow='scroll'>
                                     <PreviewPanel
@@ -644,3 +690,4 @@ export default function EditorRunner() {
         {mainContent()}
         </ThemeProvider>
 }
+

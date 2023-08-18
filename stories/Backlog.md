@@ -54,6 +54,7 @@ Stories
 ### Priority for learning Elemento
 - Tools
 - Menu improvements
+- Move Help to a Tool
 - Table of Contents
 - Example apps
 
@@ -120,6 +121,7 @@ Epics
 Tech debt
 ---------
 
+- Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Builder/runner: 
   - Generator does not hard code runner location
   - ProjectBuilder only writes updated files

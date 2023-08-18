@@ -6,7 +6,9 @@ import {isExpr, isNumeric} from '../util/helpers'
 import {OnChangeFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {format, isDate} from 'date-fns'
-import {editorElement, editorMenuPositionProps} from './Editor'
+import {editorMenuPositionProps} from './Editor'
+
+import {editorElement} from './EditorElement'
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
