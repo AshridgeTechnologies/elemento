@@ -53,7 +53,6 @@ Stories
 
 ### Priority for learning Elemento
 - Tools
-- Menu improvements
 - Move Help to a Tool
 - Table of Contents
 - Example apps
@@ -233,6 +232,7 @@ Done
 - Precise decimals
 - Calculation
 - Undo
+- Menu improvements
 
 
 Bugs fixed

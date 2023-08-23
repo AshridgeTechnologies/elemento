@@ -38,7 +38,8 @@ Requirements - Part 4
 
 - Tools can be imported from a URL
 - General Help tool is pre-populated and imported from Elemento studio site
-- Tool stays active even if closed or replaced
+- Multiple tools can be open at the same time
+- Tool stays active even if closed or switch to another tab
 
 Technical
 ---------
