@@ -19,7 +19,7 @@ export const clientConfig = {
     outdir,
     plugins: [
         lessLoader(),
-        nodeModulesPolyfillPlugin({modules: ['os', 'path', 'crypto'] }),
+        nodeModulesPolyfillPlugin({modules: ['os', 'path', 'crypto', 'buffer'], globals: {Buffer: true} }),
         copy({
             assets: {
                 from: ['src/appswebsite/**/index.html' ],

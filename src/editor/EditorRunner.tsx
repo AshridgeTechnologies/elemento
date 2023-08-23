@@ -1,25 +1,10 @@
 import ProjectHandler from './ProjectHandler'
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {ActionsAvailableFn, AppElementAction, AppElementActionName, VoidFn} from './Types'
-import {
-    Alert,
-    AlertColor,
-    AlertTitle,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Grid,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material'
+import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
+import {Alert, AlertColor, AlertTitle, Box, Grid,} from '@mui/material'
 import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -29,7 +14,6 @@ import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
-import {CloseButton} from './actions/ActionComponents'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
 import {noop, waitUntil} from '../util/helpers'
@@ -47,18 +31,17 @@ import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
 import Tool from '../model/Tool'
-import IconButton from '@mui/material/IconButton'
-import {CancelOutlined} from '@mui/icons-material'
-import EditorController from './EditorController'
-import PreviewController from './PreviewController'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
 import FirebasePublish from '../model/FirebasePublish'
 import EditorHelpPanel from './EditorHelpPanel'
 import {elementTypes} from '../model/elements'
 import EditorMenuBar from './EditorMenuBar'
-import {editorElement} from './EditorElement'
 import {without} from 'ramda'
+import {ToolWindow} from './ToolWindow'
+import {UploadDialog} from './UploadDialog'
+import {CreateGitHubRepoDialog} from './CreateGitHubRepoDialog'
+import {CommitDialog} from './CommitDialog'
 
 const {debounce} = lodash;
 
@@ -83,53 +66,6 @@ const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProj
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
-function UploadDialog({onClose, onUploaded}: { onClose: () => void, onUploaded: (name: string, data: Uint8Array) => void }) {
-    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const {target} = event
-        const {files} = target
-        const file1 = files?.[0]
-        if (file1) {
-            onUpload (file1).then( onClose )
-        } else {
-            onClose()
-        }
-    }
-
-    const onBlur = (event: ChangeEvent<HTMLInputElement>) => {
-        const {target} = event
-        const {files} = target
-        console.log('blur', files)
-    }
-
-    const onUpload = async (file: File | undefined) => {
-        if (file) {
-            const data = await file.arrayBuffer() as Uint8Array
-            onUploaded(file.name, data)
-        }
-    }
-
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Upload file <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <input
-                    style={{ display: 'none' }}
-                    id="uploadFileInput"
-                    type="file"
-                    onChange={onChange}
-                    onBlur={onBlur}
-                />
-            </DialogContent>
-            <DialogActions>
-                <label htmlFor="uploadFileInput">
-                    <Button variant="contained" component="span">Choose File</Button>
-                </label>
-                <Button variant='outlined' onClick={onClose} sx={{ml: 1}}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
 
 async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
     try {
@@ -139,100 +75,6 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
     } catch (error) {
         console.error('Error updating server file', error);
     }
-}
-
-function CreateGitHubRepoDialog({onCreate, onClose, defaultName}: { onCreate: (repoName: string) => Promise<void>, onClose: VoidFunction, defaultName: string }) {
-    const [repoName, setRepoName] = useState<string>(defaultName)
-    const onChangeRepoName = (event: ChangeEvent) => setRepoName((event.target as HTMLInputElement).value)
-    const canCreate = !!repoName
-
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Create GitHub repository <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a name for the new repository
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="repositoryName"
-                    label="Repository name"
-                    fullWidth
-                    variant="standard"
-                    value={repoName}
-                    onChange={onChangeRepoName}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCreate(repoName)} disabled={!canCreate}>Create</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
-function CommitDialog({onCommit, onClose}: { onCommit: (commitMessage: string) => Promise<void>, onClose: VoidFunction }) {
-    const [commitMessage, setCommitMessage] = useState<string>('')
-    const onChangeCommitMessage = (event: ChangeEvent) => setCommitMessage((event.target as HTMLInputElement).value)
-    const canCommit = !!commitMessage
-
-    return (
-        <Dialog onClose={onClose} open={true}>
-            <DialogTitle>Save to GitHub <CloseButton onClose={onClose}/></DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Please enter a description of the changes made
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="commitMessage"
-                    label="Changes made"
-                    fullWidth
-                    variant="standard"
-                    value={commitMessage}
-                    onChange={onChangeCommitMessage}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button variant='outlined' onClick={() => onCommit(commitMessage)} disabled={!canCommit}>Save</Button>
-                <Button variant='outlined' onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
-    )
-}
-
-function ToolWindow({tool, previewFrame, onClose}: { tool: Tool, previewFrame: HTMLIFrameElement | null, onClose: VoidFn }) {
-    const name = tool.name
-    const toolUrl = `${location.origin}/studio/preview/tools/${tool.codeName}/`
-    const toolFrameRef = useRef<HTMLIFrameElement>(null)
-    useEffect( () => {
-        const contentWindow = toolFrameRef.current?.contentWindow
-        if (contentWindow) {
-            // @ts-ignore
-            (contentWindow as Window).Editor = new EditorController(editorElement())
-            const previewWindow = previewFrame?.contentWindow
-                if(previewWindow) {
-                    // @ts-ignore
-                    (contentWindow as Window).Preview = new PreviewController(previewWindow)
-                } else {
-                    console.error('Preview frame not ready')
-                }
-        } else {
-            console.error('Tool content window not present')
-        }
-    }, [])
-    return <Stack height='100%'>
-        <Stack direction='row' spacing={1}
-               sx={{paddingLeft: '1.5em', height: '2em', color: 'white', backgroundColor: 'secondary.main'}}>
-            <Typography sx={{marginTop: '0.3em'}}>{name}</Typography>
-            <IconButton edge="start" color="inherit" aria-label="close" sx={{ml: 2}}
-                        onClick={onClose}><CancelOutlined/></IconButton>
-        </Stack>
-        <iframe name='toolFrame' src={toolUrl} ref={toolFrameRef}
-                 style={{width: '100%', height: '100%', border: 'none', backgroundColor: 'white'}}/>
-    </Stack>
 }
 
 export default function EditorRunner() {

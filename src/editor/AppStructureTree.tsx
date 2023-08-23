@@ -5,7 +5,7 @@ import 'rc-tree/assets/index.less'
 import {Icon, useTheme} from '@mui/material'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementOfType} from '../model/elements'
-import {ActionsAvailableFn, AppElementAction, OnActionFn, OnInsertFnWithPositionFn} from './Types'
+import {ActionsAvailableFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
 import {flatten, union, without} from 'ramda'
 import EditMenu from './EditMenu'
 
