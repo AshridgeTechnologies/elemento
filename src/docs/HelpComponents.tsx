@@ -8,7 +8,7 @@ export const SubSection = ({helpId, children}: {helpId: string, children: any}) 
 export const Heading = ({children}: {children: any }) => <Typography variant="h4" fontSize='1.75rem' mt='1.5rem' mb='0.8rem'>{children}</Typography>
 export const SubHeading = ({children}: {children: any }) => <Typography variant="h5" fontSize='1.4rem' mt='1rem' mb='0.8rem'>{children}</Typography>
 export const MinorHeading = ({children}: {children: any }) => <Typography variant="h6">{children}</Typography>
-export const Para = ({helpId, children}: {helpId?: string, children: any }) => <Typography {...idIfPresent(helpId)} variant="body1" gutterBottom>{children}</Typography>
+export const Para = ({helpId, children}: {helpId?: string, children: any }) => <Typography {...idIfPresent(helpId)} variant="body1" component='div' gutterBottom>{children}</Typography>
 export const BulletList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ul>{children}</ul></Typography>
 export const NumberedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ol>{children}</ol></Typography>
 export const NamedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><dl>{children}</dl></Typography>

@@ -74,6 +74,12 @@ export default class EditorController {
         })
     }
 
+    GetValue(selector: SelectorType, text: string) {
+        console.log('GetValue', selector, text)
+        const element = selectSingleElement(selector, text)
+        return element ? (element as HTMLInputElement).value : undefined
+    }
+
     EnsureFormula(propertyFieldLabel: string, shouldBeFormula = true) {
         this.queueAction('propertyTypeButton', propertyFieldLabel, async () => {
             const element = selectSingleElement('propertyTypeButton', propertyFieldLabel)

@@ -10,9 +10,9 @@ import FileMenu from './FileMenu'
 import './splitPane.css'
 import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
-import EditorHelpPanel from './EditorHelpPanel'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
+import MainHelpPanel from '../docs/MainHelpPanel'
 
 Object.keys(elementTypes()) as ElementType[]
 React.createContext<Project | null>(null)
@@ -78,7 +78,7 @@ export default function ProjectOpener({onNew, onOpen, onGetFromGitHub,}: { onOpe
                         </Box>
                         {helpVisible ?
                             <Box flex='1' maxHeight='50%'>
-                                <EditorHelpPanel onClose={onHelp}/>
+                                <MainHelpPanel/>
                             </Box> : null
                         }
                     </Box>

@@ -45,6 +45,7 @@ import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
 import Calculation from './Calculation'
+import ToolImport from './ToolImport'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -99,6 +100,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         File: File,
         FileFolder: FileFolder,
         ToolFolder: ToolFolder,
+        ToolImport: ToolImport,
         ...dataTypeElementTypes()
     }
 }

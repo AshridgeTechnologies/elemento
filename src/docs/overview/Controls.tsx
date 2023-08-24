@@ -90,9 +90,9 @@ export default () =>
             <Para>You can have spaces in the name of a control if you want, but when you refer to the control in a formula,
                 you must use the name <strong>without any spaces</strong>*.
                 So if you called a control "Number Of Tickets" you would write "NumberOfTickets" in a formula.
-                <Para>The Formula Name box next to the name shows the correct name to use.</Para>
-                <Para>* - <em>Sorry - it just gets too complicated to work out what a formula means otherwise</em>.</Para>
             </Para>
+            <Para>The Formula Name box next to the name shows the correct name to use.</Para>
+            <Para>* - <em>Sorry - it just gets too complicated to work out what a formula means otherwise</em>.</Para>
         </SubSection>
 
 

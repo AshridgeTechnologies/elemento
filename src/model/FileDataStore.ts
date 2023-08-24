@@ -1,6 +1,6 @@
 import BaseElement from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
+import {ComponentType, ParentType, PropertyDef} from './Types'
 
 type Properties = {
 }

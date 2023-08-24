@@ -4,7 +4,7 @@
 
 import React from 'react'
 import {fireEvent, render} from '@testing-library/react'
-import HelpPanel from '../../src/editor/HelpPanel'
+import HelpPanel from '../../src/docs/HelpPanel'
 import {actWait} from '../testutil/rtlHelpers'
 
 window.HTMLElement.prototype.scrollIntoView = function() {}
@@ -50,7 +50,7 @@ const helpContent = (<>
 )
 
 test("content tree shows headings from help contents",  async () => {
-    await actWait( () => ({container} = render(<HelpPanel onClose={() => {}}>{helpContent}</HelpPanel>)))
+    await actWait( () => ({container} = render(<HelpPanel>{helpContent}</HelpPanel>)))
     expect(itemLabels()).toStrictEqual(['Help item 1', 'Help item 2'])
 
     await actWait(() => fireEvent.click(expandControl(0)))

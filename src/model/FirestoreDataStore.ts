@@ -1,6 +1,6 @@
-import {ActionDef, ComponentType, ParentType, PropertyDef} from './Types'
+import {ComponentType, ParentType, PropertyDef} from './Types'
 import Element from './Element'
-import BaseElement, {actionDef, propDef} from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 import {parseCollections} from '../shared/CollectionConfig'
 import Project from './Project'
 

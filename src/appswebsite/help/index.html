@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Elemento - Help</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <style>
+        body { margin: 0; padding: 0}
+        #main { height: calc(100vh - 8px); width: calc(100vw - 8px); margin: 4px }
+    </style>
+</head>
+<body>
+<script type="module">
+    import {run} from '../index.js'
+    import {MainHelpPanel} from '../index.js'
+    const header = new URL(location).searchParams.get('header')
+    const showTitleBar = header !== '0'
+    run(MainHelpPanel, {showTitleBar})
+</script>
+</body>
+</html>

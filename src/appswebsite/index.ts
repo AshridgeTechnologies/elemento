@@ -1,5 +1,6 @@
 export {run} from '../shared/renderInPage'
 export {default as HomePage} from './components/HomePage'
 export {default as LearnPage} from './components/LearnPage'
+export {default as MainHelpPanel} from '../docs/MainHelpPanel'
 export {default as TermsOfServicePage} from './components/TermsOfServicePage'
 export {default as PrivacyPage} from './components/PrivacyPolicyPage'

@@ -1,5 +1,6 @@
 import {notEmpty, waitUntil} from '../util/helpers'
-import PQueue from 'p-queue'
+//@ts-ignore
+import {caller} from 'postmsg-rpc'
 import {fireEvent} from '@testing-library/react'
 import {UserEvent} from '@testing-library/user-event/setup/setup'
 
@@ -218,8 +219,22 @@ export const setElementValue = async (element: HTMLElement, container: HTMLEleme
     }
 }
 
+// from https://dev.to/doctolib/using-promises-as-a-queue-co5
+class PromiseQueue {
+    queue: Promise<void> = Promise.resolve()
+
+    add(operation: ActionFn) {
+        return new Promise((resolve, reject) => {
+            this.queue = this.queue
+                .then(operation)
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+}
+
 export class ActionQueue {
-    private queue = new PQueue({concurrency: 1})
+    private queue = new PromiseQueue()
 
     queueAndWait(fn: ActionFn, delay: number) {
         this.queue.add(fn)
@@ -228,3 +243,6 @@ export class ActionQueue {
         }
     }
 }
+
+
+export const callParent = (functionName: string) => caller(functionName, {postMessage: (msg: any, target: string) => window.parent.postMessage(msg, target)})

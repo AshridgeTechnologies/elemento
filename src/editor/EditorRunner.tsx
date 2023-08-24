@@ -1,5 +1,7 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useRef, useState} from 'react'
+//@ts-ignore
+import {expose} from 'postmsg-rpc'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -16,7 +18,7 @@ import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../sh
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
-import {noop, waitUntil} from '../util/helpers'
+import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash from 'lodash';
@@ -34,20 +36,23 @@ import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
 import FirebasePublish from '../model/FirebasePublish'
-import EditorHelpPanel from './EditorHelpPanel'
 import {elementTypes} from '../model/elements'
 import EditorMenuBar from './EditorMenuBar'
 import {without} from 'ramda'
-import {ToolWindow} from './ToolWindow'
 import {UploadDialog} from './UploadDialog'
 import {CreateGitHubRepoDialog} from './CreateGitHubRepoDialog'
 import {CommitDialog} from './CommitDialog'
+import ToolImport from '../model/ToolImport'
+import ToolTabsPanel from './ToolTabsPanel'
+import EditorController from '../tools/EditorController'
+import {editorElement} from './EditorElement'
+import PreviewController from '../tools/PreviewController'
 
 const {debounce} = lodash;
 
 declare global {
     var getProject: () => Project | null
-    var setProject: (project: string|Project) => void
+    var setProject: (project: string | Project) => void
 
     var showDirectoryPicker: (options: object) => Promise<FileSystemDirectoryHandle>
 }
@@ -57,12 +62,12 @@ const devServerUrl = 'http://localhost:4444'
 const safeJsonParse = (text: string) => {
     try {
         return JSON.parse(text)
-    } catch(e: any) {
+    } catch (e: any) {
         return e.message ?? e
     }
 }
 
-const debouncedSave = debounce( (updatedProject: Project, projectStore: DiskProjectStore) => {
+const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProjectStore) => {
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
@@ -77,21 +82,63 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
     }
 }
 
+const exposeBoundFunction = (objectName: string, functionName: string, object: any, getMessageData: (event: any) => object) => {
+    const nameToExpose = objectName + '.' + functionName
+    expose(nameToExpose, object[functionName].bind(object), {getMessageData})
+}
+
+const exposeEditorController = (getMessageData: (event: any) => object) => {
+    const container = editorElement()
+    if (container) {
+        const controller = new EditorController(container)
+        exposeBoundFunction('Editor', 'SetOptions', controller, getMessageData)
+        exposeBoundFunction('Editor', 'Show', controller, getMessageData)
+        exposeBoundFunction('Editor', 'Click', controller, getMessageData)
+        exposeBoundFunction('Editor', 'ContextClick', controller, getMessageData)
+        exposeBoundFunction('Editor', 'SetValue', controller, getMessageData)
+        exposeBoundFunction('Editor', 'GetValue', controller, getMessageData)
+        exposeBoundFunction('Editor', 'EnsureFormula', controller, getMessageData)
+        exposeBoundFunction('Editor', 'EnsureTreeItemsExpanded', controller, getMessageData)
+        console.log('Editor controller initialised')
+    }
+}
+
+const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMessageData: (event: any) => object) => {
+    const previewWindow = previewFrame?.contentWindow
+
+    if (previewWindow) {
+        const controller = new PreviewController(previewWindow)
+        exposeBoundFunction('Preview', 'SetOptions', controller, getMessageData)
+        exposeBoundFunction('Preview', 'Show', controller, getMessageData)
+        exposeBoundFunction('Preview', 'Click', controller, getMessageData)
+        exposeBoundFunction('Preview', 'SetValue', controller, getMessageData)
+        exposeBoundFunction('Preview', 'GetValue', controller, getMessageData)
+        exposeBoundFunction('Preview', 'GetState', controller, getMessageData)
+        exposeBoundFunction('Preview', 'GetTextContent', controller, getMessageData)
+        console.log('Preview controller initialised')
+    }
+}
+
+const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
-    const [,setProject] = useState<Project | null>(null)
+    const [, setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
-    const [tool, setTool] = useState<Tool | null>(null)
+    const [tools, setTools] = useState<(Tool | ToolImport)[]>([])
+    const [selectedTool, setSelectedTool] = useState<string | null>(null)
+    const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
-    const [helpVisible, setHelpVisible] = useState(false)
-    const [firebaseConfigName, setFirebaseConfigName] = useState<string|null>(null)
+    const [firebaseConfigName, setFirebaseConfigName] = useState<string | null>(null)
 
     const projectBuilderRef = useRef<ProjectBuilder>()
+    const previewFrameRef = useRef<HTMLIFrameElement>(null)
+    const windowToolMapRef = useRef<Map<Window, Tool | ToolImport>>(new Map())
 
     const elementoUrl = () => window.location.origin
 
@@ -171,6 +218,25 @@ export default function EditorRunner() {
         navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
     }
 
+    function getMessageDataAndAuthorize(event: any) {
+        const toolIframes = Array.from(document.querySelectorAll('iframe[data-toolid]')) as HTMLIFrameElement[]
+        const sourceIframe = toolIframes.find( f => f.contentWindow === event.source )
+        if (!sourceIframe) return null
+        const toolId = sourceIframe.getAttribute('data-toolid')
+        if (!toolId) return null
+        const tool = getOpenProject().findElement(toolId) as (Tool | ToolImport)
+
+        const authorised = tool instanceof Tool
+        || new URL(tool.source ?? '').origin === window.location.origin
+        || tool.studioAccess
+        if (authorised) {
+            return event.data
+        }
+
+        console.warn('Unauthorised access from tool', tool.name)
+        return null
+    }
+
     const initServiceWorker = () => {
 
         if (!navigator.serviceWorker) {
@@ -190,22 +256,24 @@ export default function EditorRunner() {
             }
         }
 
-        waitUntil( ()=> navigator.serviceWorker.controller, 500, 5000 ).then(doInit)
-        .catch(() => {
-            console.error('Timed out waiting for service worker')
-            // console.log('Reloading')
-            // window.location.reload()
-        })
+        waitUntil(() => navigator.serviceWorker.controller, 500, 5000).then(doInit)
+            .catch(() => {
+                console.error('Timed out waiting for service worker')
+                // console.log('Reloading')
+                // window.location.reload()
+            })
     }
 
-    useEffect( () => {
-        window.setProject = (project: string|Project) => {
+    useEffect(() => {
+        window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
             updateProjectHandlerFromStore(proj, 'Test project', projectStore!)
         }
         window.getProject = () => projectHandler.current
     })
-    useEffect( initServiceWorker, [] )
+    useEffect(initServiceWorker, [])
+    useEffect(() => exposeEditorController(getMessageDataAndAuthorize), [editorElement()])
+    useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
     const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id
@@ -230,7 +298,7 @@ export default function EditorRunner() {
         updateProjectAndSave()
     }
 
-    const onInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType)=> {
+    const onInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
         const newId = projectHandler.insertNewElement(insertPosition, targetElementId, elementType)
         updateProjectAndSave()
         return newId
@@ -262,10 +330,10 @@ export default function EditorRunner() {
     }
 
     const deleteFilesWhereNecessary = (ids: ElementId[]) => {
-        const fileIds = ids.filter( isFileElement )
+        const fileIds = ids.filter(isFileElement)
         const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
 
-        return Promise.all(fileIds.map( async id => {
+        return Promise.all(fileIds.map(async id => {
             const filename = getOpenProject().findElement(id)?.name
             if (filename) {
                 await projectStore!.deleteAssetFile(filename)
@@ -289,22 +357,22 @@ export default function EditorRunner() {
         try {
             await projectHandler.elementAction(ids, action.toString() as AppElementActionName)
             updateProjectAndSave()
-        } catch(error: any) {
+        } catch (error: any) {
             alert(error.message)
         }
     }
 
-    const onUndo = ()=> {
+    const onUndo = () => {
         projectHandler.undo()
         updateProjectAndSave()
     }
-    const onRedo = ()=> {
+    const onRedo = () => {
         projectHandler.redo()
         updateProjectAndSave()
     }
 
     const onNew = () => setDialog(<NewProjectDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
-                                                       uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
+                                                    uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
     const onOpen = async () => {
         const dirHandle = await chooseDirectory()
@@ -319,18 +387,18 @@ export default function EditorRunner() {
         }
     }
 
-    const onHelp = () => setHelpVisible(!helpVisible)
-
+    const onHelp = () => showTool(helpToolImport)
 
     const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
-    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
-                                                                 uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
+    const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
+        editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+        uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
-    const onUpdateFromGitHub = async() => {
+    const onUpdateFromGitHub = async () => {
         console.log('Update from GitHub')
         const fs = projectStore!.fileSystem
-        const store =  new GitProjectStore(fs, http)
+        const store = new GitProjectStore(fs, http)
         const projectName = projectHandler.name!
         try {
             showAlert('Updating from GitHub', projectName, null, 'info')
@@ -339,7 +407,7 @@ export default function EditorRunner() {
         } catch (e: any) {
             console.error('Error in pull', e)
             showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
-            }
+        }
         const projectWorkingCopy = await projectStore!.getProject()
         await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore!)
     }
@@ -404,16 +472,35 @@ export default function EditorRunner() {
 
     const onSelectedItemsChange = (ids: string[]) => {
         setSelectedItemIds(ids)
-        const pathIds = ids.map( id => getOpenProject().findElementPath(id)).filter(id => id !== null) as string[]
+        const pathIds = ids.map(id => getOpenProject().findElementPath(id)).filter(id => id !== null) as string[]
         selectItemsInPreview(pathIds)
     }
 
     const onShow = (id: ElementId) => {
-        const tool = projectHandler.current?.findElement(id) as Tool
-        setTool(tool)
+        const tool = projectHandler.current?.findElement(id) as (Tool | ToolImport)
+        showTool(tool)
     }
 
-    const onCloseToolWindow = ()=> setTool(null)
+    const showTool = (tool: Tool | ToolImport) => {
+        let alreadyOpen = tools.some(t => t.id === tool.id)
+        if (!alreadyOpen) {
+            setTools(tools.concat(tool))
+        }
+        setSelectedTool(tool.codeName)
+        setShowTools(true)
+    }
+
+    const onCloseTool = (toolName: string) => {
+        const oldToolIndex = tools.findIndex(t => t.codeName === toolName)
+        const newTools = tools.filter(t => t.codeName !== toolName)
+        setTools(newTools)
+        if (selectedTool === toolName) {
+            const nextToolIndex = Math.min(oldToolIndex, newTools.length - 1)
+            if (nextToolIndex >= 0) {
+                setSelectedTool(newTools[nextToolIndex].codeName)
+            }
+        }
+    }
 
     const keyHandler = (event: React.KeyboardEvent) => {
         if (event.key === 'z' && (event.metaKey || event.ctrlKey)) {
@@ -436,7 +523,6 @@ export default function EditorRunner() {
     const signedIn = useSignedInState()
 
     function mainContent() {
-        const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
         if (projectHandler.current) {
             const project = getOpenProject()
@@ -461,17 +547,22 @@ export default function EditorRunner() {
                 <AppBar title={appBarTitle}/>
             </Box>
             const EditorHeader = <Box flex='0'>
-                <EditorMenuBar {...{onNew, onOpen, onGetFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
+                <EditorMenuBar {...{
+                    onNew, onOpen, onGetFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
                     onInsert: onMenuInsert,
                     insertMenuItems,
                     onAction,
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
-                    selectedItemIds, onHelp}}/>
+                    selectedItemIds, onHelp
+                }}/>
             </Box>
 
-            return <Box display='flex' flexDirection='column' height='100%' width='100%'>
-                <Box flex='1' maxHeight={tool ? '60%' : '100%'}>
+            const toolsOpen = tools.length > 0
+            const editorHeight = toolsOpen ? (showTools ? '60%' : 'calc(100% - 50px)') : '100%'
+            const toolsHeight = toolsOpen ? (showTools ? '40%' : '50px') : '0px'
+            return <Box height='100%' width='100%'>
+                <Box height={editorHeight}>
                     <Box display='flex' flexDirection='column' height='100%' width='100%' onKeyDown={keyHandler}
                          tabIndex={-1}>
                         {OverallAppBar}
@@ -491,11 +582,6 @@ export default function EditorRunner() {
                                                     errors={errors}
                                             />
                                         </Box>
-                                        {helpVisible ?
-                                            <Box flex='1' maxHeight='50%'>
-                                                <EditorHelpPanel onClose={noop}/>
-                                            </Box> : null
-                                        }
                                     </Box>
                                 </Grid>
                                 <Grid item xs={10} height='100%' overflow='scroll'>
@@ -515,14 +601,14 @@ export default function EditorRunner() {
                         </Box>
                     </Box>
                 </Box>
-                {tool ?
-                    <Box flex='1' maxHeight='40%'>
-                        <ToolWindow tool={tool} previewFrame={previewFrameRef.current} onClose={onCloseToolWindow}/>
-                    </Box> : null
-                }
+                <Box height={toolsHeight}>
+                    <ToolTabsPanel tools={tools} selectedTool={selectedTool!}
+                                   toolsShown={showTools}
+                                   onSelectTool={setSelectedTool} onShowTools={setShowTools} onCloseTool={onCloseTool}/>
+                </Box>
             </Box>
         } else {
-            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} />
+            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub}/>
         }
     }
 
@@ -530,6 +616,6 @@ export default function EditorRunner() {
         {alertMessage}
         {dialog}
         {mainContent()}
-        </ThemeProvider>
+    </ThemeProvider>
 }
 

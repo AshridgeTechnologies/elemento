@@ -27,13 +27,14 @@ test('creates an updated object with a property set to a new value', ()=> {
     expect(folder1.name).toBe('Folder 1')
 })
 
-test('can contain only File', () => {
+test('can contain only Tool and ToolImport', () => {
     const folder1 = new ToolFolder('id1', 'Folder 1', {})
     expect(folder1.canContain('Project')).toBe(false)
     expect(folder1.canContain('App')).toBe(false)
     expect(folder1.canContain('Page')).toBe(false)
     expect(folder1.canContain('ToolFolder')).toBe(false)  // may change in the future
     expect(folder1.canContain('Tool')).toBe(true)
+    expect(folder1.canContain('ToolImport')).toBe(true)
 })
 
 test('converts to JSON', ()=> {

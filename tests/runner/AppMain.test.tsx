@@ -12,7 +12,7 @@ import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
 jest.mock('../../src/runner/loadModuleHttp', ()=> ({
     loadModuleHttp: jest.fn().mockResolvedValue({
         default: () => {
-            return React.createElement('h1', {id: 'appone.mainpage.FirstText'}, 'App from GitHub')
+            return React.createElement('h1', {id: 'appone.mainpage.FirstText'}, 'Test App')
         }
     })
 }))
@@ -44,16 +44,21 @@ function mockFetchForGitHub() {
 
 test('runs app from GitHub', async () => {
     renderThe(appMain('/runner/gh/mongo/peewit/AppOne'))
-    await actWait(50)
+    await actWait(10)
     expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dist/client/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('App from GitHub')
+    expect(el`FirstText`).toHaveTextContent('Test App')
 })
 
 test('runs app from GitHub with non-standard chars', async () => {
     renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-/AppOne'))
-    await actWait(50)
+    await actWait(10)
     expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo-pongo/-beetle-juice-@abc123/dist/client/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('App from GitHub')
+    expect(el`FirstText`).toHaveTextContent('Test App')
 })
 
-
+test('runs app from host', async () => {
+    renderThe(appMain('/myhost/apps/AppOne'))
+    await actWait(10)
+    expect(loadModuleHttp).toHaveBeenCalledWith('/myhost/apps/AppOne/AppOne.js')
+    expect(el`FirstText`).toHaveTextContent('Test App')
+})

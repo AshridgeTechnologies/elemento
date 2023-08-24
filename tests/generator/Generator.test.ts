@@ -35,6 +35,7 @@ import Form from '../../src/model/Form';
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import Calculation from '../../src/model/Calculation'
+import ToolImport from '../../src/model/ToolImport'
 
 const project = (el: Element) => Project.new([el], 'proj1', 'Project 1', {})
 
@@ -89,7 +90,7 @@ test('generates app and all page output files', ()=> {
 
 })
 
-test('generates Tool and all page output files', ()=> {
+test('generates Tool and all page output files, generates nothing for ToolImport', ()=> {
     const tool = new Tool('tool1', 'Tool 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
@@ -98,12 +99,15 @@ test('generates Tool and all page output files', ()=> {
         )]
     )
 
-    const gen = new Generator(tool, project(new ToolFolder(TOOLS_ID, 'Tools', {}, [tool])))
+    const toolImport = new ToolImport('toolImport1', 'Tool Import 1', {source: 'https://example.com/aTool'})
+
+    const gen = new Generator(tool, project(new ToolFolder(TOOLS_ID, 'Tools', {}, [tool, toolImport])))
 
     expect(gen.output().files[0].name).toBe('Page1.js')
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, Button} = Elemento.components
+    const {Editor, Preview} = Elemento
     const Button1_action = React.useCallback(() => {
         Editor.Highlight('menuItem+File')
     }, [])
@@ -119,6 +123,7 @@ test('generates Tool and all page output files', ()=> {
     expect(gen.output().files[1].contents).toBe(`export default function Tool1(props) {
     const pathWith = name => 'Tool1' + '.' + name
     const {App} = Elemento.components
+    const {Editor, Preview} = Elemento
     const pages = {Page1}
     const {appContext} = props
     const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
@@ -127,6 +132,7 @@ test('generates Tool and all page output files', ()=> {
 }
 `)
 
+    expect(gen.output().files.length).toBe(2)
 })
 
 test('can get all code in one string from the output with imports and export', function () {
@@ -272,8 +278,8 @@ test('generates html runner file', () => {
 </head>
 <body>
 <script type="module">
-    import {runForDev} from '/runtime/runtime.js'
-    runForDev('/studio/preview/App1/App1.js')
+    import {runAppFromWindowUrl} from '/runtime/runtime.js'
+    runAppFromWindowUrl()
 </script>
 </body>
 </html>

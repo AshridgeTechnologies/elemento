@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import {asArray} from '../../src/runtime'
 import {valueObj} from '../testutil/testHelpers'
 import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'

@@ -87,7 +87,7 @@ export default class ProjectBuilder {
         const project = this.project
         const apps = project.findChildElements(App)
         apps.forEach(async (app, index) => this.buildClientAppFiles(app))
-        const tools: Tool[] = project.findElement(TOOLS_ID)?.elements as Tool[] ?? []
+        const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(async tool => this.buildToolAppFiles(tool))
         if (this.hasServerApps) {
             this.buildServerAppFiles()

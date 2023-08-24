@@ -77,6 +77,7 @@ export type ElementType =
     'File' |
     'FileFolder' |
     'ToolFolder' |
+    'ToolImport' |
     DataTypeElementType
 
 export type ParentType = ElementType | ElementType[] | 'any' | null

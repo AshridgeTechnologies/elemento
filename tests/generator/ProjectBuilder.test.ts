@@ -13,6 +13,7 @@ import ServerApp from '../../src/model/ServerApp'
 import ServerFirebaseGenerator from '../../src/generator/ServerFirebaseGenerator'
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
+import ToolImport from '../../src/model/ToolImport'
 
 
 const name = new TextType('tt1', 'Name', {required: true})
@@ -51,13 +52,14 @@ const tool2 = new Tool('tool2', 'Tool 2', {}, [
         ]
     )
 ])
+const toolImport1 = new ToolImport('toolImport', 'Tool Import', {source: 'https://example.com/tool'})
 
 const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
 const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
 const serverApp1 = new ServerApp('sa1', 'Server App 1', {}, [plusFn])
 const serverApp2 = new ServerApp('sa2', 'Server App 2', {}, [multFn])
 
-const toolFolder = new ToolFolder(TOOLS_ID, 'Tools', {}, [tool1, tool2])
+const toolFolder = new ToolFolder(TOOLS_ID, 'Tools', {}, [tool1, tool2, toolImport1])
 const project1 = Project.new([app1, app2, serverApp1, serverApp2, dataTypes1, dataTypes2, toolFolder], 'proj1', 'Project 1', {})
 const projectClientOnly = Project.new([app3], 'proj2', 'Project Client Only', {})
 
@@ -138,7 +140,7 @@ test('writes server files generated from Project for all apps', async () => {
     ])
 })
 
-test('writes tool files for all tools to tool build with one copy of asset', async () => {
+test('writes tool files for all tools to tool build with one copy of asset but not ToolImports', async () => {
     const builder = newProjectBuilder()
     await builder.build()
 

@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import {UserEvent} from '@testing-library/user-event/setup/setup'
 import {
     ActionFn,
     ActionQueue,
@@ -13,15 +14,18 @@ import {
 } from './controllerHelpers'
 
 export default class PreviewController {
-    private readonly user = userEvent.setup({delay: 20})
+    private _user: UserEvent | null = null
     private readonly actionQueue = new ActionQueue()
     private options: Options = {showBeforeActions: false, showWithPointer: false, delay: 1000}
 
     constructor(private readonly window: Window) {
-        this.user = userEvent.setup({delay: 20, document: this.container.ownerDocument ?? document})
     }
 
     private get container(): HTMLElement { return this.window.document.body }
+    private get user() {
+        // lazy initialization allows for document not being ready when this object is constructed
+        return this._user ?? (this._user = userEvent.setup({delay: 20, document: this.window.document}))
+    }
 
     SetOptions(options: Partial<Options>) {
         this.options = {...this.options, ...options}

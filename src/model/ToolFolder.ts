@@ -17,7 +17,7 @@ export default class ToolFolder extends BaseElement<Properties> implements Eleme
     }
 
     canContain(elementType: ElementType): boolean {
-        return ['Tool'].includes(elementType)
+        return ['Tool', 'ToolImport'].includes(elementType)
     }
 
     static get parentType(): ParentType { return 'Project' }

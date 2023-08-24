@@ -1,9 +1,9 @@
 import {equals} from 'ramda'
-import {Box, IconButton, Typography} from '@mui/material'
+import {Box, Typography} from '@mui/material'
 import Mui_AppBar from '@mui/material/AppBar'
 
 import {TreeItem, TreeView} from '@mui/lab'
-import {ChevronRight, Close, ExpandMore} from '@mui/icons-material'
+import {ChevronRight, ExpandMore} from '@mui/icons-material'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
 
@@ -25,20 +25,19 @@ function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (
     </TreeView>)
 }
 
-function HelpBar({onClose}: {onClose: () => void}) {
+function HelpBar() {
     return (
         <Mui_AppBar position='relative'>
             <Toolbar variant="dense" sx={{minHeight: 40}}>
                 <Typography variant="h6" component="div" sx={{fontSize: 16, flexGrow: 1}}>
-                    Help
+                    Elemento Help
                 </Typography>
-                <IconButton className='closeButton' onClick={onClose} color='inherit'><Close/></IconButton>
             </Toolbar>
         </Mui_AppBar>
     )
 }
 
-export default function HelpPanel({children, onClose}: { children: React.ReactNode, onClose: () => void }) {
+export default function HelpPanel({children, showTitleBar = false}: { children: React.ReactNode, showTitleBar?: boolean }) {
     const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
@@ -69,12 +68,12 @@ export default function HelpPanel({children, onClose}: { children: React.ReactNo
     })
 
     const onScroll = (event: any) => {
-        console.log('Scroll', event.currentTarget?.scrollTop)
+        //console.log('Scroll', event.currentTarget?.scrollTop)
     }
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
-        <Box flex='0'>
-            <HelpBar {...{onClose}}/>
-        </Box>
+        {showTitleBar && <Box flex='0'>
+            <HelpBar/>
+        </Box>}
         <Box flex='1' minHeight={0}>
             <Box display='flex' flexDirection='row' height='100%'>
                 <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)'  paddingTop='1rem' sx={{backgroundColor: '#eee'}}>

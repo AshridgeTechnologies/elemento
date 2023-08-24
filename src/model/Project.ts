@@ -80,6 +80,7 @@ export default class Project extends BaseElement<Properties> implements Element 
                 FileFolder: ['upload'],
                 File: [new ConfirmAction('delete')],
                 Tool: ['show', ...standardActionsAvailable],
+                ToolImport: ['show', ...standardActionsAvailable],
             }
             return (specialActionsAvailable[element.kind as keyof object] ?? standardActionsAvailable)
         }

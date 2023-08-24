@@ -13,6 +13,8 @@ import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
 import {ConfirmAction} from '../../src/editor/Types'
 import ToolFolder from '../../src/model/ToolFolder'
+import Tool from '../../src/model/Tool'
+import ToolImport from '../../src/model/ToolImport'
 
 const newToolFolder = new ToolFolder('_TOOLS', 'Tools', {})
 
@@ -425,23 +427,28 @@ test('gets actions available for a single item', () => {
     const app2 = new App('a2', 'App 2', {}, [page2])
     const file1 = new File('f1', 'Image1.jpg', {})
     const files = new FileFolder('_FILES', 'Files', {}, [file1])
-    const project = Project.new([app, app2, files])
+    const tool1 = new Tool('tool1', 'Tool 1', {})
+    const toolImport1 = new ToolImport('toolImp1', 'Tool Import 1', {})
+    const tools = new ToolFolder('_TOOLS', 'Tools', {}, [tool1, toolImport1])
+    const project = Project.new([app, app2, files, tools])
 
     const textActions = project.actionsAvailable(['t1'])
-    expect(textActions).toStrictEqual([
+    const standardActions = [
         'insert',
         new ConfirmAction('delete'),
         'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
         'undo', 'redo'
-    ])
+    ]
+    expect(textActions).toStrictEqual(standardActions)
 
     const pageActions = project.actionsAvailable(['p1'])
-    expect(pageActions).toStrictEqual([
-        'insert',
-        new ConfirmAction('delete'),
-        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
-        'undo', 'redo'
-    ])
+    expect(pageActions).toStrictEqual(standardActions)
+
+    const toolActions = project.actionsAvailable(['tool1'])
+    expect(toolActions).toStrictEqual(['show', ...standardActions])
+
+    const toolImportActions = project.actionsAvailable(['toolImp1'])
+    expect(toolImportActions).toStrictEqual(['show', ...standardActions])
 
     expect( project.actionsAvailable(['_FILES'])).toStrictEqual(['upload', 'undo', 'redo'])
     expect( project.actionsAvailable(['_TOOLS'])).toStrictEqual(['insert', 'pasteInside', 'undo', 'redo'])

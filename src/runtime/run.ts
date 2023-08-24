@@ -1,10 +1,11 @@
 import {createRoot, Root} from 'react-dom/client'
-import React from 'react'
+import React, {createElement} from 'react'
 import {DefaultAppContext} from './AppContext'
 import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
+import AppRunnerFromGitHub from '../runner/AppRunnerFromGitHub'
 
 let root: Root
 
@@ -37,6 +38,12 @@ let selectedComponentIds: string[] = []
 let appModule: any
 
 export const runForDev = (url: string) => {
+    const previewMatch = url.match(/studio\/preview\/([\w]+\/)?([-\w]+)\/?$/)
+    let codeUrl: string | undefined
+    if (previewMatch) {
+        const [, prefix = '', appName] = previewMatch
+        codeUrl = `/studio/preview/${prefix}${appName}/${appName}.js`
+    }
     let appStore: StoreApi<AppStore>
     const appStoreHook: AppStoreHook = {
         setAppStore(sa: StoreApi<AppStore>){
@@ -51,8 +58,11 @@ export const runForDev = (url: string) => {
     }
 
     async function refreshCode() {
-        appModule = await import(url + '?' + (++refreshCount))
-        runModule()
+        if (codeUrl) {
+            appModule = await import(codeUrl + '?' + (++refreshCount))
+            runModule()
+        }
+
     }
 
     function onComponentSelected(id: string) {

@@ -75,6 +75,8 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Tools can do deployment - parameters, access to project, GitHub, etc
+- Tools can use data read from Editor and Preview 
 - Scheduled jobs
 - Rich text
 - Readonly elements - for all types and styled clearly

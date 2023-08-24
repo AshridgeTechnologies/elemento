@@ -87,7 +87,7 @@ export default class Generator {
             get code() {
                 return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
             },
-            html: this.htmlRunnerFile(dirPrefix)
+            html: this.htmlRunnerFile()
         }
     }
 
@@ -134,6 +134,7 @@ export default class Generator {
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         const appFunctionIdentifiers = this.parser.appFunctionIdentifiers(component.id)
         const appFunctionDeclarations = appFunctionIdentifiers.length ? `    const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions` : ''
+        const toolsDeclarations = this.app.kind === 'Tool' ? `    const {Editor, Preview} = Elemento` : ''
 
         let appLevelDeclarations
         if (!componentIsApp) {
@@ -145,7 +146,7 @@ export default class Generator {
             const containerIdentifiers = identifiers.filter(isContainerElement)
             containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState(parentPathWith('${ident}'))`).join('\n')
         }
-        const elementoDeclarations = [componentDeclarations, globalDeclarations, pages, appContext,
+        const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext,
             appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
         const actionHandler = (el: Element, def: PropertyDef) => {
@@ -393,6 +394,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'File':
             case 'FileFolder':
             case 'ToolFolder':
+            case 'ToolImport':
                 return ''
 
             // Types done in TypesGenerator
@@ -587,7 +589,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         return trimParens(this.getExpr(element, propertyName, exprType))
     }
 
-    private htmlRunnerFile(dirPrefix: string) {
+    private htmlRunnerFile() {
         const appName = this.app.codeName
         return `<!DOCTYPE html>
 <html lang="en">
@@ -604,8 +606,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 </head>
 <body>
 <script type="module">
-    import {runForDev} from '/runtime/${runtimeFileName}'
-    runForDev('/studio/preview/${dirPrefix}${appName}/${appName}.js')
+    import {runAppFromWindowUrl} from '/runtime/${runtimeFileName}'
+    runAppFromWindowUrl()
 </script>
 </body>
 </html>
