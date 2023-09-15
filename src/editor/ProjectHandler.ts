@@ -63,7 +63,13 @@ export default class ProjectHandler {
         const copyElementsToClipboard = async () => {
             const elements = elementIds.map(id => this.getProject().findElement(id)) as Element[]
             const elementText = elements.length === 0 ? '' : elements.length === 1 ? elementToJSON(elements[0]) : elementToJSON(elements)
-            await navigator.clipboard.writeText(elementText)
+            // @ts-ignore
+            const result = await navigator.permissions.query({ name: 'clipboard-write' })
+            if (result.state === 'granted' || result.state === 'prompt') {
+                await navigator.clipboard.writeText(elementText)
+            } else {
+                console.error('Permission not granted to write to clipboard', result)
+            }
         }
 
         const doAction = async () => {

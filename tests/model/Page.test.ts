@@ -62,6 +62,7 @@ test('can contain types apart from Project, App, Page, etc', () => {
     expect(page.canContain('FileFolder')).toBe(false)
     expect(page.canContain('Text')).toBe(true)
     expect(page.canContain('Button')).toBe(true)
+    expect(page.canContain('Layout')).toBe(true)
     expect(page.canContain('Function')).toBe(true)
     expect(page.canContain('DataTypes')).toBe(false)
     expect(page.canContain('TextType')).toBe(false)

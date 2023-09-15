@@ -314,6 +314,10 @@ export const globalFunctions = {
         return format(dateVal, pattern)
     },
 
+    Random(upperLimit: number) {
+        return Math.floor((upperLimit + 1) * Math.random())
+    },
+
     CsvToRecords(csvText: string, columnNames?: string[]) {
         const transform = (fieldRaw: string) => {
             const field = fieldRaw.trim()

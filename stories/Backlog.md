@@ -3,9 +3,13 @@ Elemento Backlog
 
 Bugs
 ----
+- Insert menu can overflow the page
+- Copying layouts does not change names of contents
+- Duplicate names create errors on action function names
 - Changes really slow on large list
 - Initial value not showing on Number input
 - Copy/Paste multiple not working
+- Errors can kill Editor
 - Select element on preview not highlighting
 - Query with MemoryDataStore not updating 
 - Query without DataStore does nothing

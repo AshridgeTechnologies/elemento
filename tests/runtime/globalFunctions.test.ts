@@ -8,6 +8,7 @@ const {Decimal, D, Add, Sub, Mult, Sum, Div,
     Round, Ceiling, Floor,
     Record, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
+    Random,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -616,6 +617,30 @@ describe('DateFormat', () => {
 
     test('formats invalid date as "Invalid Date"', () => {
         expect(DateFormat(valueObj(invalidDate), 'dd MMM yyyy')).toBe('Invalid Date')
+    })
+})
+
+describe('Random', () => {
+    test('with one argument: generates a random integer between 0 and given number', () => {
+        for (let i = 0; i < 1001; i++) {
+            const num = Random(i)
+            expect(num).toBe(Math.floor(num))
+            expect(num).toBeGreaterThanOrEqual(0)
+            expect(num).toBeLessThanOrEqual(i)
+        }
+    })
+
+    test('with one argument: range of numbers includes the upper limit', () => {
+        let upperLimitGenerated = false
+        for (let i = 0; i < 1000; i++) {
+            const num = Random(2)
+            if (num === 2) {
+                upperLimitGenerated = true
+                break
+            }
+        }
+
+        expect(upperLimitGenerated).toBe(true)
     })
 })
 
