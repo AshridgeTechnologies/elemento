@@ -2,19 +2,26 @@ import React from 'react'
 import {Heading, Para, Section} from '../HelpComponents'
 
 export default () =>
-    <Section helpId='what-is-elemento'>
-        <Heading >What is Elemento?</Heading>
+    <Section id='what-is-elemento'>
+        <Heading>What is Elemento?</Heading>
         <Para>
-            Elemento is a <b>Low Code programming tool</b>.  
-            It lets you create computer programs by choosing the parts you need from menus and filling in forms.
+            Elemento is a <b>Low Code programming tool</b>.
+            It lets people with no programming experience create software apps for business, education, games - or lots
+            of other things.
+            An app could be as simple as a 10-question quiz, or a complex system to run a whole business.
+        </Para>
+        <Para>You can use just the apps you create yourself, or you can easily publish them on the internet for others
+            to use.
         </Para>
         <Para>
-            You connect the components together with small snippets of code called <b>formulas</b>.
-            These are quite similar to spreadsheet formulas, but even easier to understand.  
-            They use names that you have given to other things in the app, like <code>FirstName</code>, instead of cell locations like <code>C2</code>.
+            You create your apps by choosing the parts you need from menus and filling in forms.
+            The parts are connected together with small snippets of code called <b>formulas</b>.
+            These are quite similar to spreadsheet formulas, but even easier to understand.
+            They use names that you have given to other things in the app, like <code>FirstName</code>, instead of cell
+            locations like <code>C2</code>.
         </Para>
         <Para>
             For example, if you are calculating the final total of a sales invoice, you might write a formula like this:<br/>
-            <code>sum(LineItemTotals) + Delivery + Tax</code>
+            <code>Sum(LineItemTotals) + Delivery + Tax</code>
         </Para>
     </Section>

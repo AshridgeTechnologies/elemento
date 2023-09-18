@@ -1,15 +1,18 @@
 import {equals} from 'ramda'
-import {Box, Typography} from '@mui/material'
+import {Box, Button, Fab, IconButton, Typography} from '@mui/material'
 import Mui_AppBar from '@mui/material/AppBar'
 
-import {TreeItem, TreeView} from '@mui/lab'
-import {ChevronRight, ExpandMore} from '@mui/icons-material'
+import {TreeItem, TreeView} from '@mui/x-tree-view'
+import {ChevronRight, ExpandMore, NavigateBefore, NavigateNext} from '@mui/icons-material'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
 
 type ContentsItem = { id: string, title: string, children?: ContentsItem[] }
 
-function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (id: string) => void}) {
+const goBack = ()=> history.back()
+const goForward = ()=> history.forward()
+
+function HelpContents({items, selected, onSelected}: {items: ContentsItem[], selected: string | null, onSelected: (id: string) => void}) {
     const treeItem = ({id, title, children = []}: ContentsItem) =>
         <TreeItem nodeId={id} label={title} key={id} onClick={() => onSelected(id)}>
             {children.map(treeItem)}
@@ -19,6 +22,7 @@ function HelpContents({items, onSelected}: {items: ContentsItem[], onSelected: (
         aria-label="help contents"
         defaultCollapseIcon={<ExpandMore />}
         defaultExpandIcon={<ChevronRight />}
+        selected={selected}
         sx={{ height: '100%', overflowY: 'auto' }}
     >
         {items.map(treeItem) }
@@ -37,13 +41,39 @@ function HelpBar() {
     )
 }
 
+const NavButtons = () => <Box sx={{position: 'absolute', top: '10px', right: '30px'}}>
+    <IconButton sx={{backgroundColor: 'lightGray'}} size='medium' aria-label='back' title='back' onClick={goBack}>
+        <NavigateBefore sx={{fontSize: '2rem'}}/>
+    </IconButton>
+    <IconButton sx={{backgroundColor: 'lightGray', marginLeft: '5px'}} size='medium' aria-label='forward'
+                title='forward' onClick={goForward}>
+        <NavigateNext sx={{fontSize: '2rem'}}/>
+    </IconButton>
+</Box>
+
 export default function HelpPanel({children, showTitleBar = false}: { children: React.ReactNode, showTitleBar?: boolean }) {
     const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
+
+    const syncSelectionToUrl = () => {
+        const locationFromUrl = location.hash.substring(1)
+        if (locationFromUrl != selectedId) {
+            setSelectedId(locationFromUrl)
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("popstate", syncSelectionToUrl)
+    }, [])
+
+    useEffect(() => {
+        syncSelectionToUrl()
+    })
+
     useEffect(()=> {
         if (selectedId && helpTextPanel.current) {
-            helpTextPanel.current.querySelector(`#${selectedId}`)?.scrollIntoView({behavior: 'smooth'})
+            helpTextPanel.current.querySelector(`#${selectedId}`)?.scrollIntoView({behavior: 'auto'})
         }
     })
 
@@ -70,16 +100,27 @@ export default function HelpPanel({children, showTitleBar = false}: { children: 
     const onScroll = (event: any) => {
         //console.log('Scroll', event.currentTarget?.scrollTop)
     }
+
+    const onSelected = (id: string) => {
+        history.pushState(null, '', `#${id}`)
+        syncSelectionToUrl()
+    }
+
+
+
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
         {showTitleBar && <Box flex='0'>
             <HelpBar/>
         </Box>}
         <Box flex='1' minHeight={0}>
-            <Box display='flex' flexDirection='row' height='100%'>
-                <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)'  paddingTop='1rem' sx={{backgroundColor: '#eee'}}>
-                    <HelpContents items={helpItems} onSelected={(id) => setSelectedId(id)}/>
+            <Box display='flex' flexDirection='row' height='100%' sx={{position: 'relative'}}>
+                <NavButtons/>
+                <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)' paddingTop='1rem'
+                     sx={{backgroundColor: '#eee'}}>
+                    <HelpContents items={helpItems} selected={selectedId} onSelected={onSelected}/>
                 </Box>
-                <Box  flex='4' className='helpText' ref={helpTextPanel} height='100%'  padding='0 1rem' overflow='auto' onScroll={onScroll}>
+                <Box flex='4' className='helpText' ref={helpTextPanel} height='100%' padding='0 1rem' overflow='auto'
+                     onScroll={onScroll}>
                     {children}
                 </Box>
             </Box>

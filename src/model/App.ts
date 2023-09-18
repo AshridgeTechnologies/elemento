@@ -1,6 +1,6 @@
 import {BaseApp} from './BaseApp'
 import {ElementType} from './Types'
-import {elementOfType, parentTypeOf} from './elements'
+import {parentTypeOf} from './elements'
 
 export default class App extends BaseApp {
     static kind = 'App'

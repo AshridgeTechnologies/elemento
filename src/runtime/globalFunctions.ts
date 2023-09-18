@@ -288,7 +288,6 @@ export const globalFunctions = {
             case 'years': return differenceInYears(date2, date1)
             default: throw new Error(`Unknown unit ${unit}.  Should be one of ${unitTypes.join(', ')}`)
         }
-
     },
 
     DaysBetween(date1Val: Value<Date>, date2Val: Value<Date>) {

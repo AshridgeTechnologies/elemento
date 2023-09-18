@@ -3,6 +3,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Fix run from GitHub
 - Insert menu can overflow the page
 - Copying layouts does not change names of contents
 - Duplicate names create errors on action function names
@@ -58,6 +59,7 @@ Stories
 ### Priority for learning Elemento
 - Tools
 - Move Help to a Tool
+- Help Content and Presentation
 - Table of Contents
 - Example apps
 
@@ -79,8 +81,10 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Database and data sync review - consider RxDB
 - Tools can do deployment - parameters, access to project, GitHub, etc
-- Tools can use data read from Editor and Preview 
+- Tools can use data read from Editor and Preview
+- runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/
 - Scheduled jobs
 - Rich text
 - Readonly elements - for all types and styled clearly
@@ -99,6 +103,7 @@ Stories
 - Functional test covering Get and Update - and others
 - Cut/paste/export/import data as JSON
 - Simple way of opening file datastores
+- Calendar control - consider https://github.com/williamtroup/Calendar.js
 
 ### The Rest
 - Slick quick apps
@@ -108,7 +113,7 @@ Stories
 - Tutorial enhancements Part 1
 - Validate App Model loaded from JSON
 - Use all input types and attributes
-- Load time optimisation
+- Load time optimisation - eg https://www.macarthur.me/posts/priority-hints
 - Splash screens - editor and app
 - Back and forward in Help
 - Links in Help (use to sync contents to position)

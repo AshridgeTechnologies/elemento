@@ -1,12 +1,4 @@
-import {
-    ComponentType,
-    ElementType,
-    eventAction,
-    ParentType,
-    PropertyDef,
-    PropertyExpr,
-    PropertyValueType
-} from './Types'
+import {ComponentType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 

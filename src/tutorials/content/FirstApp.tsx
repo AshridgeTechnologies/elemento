@@ -2,7 +2,7 @@ import React from 'react'
 import {BulletList, Heading, Para, Section, SubHeading} from '../../docs/HelpComponents'
 
 export default () =>
-    <Section helpId='first-app'>
+    <Section id='first-app'>
         <Heading >Creating your first app with Elemento</Heading>
         <Para>
             Congratulations on deciding to dive in!

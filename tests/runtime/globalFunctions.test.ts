@@ -172,6 +172,7 @@ describe('Mid', () => {
     test('Gets a part string for 2 start, length less than string length', ()=> expect(Mid('abcdefg', 2, 3)).toBe('bcd'))
     test('Gets a part string for 2 start, length greater than string length', ()=> expect(Mid('abc', 2, 4)).toBe('bc'))
     test('Gets a part string for 2 start, undefined length', ()=> expect(Mid('abc', 2)).toBe('bc'))
+    test('Gets an empty string for start greater than length', ()=> expect(Mid('abc', 4)).toBe(''))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2), valueObj(3))).toBe('bcd'))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2))).toBe('bcdef'))
 })

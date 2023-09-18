@@ -1,7 +1,7 @@
 import {ElementType, ParentType} from './Types'
 
 import {BaseApp} from './BaseApp'
-import {elementOfType, parentTypeOf} from './elements'
+import {parentTypeOf} from './elements'
 
 export default class Tool extends BaseApp {
 

@@ -3,7 +3,7 @@ import {TextField} from '@mui/material'
 import {BulletList, Heading, MinorHeading, NumberedList, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 
 export default () =>
-    <Section helpId='formulas'>
+    <Section id='formulas'>
         <Heading>Formulas</Heading>
         <Para>
             Formulas are short snippets of code that tell your app what to do.  They can calculate values, or perform actions.
@@ -22,17 +22,17 @@ export default () =>
 
         <MinorHeading>Names in formulas</MinorHeading>
         <Para>
-            The names in these examples, like <code>Length</code> or <code>ItemTotal</code> are the names of controls in the app.
-            The app uses the current value of the control in the formula.
+            The names in these examples, like <code>Length</code> or <code>ItemTotal</code> are the names of elements in the app.
+            The app uses the current value of the element in the formula.
         </Para>
-        <Para>So if you had a Text Input control where someone could enter their name, and you gave it the name "First Name",
-            you can use <code>FirstName</code> in a formula to get the current value of the control - what the user has entered as their first name.</Para>
-        <Para><em>Note:</em> you will see that although you called the control "First Name", in the formula you write <code>FirstName</code> - just miss out the spaces.
+        <Para>So if you had a Text Input element where someone could enter their name, and you gave it the name "First Name",
+            you can use <code>FirstName</code> in a formula to get the current value of the element - what the user has entered as their first name.</Para>
+        <Para><em>Note:</em> you will see that although you called the element "First Name", in the formula you write <code>FirstName</code> - just miss out the spaces.
         </Para>
 
         <MinorHeading>Fixed values in formulas</MinorHeading>
         <Para>
-            As well as using the current value of a control, you can use fixed values, like <code>10</code> or <code>"Hello "</code> in the examples above.
+            As well as using the current value of an element, you can use fixed values, like <code>10</code> or <code>"Hello "</code> in the examples above.
         </Para>
         <Para>
             Some things to know about writing fixed values:
@@ -44,8 +44,8 @@ export default () =>
 
         <MinorHeading>Where you use formulas</MinorHeading>
         <Para>
-            You enter a formula in a property of a control.
-            Take this example from the Hello World tutorial, where we want to set the content of a Text control to a formula
+            You enter a formula in a property of an element.
+            Take this example from a Hello World app, where we want to set the content of a Text element to a formula
             that joins together the word "Hello, " and the current value of a Text Input called Name.
         </Para>
         <TextField label="Content" variant='outlined' size='small' value={'"Hello, " + Name'}/>
@@ -61,10 +61,10 @@ export default () =>
             <li>Actions - these make something happen, but they don't produce a value</li>
         </BulletList>
 
-        <SubSection helpId='calculation-formulas'>
+        <SubSection id='calculation-formulas'>
             <SubHeading>Calculation Formulas</SubHeading>
             <Para>
-                Most formulas are calculations.  They are used to work out the values of a control's properties.
+                Most formulas are calculations.  They are used to work out the values of an element's properties.
                 Each time something in the app changes, they are recalculated automatically to update the value, like cells in a spreadsheet.
             </Para>
             <Para>
@@ -134,7 +134,7 @@ export default () =>
                 The Reference section for a function tells you whether it is a Calculation function or an Action function.</Para>
 
             <MinorHeading>Mix and Match</MinorHeading>
-            <Para>A value in a formula does not have to be a fixed value or a control value.  It can be the result of another formula.  Here are some examples:
+            <Para>A value in a formula does not have to be a fixed value or an element value.  It can be the result of another formula.  Here are some examples:
             </Para>
             <BulletList>
                 <li>"The total is £" + Sum(Goods, Delivery, Tax)</li>
@@ -143,7 +143,7 @@ export default () =>
             </BulletList>
         </SubSection>
 
-        <SubSection helpId='action-formulas'>
+        <SubSection id='action-formulas'>
             <SubHeading>Action Formulas</SubHeading>
             <Para>
                 Action formulas change something or make something happen, such as:
@@ -158,9 +158,9 @@ export default () =>
                 The action only happens once when it is triggered - it is not continuously updated like a calculation formula.</Para>
 
             <MinorHeading>Where action formulas are used</MinorHeading>
-            <Para>There are some properties of controls that need an action formula instead of a calculation.
-                The reference section for that control tells you which they are.</Para>
-            <Para>For example, a Button control has an <code>Action</code> property.
+            <Para>There are some properties of elements that need an action formula instead of a calculation.
+                The reference section for that element tells you which they are.</Para>
+            <Para>For example, a Button element has an <code>Action</code> property.
                 When the user clicks the button on the page, the formula in the Action property runs.
                 A button to save the data entered on a page might have an Action like this:</Para>
             <TextField label="Action" variant='filled' size='small' value={'Update(Orders, OrderId, OrderData)'} fullWidth/>
