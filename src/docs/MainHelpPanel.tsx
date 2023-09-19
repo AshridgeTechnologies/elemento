@@ -11,17 +11,19 @@ import DataTypes from './overview/DataTypes'
 import Projects from './overview/Projects'
 import WorkingWithProjects from './howTo/Working with Projects'
 import Apps from './overview/Apps'
+import DataStorage from './overview/DataStorage'
 
 const MainHelpPanel = (props: { showTitleBar?: boolean }) =>
     <HelpPanel showTitleBar={props.showTitleBar}>
         <WhatIsElemento/>
-        <ElementoStudio/>
         <GettingStarted/>
+        <ElementoStudio/>
         <Projects/>
         <Apps/>
         <Elements/>
         <Formulas/>
         <DataTypes/>
+        <DataStorage/>
         <WorkingWithProjects/>
         <ControlReference/>
         <FunctionReference/>

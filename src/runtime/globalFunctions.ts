@@ -63,7 +63,6 @@ export const globalFunctions = {
 
     Sub(...args: DecimalVal[]): DecimalOrNumber {
         return decimalOp('minus', undefined, ...args)
-
     },
 
     Mult(...args: DecimalVal[]): DecimalOrNumber {

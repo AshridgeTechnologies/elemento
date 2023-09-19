@@ -14,7 +14,7 @@ const goForward = ()=> history.forward()
 
 function HelpContents({items, selected, onSelected}: {items: ContentsItem[], selected: string | null, onSelected: (id: string) => void}) {
     const treeItem = ({id, title, children = []}: ContentsItem) =>
-        <TreeItem nodeId={id} label={title} key={id} onClick={() => onSelected(id)}>
+        <TreeItem nodeId={id} label={title} key={id} onClick={() => onSelected(id)} sx={{marginTop: '1rem', fontSize: '0.8rem'}}>
             {children.map(treeItem)}
         </TreeItem>
 
@@ -81,11 +81,11 @@ export default function HelpPanel({children, showTitleBar = false}: { children: 
         const sectionElements = Array.from(element.querySelectorAll('section'))
         const subSectionsOf = (el: HTMLElement): ContentsItem[] => Array.from(el.querySelectorAll('article')).map(el => ({
             id: el.id,
-            title: el.querySelector('h5')?.textContent || '',
+            title: el.querySelector('h2')?.textContent || '',
         }))
         return sectionElements.map(el => ({
             id: el.id,
-            title: el.querySelector('h4')?.textContent || '',
+            title: el.querySelector('h1')?.textContent || '',
             children: subSectionsOf(el)
         }))
     }
@@ -116,11 +116,11 @@ export default function HelpPanel({children, showTitleBar = false}: { children: 
             <Box display='flex' flexDirection='row' height='100%' sx={{position: 'relative'}}>
                 <NavButtons/>
                 <Box flex='1' className='helpContent' minWidth='25ch' height='calc(100% - 1rem)' paddingTop='1rem'
-                     sx={{backgroundColor: '#eee'}}>
+                     sx={{backgroundColor: '#f8fafc', color: '#64748b'}}>
                     <HelpContents items={helpItems} selected={selectedId} onSelected={onSelected}/>
                 </Box>
                 <Box flex='4' className='helpText' ref={helpTextPanel} height='100%' padding='0 1rem' overflow='auto'
-                     onScroll={onScroll}>
+                     onScroll={onScroll} color='#334155'>
                     {children}
                 </Box>
             </Box>

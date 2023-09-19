@@ -62,7 +62,7 @@ export default () =>
             </NLItem>
         </NamedList>
 
-        <MinorHeading>Structured data types</MinorHeading>
+        <MinorHeading id='structured-data-types'>Structured data types</MinorHeading>
         <NamedList>
             <NLItem name='list'>
                 <Para>A collection of other data items, in a particular order, which can be accessed by their position
@@ -89,11 +89,12 @@ export default () =>
         <MinorHeading>Project data types</MinorHeading>
         <Para>These can be defined within a Data Types section under the Project.
             They are based on one of the built-in data types above, but add further rules about the data values allowed.
-        The rules that can be added depend on the base data type.</Para>
+            The rules that can be added depend on the base data type.</Para>
         <Para>For example, a data type based on <code>text</code> can define the minimum and maximum length,
             or a data type based on <code>number</code> can define the minimum and maximum number values allowed.
         </Para>
-        <Para>A data type based on <code>record</code> would have other data types inside it to specify the names and rules for the data items it contains.</Para>
+        <Para>A data type based on <code>record</code> would have other data types inside it to specify the names and rules for the data items it
+            contains.</Para>
         <Para>Project data types can be used to validate the data entered in form fields, and also to generate forms automatically.</Para>
 
     </Section>

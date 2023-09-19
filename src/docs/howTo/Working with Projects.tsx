@@ -10,53 +10,80 @@ export default () =>
         <SubHeading>Introduction</SubHeading>
         <Para>This section aims to tell you everything you need to know to create, save and re-open Projects in the
             Elemento Studio,
-            and also how to store them in GitHub (a widely-used system for storing program code) and publish them for
+            and also how to store them in <Link href='https://github.com/'>GitHub</Link> (a widely-used system for storing program code) and publish
+            them for
             others to use.
         </Para>
 
         <SubSection id='creating-new-project'>
             <SubHeading>Creating a new Project</SubHeading>
-            <Para>A Project is stored as a set of files in a folder on your computer disk.
-                When you create a new Project in Elemento Studio, it asks you to create this folder and give it
-                permission to access the files in it.
+            <Para>A new Project is stored in a private area managed by the browser.
                 Here are the steps in detail:
             </Para>
             <BulletList>
                 <li>Click the File menu button, then the New option</li>
-                <li>In the <b>Create new project</b> box that appears, click the Choose button</li>
-                <li>Use the file chooser to create a new folder on your computer for the project files, then click
+                <li>In the <b>Create new project</b> box that appears, enter a name for the Project.
+                    This must not be the same as another Project in the private project area.
+                </li>
+                <li>Click the Create button</li>
+                <li>The main Studio page will show the new bare-bones Project, with just one page and a title</li>
+            </BulletList>
+        </SubSection>
+
+        <SubSection id='saving-project'>
+            <SubHeading>Saving a Project to your computer disk</SubHeading>
+            <Para>You can save a new copy of a Project in a set of files in a folder on your computer disk.
+                When you save a Project in Elemento Studio, it asks you to create this folder and give it
+                permission to access the files in it.
+                Here are the steps in detail:
+            </Para>
+            <BulletList>
+                <li>Click the File menu button, then the Save as option</li>
+                <li>In the <b>Save project as</b> box that appears, click the Choose button</li>
+                <li>Use the file chooser to create a new folder on your computer for the Project files, then click
                     Select
                 </li>
                 <li>When a box with "Let site edit files?" appears, give Elemento permission to access the folder by
                     clicking the Edit Files button
                 </li>
-                <li>Finally, click the Create button</li>
-                <li>The main Studio page will show the new bare-bones project, with just one page and a title</li>
+                <li>Finally, click the Save button</li>
+                <li>The main Studio page will show the new copy of the Project, which will look exactly the same as the old one.</li>
             </BulletList>
+            <Para>Note: if you close and come back to the Project after saving it in a new place, make sure you work on the right copy.
+                As with copies of spreadsheets or other documents, it is easy, and annoying, to find you have been changing the wrong one.</Para>
         </SubSection>
 
         <SubSection id='opening-project'>
             <SubHeading>Opening a Project on your computer</SubHeading>
-            <Para>If you already have an Elemento project on your computer, which you have created or got from GitHub,
+            <Para>If you already have an Elemento Project on your computer, which you have created or got from GitHub,
                 you can go back to it.</Para>
             <BulletList>
                 <li>Click the File menu button, then the Open option</li>
-                <li>In the <b>Create new project</b> box that appears, click the Choose button</li>
-                <li>Use the file chooser to find and click on the folder that contains the project files, then click
-                    Select
+                <li>In the <b>Open project</b> box that appears, you can access either Projects stored in your browser,
+                    or Projects stored in a folder on your computer disk.
                 </li>
-                <li>When a box with "Let site edit files?" appears, give Elemento permission to access the folder by
-                    clicking the Edit Files button
+                <li>To open a Project stored in your browser, just click its name in the list.</li>
+                <li>To open a Project stored on your computer disk:
+                    <BulletList>
+                        <li>Click the Choose Folder button at the bottom</li>
+                        <li>Use the file chooser to find and click on the folder that contains the Project files, then click
+                            Select
+                        </li>
+                        <li>When a box with "Let site edit files?" appears, give Elemento permission to access the folder by
+                            clicking the Edit Files button
+                        </li>
+                    </BulletList>
                 </li>
-                <li>The main Studio page shows the project</li>
+                <li>The main Studio page shows the Project you have opened.</li>
             </BulletList>
         </SubSection>
 
         <SubSection id='saving-copying-project'>
             <SubHeading>Saving or copying a Project on your computer</SubHeading>
-            <Para>You don't need to do anything to save the Project - Elemento Studio updates the files immediately when
+            <Para>You don't need to do anything to save changes while you are working on the Project - Elemento Studio updates the files immediately
+                when
                 you change something.</Para>
-            <Para>If you want to copy the Project (maybe for backup, sharing or to use as a base for a new Project) or
+            <Para>If you want to copy a Project stored on your computer disk (maybe for backup, sharing or to use as a base for a new Project) or
                 delete it, you don't need the Elemento Studio.
                 Just use the normal File Explorer or Finder on your computer to do what you want with the folder.</Para>
         </SubSection>
@@ -65,28 +92,49 @@ export default () =>
             <SubHeading>Introduction to GitHub</SubHeading>
             <Para>GitHub is a website where you can store code and associated files used in software.
                 It is owned by Microsoft, and used by millions of developers to store and manage their software. </Para>
-            <Para>Storing a Project in GitHub is <b>completely optional</b>, but it ensures your project is safely
+            <Para>Storing a Project in GitHub is <b>completely optional</b>, but it ensures your Project is safely
                 backed up and allows you to publish it for others.</Para>
-            <Para>Note that currently Elemento only works with public projects on GitHub, so anyone can look at it, and
+            <Para>Note that currently Elemento only works with public Projects on GitHub, so anyone can look at it, and
                 run it or download it.
-                For many Projects this will not matter, but the ability to use private projects will be added to
+                For many Projects this will not matter, but the ability to use private Projects will be added to
                 Elemento soon.</Para>
             <Para>
-                You need to create an account to use it, but that is no more difficult than on any other website.
-                A basic account is free, and lets you do most things you will want to do with Elemento.</Para>
+                You need to create an account to store your Projects in GitHub, but that is no more difficult than on any other website.
+                A basic account is free, and lets you do most things you will want to do with Elemento.
+                You can get public Projects from GitHub without an account.</Para>
             <Para>On the <Link href='https://github.com'>GitHub site</Link> you will find a huge number of options and
                 tools, but you should not need them
                 for most apps. Elemento Studio can talk directly to GitHub to do the three most important things:</Para>
             <BulletList>
-                <li>Store a Project in GitHub, and update it when you change it</li>
                 <li>Get a Project from GitHub</li>
+                <li>Store a Project in GitHub, and update it when you change it</li>
                 <li>Update a Project from GitHub if someone else has changed it</li>
+            </BulletList>
+        </SubSection>
+
+
+        <SubSection id='getting-from-github'>
+            <SubHeading>Getting a Project from GitHub</SubHeading>
+            <Para>If you want to look at or work on someone else's (public) Project, or work on your own Project on
+                another computer,
+                you will need to download it.
+            </Para>
+            <Para>You don't need an account to get a public Project from GitHub.</Para>
+            <Para>You will need the GitHub URL of the repository where the Project is stored.
+                This will look something like <code>https://github.com/username/repository-name</code>. Here are the
+                steps:</Para>
+            <BulletList>
+                <li>Click the File menu button, then the Get from GitHub option</li>
+                <li>In the <b>Get project from GitHub</b> box that appears, paste or type the GitHub URL</li>
+                <li>Click the Open button - downloading the Project will take a few seconds</li>
+                <li>The main Studio page will show the Project</li>
             </BulletList>
         </SubSection>
 
         <SubSection id='creating-account-github'>
             <SubHeading>Creating a GitHub account</SubHeading>
-            <Para>This has a couple of unusual steps, but it is very easy.</Para>
+            <Para>You will need to create an account to store projects you have created in GitHub.
+                This has a couple of unusual steps, but it is very easy.</Para>
             <BulletList>
                 <li>Go to the <Link href='https://github.com/signup' target='_blank'>GitHub signup page</Link></li>
                 <li>Enter your email address and choose a password</li>
@@ -155,31 +203,6 @@ export default () =>
 
         </SubSection>
 
-        <SubSection id='getting-from-github'>
-            <SubHeading>Getting a Project from GitHub</SubHeading>
-            <Para>If you want to look at or work on someone else's (public) Project, or work on your own Project on
-                another computer,
-                you will need to download it to a folder. So it's like creating a new project and then immediately
-                filling it with a Project from GitHub.
-            </Para>
-            <Para>You will need the GitHub URL of the repository where the project is stored.
-                This will look something like <code>https://github.com/username/repository-name</code>. Here are the
-                steps:</Para>
-            <BulletList>
-                <li>Click the File menu button, then the Download from GitHub option</li>
-                <li>In the <b>Get project from GitHub</b> box that appears, paste or type the GitHub URL</li>
-                <li>click the Choose button</li>
-                <li>Use the file chooser to create a new folder on your computer for the project files, then click
-                    Select
-                </li>
-                <li>When a box with "Let site edit files?" appears, give Elemento permission to access the folder by
-                    clicking the Edit Files button
-                </li>
-                <li>Finally, click the Get button - downloading the Project will take a few seconds</li>
-                <li>The main Studio page will show the Project</li>
-            </BulletList>
-
-        </SubSection>
 
         <SubSection id='updating-from-github'>
             <SubHeading>Updating a Project from GitHub</SubHeading>

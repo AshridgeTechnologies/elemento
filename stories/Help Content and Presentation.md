@@ -15,21 +15,20 @@ Requirements
 - ✅ Getting Started
 - ✅ Control -> Element
 - ✅ Projects overview
-- Elements (controls) up to date
-- Formulas up to date
+- ✅ Elements (controls) up to date
+- ✅ Formulas up to date
 - ✅ Data Types - built in
 - ✅ User data types
 - ✅ Apps
 - ✅ Working with Projects
 - ✅ Publishing Projects to the web
-- Working with Elements
+- ✅ Storing Data
+- ✅ Updates for projects stored in the browser
 - Cross-linked throughout
-- Start page Help in an iframe on the right
 - ✅ Anchors without help- prefix
-- Improved formatting - look at https://syntax.tailwindui.com/
+- ✅ Improved formatting
 - ✅ Hash in address bar syncs with selected item in tree
 - ✅ Back/forward buttons floating at top-right
-- Links in Tools can open another Tool window (OR a new window)
 
 Further requirements
 --------------------

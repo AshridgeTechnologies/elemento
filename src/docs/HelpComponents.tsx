@@ -3,21 +3,23 @@ import {Link, Typography} from '@mui/material'
 import {startCase} from 'lodash'
 
 const idIfPresent = (id?: string) => id ? {id} : {}
-export const Section = ({id, children}: {id: string, children: any}) => <section id={id}>{children}</section>
+export const Section = ({id, children}: {id: string, children: any}) =>
+    <section id={id} style={{paddingBottom: '2rem', borderBottom:'1px solid #e2e8f0', maxWidth: '50em'}}>{children}</section>
 export const Summary = ({id, children}: {id: string, children: any}) => <article id={id}>
         <MinorHeading>Summary</MinorHeading>
         {children}
 </article>
 export const SubSection = ({id, children}: {id: string, children: any}) => <article id={id}>{children}</article>
-export const Heading = ({children}: {children: any }) => <Typography variant="h4" fontSize='1.75rem' mt='1.5rem' mb='0.8rem'>{children}</Typography>
-export const SubHeading = ({children}: {children: any }) => <Typography variant="h5" fontSize='1.4rem' mt='1rem' mb='0.8rem'>{children}</Typography>
-export const MinorHeading = ({id, children}: {id?: string, children: any }) => <Typography variant="h6" id={id}>{children}</Typography>
-export const Para = ({id, children}: {id?: string, children: any }) => <Typography {...idIfPresent(id)} variant="body1" component='div' gutterBottom>{children}</Typography>
+export const Heading = ({children}: {children: any }) => <Typography variant="h1" fontSize='2rem' mt='2.5rem' mb='2rem' color='#0F172A'>{children}</Typography>
+export const SubHeading = ({children}: {children: any }) => <Typography variant="h2" fontSize='1.5rem' mt='2rem' mb='1.5rem' color='#0F172A'>{children}</Typography>
+export const MinorHeading = ({id, children}: {id?: string, children: any }) => <Typography variant="h3" id={id} fontSize='1.2rem' mt='1.5rem' mb='1rem' color='#0F172A'>{children}</Typography>
+export const Para = ({id, children}: {id?: string, children: any }) =>
+    <Typography {...idIfPresent(id)} variant="body1" component='div' marginBottom='1.25em' color='#334155'>{children}</Typography>
 export const BulletList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ul>{children}</ul></Typography>
 export const NumberedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div'><ol>{children}</ol></Typography>
 export const NamedList = ({children}: {children: any }) => <Typography variant="body1" gutterBottom component='div' marginLeft='2em'><dl>{children}</dl></Typography>
-export const NLItem = ({name, children}: {name: string, children: any}) => <>
-        <Typography variant='body1' fontWeight='bold'>{name}</Typography>
+export const NLItem = ({name, children}: {name: ReactNode, children: any}) => <>
+        <Typography variant='body1' fontWeight='bold' fontSize='1.2em' marginBottom='0.25em'>{name}</Typography>
         <Para>{children}</Para>
 </>
 export const HelpLink = ({id, children}: {id: string, children?: any}) => <Link href={'#' + id}>{children || startCase((id))}</Link>
