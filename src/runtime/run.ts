@@ -28,8 +28,9 @@ export const run = (elementType: React.FunctionComponent,
         root = createRoot(container)
     }
     const appContext = new DefaultAppContext(null)
+    const resourceUrl = '/studio/preview/' + ASSET_DIR
     // @ts-ignore
-    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl: ASSET_DIR, selectedComponentId, onComponentSelected, appStoreHook})
+    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
     root.render(appRunner)
 }
 

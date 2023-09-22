@@ -21,6 +21,7 @@ await ctx.watch()
 
 let { host, port } = await ctx.serve({
     servedir: outdir,
+    fallback: `${outdir}/run/index.html`  // to let the Run app from GitHub link work
 })
 
 console.log('Server running on port', port)

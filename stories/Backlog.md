@@ -3,7 +3,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Fix run from GitHub
 - Insert menu can overflow the page
 - Copying layouts does not change names of contents
 - Duplicate names create errors on action function names
@@ -261,3 +260,4 @@ Bugs fixed
 - Select in copied page selects the corresponding element in the page copied from
 - Select does not respond to alt-click to highlight
 - Bug: Incomplete Select blows up editor - see file
+- Fix run from GitHub

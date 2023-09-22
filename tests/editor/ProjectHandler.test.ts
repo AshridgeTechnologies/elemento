@@ -36,7 +36,10 @@ beforeEach(() => {
             write(data: any) {return Promise.resolve()},
             readText() {return Promise.resolve(clipboardData)},
             read() {return Promise.resolve({} as ClipboardItems)},
-        } as Clipboard
+        } as Clipboard,
+        permissions: {
+            query() { return Promise.resolve({state: 'granted'} as PermissionStatus)}
+        } as Permissions
     } as Navigator
 })
 

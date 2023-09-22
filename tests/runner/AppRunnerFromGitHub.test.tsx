@@ -60,7 +60,7 @@ beforeEach(() => {
 test('shows loading until app loads then shows app on page', async () => {
     expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
     await actWait(500)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne.js')
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne/AppOne.js')
     expectEl('FirstText').toHaveTextContent('App from GitHub')
 })
 

@@ -28,7 +28,7 @@ export default function AppRunnerFromGitHub({username, repo, appName, appContext
         return <p>Finding latest version...</p>
     }
 
-    const codeUrl = `${appUrl}/${appName}.js`
+    const codeUrl = `${appUrl}/${appName}/${appName}.js`
     const resourceUrl = `${appUrl}/${ASSET_DIR}`
     return <AppRunnerFromCodeUrl url={codeUrl} resourceUrl={resourceUrl} appContext={appContext}/>
 }

@@ -4,6 +4,7 @@ import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {runForDev} from '../runtime/run'
+import {ASSET_DIR} from '../shared/constants'
 
 type Properties = {windowUrlPath: string}
 
@@ -23,9 +24,11 @@ export default function AppMain({windowUrlPath}: Properties) {
     if (hostServerMatch) {
         const [, firstPart, appName] = hostServerMatch
         const pathPrefix = `${firstPart}${appName}`
-        const url = '/' + pathPrefix + '/' + appName + '.js'
-        console.log('Loading app from', url)
-        return createElement(AppRunnerFromCodeUrl, {url, appContext: getAppContext(pathPrefix)})
+        const appCodeUrl = '/' + pathPrefix + '/' + appName + '.js'
+        const resourceUrl = `${firstPart}/${ASSET_DIR}`
+
+        console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)
+        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, appContext: getAppContext(resourceUrl)})
     }
 
     return createElement('h4', null, 'Sorry - we could not find the Elemento app you are trying to run from ', windowUrlPath)
