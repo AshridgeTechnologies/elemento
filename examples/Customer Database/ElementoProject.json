@@ -1,0 +1,1061 @@
+{
+  "id": "project_1",
+  "name": "Customer Database Example",
+  "kind": "Project",
+  "properties": {},
+  "elements": [
+    {
+      "id": "app_1",
+      "name": "Customer App",
+      "kind": "App",
+      "properties": {
+        "startupAction": {
+          "expr": "let existingCustomers = await Customers.Query({})\nexistingCustomers.length === 0 && DataStore.addAll('Customers', InitialData())"
+        },
+        "author": "pb12"
+      },
+      "elements": [
+        {
+          "id": "page_1",
+          "name": "Main Page",
+          "kind": "Page",
+          "properties": {},
+          "elements": [
+            {
+              "id": "text_1",
+              "name": "Title",
+              "kind": "Text",
+              "properties": {
+                "content": "Customer Database",
+                "fontSize": 26
+              }
+            },
+            {
+              "id": "layout_1",
+              "name": "Page Layout",
+              "kind": "Layout",
+              "properties": {
+                "horizontal": true,
+                "width": "100%"
+              },
+              "elements": [
+                {
+                  "id": "layout_3",
+                  "name": "List Layout",
+                  "kind": "Layout",
+                  "properties": {
+                    "width": "30%"
+                  },
+                  "elements": [
+                    {
+                      "id": "button_3",
+                      "name": "New Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "New Customer",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "CustomerList.Reset()\nCustomerForm.Reset()"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "list_1",
+                      "name": "Customer List",
+                      "kind": "List",
+                      "properties": {
+                        "width": "100%",
+                        "selectable": true,
+                        "items": {
+                          "expr": "Sort(Customers.Query({}), $item.LastName)"
+                        },
+                        "selectAction": {
+                          "expr": "CustomerForm.Reset()"
+                        }
+                      },
+                      "elements": [
+                        {
+                          "id": "text_3",
+                          "name": "Customer List Item",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$item.LastName + \", \" + $item.FirstName"
+                            }
+                          },
+                          "elements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "layout_2",
+                  "name": "Customer Details Layout",
+                  "kind": "Layout",
+                  "properties": {
+                    "width": "70%"
+                  },
+                  "elements": [
+                    {
+                      "id": "form_1",
+                      "name": "Customer Form",
+                      "kind": "Form",
+                      "properties": {
+                        "dataType": {
+                          "expr": "Types.CustomerType"
+                        },
+                        "label": "Customer Details",
+                        "initialValue": {
+                          "expr": "CustomerList.selectedItem"
+                        }
+                      },
+                      "elements": [
+                        {
+                          "id": "text_24",
+                          "name": "All error messages",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": " $form.errors"
+                            },
+                            "fontSize": 13,
+                            "color": "red",
+                            "display": true
+                          },
+                          "elements": []
+                        },
+                        {
+                          "id": "text_26",
+                          "name": "Form error messages",
+                          "kind": "Text",
+                          "properties": {
+                            "content": {
+                              "expr": "$form.errors?._self"
+                            },
+                            "fontSize": 13,
+                            "color": "red"
+                          },
+                          "elements": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "button_1",
+                      "name": "Save Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Save",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "await Update(Customers, CustomerList.selectedItem.id, CustomerForm.value)\nCustomerForm.Reset()"
+                        },
+                        "display": {
+                          "expr": "CustomerList.selectedItem"
+                        },
+                        "enabled": {
+                          "expr": "CustomerForm.valid && CustomerForm.modified"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_2",
+                      "name": "Add Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Add",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "let newItem = await Add(Customers, CustomerForm.value)\nCustomerList.Set(newItem)\nCustomerForm.Reset()"
+                        },
+                        "display": {
+                          "expr": "Not(CustomerList.selectedItem)"
+                        },
+                        "enabled": {
+                          "expr": "And(CustomerForm.valid, CustomerForm.modified)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "browserdatastore_1",
+          "name": "Data Store",
+          "kind": "BrowserDataStore",
+          "properties": {
+            "databaseName": "CustomerExample",
+            "collectionNames": [
+              "Customers"
+            ]
+          },
+          "elements": []
+        },
+        {
+          "id": "collection_1",
+          "name": "Customers",
+          "kind": "Collection",
+          "properties": {
+            "dataStore": {
+              "expr": "DataStore"
+            },
+            "collectionName": "Customers",
+            "display": false
+          },
+          "elements": []
+        },
+        {
+          "id": "functionimport_1",
+          "name": "InitialData",
+          "kind": "FunctionImport",
+          "properties": {
+            "source": "InitialData.js"
+          },
+          "elements": []
+        }
+      ]
+    },
+    {
+      "id": "datatypes_1",
+      "name": "Types",
+      "kind": "DataTypes",
+      "properties": {},
+      "elements": [
+        {
+          "id": "recordtype_1",
+          "name": "Address Type",
+          "kind": "RecordType",
+          "properties": {
+            "description": "A UK postal address"
+          },
+          "elements": [
+            {
+              "id": "texttype_1",
+              "name": "Address Line 1",
+              "kind": "TextType",
+              "properties": {
+                "description": "First line of the address, house name/number and street",
+                "required": true,
+                "minLength": 3,
+                "maxLength": 50
+              },
+              "elements": []
+            },
+            {
+              "id": "texttype_2",
+              "name": "Address Line 2",
+              "kind": "TextType",
+              "properties": {
+                "description": "Second line of the address",
+                "required": false,
+                "minLength": 3,
+                "maxLength": 50
+              },
+              "elements": []
+            },
+            {
+              "id": "texttype_3",
+              "name": "City",
+              "kind": "TextType",
+              "properties": {
+                "description": "The town or city",
+                "required": true,
+                "maxLength": 30
+              },
+              "elements": []
+            },
+            {
+              "id": "texttype_4",
+              "name": "Postcode",
+              "kind": "TextType",
+              "properties": {
+                "description": "The full post code",
+                "minLength": 5,
+                "maxLength": 8
+              },
+              "elements": [
+                {
+                  "id": "rule_1",
+                  "name": "Postcode format rule",
+                  "kind": "Rule",
+                  "properties": {
+                    "description": "Must be a valid postcode",
+                    "formula": {
+                      "expr": "$item.match(/[A-Z][A-Z]?\\d\\d?[A-Z]? ?\\d[A-Z][A-Z]/)"
+                    }
+                  },
+                  "elements": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "recordtype_2",
+          "name": "Customer Type",
+          "kind": "RecordType",
+          "properties": {},
+          "elements": [
+            {
+              "id": "texttype_5",
+              "name": "First Name",
+              "kind": "TextType",
+              "properties": {
+                "minLength": 2,
+                "required": true,
+                "maxLength": 20
+              },
+              "elements": []
+            },
+            {
+              "id": "texttype_6",
+              "name": "Last Name",
+              "kind": "TextType",
+              "properties": {
+                "minLength": 2,
+                "required": true,
+                "maxLength": 30
+              },
+              "elements": []
+            },
+            {
+              "id": "datetype_1",
+              "name": "Date Of First Order",
+              "kind": "DateType",
+              "properties": {
+                "description": "Must be after beginning of 2017",
+                "min": "2017-01-01T00:00:00.000Z"
+              },
+              "elements": []
+            },
+            {
+              "id": "truefalsetype_1",
+              "name": "Existing Customer",
+              "kind": "TrueFalseType",
+              "properties": {
+                "description": "Is this a pre-merger customer?"
+              },
+              "elements": []
+            },
+            {
+              "id": "choicetype_1",
+              "name": "Region",
+              "kind": "ChoiceType",
+              "properties": {
+                "description": "Sales region",
+                "required": true,
+                "values": [
+                  "North",
+                  "South",
+                  "Central"
+                ]
+              },
+              "elements": []
+            },
+            {
+              "id": "numbertype_1",
+              "name": "Credit Limit",
+              "kind": "NumberType",
+              "properties": {
+                "description": "Credit limit (£)",
+                "max": 1000,
+                "min": 100,
+                "format": "integer",
+                "required": true
+              },
+              "elements": []
+            },
+            {
+              "id": "decimaltype_1",
+              "name": "Opening Balance",
+              "kind": "DecimalType",
+              "properties": {
+                "required": true,
+                "description": "Opening Balance",
+                "decimalPlaces": 2
+              },
+              "elements": []
+            },
+            {
+              "id": "rule_2",
+              "name": "Balance within limit",
+              "kind": "Rule",
+              "properties": {
+                "description": "Opening Balance must be less than Credit Limit",
+                "formula": {
+                  "expr": "Or(!$item.OpeningBalance, ($item.OpeningBalance <= $item.CreditLimit))"
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "recordtype_3",
+              "name": "Invoice Address",
+              "kind": "RecordType",
+              "properties": {
+                "basedOn": {
+                  "expr": "AddressType"
+                },
+                "description": "Purchasing department address"
+              },
+              "elements": []
+            },
+            {
+              "id": "recordtype_4",
+              "name": "Delivery Address",
+              "kind": "RecordType",
+              "properties": {
+                "basedOn": {
+                  "expr": "AddressType"
+                },
+                "description": "Delivery location address"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "_TOOLS",
+      "name": "Tools",
+      "kind": "ToolFolder",
+      "properties": {},
+      "elements": [
+        {
+          "id": "tool_1",
+          "name": "Quick Tour",
+          "kind": "Tool",
+          "properties": {
+            "showWhenProjectOpened": true,
+            "maxWidth": "60em"
+          },
+          "elements": [
+            {
+              "id": "page_2",
+              "name": "Overview Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_5",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Customer Database Example Project",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_6",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "This example shows how you can build an app to store records in a database, using Data Types to define the fields and generate forms automatically.\n\nOn the left side of the page  you can see how it is built, and examine the elements that define what it does.  On the right hand side you can try out the preview of the app - add a new customer or update an existing one.  \n\nClick the Help button above to find out more about anything in the example.\n\nGo ahead and experiment with the app - just change anything you like and see what happens. If it all goes wrong, you can just download this example again and start over.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "button_4",
+                  "name": "Next Button",
+                  "kind": "Button",
+                  "properties": {
+                    "content": "Next",
+                    "appearance": "outline",
+                    "action": {
+                      "expr": "ShowPage(DataTypesPage)"
+                    }
+                  },
+                  "elements": []
+                }
+              ]
+            },
+            {
+              "id": "page_3",
+              "name": "Data Types Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_7",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Data Types",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_8",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The app is based around definitions of the data it uses.  You can see these in the Navigator at the left of the page, under 'Types'.  \n\nCustomer and Address are record types that contain several simple fields.  If you expand each one and click each field in turn, you can see how the various settings define the types of data allowed.  The Data Types section in the Help explains a lot more.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_4",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_7",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(OverviewPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_5",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(DataTypesInterestingPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_5",
+              "name": "Data Types Interesting Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_11",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Data Types - Interesting Points",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_12",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "All Data Types have a Description and a Required property, but the other properties depend on the particular type.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_13",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Customer Type, which is a Record Type, contains both simple types and another Record Type, Address Type.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_14",
+                  "name": "Para 3",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "All types can contain Rules, which allow you to set any conditions for the data in that type.  The condition is a formula which must be true if the value is correct.  The Rule also has a Description which is displayed as an error message when necessary.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_23",
+                  "name": "Para 4",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "In Customer Type there is a rule called \"Balance within limit\" that does a cross-check between two field values.  \nIn Address Type, the Postcode field has a rule that defines the allowed format.  This rule is an example of how you can use almost any JavaScript expression if you need to,  and have someone who knows how to, so there are no artificial limits to what you can do.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_5",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_8",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(DataTypesPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_9",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(DataStoragePage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_8",
+              "name": "Data Storage Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_27",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Data Storage",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_28",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The customer records are managed by a collection called Customers.  The collection is connected to a backing store, Data Store.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_29",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "There are various types of data store available in Elemento - this one is a Browser Data Store.  It stores data in the IndexedDB local database provided by the browser.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_8",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_14",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(DataTypesInterestingPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_15",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(CustomerListPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_9",
+              "name": "Customer List Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_30",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Customer List",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_31",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Expand Main Page and the elements under it until you find Customer List.  This shows the list of Customers on the left of the app page.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_32",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The list's Items property is set to a formula that gets all the items from the Customer collection, and sorts them by Last Name.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_35",
+                  "name": "Para 3",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The list contains a Text element that is repeated for each item.  Its content is a formula that joins the Last Name and First Name together.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_9",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_16",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(DataStoragePage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_17",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(FormPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_6",
+              "name": "Form Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_15",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Forms",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_16",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Expand Main Page and the elements under it until you find Customer Form.  You can define a form by adding elements manually, but here we set the Data Type property to automatically generate the fields.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_17",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The form's Initial Value property has a formula which refers to the CustomerList element's selected value.  This makes the form show the item selected in the list.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_33",
+                  "name": "Para 3",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "To show an empty form for entering a new customer, the New Customer button simply resets the Customer List to have no item selected."
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_6",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_10",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(CustomerListPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_11",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(FormsInterestingPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_7",
+              "name": "Forms Interesting Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_19",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Forms - Interesting Points",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_20",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The Description and Required properties of the Data Type create a help tooltip and a required marker on the form field.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_21",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Error messages are displayed if you enter an invalid value, or leave a required field without entering a value.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_22",
+                  "name": "Para 3",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "The form has a manually defined element, Form error messages, which is displayed after the elements generated from the Data Type.\nThis element uses a formula to display the form-level error messages.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_37",
+                  "name": "Para 3a",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Theres is also an element, All error messages, which is hidden by having Display set to No.\nThis element uses a formula to display all the error messages, and can be set to Display Yes to help with debugging.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_25",
+                  "name": "Para 4",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "Only one of the Add and Save buttons with the form is displayed, depending on whether you are editing a new customer or an existing one.  The buttons are only enabled when the form is valid and has been modified.",
+                    "width": "100%"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_7",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_12",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(FormPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_13",
+                      "name": "Next Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Next",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(FinishPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "page_4",
+              "name": "Finish Page",
+              "kind": "Page",
+              "properties": {},
+              "elements": [
+                {
+                  "id": "text_9",
+                  "name": "Title",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "That's it!",
+                    "fontSize": 24
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_10",
+                  "name": "Para 1",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "OK - that's the end of the tour.  Thanks for following along to the end."
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "text_36",
+                  "name": "Para 2",
+                  "kind": "Text",
+                  "properties": {
+                    "content": "To find out more, you can use the Help page here in the Studio, or try some of the other resources at https://elemento.online/learn"
+                  },
+                  "elements": []
+                },
+                {
+                  "id": "layout_10",
+                  "name": "Layout 4",
+                  "kind": "Layout",
+                  "properties": {
+                    "horizontal": true
+                  },
+                  "elements": [
+                    {
+                      "id": "button_18",
+                      "name": "Back Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Back",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(FormsInterestingPage)"
+                        }
+                      },
+                      "elements": []
+                    },
+                    {
+                      "id": "button_19",
+                      "name": "Goto Start Button",
+                      "kind": "Button",
+                      "properties": {
+                        "content": "Go to Start",
+                        "appearance": "outline",
+                        "action": {
+                          "expr": "ShowPage(OverviewPage)"
+                        }
+                      },
+                      "elements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

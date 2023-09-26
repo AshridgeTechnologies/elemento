@@ -2,7 +2,7 @@ import MenuItem from '@mui/material/MenuItem'
 import lodash from 'lodash';
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
-import {Divider, PopoverOrigin, Typography} from '@mui/material'
+import {PopoverOrigin, Typography} from '@mui/material'
 import {ElementId, ElementType, InsertPosition, InsertPositions} from '../model/Types'
 import {editorMenuPositionProps} from './Editor'
 import {editorElement} from './EditorElement'
@@ -66,7 +66,7 @@ export function InsertMenu({anchorEl, anchorOrigin, transformOrigin, open, onClo
             <MenuSubTitle>...the selected element</MenuSubTitle>
         </div>
         <div style={{display: "flex", flexDirection: "column", flexGrow: 0, borderLeft: "1px solid #aaa"}}/>
-        <div data-testid='insertItems' style={{display: "flex", flexDirection: "column"}}>
+        <div data-testid='insertItems' style={{display: "flex", flexDirection: "column", flexWrap: "wrap", maxHeight: 350}}>
             {React.Children.toArray(items.map(menuItem))}
     </div>
 

@@ -36,7 +36,7 @@ const check = (validator: BaseType<any, any>, item: any) => validator.validate(i
 const errors = (validator: BaseType<any, any>, item: any) => check(validator, item) as string[]
 
 function aProject(type: BaseTypeElement<any>) {
-    return Project1.new([new DataTypes('dt1', dataTypesName, {}, [type])], 'p1', 'The Project', {})
+    return Project1.new([new DataTypes('dt1', dataTypesName, {}, [type])], 'The Project', 'p1', {})
 }
 
 test('generates TextType with expected validation', async () => {

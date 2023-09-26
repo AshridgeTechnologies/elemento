@@ -1,7 +1,8 @@
 import {valueObj} from '../testutil/testHelpers'
 import dataFunctions from '../../src/runtime/dataFunctions'
 
-const mockFn = jest.fn()
+const dataStoreResult = "result"
+const mockFn = jest.fn().mockResolvedValue(dataStoreResult)
 const {Update, Add, AddAll, Remove, Get, GetAll} = dataFunctions
 
 describe('Update single item', () => {
@@ -17,8 +18,9 @@ describe('Add', () => {
 
     test('adds an object with id', () => {
         const elementState = {value: {}, Add: mockFn}
-        Add(elementState, {id: 'x3', a: 50, b: 'Bee'})
+        const result = Add(elementState, {id: 'x3', a: 50, b: 'Bee'})
         expect(elementState.Add).toBeCalledWith({id: 'x3', a: 50, b: 'Bee'})
+        expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -32,8 +34,9 @@ describe('AddAll', () => {
 
     test('adds many objects with ids', () => {
         const elementState = {value: {}, AddAll: mockFn}
-        AddAll(elementState, [{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
+        const result = AddAll(elementState, [{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
         expect(elementState.AddAll).toBeCalledWith([{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
+        expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -46,8 +49,9 @@ describe('AddAll', () => {
 describe('Remove', () => {
     test('removes an object with id', () => {
         const elementState = {value: {}, Remove: mockFn}
-        Remove(elementState, 'x3')
+        const result = Remove(elementState, 'x3')
         expect(elementState.Remove).toBeCalledWith('x3')
+        expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -63,8 +67,9 @@ describe('Update item in collection', () => {
 
     test('updates an object by id', () => {
         const elementState = {value: existingCollection, Update: mockFn}
-        Update(elementState, 'x1', {a: 50, b: 'Bee'})
+        const result = Update(elementState, 'x1', {a: 50, b: 'Bee'})
         expect(elementState.Update).toBeCalledWith('x1', {a: 50, b: 'Bee'})
+        expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {

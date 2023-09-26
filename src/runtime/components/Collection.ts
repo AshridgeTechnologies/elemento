@@ -8,7 +8,7 @@ import DataStore, {
     Id,
     InvalidateAll,
     MultipleChanges,
-    Pending, queryMatcher,
+    pending, queryMatcher,
     Add, Remove,
     Update,
     UpdateNotification
@@ -121,7 +121,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
 
         if (this.dataStore) {
-            this.dataStore.update(this.props.collectionName!, id, safeChanges)
+            return this.dataStore.update(this.props.collectionName!, id, safeChanges)
         }
     }
 
@@ -139,14 +139,16 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             this.updateState({value: newValue})
 
             if (this.dataStore) {
-                this.dataStore.addAll(this.props.collectionName!, addItems)
+                return this.dataStore.addAll(this.props.collectionName!, addItems).then( ()=> addItems )
             }
         } else {
             const [id, itemWithId] = toEntry(item)
             this.updateValue(id as Id, itemWithId)
 
             if (this.dataStore) {
-                this.dataStore.add(this.props.collectionName!, id as Id, itemWithId as object)
+                return this.dataStore.add(this.props.collectionName!, id as Id, itemWithId as object).then( ()=> itemWithId )
+            } else {
+                return itemWithId
             }
         }
     }
@@ -159,7 +161,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
 
         if (this.dataStore) {
-            this.dataStore.remove(this.props.collectionName!, id)
+            return this.dataStore.remove(this.props.collectionName!, id)
         }
     }
 
@@ -170,12 +172,12 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
 
         if (this.dataStore) {
-            const result = new Pending()
-            this.updateValue(id, result)
-
-            this.dataStore.getById(this.props.collectionName!, id).then( data => {
+            const result = pending(this.dataStore.getById(this.props.collectionName!, id).then( data => {
                 this.latest().updateValue(id, data)
-            })
+                return data
+            }))
+
+            this.updateValue(id, result)
             return result
         }
 
@@ -191,11 +193,12 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
                 return storedResult
             }
 
-            const result = new Pending()
-            this.updateQueries(criteriaKey, result)
-            this.dataStore.query(this.props.collectionName!, criteria).then(data => {
+            const result = pending(this.dataStore.query(this.props.collectionName!, criteria).then(data => {
                 this.latest().updateQueries(criteriaKey, data)
-            })
+                return data
+            }))
+            this.updateQueries(criteriaKey, result)
+
             return result
         }
 

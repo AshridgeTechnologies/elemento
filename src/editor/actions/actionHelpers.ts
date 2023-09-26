@@ -3,6 +3,8 @@ import {AlertColor} from '@mui/material'
 import EditorManager from './EditorManager'
 import {projectFileName} from '../../shared/constants'
 
+const OPFS_PROJECTS_DIR = 'GitHub'
+
 export type ShowAlertFn = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => void
 
 export type Optional<T> = {
@@ -21,7 +23,7 @@ export async function chooseDirectory(): Promise<FileSystemDirectoryHandle | nul
 export async function validateDirectory(directory: FileSystemDirectoryHandle | null) {
     // @ts-ignore
     const dirEntry = await directory?.keys().next()
-    return dirEntry.value ? 'Directory is not empty' : null
+    return dirEntry.value ? 'Folder is not empty' : null
 }
 
 export async function validateDirectoryForOpen(directory: FileSystemDirectoryHandle | null) {
@@ -63,3 +65,40 @@ export const doAction = (uiManager: UIManager, description: string, actionFn: ()
     uiManager.onClose()
 }
 export const userCancelledFilePick = (e: any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'
+
+export const internalProjectsDir = async () => {
+    const opfsRoot = await navigator.storage.getDirectory()
+    return opfsRoot.getDirectoryHandle(OPFS_PROJECTS_DIR, {create: true})
+}
+export const internalProject = async (name: string) => {
+    const projectsDir = await internalProjectsDir()
+    return projectsDir.getDirectoryHandle(name)
+}
+export const openFromGitHub = async (url: string, editorManager: EditorManager) => {
+    const repoName = new URL(url).pathname.substring(1)
+    const tidiedRepoName = repoName.replace(/\//, '_').replace(/\.git$/, '')
+    const dateTime = new Date().toISOString().substring(0,19).replace(/[:\-T]/g, '')
+    const dirName = `${tidiedRepoName}_${dateTime}`
+    const projectsDir = await internalProjectsDir()
+    const opfsDirectory = await projectsDir.getDirectoryHandle(dirName, {create: true})
+    return editorManager.getFromGitHub(url, opfsDirectory)
+}
+
+export const createNewProject = async (name: string, editorManager: EditorManager) => {
+    const projectsDir = await internalProjectsDir()
+    const opfsDirectory = await projectsDir.getDirectoryHandle(name, {create: true})
+    return editorManager.newProject(opfsDirectory)
+}
+
+export const validateProjectName = async (name: string | null) => {
+    if (!name) return 'Name cannot be empty'
+    if (name.includes('/')) return 'Name cannot contain /'
+    const projectsDir = await internalProjectsDir()
+    let existingProject: FileSystemDirectoryHandle
+    try {
+        await projectsDir.getDirectoryHandle(name)
+        return 'A project with this name already exists'
+    } catch (e) {
+        return null
+    }
+}

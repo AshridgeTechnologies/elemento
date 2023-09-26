@@ -93,7 +93,7 @@ test('SelectInput stores null value in the app store when cleared', async () => 
     await actWait( () => fireEvent.mouseDown(getByRole('button')))
     await actWait( () => fireEvent.click(within(getByRole('listbox')).getByText('None')))
 
-    expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
+    expect(stateAt('app.page1.sprocket').dataValue).toBe(null)
 } )
 
 test('State class has correct properties', () => {

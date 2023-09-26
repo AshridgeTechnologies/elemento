@@ -61,7 +61,7 @@ const kindButton = (index: number) => {
     return Array.from(nodes)[index] as HTMLButtonElement
 }
 
-const project = Project1.new([], 'id1', 'proj1', {})
+const project = Project1.new([], 'proj1', 'id1', {})
 
 test('shows type and id', () => {
     const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
@@ -135,7 +135,7 @@ test('updates other properties', () => {
 })
 
 test('has fields for Project', () => {
-    const element = Project2.new([], 'id1', 'Project 1', {author: 'Me!'})
+    const element = Project2.new([], 'Project 1', 'id1', {author: 'Me!'})
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Project 1')
@@ -313,8 +313,8 @@ test('has fields for Button', () => {
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
     expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(3).textContent).toBe('fx=')
-    expect(kindButton(3).disabled).toBe(true)
+    expect(kindButton(4).textContent).toBe('fx=')
+    expect(kindButton(4).disabled).toBe(true)
     expect(selectValue('Display')).toBe('false')
 })
 

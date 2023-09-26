@@ -43,7 +43,7 @@ export function DialogTextField(props: TextFieldProps) {
 export function EditorActionDialog({title, content, fields, action, onCancel}:
                                  { title: string, content: React.ReactNode, fields: React.ReactNode, action: React.ReactNode, onCancel: VoidFunction }) {
     return (
-        <Dialog onClose={onCancel} open={true}>
+        <Dialog onClose={onCancel} open={true} sx={{minWidth: 400}}>
             <DialogTitle>{title} <CloseButton onClose={onCancel}/></DialogTitle>
             <DialogContent>
                 <DialogContentText>

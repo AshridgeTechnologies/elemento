@@ -23,7 +23,7 @@ describe('generates files for app and exposes public functions and includes data
     const app = new ServerApp('sa1', 'Server App 1', {}, [
         plusFn, timesFn, totalFn, privateFn
     ])
-    const project = Project3.new([dataTypes1, dataTypes2, app], 'proj1', 'Project 1', {})
+    const project = Project3.new([dataTypes1, dataTypes2, app], 'Project 1', 'proj1', {})
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
     const [serverAppFile, expressAppFile] = files
@@ -43,18 +43,24 @@ const {Sum} = globalFunctions
 const {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule} = types
 
 // Types1.js
-const Name = new TextType('Name', {required: true, maxLength: 20})
+const Types1 = (() => {
 
-const Types1 = {
-    Name
-}
+    const Name = new TextType('Name', {required: true, maxLength: 20})
+
+    return {
+        Name
+    }
+})()
 
 // Types2.js
-const ItemAmount = new NumberType('Item Amount', {required: false, max: 10})
+const Types2 = (() => {
 
-const Types2 = {
-    ItemAmount
-}
+    const ItemAmount = new NumberType('Item Amount', {required: false, max: 10})
+
+    return {
+        ItemAmount
+    }
+})()
 
 
 const ServerApp1 = (user) => {
@@ -109,7 +115,7 @@ describe('generates files using data components in dependency order', () => {
         getWidgetFn, updateWidgetFn, getSprocketFn,
         sprocketCollection, widgetCollection, dataStore
     ])
-    const project = Project2.new([app], 'proj1', 'Project 1', {})
+    const project = Project2.new([app], 'Project 1', 'proj1', {})
 
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
@@ -187,7 +193,7 @@ describe('handles errors and special cases', () => {
         selectFunction, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
     ])
-    const project = Project1.new([app], 'proj1', 'Project 1', {})
+    const project = Project1.new([app], 'Project 1', 'proj1', {})
 
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()

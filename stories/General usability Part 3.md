@@ -1,7 +1,7 @@
 General usability Part 3
 ========================
 
-- Auto-save in editor
+- Projects can be stored in OPFS file storage
 - Remove animation on list so things change quickly
 - Retain position in list when content changes
 - Editor messages are done with toasts
@@ -28,6 +28,9 @@ General usability Part 3
 - Store project as separate YAML files
 - Direct editing of YAML in Studio
 - Reload project from disk
+- Better required indication - https://www.accessibility-developer-guide.com/examples/forms/required/
+- Drag and drop elements inside another
+- Sliders for numeric props like font-size
 
 Help
 ----

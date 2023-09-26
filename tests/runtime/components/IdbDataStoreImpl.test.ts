@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto'
 import {IdbDataStoreImpl} from '../../../src/runtime/components/index'
 import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
+import BigNumber from 'bignumber.js'
 
 let store: IdbDataStoreImpl
 
@@ -48,13 +49,40 @@ test('can query', async () => {
 })
 
 test('stores dates', async () => {
-
     const hour = 10
     const theDate = new Date(2022, 6, 2, hour, 11, 12)
     await store.add('Widgets', 'w1', {a: 10, date: theDate})
     const item = await store.getById('Widgets', 'w1')
     expect(item.date.getTime()).toStrictEqual(theDate.getTime())
 })
+
+describe('stores decimals', () => {
+    test('in add and get', async () => {
+        const theNumber = new BigNumber('1234.56')
+        await store.add('Widgets', 'w1', {a: 10, amount: theNumber})
+        const item = await store.getById('Widgets', 'w1')
+        expect(item.amount).toBeInstanceOf(BigNumber)
+        expect(item.amount).toStrictEqual(theNumber)
+    })
+
+    test('in addAll and query', async () => {
+        const theNumber = new BigNumber('1234.56')
+        await store.addAll('Widgets', {'id1': {a: 10, amount: theNumber}})
+        const item = (await store.query('Widgets', {}))[0] as any
+        expect(item.amount).toBeInstanceOf(BigNumber)
+        expect(item.amount).toStrictEqual(theNumber)
+    })
+
+    test('in update', async () => {
+        const theNumber = new BigNumber('1234.56')
+        await store.add('Widgets', 'w1', {a: 10})
+        await store.update('Widgets', 'w1', {amount: theNumber})
+        const item = await store.getById('Widgets', 'w1')
+        expect(item.amount).toBeInstanceOf(BigNumber)
+        expect(item.amount).toStrictEqual(theNumber)
+    })
+})
+
 
 describe('subscribe', () => {
 

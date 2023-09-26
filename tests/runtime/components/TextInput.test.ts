@@ -93,7 +93,7 @@ test('TextInput stores null value in the app store when cleared', async () => {
     const inputEl = el`app.page1.sprocket2`
     await user.clear(inputEl)
     await wait(10)
-    expect(stateAt('app.page1.sprocket2')._controlValue).toBe(null)
+    expect(stateAt('app.page1.sprocket2').dataValue).toBe(null)
 })
 
 test('TextInput stores errors shown when blurred and ShowErrors or Reset called', async () => {
@@ -143,7 +143,7 @@ test('TextInput shows required', async () => {
     await actWait( () => stateAt('app.page1.sprocket2').props.dataType = requiredType )
 
     await actWait( () => stateAt('app.page1.sprocket2').Reset() )
-    expect(el`label`.innerHTML).toBe('The Input (required)')
+    expect(el`.requiredButton`.textContent).toBe('emergency')
 })
 
 test('TextInput uses properties from dataType', async () => {
@@ -218,6 +218,17 @@ test('State is valid when its value is valid for the data type', () => {
     expect(stateValid.errors).toBe(null)
     expect(stateInvalid.valid).toBe(false)
     expect(stateInvalid.errors).toStrictEqual(['Minimum length 3'])
+})
+
+test('State uses props or state value for validation and not default value', () => {
+    const textType = new TextType('tt1', {required: true})
+    const stateValid = new TextInput.State({value: 'car', dataType: textType})
+    const stateInvalidProps = new TextInput.State({value: null, dataType: textType})
+    const stateInvalidState = new TextInput.State({value: 'car', dataType: textType})._withStateForTest({value: null})
+    expect(stateValid.errors).toBe(null)
+    expect(stateInvalidProps.errors).toStrictEqual(['Required'])
+    expect(stateInvalidState.errors).toStrictEqual(['Required'])
+
 })
 
 test('State is modified only when its value is not null and different to its empty initial value', () => {

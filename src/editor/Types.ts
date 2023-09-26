@@ -17,6 +17,7 @@ export type Action = {
 export type VoidFn = () => void
 export type OnOpenFn = VoidFn
 export type OnNewFn = VoidFn
+export type OnOpenFromGitHubFn = VoidFn
 export type OnGetFromGitHubFn = VoidFn
 export type OnChangeFn = (id: ElementId, propertyName: string, value: any) => void
 export type OnInsertFnWithPositionFn = (insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType) => void

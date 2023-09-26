@@ -24,7 +24,7 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     }
 
     get errors() {
-        return this.dataType?.validate(this.value) ?? null
+        return this.dataType?.validate(this.propsOrStateValue ?? null) ?? null
     }
 
     get modified() {
@@ -37,8 +37,8 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
         return this.state.errorsShown ?? false
     }
 
-    get _controlValue() {
-        return this.propsOrStateValue
+    get dataValue() {
+        return this.propsOrStateValue ?? null
     }
 
     get dataType() { return this.props.dataType }

@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {OnGetFromGitHubFn, OnNewFn, OnOpenFn, VoidFn} from './Types'
+import {OnGetFromGitHubFn, OnNewFn, OnOpenFn, OnOpenFromGitHubFn, VoidFn} from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
 import {ElementType} from '../model/Types'
@@ -34,7 +34,8 @@ React.createContext<Project | null>(null)
 
 
 
-export default function ProjectOpener({onNew, onOpen, onGetFromGitHub,}: { onOpen: OnOpenFn, onNew: OnNewFn, onGetFromGitHub: OnGetFromGitHubFn}) {
+export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onGetFromGitHub,}: { onOpen: OnOpenFn, onNew: OnNewFn,
+                        onGetFromGitHub: OnGetFromGitHubFn, onOpenFromGitHub: OnOpenFromGitHubFn}) {
     const [helpVisible, setHelpVisible] = useState(false)
     const onHelp = () => {setHelpVisible(!helpVisible)}
 
@@ -45,7 +46,7 @@ export default function ProjectOpener({onNew, onOpen, onGetFromGitHub,}: { onOpe
     </Box>
     const EditorHeader = <Box flex='0'>
         <MenuBar>
-            <FileMenu onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} signedIn={signedIn}/>
+            <FileMenu onNew={onNew} onOpen={onOpen} onOpenFromGitHub={onOpenFromGitHub}  signedIn={signedIn}/>
             <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
         </MenuBar>
     </Box>
@@ -58,8 +59,8 @@ export default function ProjectOpener({onNew, onOpen, onGetFromGitHub,}: { onOpe
         <nav aria-label="Open an Elemento project">
         <List sx={{maxWidth: '35em', maxHeight: '100%'}}>
             <OpenOption text='Create a new project' iconClass='create_new_folder_two_tone' onClick={onNew}/>
+            <OpenOption text='Get a project from GitHub' iconClass='download_two_tone' onClick={onOpenFromGitHub}/>
             <OpenOption text='Open an existing project on your computer' iconClass='folder_open_two_tone' onClick={onOpen}/>
-            <OpenOption text='Get a project stored in GitHub' iconClass='download_two_tone' onClick={onGetFromGitHub}/>
             <OpenOption text='Help' iconClass='help_two_tone' onClick={onHelp}/>
         </List>
         </nav>

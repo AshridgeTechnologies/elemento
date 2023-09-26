@@ -60,8 +60,8 @@ const serverApp1 = new ServerApp('sa1', 'Server App 1', {}, [plusFn])
 const serverApp2 = new ServerApp('sa2', 'Server App 2', {}, [multFn])
 
 const toolFolder = new ToolFolder(TOOLS_ID, 'Tools', {}, [tool1, tool2, toolImport1])
-const project1 = Project.new([app1, app2, serverApp1, serverApp2, dataTypes1, dataTypes2, toolFolder], 'proj1', 'Project 1', {})
-const projectClientOnly = Project.new([app3], 'proj2', 'Project Client Only', {})
+const project1 = Project.new([app1, app2, serverApp1, serverApp2, dataTypes1, dataTypes2, toolFolder], 'Project 1', 'proj1', {})
+const projectClientOnly = Project.new([app3], 'Project Client Only', 'proj2', {})
 
 const expectedClientCode = (app: App | Tool, project: Project = project1) => generate(app, project).code
 const expectedIndexFile = (app: App, project: Project = project1) => generate(app, project).html

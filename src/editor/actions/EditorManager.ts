@@ -15,9 +15,21 @@ export default class EditorManager {
     }
 
     newProject = async(directory: FileSystemDirectoryHandle) => {
+        const name = directory.name
         const projectStore = new DiskProjectStore(directory)
         await projectStore.createProject()
-        await projectStore.writeProjectFile(editorEmptyProject())
+        await projectStore.writeProjectFile(editorEmptyProject(name))
+        await this.openProjectFunction(name, projectStore)
+    }
+
+    saveProjectAs = async (directory: FileSystemDirectoryHandle, currentProjectStore: DiskProjectStore) => {
+        await currentProjectStore.copyFiles(directory)
+        const projectStore = new DiskProjectStore(directory)
+        await this.openProjectFunction(directory.name, projectStore)
+    }
+
+    openProject = async (directory: FileSystemDirectoryHandle) => {
+        const projectStore = new DiskProjectStore(directory)
         await this.openProjectFunction(directory.name, projectStore)
     }
 }

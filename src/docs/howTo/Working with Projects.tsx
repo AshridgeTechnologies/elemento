@@ -166,7 +166,7 @@ export default () =>
                 This will look something like <code>https://github.com/username/repository-name</code>. Here are the
                 steps:</Para>
             <BulletList>
-                <li>Click the File menu button, then the Get from GitHub option</li>
+                <li>Click the File menu button, then the Download from GitHub option</li>
                 <li>In the <b>Get project from GitHub</b> box that appears, paste or type the GitHub URL</li>
                 <li>click the Choose button</li>
                 <li>Use the file chooser to create a new folder on your computer for the project files, then click

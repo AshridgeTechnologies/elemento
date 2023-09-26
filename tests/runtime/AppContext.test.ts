@@ -32,10 +32,10 @@ test('DefaultAppContext caches url', () => {
     expect(appContext.getUrl()).toBe(appContext.getUrl())
 })
 
-test('DefaultAppContext gets data from window location with path prefix', () => {
+test('DefaultAppContext gets data from window location with path prefix and removes trailing slash', () => {
 
     const history = createMemoryHistory({initialEntries: ['/theApp/somewhere/Page1/abc/123']})
-    const appContext = new DefaultAppContext('theApp/somewhere', history, 'http://example.com:8090')
+    const appContext = new DefaultAppContext('theApp/somewhere/', history, 'http://example.com:8090')
 
     expect(appContext.getUrl()).toStrictEqual({
         location: {

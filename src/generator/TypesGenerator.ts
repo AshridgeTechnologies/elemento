@@ -15,6 +15,7 @@ import {dataTypeElementTypes} from '../model/elements'
 
 const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel1 = '    '
+const indentLevel2 = indentLevel1 + indentLevel1
 
 export function generateTypes(project: Project) {
     return new TypesGenerator(project).output()
@@ -77,11 +78,18 @@ export default class TypesGenerator {
     }
 
     private typeFileContent(dataTypes: DataTypes): string {
+        const globals = this.parser.globalFunctionIdentifiers(dataTypes.id)
         const typeNames = dataTypes.elementArray().map( t => t.codeName )
         const typeElements = dataTypes.elementArray() as BaseTypeElement<any>[]
-        const typeDeclarations = typeElements.map( t => `const ${t.codeName} = ${this.generateTypeExpr(t)}` ).join('\n')
-        const dataTypesObject = `const ${dataTypes.codeName} = {\n${typeNames.map( name => indentLevel1 + name).join(',\n')}\n}`
-        return [typeDeclarations, dataTypesObject].join('\n\n') + '\n'
+
+        const functionName = `build_${dataTypes.codeName}`
+        const globalsDeclaration = globals.length ? '\n' + indentLevel1 + `const {${globals.join(', ')}} = Elemento.globalFunctions` : ''
+        const functionHeader = `const ${dataTypes.codeName} = (() => {${globalsDeclaration}`
+
+        const typeDeclarations = typeElements.map( t => `${indentLevel1}const ${t.codeName} = ${this.generateTypeExpr(t, indentLevel1)}` ).join('\n')
+        const functionEnd = `    return {\n${typeNames.map( name => indentLevel2 + name).join(',\n')}\n    }\n})()`
+        const dataTypesObject = `const ${dataTypes.codeName} = ${functionName}()`
+        return [functionHeader, typeDeclarations, functionEnd].join('\n\n') + '\n'
     }
 
     output() {

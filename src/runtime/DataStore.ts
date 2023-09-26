@@ -1,6 +1,7 @@
 import Observable from 'zen-observable'
 import lodash from 'lodash'; const {matches} = lodash;
 
+const pendingFlag = Symbol('pending')
 export type Criteria = object
 
 export type CollectionName = string
@@ -19,10 +20,12 @@ export type UpdateNotification = {
     id?: Id
     changes?: object
 }
-export class Pending {
-    valueOf() { return null }
+export const pending = (p: Promise<any>) => {
+    (p as any).valueOf = () => null;
+    (p as any)[pendingFlag] = true;
+    return p
 }
-
+export const isPending = (val: any) => Boolean(val?.[pendingFlag])
 export class ErrorResult {
     constructor(public description: string, public errorMessage: string) {}
 }

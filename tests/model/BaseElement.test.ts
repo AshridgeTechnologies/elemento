@@ -40,7 +40,7 @@ describe('Insert element with new ids', () => {
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
-    const project = Project1.new([app, app2], 'pr1', 'proj1', {})
+    const project = Project1.new([app, app2], 'proj1', 'pr1', {})
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', () => {
 

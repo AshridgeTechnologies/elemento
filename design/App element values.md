@@ -53,7 +53,7 @@ Decision 10 Mar 22
   - else the default value
 - If a control is reset, the value is set to undefined, which means not present
 - If a control is cleared by the user, the value is set to empty
-- The proxy state object has a _controlValue property, used by the control, that gives:
+- The proxy state object has a dataValue property, used by the control, that gives:
   - if the value is present and not empty, the value
   - if the value is present and empty, null
   - else if an initial value is supplied, that value

@@ -7,16 +7,18 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
+import DateInput from '../../src/model/DateInput'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200}, [page1, page2])
+    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`}, [page1, page2])
 
     expect(app.id).toBe('t1')
     expect(app.name).toBe('test1')
     expect(app.author).toBe('Herself')
     expect(app.maxWidth).toBe(200)
+    expect(app.startupAction).toStrictEqual(ex`Log('Hi')`)
     expect(app.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
 })
 
@@ -181,6 +183,10 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
     expect(app.canContain('Project')).toBe(false)
 })
 
+test('has correct property names', () => {
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'startupAction'])
+})
+
 test('converts to JSON', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
@@ -188,7 +194,7 @@ test('converts to JSON', ()=> {
     const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
-    const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2])
+    const app = new App('a1', 'App 1', {author: `Jo`, startupAction: ex`Log('Hi')`}, [page1, page2])
 
     expect(asJSON(app)).toStrictEqual({
         kind: 'App',
@@ -197,7 +203,6 @@ test('converts to JSON', ()=> {
         properties: app.properties,
         elements: [asJSON(page1), asJSON(page2)]
     })
-
 })
 
 test('converts from plain object', ()=> {
@@ -211,3 +216,4 @@ test('converts from plain object', ()=> {
     const newApp = loadJSON(asJSON(app))
     expect(newApp).toStrictEqual<App>(app)
 })
+

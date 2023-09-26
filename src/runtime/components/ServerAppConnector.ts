@@ -1,5 +1,5 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {ErrorResult, Pending} from '../DataStore'
+import {ErrorResult, pending} from '../DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
 import {valueOf} from '../runtimeFunctions'
@@ -83,7 +83,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             const paramNames = functionDef.params.slice(0, params.length)
             const queryString = paramNames.map( (name, index) => `${name}=${valueOf(params[index])}`).join('&')
             const url = `${config.url}/${name}?${queryString}`
-            auth.getIdToken().then(token => {
+            const resultPromise = auth.getIdToken().then(token => {
                 const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
                 return this.fetch!(url, options)
                     .then( resp => {
@@ -98,7 +98,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                     })
                     .then( data => this.updateCalls(functionArgsKey, data) )
             })
-            const result = new Pending()
+            const result = pending(resultPromise)
             this.updateCalls(functionArgsKey, result)
             return result
         }

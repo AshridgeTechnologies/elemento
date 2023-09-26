@@ -12,14 +12,14 @@ import {InputWithInfo} from './InputWithInfo'
 type Properties = {path: string, label?: PropVal<string>, width?: PropVal<string | number>, multiline?: PropVal<boolean>, readOnly?: PropVal<boolean>}
 
 export default function TextInput({path, ...props}: Properties) {
-    const {label: plainLabel, multiline: multilineProp, width, readOnly} = valueOfProps(props)
+    const {label, multiline: multilineProp, width, readOnly} = valueOfProps(props)
     const widthProp = width !== undefined ? {width} : {}
     const sxProps = {sx: {...widthProp}}
 
     const state = useGetObjectState<TextInputState>(path)
-    const value = state._controlValue ?? ''
+    const {value} = state
     const dataType = state.dataType
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
+    const required = dataType?.required
     const multiline = dataType?.format === 'multiline' || multilineProp
     const multilineProps = multiline ? {minRows: 2, maxRows: 10} : {}
     const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})
@@ -56,7 +56,7 @@ export default function TextInput({path, ...props}: Properties) {
         ...sxProps,
         ...optionalProps
     })
-    return InputWithInfo({description: dataType?.description, width, formControl})
+    return InputWithInfo({description: dataType?.description, required, width, formControl})
 }
 
 export class TextInputState extends InputComponentState<string, TextType> {

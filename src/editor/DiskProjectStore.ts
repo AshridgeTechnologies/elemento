@@ -45,6 +45,8 @@ export interface DiskProjectStoreInterface {
     renameAsset(oldPath: string, newPath: string): Promise<void>
 
     get fileSystem() : FS
+
+    copyFiles(directory: FileSystemDirectoryHandle): Promise<void>
 }
 
 
@@ -366,4 +368,31 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
     renameAsset(oldPath: string, newPath: string) {
         return this.fs.rename(`/${ASSET_DIR}/${oldPath}`, `/${ASSET_DIR}/${newPath}`)
     }
+
+    async copyFiles(newDirectoryHandle: FileSystemDirectoryHandle) {
+        return copyDir(this.directoryHandle, newDirectoryHandle)
+    }
+}
+
+async function copyDir(srcDirectoryHandle: FileSystemDirectoryHandle, destDirectoryHandle: FileSystemDirectoryHandle) {
+    // @ts-ignore
+    for await (const [name, handle] of srcDirectoryHandle) {
+        console.log(name, handle)
+        if (handle.kind === 'file') {
+            await copyFile(handle, destDirectoryHandle)
+        } else {
+            const subDirHandle = await destDirectoryHandle.getDirectoryHandle(name, {create: true})
+            await copyDir(handle, subDirHandle)
+        }
+    }
+}
+
+async function copyFile(srcFileHandle: FileSystemFileHandle, destDirectoryHandle: FileSystemDirectoryHandle) {
+    const destFileHandle = await destDirectoryHandle.getFileHandle(srcFileHandle.name, {create: true})
+    const file = await srcFileHandle.getFile()
+    const data = new Uint8Array(await file.arrayBuffer())
+    // @ts-ignore
+    const writable = await destFileHandle.createWritable()
+    await writable.write(data)
+    await writable.close()
 }

@@ -1,8 +1,8 @@
-import {Pending} from '../../src/runtime/DataStore'
+import {pending} from '../../src/runtime/DataStore'
 import {DecimalType, globalFunctions} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
 
-const {Decimal, D, Add, Sub, Mult, Sum, Div,
+const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
@@ -15,6 +15,7 @@ const {valueOf} = globalFunctions
 const undefinedDate = undefined as unknown as Date
 const nullDate = null as unknown as Date
 const invalidDate = new Date(NaN)
+const pendingValue = pending(Promise.resolve(42))
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valueObj(10))).toBe(10))
@@ -52,7 +53,7 @@ describe('Decimals', () => {
 
 describe('Decimal arithmetic', () => {
     test('adds numbers from any source with decimal result', () => {
-        expect(Add(1, 2, '3', D(4.5))).toStrictEqual(D`10.5`)
+        expect(Sum(1, 2, '3', D(4.5))).toStrictEqual(D`10.5`)
     })
 
     test('subtracts all numbers from first one from any source with decimal result', () => {
@@ -293,7 +294,7 @@ describe('Select', () => {
     test('returns the selected items', () => expect(Select([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual([3, 4]))
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
-    test('Pending value gives empty list', ()=> expect(Select(new Pending(), (it: any) => it <= 0)).toStrictEqual([]))
+    test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
 })
 
 describe('ForEach', () => {
@@ -302,7 +303,7 @@ describe('ForEach', () => {
     test('returns the selected items', () => expect(ForEach([3, -1, 4, 0], (it: any) => it * 10)).toStrictEqual([30, -10, 40, 0]))
     test('Gets value of object for the list', ()=> expect(ForEach(valueObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
     // @ts-ignore
-    test('Pending value gives empty list', ()=> expect(ForEach(new Pending(), (it: any) => it + 10)).toStrictEqual([]))
+    test('Pending value gives empty list', ()=> expect(ForEach(pendingValue, (it: any) => it + 10)).toStrictEqual([]))
 })
 
 describe('First', () => {
@@ -312,7 +313,7 @@ describe('First', () => {
     test('returns the first selected item with a condition', () => expect(First([3, -1, 4, 0], (it: any) => it < 0)).toStrictEqual(-1))
     test('Gets value of object for the list', ()=> expect(First(valueObj([3, -1, 4, 0]), (it: any) => it === 0)).toStrictEqual(0))
     // @ts-ignore
-    test('Pending value gives null', ()=> expect(First(new Pending(), (it: any) => it <= 0)).toStrictEqual(null))
+    test('Pending value gives null', ()=> expect(First(pendingValue, (it: any) => it <= 0)).toStrictEqual(null))
 })
 
 describe('Last', () => {
@@ -322,7 +323,7 @@ describe('Last', () => {
     test('returns the last selected item with a condition', () => expect(Last([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual(4))
     test('Gets value of object for the list', ()=> expect(Last(valueObj([3, -1, 4, 0]), (it: any) => it > 3)).toStrictEqual(4))
     // @ts-ignore
-    test('Pending value gives null', ()=> expect(Last(new Pending(), (it: any) => it <= 0)).toStrictEqual(null))
+    test('Pending value gives null', ()=> expect(Last(pendingValue, (it: any) => it <= 0)).toStrictEqual(null))
 })
 
 describe('Sort', () => {

@@ -10,10 +10,10 @@ type Properties = {path: string, label?: string}
 
 export default function TrueFalseInput({path, ...props}: Properties) {
     const state = useGetObjectState<TrueFalseInputState>(path)
-    const value = state._controlValue ?? false
+    const value = state .dataValue ?? false
     const dataType = state.dataType
-    const {label: plainLabel = ''} = valueOfProps(props)
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
+    const {label = ''} = valueOfProps(props)
+    const required = dataType?.required
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -40,7 +40,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
                           control={checkbox}/>
         <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
-    return InputWithInfo({description: dataType?.description, formControl})
+    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseType> {

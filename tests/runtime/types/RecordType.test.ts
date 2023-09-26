@@ -3,6 +3,7 @@ import Rule from '../../../src/shared/types/Rule'
 import {expect} from 'expect'
 import RecordType from '../../../src/shared/types/RecordType'
 import {isNil} from 'ramda'
+import {NumberType} from '../../../src/shared/types'
 
 const nameType = new TextType('Name', {required: true, description: 'Customers full name', minLength: 2})
 const countryType = new TextType('Home Country', {maxLength: 2})
@@ -16,14 +17,23 @@ const type = new RecordType('Customer', {description: 'A customer who has ordere
     postcodeType,
 ])
 
-test('has expected properties', () => {
+test('has expected default properties', () => {
+    const emptyType = new RecordType('Not Much')
+    expect(emptyType.required).toBe(false)
+    expect(emptyType.description).toBe(undefined)
+    expect(emptyType.fields).toStrictEqual([])
+    expect(emptyType.ruleDescriptions).toStrictEqual(['Optional'])
+})
 
+test('has expected properties', () => {
     expect(type.kind).toBe('Record')
     expect(type.required).toBe(false)
     expect(type.description).toBe('A customer who has ordered')
     expect(type.fields).toStrictEqual([nameType, countryType, postcodeType])
     expect(type.ruleDescriptions).toStrictEqual(['Optional', 'If country is UK postcode is required'])
 })
+
+
 
 test('validates all fields', () => {
     expect(type.validate(null)).toBe(null)
@@ -52,4 +62,24 @@ test('checks correct data type', () => {
     expect(type.isCorrectDataType(10)).toBe(false)
     expect(type.isCorrectDataType(new Date())).toBe(false)
     expect(type.isCorrectDataType(clazz)).toBe(false)
+})
+
+test('can extend another type', () => {
+    const creditLimitType = new NumberType('CreditLimit', {max: 2000})
+    const extendedType = new RecordType('VipCustomer', {description: 'A special customer', basedOn: type, required: true}, [
+        new Rule('VIP postcodes', (item: any) => item.Postcode.startsWith('SW1'), {description: 'Posh people only'})
+    ], [
+        creditLimitType,
+    ])
+
+    expect(extendedType.kind).toBe('Record')
+    expect(extendedType.required).toBe(true)
+    expect(extendedType.description).toBe('A special customer')
+    expect(extendedType.basedOn).toBe(type)
+    expect(extendedType.fields).toStrictEqual([nameType, countryType, postcodeType, creditLimitType])
+    expect(extendedType.ruleDescriptions).toStrictEqual([
+        'Required',
+        'If country is UK postcode is required',
+        'Posh people only'])
+
 })

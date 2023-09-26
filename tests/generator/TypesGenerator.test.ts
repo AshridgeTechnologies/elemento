@@ -24,7 +24,7 @@ test('has list of all Types class names', () => {
     const name = new TextType('id1', 'Name', {required: true})
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const theTypes = new DataTypes('dt1', 'My Types', {}, [name, itemAmount])
-    const project = Project10.new([theTypes], 'p1', 'The Project', {})
+    const project = Project10.new([theTypes], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -36,7 +36,7 @@ test('generates types without constraints in a DataTypes', () => {
     const name = new TextType('id1', 'Name', {required: true})
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const theTypes = new DataTypes('dt1', 'My Types', {}, [name, itemAmount])
-    const project = Project9.new([theTypes], 'p1', 'The Project', {})
+    const project = Project9.new([theTypes], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -45,13 +45,16 @@ test('generates types without constraints in a DataTypes', () => {
     const theTypesFile = output.files[0]
     expect(theTypesFile.name).toBe('MyTypes.js')
     expect(theTypesFile.contents).toBe(trimText`
-        const Name = new TextType('Name', {required: true})
-        const ItemAmount = new NumberType('Item Amount', {required: false})
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            Name,
-            ItemAmount
-        }
+            const Name = new TextType('Name', {required: true})
+            const ItemAmount = new NumberType('Item Amount', {required: false})
+        
+            return {
+                Name,
+                ItemAmount
+            }
+        })()
     `)
 })
 
@@ -60,7 +63,7 @@ test('generates a file for each DataTypes', () => {
     const itemAmount = new NumberType('id2', 'Item Amount', {})
     const types1 = new DataTypes('dt1', 'Types 1', {}, [name])
     const types2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
-    const project = Project8.new([types1, types2], 'p1', 'The Project', {})
+    const project = Project8.new([types1, types2], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -71,19 +74,25 @@ test('generates a file for each DataTypes', () => {
     expect(types1File.name).toBe('Types1.js')
     expect(types2File.name).toBe('Types2.js')
     expect(types1File.contents).toBe(trimText`
-        const Name = new TextType('Name', {required: true})
+        const Types1 = (() => {
         
-        const Types1 = {
-            Name
-        }
+            const Name = new TextType('Name', {required: true})
+        
+            return {
+                Name
+            }
+        })()
     `)
 
     expect(types2File.contents).toBe(trimText`
-        const ItemAmount = new NumberType('Item Amount', {required: false})
+        const Types2 = (() => {
         
-        const Types2 = {
-            ItemAmount
-        }
+            const ItemAmount = new NumberType('Item Amount', {required: false})
+        
+            return {
+                ItemAmount
+            }
+        })()
     `)
 })
 
@@ -97,18 +106,21 @@ test('generates TextType with built in and ad-hoc rules', async () => {
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(".com")`, description: 'Must end with .com'})
     ])
 
-    const project = Project7.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'p1', 'The Project', {})
+    const project = Project7.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
     expect(theTypesFile.contents).toBe(trimText`
-        const TextType1 = new TextType('TextType 1', {description: 'The blurb', required: false, minLength: 5, maxLength: 20, format: 'url'}, [
-            new Rule('Dot Com', \$item => \$item.endsWith(".com"), {description: 'Must end with .com'})
-        ])
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            TextType1
-        }
+            const TextType1 = new TextType('TextType 1', {description: 'The blurb', required: false, minLength: 5, maxLength: 20, format: 'url'}, [
+                new Rule('Dot Com', $item => $item.endsWith(".com"), {description: 'Must end with .com'})
+            ])
+        
+            return {
+                TextType1
+            }
+        })()
     `)
 })
 
@@ -117,18 +129,21 @@ test('generates NumberType with built in and ad-hoc rules using expressions', ()
         new Rule('r1', 'Multiple of Pi', {formula: ex`$item % Math.PI === 0`, description: 'Must be a multiple of Pi'})
     ])
 
-    const project = Project6.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'p1', 'The Project', {})
+    const project = Project6.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
     expect(theTypesFile.contents).toBe(trimText`
-        const NumberType1 = new NumberType('NumberType 1', {description: 'The amount', required: false, min: 5, max: 20, format: 'integer'}, [
-            new Rule('Multiple of Pi', \$item => \$item % Math.PI === 0, {description: 'Must be a multiple of Pi'})
-        ])
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            NumberType1
-        }
+            const NumberType1 = new NumberType('NumberType 1', {description: 'The amount', required: false, min: 5, max: 20, format: 'integer'}, [
+                new Rule('Multiple of Pi', $item => $item % Math.PI === 0, {description: 'Must be a multiple of Pi'})
+            ])
+        
+            return {
+                NumberType1
+            }
+        })()
     `)
 })
 
@@ -137,18 +152,21 @@ test('generates DateType with built in rules', () => {
         new Rule('r1', 'Monday-Tuesday', {formula: ex`\$item.getDay() === 1 || \$item.getDay() === 2`, description: 'Must be a Monday or a Tuesday'})
     ])
 
-    const project = Project5.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'p1', 'The Project', {})
+    const project = Project5.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
     expect(theTypesFile.contents).toBe(trimText`
-        const DateType1 = new DateType('DateType 1', {description: 'The date', required: false, min: new Date('2022-07-06'), max: new Date('2022-08-09')}, [
-            new Rule('Monday-Tuesday', \$item => \$item.getDay() === 1 || \$item.getDay() === 2, {description: 'Must be a Monday or a Tuesday'})
-        ])
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            DateType1
-        }
+            const DateType1 = new DateType('DateType 1', {description: 'The date', required: false, min: new Date('2022-07-06'), max: new Date('2022-08-09')}, [
+                new Rule('Monday-Tuesday', $item => $item.getDay() === 1 || $item.getDay() === 2, {description: 'Must be a Monday or a Tuesday'})
+            ])
+        
+            return {
+                DateType1
+            }
+        })()
     `)
 })
 
@@ -165,36 +183,39 @@ test('generates RecordType with all types', () => {
     ])
     const rule1 = new Rule('r1', 'Name-Location', {description: 'Name must be different to Location', formula: ex`\$item.Name !== \$item.Location`})
     const placeRecord = new RecordType('rec1', 'Place', {description: 'A place to visit', required: true}, [text1, text2, choice1, number1, bool1, list1, rule1])
-    const project = Project4.new([new DataTypes('dt1', 'My Types', {}, [placeRecord])], 'p1', 'The Project', {})
+    const project = Project4.new([new DataTypes('dt1', 'My Types', {}, [placeRecord])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const theTypesFile = generator.output().files[0]
     expect(theTypesFile.contents).toBe(trimText`
-        const Place = new RecordType('Place', {description: 'A place to visit', required: true}, [
-            new Rule('Name-Location', \$item => \$item.Name !== \$item.Location, {description: 'Name must be different to Location'})
-        ], [
-            new TextType('Name', {description: 'What it\\'s called', required: true}, [
-                new Rule('No hyphens', \$item => !\$item.contains('-'), {description: 'Must not contain hyphens'})
-            ]),
-            new TextType('Location', {description: 'Where it is', required: false, maxLength: 10}),
-            new ChoiceType('Type', {description: 'The kind of location', required: false, values: ['House', 'Mountain', 'Village'], valueNames: []}),
-            new NumberType('Price', {description: 'The entry cost', required: false, max: 50}),
-            new TrueFalseType('Visited', {description: 'Have we been there?', required: false}),
-            new ListType('Dates Visited', {description: 'When we went there', required: false}, [], 
-                new DateType('Date of visit', {})
-            )
-        ])
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            Place
-        }
+            const Place = new RecordType('Place', {description: 'A place to visit', required: true}, [
+                new Rule('Name-Location', $item => $item.Name !== $item.Location, {description: 'Name must be different to Location'})
+            ], [
+                new TextType('Name', {description: 'What it\\'s called', required: true}, [
+                    new Rule('No hyphens', $item => !$item.contains('-'), {description: 'Must not contain hyphens'})
+                ]),
+                new TextType('Location', {description: 'Where it is', required: false, maxLength: 10}),
+                new ChoiceType('Type', {description: 'The kind of location', required: false, values: ['House', 'Mountain', 'Village'], valueNames: []}),
+                new NumberType('Price', {description: 'The entry cost', required: false, max: 50}),
+                new TrueFalseType('Visited', {description: 'Have we been there?', required: false}),
+                new ListType('Dates Visited', {description: 'When we went there', required: false}, [], 
+                    new DateType('Date of visit', {})
+                )
+            ])
+        
+            return {
+                Place
+            }
+        })()
     `)
 })
 
 test('finds errors in expressions for type object properties', () => {
     const numberType1 = new NumberType('id1', 'NumberType 1', {description: 'The amount', format: 'integer', max: ex`XX * 10`}, )
 
-    const project = Project3.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'p1', 'The Project', {})
+    const project = Project3.new([new DataTypes('dt1', 'My Types', {}, [numberType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -204,32 +225,38 @@ test('finds errors in expressions for type object properties', () => {
         id1: {max: 'Unknown names: XX'}
     })
     expect(theTypesFile.contents).toBe(trimText`
-        const NumberType1 = new NumberType('NumberType 1', {description: 'The amount', required: false, max: Elemento.codeGenerationError(\`XX * 10\`, 'Unknown names: XX'), format: 'integer'})
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            NumberType1
-        }
+            const NumberType1 = new NumberType('NumberType 1', {description: 'The amount', required: false, max: Elemento.codeGenerationError(\`XX * 10\`, 'Unknown names: XX'), format: 'integer'})
+        
+            return {
+                NumberType1
+            }
+        })()
     `)
 })
 
 test('finds parsing errors in expressions for type object properties', () => {
     const dateType1 = new DateType('id1', 'Date 1', {description: 'The start', max: ex`Fri Apr 21 2023`}, )
 
-    const project = Project2.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'p1', 'The Project', {})
+    const project = Project2.new([new DataTypes('dt1', 'My Types', {}, [dateType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
     const theTypesFile = output.files[0]
 
     expect(output.errors).toStrictEqual({
-        id1: {max: 'Error: Line 1: Unexpected identifier'}
+        id1: {max: 'Error: Unexpected character(s) (Line 1 Position 4)'}
     })
     expect(theTypesFile.contents).toBe(trimText`
-        const Date1 = new DateType('Date 1', {description: 'The start', required: false, max: Elemento.codeGenerationError(\`Fri Apr 21 2023\`, 'Error: Line 1: Unexpected identifier')})
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            Date1
-        }
+            const Date1 = new DateType('Date 1', {description: 'The start', required: false, max: Elemento.codeGenerationError(\`Fri Apr 21 2023\`, 'Error: Unexpected character(s) (Line 1 Position 4)')})
+        
+            return {
+                Date1
+            }
+        })()
     `)
 })
 
@@ -238,7 +265,7 @@ test('finds errors in expressions for rule formulas and descriptions', () => {
         new Rule('r1', 'Dot Com', {formula: ex`$item.endsWith(XX)`, description: ex`'Must end with ' + YY()`})
     ])
 
-    const project = Project1.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'p1', 'The Project', {})
+    const project = Project1.new([new DataTypes('dt1', 'My Types', {}, [textType1])], 'The Project', 'p1', {})
 
     const generator = new TypesGenerator(project)
     const output = generator.output()
@@ -251,12 +278,15 @@ test('finds errors in expressions for rule formulas and descriptions', () => {
         }
     })
     expect(theTypesFile.contents).toBe(trimText`
-        const TextType1 = new TextType('TextType 1', {description: 'The blurb', required: false}, [
-            new Rule('Dot Com', \$item => Elemento.codeGenerationError(\`$item.endsWith(XX)\`, 'Unknown names: XX'), {description: Elemento.codeGenerationError(\`'Must end with ' + YY()\`, 'Unknown names: YY')})
-        ])
+        const MyTypes = (() => {
         
-        const MyTypes = {
-            TextType1
-        }
+            const TextType1 = new TextType('TextType 1', {description: 'The blurb', required: false}, [
+                new Rule('Dot Com', $item => Elemento.codeGenerationError(\`$item.endsWith(XX)\`, 'Unknown names: XX'), {description: Elemento.codeGenerationError(\`'Must end with ' + YY()\`, 'Unknown names: YY')})
+            ])
+        
+            return {
+                TextType1
+            }
+        })()
     `)
 })

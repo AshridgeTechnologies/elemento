@@ -143,7 +143,7 @@ test('shows errors for properties of main client app', async () => {
                 width: ex`BadName + 30`
             }),
         ]),
-    ])], 'pr1', 'Project Bad', {})
+    ])], 'Project Bad', 'pr1', {})
     const errors = {
         textInput_1: {
             initialValue: 'Error: Line 1: Unexpected end of input',
@@ -181,7 +181,7 @@ test('shows errors for properties of all client apps', async () => {
         ]),
     ])
 
-    const projectWithErrors = Project.new([app1, app2], 'pr1', 'Project Bad', {})
+    const projectWithErrors = Project.new([app1, app2], 'Project Bad', 'pr1', {})
     const errors = {
         textInput_1: {
             initialValue: 'Error: Line 1: Unexpected end of input',
@@ -219,7 +219,7 @@ test('shows errors for properties of all server apps', async () => {
     const serverApp2 = new ServerApp('serverApp2', 'Server App Two', {}, [
         new FunctionDef('func2', 'Add Bad', {calculation: ex`BadName + 22`}),
     ])
-    const projectWithErrors = Project.new([serverApp1, serverApp2], 'pr1', 'Project Bad', {})
+    const projectWithErrors = Project.new([serverApp1, serverApp2], 'Project Bad', 'pr1', {})
     const errors = {
         func1: {
             calculation: 'Error: Line 1: Unexpected end of input',
@@ -253,7 +253,7 @@ test('shows errors for properties of type objects', async () => {
             new Page('page_1', 'Main Page', {}, []),
         ]),
         new DataTypes('dt1', 'My Types', {}, [numberType1])
-    ], 'pr1', 'Project Bad', {})
+    ], 'Project Bad', 'pr1', {})
     const errors = {
         id1: {
             max: 'Error: Line 1: Unexpected end of input',

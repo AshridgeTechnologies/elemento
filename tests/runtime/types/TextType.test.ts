@@ -3,10 +3,11 @@ import Rule from '../../../src/shared/types/Rule'
 import {expect} from 'expect'
 
 test('has expected properties', () => {
-    const type = new TextType('Internal email', {minLength: 10, maxLength: 20, format: 'email', description: 'Email address of Acme staff member'}, [
+    const type = new TextType('Internal Email', {minLength: 10, maxLength: 20, format: 'email', description: 'Email address of Acme staff member'}, [
         new Rule('Dot Com only', (item: any) => item.endsWith("acme.com"), {description: 'Must end with acme.com'})
     ])
     expect(type.kind).toBe('Text')
+    expect(type.codeName).toBe('InternalEmail')
     expect(type.required).toBe(false)
     expect(type.minLength).toBe(10)
     expect(type.maxLength).toBe(20)
@@ -35,6 +36,18 @@ test('validates url format', () => {
     expect(urlType.validate('b@xyz.com')).toStrictEqual(['Must be a valid url'])
     expect(urlType.validate('ws://xyz.com')).toStrictEqual(['Must be a valid url'])
     expect(urlType.validate('http://xyz.com')).toBe(null)
+})
+
+test('does not validate condition if empty and required', () => {
+    const type = new TextType('Internal email', {required: true, minLength: 10})
+    expect(type.validate(null)).toStrictEqual(['Required'])
+    expect(type.validate('')).toStrictEqual(['Minimum length 10'])
+})
+
+test('does not validate condition if empty and not required', () => {
+    const type = new TextType('Internal email', {required: false, minLength: 10})
+    expect(type.validate(null)).toBe(null)
+    expect(type.validate('')).toStrictEqual(['Minimum length 10'])
 })
 
 test('checks correct data type', () => {

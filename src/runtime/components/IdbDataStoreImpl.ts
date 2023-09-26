@@ -15,6 +15,14 @@ import SendObservable from '../SendObservable'
 import {mapObjIndexed} from 'ramda'
 import Dexie, {Table} from 'dexie'
 import lodash from 'lodash'; const {matches} = lodash;
+import BigNumber from 'bignumber.js'
+
+const DECIMAL_PREFIX = '#Dec'
+const convertFromDbValue = (value: any) => typeof value === 'string' && value.startsWith(DECIMAL_PREFIX) ? new BigNumber(value.substring(DECIMAL_PREFIX.length)) : value
+const convertFromDbData = (data: any) => mapObjIndexed(convertFromDbValue, data)
+const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PREFIX + value : value
+const convertToDbData = (data: any) => mapObjIndexed(convertToDbValue, data)
+const addIdToItem = (item: DataStoreObject, id: Id) => ({...item, id})
 
 type Properties = {databaseName: string, collectionNames: string[]}
 export default class IdbDataStoreImpl implements DataStore {
@@ -42,24 +50,23 @@ export default class IdbDataStoreImpl implements DataStore {
             throw new Error(`Object with id '${id}' not found in collection '${collection}'`)
         }
 
-        return item
+        return convertFromDbData(item)
     }
 
     async add(collection: CollectionName, id: Id, item: DataStoreObject) {
-        const itemWithId = {...item, id}
+        const itemWithId = addIdToItem(convertToDbData(item), id)
         await this.table(collection).put(itemWithId)
         this.notify(collection, Add, id, item)
     }
 
     async addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
-        const addIdToItem = (item: DataStoreObject, id: Id) => ({...item, id})
-        const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items))
+        const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items)).map(convertToDbData)
         await this.table(collection).bulkAdd(itemsWithIds)
         this.notify(collection, MultipleChanges)
     }
 
     async update(collection: CollectionName, id: Id, changes: object) {
-        await this.table(collection).update(id, changes)
+        await this.table(collection).update(id, convertToDbData(changes))
         this.notify(collection, Update, id, changes)
     }
 
@@ -69,7 +76,8 @@ export default class IdbDataStoreImpl implements DataStore {
     }
 
     async query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        return this.table(collection).filter( matches(criteria)).toArray()
+        const results = await this.table(collection).filter( matches(criteria)).toArray()
+        return results.map( convertFromDbData )
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {

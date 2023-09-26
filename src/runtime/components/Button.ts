@@ -5,9 +5,9 @@ import {valueOf, valueOfProps} from '../runtimeFunctions'
 
 const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
-type Properties = {path: string, appearance?: Appearance , content: React.ReactNode, action?: () => void, display?: boolean}
+type Properties = {path: string, appearance?: Appearance , content: React.ReactNode, action?: () => void, display?: boolean, enabled?: boolean}
 
-export default function Button({path, action, content, appearance, display}: Properties) {
+export default function Button({path, action, content, appearance, display, enabled = true}: Properties) {
     const optionalProps = definedPropertiesOf({onClick: action})
     const {display: displayVal} = valueOfProps({display})
     const sxVariable = displayVal !== undefined && !displayVal ? {display: 'none'} : {}
@@ -26,6 +26,7 @@ export default function Button({path, action, content, appearance, display}: Pro
         variant: appearance === 'filled' ? 'contained' : 'outlined',
         size: 'small',
         disableElevation: true,
+        disabled: !enabled,
         sx,
         ...optionalProps,
     }, valueOf(content) as React.ReactNode)

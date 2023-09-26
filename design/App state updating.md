@@ -32,7 +32,7 @@ Forces
 - State updates for private things like subscriptions seems weird
 - Only public state _needs_ to be in the app state store
 - Only need to change the store if the public state updates
-- _controlValue may not be needed
+- dataValue may not be needed
 - State objects are independent - don't have to be in a tree
 - BUT may want to find all components under another eg for form processing
 - And may need to find them in an async call when the store is not available from the context

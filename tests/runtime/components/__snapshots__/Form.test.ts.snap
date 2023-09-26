@@ -11,18 +11,7 @@ exports[`Form element produces output containing children 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
@@ -46,6 +35,7 @@ exports[`Form element produces output containing children 1`] = `
           disabled={false}
           id="app.page1.form1.Description"
           maxLength={10}
+          minLength={2}
           onAnimationStart={[Function]}
           onBlur={[Function]}
           onChange={[Function]}
@@ -74,8 +64,8 @@ exports[`Form element produces output containing children 1`] = `
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
-        htmlFor="app.page1.form1.Size"
-        id="app.page1.form1.Size-label"
+        htmlFor="app.page1.form1.BoxSize"
+        id="app.page1.form1.BoxSize-label"
       >
         Size
       </label>
@@ -88,8 +78,9 @@ exports[`Form element produces output containing children 1`] = `
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.form1.Size"
+          id="app.page1.form1.BoxSize"
           max={20}
+          min={1}
           onAnimationStart={[Function]}
           onBlur={[Function]}
           onChange={[Function]}
@@ -133,18 +124,7 @@ exports[`Form element produces output containing nested form 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
@@ -168,6 +148,7 @@ exports[`Form element produces output containing nested form 1`] = `
           disabled={false}
           id="app.page1.formNested.Description"
           maxLength={10}
+          minLength={2}
           onAnimationStart={[Function]}
           onBlur={[Function]}
           onChange={[Function]}
@@ -196,8 +177,8 @@ exports[`Form element produces output containing nested form 1`] = `
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
-        htmlFor="app.page1.formNested.Size"
-        id="app.page1.formNested.Size-label"
+        htmlFor="app.page1.formNested.BoxSize"
+        id="app.page1.formNested.BoxSize-label"
       >
         Size
       </label>
@@ -210,8 +191,9 @@ exports[`Form element produces output containing nested form 1`] = `
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.formNested.Size"
+          id="app.page1.formNested.BoxSize"
           max={20}
+          min={1}
           onAnimationStart={[Function]}
           onBlur={[Function]}
           onChange={[Function]}
@@ -242,18 +224,7 @@ exports[`Form element produces output containing nested form 1`] = `
         className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
       />
       <div
-        className="css-a5tkhr-MuiStack-root"
-        sz={
-          {
-            "alignItems": "flex-start",
-            "boxSizing": "border-box",
-            "maxHeight": "100%",
-            "minHeight": "3em",
-            "overflow": "scroll",
-            "padding": 1,
-            "py": 1,
-          }
-        }
+        className="css-1q4ho6v-MuiStack-root"
       >
         <div
           className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
@@ -277,6 +248,7 @@ exports[`Form element produces output containing nested form 1`] = `
               disabled={false}
               id="app.page1.formNested.Extra.Description"
               maxLength={10}
+              minLength={2}
               onAnimationStart={[Function]}
               onBlur={[Function]}
               onChange={[Function]}
@@ -320,18 +292,7 @@ exports[`Form element produces output with no children 1`] = `
     className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
   />
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   />
 </div>
 `;
@@ -345,18 +306,7 @@ exports[`Form element produces output with one child 1`] = `
     className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
   />
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
@@ -380,6 +330,7 @@ exports[`Form element produces output with one child 1`] = `
           disabled={false}
           id="app.page1.formSingle.Description"
           maxLength={10}
+          minLength={2}
           onAnimationStart={[Function]}
           onBlur={[Function]}
           onChange={[Function]}

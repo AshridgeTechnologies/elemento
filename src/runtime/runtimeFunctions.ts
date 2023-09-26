@@ -1,6 +1,7 @@
 import lodash from 'lodash'; const {isArray, isObject, isPlainObject} = lodash;
 import {map} from 'ramda'
 import * as Module from "module";
+import BigNumber from 'bignumber.js'
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined
@@ -103,6 +104,7 @@ export type PropVal<T> = T | { valueOf: () => T }
 
 export function valueOf<T>(x: Value<T>): T {
     if (x instanceof Date) return x as T
+    if (x instanceof BigNumber) return x as T
     return isObject(x) ? x.valueOf() : x
 }
 
@@ -126,6 +128,4 @@ export function asArray(value: any[] | object | any) {
     return [val]
 }
 
-export const _DELETE = '_DELETE'
-export const isClassObject = (obj: any) => isObject(obj) && !isPlainObject(obj)
 export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''

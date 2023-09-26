@@ -7,9 +7,9 @@ import {editorMenuPositionProps} from './Editor'
 
 import {editorElement} from './EditorElement'
 
-export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
-    {onNew?: OnNewFn, onOpen?: MenuItemFn,
-        onSaveToGitHub?: MenuItemFn, onGetFromGitHub?: MenuItemFn, onUpdateFromGitHub?: MenuItemFn, signedIn: boolean}) {
+export default function FileMenu({onNew, onOpen, onSaveAs, onSaveToGitHub, onOpenFromGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
+    {onNew?: OnNewFn, onOpen?: MenuItemFn, onSaveAs?: MenuItemFn,
+        onSaveToGitHub?: MenuItemFn, onOpenFromGitHub?: MenuItemFn, onGetFromGitHub?: MenuItemFn, onUpdateFromGitHub?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
@@ -48,7 +48,8 @@ export default function FileMenu({onNew, onOpen, onSaveToGitHub, onGetFromGitHub
             >
                 {menuItem('New', onNew)}
                 {menuItem('Open', onOpen)}
-                {menuItem('Get from GitHub', onGetFromGitHub)}
+                {menuItem('Save As', onSaveAs)}
+                {menuItem('Get from GitHub', onOpenFromGitHub)}
                 {menuItem('Update from GitHub', onUpdateFromGitHub)}
                 {menuItem('Save to GitHub', onSaveToGitHub)}
             </Menu>

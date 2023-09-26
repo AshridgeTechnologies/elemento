@@ -50,12 +50,24 @@ test('ListElement updates its selectedItem in the app state', async () => {
     expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
 })
 
+test('ListElement updates the selectedItem when it changes', async () => {
+    const {el, user, renderThe}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
+    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
+    await user.click(listItem0El)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
+
+    const updatedListData = [{id: 'id1', text: 'new text'}, listData[1]]
+    renderThe(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: updatedListData}))
+    await wait(20)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(updatedListData[0])
+})
+
 test('ListElement does not update its selectedItem if not selectable', async () => {
     let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectable: false}), 'container2')
     const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
     const user = userEvent.setup()
     await user.click(listItem0El)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(undefined)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(null)
 })
 
 test('ListElement updates its scrollTop in the app state', async () => {
@@ -82,7 +94,7 @@ test('selectAction is called with selected item even if not selectable', async (
     const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
     await user.click(listItem0El)
     expect(selectAction).toHaveBeenCalledWith(listData[0])
-    expect(stateAt('app.page1.list1').selectedItem).toBe(undefined)
+    expect(stateAt('app.page1.list1').selectedItem).toBe(null)
 })
 
 test('Can highlight all matching elements in a list', async () => {

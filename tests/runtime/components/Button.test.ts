@@ -28,6 +28,13 @@ test('Button element produces output with display false',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}, display: false}))
 )
 
+test('Button element produces output with enabled true',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'filled', action: () => {doIt()}}))
+)
+test('Button element produces output with enabled false',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}, enabled: false}))
+)
+
 test('Button element produces output with properties supplied as state values', async () => {
         const element = createElement(Button, {path: 'app.page1.save', content: valueObj('Click me!'), action: () => {doIt()}, display: valueObj(false)})
         await wait(10)

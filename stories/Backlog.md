@@ -3,7 +3,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Insert menu can overflow the page
 - Copying layouts does not change names of contents
 - Duplicate names create errors on action function names
 - Changes really slow on large list
@@ -26,10 +25,18 @@ Bugs
 - Dependencies error while editing blows up editor
 - No code generation error for unknown name in text element
 - Editor height styles allow property panel to be larger than container, so page scrolls up
+- Can refresh app after navigating to page
 
 
 Stories
 -------
+
+### Initial release
+- Finish help content
+- Data Types example app
+- Data types guide
+- Automatic open from GitHub
+- Priority improvements
 
 ### Move to GitHub
 - Deploy from GitHub
@@ -80,13 +87,14 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
-- Database and data sync review - consider RxDB
+- Database and data sync review - consider RxDB, OPFS file store, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
 - Tools can use data read from Editor and Preview
 - runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/
 - Scheduled jobs
 - Rich text
 - Readonly elements - for all types and styled clearly
+- Form improvements - buttons enabled, validation, mods shown, form rules shown in position
 - Import components from web (GitHub repos or npm) - esm.sh bundling? esbuild in browser?
 - Import components with typed property editing
 - Import API client component with type property editing
@@ -103,6 +111,8 @@ Stories
 - Cut/paste/export/import data as JSON
 - Simple way of opening file datastores
 - Calendar control - consider https://github.com/williamtroup/Calendar.js
+- Form-level Rules display message - at the position where they occur in the form
+- Clean old files from generated code dir
 
 ### The Rest
 - Slick quick apps
@@ -130,6 +140,7 @@ Epics
 Tech debt
 ---------
 
+- Remove Download from GitHub to new directory
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Builder/runner: 
   - Generator does not hard code runner location
@@ -243,6 +254,7 @@ Done
 - Calculation
 - Undo
 - Menu improvements
+- Startup Action
 
 
 Bugs fixed
@@ -261,3 +273,4 @@ Bugs fixed
 - Select does not respond to alt-click to highlight
 - Bug: Incomplete Select blows up editor - see file
 - Fix run from GitHub
+- Insert menu can overflow the page

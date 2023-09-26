@@ -12,12 +12,12 @@ import {DatePicker} from '@mui/x-date-pickers'
 type Properties = {path: string, label?: PropVal<string>, }
 
 export default function DateInput({path, ...props}: Properties) {
-    const {label: plainLabel} = valueOfProps(props)
+    const {label} = valueOfProps(props)
 
     const state = useGetObjectState<DateInputState>(path)
-    const value = state._controlValue ?? null
+    const {value} = state
     const dataType = state.dataType
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
+    const required = dataType?.required
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
 
@@ -46,7 +46,7 @@ export default function DateInput({path, ...props}: Properties) {
         maxDate: dataType?.max,
     })
 
-    return InputWithInfo({description: dataType?.description, formControl})
+    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class DateInputState extends InputComponentState<Date, DateType>  {

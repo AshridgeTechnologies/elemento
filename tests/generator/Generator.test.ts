@@ -36,8 +36,9 @@ import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import Calculation from '../../src/model/Calculation'
 import ToolImport from '../../src/model/ToolImport'
+import Rule from '../../src/model/types/Rule';
 
-const project = (el: Element) => Project.new([el], 'proj1', 'Project 1', {})
+const project = (el: Element) => Project.new([el], 'Project 1', 'proj1', {})
 
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
@@ -185,9 +186,11 @@ export default function App1(props) {
 `)
 })
 
-test('includes all DataTypes files', () => {
+test('includes all DataTypes files and global functions in data types', () => {
     const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})
-    const itemAmount = new NumberType('nt1', 'Item Amount', {max: 10})
+    const itemAmount = new NumberType('nt1', 'Item Amount', {max: 10}, [
+        new Rule('rule1', 'Even rule', {description: 'Must be even', formula: ex`And(\$item > 0, \$item % 2 === 0)`})
+    ])
     const dataTypes1 = new DataTypes('dt1', 'Types 1', {}, [name])
     const dataTypes2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
 
@@ -204,7 +207,7 @@ test('includes all DataTypes files', () => {
         )
     ])
 
-    const project = Project.new([app1, app2, dataTypes1, dataTypes2], 'proj1', 'Project 1', {})
+    const project = Project.new([app1, app2, dataTypes1, dataTypes2], 'Project 1', 'proj1', {})
 
     const output = generate(app1, project)
 
@@ -215,18 +218,27 @@ const {React} = Elemento
 const {types: {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
 
 // Types1.js
-const Name = new TextType('Name', {required: true, maxLength: 20})
+const Types1 = (() => {
 
-const Types1 = {
-    Name
-}
+    const Name = new TextType('Name', {required: true, maxLength: 20})
+
+    return {
+        Name
+    }
+})()
 
 // Types2.js
-const ItemAmount = new NumberType('Item Amount', {required: false, max: 10})
+const Types2 = (() => {
+    const {And} = Elemento.globalFunctions
 
-const Types2 = {
-    ItemAmount
-}
+    const ItemAmount = new NumberType('Item Amount', {required: false, max: 10}, [
+        new Rule('Even rule', $item => And($item > 0, $item % 2 === 0), {description: 'Must be even'})
+    ])
+
+    return {
+        ItemAmount
+    }
+})()
 
 // Page1.js
 function Page1(props) {
@@ -310,6 +322,30 @@ test('generates App Bar elements with contents', ()=> {
             React.createElement(TextElement, {path: pathWith('Text0'), width: 200}, 'Welcome!'),
     ))
     },)
+}
+`)
+})
+
+test('generates startup action for App', ()=> {
+    const app = new App('app1', 'Test1', {startupAction: ex`Log('Off we go!')`}, [
+        new Page('p1', 'Page 1', {}, [
+            new Text('id1', 't1', {content: 'Hi there!'})
+        ])
+    ])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[1].contents).toBe(`export default function Test1(props) {
+    const pathWith = name => 'Test1' + '.' + name
+    const {App} = Elemento.components
+    const {Log} = Elemento.globalFunctions
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+    const Test1_startupAction = React.useCallback(() => {
+        Log('Off we go!')
+    }, [])
+
+    return React.createElement(App, {path: 'Test1', startupAction: Test1_startupAction,},)
 }
 `)
 })
@@ -507,8 +543,8 @@ test('generates TrueFalseInput elements with initial value', ()=> {
 `)
 })
 
-test('generates Button elements with properties', ()=> {
-    const actionExpr = ex`const message = "You clicked me!"; Log(message)
+test('generates Button elements with properties including await in action', ()=> {
+    const actionExpr = ex`const message = "You clicked me!"; await Log(message)
     Log("Didn't you?")`
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -522,8 +558,11 @@ test('generates Button elements with properties', ()=> {
     const {Page, Button} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const b1_action = React.useCallback(() => {
-        const message = "You clicked me!"; Log(message)
+    const doAction = async () => {
+        const message = "You clicked me!"; await Log(message)
             Log("Didn't you?")
+    }
+    doAction()
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -680,7 +719,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
         getWidgetFn, updateWidgetFn, getSprocketFn,
     ])
-    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
+    const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
 
@@ -748,7 +787,7 @@ test('generates ServerAppConnector elements with correct configuration if has sa
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
         getWidgetFn,
     ])
-    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
+    const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
     expect(output.files[1].contents).toBe(`function configServerApp1() {
@@ -788,7 +827,7 @@ test('generates ServerAppConnector elements with specified URL', () => {
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
+    const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
 
@@ -830,7 +869,7 @@ test('generates ServerAppConnector with code generation error if ServerApp not f
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
+    const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
 
@@ -862,7 +901,7 @@ test('generates ServerAppConnector with empty config if ServerApp not specified'
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
-    const project = Project.new([app, serverApp], 'proj1', 'The Project', {})
+    const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
 
@@ -1194,7 +1233,7 @@ test('generates simple Form element with separate child component', ()=> {
 
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
-    fieldNames = ['TextInput2', 'NumberInput1']
+    ownFieldNames = ['TextInput2', 'NumberInput1']
 }
 
 
@@ -1244,7 +1283,7 @@ test('generates nested Form elements', ()=> {
 
 
 DetailsForm_FurtherDetails.State = class DetailsForm_FurtherDetails_State extends Elemento.components.BaseFormState {
-    fieldNames = ['Description', 'Size']
+    ownFieldNames = ['Description', 'Size']
 }
 
 
@@ -1266,7 +1305,7 @@ function Page1_DetailsForm(props) {
 
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
-    fieldNames = ['TextInput2', 'NumberInput1', 'FurtherDetails']
+    ownFieldNames = ['TextInput2', 'NumberInput1', 'FurtherDetails']
 }
 
 
@@ -1327,7 +1366,7 @@ test('generates Form element with separate child component', ()=> {
 
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
-    fieldNames = ['TextInput2', 'NumberInput1']
+    ownFieldNames = ['TextInput2', 'NumberInput1']
 }
 
 
@@ -1432,6 +1471,7 @@ return y
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
             new FunctionDef('f1', 'WidgetHeight', {input1: 'widget', calculation: {expr: javascriptCode}, javascript: true}),
+            new FunctionDef('f2', 'DoNothing', {calculation: {expr: ''}, javascript: true}),
             ]
         )
     ])
@@ -1448,6 +1488,7 @@ return y
         }
         return y
     }
+    const DoNothing = () => {}
 
     return React.createElement(Page, {id: props.path},
 
@@ -1599,11 +1640,11 @@ test('generates function imports in the app', () => {
 const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 const {importModule, importHandlers} = Elemento
-const GetName = await import('./files/Function1.js').then(...importHandlers())
+const GetName = await import('../files/Function1.js').then(...importHandlers())
 const CalcTax = await importModule('https://cdn.example.com/CalcStuff.js')
-const DoStuff = await import('./files/DoStuff.js').then(...importHandlers())
-const GetAmount = await import('./files/Functions.js').then(...importHandlers('amount'))
-const Calcs = await import('./files/Functions.js').then(...importHandlers('*'))
+const DoStuff = await import('../files/DoStuff.js').then(...importHandlers())
+const GetAmount = await import('../files/Functions.js').then(...importHandlers('amount'))
+const Calcs = await import('../files/Functions.js').then(...importHandlers('*'))
 
 // Page1.js
 function Page1(props) {
@@ -1641,13 +1682,13 @@ test('generates error for syntax error in expression', ()=> {
     const {Page, TextElement} = Elemento.components
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Line 1: Unexpected identifier')),
+        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Unexpected character(s) (Line 1 Position 8)')),
     )
 }
 `)
     expect(output.errors).toStrictEqual({
         id1: {
-            content: "Error: Line 1: Unexpected identifier"
+            content: "Error: Unexpected character(s) (Line 1 Position 8)"
         }
     })
 
@@ -1667,13 +1708,13 @@ test('generates error on correct line for syntax error in multiline content expr
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`23
- +\`, 'Error: Line 2: Unexpected end of input')),
+ +\`, 'Error: Unexpected character(s) (Line 2 Position 2)')),
     )
 }
 `)
     expect(output.errors).toStrictEqual({
         id1: {
-            content: "Error: Line 2: Unexpected end of input"
+            content: "Error: Unexpected character(s) (Line 2 Position 2)"
         }
     })
 
@@ -1841,7 +1882,7 @@ test('syntax error statement in initialValue generates error into state defaults
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
-    const NameInput = Elemento.useObjectState(pathWith('NameInput'), new TextInput.State({value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Line 1: Unexpected token )')}))
+    const NameInput = Elemento.useObjectState(pathWith('NameInput'), new TextInput.State({value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Unexpected character(s) (Line 1 Position 8)')}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
@@ -1850,7 +1891,7 @@ test('syntax error statement in initialValue generates error into state defaults
 `)
     expect(output.errors).toStrictEqual({
         id2: {
-            initialValue: 'Error: Line 1: Unexpected token )'
+            initialValue: 'Error: Unexpected character(s) (Line 1 Position 8)'
         }
     })
 
@@ -1874,7 +1915,7 @@ test('statement not expression generates error', ()=> {
 test('multiple statements in value expression generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Text('id1', 't1', {content: ex`while (true) log(10); return 42`}),
+                new Text('id1', 't1', {content: ex`while (true) log(10); log(20)`}),
             ]
         )])
 
@@ -2032,9 +2073,20 @@ test('Unexpected number error in expression generates error', ()=> {
     const output = new Generator(app, project(app)).output()
     expect(output.errors).toStrictEqual({
         id1: {
-            content: 'Error: Unexpected token 1'
+            content: 'Error: Unexpected character(s) (Line 1 Position 13)'
         }
     })
-
 })
+
+test('Accepts modern JavaScript features', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Optional ops', {content: ex`{a: 20}?.b ?? 20`}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({})
+})
+
 

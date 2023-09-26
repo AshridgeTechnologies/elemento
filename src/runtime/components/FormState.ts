@@ -7,9 +7,14 @@ type SubmitActionFn = (form: BaseFormState, data: any) => void
 export default abstract class BaseFormState extends InputComponentState<object, RecordType, {submitAction?: SubmitActionFn}> {
     defaultValue = {}
 
-    protected abstract readonly fieldNames: string[]
+    protected abstract readonly ownFieldNames: string[]
 
     protected get submitAction() { return this.props.submitAction }
+
+    get fieldNames() {
+        const dataTypeFields = this.props.dataType?.fields?.map(f => f.codeName ) ?? []
+        return [...dataTypeFields, ...(this.ownFieldNames ?? [])]
+    }
 
     get updates() {
         const modifiedFields = this.fieldNames.filter(name => this.getChildState(name)?.modified)
@@ -22,7 +27,7 @@ export default abstract class BaseFormState extends InputComponentState<object, 
 
     get errors(): { [p: string]: string[] } | null {
         const componentErrorEntries = this.fieldNames.map(name => [name, this.getChildState(name)?.errors]).filter( ([_name, entries]) => entries)
-        const validationResult = this.dataType?.validate(this.value)
+        const validationResult = this.dataType?.validate(this.dataValue)
         const ownErrorResult = (validationResult && (validationResult as any)._self) as string[]
         const ownErrors = ownErrorResult ? {_self: ownErrorResult} : {}
         const componentErrors =  componentErrorEntries.length ? Object.fromEntries(componentErrorEntries) : {}
@@ -40,7 +45,7 @@ export default abstract class BaseFormState extends InputComponentState<object, 
     }
 
     protected getChildValue(name: string) {
-        const childStateValue = this.getChildState(name)?.value
+        const childStateValue = this.getChildState(name)?.dataValue
         if (childStateValue !== undefined) return childStateValue
 
         return this.props.value?.[name as keyof object]
@@ -72,14 +77,6 @@ export default abstract class BaseFormState extends InputComponentState<object, 
     }
 }
 
-type DataTypeFormStateProps = InputComponentExternalProps<object, RecordType, {submitAction?: SubmitActionFn}>
-
 export class DataTypeFormState extends BaseFormState {
-    constructor(props: DataTypeFormStateProps) {
-        super(props)
-    }
-
-    get fieldNames(): string[] {
-        return this.props.dataType?.fields.map( f => f.name ) ?? []
-    }
+    protected readonly ownFieldNames: string[] = []
 }

@@ -1,5 +1,6 @@
 import {isNil} from 'ramda'
 import Rule from './Rule'
+import {noSpaces} from '../../util/helpers'
 
 export type Kind = 'Text' | 'Number' | 'Decimal' | 'Date' | 'Choice' | 'TrueFalse' | 'Record' | 'List'
 
@@ -7,13 +8,16 @@ export type ValidationErrors = string[] | { [name: string]: string[] } | null
 export type BaseProperties = Partial<Readonly<{
     description: string,
     required: boolean,
+    basedOn: BaseType<any, any>,
 }>>
 
 export default abstract class BaseType<T, PropertiesType extends BaseProperties> {
     constructor(public readonly kind: Kind, public readonly name: string, protected readonly properties: PropertiesType, private readonly rules: Rule[] = []) {}
 
+    get codeName() { return noSpaces(this.name) }
     get description() { return this.properties.description }
     get required() { return this.properties.required ?? false}
+    get basedOn() { return this.properties.basedOn}
 
     private get requiredRule() {
         const isRequiredRule = new Rule('Required', (item: any) => !isNil(item) && this.isCorrectDataType(item), {description: 'Required'})
@@ -25,7 +29,9 @@ export default abstract class BaseType<T, PropertiesType extends BaseProperties>
     }
 
     private get nonNullRules(): Rule[] {
-        return [...this.shorthandRules, ...this.rules]
+        const shorthandRules = [...(this.basedOn?.shorthandRules ?? []), ...this.shorthandRules]
+        const rules = [...(this.basedOn?.rules ?? []), ...this.rules]
+        return [...shorthandRules, ...rules]
     }
 
     private get allRules(): Rule[] {

@@ -11,13 +11,25 @@ import {ElementType} from '../../src/model/Types'
 test('Tool has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const tool = new Tool('t1', 'test1', {author: 'Herself', maxWidth: 200}, [page1, page2])
+    const tool = new Tool('t1', 'test1', {author: 'Herself', maxWidth: 200, showWhenProjectOpened: true}, [page1, page2])
 
     expect(tool.id).toBe('t1')
     expect(tool.name).toBe('test1')
     expect(tool.author).toBe('Herself')
     expect(tool.maxWidth).toBe(200)
+    expect(tool.showWhenProjectOpened).toBe(true)
     expect(tool.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
+})
+
+test('Tool has default properties', ()=> {
+    const tool = new Tool('t1', 'test1', {}, [])
+
+    expect(tool.id).toBe('t1')
+    expect(tool.name).toBe('test1')
+    expect(tool.author).toBe(undefined)
+    expect(tool.maxWidth).toBe(undefined)
+    expect(tool.showWhenProjectOpened).toBe(undefined)
+    expect(tool.pages).toStrictEqual([])
 })
 
 test('can distinguish different types of element', () => {
@@ -127,7 +139,7 @@ test('converts to JSON', ()=> {
     const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
-    const tool = new Tool('a1', 'Tool 1', {author: `Jo`}, [page1, page2])
+    const tool = new Tool('a1', 'Tool 1', {author: `Jo`, showWhenProjectOpened: true}, [page1, page2])
 
     expect(asJSON(tool)).toStrictEqual({
         kind: 'Tool',
@@ -146,7 +158,7 @@ test('converts from plain object', ()=> {
     const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
-    const tool = new Tool('a1', 'Tool 1', {author: `Jo`}, [page1, page2])
+    const tool = new Tool('a1', 'Tool 1', {author: `Jo`, showWhenProjectOpened: true}, [page1, page2])
     const newTool = loadJSON(asJSON(tool))
     expect(newTool).toStrictEqual<Tool>(tool)
 })

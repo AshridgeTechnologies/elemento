@@ -1,12 +1,24 @@
-import BaseElement from './BaseElement'
+import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
+import {
+    ComponentType,
+    ElementType,
+    eventAction,
+    ParentType,
+    PropertyDef,
+    PropertyExpr,
+    PropertyValueType
+} from './Types'
 import {without} from 'ramda'
 import Page from './Page'
 
-type Properties = { author?: PropertyValueType<string>, maxWidth?: PropertyValueType<string | number> }
+export type Properties = Partial<Readonly<{
+    author: PropertyValueType<string>,
+    maxWidth: PropertyValueType<string | number>,
+    startupAction: PropertyExpr
+}>>
 
-export class BaseApp extends BaseElement<Properties> implements Element {
+export class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
 
     type(): ComponentType {
         return 'app'
@@ -35,11 +47,15 @@ export class BaseApp extends BaseElement<Properties> implements Element {
     get maxWidth() {
         return this.properties.maxWidth
     }
+    get startupAction() {
+        return this.properties.startupAction
+    }
 
     get propertyDefs(): PropertyDef[] {
         return [
-            {name: 'author', type: 'string'},
-            {name: 'maxWidth', type: 'string|number'},
+            propDef('author', 'string'),
+            propDef('maxWidth', 'string|number'),
+            propDef('startupAction', eventAction()),
         ]
     }
 

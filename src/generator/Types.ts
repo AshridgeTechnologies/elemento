@@ -6,6 +6,8 @@ export class ListItem {
     constructor(public list: List) {
     }
 
+    kind = 'ListItem'
+
     get id() {
         return this.list.id
     }

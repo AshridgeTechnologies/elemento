@@ -6,7 +6,7 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {Alert, AlertColor, AlertTitle, Box, Grid,} from '@mui/material'
+import {Alert, AlertColor, AlertTitle, Box, Grid, Typography,} from '@mui/material'
 import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -16,7 +16,7 @@ import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
-import {chooseDirectory, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
+import {chooseDirectory, openFromGitHub, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
@@ -33,6 +33,7 @@ import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
 import Tool from '../model/Tool'
+import Element from '../model/Element'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
 import FirebasePublish from '../model/FirebasePublish'
@@ -47,6 +48,9 @@ import ToolTabsPanel from './ToolTabsPanel'
 import EditorController from '../tools/EditorController'
 import {editorElement} from './EditorElement'
 import PreviewController from '../tools/PreviewController'
+import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
+import {SaveAsDialog} from './actions/SaveAs'
+import {OpenDialog} from './actions/Open'
 
 const {debounce} = lodash;
 
@@ -127,6 +131,7 @@ export default function EditorRunner() {
     const [updateTime, setUpdateTime] = useState<number | null>(null)
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
+    const [openFromGitHubUrl, setOpenFromGitHubUrl] = useState<string | null>('')
     const [, setProject] = useState<Project | null>(null)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
@@ -138,7 +143,6 @@ export default function EditorRunner() {
 
     const projectBuilderRef = useRef<ProjectBuilder>()
     const previewFrameRef = useRef<HTMLIFrameElement>(null)
-    const windowToolMapRef = useRef<Map<Window, Tool | ToolImport>>(new Map())
 
     const elementoUrl = () => window.location.origin
 
@@ -200,6 +204,10 @@ export default function EditorRunner() {
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
+        const initialOpenTools = project.findElementsBy((el: Element) => el.kind === 'Tool' && ((el as Tool).showWhenProjectOpened?? false)) as Tool[]
+        setTools(initialOpenTools)
+        setSelectedTool(initialOpenTools[0]?.codeName ?? null)
+        setShowTools(initialOpenTools.length > 0)
     }
 
     function renameFile(oldPath: string, newPath: string) {
@@ -263,6 +271,17 @@ export default function EditorRunner() {
                 // window.location.reload()
             })
     }
+
+    const openInitialProjectIfSupplied = () => {
+        const searchParams = new URLSearchParams(location.search)
+        const initialProjectUrl = searchParams.get('openFromGitHub')
+        if (!openFromGitHubUrl && initialProjectUrl) {
+            const editorManager = new EditorManager(openOrUpdateProjectFromStore)
+            setOpenFromGitHubUrl(initialProjectUrl)
+            openFromGitHub(initialProjectUrl, editorManager)
+        }
+    }
+    openInitialProjectIfSupplied()
 
     useEffect(() => {
         window.setProject = (project: string | Project) => {
@@ -374,17 +393,13 @@ export default function EditorRunner() {
     const onNew = () => setDialog(<NewProjectDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                     uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
+    const onSaveAs = () => setDialog(<SaveAsDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+                                                    uiManager={new UIManager({onClose: removeDialog, showAlert})}
+                                                    currentProjectStore={projectStore!}/>)
+
     const onOpen = async () => {
-        const dirHandle = await chooseDirectory()
-        if (dirHandle) {
-            const error = await validateDirectoryForOpen(dirHandle)
-            if (error) {
-                showAlert('Open project', error, null, 'error')
-            } else {
-                const projectStore = new DiskProjectStore(dirHandle)
-                await openOrUpdateProjectFromStore(projectStore.name, projectStore)
-            }
-        }
+        setDialog(<OpenDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+                              uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
     }
 
     const onHelp = () => showTool(helpToolImport)
@@ -392,6 +407,10 @@ export default function EditorRunner() {
     const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
+        editorManager={new EditorManager(openOrUpdateProjectFromStore)}
+        uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
+
+    const onOpenFromGitHub = () => setDialog(<OpenFromGitHubDialog
         editorManager={new EditorManager(openOrUpdateProjectFromStore)}
         uiManager={new UIManager({onClose: removeDialog, showAlert})}/>)
 
@@ -548,7 +567,7 @@ export default function EditorRunner() {
             </Box>
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
-                    onNew, onOpen, onGetFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
+                    onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
                     onInsert: onMenuInsert,
                     insertMenuItems,
                     onAction,
@@ -607,8 +626,10 @@ export default function EditorRunner() {
                                    onSelectTool={setSelectedTool} onShowTools={setShowTools} onCloseTool={onCloseTool}/>
                 </Box>
             </Box>
+        } else if (openFromGitHubUrl) {
+            return <Typography variant='h6' sx={{m: 3}}>Opening project...</Typography>
         } else {
-            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub}/>
+            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} onOpenFromGitHub={onOpenFromGitHub}/>
         }
     }
 

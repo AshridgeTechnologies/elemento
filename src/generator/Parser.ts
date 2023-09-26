@@ -1,4 +1,5 @@
 import {parse} from 'recast'
+import * as acorn from 'acorn'
 import {visit,} from 'ast-types'
 import Page from '../model/Page'
 import Element from '../model/Element'
@@ -36,8 +37,36 @@ const isItemVar = (name: string) => name === '$item'
 const isFormVar = (name: string) => name === '$form'
 
 function parseExpr(expr: string) {
+
+    function parseAcorn(source: string, options?: any) {
+        const comments: any[] = []
+        const tokens: any[] = []
+        const ast = acorn.parse(source, {
+            allowHashBang: false,
+            allowImportExportEverywhere: false,
+            allowReturnOutsideFunction: true,
+            allowAwaitOutsideFunction: true,
+            ecmaVersion: 11,  //2020
+            sourceType: "module",
+            locations: true,
+            onComment: comments,
+            onToken: tokens,
+        })
+
+        const astAsAny = (ast as any)
+        if (!astAsAny.comments) {
+            astAsAny.comments = comments
+        }
+
+        if (!astAsAny.tokens) {
+            astAsAny.tokens = tokens
+        }
+
+        return ast
+    }
+
     const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
-    return parse(exprToParse)
+    return parse(exprToParse, {parser: {parse: parseAcorn}})
 }
 
 const addAllTo = (to: IdentifierCollector, from: Iterable<string>): void => {
@@ -89,7 +118,14 @@ export default class Parser {
     }
 
     getAst(elementId: ElementId, propertyName: string): any {
-        const expr = this.getExpression(elementId, propertyName)
+
+            const element = this.project.findElement(elementId)!
+            const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
+            if (propertyValue === undefined) {
+                return undefined
+            }
+        const expr = isExpr(propertyValue) ? propertyValue.expr.trim() : valueLiteral(propertyValue)
+
         if (expr === undefined) {
             return undefined
         }
@@ -108,8 +144,7 @@ export default class Parser {
             return undefined
         }
         if (isExpr(propertyValue)) {
-            const {expr} = propertyValue
-            return expr.trim()
+            return propertyValue.expr.trim()
         } else {
             return valueLiteral(propertyValue)
         }
@@ -152,6 +187,9 @@ export default class Parser {
             identifierSet.add(runtimeElementName(component))
         }
 
+        if (component.kind === 'App') {
+            this.parseElement(component, identifierSet, topLevelFunctions, isKnown, containingComponent, false)
+        }
         const elementArray = (component instanceof ListItem ? component.list.elements : component.elements) ?? []
         elementArray.forEach(childEl => {
             this.parseElement(childEl, identifierSet, topLevelFunctions, isKnown, containingComponent)
@@ -160,7 +198,7 @@ export default class Parser {
         this.identifiersForComponent[component.id] = Array.from(identifierSet.values())
     }
 
-    private parseElement(element: Element | ListItem, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, containingComponent?: Page) {
+    private parseElement(element: Element | ListItem, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, containingComponent?: Page, includeChildren = true) {
 
         const parseChildren = (element: Element | ListItem, containingComponent?: Page) => {
             const elementArray = (element instanceof ListItem ? element.list.elements : element.elements) ?? []
@@ -225,7 +263,9 @@ export default class Parser {
             this.parseComponent(element)
         } else if (element.kind === 'List') {
             this.parseComponent(new ListItem(element as List), containingComponent)
-        } else {
+        } else if (element.kind === 'DataTypes') {
+            this.parseComponent(element)
+        } else if (includeChildren) {
             parseChildren(element, containingComponent)
         }
     }
@@ -239,7 +279,6 @@ export default class Parser {
             return undefined
         }
 
-        const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
         function checkIsExpression(ast: any) {
             const bodyStatements = ast.program.body as any[]
             if (exprType === 'singleExpression') {
@@ -272,8 +311,8 @@ export default class Parser {
         if (isExpr(propertyValue)) {
             const {expr} = propertyValue
             try {
-                const exprToParse = isJavascriptFunctionBody ? `const x = function() {\n${expr}\n}` : expr
-                const ast = parseExpr(exprToParse)
+                const ast = parseExpr(expr)
+                const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
 
                 if (!isJavascriptFunctionBody) {
                     checkIsExpression(ast)
@@ -330,7 +369,10 @@ export default class Parser {
                 const externalIdentifiers = without(Array.from(variableIdentifiers), identifierNames)
                 externalIdentifiers.forEach(name => identifiers.add(name))
             } catch(e: any) {
-                const errorMessage = `${e.constructor.name}: ${e.message}`
+                const humanizedMessage = e.message.replace(/\((\d+):(\d+)\)$/, (_:any, lineNo: string, charIndex: string) => `(Line ${lineNo} Position ${charIndex})`)
+                    .replace(/\btoken\b/, 'character(s)')
+                    .replace(/'return' outside of function/, 'return not allowed here')
+                const errorMessage = `Error: ${humanizedMessage}`
                 onError(errorMessage)
             }
         }

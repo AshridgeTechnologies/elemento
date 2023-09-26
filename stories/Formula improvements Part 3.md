@@ -1,6 +1,10 @@
 Formula improvements Part 3
 ===========================
 
+- If() has expressions transformed to functions so they are not evaluated unless needed
+- Value Formulas can have multiple named sub-formulas used in the result
+- Action formulas can have steps with the result of each step assigned to a name if required
+- Action formulas are async and each step is done with await
 - Need either a Random Number element or a RandomNumber function to get a random integer
 - Random function to do any of: 
   - pick from arg list
@@ -25,11 +29,11 @@ Formula improvements Part 3
 - Data at app level
 - Live calculations at app level
 - User-defined functions at app level
-- If() has expressions transformed to functions so they are not evaluated unless needed
 - Only allow $item in List item and list predicate/transform expressions
 - Template vars in text content
 - Avoiding floating point errors
 - More argument checking at design time eg in Record Function
 - Full type checking!
 - Typed editors - popup properties editor forms based on the typof the function call or object
-- Find a way to ensure that fixed values are the correct types (esp booleans)  
+- Find a way to ensure that fixed values are the correct types (esp booleans) 
+- Click on a name in a formula to go to its definition

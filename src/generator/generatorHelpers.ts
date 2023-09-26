@@ -61,7 +61,7 @@ export function isAppLike(component: Element | ListItem): component is BaseApp {
 
 export const allElements = (component: Element | ListItem, isTopLevel = false): Element[] => {
     if (isAppLike(component)) {
-        return flatten(component.otherComponents.map(el => [el, allElements(el)]))
+        return [component, ...flatten(component.otherComponents.map(el => [el, allElements(el)]))]
     }
     if (component instanceof ListItem) {
         const childElements = component.list.elements || []

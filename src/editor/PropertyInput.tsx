@@ -130,7 +130,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button()}
         {fixedBoolean ?
-            <FormControl variant="filled" size='small' sx={{ minWidth: 120 }}>
+            <FormControl variant="filled" size='small' sx={{ minWidth: 240 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>
                 <Select
                     labelId={name + '_label'}
@@ -145,7 +145,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 </Select>
             </FormControl>
             : fixedChoiceList ?
-            <FormControl variant="filled" size='small' sx={{ minWidth: 150 }}>
+            <FormControl variant="filled" size='small' sx={{ minWidth: 240 }}>
                 <InputLabel id={name + '_label'}>{label}</InputLabel>
                 <Select
                     labelId={name + '_label'}

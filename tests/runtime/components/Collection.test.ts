@@ -9,8 +9,7 @@ import DataStore, {
     ErrorResult,
     InvalidateAll,
     MultipleChanges,
-    Pending,
-    UpdateNotification, Update, Add, Remove
+    UpdateNotification, Update, Add, Remove, isPending, pending
 } from '../../../src/runtime/DataStore'
 import SendObservable from '../../../src/runtime/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
@@ -22,10 +21,10 @@ let testObservable: SendObservable<UpdateNotification>
 
 const mockDataStore = (): DataStore => ({
     getById: jest.fn(),
-    add: jest.fn(),
-    addAll: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    add: jest.fn().mockResolvedValue(undefined),
+    addAll: jest.fn().mockResolvedValue(undefined),
+    update: jest.fn().mockResolvedValue(undefined),
+    remove: jest.fn().mockResolvedValue(undefined),
     observable: jest.fn().mockImplementation( () => testObservable ),
     query: jest.fn()
 })
@@ -43,6 +42,8 @@ const initState = (initialCollection: object):[CollectionState, AppStateForObjec
 
     return [state, appInterface]
 }
+
+const calls = (fn: any) => (fn as jest.MockedFunction<any>).mock.calls
 
 test('produces output with simple values',
     snapshot(collection('app.page1.collection1', {value: ['green', 'blue']}, {display: true}))
@@ -170,7 +171,8 @@ describe('Add', () => {
     test('inserts a new object with id into a collection', () => {
         const state = new CollectionState({value: initialCollection})
         const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
-        state.Add({id: 'x3', a: 30})
+        const result = state.Add({id: 'x3', a: 30})
+        expect(result).toStrictEqual({id: 'x3', a: 30})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 10},
@@ -183,19 +185,20 @@ describe('Add', () => {
     test('inserts a new item without id into a collection and adds the id', () => {
         const state = new Collection.State({value: {}})
         const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
-        state.Add({a: 30})
+        const result = state.Add({a: 30})
         const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
         const entries = Object.entries(newState.value)
         expect(entries.length).toBe(1)
         const [key, value] = entries[0]
         expect(Number(key)).toBeGreaterThan(0)
         expect(value).toStrictEqual({id: key, a: 30})
+        expect(result).toStrictEqual(value)
     })
 
     test('inserts a new simple value into a collection', () => {
         const state = new Collection.State({value: initialCollection})
         const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
-        state.Add('green')
+        const result = state.Add('green')
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 10},
@@ -203,12 +206,14 @@ describe('Add', () => {
                 green: 'green',
             }
         }))
+        expect(result).toBe('green')
     })
 
     test('inserts multiple objects into a collection', () => {
         const state = new CollectionState({value: initialCollection})
         const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
-        state.Add([{id: 'x3', a: 30}, {id: 'x4', a: 40}])
+        const result = state.Add([{id: 'x3', a: 30}, {id: 'x4', a: 40}])
+        expect(result).toBeUndefined()
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 10},
@@ -307,7 +312,8 @@ describe('Add with external datastore', () => {
     test('makes correct update when not in cache', () => {
         const [state, appInterface] = initState({});
 
-        state.Add({id: 'x1', a:20, b:'Cee'})
+        const item = {id: 'x1', a:20, b:'Cee'}
+        const result = state.Add(item)
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
@@ -315,12 +321,13 @@ describe('Add with external datastore', () => {
         }))
 
         expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'x1', {id: 'x1', a:20, b:'Cee'})
+        expect(result).resolves.toStrictEqual(item)
     })
 
     test('makes correct update for item without id', () => {
         const [state, appInterface] = initState({});
 
-        state.Add({a:20, b:'Cee'})
+        const result = state.Add({a:20, b:'Cee'})
         expect(dataStore.add).toHaveBeenCalled()
         const mock = (dataStore.add as jest.MockedFunction<any>).mock
 
@@ -333,24 +340,26 @@ describe('Add with external datastore', () => {
                 [newId]: {id: newId, a: 20, b: 'Cee'},
             }
         }))
+        expect(result).resolves.toStrictEqual({id: newId, a:20, b:'Cee'})
     })
 
     test('makes correct update for simple value', () => {
         const [state, appInterface] = initState({});
 
-        state.Add('green')
+        const result = state.Add('green')
         expect(dataStore.add).toHaveBeenCalledWith('Widgets','green', 'green')
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 green: 'green',
             }
         }))
+        expect(result).resolves.toBe('green')
     })
 
     test('makes correct update for multiple items when not in cache', () => {
         const [state, appInterface] = initState({});
 
-        state.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
+        const result = state.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
@@ -362,9 +371,12 @@ describe('Add with external datastore', () => {
                 x1: {id: 'x1', a:20, b:'Cee'},
                 x2: {id: 'x2', a:30, b:'Dee'},
         })
+
+        expect(result).resolves.toStrictEqual({
+            x1: {id: 'x1', a: 20, b: 'Cee'},
+            x2: {id: 'x2', a: 30, b: 'Dee'},
+        })
     })
-
-
 })
 
 describe('Update with external datastore', () => {
@@ -372,21 +384,23 @@ describe('Update with external datastore', () => {
     test('makes correct update when not in cache', () => {
         const [state, appInterface] = initState({});
 
-        state.Update('x1', {a:20, b:'Cee'})
+        const result = state.Update('x1', {a:20, b:'Cee'})
         expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'x1', {a:20, b:'Cee'})
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(result).resolves.toBeUndefined()
     })
 
     test('makes correct update when already in cache', () => {
         const [state, appInterface] = initState({x1: {id: 'x1', a: 10}});
 
-        state.Update('x1', {a:20, b:'Cee'})
+        const result = state.Update('x1', {a:20, b:'Cee'})
         expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'x1', {a:20, b:'Cee'})
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
             }
         }))
+        expect(result).resolves.toBeUndefined()
     })
 
     test('cannot update id', () => {
@@ -400,7 +414,6 @@ describe('Update with external datastore', () => {
             }
         }))
     })
-
 })
 
 describe('Remove with external datastore', () => {
@@ -408,21 +421,23 @@ describe('Remove with external datastore', () => {
     test('returns correct update when not in cache', () => {
         const [state, appInterface] = initState({});
 
-        state.Remove('x1')
+        const result = state.Remove('x1')
         expect(dataStore.remove).toHaveBeenCalledWith('Widgets', 'x1')
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(result).resolves.toBeUndefined()
     })
 
     test('returns correct update when already in cache', () => {
         const [state, appInterface] = initState({x1: {id: 'x1', a: 10}, x2: {id: 'x2', a: 20}});
 
-        state.Remove('x1')
+        const result = state.Remove('x1')
         expect(dataStore.remove).toHaveBeenCalledWith('Widgets', 'x1')
         expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
             value: {
                 x2: {id: 'x2', a: 20},
             }
         }))
+        expect(result).resolves.toBeUndefined()
     })
 })
 
@@ -433,12 +448,10 @@ describe('Get with external datastore', () => {
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
         const initialResult = state.Get('x1')
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(initialResult).toBeInstanceOf(Pending)
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
-            value: {
-                x1: new Pending(),
-            }
-        }))
+        expect(isPending(initialResult)).toBe(true)
+        expect(initialResult).resolves.toStrictEqual({a: 10, b: 'Bee'})
+        const newState = calls(appInterface.updateVersion)[0][0]
+        expect(isPending(newState.value.x1)).toBe(true)
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
@@ -453,12 +466,11 @@ describe('Get with external datastore', () => {
         const [state, appInterface] = initState({});
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue(new ErrorResult('Some', 'problem'))
         const initialResult = state.Get('x1')
+        expect(isPending(initialResult)).toBe(true)
+        expect(initialResult).resolves.toStrictEqual(new ErrorResult('Some', 'problem'))
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
-            value: {
-                x1: new Pending(),
-            }
-        }))
+        const newState = calls(appInterface.updateVersion)[0][0]
+        expect(isPending(newState.value.x1)).toBe(true)
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
@@ -471,23 +483,23 @@ describe('Get with external datastore', () => {
     test('get object by id when in cache', async () => {
         const initialCollection = {
             x1: {id: 'x1', a: 10},
-            x2: new Pending(),
+            x2: pending(Promise.resolve(42)),
         }
         const [state] = initState(initialCollection);
         expect(state.Get('x1')).toStrictEqual({id: 'x1', a: 10})
-        expect(state.Get('x2')).toStrictEqual(new Pending())
+        expect(isPending(state.Get('x2'))).toBe(true)
         expect(dataStore.getById).not.toHaveBeenCalled()
     })
 
-    test('get Pending when already requested in same render', async () => {
+    test('gets pending when already requested in same render', async () => {
         const [state, appInterface] = initState({});
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
         const result = state.Get('x1')
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(result).toBeInstanceOf(Pending)
+        expect(isPending(result)).toBe(true)
 
         const result2 = state.Get('x1')
-        expect(result2).toBeInstanceOf(Pending)
+        expect(isPending(result2)).toBe(true)
         expect(dataStore.getById).toHaveBeenCalledTimes(1)
     })
 
@@ -501,8 +513,8 @@ describe('Get with external datastore', () => {
         state.Get('x2')
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x2')
-        expect(state.Get('x1')).toBeInstanceOf(Pending)
-        expect(state.Get('x2')).toBeInstanceOf(Pending)
+        expect(isPending(state.Get('x1'))).toBe(true)
+        expect(isPending(state.Get('x2'))).toBe(true)
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
             value: {
@@ -521,13 +533,11 @@ describe('Query with external datastore', () => {
 
         const result = state.Query({a: 10, c: false})
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 10, c: false})
-        expect(result).toBeInstanceOf(Pending)
+        expect(isPending(result)).toBe(true)
+        expect(result).resolves.toStrictEqual([{id: 'a1', a: 10, b: 'Bee'}])
 
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
-            queries: {
-                '{"a":10,"c":false}': new Pending()
-            }
-        }))
+        const newState = calls(appInterface.updateVersion)[0][0]
+        expect(isPending(newState.queries['{"a":10,"c":false}'])).toBe(true)
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
@@ -547,10 +557,12 @@ describe('Query with external datastore', () => {
         expect(dataStore.query).not.toHaveBeenCalled()
     })
 
-    test('query puts error in cache', async () => {
+    test('query returns error and puts in cache', async () => {
         const [state, appInterface] = initState({});
         (dataStore.query as jest.MockedFunction<any>).mockResolvedValue(new ErrorResult('Some', 'problem'))
-        state.Query({a: 10})
+        const result = state.Query({a: 10})
+        expect(isPending(result)).toBe(true)
+        expect(result).resolves.toStrictEqual(new ErrorResult('Some', 'problem'))
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
@@ -560,15 +572,15 @@ describe('Query with external datastore', () => {
 
     })
 
-    test('get Pending when already requested same query in same render', async () => {
+    test('get pending result when already requested same query in same render', async () => {
         const [state, appInterface] = initState({});
         (dataStore.query as jest.MockedFunction<any>).mockResolvedValue([{id: 'a1', a: 10, b: 'Bee'}])
 
         const result = state.Query({a: 10, c: false})
-        expect(result).toBeInstanceOf(Pending)
+        expect(isPending(result)).toBe(true)
 
         const result2 = state.Query({a: 10, c: false})
-        expect(result2).toBeInstanceOf(Pending)
+        expect(isPending(result2)).toBe(true)
         expect(dataStore.query).toHaveBeenCalledTimes(1)
     })
 
@@ -582,8 +594,8 @@ describe('Query with external datastore', () => {
         state.Query({a: 20})
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 10, c: false})
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 20})
-        expect(state.Query({a: 10, c: false})).toBeInstanceOf(Pending)
-        expect(state.Query({a: 20})).toBeInstanceOf(Pending)
+        expect(isPending(state.Query({a: 10, c: false}))).toBe(true)
+        expect(isPending(state.Query({a: 20}))).toBe(true)
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
@@ -606,8 +618,8 @@ describe('Query with external datastore', () => {
         state.Query({a: 20})
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 20})
-        expect(state.Get('x1')).toBeInstanceOf(Pending)
-        expect(state.Query({a: 20})).toBeInstanceOf(Pending)
+        expect(isPending(state.Get('x1'))).toBe(true)
+        expect(isPending(state.Query({a: 20}))).toBe(true)
 
         await actWait()
         expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({

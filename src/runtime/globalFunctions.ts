@@ -61,10 +61,6 @@ export const globalFunctions = {
         return isArray(s) ? Decimal(s[0]) : Decimal(s as DecimalVal)
     },
 
-    Add(...args: DecimalVal[]): DecimalOrNumber {
-        return decimalOp('plus', 0, ...args)
-    },
-
     Sub(...args: DecimalVal[]): DecimalOrNumber {
         return decimalOp('minus', undefined, ...args)
 

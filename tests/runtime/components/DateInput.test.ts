@@ -76,13 +76,13 @@ test('DateInput stores null value in the app store when cleared', async () => {
     const {el, user} = testContainer(dateInput('app.page1.termDate', {value: new Date('2021-11-12')}))
     const inputEl = el`app.page1.termDate`
     await user.clear(inputEl)
-    expect(stateAt('app.page1.termDate')._controlValue).toBe(null)
+    expect(stateAt('app.page1.termDate').dataValue).toBe(null)
 })
 
 test('State class has correct properties', () => {
     const emptyState = new DateInput.State({})
     expect(emptyState.value).toBe(null)
-    expect(emptyState._controlValue).toBe(undefined)
+    expect(emptyState.dataValue).toBe(null)
     expect(emptyState.defaultValue).toBe(null)
 
     const state = new DateInput.State({value: new Date('2021-11-12')})
@@ -94,11 +94,11 @@ test('State class has correct properties', () => {
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
     expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
     expect(resetState.value).toStrictEqual(new Date('2021-11-12'))
-    expect(resetState._controlValue).toStrictEqual(new Date('2021-11-12'))
+    expect(resetState.dataValue).toStrictEqual(new Date('2021-11-12'))
 
     const clearedState = state._withStateForTest({value: null})
     expect(clearedState.value).toBe(null)
-    expect(clearedState._controlValue).toBe(null)
+    expect(clearedState.dataValue).toBe(null)
 })
 
 test('DateInput stores errors shown when blurred and ShowErrors or Reset called', async () => {

@@ -84,7 +84,7 @@ test('NumberInput stores null value in the app store when cleared', async () => 
     const {el, user} = testContainer(numberInput('app.page1.sprocket', {value: 27}))
     const inputEl = el`app.page1.sprocket`
     await user.clear(inputEl)
-    expect(stateAt('app.page1.sprocket')._controlValue).toBe(null)
+    expect(stateAt('app.page1.sprocket').dataValue).toBe(null)
 })
 
 test('NumberInput uses properties from dataType', async () => {
@@ -103,7 +103,7 @@ test('NumberInput uses properties from dataType', async () => {
 test('State class has correct properties', () => {
     const emptyState = new NumberInput.State({})
     expect(emptyState.value).toBe(0)
-    expect(emptyState._controlValue).toBe(undefined)
+    expect(emptyState.dataValue).toBe(null)
     expect(emptyState.defaultValue).toBe(0)
 
     const state = new NumberInput.State({value: 77})
@@ -115,9 +115,9 @@ test('State class has correct properties', () => {
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
     expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
     expect(resetState.value).toBe(77)
-    expect(resetState._controlValue).toBe(77)
+    expect(resetState.dataValue).toBe(77)
 
     const clearedState = state._withStateForTest({value: null})
     expect(clearedState.value).toBe(0)
-    expect(clearedState._controlValue).toBe(null)
+    expect(clearedState.dataValue).toBe(null)
 })

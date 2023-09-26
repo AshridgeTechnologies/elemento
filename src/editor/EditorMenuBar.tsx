@@ -10,7 +10,9 @@ import EditMenuWithButton from './EditMenuWithButton'
 type EditorMenuProps = {
     onNew: () => void,
     onOpen: () => Promise<void>,
-    onGetFromGitHub: () => void,
+    onSaveAs: () => void,
+    onOpenFromGitHub: () => void,
+    onGetFromGitHub?: () => void,
     onUpdateFromGitHub: () => Promise<void>,
     onSaveToGitHub: () => Promise<void>,
     signedIn: boolean,
@@ -27,7 +29,9 @@ export default function EditorMenuBar(props: EditorMenuProps) {
     const {
         onNew,
         onOpen,
+        onSaveAs,
         onHelp,
+        onOpenFromGitHub,
         onGetFromGitHub,
         onUpdateFromGitHub,
         onSaveToGitHub,
@@ -41,7 +45,8 @@ export default function EditorMenuBar(props: EditorMenuProps) {
     } = props
 
     return <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen}
+        <FileMenu onNew={onNew} onOpen={onOpen} onSaveAs={onSaveAs}
+                  onOpenFromGitHub={onOpenFromGitHub}
                   onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub}
                   onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
         <EditMenuWithButton onAction={onAction} actionsAvailableFn={actionsAvailableFn} selectedItemIds={selectedItemIds} itemNameFn={itemNameFn}/>

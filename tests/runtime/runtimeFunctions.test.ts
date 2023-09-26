@@ -5,11 +5,14 @@
 import {asArray} from '../../src/runtime'
 import {valueObj} from '../testutil/testHelpers'
 import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
+import BigNumber from 'bignumber.js'
 
-test('gets correct valueOf for date, object, primitive', () => {
+test('gets correct valueOf for date, object, primitive, decimal', () => {
     expect(valueOf({valueOf() { return 42}})).toBe(42)
     const date = new Date(2022, 6, 1)
     expect(valueOf(date)).toBe(date)
+    const decimal = new BigNumber('123.45')
+    expect(valueOf(decimal)).toBe(decimal)
     expect(valueOf('Hi!')).toBe('Hi!')
 })
 

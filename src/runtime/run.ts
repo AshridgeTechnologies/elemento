@@ -11,11 +11,12 @@ let root: Root
 
 type ComponentSelectedFn = (id: string) => void
 
-export const run = (elementType: React.FunctionComponent,
-                    selectedComponentId?: string,
-                    onComponentSelected?: ComponentSelectedFn,
-                    appStoreHook?: AppStoreHook,
-                    containerElementId = 'main') => {
+const run = (urlPath: string,
+             elementType: React.FunctionComponent,
+             selectedComponentId?: string,
+             onComponentSelected?: ComponentSelectedFn,
+             appStoreHook?: AppStoreHook,
+             containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
         container.id = containerElementId
@@ -27,7 +28,7 @@ export const run = (elementType: React.FunctionComponent,
     if (!root) {
         root = createRoot(container)
     }
-    const appContext = new DefaultAppContext(null)
+    const appContext = new DefaultAppContext(urlPath)
     const resourceUrl = '/studio/preview/' + ASSET_DIR
     // @ts-ignore
     const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
@@ -38,8 +39,8 @@ let refreshCount = 0
 let selectedComponentIds: string[] = []
 let appModule: any
 
-export const runForDev = (url: string) => {
-    const previewMatch = url.match(/studio\/preview\/([\w]+\/)?([-\w]+)\/?$/)
+export const runForDev = (urlPath: string) => {
+    const previewMatch = urlPath.match(/studio\/preview\/([\w]+\/)?([-\w]+)\/?$/)
     let codeUrl: string | undefined
     if (previewMatch) {
         const [, prefix = '', appName] = previewMatch
@@ -55,7 +56,7 @@ export const runForDev = (url: string) => {
     }
 
     function runModule() {
-        run(appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
+        run(urlPath, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
     }
 
     async function refreshCode() {

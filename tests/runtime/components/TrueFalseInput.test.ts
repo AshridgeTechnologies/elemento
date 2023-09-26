@@ -71,7 +71,7 @@ test('TrueFalseInput stores updated values in the app store section for its path
 test('State class has correct properties', () => {
     const emptyState = new TrueFalseInput.State({})
     expect(emptyState.value).toBe(false)
-    expect(emptyState._controlValue).toBe(undefined)
+    expect(emptyState.dataValue).toBe(null)
     expect(emptyState.defaultValue).toBe(false)
 
     const state = new TrueFalseInput.State({value: true})
@@ -82,7 +82,7 @@ test('State class has correct properties', () => {
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
     expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
     expect(resetState.value).toBe(true)
-    expect(resetState._controlValue).toBe(true)
+    expect(resetState.dataValue).toBe(true)
 })
 
 test('State is modified only when its value is not null and different to its empty initial value', () => {

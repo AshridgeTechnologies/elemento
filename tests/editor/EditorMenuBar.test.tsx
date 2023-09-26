@@ -112,11 +112,11 @@ test('notifies open request and closes menu', async () => {
 })
 
 test('notifies Get from GitHub request and closes menu', async () => {
-    let onGetFromGitHub = jest.fn()
-    await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onGetFromGitHub={onGetFromGitHub}/>)))
+    let onOpenFromGitHub = jest.fn()
+    await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onOpenFromGitHub={onOpenFromGitHub}/>)))
     await actWait(() => fireEvent.click(screen.getByText('File')) )
     await actWait(() => fireEvent.click(screen.getByText('Get from GitHub')) )
-    expect(onGetFromGitHub).toHaveBeenCalled()
+    expect(onOpenFromGitHub).toHaveBeenCalled()
     await actWait()
     expect(screen.queryByText('Get from GitHub')).toBeNull()
 })

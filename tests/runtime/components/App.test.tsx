@@ -3,7 +3,7 @@
  */
 
 import React, {createElement} from 'react'
-import {componentJSON, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
@@ -11,8 +11,8 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
 import {createMemoryHistory, MemoryHistory} from 'history'
-import MockedFunction = jest.MockedFunction
 import {AppData} from '../../../src/runtime/components/AppData'
+import MockedFunction = jest.MockedFunction
 
 const [appComponent, appStoreHook] = wrappedTestElement(App, AppData)
 
@@ -61,8 +61,8 @@ test('App element produces output containing page and additional components with
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
 
-test('App shows first page initially and other page when state changes', async () => {
-
+test('App shows first page initially and other page when state changes and only runs startup action once', async () => {
+    let startupCount = 0
     const [appContext] = getRealAppContext()
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1'}, 'this is page ' + pageName)
 
@@ -81,14 +81,18 @@ test('App shows first page initially and other page when state changes', async (
     const OtherPage = () => createElement(Page, {path: 'app1.page2'}, text('Other'), 'Page 2')
     const app = () => {
         useObjectState('app1', new App.State({pages: {MainPage, OtherPage}, appContext}))
-        return createElement(App, {path: 'app1'})
+        return createElement(App, {path: 'app1', startupAction: () => {
+                startupCount++
+            }})
     }
 
     const {el, click} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
     expect(el`p[id="app1.page1.para1"`?.textContent).toBe('this is page Main')
+    expect(startupCount).toBe(1)
 
     await actWait( () => click('button'))
     expect(el`p[id="app1.page1.para1`?.textContent).toBe('this is page Other')
+    expect(startupCount).toBe(1)
 })
 
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {

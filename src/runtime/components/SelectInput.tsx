@@ -9,11 +9,11 @@ import {InputWithInfo} from './InputWithInfo'
 type Properties = {path: string,  label?: string, values?: string[]}
 
 export default function SelectInput({path, ...props}: Properties) {
-    const {values: valuesFromProps = [], label: plainLabel} = valueOfProps(props)
+    const {values: valuesFromProps = [], label} = valueOfProps(props)
     const state = useGetObjectState<SelectInputState>(path)
-    const value = state._controlValue ?? ''
+    const {value} = state
     const dataType = state.dataType
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
+    const required = dataType?.required
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -42,7 +42,7 @@ export default function SelectInput({path, ...props}: Properties) {
         }, ...menuItems),
         el(FormHelperText, {}, helperText)
     )
-    return InputWithInfo({description: dataType?.description, formControl})
+    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class SelectInputState extends InputComponentState<string, ChoiceType> {

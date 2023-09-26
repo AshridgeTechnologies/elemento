@@ -11,18 +11,7 @@ exports[`Form element produces output containing children 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
@@ -74,10 +63,10 @@ exports[`Form element produces output containing children 1`] = `
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
-        htmlFor="app.page1.form1.Size"
-        id="app.page1.form1.Size-label"
+        htmlFor="app.page1.form1.BoxSize"
+        id="app.page1.form1.BoxSize-label"
       >
-        Size
+        Box Size
       </label>
       <div
         className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
@@ -88,7 +77,7 @@ exports[`Form element produces output containing children 1`] = `
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.form1.Size"
+          id="app.page1.form1.BoxSize"
           max={20}
           onAnimationStart={[Function]}
           onBlur={[Function]}
@@ -106,7 +95,7 @@ exports[`Form element produces output containing children 1`] = `
             className="css-14lo706"
           >
             <span>
-              Size
+              Box Size
             </span>
           </legend>
         </fieldset>
@@ -127,18 +116,7 @@ exports[`Form element produces output containing nested form 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
@@ -190,10 +168,10 @@ exports[`Form element produces output containing nested form 1`] = `
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
-        htmlFor="app.page1.formNested.Size"
-        id="app.page1.formNested.Size-label"
+        htmlFor="app.page1.formNested.BoxSize"
+        id="app.page1.formNested.BoxSize-label"
       >
-        Size
+        Box Size
       </label>
       <div
         className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
@@ -204,7 +182,7 @@ exports[`Form element produces output containing nested form 1`] = `
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.formNested.Size"
+          id="app.page1.formNested.BoxSize"
           max={20}
           onAnimationStart={[Function]}
           onBlur={[Function]}
@@ -222,7 +200,7 @@ exports[`Form element produces output containing nested form 1`] = `
             className="css-14lo706"
           >
             <span>
-              Size
+              Box Size
             </span>
           </legend>
         </fieldset>
@@ -238,18 +216,7 @@ exports[`Form element produces output containing nested form 1`] = `
         Extra
       </h6>
       <div
-        className="css-a5tkhr-MuiStack-root"
-        sz={
-          {
-            "alignItems": "flex-start",
-            "boxSizing": "border-box",
-            "maxHeight": "100%",
-            "minHeight": "3em",
-            "overflow": "scroll",
-            "padding": 1,
-            "py": 1,
-          }
-        }
+        className="css-1q4ho6v-MuiStack-root"
       >
         <div
           className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
@@ -312,18 +279,7 @@ exports[`Form element produces output from data type with extra and override chi
     Test Form 1
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-1g1iitx-MuiFormControl-root-MuiTextField-root"
@@ -375,10 +331,10 @@ exports[`Form element produces output from data type with extra and override chi
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
-        htmlFor="app.page1.form1.Size"
-        id="app.page1.form1.Size-label"
+        htmlFor="app.page1.form1.BoxSize"
+        id="app.page1.form1.BoxSize-label"
       >
-        Size
+        Box Size
       </label>
       <div
         className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
@@ -389,7 +345,7 @@ exports[`Form element produces output from data type with extra and override chi
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.form1.Size"
+          id="app.page1.form1.BoxSize"
           max={20}
           onAnimationStart={[Function]}
           onBlur={[Function]}
@@ -407,7 +363,7 @@ exports[`Form element produces output from data type with extra and override chi
             className="css-14lo706"
           >
             <span>
-              Size
+              Box Size
             </span>
           </legend>
         </fieldset>
@@ -461,7 +417,7 @@ exports[`Form element produces output from data type with extra and override chi
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
       id="app.page1.form1.Feedback"
     >
-      Size is 17
+      BoxSize is 17
     </p>
   </div>
 </div>
@@ -479,7 +435,7 @@ exports[`Form element produces output with all types of children and description
     <button
       aria-label="The record type with them all"
       aria-labelledby={null}
-      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-n5iuq0-MuiButtonBase-root-MuiIconButton-root"
       data-mui-internal-clone-element={true}
       disabled={false}
       onBlur={[Function]}
@@ -501,7 +457,7 @@ exports[`Form element produces output with all types of children and description
       <span
         aria-hidden={true}
         aria-label="Help"
-        className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1rapajh-MuiIcon-root"
+        className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root"
       >
         info_outlined
       </span>
@@ -511,18 +467,7 @@ exports[`Form element produces output with all types of children and description
     </button>
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
@@ -530,10 +475,10 @@ exports[`Form element produces output with all types of children and description
       onMouseUp={[Function]}
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={false}
-        htmlFor="app.page1.form1.Start Date"
-        id="app.page1.form1.Start Date-label"
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={true}
+        htmlFor="app.page1.form1.StartDate"
+        id="app.page1.form1.StartDate-label"
       >
         Start Date
       </label>
@@ -547,7 +492,7 @@ exports[`Form element produces output with all types of children and description
           autoFocus={false}
           className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
           disabled={false}
-          id="app.page1.form1.Start Date"
+          id="app.page1.form1.StartDate"
           inputMode="text"
           onAnimationStart={[Function]}
           onBlur={[Function]}
@@ -559,13 +504,13 @@ exports[`Form element produces output with all types of children and description
           readOnly={false}
           required={false}
           type="text"
-          value=""
+          value="13 Feb 2015"
         />
         <div
           className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-1laqsz7-MuiInputAdornment-root"
         >
           <button
-            aria-label="Choose date"
+            aria-label="Choose date, selected date is 13 Feb 2015"
             className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
             disabled={false}
             onBlur={[Function]}
@@ -605,7 +550,7 @@ exports[`Form element produces output with all types of children and description
           className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-yjsfm1"
+            className="css-14lo706"
           >
             <span>
               Start Date
@@ -643,7 +588,7 @@ exports[`Form element produces output with all types of children and description
           onFocus={[Function]}
           required={false}
           type="number"
-          value="223344.55"
+          value={"223344.55"}
         />
         <fieldset
           aria-hidden={true}
@@ -777,7 +722,7 @@ exports[`Form element produces output with all types of children and description
       <button
         aria-label="Internal sign up"
         aria-labelledby={null}
-        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-n5iuq0-MuiButtonBase-root-MuiIconButton-root"
         data-mui-internal-clone-element={true}
         disabled={false}
         onBlur={[Function]}
@@ -799,7 +744,7 @@ exports[`Form element produces output with all types of children and description
         <span
           aria-hidden={true}
           aria-label="Help"
-          className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1rapajh-MuiIcon-root"
+          className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root"
         >
           info_outlined
         </span>
@@ -823,18 +768,7 @@ exports[`Form element produces output with no children 1`] = `
     Test Form Empty
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   />
 </div>
 `;
@@ -850,18 +784,7 @@ exports[`Form element produces output with one child 1`] = `
     Test Form One Element
   </h6>
   <div
-    className="css-a5tkhr-MuiStack-root"
-    sz={
-      {
-        "alignItems": "flex-start",
-        "boxSizing": "border-box",
-        "maxHeight": "100%",
-        "minHeight": "3em",
-        "overflow": "scroll",
-        "padding": 1,
-        "py": 1,
-      }
-    }
+    className="css-1q4ho6v-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"

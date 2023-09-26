@@ -37,8 +37,9 @@ export default class Project extends BaseElement<Properties> implements Element 
         super(id, name, properties, [...otherElements, ...toolFolders])
     }
     static kind = 'Project'
-    static new(elements: ReadonlyArray<Element> = [], id: ElementId = 'project_1',
+    static new(elements: ReadonlyArray<Element> = [],
                name = 'New Project',
+               id: ElementId = 'project_1',
                properties: Properties = {}) {
         return new Project(id, name, properties, [...elements])
     }
@@ -146,10 +147,10 @@ export default class Project extends BaseElement<Properties> implements Element 
     }
 }
 
-export function editorEmptyProject() {
-    return Project.new([new App('app_1', 'New App', {}, [
+export function editorEmptyProject(name = 'New Project') {
+    return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new Text('text_1', 'Title', {content: 'The New App', fontSize: 24})
+            new Text('text_1', 'Title', {content: `${name} App`, fontSize: 24})
         ])
-    ])])
+    ])], name)
 }

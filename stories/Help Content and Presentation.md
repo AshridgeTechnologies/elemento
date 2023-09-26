@@ -26,7 +26,7 @@ Requirements
 - Cross-linked throughout
 - Start page Help in an iframe on the right
 - ✅ Anchors without help- prefix
-- Improved formatting
+- Improved formatting - look at https://syntax.tailwindui.com/
 - ✅ Hash in address bar syncs with selected item in tree
 - ✅ Back/forward buttons floating at top-right
 - Links in Tools can open another Tool window (OR a new window)

@@ -31,7 +31,7 @@ test.skip('generated app can be shown in runner page', async ()=> {
             new Text('text2', 'Text 2', {content: ex`2 + 2`}),
         ])])
 
-    const project = Project2.new([app], 'proj1', 'Project 1', {})
+    const project = Project2.new([app], 'Project 1', 'proj1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
@@ -56,7 +56,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     const textType1 = new TextType('tt1', 'Text 1', {description: 'The text', maxLength: 20}, )
     const dataTypes = new DataTypes('dt1', 'My Types', {}, [textType1])
 
-    const project = Project1.new([app, dataTypes], 'proj1', 'Project 1', {})
+    const project = Project1.new([app, dataTypes], 'Project 1', 'proj1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))

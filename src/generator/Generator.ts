@@ -62,7 +62,7 @@ export default class Generator {
     }
 
     static prettyPrint(code: string) {
-        return prettyPrint(parse(code), {quote: 'single'}).code
+        return prettyPrint(parse(code), {quote: 'single', objectCurlySpacing: false}).code
     }
 
     output() {
@@ -99,7 +99,7 @@ export default class Generator {
                 return `const ${codeName} = await importModule('${source}'${exportNameArg})`
             } else {
                 const exportNameArg = exportName ? `'${exportName}'` : ''
-                const importPath = `./${ASSET_DIR}/${source ?? codeName + '.js'}`
+                const importPath = `../${ASSET_DIR}/${source ?? codeName + '.js'}`
                 return `const ${codeName} = await import('${importPath}').then(...importHandlers(${exportNameArg}))`
             }
         }
@@ -152,10 +152,11 @@ export default class Generator {
         const actionHandler = (el: Element, def: PropertyDef) => {
             const actionDef = def.type as EventActionPropertyDef
             const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
+            const voidReturnFunctionCode = functionCode?.startsWith('async ') ? `() => {\n    const doAction = ${functionCode}\n    doAction()\n    }` : functionCode
             const functionName = `${el.codeName}_${def.name}`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
             const dependencies = identifiers.filter(id => id !== el.codeName && (isStatefulComponentName(id) || (componentIsForm && id === '$form')))
-             return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
+             return functionCode && `    const ${functionName} = React.useCallback(${voidReturnFunctionCode}, [${dependencies.join(', ')}])`
         }
 
         const uiElementActionHandlers = (el: Element) => {
@@ -241,7 +242,7 @@ ${declarations}
 
         const stateNames = statefulComponents.map( el => el.codeName )
         const stateClass = componentIsForm ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseFormState {
-    fieldNames = [${stateNames.map(quote).join(', ')}]
+    ownFieldNames = [${stateNames.map(quote).join(', ')}]
 }
 `.trimStart() : ''
 
@@ -520,7 +521,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             this.convertAstToValidJavaScript(ast, exprType);
         }
 
-        const exprCode = print(ast).code.replace(/;$/, '')
+        // remove braces if the ast is a block statement from wrapping in a function
+        const exprCode = print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '').replace(/^\{\n/, '').replace(/\n\}$/, '')
 
         switch (exprType) {
             case 'singleExpression':
@@ -528,10 +530,11 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'action': {
                 const argList = (argumentNames ?? []).join(', ')
                 const body = propertyName === 'keyAction' ? `const \$key = \$event.key\n${exprCode}` : exprCode
-                return `(${argList}) => {\n${indent(body, '        ')}\n    }`
+                const asyncPrefix = body.match(/\bawait\b/) ? 'async ' : ''
+                return `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }`
             }
             case 'multilineExpression': {
-                return `{\n${indent(exprCode, '        ')}\n    }`
+                return exprCode.trim() ? `{\n${indent(exprCode, '        ')}\n    }` : '{}'
             }
             case 'reference': {
                 return `${element.codeName}_${propertyName}`

@@ -13,13 +13,13 @@ import DecimalType from '../../shared/types/DecimalType'
 type Properties = {path: string, label?: PropVal<string>, }
 
 export default function NumberInput({path, ...props}: Properties) {
-    const {label: plainLabel} = valueOfProps(props)
+    const {label} = valueOfProps(props)
 
     const numericProps = {type: 'number', sx: { minWidth: 120, flex: 0 }}
     const state = useGetObjectState<NumberInputState>(path)
-    const value = state._controlValue ?? ''
+    const value = state.dataValue ?? ''
     const dataType = state.dataType
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
+    const required = dataType?.required
     const optionalProps = definedPropertiesOf({label})
 
     const dataTypeProps = definedPropertiesOf(pick(['max', 'min'], dataType ?? {}))
@@ -54,7 +54,7 @@ export default function NumberInput({path, ...props}: Properties) {
         ...optionalProps
     })
 
-    return InputWithInfo({description: dataType?.description, formControl})
+    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {

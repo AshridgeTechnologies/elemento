@@ -29,8 +29,8 @@ const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
 type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean>, horizontal?: boolean, width?: string | number, wrap?: boolean, keyAction?: KeyboardEventHandler, children?: any }
 
 const formField = (parentPath: string, type: BaseType<any, any>) => {
-    const {name} = type
-    const path = withDots(parentPath, name)
+    const {name, codeName} = type
+    const path = withDots(parentPath, codeName)
     if (type.kind === 'Text') {
         return <TextInput path={path} label={name} key={path}/>
     }
@@ -89,7 +89,7 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>) => 
 }
 
 export default function Form({children, path, horizontal = false, wrap = false, keyAction, ...props}: Properties) {
-    const {width, label: plainLabel, ...propVals} = valueOfProps(props)
+    const {width, label, ...propVals} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
     const flexWrap = wrap ? 'wrap' : 'nowrap'
     const sx = {
@@ -104,15 +104,14 @@ export default function Form({children, path, horizontal = false, wrap = false, 
 
     const state = useGetObjectState<BaseFormState>(path)
     const dataType = state.dataType
-    const label = dataType?.required ? plainLabel + ' (required)' : plainLabel
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors?._self ? errorsToString(state.errors._self) : undefined
 
     const dataTypeFields = dataType?.fields ?? []
 
     const childStates = Object.fromEntries( dataTypeFields.map( type => {
-        const {name} = type
-        return [name, formState(type, state.originalValue?.[name as keyof object])]
+        const {codeName} = type
+        return [codeName, formState(type, state.originalValue?.[codeName as keyof object])]
     })) as StateMap
     useObjectStates(childStates, path)
     state._updateValue()
@@ -140,7 +139,7 @@ export default function Form({children, path, horizontal = false, wrap = false, 
                 justifyContent='flex-start'
                 alignItems='flex-start'
                 spacing={2}
-                sz={sx}
+                sx={sx}
                 {...propVals}>
                 {formChildrenFragment}
             </Stack>

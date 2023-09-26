@@ -5,7 +5,7 @@ import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'; const {debounce} = lodash;
-import { isNil } from 'ramda'
+import {equals, isNil} from 'ramda'
 
 type Properties = {
     path: string,
@@ -36,6 +36,16 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
 
     const {selectedItem = undefined} = state
     const {items = [], width, style, selectable = true} = valueOfProps(props)
+
+    useEffect(() => {
+        if (selectedItem && selectable) {
+            const currentSelectedItem = items.find((it:any) => it.id === selectedItem.id)
+            if (!equals(selectedItem, currentSelectedItem)) {
+                state._setSelectedItem(currentSelectedItem)
+            }
+        }
+    }, [items])
+
     const onClickFn = useCallback((event:SyntheticEvent) => {
         const targetId = (event.target as HTMLElement).id
         const itemId = targetId.match(/\.#(\w+)/)?.[1]
@@ -61,7 +71,8 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         }
     )
 
-    return React.createElement(List, {id: path, sx: fixedSx, style, onScroll: debouncedScrollHandler, ref: listRef}, children)
+    const sx = {...fixedSx, width}
+    return React.createElement(List, {id: path, sx, style, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
 export default ListElement
@@ -78,7 +89,7 @@ export class ListElementState extends BaseComponentState<StateProperties>
     }
 
     get selectedItem() {
-        return this.state.selectedItem !== undefined ? this.state.selectedItem : this.props.selectedItem
+        return (this.state.selectedItem !== undefined ? this.state.selectedItem : this.props.selectedItem) ?? null
     }
 
     _setSelectedItem(selectedItem: any) {
