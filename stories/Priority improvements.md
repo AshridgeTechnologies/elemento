@@ -22,5 +22,4 @@ Requirements
 - Run page can enter and run an app from GitHub
 - Learn page links to Help and Guides
 - Can't type date into property field
-- Ensure Types generated in order to allow references to each other - or highlight errors clearly
-- Highlight element in preview not working in form - link to data type?
+
