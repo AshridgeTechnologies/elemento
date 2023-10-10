@@ -49,6 +49,13 @@ test('runs app from GitHub', async () => {
     expect(el`FirstText`).toHaveTextContent('Test App')
 })
 
+test('runs app from GitHub in sub-directory', async () => {
+    renderThe(appMain('/runner/gh/mongo/peewit/dir1/dir2/AppOne'))
+    await actWait(10)
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dir1/dir2/dist/client/AppOne/AppOne.js')
+    expect(el`FirstText`).toHaveTextContent('Test App')
+})
+
 test('runs app from GitHub with non-standard chars', async () => {
     renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-/AppOne'))
     await actWait(10)

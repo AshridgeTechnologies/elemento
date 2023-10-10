@@ -13,11 +13,12 @@ const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContex
 export default function AppMain({windowUrlPath}: Properties) {
     const path = decodeURIComponent(windowUrlPath)
 
-    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-\w]+)/)
+    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-/\w]+\/)?([-\w]+)$/)
     if (githubMatch) {
-        const [, firstPart, username, repo, appName] = githubMatch
-        const pathPrefix = `${firstPart}/gh/${username}/${repo}`
-        return createElement(AppRunnerFromGitHub, {username, repo, appName, appContext: getAppContext(pathPrefix)})
+        const [, firstPart, username, repo, pathWithSlash, appName] = githubMatch
+        const path = pathWithSlash?.slice(0, -1)
+        const pathPrefix = `${firstPart}/gh/${username}/${repo}/${path}`
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext: getAppContext(pathPrefix)})
     }
 
     const hostServerMatch = path.match(/\/(.*\/)?([-\w]+)(\/)?(index.html)?$/)
