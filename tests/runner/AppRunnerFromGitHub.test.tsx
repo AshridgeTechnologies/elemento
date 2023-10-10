@@ -13,6 +13,7 @@ import {wait} from '../testutil/testHelpers'
 import App from '../../src/model/App'
 import {generate} from '../../src/generator/index'
 import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
+import resetAllMocks = jest.resetAllMocks
 
 jest.mock('../../src/runner/loadModuleHttp', ()=> ({
     loadModuleHttp: jest.fn().mockResolvedValue({
@@ -32,6 +33,7 @@ function mockFetchForGitHub() {
     })
 }
 beforeEach(() => {
+    (loadModuleHttp as jest.MockedFunction<any>).mockClear()
     // @ts-ignore
     global.fetch = mockFetchForGitHub()
 })
@@ -48,23 +50,31 @@ const appContext: AppContext = {
     goBack(): void {}
 }
 
-const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, appContext})
+const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', path = '', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
     ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
-
-    renderThe(appRunnerFromGitHub())
 })
 
 test('shows loading until app loads then shows app on page', async () => {
+    renderThe(appRunnerFromGitHub())
     expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
     await actWait(500)
     expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne/AppOne.js')
     expectEl('FirstText').toHaveTextContent('App from GitHub')
 })
 
+test('uses path within repo if not empty', async () => {
+    renderThe(appRunnerFromGitHub('mickey', 'mouse', 'demo/example1', 'DemoApp'))
+    expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
+    await actWait(500)
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/demo/example1/dist/client/DemoApp/DemoApp.js')
+    expectEl('FirstText').toHaveTextContent('App from GitHub')
+})
+
 test('only fetches github commits once for a url', async () => {
+    renderThe(appRunnerFromGitHub())
     await act( () => wait(50) )
     renderThe(appRunnerFromGitHub()) // second render
     await act( () => wait(50) )
