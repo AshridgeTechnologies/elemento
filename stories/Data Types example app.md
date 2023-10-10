@@ -15,7 +15,7 @@ Requirements
 - ✅ Store in local data store, initialized from (JSON?) file
 - ✅ README
 - ✅ Built-in introduction and tour
-- Run standalone from GitHub
+- ✅ Run app standalone from GitHub
 - Thoroughly tested from scratch on new browser profile
 
 

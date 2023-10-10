@@ -33,9 +33,6 @@ Stories
 
 ### Initial release
 - Finish help content
-- Data Types example app
-- Data types guide
-- Automatic open from GitHub
 - Priority improvements
 
 ### Move to GitHub
@@ -63,11 +60,11 @@ Stories
 - Dynamic elements from a list
 
 ### Priority for learning Elemento
-- Tools
-- Move Help to a Tool
 - Help Content and Presentation
 - Table of Contents
 - Example apps
+- Data types guide
+- Other how-to guides
 
 ### Priority for credibility
 - Dependency vulnerability review
@@ -87,7 +84,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
-- Database and data sync review - consider RxDB, OPFS file store, etc
+- Database and data sync review - consider RxDB, OPFS file store, CRDTs, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
 - Tools can use data read from Editor and Preview
 - runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/
@@ -140,6 +137,8 @@ Epics
 Tech debt
 ---------
 
+- Remove barrel files: https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-7
+- Check for dodgy RegExp - see https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript
 - Remove Download from GitHub to new directory
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Builder/runner: 
@@ -255,7 +254,10 @@ Done
 - Undo
 - Menu improvements
 - Startup Action
-
+- Tools
+- Move Help to a Tool
+- Data Types example app
+- Automatic open from GitHu
 
 Bugs fixed
 ----------
@@ -274,3 +276,4 @@ Bugs fixed
 - Bug: Incomplete Select blows up editor - see file
 - Fix run from GitHub
 - Insert menu can overflow the page
+b
