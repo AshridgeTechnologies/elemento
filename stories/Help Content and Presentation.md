@@ -24,7 +24,7 @@ Requirements
 - ✅ Publishing Projects to the web
 - ✅ Storing Data
 - ✅ Updates for projects stored in the browser
-- Cross-linked throughout
+- ✅ Cross-linked throughout
 - ✅ Anchors without help- prefix
 - ✅ Improved formatting
 - ✅ Hash in address bar syncs with selected item in tree

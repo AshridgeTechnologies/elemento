@@ -19,7 +19,7 @@ export default () =>
             and what they do.
             It also continuously shows your app running, so you can instantly see the effect of any change you make.
         </Para>
-        <Para>When you first go to the Elemento Studio, before you open a Project, you will see the Start page.
+        <Para>When you first go to the Elemento Studio, before you open a <HelpLink id='projects-overview'>Project</HelpLink>, you will see the Start page.
             This shows only the things you need to start a new Project or open an existing one.
             See <HelpLink id={'getting-started'}/> or <HelpLink id={'working-with-projects'}/> for more information.</Para>
         <Para>
@@ -77,10 +77,10 @@ export default () =>
                 For example:
             </Para>
             <ul>
-                <li>With a Text element you need to set where it gets the text from, and what font it uses
+                <li>With a <HelpLink id='text'>Text</HelpLink> element you need to set where it gets the text from, and what font it uses
                     (among many other things)
                 </li>
-                <li>With a Button, you would need to set what happens when it is clicked</li>
+                <li>With a <HelpLink id='button'>Button</HelpLink>, you would need to set what happens when it is clicked</li>
             </ul>
         </SubSection>
 
@@ -89,7 +89,7 @@ export default () =>
             <Para>
                 This area shows you the app you are building, as you work on it. You can try out the app, and
                 enter things into it, and then go back to make more changes.
-                Every new element and change shows up in the running app immediately, and it will keep any data
+                Every new element and change shows up in the App Preview immediately, and it will keep any data
                 you have already entered if possible.
             </Para>
         </SubSection>

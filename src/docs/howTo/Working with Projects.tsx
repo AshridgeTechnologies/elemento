@@ -8,8 +8,8 @@ export default () =>
         <Heading>Working with Projects</Heading>
 
         <SubHeading>Introduction</SubHeading>
-        <Para>This section aims to tell you everything you need to know to create, save and re-open Projects in the
-            Elemento Studio,
+        <Para>This section aims to tell you everything you need to know to create, save and re-open <HelpLink id='projects-overview'>Projects</HelpLink> in the
+            <HelpLink id='elemento-studio'>Elemento Studio</HelpLink>,
             and also how to store them in <Link href='https://github.com/'>GitHub</Link> (a widely-used system for storing program code) and publish
             them for
             others to use.
@@ -21,7 +21,7 @@ export default () =>
                 Here are the steps in detail:
             </Para>
             <BulletList>
-                <li>Click the File menu button, then the New option</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then the New option</li>
                 <li>In the <b>Create new project</b> box that appears, enter a name for the Project.
                     This must not be the same as another Project in the private project area.
                 </li>
@@ -38,7 +38,7 @@ export default () =>
                 Here are the steps in detail:
             </Para>
             <BulletList>
-                <li>Click the File menu button, then the Save as option</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then the Save as option</li>
                 <li>In the <b>Save project as</b> box that appears, click the Choose button</li>
                 <li>Use the file chooser to create a new folder on your computer for the Project files, then click
                     Select
@@ -58,7 +58,7 @@ export default () =>
             <Para>If you already have an Elemento Project on your computer, which you have created or got from GitHub,
                 you can go back to it.</Para>
             <BulletList>
-                <li>Click the File menu button, then the Open option</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then the Open option</li>
                 <li>In the <b>Open project</b> box that appears, you can access either Projects stored in your browser,
                     or Projects stored in a folder on your computer disk.
                 </li>
@@ -90,7 +90,7 @@ export default () =>
 
         <SubSection id='introduction-github'>
             <SubHeading>Introduction to GitHub</SubHeading>
-            <Para>GitHub is a website where you can store code and associated files used in software.
+            <Para><Link href='https://github.com/'>GitHub</Link> is a website where you can store code and associated files used in software.
                 It is owned by Microsoft, and used by millions of developers to store and manage their software. </Para>
             <Para>Storing a Project in GitHub is <b>completely optional</b>, but it ensures your Project is safely
                 backed up and allows you to publish it for others.</Para>
@@ -124,7 +124,7 @@ export default () =>
                 This will look something like <code>https://github.com/username/repository-name</code>. Here are the
                 steps:</Para>
             <BulletList>
-                <li>Click the File menu button, then the Get from GitHub option</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then the Get from GitHub option</li>
                 <li>In the <b>Get project from GitHub</b> box that appears, paste or type the GitHub URL</li>
                 <li>Click the Open button - downloading the Project will take a few seconds</li>
                 <li>The main Studio page will show the Project</li>
@@ -178,7 +178,7 @@ export default () =>
                 <li><HelpLink id='creating-account-github'>Create a GitHub account</HelpLink>
                     and <HelpLink id='signin-github'>Sign In</HelpLink> (if you haven't already)
                 </li>
-                <li>Click the File menu button, then Save to GitHub</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then Save to GitHub</li>
                 <li>In the <b>Create GitHub repository</b> box that appears, enter a name.
                     The name of the Project folder is already filled in, but you can change it if you want.
                 </li>
@@ -195,7 +195,7 @@ export default () =>
             <Para>When you have made changes to the Project, you can update it in GitHub in the same way, except you
                 don't have to create the repository.</Para>
             <BulletList>
-                <li>Click the File menu button, then Save to GitHub</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then Save to GitHub</li>
                 <li>In the <b>Save to GitHub</b> box, enter a brief description of the changes you have made.</li>
                 <li>Click the Save button - saving will take a few seconds.</li>
                 <li>If everything is OK, you will see the message "Saved to GitHub"</li>
@@ -211,7 +211,7 @@ export default () =>
                 But if changes have been made elsewhere and saved to GitHub, you will need to update the copy you are
                 working on.</Para>
             <BulletList>
-                <li>Click the File menu button, then the Update from GitHub option</li>
+                <li>Click the <HelpLink id='menu-reference'>File menu</HelpLink> button, then the Update from GitHub option</li>
                 <li>A message will appear when the Project has been updated</li>
             </BulletList>
         </SubSection>

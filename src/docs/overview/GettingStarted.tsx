@@ -33,6 +33,7 @@ export default () =>
             <li>Click the Create button</li>
             <li>The main Studio page will show the new bare-bones Project, with just one page and a title</li>
         </BulletList>
+        <Para>More information in <HelpLink id='working-with-projects'/></Para>
 
         <SubHeading>Quick start</SubHeading>
         <Para>Of course some people hate reading stuff and just want to get started. If that's you, just create a new project and explore.
@@ -40,14 +41,14 @@ export default () =>
         </Para>
         <Para>Here are a few pointers to get you going:</Para>
         <BulletList>
-            <li>Select an element in the Navigator tree to see and set its properties</li>
-            <li>Click the button at the left of the property to change it to a Formula</li>
+            <li>Select an element in the <HelpLink id='navigator'/> tree to see and set its properties</li>
+            <li>Click the button at the left of a property to change it to a <HelpLink id='formulas'>formula</HelpLink></li>
             <li>Text in a formula needs to be in quotes - so you may see errors after changing until you edit the formula</li>
-            <li>You build a Formula using <HelpLink id='function-reference'>functions</HelpLink> and basic +, -, *, / operators</li>
-            <li>Refer to another element in a Formula by its Formula Name - without spaces</li>
-            <li>Use the Edit and Insert menus at the top, or the right-click menu on the Navigator, to add or manipulate elements</li>
-            <li>To move elements, drag them in the Navigator, not the Preview</li>
+            <li>You build a formula using <HelpLink id='function-reference'>functions</HelpLink> and basic +, -, *, / operators</li>
+            <li>Refer to another element in a formula by its Formula Name - without spaces</li>
+            <li>Use the <HelpLink id='menu-reference'>Edit and Insert menus</HelpLink>  at the top,
+                or the right-click menu on the Navigator, to add or manipulate elements</li>
+            <li>To move elements, drag them in the Navigator, not the <HelpLink id='app-preview'>Preview</HelpLink></li>
         </BulletList>
         <Para>Enjoy exploring Elemento!</Para>
-
     </Section>

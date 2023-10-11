@@ -10,6 +10,7 @@ import {
     SubHeading
 } from '../HelpComponents'
 import React from 'react'
+import {Link} from '@mui/material'
 
 export default () =>
     <Section id='projects-overview'>
@@ -19,10 +20,10 @@ export default () =>
         <SubHeading>The Project</SubHeading>
         <Para>A Project is the main unit that you work on in the Elemento Studio. The Studio shows just one Project at a time,
             although you can open another one to replace it.
-            You can also open the Studio in more than one browser tab, and have a different Project open in each.</Para>
-        <Para>There is an element at the top of the Navigator that represents the Project,
+            You can also open the <HelpLink id='elemento-studio'>Studio</HelpLink> in more than one browser tab, and have a different Project open in each.</Para>
+        <Para>There is an element at the top of the <HelpLink id='navigator'>Navigator</HelpLink> that represents the Project,
             and you can select it to change its Name and other properties, but you cannot delete it.</Para>
-        <Para>Many simple Projects just contain one App, so it is difficult to see the difference between them,
+        <Para>Many simple Projects just contain one <HelpLink id='app'>App</HelpLink>, so it is difficult to see the difference between an App and a Project,
             but in a more advanced Project there may be multiple browser Apps, Server Apps and other parts that work together,
             so the Project element is needed to contain them all.</Para>
 
@@ -31,7 +32,7 @@ export default () =>
             or in a set of files in a folder you choose on your computer disk.
             You can copy this folder for backup, to share it with someone or to start another similar Project.</Para>
         <Para>When you are ready, a Project can also be uploaded into a code storage (or source control) system on the internet.
-            Elemento includes facilities to work with the widely-used GitHub system, but you can use others if you use their tools outside
+            Elemento includes facilities to work with the widely-used <Link href='https://github.com/'>GitHub</Link> system, but you can use others if you use their tools outside
             Elemento.</Para>
         <Para>Storing your Project in GitHub is completely optional, but it has many advantages, including:</Para>
         <BulletList>

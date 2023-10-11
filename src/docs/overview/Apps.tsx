@@ -21,7 +21,7 @@ export default () =>
 
         <SubHeading>Main parts of an App</SubHeading>
         <MinorHeading>Pages</MinorHeading>
-        <Para>An App must contain at least one <HelpLink id='pages-overview'>Page</HelpLink>, or it will have nothing to display.
+        <Para>An App must contain at least one <HelpLink id='page'>Page</HelpLink>, or it will have nothing to display.
             A Page displays fixed text and data that can change, and accepts inputs from the user
         </Para>
         <Para>
@@ -55,7 +55,7 @@ export default () =>
                 Page.
             </NLItem>
             <NLItem name='Server App Connector'>A <HelpLink id='serverAppConnector'>Server App Connector</HelpLink> is
-                an advanced feature that allows any Page in the App to access a Server App.
+                an advanced feature that allows any Page in the App to access a <HelpLink id='serverApp'>Server App</HelpLink>.
             </NLItem>
         </NamedList>
 

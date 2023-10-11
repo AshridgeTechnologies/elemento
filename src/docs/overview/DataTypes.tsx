@@ -1,5 +1,5 @@
 import React from 'react'
-import {Heading, MinorHeading, NamedList, NLItem, Para, Section} from '../HelpComponents'
+import {Heading, HelpLink, MinorHeading, NamedList, NLItem, Para, Section} from '../HelpComponents'
 
 export default () =>
     <Section id='data-types'>
@@ -68,7 +68,7 @@ export default () =>
                 <Para>A collection of other data items, in a particular order, which can be accessed by their position
                     in the list.
                     Used for things like the places visited on a journey, or the steps in a recipe
-                    Written with the List() function eg <code>List("Boil water", "Add sugar", "Mix thoroughly")</code>
+                    Written with the <HelpLink id='List'>List()</HelpLink> function eg <code>List("Boil water", "Add sugar", "Mix thoroughly")</code>
                     May be called 'array' in other programming languages.
                 </Para>
             </NLItem>
@@ -79,7 +79,7 @@ export default () =>
                 <Para>A collection of named data items, representing different facts about something, which can be
                     accessed using the name.
                     Used for things like a Customer record in a database.
-                    Written with the Record() function eg <code>Record("FirstName", "Jean", "LastName", "Durand",
+                    Written with the <HelpLink id='Record'>Record()</HelpLink>Record() function eg <code>Record("FirstName", "Jean", "LastName", "Durand",
                         "Region", "North")</code>
                     May be called 'record' or 'object' in other programming languages.
                 </Para>
