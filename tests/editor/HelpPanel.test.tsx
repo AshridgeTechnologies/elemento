@@ -25,24 +25,24 @@ let expandControl = function (index: number) {
 
 const helpContent = (<>
     <section id='item-1'>
-        <h4>Help item 1</h4>
+        <h1>Help item 1</h1>
         <article id='item-1-1'>
-            <h5>Help subsection 1-1</h5>
+            <h2>Help subsection 1-1</h2>
             <p>Stuff about 1-1</p>
         </article>
         <article id='item-1-2'>
-            <h5>Help subsection 1-2</h5>
+            <h2>Help subsection 1-2</h2>
             <p>Stuff about 1-2</p>
         </article>
     </section>
     <section id='item-2'>
-        <h4>Help item 2</h4>
+        <h1>Help item 2</h1>
         <article id='item-2-1'>
-            <h5>Help subsection 2-1</h5>
+            <h2>Help subsection 2-1</h2>
             <p>Stuff about 2-1</p>
         </article>
         <article id='item-2-2'>
-            <h5>Help subsection 2-2</h5>
+            <h2>Help subsection 2-2</h2>
             <p>Stuff about 2-2</p>
         </article>
     </section>
