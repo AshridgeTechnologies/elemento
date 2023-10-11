@@ -85,7 +85,7 @@ exports[`Form element produces output containing children 1`] = `
           onFocus={[Function]}
           required={false}
           type="number"
-          value={17}
+          value="17"
         />
         <fieldset
           aria-hidden={true}
@@ -190,7 +190,7 @@ exports[`Form element produces output containing nested form 1`] = `
           onFocus={[Function]}
           required={false}
           type="number"
-          value={17}
+          value="17"
         />
         <fieldset
           aria-hidden={true}
@@ -353,7 +353,7 @@ exports[`Form element produces output from data type with extra and override chi
           onFocus={[Function]}
           required={false}
           type="number"
-          value={17}
+          value="17"
         />
         <fieldset
           aria-hidden={true}
@@ -588,7 +588,7 @@ exports[`Form element produces output with all types of children and description
           onFocus={[Function]}
           required={false}
           type="number"
-          value={"223344.55"}
+          value="223344.55"
         />
         <fieldset
           aria-hidden={true}

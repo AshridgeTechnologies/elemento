@@ -87,7 +87,7 @@ exports[`Form element produces output containing children 1`] = `
           onFocus={[Function]}
           required={false}
           type="number"
-          value={17}
+          value="17"
         />
         <fieldset
           aria-hidden={true}
@@ -200,7 +200,7 @@ exports[`Form element produces output containing nested form 1`] = `
           onFocus={[Function]}
           required={false}
           type="number"
-          value={17}
+          value="17"
         />
         <fieldset
           aria-hidden={true}

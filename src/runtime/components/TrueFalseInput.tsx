@@ -23,7 +23,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
         const updateValue = controlValue !== '' ? controlValue : null
         state._setValue(updateValue)
     }
-    const onBlur = (_event: FocusEvent) => state.ShowErrors(true)
+    const onBlur = (_event: FocusEvent) => state._setBlurred()
 
     const checkbox = createElement(Checkbox, {
         id: path,

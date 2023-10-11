@@ -5,7 +5,7 @@ import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {NumberType} from '../../shared/types'
-import {pick} from 'ramda'
+import {isNil, pick} from 'ramda'
 import {InputWithInfo} from './InputWithInfo'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../shared/types/DecimalType'
@@ -15,15 +15,27 @@ type Properties = {path: string, label?: PropVal<string>, }
 export default function NumberInput({path, ...props}: Properties) {
     const {label} = valueOfProps(props)
 
-    const numericProps = {type: 'number', sx: { minWidth: 120, flex: 0 }}
     const state = useGetObjectState<NumberInputState>(path)
-    const value = state.dataValue ?? ''
     const dataType = state.dataType
+    const decPlaces = dataType?.kind === 'Decimal' ? (dataType as DecimalType).decimalPlaces : undefined
+    const numericProps = {type: 'number', sx: { minWidth: 120, flex: 0 }}
+
+    const formatValue = () => {
+        const {dataValue} = state
+        if (isNil(dataValue)) return ''
+        if (decPlaces !== undefined){
+            return dataValue.toFixed(decPlaces)
+        }
+        return dataValue.toString()
+    }
+    const value = state.controlValue ?? formatValue()
     const required = dataType?.required
     const optionalProps = definedPropertiesOf({label})
 
     const dataTypeProps = definedPropertiesOf(pick(['max', 'min'], dataType ?? {}))
-    const inputPropsValues = {...dataTypeProps, }
+    const step = decPlaces === 0 ? 1 : undefined
+
+    const inputPropsValues = {...dataTypeProps, step}
     const inputProps = Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
 
     const error = state.errorsShown && !state.valid
@@ -36,9 +48,9 @@ export default function NumberInput({path, ...props}: Properties) {
             if (dataType?.kind === 'Decimal') return new BigNumber(controlValue)
             return Number(controlValue)
         }
-        state._setValue(updateValue())
+        state._setValues(updateValue(), controlValue)
     }
-    const onBlur = (_event: FocusEvent) => state.ShowErrors(true)
+    const onBlur = (_event: FocusEvent) => state._setBlurred()
 
     const formControl = React.createElement(TextField, {
         id: path,
@@ -59,6 +71,10 @@ export default function NumberInput({path, ...props}: Properties) {
 
 export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {
     defaultValue = 0
+
+    _setValues(value: number | BigNumber | null, editedValue: string) {
+        this.updateState({value, editedValue})
+    }
 }
 
 NumberInput.State = NumberInputState

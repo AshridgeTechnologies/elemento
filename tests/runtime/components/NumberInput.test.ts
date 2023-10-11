@@ -41,6 +41,24 @@ test('NumberInput shows Decimal value from the state supplied', () => {
     expect(el`app.page1.widget1`.value).toBe('27.34')
 })
 
+test('NumberInput shows Decimal value ending in 0 with DecimalType', () => {
+    const decimalType = new DecimalType('dt1', {decimalPlaces: 2})
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: new BigNumber('27.30'), dataType: decimalType}))
+    expect(el`app.page1.widget1`.value).toBe('27.30')
+})
+
+test('NumberInput shows Decimal value ending in 0 with DecimalType from number input', () => {
+    const decimalType = new DecimalType('dt1', {decimalPlaces: 2})
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: 27.3, dataType: decimalType}))
+    expect(el`app.page1.widget1`.value).toBe('27.30')
+})
+
+test('NumberInput shows Decimal value without extra places if DecimalType does not specify', () => {
+    const decimalType = new DecimalType('dt1', {})
+    const {el} = testContainer(numberInput('app.page1.widget1', {value: 27.3, dataType: decimalType}))
+    expect(el`app.page1.widget1`.value).toBe('27.3')
+})
+
 test('NumberInput element produces output with properties supplied as state objects', () => {
     const {el} = testContainer(numberInput('app.page1.widget1', {value: 27},
         {label: new TextInputState({value: 'Item Number'})}))

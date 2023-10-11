@@ -3,8 +3,7 @@ import {PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../../shared/types/BaseType'
 
 export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
-type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean}
-
+type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
     extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
     implements ComponentState<InputComponentState<T, DT, Props>> {
@@ -41,6 +40,10 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
         return this.propsOrStateValue ?? null
     }
 
+    get controlValue() {
+        return this.state.editedValue
+    }
+
     get dataType() { return this.props.dataType }
 
     protected get propsOrStateValue() {
@@ -52,7 +55,7 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     }
 
     _setBlurred() {
-        this.updateState({errorsShown: true})
+        this.updateState({errorsShown: true, editedValue: undefined})
     }
 
     valueOf() {

@@ -24,7 +24,7 @@ export default function DateInput({path, ...props}: Properties) {
     const onChange = (newDate: Date) => {
         state._setValue(newDate)
     }
-    const onBlur = (_event: FocusEvent) => state.ShowErrors(true)
+    const onBlur = (_event: FocusEvent) => state._setBlurred()
 
     const slotProps = {
         textField: {
