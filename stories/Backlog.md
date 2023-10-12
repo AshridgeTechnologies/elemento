@@ -26,14 +26,17 @@ Bugs
 - No code generation error for unknown name in text element
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 - Can refresh app after navigating to page
+- Can't type date into property field
 
 
 Stories
 -------
 
 ### Initial release
-- Finish help content
 - Priority improvements
+- Move examples to separate repos
+- New Run page can enter and run an app from GitHub
+- New Learn page with links to Help, Guides and Examples
 
 ### Move to GitHub
 - Deploy from GitHub
@@ -60,7 +63,6 @@ Stories
 - Dynamic elements from a list
 
 ### Priority for learning Elemento
-- Help Content and Presentation
 - Table of Contents
 - Example apps
 - Data types guide
@@ -258,6 +260,7 @@ Done
 - Move Help to a Tool
 - Data Types example app
 - Automatic open from GitHu
+- Help Content and Presentation
 
 Bugs fixed
 ----------
