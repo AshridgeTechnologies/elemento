@@ -40,13 +40,20 @@ const removePrefix = (pathname: string, prefix: string | null) => {
 }
 
 export class DefaultAppContext implements AppContext {
-    constructor(pathPrefix: string | null = null, private history: BrowserHistory = getHistory(), private origin: string = globalThis.location?.origin) {
+    constructor(pathPrefix: string | null = null, private _history: BrowserHistory | null = null, private origin: string = globalThis.location?.origin) {
         this.pathPrefix = pathPrefix ? pathPrefix.replace(/\/$/, '') : null
     }
     private pathPrefix: string | null
     private url: UrlType | null = null
     private listeners: CallbackFn[] = []
     private historySubscription: any
+
+    get history() {
+        if (!this._history) {
+            this._history = getHistory()
+        }
+        return this._history
+    }
 
     getUrl() {
         if (this.url === null) {

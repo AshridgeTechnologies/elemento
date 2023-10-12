@@ -4,7 +4,7 @@ import AppContext from '../runtime/AppContext'
 import AppLoadError from './AppLoadError'
 import {loadModuleHttp} from './loadModuleHttp'
 
-type Properties = {url: string, appContext: AppContext, resourceUrl?: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
+type Properties = {url: string, appContext: AppContext, resourceUrl: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 
 export default function AppRunnerFromCodeUrl({url, appContext, resourceUrl, onComponentSelected  = () => {}, selectedComponentId}: Properties) {
     const [appComponent, setAppComponent] = useState<FunctionComponent | null>(null)

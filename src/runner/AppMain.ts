@@ -21,15 +21,26 @@ export default function AppMain({windowUrlPath}: Properties) {
         return createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext: getAppContext(pathPrefix)})
     }
 
+    const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w]+)\/([-\w]+)\/?(index.html)?$/)
+    if (localMatch) {
+        const [, area, projectName, appName] = localMatch
+        const pathPrefix = `run/local/${area}/${projectName}/${appName}`
+        const appCodeUrl = '/' + pathPrefix + '/' + appName + '.js'
+        const resourceUrl = `/run/local/${area}/${projectName}/${ASSET_DIR}`
+
+        console.log('Loading local app from', appCodeUrl, 'resource url', resourceUrl)
+        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(pathPrefix)})
+    }
+
     const hostServerMatch = path.match(/\/(.*\/)?([-\w]+)(\/)?(index.html)?$/)
     if (hostServerMatch) {
         const [, firstPart, appName] = hostServerMatch
         const pathPrefix = `${firstPart}${appName}`
         const appCodeUrl = '/' + pathPrefix + '/' + appName + '.js'
-        const resourceUrl = `${firstPart}/${ASSET_DIR}`
+        const resourceUrl = '/' + `${firstPart}/${ASSET_DIR}`
 
         console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)
-        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, appContext: getAppContext(resourceUrl)})
+        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(resourceUrl)})
     }
 
     return createElement('h4', null, 'Sorry - we could not find the Elemento app you are trying to run from ', windowUrlPath)

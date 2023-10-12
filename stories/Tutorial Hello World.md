@@ -16,3 +16,8 @@ NTH
 ---
 - Inline button/link in text
 - Hover link in text
+
+Notes
+-----
+
+- Look at https://developer.chrome.com/docs/extensions/mv3/getstarted/ for ideas

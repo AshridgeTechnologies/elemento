@@ -1,11 +1,10 @@
 import {createRoot, Root} from 'react-dom/client'
-import React, {createElement} from 'react'
-import {DefaultAppContext} from './AppContext'
+import React from 'react'
+import {getDefaultAppContext} from './AppContext'
 import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
-import AppRunnerFromGitHub from '../runner/AppRunnerFromGitHub'
 
 let root: Root
 
@@ -28,7 +27,7 @@ const run = (urlPath: string,
     if (!root) {
         root = createRoot(container)
     }
-    const appContext = new DefaultAppContext(urlPath)
+    const appContext = getDefaultAppContext(urlPath)
     const resourceUrl = '/studio/preview/' + ASSET_DIR
     // @ts-ignore
     const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})

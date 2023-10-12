@@ -48,7 +48,7 @@ export class OpenState {
     get names() { return this.state.names }
     get canDoAction() { return true }
 
-    onOpen = () => null//openFromGitHub(this.url, this.props.editorManager)
+    onOpen = () => null
 }
 
 export function OpenDialog({editorManager, uiManager}: { editorManager: EditorManager, uiManager: UIManager }) {

@@ -7,6 +7,7 @@ import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import enGB from 'date-fns/locale/en-GB'
 import {isArray} from 'lodash'
+import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -224,3 +225,75 @@ export function mockImplementation(fn: any, impl: any) {
 export const doNothing = () => {
 }
 export const wait = (time: number = 1): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
+
+export class MockFileSystemDirectoryHandle implements FileSystemDirectoryHandle {
+    kind: 'directory' = 'directory'
+
+    constructor(public name: string, public files: FileSystemTree) {
+    }
+
+    async getDirectoryHandle(name: string, options: FileSystemGetDirectoryOptions = {create: false}): Promise<FileSystemDirectoryHandle> {
+        const dir = this.files[name] as DirectoryNode
+        if (dir?.directory) {
+            // @ts-ignore
+            return new MockFileSystemDirectoryHandle(name, dir.directory)
+        }
+        throw new DOMException('Directory not found', name)
+    }
+
+    getFileHandle(name: string, options: FileSystemGetFileOptions = {create: false}): Promise<FileSystemFileHandle> {
+        const file = this.files[name] as FileNode
+        if (file?.file) {
+            return Promise.resolve(new MockFileSystemFileHandle(name, file))
+        }
+        throw new DOMException('File not found', name)
+    }
+
+    removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void> {
+        throw new Error('Not implemented')
+    }
+
+    resolve(possibleDescendant: FileSystemHandle): Promise<string[] | null> {
+        throw new Error('Not implemented')
+    }
+
+    isSameEntry(other: FileSystemHandle): Promise<boolean> {
+        throw new Error('Not implemented')
+    }
+}
+
+export class MockFileSystemFileHandle implements FileSystemFileHandle {
+    kind: 'file' = 'file'
+
+    constructor(public name: string, public file: FileNode) {
+    }
+
+    removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void> {
+        throw new Error('Not implemented')
+    }
+
+    resolve(possibleDescendant: FileSystemHandle): Promise<string[] | null> {
+        throw new Error('Not implemented')
+    }
+
+    isSameEntry(other: FileSystemHandle): Promise<boolean> {
+        throw new Error('Not implemented')
+    }
+
+    getFile(): Promise<File> {
+        const fileContents = this.file.file.contents
+        // @ts-ignore
+        return {
+            text() {
+                return Promise.resolve(fileContents as string)
+            },
+            arrayBuffer() {
+                return Promise.resolve(fileContents as Uint8Array)
+            },
+        } as File
+    }
+
+    createWritable(): any {
+        throw new Error('Not implemented')
+    }
+}

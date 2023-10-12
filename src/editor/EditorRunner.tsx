@@ -6,8 +6,8 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {Alert, AlertColor, AlertTitle, Box, Grid, Typography,} from '@mui/material'
-import {default as ModelElement} from '../model/Element'
+import {AlertColor, Box, Grid, Typography,} from '@mui/material'
+import Element, {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../shared/styling'
@@ -16,7 +16,7 @@ import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
 import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
-import {chooseDirectory, openFromGitHub, UIManager, validateDirectoryForOpen} from './actions/actionHelpers'
+import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
 import {waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
@@ -33,7 +33,6 @@ import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
 import Tool from '../model/Tool'
-import Element from '../model/Element'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
 import FirebasePublish from '../model/FirebasePublish'
@@ -482,11 +481,7 @@ export default function EditorRunner() {
     }
     const showAlert = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => {
         const removeAlert = () => setAlertMessage(null)
-        setAlertMessage(<Alert severity={severity} onClose={removeAlert}>
-            <AlertTitle>{title}</AlertTitle>
-            <p id="alertMessage">{message}</p>
-            <p>{detail}</p>
-        </Alert>)
+        setAlertMessage(AlertMessage({severity, removeAlert, title, message, detail}))
     }
 
     const onSelectedItemsChange = (ids: string[]) => {

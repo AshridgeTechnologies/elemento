@@ -1,11 +1,13 @@
-import React, {ChangeEvent, useContext, useState} from 'react'
+import React, {useState} from 'react'
 import Element from '../model/Element'
 import {Box, Button, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
 import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyType, PropertyValue} from '../model/Types'
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash from 'lodash';
 import Project, {FILES_ID, TOOLS_ID} from '../model/Project'
+
+const {startCase} = lodash;
 
 function NameTextField(props: TextFieldProps) {
     const [changedValue, setChangedValue] = useState<string | undefined>(undefined)

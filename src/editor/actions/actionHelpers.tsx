@@ -1,7 +1,7 @@
-import React, {ChangeEvent, useState} from 'react'
-import {AlertColor} from '@mui/material'
+import React, {ChangeEvent, ReactNode, useState} from 'react'
+import {Alert, AlertColor, AlertTitle} from '@mui/material'
 import EditorManager from './EditorManager'
-import {projectFileName} from '../../shared/constants'
+import {ASSET_DIR, projectFileName} from '../../shared/constants'
 
 const OPFS_PROJECTS_DIR = 'GitHub'
 
@@ -101,4 +101,24 @@ export const validateProjectName = async (name: string | null) => {
     } catch (e) {
         return null
     }
+}
+
+export function AlertMessage({severity, removeAlert, title, message, detail}:
+                                 { severity: AlertColor, removeAlert: VoidFunction, title: string, message: string, detail: ReactNode }) {
+    return <Alert severity={severity} onClose={removeAlert}>
+        <AlertTitle>{title}</AlertTitle>
+        <p id="alertMessage">{message}</p>
+        <p>{detail}</p>
+    </Alert>
+}
+
+export const loadAppNames = async (projectDir: FileSystemDirectoryHandle): Promise<string[]> => {
+    const distDir = await projectDir.getDirectoryHandle('dist')
+    const clientDir = await distDir.getDirectoryHandle('client')
+    const result: string[] = []
+    // @ts-ignore
+    for await (const [name] of clientDir.entries()) {
+        if (name !== ASSET_DIR) result.push(name)
+    }
+    return result
 }

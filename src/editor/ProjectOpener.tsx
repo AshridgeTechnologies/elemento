@@ -2,20 +2,15 @@ import React, {useState} from 'react'
 import {OnGetFromGitHubFn, OnNewFn, OnOpenFn, OnOpenFromGitHubFn, VoidFn} from './Types'
 import AppBar from '../shared/AppBar'
 import MenuBar from './MenuBar'
-import {ElementType} from '../model/Types'
-import {elementTypes} from '../model/elements'
 
 import {Box, Button, Grid, Icon, List, ListItem, ListItemIcon, Typography, useTheme} from '@mui/material'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import Project from '../model/Project'
 import {useSignedInState} from '../shared/authentication'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import MainHelpPanel from '../docs/MainHelpPanel'
 
-Object.keys(elementTypes()) as ElementType[]
-React.createContext<Project | null>(null)
 
     function OpenOption({text, iconClass, onClick}: {text: string, iconClass: string, onClick: VoidFn}) {
         const theme = useTheme()

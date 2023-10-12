@@ -3,7 +3,8 @@ Elemento Backlog
 
 Bugs
 ----
-- Copying layouts does not change names of contents
+- Cannot load project from Git if files dir empty, and Git does not commit empty dirs
+- Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Duplicate names create errors on action function names
 - Changes really slow on large list
 - Initial value not showing on Number input
@@ -34,8 +35,8 @@ Stories
 
 ### Initial release
 - Priority improvements
-- Move examples to separate repos
-- New Run page can enter and run an app from GitHub
+- ✅ Move examples to separate repos
+- New Run page can enter and run an app from GitHub or local projects
 - New Learn page with links to Help, Guides and Examples
 
 ### Move to GitHub
@@ -139,6 +140,7 @@ Epics
 Tech debt
 ---------
 
+- run.css - needed?  where from?- Copying layouts does not change names of contents
 - Remove barrel files: https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-7
 - Check for dodgy RegExp - see https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript
 - Remove Download from GitHub to new directory

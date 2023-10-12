@@ -78,6 +78,7 @@ Possibilities
 - Firebase extension to install app server function
 - Secret key shared between app server and editor for preview
 - App server has list of users (by email address?) that can access preview and/or other versions
+- *** run service worker rewrites paths, including index.html, to get from cdn
 
 Decisions 20 May 23
 -------------------
@@ -100,3 +101,4 @@ Later
 -----
 
 - Load parts of index.html, like CSS or scripts
+- Run service worker does github as well to get latest commit and rewrite paths to CDN, inc index.html

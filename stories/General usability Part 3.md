@@ -3,7 +3,9 @@ General usability Part 3
 
 - Ensure Types generated in order to allow references to each other - or highlight errors clearly
 - Highlight element in preview not working in form - link to data type?
-- Projects can be stored in OPFS file storage
+- ✅ Projects can be stored in OPFS file storage
+- Run from GitHub finds apps available in GitHub, shows links
+- Run local disk project runs single app immediately
 - Remove animation on list so things change quickly
 - Retain position in list when content changes
 - Editor messages are done with toasts

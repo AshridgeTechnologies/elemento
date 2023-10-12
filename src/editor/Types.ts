@@ -27,6 +27,7 @@ export type OnActionFn = (ids: ElementId[], action: AppElementAction) => Promise
 export type InsertMenuItemsFn = (insertPosition: InsertPosition, targetItemId: ElementId) => ElementType[]
 export type MenuItemFn = VoidFn
 
+export type RunArea = 'opfs' | 'disk'
 
 // As used in WebContainer
 export interface FileSystemTree {

@@ -18,6 +18,6 @@ Requirements
 - ✅ Ensure Tools shown at startup don't fail
 - ✅ Form validation - false Required on Decimal, conditions applied on empty when not required
 - ✅ Can't type a .90 in a decimal input
-- Fix the memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
-- run.css - needed?  where from?
+- ✅ Files included under dist/client
+
 

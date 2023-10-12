@@ -1,9 +1,9 @@
 import mime from 'mime-types'
 import {DirectoryNode, FileNode, FileSystemTree} from './Types'
 import assert from "assert";
+import { pathSegments } from '../shared/fileSystem';
 
 
-const pathSegments = (path: string) => path.split('/')
 const dirName = (path: string) => pathSegments(path).slice(0, -1).join('/')
 
 export default class EditorServiceWorker {
