@@ -33,12 +33,6 @@ Bugs
 Stories
 -------
 
-### Initial release
-- Priority improvements
-- ✅ Move examples to separate repos
-- New Run page can enter and run an app from GitHub or local projects
-- New Learn page with links to Help, Guides and Examples
-
 ### Move to GitHub
 - Deploy from GitHub
 - Can use private GitHub repos
@@ -263,6 +257,10 @@ Done
 - Data Types example app
 - Automatic open from GitHu
 - Help Content and Presentation
+- Priority improvements
+- Move examples to separate repos
+- New Run page can enter and run an app from GitHub or local projects
+- New Learn page with links to Help, Guides and Examples
 
 Bugs fixed
 ----------
