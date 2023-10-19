@@ -8,6 +8,7 @@ const outdir = 'dist'
 export const clientConfig = {
     entryPoints: [
         { in: 'src/runtime/index.ts', out: 'runtime/runtime'},
+        // { in: 'src/serverRuntime/index.ts', out: 'runtime/serverRuntime'},
         { in: 'src/editor/runEditor.ts', out: 'studio/runEditor'},
         { in: 'src/editor/runLocalApp.ts', out: 'run/runLocalApp'},
         { in: 'src/appswebsite/sw.ts', out: 'sw' },

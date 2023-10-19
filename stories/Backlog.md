@@ -3,12 +3,12 @@ Elemento Backlog
 
 Bugs
 ----
+- Copy/Paste not working
 - Cannot load project from Git if files dir empty, and Git does not commit empty dirs
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Duplicate names create errors on action function names
 - Changes really slow on large list
 - Initial value not showing on Number input
-- Copy/Paste multiple not working
 - Errors can kill Editor
 - Select element on preview not highlighting
 - Query with MemoryDataStore not updating 

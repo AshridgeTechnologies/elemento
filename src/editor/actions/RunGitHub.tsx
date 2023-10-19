@@ -13,8 +13,7 @@ export function RunGitHubDialog({openProjectFn, uiManager}: { openProjectFn: Run
         onCancel={uiManager.onClose} title={title}
         content={<>
             <Para>Sorry - this is not available yet.</Para>
-            <Para>Please use the Elemento Studio to open the GitHub project and use the
-                <b>Run app from GitHub</b> link above the app preview.</Para>
+            <Para>Please use the Elemento Studio to open the GitHub project and use the <b>Run app from GitHub</b> link above the app preview.</Para>
         </>}
         fields={<>
         </>}
