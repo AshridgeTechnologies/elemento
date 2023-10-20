@@ -16,6 +16,7 @@ export interface ProjectLoader {
 }
 
 export interface FileLoader {
+    exists(dirPath: string): Promise<boolean>
     listFiles(dirPath: string): Promise<string[]>
     readFile(filePath: string): Promise<FileContents>
 }
@@ -126,8 +127,11 @@ export default class ProjectBuilder {
     }
 
     private async copyAssetFiles() {
-        const files = await this.props.fileLoader.listFiles(ASSET_DIR)
-        await Promise.all(files.map( f => this.copyAssetFile(f) ))
+        const filesDirExists = await this.props.fileLoader.exists(ASSET_DIR)
+        if (filesDirExists) {
+            const files = await this.props.fileLoader.listFiles(ASSET_DIR)
+            await Promise.all(files.map( f => this.copyAssetFile(f) ))
+        }
     }
 
     private async copyRuntimeFiles() {

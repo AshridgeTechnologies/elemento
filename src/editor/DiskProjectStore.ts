@@ -19,8 +19,7 @@ export interface DiskProjectStoreInterface {
 
     getProject(): Promise<ProjectWorkingCopy>
 
-    createProject(): Promise<void>
-
+    exists(dirName: string): Promise<boolean>
     getFileNames(dirName: string): Promise<string[]>
     readFile(path: string): Promise<Uint8Array>
 
@@ -294,8 +293,7 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
     async getProject(): Promise<ProjectWorkingCopy> {
         const projectFileText = await this.readTextFile(projectFileName)
         const project = loadJSONFromString(projectFileText) as Project
-        let assetFileNames: string[] = []
-        try { assetFileNames = await this.assetFilePaths()} catch (e) { }
+        let assetFileNames = await this.assetFilePaths()
 
         return {
             project,
@@ -306,15 +304,14 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
         }
     }
 
+    exists(name: string) {
+        return this.fs.stat(`/${name}`).then( () => true, () => false)
+    }
 
     async getFileNames(dirName: string = '') {
         const names = await this.fs.readdir(`/${dirName}`)
         names.sort()
         return names
-    }
-
-    createProject() {
-        return this.fs.mkdir(`/${ASSET_DIR}`)
     }
 
     readTextFile(path: string) {
@@ -349,12 +346,16 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
         return this.fs.readFile(`/${path}`) as Promise<Uint8Array>
     }
 
-    writeAssetFile(path: string, fileData: Uint8Array) {
-        return this.fs.writeFile(`/${ASSET_DIR}/${path}`, fileData)
+    async writeAssetFile(path: string, fileData: Uint8Array) {
+        if (!await this.exists(ASSET_DIR)) {
+            await this.fs.mkdir(`/${ASSET_DIR}`)
+        }
+        await this.fs.writeFile(`/${ASSET_DIR}/${path}`, fileData)
     }
 
     async assetFilePaths(): Promise<string[]> {
-        return (await this.getFileNames(`/${ASSET_DIR}`)).filter(name => !name.startsWith('.'))
+        const exists = await this.exists(ASSET_DIR)
+        return exists ? (await this.getFileNames(`/${ASSET_DIR}`)).filter(name => !name.startsWith('.')) : []
     }
 
     readAssetFile(path: string) {

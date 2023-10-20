@@ -3,9 +3,9 @@ Elemento Backlog
 
 Bugs
 ----
-- Copy/Paste not working
-- Cannot load project from Git if files dir empty, and Git does not commit empty dirs
+- Menu on Studio etc not working
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
+- Loads 3 new versions of app when you select an item in navigator
 - Duplicate names create errors on action function names
 - Changes really slow on large list
 - Initial value not showing on Number input
@@ -279,4 +279,5 @@ Bugs fixed
 - Bug: Incomplete Select blows up editor - see file
 - Fix run from GitHub
 - Insert menu can overflow the page
-b
+- Copy/Paste not working
+- Cannot load project from Git if files dir empty, and Git does not commit empty dirs

@@ -1,8 +1,12 @@
 import {DiskProjectStoreInterface} from './DiskProjectStore'
 import {FileContents, FileLoader} from '../generator/ProjectBuilder'
 
-export default class DiskProjectStoreFileLoader implements FileLoader{
+export default class DiskProjectStoreFileLoader implements FileLoader {
     constructor(private readonly store: DiskProjectStoreInterface) {
+    }
+
+    exists(dirPath: string): Promise<boolean> {
+        return this.store.exists(dirPath)
     }
 
     listFiles(dirPath: string): Promise<string[]> {

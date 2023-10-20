@@ -84,7 +84,8 @@ const runtimeLoader = {
     getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
 }
 
-const getFileLoader = (dirContents: object = {}) => ({
+const getFileLoader = (dirContents: object = {}, exists = true) => ({
+    exists: jest.fn().mockResolvedValue(exists),
     listFiles: jest.fn().mockResolvedValue(Object.keys(dirContents)),
     readFile: jest.fn().mockImplementation((filepath: string) => Promise.resolve(dirContents[filepath.split('/')[1] as keyof typeof dirContents]))
 })
@@ -126,6 +127,14 @@ test('writes client files for all apps to client build with one copy of asset', 
         ['files/Image1.jpg', dirContents['Image1.jpg']],
         ['files/File2.pdf', dirContents['File2.pdf']],
     ])
+})
+
+test('skips asset files if dir does not exist', async () => {
+    const fileLoader = getFileLoader({}, false)
+    const builder = newProjectBuilder({fileLoader})
+    await builder.build()
+
+    expect(fileLoader.listFiles).not.toHaveBeenCalled()
 })
 
 test('writes server files generated from Project for all apps', async () => {

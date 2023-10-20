@@ -1,6 +1,17 @@
 import DiskProjectStoreFileLoader from '../../src/editor/DiskProjectStoreFileLoader'
 import type {DiskProjectStoreInterface} from '../../src/editor/DiskProjectStore'
 
+test.each([false, true])('returns exists for a directory from a DiskProjectStore', async (existsVal) => {
+    const storeWithDir = {
+        exists: jest.fn().mockResolvedValue(existsVal)
+    } as unknown as DiskProjectStoreInterface
+
+    const loader = new DiskProjectStoreFileLoader(storeWithDir)
+
+    await expect(loader.exists('theDir')).resolves.toStrictEqual(existsVal)
+    expect(storeWithDir.exists).toHaveBeenCalledWith('theDir')
+})
+
 test('lists files in a directory from a DiskProjectStore', async () => {
     const store = {
         getFileNames: jest.fn().mockResolvedValue(['file1.jpg', 'file2.pdf'])
