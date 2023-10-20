@@ -1,8 +1,7 @@
 import {notEmpty, waitUntil} from '../util/helpers'
 //@ts-ignore
 import {caller} from 'postmsg-rpc'
-import {fireEvent} from '@testing-library/react'
-import {UserEvent} from '@testing-library/user-event/setup/setup'
+import userEvent from '@testing-library/user-event'
 
 export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuItem' | 'propertyField' | 'propertyTypeButton'
 
@@ -188,33 +187,34 @@ export const highlightElements = (elements: HTMLElement[], container: HTMLElemen
     elements.forEach(el => el.classList.add(highlightClassName))
 }
 
-export const setElementValue = async (element: HTMLElement, container: HTMLElement, user: UserEvent, value: string | boolean) => {
+export const setElementValue = async (element: HTMLElement, container: HTMLElement, value: string | boolean) => {
     const textInput = isInputElement(element) ? element : element.querySelector('textarea,input[type=text],input[type=number]')
     if (textInput) {
-        fireEvent.focus(textInput)
+        (textInput as HTMLInputElement).focus()
         const currentValue = (textInput as HTMLInputElement).value
 
-        await user.type(textInput, value.toString(), {
+        await userEvent.type(textInput, value.toString(), {
             initialSelectionStart: 0,
-            initialSelectionEnd: currentValue.length
+            initialSelectionEnd: currentValue.length,
+            delay: 50
         })
     }
 
     const select = isSelectElement(element) ? element : element.querySelector('.MuiSelect-select')
     if (select) {
-        fireEvent.focus(select)
-        await user.click(select)
+        (select as HTMLSelectElement).focus()
+        await userEvent.click(select)
         await wait(700)
         const itemToSelect = Array.from(container.querySelector('[role=listbox]')?.querySelectorAll(`[role=option]`) ?? []).find(el => textMatch(el, value.toString()))
-        itemToSelect && await user.click(itemToSelect)
+        itemToSelect && await userEvent.click(itemToSelect)
     }
 
     const checkbox = (isCheckboxElement(element) ? element : element.querySelector('input[type=checkbox]')) as HTMLInputElement
     if (checkbox) {
-        fireEvent.focus(checkbox)
+        checkbox.focus()
         const shouldBeChecked = ['true', 'yes'].includes(value.toString().toLowerCase())
         if (checkbox.checked !== shouldBeChecked) {
-            await user.click(checkbox)
+            await userEvent.click(checkbox)
         }
     }
 }

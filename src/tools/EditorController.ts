@@ -15,7 +15,6 @@ import {
 
 
 export default class EditorController {
-    private user = userEvent.setup({delay: 20})
     private actionQueue = new ActionQueue()
     private options: Options = {showBeforeActions: false, showWithPointer: false, delay: 1000}
 
@@ -49,17 +48,17 @@ export default class EditorController {
         this.queueAction(selector, text, () => {
             const element = selectSingleElement(selector, text)
             if (element) {
-                return this.user.click(element)
+                return userEvent.click(element)
             }
         })
     }
 
     ContextClick(selector: SelectorType, text: string) {
         console.log('ContextClick', selector, text)
-        this.queueAction(selector, text, () => {
+        this.queueAction(selector, text, async () => {
             const element = selectSingleElement(selector, text)
             if (element) {
-                return this.user.pointer([{target: element}, {keys: '[MouseRight]', target: element}])
+                await userEvent.pointer([{target: element}, {keys: '[MouseRight]', target: element}])
             }
         })
     }
@@ -69,7 +68,7 @@ export default class EditorController {
         this.queueAction(selector, text, async () => {
             const element = selectSingleElement(selector, text)
             if (element) {
-                await setElementValue(element, this.container, this.user, value)
+                await setElementValue(element, this.container, value)
             }
         })
     }
@@ -86,7 +85,7 @@ export default class EditorController {
             if (element) {
                 const currentStateIsFormula = element.textContent?.toLowerCase() === 'fx='
                 if (currentStateIsFormula !== shouldBeFormula) {
-                    await this.user.click(element)
+                    await userEvent.click(element)
                 }
             }
         })
@@ -99,7 +98,7 @@ export default class EditorController {
                 if (element) {
                     const isClosed = element.classList.contains('rc-tree-switcher_close')
                     if (isClosed) {
-                        await this.user.click(element)
+                        await userEvent.click(element)
                     }
                 }
             })
