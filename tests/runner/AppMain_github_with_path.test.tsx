@@ -32,7 +32,7 @@ afterEach(async () => {
 
 })
 
-const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
+const appMain = (pathname: string, origin = 'https://example.com') => createElement(AppMain, {pathname, origin})
 
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} = container = {} as any
 
@@ -61,8 +61,5 @@ test('runs app from GitHub with path', async () => {
     renderThe(appMain('/runner/gh/mongo/peewit/Page1/path2/1234'))
     await actWait(50)
     expect(el`FirstText`).toHaveTextContent('App from GitHub with current url http://localhost/runner/gh/mongo/peewit/Page1/path2/1234')
-    // expect(el`Page`).toHaveTextContent('Page1')
-    // expect(el`PathSections`).toHaveTextContent('path2,1234')
-    // expect(el`CurrentUrl`).toHaveTextContent('http://localhost/runner/gh/mongo/peewit/Page1/path2/1234')
 })
 

@@ -23,7 +23,6 @@ export default class ServerAppGenerator {
     private parser
     private typesGenerator
 
-
     constructor(private readonly app: ServerApp, private readonly project: Project) {
         this.parser = new ServerAppParser(app)
         this.typesGenerator = new TypesGenerator(project)
@@ -101,11 +100,12 @@ export default class ServerAppGenerator {
         const hasTypes = !!typesFiles.length
 
         const imports = [
-            `import {runtimeFunctions} from './serverRuntime.cjs'`,
-            hasGlobalFunctions && `import {globalFunctions} from './serverRuntime.cjs'`,
-            hasAppFunctions && `import {appFunctions} from './serverRuntime.cjs'`,
-            hasComponents && `import {components} from './serverRuntime.cjs'`,
-            hasTypes && `import {types} from './serverRuntime.cjs'`,
+            `import * as serverRuntime from './serverRuntime.cjs'`,
+            `const {runtimeFunctions} = serverRuntime`,
+            hasGlobalFunctions && `const {globalFunctions} = serverRuntime`,
+            hasAppFunctions && `const {appFunctions} = serverRuntime`,
+            hasComponents && `const {components} = serverRuntime`,
+            hasTypes && `const {types} = serverRuntime`,
         ].filter(isTruthy).join('\n')
 
         const globalImports = hasGlobalFunctions && `const {${globalFunctionNames.join(', ')}} = globalFunctions`

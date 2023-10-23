@@ -133,15 +133,4 @@ export default class ProjectBuilder {
             await Promise.all(files.map( f => this.copyAssetFile(f) ))
         }
     }
-
-    private async copyRuntimeFiles() {
-        const {runtimeLoader, clientFileWriter, serverFileWriter} = this.props
-        const copyFile = (writer: FileWriter) => async (filename: string) => {
-            const fileContents = await runtimeLoader.getFile(filename)
-            await writer.writeFile(filename, fileContents)
-        }
-        const clientFileWrites = ['runtime.js', 'runtime.js.map'].map( copyFile(clientFileWriter) )
-        const serverFileWrites = this.hasServerApps ? ['serverRuntime.js', 'serverRuntime.js.map'].map( copyFile(serverFileWriter) ) : []
-        await Promise.all([...clientFileWrites, ...serverFileWrites])
-    }
 }

@@ -9,15 +9,54 @@ Aims
 Requirements
 ------------
 
-- Runs from Firebase hosting
-- Serve client app from GitHub
-- Run server apps from GitHub
-- Private repos
-- Run server app preview from Studio
+- ✅ Runs from Firebase hosting
+- ✅ Serve client app from GitHub
+- ✅ Serves files with correct headers
+- ✅ Still works with studio preview
+- ✅ All client page requests redirected to the main page and still work
+- Serve/redirect to default client app on top level
+- Gets project id from environment
+- ✅ Deploy server apps from GitHub to server app runner cache
+- ~~Connect to server apps from client in GitHub~~
+- ✅ All capi calls redirected to the function
+- ✅ Gets firebaseConfig and whatever needed for authorization
+- Private repos - fetch and save and deploy
+- ✅ Server app runner uploads and runs previews of server apps
+- ✅ Server apps in preview update immediately
+- Studio uploads server apps
+- Server apps in preview are secured
 - Can access Firebase
 - Can access third party APIs with secret credentials
-- Can serve and cache default and specified versions concurrently
-- Easy way of installing app server extension
+- Can use Firebase authorization
+- Can run server apps in cache default and specified versions concurrently
+- Can update client app quickly and easily when new version in GitHub
+- Tool in Studio to deploy
+- Tool works with access tokens from GitHub and Google logins
+- Easy way of installing app server extension and setting up project
+- Clear instructions for the manual steps
+- Use hosting where possible for faster response and lower costs
+- Appropriate caching for all files - use cache where possible, close-spaced deploys work
+- Can deploy to preview channel
+- Use unique filenames with caching and/or ensure cache cleared
+- Password protect and test clear cache function - or remove
+- Extension and management tool independent of Elemento
+- All runtime and generated server JS files inc cjs are served with correct content type
+- All generated server files are consistent and usable for other deployment environments
+- Remove old dev server
+
+Preview server
+--------------
+
+- ✅ Extension has Preview server function alongside main app server and admin server
+- ✅ Preview server receives PUTs of updated server apps
+- ✅ Create server app function using the Function constructor
+- ✅ Hold map of latest version of each app function
+- ✅ Write each new server app function to storage, overwriting previous
+- ✅ When requested, load current version from storage
+- ✅ Store server runtime in storage
+- ✅ Create a check for updated server runtime and download if needed
+- ✅ Do check when new preview version uploaded, throttled to 60 seconds 
+
 
 
 App Runner rework - client side
@@ -33,7 +72,7 @@ App Runner rework - server side
 - Server app preview works
 - App server protects preview PUT and GET with secret key or Firebase login
 - Use secret for access token extension param, check all permissions and ordering for using secrets
-- Remove old Builder and build.ts
+- Remove old Builder and build.ts, BrowserRuntimeLoader
 - Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting 
 
 Further requirements
@@ -54,6 +93,19 @@ Notes
 
 To do
 -----
+- ✅ Fix all 4 run situations to work with pages and further path elements, from deep link
+- ✅ Make everything able to use an alternative runtime.js
+- ✅ Run app stored in browser shows no options
+- ✅ Cloud storage cache path fn from username, repo, commitId, subdir, filePath
+- ✅ Deploy server code to cache in storage with commit id in the path
+- ✅ Server app runner loads the requested version
+- ✅ All capi requests must go the correct deploy id
+- ✅ Client reads version file to get deploy id
+- Generator writes metadata file to top level with default app in it
+- Deployment sets up redirect to default app at top level
+- Don't look up server app factory functions again once imported
+- Work out correct caching for runtime files
+- Work out how to make preview server functions update
 
 
 Technical (from Part 1)
@@ -73,9 +125,26 @@ Technical (from Part 1)
     - Construct GitHub or jsDelivr path
     - Retrieve text
     - Write to file with the app module path
-  - Dynamic import the server app modue from the file
+  - Dynamic import the server app module from the file
   - Call the default export function with the current user to get the app instance for the request
   - Get the function and parameters from the request
   - Call the function
   - Send the result
 
+
+Problems
+--------
+
+- Need to initialise storage in the console
+- If don't use the same region as other things, may be problems
+- CLI install updates nearest firebase.json and extensions dir it finds
+- CLI install fails with permissions error, says need to grant the role roles/artifactregistry.reader to Cloud Functions service account, but succeeds second try
+- Difficult to work out correct function url eg  https://europe-west2-elemento-app-server-test.cloudfunctions.net/ext-elemento-app-server-appServer
+- When call function, get error: The specified bucket does not exist
+  - so need to initialise storage 
+  - so need instructions on how to do this and which location
+- Probably want hosting redirect to send all requests to the function
+- Stuck for long time because deploying extension appeared not to update the code - didn't rebuild lib code from TS source
+- CORS error getting runtime from elemento server
+- 
+- 

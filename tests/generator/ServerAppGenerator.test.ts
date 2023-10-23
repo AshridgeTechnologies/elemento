@@ -35,9 +35,10 @@ describe('generates files for app and exposes public functions and includes data
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('ServerApp1.mjs')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
-import {globalFunctions} from './serverRuntime.cjs'
-import {types} from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
+const {globalFunctions} = serverRuntime
+const {types} = serverRuntime
 
 const {Sum} = globalFunctions
 const {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule} = types
@@ -123,9 +124,10 @@ describe('generates files using data components in dependency order', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.mjs')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
-import {appFunctions} from './serverRuntime.cjs'
-import {components} from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
+const {appFunctions} = serverRuntime
+const {components} = serverRuntime
 
 const {Get, Update} = appFunctions
 const {Collection, FirestoreDataStore} = components
@@ -201,9 +203,10 @@ describe('handles errors and special cases', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.mjs')
-        expect(serverAppFile.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
-import {globalFunctions} from './serverRuntime.cjs'
-import {components} from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
+const {globalFunctions} = serverRuntime
+const {components} = serverRuntime
 
 const {Log, Select, If, Sum} = globalFunctions
 const {Collection, FirestoreDataStore} = components

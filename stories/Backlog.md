@@ -5,6 +5,12 @@ Elemento Backlog
 Bugs
 ----
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
+- Previews are mixed up if open two projects in different tabs
+- Fails to check out private project from GitHub - unauthorized
+- Errors in server app calls (and elsewhere?) not caught and show React error message instead of app
+- Update or download from GitHub is very slow on -Beetle1- (maybe open in two places - or old runtime files)
+- No feedback or disabled buttons while awaiting GitHub operations 
+- Files not showing up in Files Folder on -Beetle1-
 - Loads 3 new versions of app when you select an item in navigator (only when deployed?)
 - Duplicate names create errors on action function names
 - Changes really slow on large list
@@ -36,6 +42,12 @@ Stories
 ### Run from GitHub
 - Refactor app runners - Part 2
 
+### Priority for learning Elemento
+- Server apps example
+- Server apps guide
+- Data types guide
+- Other how-to guides
+
 ### Priority for internal apps
 - Type expressions
 
@@ -54,12 +66,6 @@ Stories
 - Speech synthesis
 - Shapes, drawing, animation
 - Dynamic elements from a list
-
-### Priority for learning Elemento
-- Server apps example
-- Server apps guide
-- Data types guide
-- Other how-to guides
 
 ### Priority for credibility
 - Dependency vulnerability review
@@ -148,6 +154,7 @@ Tech debt
 - Consider Temporal
 - Consider TinyBase
 - Consider escodegen in generator
+- Latest yarn
 - Consider a better bundler - esbuild, rspack, Rome
 - Reduce size of serverRuntime, consider firebase-admin external
 - Look for ways to have imports that update dynamically in preview, both client and server

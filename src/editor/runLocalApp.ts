@@ -4,7 +4,6 @@ import AppChooser from './AppChooser'
 import {registerServiceWorker} from '../shared/serviceWorker'
 import {RunArea} from './Types'
 
-const wait = (time: number): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 
 export type RunAppFn = (area: RunArea, projectName: string, appName: string, dirHandle: FileSystemDirectoryHandle) => void
 const runApp: RunAppFn = (area: RunArea, projectName: string, appName: string, dirHandle: FileSystemDirectoryHandle) => {

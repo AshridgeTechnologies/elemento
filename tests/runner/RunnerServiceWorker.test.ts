@@ -5,7 +5,7 @@ import {MockFileSystemDirectoryHandle} from '../testutil/testHelpers'
 import str2ab from 'string-to-arraybuffer'
 
 const mockFiles: FileSystemTree = {
-    'GitHub': {
+    'Projects': {
         directory: {
             'ProjectOne': {
                 directory: {
@@ -20,7 +20,7 @@ const mockFiles: FileSystemTree = {
                                                     contents: str2ab('top index.html contents')
                                                 }
                                             },
-                                            'dir1': {
+                                            'files': {
                                                 directory: {
                                                     'stuff.js': {
                                                         file: {
@@ -34,7 +34,7 @@ const mockFiles: FileSystemTree = {
                                                     },
                                                     'index.html': {
                                                         file: {
-                                                            contents: str2ab('dir1 index.html contents')
+                                                            contents: str2ab('other index.html contents')
                                                         }
                                                     },
                                                 }
@@ -75,7 +75,7 @@ beforeEach(() => {
 
 test('mocks work', async () => {
     const opfsRoot = await navigator.storage.getDirectory()
-    const githubRoot = await opfsRoot.getDirectoryHandle('GitHub')
+    const githubRoot = await opfsRoot.getDirectoryHandle('Projects')
     const projRoot = await githubRoot.getDirectoryHandle('ProjectOne')
     const distRoot = await projRoot.getDirectoryHandle('dist')
     const clientRoot = await distRoot.getDirectoryHandle('client')
@@ -83,7 +83,7 @@ test('mocks work', async () => {
     const indexContents = await appRoot.getFileHandle('index.html').then( handle => handle.getFile() ).then( file => file.text() )
     expect(indexContents).toStrictEqual(str2ab('top index.html contents'))
 
-    const stuffContents = await appRoot.getDirectoryHandle('dir1')
+    const stuffContents = await appRoot.getDirectoryHandle('files')
         .then(handle => handle.getFileHandle('stuff.js'))
         .then(handle => handle.getFile())
         .then(file => file.text())
@@ -98,7 +98,7 @@ test('can get response for OPFS file at top level', async () => {
 })
 
 test('can get response for OPFS file in sub-directory', async () => {
-    const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/dir1/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/files/stuff.js'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.arrayBuffer()).toStrictEqual(str2ab('stuff.js contents'))
@@ -109,19 +109,39 @@ test('can get not found response for non-existent OPFS dir', async () => {
     expect(result.status).toBe(404)
 })
 
-test('can get not found response for non-existent top-level file', async () => {
+
+test('serves index.html if top-level path ends in /', async () => {
+    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/'))
+    expect(await result.text()).toBe('top index.html contents')
+})
+
+test('serves top level index.html if non-existent sub-dir path ends in /', async () => {
+    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/dir1/'))
+    expect(await result.text()).toBe('top index.html contents')
+})
+
+test('serves specific index.html if exact path given', async () => {
+    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/files/index.html'))
+    expect(await result.text()).toBe('other index.html contents')
+})
+
+test('serves top level index.html if non-existent sub-dir path does not end in /', async () => {
+    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/PageOne/stuff'))
+    expect(await result.text()).toBe('top index.html contents')
+})
+test('serves top level index.html for non-existent top-level file', async () => {
     const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/xxx.html'))
-    expect(result.status).toBe(404)
+    expect(await result.text()).toBe('top index.html contents')
 })
 
-test('can get not found response for non-existent file in sub dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/dir1/xxx.js'))
-    expect(result.status).toBe(404)
+test('serves top level index.html for non-existent file in sub dir', async () => {
+    const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/files/xxx.js'))
+    expect(await result.text()).toBe('top index.html contents')
 })
 
-test('can get not found response for non-existent dir', async () => {
+test('serves top level index.html for non-existent dir', async () => {
     const result = await worker.handleRequest(request('http://example.com/run/local/opfs/ProjectOne/AppOne/dir2/stuff.js'))
-    expect(result.status).toBe(404)
+    expect(await result.text()).toBe('top index.html contents')
 })
 
 test('passes through non-app file requests', async () => {
@@ -142,14 +162,4 @@ test('passes through non-app file requests', async () => {
     } finally {
         globalThis.fetch = originalFetch
     }
-})
-
-test('serves index.html if top-level path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/'))
-    expect(await result.text()).toBe('top index.html contents')
-})
-
-test('serves index.html if sub-dir path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/run/local/opfs/ProjectOne/AppOne/dir1/'))
-    expect(await result.text()).toBe('dir1 index.html contents')
 })

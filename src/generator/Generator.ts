@@ -11,11 +11,12 @@ import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, last, omit} from 'ramda'
 import Parser from './Parser'
-import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName} from './Types'
+import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName, runtimeFileSourcePath, runtimeImportPath} from './Types'
 import {notBlank, notEmpty, trimParens} from '../util/helpers'
 import {
     allElements,
-    DefinedFunction, isAppLike,
+    DefinedFunction,
+    isAppLike,
     objectLiteral,
     objectLiteralEntries,
     quote,
@@ -42,7 +43,7 @@ const indentLevel3 = '            '
 const isActionProperty = (def: PropertyDef) => (def.type as EventActionPropertyDef).type === 'Action'
 
 export const DEFAULT_IMPORTS = [
-    `const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\``,
+    `const runtimeUrl = window.elementoRuntimeUrl || '${runtimeImportPath}/runtime.js'`,
     `const Elemento = await import(runtimeUrl)`,
     `const {React} = Elemento`
 ]
@@ -491,7 +492,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{
                 appName: '${serverApp.name}',
-                url: ${serverUrlExpr || `'/capi/${serverApp.codeName}'`},
+                url: ${serverUrlExpr || `'/capi/:versionId/${serverApp.codeName}'`},
                 functions: ${valueLiteral(Object.fromEntries(serverApp.functions.map(fn => [fn.codeName, functionInfo(fn)])))}
             }`
 
@@ -609,8 +610,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 </head>
 <body>
 <script type="module">
-    import {runAppFromWindowUrl} from '/runtime/${runtimeFileName}'
-    runAppFromWindowUrl()
+    window.elementoRuntimeUrl = (location.host.match(/^localhost:/)) ? location.origin + '/lib/runtime.js' : 'https://elemento.online/lib/runtime.js'
+    import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
 </script>
 </body>
 </html>

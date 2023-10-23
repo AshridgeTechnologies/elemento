@@ -5,7 +5,7 @@ export default class BrowserRuntimeLoader implements RuntimeLoader {
     }
 
     getFile(filename: string): Promise<string> {
-        const path = filename.startsWith('server') ? 'serverRuntime' : 'runtime'
+        const path = 'lib'
         const url = `${this.runtimeServerUrl}/${path}/${filename}`
         return fetch(url).then( resp => resp.text())
     }

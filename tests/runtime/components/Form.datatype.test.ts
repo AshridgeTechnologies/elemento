@@ -19,7 +19,6 @@ import {
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
 import MockedFunction = jest.MockedFunction
 import React, {KeyboardEventHandler} from 'react'
-import {withDots} from '../../../src/util/helpers'
 import {useGetObjectState} from '../../../src/runtime'
 import {useObjectStates} from '../../../src/runtime/appData'
 import BigNumber from 'bignumber.js'

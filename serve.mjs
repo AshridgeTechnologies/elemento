@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import {clientConfig} from './build.mjs'
+import {clientConfig, serverConfig} from './build.mjs'
 
 const outdir = 'devDist'
 
@@ -13,13 +13,23 @@ const devClientConfig = {...clientConfig,
     }
 }
 
-// src/serverRuntime/index.ts --bundle --sourcemap --format=cjs  --minify --platform=node --target=node18.16 --outfile=dist/serverRuntime/serverRuntime.cjs
+const devServerConfig = {...serverConfig,
+    sourcemap: true,
+    minify: false,
+    outdir,
+    define: {
+        "process.env.NODE_ENV": `"development"`,
+        "process.env.NODE_DEBUG": `""`,
+    }
+}
 
-const ctx = await esbuild.context(devClientConfig)
+const clientCtx = await esbuild.context(devClientConfig)
+await clientCtx.watch()
 
-await ctx.watch()
+const serverCtx = await esbuild.context(devServerConfig)
+await serverCtx.watch()
 
-let { host, port } = await ctx.serve({
+let { host, port } = await clientCtx.serve({
     servedir: outdir,
     fallback: `${outdir}/run/index.html`  // to let the Run app from GitHub link work
 })

@@ -7,13 +7,9 @@ import AppRunnerFromGitHub from '../../src/runner/AppRunnerFromGitHub'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import {projectFixture3} from '../testutil/projectFixtures'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {wait} from '../testutil/testHelpers'
-import App from '../../src/model/App'
-import {generate} from '../../src/generator/index'
 import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
-import resetAllMocks = jest.resetAllMocks
 
 jest.mock('../../src/runner/loadModuleHttp', ()=> ({
     loadModuleHttp: jest.fn().mockResolvedValue({
@@ -50,7 +46,7 @@ const appContext: AppContext = {
     goBack(): void {}
 }
 
-const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', path = '', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext})
+const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
@@ -62,14 +58,6 @@ test('shows loading until app loads then shows app on page', async () => {
     expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
     await actWait(500)
     expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne/AppOne.js')
-    expectEl('FirstText').toHaveTextContent('App from GitHub')
-})
-
-test('uses path within repo if not empty', async () => {
-    renderThe(appRunnerFromGitHub('mickey', 'mouse', 'demo/example1', 'DemoApp'))
-    expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
-    await actWait(500)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/demo/example1/dist/client/DemoApp/DemoApp.js')
     expectEl('FirstText').toHaveTextContent('App from GitHub')
 })
 

@@ -149,7 +149,7 @@ test('can get all code in one string from the output with imports and export', f
 
     const output = generate(app, project(app))
 
-    expect(output.code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+    expect(output.code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 
@@ -211,7 +211,7 @@ test('includes all DataTypes files and global functions in data types', () => {
 
     const output = generate(app1, project)
 
-    expect(output.code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+    expect(output.code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 
@@ -290,8 +290,8 @@ test('generates html runner file', () => {
 </head>
 <body>
 <script type="module">
-    import {runAppFromWindowUrl} from '/runtime/runtime.js'
-    runAppFromWindowUrl()
+    window.elementoRuntimeUrl = (location.host.match(/^localhost:/)) ? location.origin + '/lib/runtime.js' : 'https://elemento.online/lib/runtime.js'
+    import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
 </script>
 </body>
 </html>
@@ -741,7 +741,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     expect(output.files[1].contents).toBe(`function configServerApp1() {
     return {
         appName: 'Server App 1',
-        url: '/capi/ServerApp1',
+        url: '/capi/:versionId/ServerApp1',
 
         functions: {
             GetWidget: {
@@ -793,7 +793,7 @@ test('generates ServerAppConnector elements with correct configuration if has sa
     expect(output.files[1].contents).toBe(`function configServerApp1() {
     return {
         appName: 'Server App 1',
-        url: '/capi/ServerApp1',
+        url: '/capi/:versionId/ServerApp1',
 
         functions: {
             GetWidget: {
@@ -1636,7 +1636,7 @@ test('generates function imports in the app', () => {
         )])
 
     const gen = new Generator(app, project(app))
-    expect(gen.output().code).toBe(`const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\`
+    expect(gen.output().code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
 const {React} = Elemento
 const {importModule, importHandlers} = Elemento

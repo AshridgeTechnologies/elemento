@@ -20,7 +20,7 @@ export interface Configuration {
 }
 
 type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
-type StateProperties = {resultCache: object }
+type StateProperties = {resultCache: object, versionId: string, versionFetch: Promise<string> }
 
 export default function ServerAppConnector({path}: Properties) {
     return null
@@ -32,6 +32,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     private get fetch() { return this.props.fetch }
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}
+    private get versionId() { return this.state.versionId}
 
     constructor(props: ExternalProperties) {
         super({fetch: globalThis.fetch.bind(globalThis), ...props})
@@ -72,6 +73,21 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         return action ? this.doPostCall(name, params) : this.doGetCall(name, params)
     }
 
+    private async getVersion() {
+        if (this.versionId) return
+        if (!this.state.versionFetch) {
+            const versionFetch = this.fetch!('/version')
+                .then( resp => resp.json() )
+                .then( versionInfo => versionInfo.commitId as string)
+                .then( versionId => {
+                    this.updateVersion(versionId)
+                    return versionId
+                })
+                this.updateVersionFetch(versionFetch)
+        }
+        return this.state.versionFetch
+    }
+
     private doGetCall(name: string, params: any[]) {
         const functionArgsKey = this.getFunctionArgsKey(name, params)
         const cachedResult = this.resultCache[functionArgsKey as keyof object]
@@ -81,23 +97,28 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
 
             const functionDef = config.functions[name]
             const paramNames = functionDef.params.slice(0, params.length)
-            const queryString = paramNames.map( (name, index) => `${name}=${valueOf(params[index])}`).join('&')
-            const url = `${config.url}/${name}?${queryString}`
-            const resultPromise = auth.getIdToken().then(token => {
-                const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
-                return this.fetch!(url, options)
-                    .then( resp => {
-                        if (resp.ok) {
-                            return resp.json()
-                        } else {
-                            return resp.json().then( data => this.handleError(name, data.error))
-                        }
-                    })
-                    .catch(err => {
-                        return this.handleError(name, err)
-                    })
-                    .then( data => this.updateCalls(functionArgsKey, data) )
-            })
+            const queryString = paramNames.map((name, index) => `${name}=${valueOf(params[index])}`).join('&')
+            const resultPromise = this.getVersion()
+                .then(() => auth.getIdToken())
+                .then(token => {
+                    const url = `${config.url.replace(':versionId', this.versionId)}/${name}?${queryString}`
+                    const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
+                    return this.fetch!(url, options)
+                        .then(resp => {
+                            if (resp.ok) {
+                                return resp.json()
+                            } else {
+                                return resp.json().then(data => this.handleError(name, data.error))
+                            }
+                        })
+                        .catch(err => {
+                            return this.handleError(name, err)
+                        })
+                        .then(data => {
+                            this.updateCalls(functionArgsKey, data)
+                            return data
+                        })
+                })
             const result = pending(resultPromise)
             this.updateCalls(functionArgsKey, result)
             return result
@@ -112,22 +133,24 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         const paramNames = functionDef.params.slice(0, params.length)
         const objectEntries = paramNames.map((name, index) => [name, valueOf(params[index])])
         const bodyData = Object.fromEntries(objectEntries)
-        const url = `${config.url}/${name}`
-        return auth.getIdToken().then(token => {
-            const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}
-            const headers = {...({'Content-Type': 'application/json'}), ...authHeaders} as HeadersInit
-            return this.fetch!(url, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(bodyData)
+        return this.getVersion()
+            .then(() => auth.getIdToken())
+            .then(token => {
+                const url = `${config.url.replace(':versionId', this.versionId)}/${name}`
+                const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}
+                const headers = {...({'Content-Type': 'application/json'}), ...authHeaders} as HeadersInit
+                return this.fetch!(url, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(bodyData)
+                })
             })
-        })
             // @ts-ignore
             .then(resp => {
                 if (resp.ok) {
                     return resp.text()
                 } else {
-                    return resp.json().then( data => this.handleError(name, data.error))
+                    return resp.json().then(data => this.handleError(name, data.error))
                 }
             })
             .catch(err => this.handleError(name, err))
@@ -143,6 +166,15 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         this.updateState({resultCache: newCache})
     }
 
+    private updateVersion(versionId: string) {
+        this.state.versionId = versionId
+        this.updateState({versionId})
+    }
+
+    private updateVersionFetch(versionFetch: Promise<string>) {
+        this.state.versionFetch = versionFetch
+        this.updateState({versionFetch})
+    }
 }
 
 ServerAppConnector.State = ServerAppConnectorState

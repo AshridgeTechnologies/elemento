@@ -7,8 +7,7 @@ const outdir = 'dist'
 
 export const clientConfig = {
     entryPoints: [
-        { in: 'src/runtime/index.ts', out: 'runtime/runtime'},
-        // { in: 'src/serverRuntime/index.ts', out: 'runtime/serverRuntime'},
+        { in: 'src/runtime/index.ts', out: 'lib/runtime'},
         { in: 'src/editor/runEditor.ts', out: 'studio/runEditor'},
         { in: 'src/editor/runLocalApp.ts', out: 'run/runLocalApp'},
         { in: 'src/appswebsite/sw.ts', out: 'sw' },
@@ -36,8 +35,28 @@ export const clientConfig = {
     }
 }
 
-// src/serverRuntime/index.ts --bundle --sourcemap --format=cjs  --minify --platform=node --target=node18.16 --outfile=dist/serverRuntime/serverRuntime.cjs
+export const serverConfig = {
+    entryPoints: [
+        { in: 'src/serverRuntime/index.ts', out: 'lib/serverRuntime'},
+    ],
+    outExtension: { '.js': '.cjs' },
+    bundle: true,
+    sourcemap: false,
+    format: 'cjs',
+    minify: true,
+    platform: 'node',
+    target: 'node18.16',
+    outdir,
+    plugins: [],
+    define: {
+        "process.env.NODE_ENV": `"production"`,
+        "process.env.NODE_DEBUG": `""`,
+    }
+}
 
-const output = await esbuild.build(clientConfig)
+const output = await Promise.all([
+    esbuild.build(clientConfig),
+    esbuild.build(serverConfig),
+    ])
 
 console.log(output)

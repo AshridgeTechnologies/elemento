@@ -1,5 +1,28 @@
 {
   "projects": {
     "default": "elemento-apps"
+  },
+  "targets": {},
+  "etags": {
+    "elemento-app-server-test": {
+      "extensionInstances": {
+        "elemento-app-server": "5db155e8132e91d956e7f2dbe142d27950dd603c8e2bc2dd6b0a0af6aefd4bd3"
+      }
+    },
+    "elemento-hosting-test": {
+      "extensionInstances": {
+        "elemento-app-server": "2ac6fa87c8839aa9a193b64bc2c4d3176a5a3f46ce3d3666c5a019f379efdb15"
+      }
+    },
+    "hosted-apps-spike-1": {
+      "extensionInstances": {
+        "elemento-app-server": "66f7bee7ec77408fda711c9e9d2a8bec89373f126a650736ca1cae2e61940679"
+      }
+    },
+    "stone-frog-world": {
+      "extensionInstances": {
+        "elemento-app-server": "2e3a523585ef202ff37dbcfb599a1a11cbd8e4bb3374e86f1312152e71084ab8"
+      }
+    }
   }
 }

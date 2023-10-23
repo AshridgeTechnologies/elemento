@@ -35,15 +35,22 @@ export default class RunnerServiceWorker {
     async handleRequest(request: Request): Promise<Response> {
         const url = new URL(request.url)
         const pathname = decodeURIComponent(url.pathname)
-        // console.log('SW request', url.toString())
 
         const [, area, projectName, appName, filepath] = pathname.match(/^\/run\/local\/(opfs|disk)\/([-\w ]+)\/([-\w ]+)\/?(.*)?$/) ?? []
-        if (projectName !== undefined) {
-            const requestFilepath = makeRequestFilepath(filepath)
+
+        const getFile = async (requestFilepath: string) => {
             const [topDir, diskFilepath] = area === 'opfs'
                 ? [await internalProjectsDir(), `${projectName}/dist/client/${appName}/${requestFilepath}`]
                 : [this.diskDirs[projectName], `dist/client/${appName}/${requestFilepath}`]
-            const file = await this.getFileContents(topDir, diskFilepath)
+            return await this.getFileContents(topDir, diskFilepath)
+        }
+        if (projectName !== undefined) {
+            let requestFilepath = makeRequestFilepath(filepath)
+            let file = await getFile(requestFilepath)
+            if (!file) {
+                requestFilepath = makeRequestFilepath('index.html')
+                file = await getFile(requestFilepath)
+            }
             if (!file) {
                 return new Response(null, {status: 404, statusText: `File ${filepath} not found (in service worker)`})
             }

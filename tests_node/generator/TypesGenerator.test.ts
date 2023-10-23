@@ -24,7 +24,7 @@ async function importCode(code: string) {
     const filename = nextTempFileName()
     const testModulePath = `./tempTestFiles/${filename}`
     const testModuleRelativePath = `../../tempTestFiles/${filename}`
-    const testImports = `import {types} from '../devDist/runtime/runtime.js'\n`
+    const testImports = `import {types} from '../devDist/lib/runtime.js'\n`
         + `const {ChoiceType, DateType, ListType, NumberType, RecordType, TextType, TrueFalseType, Rule} = types`
     const testExports = `export {${dataTypesName}}`
     const codeWithLocalImports = testImports + '\n\n' + code + '\n\n' + testExports

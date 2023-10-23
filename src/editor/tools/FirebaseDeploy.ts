@@ -9,8 +9,8 @@ import ServerApp from '../../model/ServerApp'
 import ServerAppGenerator from '../../generator/ServerAppGenerator'
 
 const runtimeFileName = 'runtime.js'
-const runtimeFileSourceUrl = '/runtime/runtime.js'
-const serverRuntimeFileSourceUrl = '/serverRuntime/serverRuntime.cjs'
+const runtimeFileSourceUrl = '/lib/runtime.js'
+const serverRuntimeFileSourceUrl = '/lib/serverRuntime.cjs'
 
 function zipText(text: string) {
     const uint8array = new TextEncoder().encode(text)
