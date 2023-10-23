@@ -16,3 +16,4 @@ Technical
 ---------
 
 - Create Firebase scheduled function for each job
+- OR extension with scheduled trigger

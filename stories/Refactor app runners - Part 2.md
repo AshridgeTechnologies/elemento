@@ -1,0 +1,81 @@
+Refactor app runners
+====================
+
+Aims
+----
+
+- Update facility to run apps in Firebase from GitHub 
+
+Requirements
+------------
+
+- Runs from Firebase hosting
+- Serve client app from GitHub
+- Run server apps from GitHub
+- Private repos
+- Run server app preview from Studio
+- Can access Firebase
+- Can access third party APIs with secret credentials
+- Can serve and cache default and specified versions concurrently
+- Easy way of installing app server extension
+
+
+App Runner rework - client side
+-------------------------------
+
+- Review run and runForDev in index.html for prod and preview
+- Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
+
+App Runner rework - server side
+-------------------------------
+
+- Builder writes preview to app server
+- Server app preview works
+- App server protects preview PUT and GET with secret key or Firebase login
+- Use secret for access token extension param, check all permissions and ordering for using secrets
+- Remove old Builder and build.ts
+- Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting 
+
+Further requirements
+--------------------
+- Upgrade FB function to v2 and Node 20
+- Studio Tool to manage app server - or just use FB console?
+- Set the Firebase function location and stop it changing on reconfiguration
+- App runner gets default from tag
+- Preview and specified versions can run from app server on any device without being open in editor
+
+Notes
+-----
+
+- Preview service worker can intercept capi calls
+- Will need to inject password or ask for it when load page
+- 
+
+
+To do
+-----
+
+
+Technical (from Part 1)
+---------
+
+- Server app runner is a Firebase function running an express app
+- Configured in hosting to run on <hostname>/capi
+- It is set up to serve apps from one GitHub repo (how? - function config? Hard coded constant?)
+- First part of path is version: _ for latest, tag, commit id
+- Next part is the app name
+- Final part of the path name is the function to call
+- Request handling procedure:
+  - Get the current user
+  - Construct the path of the app module and version on GitHub
+  - Check if file exists in disk module store
+  - If not:
+    - Construct GitHub or jsDelivr path
+    - Retrieve text
+    - Write to file with the app module path
+  - Dynamic import the server app modue from the file
+  - Call the default export function with the current user to get the app instance for the request
+  - Get the function and parameters from the request
+  - Call the function
+  - Send the result
+

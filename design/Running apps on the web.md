@@ -15,7 +15,7 @@ Needs
 -----
 
 - Run client-only apps from GitHub
-- Deploy client and server apps to hosting
+- Serve client and server apps from hosting
 - Avoid complex Firebase access permissions
 - Allow use of private repos
 - Avoid builds, but...
@@ -30,6 +30,10 @@ Needs
 - Allow multiple hosting environments connected to same GitHub repo, for testing
 - Run preview of server apps with immediate update
 - Preview server apps only available from editor with security
+- Get rid of Firebase Publish
+- Run in Firebase or elsewhere
+- Provide Tool that can be imported to a Project to manage deployments
+- Easy to set up Firebase hosting
 
 Forces
 ------
@@ -52,6 +56,7 @@ Forces
 - Want to avoid Firebase-specific stuff as far as possible
 - Pulling code from GitHub as needed will give flexibility, but...
 - Pulling code from GitHub as needed will need to be carefully cached to avoid slowness and costs
+- Pulling from GitHub easiest way to make it independent of environment
 - Good to include the index.html in the built code so it can be tailored in the future if necessary
 - Probably acceptable to require extra effort for server apps at this stage
 - Generating code on GitHub requires a standalone generator

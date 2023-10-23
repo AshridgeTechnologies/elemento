@@ -1,11 +1,11 @@
 Elemento Backlog
 ================
 
+
 Bugs
 ----
-- Menu on Studio etc not working
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
-- Loads 3 new versions of app when you select an item in navigator
+- Loads 3 new versions of app when you select an item in navigator (only when deployed?)
 - Duplicate names create errors on action function names
 - Changes really slow on large list
 - Initial value not showing on Number input
@@ -33,10 +33,8 @@ Bugs
 Stories
 -------
 
-### Move to GitHub
-- Deploy from GitHub
-- Can use private GitHub repos
-
+### Run from GitHub
+- Refactor app runners - Part 2
 
 ### Priority for internal apps
 - Type expressions
@@ -58,8 +56,8 @@ Stories
 - Dynamic elements from a list
 
 ### Priority for learning Elemento
-- Table of Contents
-- Example apps
+- Server apps example
+- Server apps guide
 - Data types guide
 - Other how-to guides
 
@@ -81,7 +79,9 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
-- Database and data sync review - consider RxDB, OPFS file store, CRDTs, etc
+- OPFS file store
+- Better queries
+- Database and data sync review - consider RxDB, CRDTs, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
 - Tools can use data read from Editor and Preview
 - runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/
@@ -109,6 +109,7 @@ Stories
 - Clean old files from generated code dir
 
 ### The Rest
+- Table of Contents
 - Slick quick apps
 - CSV file datastore
 - Tutorial Hello World
@@ -281,3 +282,4 @@ Bugs fixed
 - Insert menu can overflow the page
 - Copy/Paste not working
 - Cannot load project from Git if files dir empty, and Git does not commit empty dirs
+- Menu on Studio etc not working
