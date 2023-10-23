@@ -33,5 +33,5 @@ export interface GeneratorOutput {
 }
 
 export const runtimeFileName = 'runtime.js'
-export const runtimeFileSourcePath = '/runtime/runtime.js'
-export const serverRuntimeFileSourcePath = '/serverRuntime/serverRuntime.cjs'
+export const runtimeFileSourcePath = '/lib/runtime.js'
+export const serverRuntimeFileSourcePath = '/lib/serverRuntime.cjs'

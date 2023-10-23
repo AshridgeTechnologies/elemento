@@ -42,7 +42,7 @@ const indentLevel3 = '            '
 const isActionProperty = (def: PropertyDef) => (def.type as EventActionPropertyDef).type === 'Action'
 
 export const DEFAULT_IMPORTS = [
-    `const runtimeUrl = \`\${window.location.origin}/runtime/runtime.js\``,
+    `const runtimeUrl = \`\${window.location.origin}/lib/runtime.js\``,
     `const Elemento = await import(runtimeUrl)`,
     `const {React} = Elemento`
 ]
@@ -609,7 +609,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 </head>
 <body>
 <script type="module">
-    import {runAppFromWindowUrl} from '/runtime/${runtimeFileName}'
+    import {runAppFromWindowUrl} from '/lib/${runtimeFileName}'
     runAppFromWindowUrl()
 </script>
 </body>

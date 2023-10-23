@@ -13,8 +13,6 @@ const devClientConfig = {...clientConfig,
     }
 }
 
-// src/serverRuntime/index.ts --bundle --sourcemap --format=cjs  --minify --platform=node --target=node18.16 --outfile=dist/serverRuntime/serverRuntime.cjs
-
 const ctx = await esbuild.context(devClientConfig)
 
 await ctx.watch()

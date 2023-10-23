@@ -33,7 +33,7 @@ App Runner rework - server side
 - Server app preview works
 - App server protects preview PUT and GET with secret key or Firebase login
 - Use secret for access token extension param, check all permissions and ordering for using secrets
-- Remove old Builder and build.ts
+- Remove old Builder and build.ts, BrowserRuntimeLoader
 - Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting 
 
 Further requirements
@@ -73,9 +73,21 @@ Technical (from Part 1)
     - Construct GitHub or jsDelivr path
     - Retrieve text
     - Write to file with the app module path
-  - Dynamic import the server app modue from the file
+  - Dynamic import the server app module from the file
   - Call the default export function with the current user to get the app instance for the request
   - Get the function and parameters from the request
   - Call the function
   - Send the result
 
+
+Problems
+--------
+
+- CLI install updates nearest firebase.json and extensions dir it finds
+- CLI install fails with permissions error, says need to grant the role roles/artifactregistry.reader to Cloud Functions service account, but succeeds second try
+- Difficult to work out correct function url eg  https://europe-west2-elemento-app-server-test.cloudfunctions.net/ext-elemento-app-server-appServer
+- When call function, get error: The specified bucket does not exist
+  - so need to initialise storage 
+  - so need instructions on how to do this and which location
+- Probably want hosting redirect to send all requests to the function
+- Stuck for long time because deploying extension appeared not to update the code

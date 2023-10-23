@@ -15,6 +15,7 @@ exports[`Components AppBar has expected structure 1`] = `
         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-edgeStart MuiIconButton-sizeLarge css-ancrnh-MuiButtonBase-root-MuiIconButton-root"
         disabled={false}
         onBlur={[Function]}
+        onClick={[Function]}
         onContextMenu={[Function]}
         onDragLeave={[Function]}
         onFocus={[Function]}

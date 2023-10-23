@@ -15,7 +15,7 @@
   <script type="module">
     const isGitHub = window.location.pathname.startsWith('/run/gh/');
     if (isGitHub) {
-      import('/runtime/runtime.js').then( runtime => runtime.runAppFromWindowUrl() )
+      import('/lib/runtime.js').then( runtime => runtime.runAppFromWindowUrl() )
     } else {
       import('/run/runLocalApp.js').then( run => run.runLocalApp() )
     }
