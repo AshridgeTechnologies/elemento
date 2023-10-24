@@ -9,15 +9,22 @@ Aims
 Requirements
 ------------
 
-- Runs from Firebase hosting
-- Serve client app from GitHub
+- ✅ Runs from Firebase hosting
+- ✅ Serve client app from GitHub
+- Serves files with correct headers
+- Still works with preview
+- Can update client app quickly and easily when new version in GitHub
+- All calls redirected to the function
+- Serve default client app on top level
 - Run server apps from GitHub
+- Connect to server apps from client in GitHub
 - Private repos
 - Run server app preview from Studio
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can serve and cache default and specified versions concurrently
 - Easy way of installing app server extension
+- Password protect and test clear cache function - or remove
 
 
 App Runner rework - client side
@@ -54,6 +61,9 @@ Notes
 
 To do
 -----
+- index.html needs to get runtime from standard server
+- xxxApp.js need to get runtime from standard server
+- Clear cache function on app server
 
 
 Technical (from Part 1)
@@ -90,4 +100,7 @@ Problems
   - so need to initialise storage 
   - so need instructions on how to do this and which location
 - Probably want hosting redirect to send all requests to the function
-- Stuck for long time because deploying extension appeared not to update the code
+- Stuck for long time because deploying extension appeared not to update the code - didn't rebuild lib code from TS source
+- CORS error getting runtime from elemento server
+
+- 

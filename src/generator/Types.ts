@@ -32,6 +32,7 @@ export interface GeneratorOutput {
     html: string
 }
 
+export const runtimeImportPath = 'https://elemento.online/lib'
 export const runtimeFileName = 'runtime.js'
-export const runtimeFileSourcePath = '/lib/runtime.js'
-export const serverRuntimeFileSourcePath = '/lib/serverRuntime.cjs'
+export const runtimeFileSourcePath = '/runtime.js'
+export const serverRuntimeFileSourcePath = '/serverRuntime.cjs'

@@ -34,10 +34,10 @@ export default function AppMain({windowUrlPath}: Properties) {
 
     const hostServerMatch = path.match(/\/(.*\/)?([-\w]+)(\/)?(index.html)?$/)
     if (hostServerMatch) {
+        const {origin} = window.location
         const [, firstPart, appName] = hostServerMatch
-        const pathPrefix = `${firstPart}${appName}`
-        const appCodeUrl = '/' + pathPrefix + '/' + appName + '.js'
-        const resourceUrl = '/' + `${firstPart}/${ASSET_DIR}`
+        const appCodeUrl = `${origin}/${firstPart}${appName}/${appName}.js`
+        const resourceUrl = `${origin}/${firstPart}${ASSET_DIR}`
 
         console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)
         return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(resourceUrl)})
