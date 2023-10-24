@@ -51,9 +51,37 @@ export default () =>
                     A Server App can store the secrets securely and pass on requests to the services after checking them.
                 </NLItem>
                 <NLItem name='Providing an internet service'>
-                    If you want your system to provide internet services so that other programs can connect directlyand call Functions to do things (an API),
+                    If you want your system to provide internet services so that other programs can connect directly and call Functions to do things (an API),
                     those Functions need to run on a server connected to the internet.
                     A Server App can be set up to allow requests from third parties, with authorisation where necessary.
+                </NLItem>
+            </NamedList>
+
+        </SubSection>
+
+        <SubSection id='server-apps-what-can-do'>
+            <SubHeading>Uses of Server Apps</SubHeading>
+            <Para>
+                Here are some examples of cases where you would need a server app.
+                They are the kind of thing you would find in a system that took online orders and payments.
+            </Para>
+            <NamedList>
+                <NLItem name='Ensuring valid updates to data'>
+                    If you have a business system with reasonably complex data, you will usually have rules about what is allowed in the data.
+                    For example, your apps may enforce a rule that new customers cannot have a Credit Limit greater than 500.
+                    If the normal App in the browser could update the database directly,
+                    someone could easily alter the data as it was sent out to make the credit limit anything they wanted.
+                    If instead the App in the browser asks a Server App to update the database, the Server App checks the data,
+                    and there is no way anyone can interfere with that.
+                </NLItem>
+                <NLItem name='Secret information'>
+                    If you want to use a payment service like Stripe, you will get a secret access key from them.
+                    You would set up your browser App to make a request to a Server App that deals with payments.
+                    The Server App stores the key securely and supplies it to Stripe when necessary.
+                </NLItem>
+                <NLItem name='Providing an internet service'>
+                    Some systems allow orders to be sent directly from another system, instead of being entered through a browser.
+                    A Server App in Elemento can be set up to do this.
                 </NLItem>
             </NamedList>
 
