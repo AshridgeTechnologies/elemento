@@ -11,9 +11,8 @@ Requirements
 
 - ✅ Runs from Firebase hosting
 - ✅ Serve client app from GitHub
-- Serves files with correct headers
-- Still works with preview
-- Can update client app quickly and easily when new version in GitHub
+- ✅ Serves files with correct headers
+- ✅ Still works with preview
 - All calls redirected to the function
 - Serve default client app on top level
 - Run server apps from GitHub
@@ -23,7 +22,11 @@ Requirements
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can serve and cache default and specified versions concurrently
-- Easy way of installing app server extension
+- Can update client app quickly and easily when new version in GitHub
+- Easy way of installing app server extension and setting up project
+- Clear instructions for the manual steps
+- Use hosting where possible for faster response and lower costs
+- Use unique filenames with caching and/or ensure cache cleared
 - Password protect and test clear cache function - or remove
 
 
