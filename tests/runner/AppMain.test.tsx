@@ -20,7 +20,8 @@ jest.mock('../../src/runner/loadModuleHttp', ()=> ({
 beforeEach(() => {
     ({domContainer, click, elIn, enter, expectEl, renderThe, el} = container = testContainer())
     // @ts-ignore
-    global.fetch = mockFetchForGitHub()
+    global.fetch = mockFetchForGitHub();
+    (loadModuleHttp as jest.MockedFunction<any>).mockClear()
 })
 
 afterEach(async () => {
@@ -28,7 +29,7 @@ afterEach(async () => {
     global.fetch = undefined
 })
 
-const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
+const appMain = (pathname: string, origin = 'https://example.com') => createElement(AppMain, {pathname, origin})
 
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} = container = {} as any
 
@@ -63,9 +64,17 @@ test('runs app from GitHub with non-standard chars', async () => {
     expect(el`FirstText`).toHaveTextContent('Test App')
 })
 
-test('runs app from host', async () => {
+test('runs app from host with path before app name', async () => {
     renderThe(appMain('/myhost/apps/AppOne'))
     await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('/myhost/apps/AppOne/AppOne.js')
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://example.com/myhost/apps/AppOne/AppOne.js')
     expect(el`FirstText`).toHaveTextContent('Test App')
 })
+
+test('runs app from host with no path before app name', async () => {
+    renderThe(appMain('/AppOne'))
+    await actWait(10)
+    expect(loadModuleHttp).toHaveBeenCalledWith('https://example.com/AppOne/AppOne.js')
+    expect(el`FirstText`).toHaveTextContent('Test App')
+})
+

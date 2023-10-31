@@ -42,7 +42,9 @@ Forces
 - FB Hosting makes good use of CDN - and clears cache
 - Serving files from Hosting will be much faster and cheaper
 - More need to get this right than to do it immediately
-- Preview channels have similarities to facilities on other hosting services like netlify 
+- Preview channels have similarities to facilities on other hosting services like netlify
+- Security is important - don't want keys stored in many places - or anywhere if possible
+- Simplicity is important - ideally just use browser login to Google and GitHub
 
 
 Possibilities
@@ -53,6 +55,7 @@ Possibilities
 - Use FB preview channels if they support server app functionality
 - Server app runner could be used just for Studio preview
 - Browser build and deploy might share code with a CLI script and/or GitHub action
+- Browser logon gets access tokens, send them to admin server to do the deployment
 
 Spike 1
 -------

@@ -7,13 +7,9 @@ import AppRunnerFromGitHub from '../../src/runner/AppRunnerFromGitHub'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import {projectFixture3} from '../testutil/projectFixtures'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {wait} from '../testutil/testHelpers'
-import App from '../../src/model/App'
-import {generate} from '../../src/generator/index'
 import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
-import resetAllMocks = jest.resetAllMocks
 
 jest.mock('../../src/runner/loadModuleHttp', ()=> ({
     loadModuleHttp: jest.fn().mockResolvedValue({

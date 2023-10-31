@@ -100,7 +100,7 @@ export default class GitProjectStore {
             corsProxy,
             url,
             singleBranch: true,
-            depth: 10
+            depth: 1
         })
     }
 

@@ -32,7 +32,7 @@ afterEach(async () => {
 
 })
 
-const appMain = (windowUrlPath: string) => createElement(AppMain, {windowUrlPath})
+const appMain = (pathname: string, origin = 'https://example.com') => createElement(AppMain, {pathname, origin})
 
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} = container = {} as any
 
