@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, DialogContentText, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
+import {Box, Button, DialogContentText, List, ListItem, ListItemButton, ListItemText, Stack, Typography} from '@mui/material'
 import {EditorActionDialog} from './ActionComponents'
 import {
     chooseDirectory,
@@ -71,17 +71,17 @@ export function OpenDialog({editorManager, uiManager}: { editorManager: EditorMa
     const onOpenAction = doAction(uiManager, title, openProjectFromDisk)
     return <EditorActionDialog
         onCancel={uiManager.onClose} title={title}
-        content='Choose a project stored in the browser'
-        fields={<>
-            <List dense sx={{maxHeight: 300, overflowY: 'auto', mt: 2, mb: 2}}>
+        content={<>
+            <span>Choose a project stored in the browser</span><br/><span>Or click Choose Folder to open a project on your computer disk</span></>}
+        fields={
+            <List dense sx={{overflowY: 'auto', mt: 2, mb: 2,  flexShrink: 1, flexGrow: 1}}>
                 {names.map( (proj: string, ) => (
                     <ListItemButton key={proj} onClick={doAction(uiManager, title, async () => editorManager.openProject(await internalProject(proj)) )}>
                         <ListItemText primary={proj}/>
                     </ListItemButton>
                 ))}
             </List>
-            <DialogContentText sx={{borderTop: '1px solid lightgray', pt: 2}}>Or click Choose Folder to open a project on your computer disk</DialogContentText>
-        </>}
+    }
         action={<Button variant='outlined' onClick={onOpenAction} disabled={!canDoAction}>Choose Folder</Button>}
     />
 }
