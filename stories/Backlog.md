@@ -152,6 +152,7 @@ Tech debt
 - Consider Temporal
 - Consider TinyBase
 - Consider escodegen in generator
+- Latest yarn
 - Consider a better bundler - esbuild, rspack, Rome
 - Reduce size of serverRuntime, consider firebase-admin external
 - Look for ways to have imports that update dynamically in preview, both client and server
