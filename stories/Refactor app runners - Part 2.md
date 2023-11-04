@@ -12,20 +12,23 @@ Requirements
 - ✅ Runs from Firebase hosting
 - ✅ Serve client app from GitHub
 - ✅ Serves files with correct headers
-- ✅ Still works with preview
-- All calls redirected to the function
-- Serve default client app on top level
-- Run server apps from GitHub
-- Connect to server apps from client in GitHub
+- ✅ Still works with studio preview
+- All client page requests redirected to the main page and still work
+- Serve/redirect to default client app on top level
+- Gets project id from environment
+- Deploy server apps from GitHub to server app runner cache
+- ~~Connect to server apps from client in GitHub~~
+- All capi calls redirected to the function
 - Private repos
 - Run server app preview from Studio
 - Can access Firebase
 - Can access third party APIs with secret credentials
-- Can serve and cache default and specified versions concurrently
+- Can run server apps in cache default and specified versions concurrently
 - Can update client app quickly and easily when new version in GitHub
 - Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
 - Use hosting where possible for faster response and lower costs
+- Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
 - Password protect and test clear cache function - or remove
 
@@ -64,9 +67,15 @@ Notes
 
 To do
 -----
-- index.html needs to get runtime from standard server
-- xxxApp.js need to get runtime from standard server
-- Clear cache function on app server
+- ✅ Fix all 4 run situations to work with pages and further path elements, from deep link
+- ✅ Make everything able to use an alternative runtime.js
+- Run app stored in browser shows no options
+- Deploy server code to cache in storage with deploy id in the path
+- Server app runner loads the requested version
+- All capi requests must go the correct deploy id
+- Client reads version file to get deploy id
+- Generator writes metadata file to top level with default app in it
+- Deployment sets up redirect to default app at top level
 
 
 Technical (from Part 1)

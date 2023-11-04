@@ -3,7 +3,7 @@ import {Alert, AlertColor, AlertTitle} from '@mui/material'
 import EditorManager from './EditorManager'
 import {ASSET_DIR, projectFileName} from '../../shared/constants'
 
-const OPFS_PROJECTS_DIR = 'GitHub'
+const OPFS_PROJECTS_DIR = 'Projects'
 
 export type ShowAlertFn = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => void
 

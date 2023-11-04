@@ -23,7 +23,7 @@ Needs
 - Provide a standalone preview of at least one next version
 - If possible allow multiple newer and older versions to be run side by side
 - Allow versions to be viewed and managed in the studio
-- Find a low-cost high-performance route to server client files 
+- Find a low-cost high-performance route to serve client files 
 
 Forces
 ------

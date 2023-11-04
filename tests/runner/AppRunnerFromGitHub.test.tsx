@@ -46,7 +46,7 @@ const appContext: AppContext = {
     goBack(): void {}
 }
 
-const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', path = '', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext})
+const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, appContext})
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {
@@ -58,14 +58,6 @@ test('shows loading until app loads then shows app on page', async () => {
     expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
     await actWait(500)
     expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/dist/client/AppOne/AppOne.js')
-    expectEl('FirstText').toHaveTextContent('App from GitHub')
-})
-
-test('uses path within repo if not empty', async () => {
-    renderThe(appRunnerFromGitHub('mickey', 'mouse', 'demo/example1', 'DemoApp'))
-    expectEl(container.domContainer).toHaveTextContent('Finding latest version...')
-    await actWait(500)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mickey/mouse@abc123/demo/example1/dist/client/DemoApp/DemoApp.js')
     expectEl('FirstText').toHaveTextContent('App from GitHub')
 })
 

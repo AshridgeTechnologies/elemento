@@ -13,15 +13,14 @@ const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContex
 export default function AppMain({pathname, origin}: Properties) {
     const path = decodeURIComponent(pathname)
 
-    const githubMatch = path.match(/(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-/\w]+\/)?([-\w]+)$/)
+    const githubMatch = path.match(/^(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-\w]+)/)
     if (githubMatch) {
-        const [, firstPart, username, repo, pathWithSlash, appName] = githubMatch
-        const path = pathWithSlash?.slice(0, -1)
-        const pathPrefix = `${firstPart}/gh/${username}/${repo}/${path}`
-        return createElement(AppRunnerFromGitHub, {username, repo, appName, path, appContext: getAppContext(pathPrefix)})
+        const [, firstPart, username, repo, appName] = githubMatch
+        const pathPrefix = `${firstPart}/gh/${username}/${repo}/${appName}`
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, appContext: getAppContext(pathPrefix)})
     }
 
-    const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w]+)\/([-\w]+)\/?(index.html)?$/)
+    const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w]+)\/([-\w]+)/)
     if (localMatch) {
         const [, area, projectName, appName] = localMatch
         const pathPrefix = `run/local/${area}/${projectName}/${appName}`
@@ -32,12 +31,12 @@ export default function AppMain({pathname, origin}: Properties) {
         return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(pathPrefix)})
     }
 
-    const hostServerMatch = path.match(/\/(.*\/)?([-\w]+)(\/)?(index.html)?$/)
+    const hostServerMatch = path.match(/^\/([-\w]+)(\/)?/)
     if (hostServerMatch) {
-        const [, firstPart = '', appName] = hostServerMatch
-        const appCodeUrl = `${origin}/${firstPart}${appName}/${appName}.js`
-        const pathPrefix = `${firstPart}${appName}`
-        const resourceUrl = `${origin}/${firstPart}${ASSET_DIR}`
+        const [, appName] = hostServerMatch
+        const appCodeUrl = `${origin}/${appName}/${appName}.js`
+        const pathPrefix = appName
+        const resourceUrl = `${origin}/${ASSET_DIR}`
 
         console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)
         return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(pathPrefix)})

@@ -17,8 +17,9 @@ jest.mock('../../src/runner/loadModuleHttp', ()=> ({
     })
 }))
 
+let idSeq = 1
 beforeEach(() => {
-    ({domContainer, click, elIn, enter, expectEl, renderThe, el} = container = testContainer())
+    ({domContainer, click, elIn, enter, expectEl, renderThe, el} = container = testContainer(null, 'container' + (idSeq++)))
     // @ts-ignore
     global.fetch = mockFetchForGitHub();
     (loadModuleHttp as jest.MockedFunction<any>).mockClear()
@@ -39,42 +40,69 @@ function mockFetchForGitHub() {
         if (url.startsWith('https://api.github.com')) {
             return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})
         }
+        if (url.startsWith('https://cdn.jsdelivr.net')) {
+            return Promise.resolve({text: () => wait(10).then(() => 'File text')})
+        }
         return Promise.reject(new Error(`URL ${url} not found`))
     })
 }
 
-test('runs app from GitHub', async () => {
-    renderThe(appMain('/runner/gh/mongo/peewit/AppOne'))
-    await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dist/client/AppOne/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('Test App')
+describe('GitHub', () => {
+
+    test.each([
+        '/runner/gh/mongo/peewit/AppOne',
+        '/runner/gh/mongo/peewit/AppOne/',
+        '/runner/gh/mongo/peewit/AppOne/Page1/stuff',
+        '/runner/gh/mongo/peewit/AppOne/Page1/stuff/',
+        ])
+    ('runs app from GitHub', async (url) => {
+        renderThe(appMain(url))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dist/client/AppOne/AppOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
+
+    test('runs app from GitHub with non-standard chars', async () => {
+        renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-/AppOne'))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo-pongo/-beetle-juice-@abc123/dist/client/AppOne/AppOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
 })
 
-test('runs app from GitHub in sub-directory', async () => {
-    renderThe(appMain('/runner/gh/mongo/peewit/dir1/dir2/AppOne'))
-    await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dir1/dir2/dist/client/AppOne/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('Test App')
+describe('Local', () => {
+    test.each([
+        '/run/local/opfs/ProjectOne/AppOne',
+        '/run/local/opfs/ProjectOne/AppOne/',
+        '/run/local/opfs/ProjectOne/AppOne/PageOne/stuff',
+        '/run/local/opfs/ProjectOne/AppOne/PageOne/stuff/',
+    ])
+    ('runs app from local', async (url) => {
+        renderThe(appMain(url))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('/run/local/opfs/ProjectOne/AppOne/AppOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
+
+    test('runs app from local with disk path', async () => {
+        renderThe(appMain('/run/local/disk/ProjectOne/AppOne/PageOne/stuff'))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('/run/local/disk/ProjectOne/AppOne/AppOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
 })
 
-test('runs app from GitHub with non-standard chars', async () => {
-    renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-/AppOne'))
-    await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo-pongo/-beetle-juice-@abc123/dist/client/AppOne/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('Test App')
-})
-
-test('runs app from host with path before app name', async () => {
-    renderThe(appMain('/myhost/apps/AppOne'))
-    await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://example.com/myhost/apps/AppOne/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('Test App')
-})
-
-test('runs app from host with no path before app name', async () => {
-    renderThe(appMain('/AppOne'))
-    await actWait(10)
-    expect(loadModuleHttp).toHaveBeenCalledWith('https://example.com/AppOne/AppOne.js')
-    expect(el`FirstText`).toHaveTextContent('Test App')
+describe('Host', () => {
+    test.each([
+        '/AppOne',
+        '/AppOne/',
+        '/AppOne/PageOne/stuff',
+        '/AppOne/PageOne/stuff/',
+    ])('runs app from host', async (url) => {
+        renderThe(appMain(url))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('https://example.com/AppOne/AppOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
 })
 

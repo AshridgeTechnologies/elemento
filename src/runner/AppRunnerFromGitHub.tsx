@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {ASSET_DIR} from '../shared/constants'
 
-type Properties = {username: string, repo: string, path?: string, appName: string, appContext: AppContext}
+type Properties = {username: string, repo: string, appName: string, appContext: AppContext}
 
 const CDN_HOST = 'https://cdn.jsdelivr.net'
 const GITHUB_API_HOST = 'https://api.github.com'
@@ -13,17 +13,16 @@ const getLatestCommitId = (username: string, repo: string): Promise<string> => {
         .then(resp => resp.json())
         .then(commits => commits[0].sha)
 }
-export default function AppRunnerFromGitHub({username, repo, path, appName, appContext}: Properties) {
+export default function AppRunnerFromGitHub({username, repo, appName, appContext}: Properties) {
     const [usernameRepoFetched, setUsernameRepoFetched] = useState<string | null>(null)
     const [appUrl, setAppUrl] = useState<string | null>(null)
 
-    const pathSegment = path ? '/' + path : ''
-    const usernameRepo = username + '/' + repo + pathSegment
+    const usernameRepo = username + '/' + repo
     if ( usernameRepoFetched !== usernameRepo) {
         getLatestCommitId(username, repo)
             .then( commitId => {
-                const codeUrl = `${CDN_HOST}/gh/${username}/${repo}@${commitId}${pathSegment}/dist/client`
-                return setAppUrl(codeUrl)
+                const clientUrl = `${CDN_HOST}/gh/${username}/${repo}@${commitId}/dist/client`
+                return setAppUrl(clientUrl)
             })
         setUsernameRepoFetched(usernameRepo)
     }

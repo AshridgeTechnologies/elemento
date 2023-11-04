@@ -13,9 +13,10 @@
 </head>
 <body>
   <script type="module">
+    window.elementoRuntimeUrl = `${window.location.origin}/lib/runtime.js`
     const isGitHub = window.location.pathname.startsWith('/run/gh/');
     if (isGitHub) {
-      import('https://elemento.online/lib/runtime.js').then( runtime => runtime.runAppFromWindowUrl() )
+      import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl())
     } else {
       import('/run/runLocalApp.js').then( run => run.runLocalApp() )
     }
