@@ -6,8 +6,9 @@ Bugs
 ----
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Previews are mixed up if open two projects in different tabs
+- Fails to check out private project from GitHub - unauthorized
 - Update or download from GitHub is very slow on -Beetle1- (maybe open in two places)
-- No feedback or disabled buttons while awaiting GitHub operationscd 
+- No feedback or disabled buttons while awaiting GitHub operations 
 - Files not showing up in Files Folder on -Beetle1-
 - Loads 3 new versions of app when you select an item in navigator (only when deployed?)
 - Duplicate names create errors on action function names

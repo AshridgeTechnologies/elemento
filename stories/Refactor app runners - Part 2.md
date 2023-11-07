@@ -19,7 +19,7 @@ Requirements
 - Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
 - All capi calls redirected to the function
-- Private repos
+- Private repos - fetch and save and deploy
 - Run server app preview from Studio
 - Can access Firebase
 - Can access third party APIs with secret credentials
@@ -69,13 +69,16 @@ To do
 -----
 - ✅ Fix all 4 run situations to work with pages and further path elements, from deep link
 - ✅ Make everything able to use an alternative runtime.js
-- Run app stored in browser shows no options
-- Deploy server code to cache in storage with deploy id in the path
-- Server app runner loads the requested version
+- ✅ Run app stored in browser shows no options
+- ✅ Cloud storage cache path fn from username, repo, commitId, subdir, filePath
+- ✅ Deploy server code to cache in storage with commit id in the path
+- ✅ Server app runner loads the requested version
 - All capi requests must go the correct deploy id
 - Client reads version file to get deploy id
 - Generator writes metadata file to top level with default app in it
 - Deployment sets up redirect to default app at top level
+- Don't look up server app factory functions again once imported
+- Work out correct caching for runtime files
 
 
 Technical (from Part 1)
@@ -105,6 +108,8 @@ Technical (from Part 1)
 Problems
 --------
 
+- Need to initialise storage in the console
+- If don't use the same region as other things, may be problems
 - CLI install updates nearest firebase.json and extensions dir it finds
 - CLI install fails with permissions error, says need to grant the role roles/artifactregistry.reader to Cloud Functions service account, but succeeds second try
 - Difficult to work out correct function url eg  https://europe-west2-elemento-app-server-test.cloudfunctions.net/ext-elemento-app-server-appServer
@@ -114,5 +119,5 @@ Problems
 - Probably want hosting redirect to send all requests to the function
 - Stuck for long time because deploying extension appeared not to update the code - didn't rebuild lib code from TS source
 - CORS error getting runtime from elemento server
-
+- 
 - 
