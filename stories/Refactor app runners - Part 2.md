@@ -13,21 +13,25 @@ Requirements
 - ✅ Serve client app from GitHub
 - ✅ Serves files with correct headers
 - ✅ Still works with studio preview
-- All client page requests redirected to the main page and still work
+- ✅ All client page requests redirected to the main page and still work
 - Serve/redirect to default client app on top level
 - Gets project id from environment
-- Deploy server apps from GitHub to server app runner cache
+- ✅ Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
-- All capi calls redirected to the function
+- ✅ All capi calls redirected to the function
+- Gets firebaseConfig and whatever needed for authorization
 - Private repos - fetch and save and deploy
 - Run server app preview from Studio
 - Can access Firebase
 - Can access third party APIs with secret credentials
+- Can use Firebase authorization
 - Can run server apps in cache default and specified versions concurrently
 - Can update client app quickly and easily when new version in GitHub
+- Tool in Studio to deploy
 - Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
 - Use hosting where possible for faster response and lower costs
+- Appropriate caching for all files - use cache where possible, close-spaced deploys work
 - Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
 - Password protect and test clear cache function - or remove
@@ -73,8 +77,8 @@ To do
 - ✅ Cloud storage cache path fn from username, repo, commitId, subdir, filePath
 - ✅ Deploy server code to cache in storage with commit id in the path
 - ✅ Server app runner loads the requested version
-- All capi requests must go the correct deploy id
-- Client reads version file to get deploy id
+- ✅ All capi requests must go the correct deploy id
+- ✅ Client reads version file to get deploy id
 - Generator writes metadata file to top level with default app in it
 - Deployment sets up redirect to default app at top level
 - Don't look up server app factory functions again once imported

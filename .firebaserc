@@ -8,6 +8,21 @@
       "extensionInstances": {
         "elemento-app-server": "5db155e8132e91d956e7f2dbe142d27950dd603c8e2bc2dd6b0a0af6aefd4bd3"
       }
+    },
+    "elemento-hosting-test": {
+      "extensionInstances": {
+        "elemento-app-server": "bc427c5f46ea696ce29eb67422b65d4e9ddc0ea50b006433a68ad6d2773dc432"
+      }
+    },
+    "hosted-apps-spike-1": {
+      "extensionInstances": {
+        "elemento-app-server": "66f7bee7ec77408fda711c9e9d2a8bec89373f126a650736ca1cae2e61940679"
+      }
+    },
+    "stone-frog-world": {
+      "extensionInstances": {
+        "elemento-app-server": "2e3a523585ef202ff37dbcfb599a1a11cbd8e4bb3374e86f1312152e71084ab8"
+      }
     }
   }
 }

@@ -741,7 +741,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     expect(output.files[1].contents).toBe(`function configServerApp1() {
     return {
         appName: 'Server App 1',
-        url: '/capi/ServerApp1',
+        url: '/capi/:versionId/ServerApp1',
 
         functions: {
             GetWidget: {
@@ -793,7 +793,7 @@ test('generates ServerAppConnector elements with correct configuration if has sa
     expect(output.files[1].contents).toBe(`function configServerApp1() {
     return {
         appName: 'Server App 1',
-        url: '/capi/ServerApp1',
+        url: '/capi/:versionId/ServerApp1',
 
         functions: {
             GetWidget: {
