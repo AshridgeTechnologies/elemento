@@ -1,4 +1,4 @@
-import {BulletList, Heading, NamedList, NLItem, Para, Section, SubHeading, SubSection} from '../HelpComponents'
+import {BulletList, Heading, MinorHeading, NamedList, NLItem, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 import React from 'react'
 import {Link} from '@mui/material'
 
@@ -138,6 +138,59 @@ export default () =>
                     Next steps TBC
                 </NLItem>
             </NamedList>
+        </SubSection>
+
+        <SubSection id='server-apps-how-to-create'>
+            <SubHeading>How to create a Server App</SubHeading>
+            <Para>
+                First of all, add a Server App to your project.
+                In the Studio, click on the Project - the top item in the Navigator.
+                Then click the Insert menu at the top, then Inside, then Server App.  You may want to change the name to something that describes the purpose of the Server App.
+            </Para>
+
+            <MinorHeading>Add Functions</MinorHeading>
+            <Para>
+                Now you need to add one or more Functions to the Server App, to make it do something useful.
+                These can be Calculation Functions which just look up data and give you an answer, or Action Functions, which update data.
+                It is important to choose the right type, as Calculation Functions are called automatically by the Elemento framework, as many times as needed,
+                but Action Functions should only be called when the user has specifically asked for that action to take place.
+                For more details about Functions, see the Elemento Help.
+            </Para>
+            <Para>To add a Function, select the Server App in the Navigator, then click Insert Menu, Inside, Function.</Para>
+
+            <MinorHeading>Data Storage</MinorHeading>
+            <Para>
+                The Functions may need to use Collections and Data Stores.  These are set up and used in the same way as in a browser App.
+            </Para>
+            <Para>To add a Collections or Data Store, select the Server App in the Navigator, then click Insert Menu, Inside, followed by Collection or Data Store.</Para>
+        </SubSection>
+
+        <SubSection id='server-apps-connect-from-browser'>
+            <SubHeading>Connecting to a Server App from the browser</SubHeading>
+            <Para>
+                Once you have some Functions in your Server App, you can use them in a browser App almost as if they were Functions in the Browser App itself.
+                The browser App will connect to the Server App when needed to call the Functions
+                to do this, you need to add a Server App Connector in the browser App.
+            </Para>
+            <Para>
+                First select the browser App in the Navigator, then click Insert Menu, Inside, Server App Connector.
+                You may want to change the name to be the same as the Server App.
+                In the Server App property, enter the formula name (no spaces) of the Server App you want to connect to.
+            </Para>
+
+            <MinorHeading>Using Server App functions</MinorHeading>
+            <Para>
+                To use a Server App function in a formula, Enter the formula name of the Server App Connector,
+                a period and the formula name of the Function in the Server App, followed by the brackets and inputs.
+            </Para>
+            <Para>For example, if you have:</Para>
+            <BulletList>
+                <li>A Server App called Price Server</li>
+                <li>A Function in the Server App called Discounted Price</li>
+                <li>A Server App Connector called Special Pricing that connects to Price Server</li>
+                <li>And inputs called Full Price and Discount Type</li>
+            </BulletList>
+            <Para>then you would write:  SpecialPricing.DiscountedPrice(FullPrice, DiscountType)</Para>
         </SubSection>
 
     </Section>
