@@ -42,6 +42,12 @@ Stories
 ### Run from GitHub
 - Refactor app runners - Part 2
 
+### Priority for learning Elemento
+- Server apps example
+- Server apps guide
+- Data types guide
+- Other how-to guides
+
 ### Priority for internal apps
 - Type expressions
 
@@ -60,12 +66,6 @@ Stories
 - Speech synthesis
 - Shapes, drawing, animation
 - Dynamic elements from a list
-
-### Priority for learning Elemento
-- Server apps example
-- Server apps guide
-- Data types guide
-- Other how-to guides
 
 ### Priority for credibility
 - Dependency vulnerability review

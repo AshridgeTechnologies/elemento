@@ -19,15 +19,17 @@ Requirements
 - ✅ Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
 - ✅ All capi calls redirected to the function
-- Gets firebaseConfig and whatever needed for authorization
+- ✅ Gets firebaseConfig and whatever needed for authorization
 - Private repos - fetch and save and deploy
 - Run server app preview from Studio
+- Server apps in preview update immediately
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
 - Can run server apps in cache default and specified versions concurrently
 - Can update client app quickly and easily when new version in GitHub
 - Tool in Studio to deploy
+- Tool works with access tokens from GitHub and Google logins
 - Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
 - Use hosting where possible for faster response and lower costs
@@ -35,6 +37,21 @@ Requirements
 - Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
 - Password protect and test clear cache function - or remove
+- Extension and management tool independent of Elemento
+- All runtime and generated server JS files inc cjs are served with correct content type
+
+Preview server
+--------------
+
+- Extension has Preview server function alongside main app server and admin server
+- Preview server receives PUTs of updated server apps
+- Create server app function using the Function constructor
+- Hold map of latest version of each app function
+- Write each new server app function to storage, overwriting previous
+- On Preview server instance startup, load current version from storage
+- Store server runtime in storage
+- Create check for updated server runtime and download if needed
+- Do check on Preview server instance startup
 
 
 App Runner rework - client side
@@ -83,6 +100,7 @@ To do
 - Deployment sets up redirect to default app at top level
 - Don't look up server app factory functions again once imported
 - Work out correct caching for runtime files
+- Work out how to make preview server functions update
 
 
 Technical (from Part 1)
