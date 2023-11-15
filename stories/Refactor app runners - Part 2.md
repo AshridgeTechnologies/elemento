@@ -44,14 +44,15 @@ Preview server
 --------------
 
 - Extension has Preview server function alongside main app server and admin server
-- Preview server receives PUTs of updated server apps
-- Create server app function using the Function constructor
-- Hold map of latest version of each app function
-- Write each new server app function to storage, overwriting previous
-- On Preview server instance startup, load current version from storage
-- Store server runtime in storage
-- Create check for updated server runtime and download if needed
-- Do check on Preview server instance startup
+- ✅ Preview server receives PUTs of updated server apps
+- ✅ Create server app function using the Function constructor
+- ✅ Hold map of latest version of each app function
+- ✅ Write each new server app function to storage, overwriting previous
+- ✅ When requested, load current version from storage
+- ✅ Store server runtime in storage
+- ✅ Create a check for updated server runtime and download if needed
+- ✅ Do check when new preview version uploaded, throttled to 60 seconds 
+
 
 
 App Runner rework - client side
