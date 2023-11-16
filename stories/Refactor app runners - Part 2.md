@@ -21,8 +21,10 @@ Requirements
 - ✅ All capi calls redirected to the function
 - ✅ Gets firebaseConfig and whatever needed for authorization
 - Private repos - fetch and save and deploy
-- Run server app preview from Studio
-- Server apps in preview update immediately
+- ✅ Server app runner uploads and runs previews of server apps
+- ✅ Server apps in preview update immediately
+- Studio uploads server apps
+- Server apps in preview are secured
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
@@ -39,11 +41,13 @@ Requirements
 - Password protect and test clear cache function - or remove
 - Extension and management tool independent of Elemento
 - All runtime and generated server JS files inc cjs are served with correct content type
+- All generated server files are consistent and usable for other deployment environments
+- Remove old dev server
 
 Preview server
 --------------
 
-- Extension has Preview server function alongside main app server and admin server
+- ✅ Extension has Preview server function alongside main app server and admin server
 - ✅ Preview server receives PUTs of updated server apps
 - ✅ Create server app function using the Function constructor
 - ✅ Hold map of latest version of each app function
