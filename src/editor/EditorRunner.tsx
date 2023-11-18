@@ -14,7 +14,7 @@ import {theme} from '../shared/styling'
 import {DiskProjectStore} from './DiskProjectStore'
 import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState} from '../shared/authentication'
+import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState, isSignedIn} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
@@ -44,9 +44,9 @@ import {CreateGitHubRepoDialog} from './CreateGitHubRepoDialog'
 import {CommitDialog} from './CommitDialog'
 import ToolImport from '../model/ToolImport'
 import ToolTabsPanel from './ToolTabsPanel'
-import EditorController from '../tools/EditorController'
+import EditorController from '../editorToolApis/EditorController'
 import {editorElement} from './EditorElement'
-import PreviewController from '../tools/PreviewController'
+import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
@@ -90,10 +90,10 @@ const exposeBoundFunction = (objectName: string, functionName: string, object: a
     expose(nameToExpose, object[functionName].bind(object), {getMessageData})
 }
 
-const exposeEditorController = (getMessageData: (event: any) => object) => {
+const exposeEditorController = (getMessageData: (event: any) => object, gitHubUrl: string) => {
     const container = editorElement()
     if (container) {
-        const controller = new EditorController(container)
+        const controller = new EditorController(container, gitHubUrl)
         exposeBoundFunction('Editor', 'SetOptions', controller, getMessageData)
         exposeBoundFunction('Editor', 'Show', controller, getMessageData)
         exposeBoundFunction('Editor', 'Click', controller, getMessageData)
@@ -102,6 +102,7 @@ const exposeEditorController = (getMessageData: (event: any) => object) => {
         exposeBoundFunction('Editor', 'GetValue', controller, getMessageData)
         exposeBoundFunction('Editor', 'EnsureFormula', controller, getMessageData)
         exposeBoundFunction('Editor', 'EnsureTreeItemsExpanded', controller, getMessageData)
+        exposeBoundFunction('Editor', 'GetGitHubUrl', controller, getMessageData)
         console.log('Editor controller initialised')
     }
 }
@@ -290,7 +291,7 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect(initServiceWorker, [])
-    useEffect(() => exposeEditorController(getMessageDataAndAuthorize), [editorElement()])
+    useEffect(() => exposeEditorController(getMessageDataAndAuthorize, gitHubUrl), [editorElement()])
     useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
@@ -402,8 +403,6 @@ export default function EditorRunner() {
     }
 
     const onHelp = () => showTool(helpToolImport)
-
-    const isSignedIn = () => gitHubUsername() && gitHubAccessToken()
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
         editorManager={new EditorManager(openOrUpdateProjectFromStore)}

@@ -3,8 +3,8 @@ import * as types from '../shared/types'
 import {globalFunctions} from './globalFunctions'
 
 export {components, globalFunctions, types}
-export {Editor} from '../tools/EditorControllerClient'
-export {Preview} from '../tools/PreviewControllerClient'
+export {Editor} from '../editorToolApis/EditorControllerClient'
+export {Preview} from '../editorToolApis/PreviewControllerClient'
 export {default as React} from 'react'
 export {default as ReactDOM} from 'react-dom/client'
 export {default as appFunctions} from './appFunctions'

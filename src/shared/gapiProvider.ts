@@ -3,7 +3,7 @@ declare global {
 }
 
 // these are unique but non-secret identifiers - see https://firebase.google.com/docs/projects/learn-more#config-files-objects
-const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
+export const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
 const API_KEY = 'AIzaSyBt5DsD6YG2naMDe2tsaZcOjL8G81dR8-c'
 
 const DISCOVERY_DOCS = ['https://firebasehosting.googleapis.com/$discovery/rest?version=v1beta1',
@@ -11,7 +11,7 @@ const DISCOVERY_DOCS = ['https://firebasehosting.googleapis.com/$discovery/rest?
                         'https://cloudfunctions.googleapis.com/$discovery/rest?version=v2'
 ]
 
-const SCOPES = [
+export const SCOPES = [
     'https://www.googleapis.com/auth/firebase',
     'https://www.googleapis.com/auth/cloud-platform'
 ].join(' ')
@@ -19,6 +19,19 @@ const SCOPES = [
 let tokenClient: any
 let gapiInited = false
 let gisInited = false
+
+// let auth2: any
+// gapi.load('auth2', function () {
+//     // Retrieve the singleton for the GoogleAuth library and set up the client.
+//     // @ts-ignore
+//     auth2 = gapi.auth2.init({
+//         client_id: CLIENT_ID,
+//         cookiepolicy: 'single_host_origin',
+//         scope: SCOPES
+//     })
+//
+// })
+
 
 /**
  * Callback after api.js is loaded.
@@ -57,7 +70,7 @@ function ensureScriptElement(scriptUrl: string, onloadFn: () => void) {
     }
 }
 
-function loadGisAndGapi() {
+export function loadGisAndGapi() {
     ensureScriptElement('https://apis.google.com/js/api.js', gapiLoaded)
     ensureScriptElement('https://accounts.google.com/gsi/client', gisLoaded)
     return new Promise<void>(resolve => {
@@ -75,7 +88,7 @@ function loadGisAndGapi() {
 /**
  *  Sign in the user.
  */
-function authorize() {
+export function old_authorize() {
     return new Promise<void>((resolve, reject) => {
         tokenClient.callback = async (resp: any) => {
             if (resp.error !== undefined) {
@@ -95,6 +108,12 @@ function authorize() {
     })
 }
 
+export function authorize() {
+    return new Promise<void>((resolve, reject) => {
+    })
+
+}
+
 /**
  *  Sign out the user.
  */
@@ -110,4 +129,14 @@ export default async function getGapi(): Promise<any> {  //TODO: get firebasehos
     await loadGisAndGapi()
     await authorize()
     return gapi
+}
+
+export function initGoogleAccounts() {
+    google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: (response: any)=> console.log('Google accounts initialized', response)
+    });
+    const parent = document.getElementById('google_btn');
+    google.accounts.id.renderButton(parent, {theme: "filled_blue"});
+    google.accounts.id.prompt();
 }

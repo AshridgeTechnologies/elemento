@@ -9,6 +9,7 @@ export default class EditorControllerClient {
     public GetValue = callParent('Editor.GetValue')
     public EnsureFormula = callParent('Editor.EnsureFormula')
     public EnsureTreeItemsExpanded = callParent('Editor.EnsureTreeItemsExpanded')
+    public GetGitHubUrl = callParent('Editor.GetGitHubUrl')
 }
 
 export const Editor = new EditorControllerClient()
