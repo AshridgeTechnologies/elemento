@@ -1,30 +1,20 @@
 import * as React from 'react'
-import {useEffect, useRef, useState} from 'react'
-import {Box, Link, Typography} from '@mui/material'
-import {initGoogleAccounts, UserInfo} from '../shared/gsiProvider'
+import {useState} from 'react'
+import {Button, Typography} from '@mui/material'
+import {googleAccessToken, authorizeWithGoogle} from '../shared/gisProvider'
 
 
 export default function GoogleLogin() {
-    const [user, setUser] = useState<UserInfo | null>(null)
-    const googleSignInButtonHolder = useRef<HTMLElement>(null)
+    const [, setUpdate] = useState<number>(0)
+    const status = googleAccessToken() ? 'Authorized with Google' : 'Google Authorization required'
 
-    const signOut = () => setUser(null)
-
-    useEffect(() => {
-        initGoogleAccounts(googleSignInButtonHolder.current!, setUser)
-    }, [])
-
+    const authorize = ()=> authorizeWithGoogle( ()=> setUpdate(Date.now()))
     return (
-        <div>{
-            user
-                ? <>
-                    <Typography>Signed in to Google as {user!.name} ({user!.email})</Typography>
-                    <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1'
-                          onClick={signOut}>Sign Out</Link>
-                  </>
-                : 'Not signed in to Google'
-        }
-        <Box maxWidth={250} sx={{display: user === null ? 'inherit' : 'none'}} ref={googleSignInButtonHolder}>Google Sign In</Box>
+        <div>
+            <Button variant='outlined'
+                    aria-label='Authorize With Google'
+                    onClick={authorize}>Authorize With Google</Button>
+            <Typography mt={2}>{status}</Typography>
         </div>
     )
 }

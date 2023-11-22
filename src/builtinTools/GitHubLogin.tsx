@@ -1,22 +1,25 @@
 import * as React from 'react'
 import {Button, Link, Typography} from '@mui/material'
-import {currentUser, signIn, signOut, useSignedInState} from '../shared/authentication'
+import {currentUser, isSignedIn, signIn, signOut} from '../shared/authentication'
+import {useState} from 'react'
 
 export default function GitHubLogin() {
-    const isSignedIn = useSignedInState()
+    const [, setUpdate] = useState(0)
+    const refresh = ()=> setUpdate(prev => prev + 1)
+    const withRefresh = (fn: () => Promise<void>) => ()=> fn().then( refresh )
     const user = currentUser()
 
     return (
         <div>{
-            isSignedIn
+            isSignedIn()
                 ? <>
-                    <Typography>Signed in to GitHub as {user!.displayName ?? user!.email}</Typography>
+                    <Typography>Signed in to GitHub as {user!.email} - {user!.displayName ?? ''}</Typography>
                     <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1'
-                          onClick={signOut}>Sign Out</Link>
+                          onClick={withRefresh(signOut)}>Sign Out</Link>
                   </>
                 : <Button variant='outlined'
                           aria-label="Sign In to GitHub"
-                          onClick={signIn}>Sign In to GitHub
+                          onClick={withRefresh(signIn)}>Sign In to GitHub
                 </Button>
         }
         </div>
