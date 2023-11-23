@@ -15,26 +15,26 @@ Requirements
 - ✅ Still works with studio preview
 - ✅ All client page requests redirected to the main page and still work
 - Serve/redirect to default client app on top level
-- Gets project id from environment
+- ✅ Gets project id from environment
 - ✅ Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
 - ✅ All capi calls redirected to the function
 - ✅ Gets firebaseConfig and whatever needed for authorization
-- Private repos - fetch and save and deploy
+- ✅ Private repos - fetch and save and deploy
 - ✅ Server app runner uploads and runs previews of server apps
 - ✅ Server apps in preview update immediately
-- Studio uploads server apps
+- Studio uploads server apps to preview
 - Server apps in preview are secured
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
 - Can run server apps in cache default and specified versions concurrently
 - Can update client app quickly and easily when new version in GitHub
-- Tool in Studio to deploy
-- Tool works with access tokens from GitHub and Google logins
+- ✅ Tool in Studio to deploy to Firebase
+- ✅ Tool works with access tokens from GitHub and Google logins
 - Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
-- Use hosting where possible for faster response and lower costs
+- ✅ Use hosting where possible for faster response and lower costs
 - Appropriate caching for all files - use cache where possible, close-spaced deploys work
 - Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
@@ -57,6 +57,18 @@ Preview server
 - ✅ Create a check for updated server runtime and download if needed
 - ✅ Do check when new preview version uploaded, throttled to 60 seconds 
 
+Studio uploads to preview server
+--------------------------------
+
+- Need to have firebase project id
+- Best not to have this in source files, or generated code
+- So need local settings for project
+- Spike: store settings in .settings.json file, exclude from git, available on Project
+- Need to throttle updates to maybe one every 1-3 seconds - different to client side writes
+- Need to update client after new version uploaded
+- Need to ensure all uploaded when load project
+- Need to clear out old project
+- Ensure could swap out for another hosting arrangement
 
 
 App Runner rework - client side
