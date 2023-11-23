@@ -29,13 +29,23 @@ export interface FileWriter {
     writeFile(filepath: string, contents: FileContents): Promise<void>
 }
 
+export interface ServerFileWriter extends FileWriter {
+    clean(): Promise<void>
+    flush(): Promise<void>
+}
+
+export interface CombinedFileWriter {
+    writeFiles(files: {[filepath: string]:FileContents}): Promise<void>
+    clean(): Promise<void>
+}
+
 export type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
     runtimeLoader: RuntimeLoader,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
-    serverFileWriter: FileWriter
+    serverFileWriter: ServerFileWriter,
 }
 
 export default class ProjectBuilder {
@@ -50,7 +60,10 @@ export default class ProjectBuilder {
     }
 
     async build() {
-        return Promise.all([this.buildAndWriteProjectFiles(), this.copyAssetFiles()])
+        this.buildProjectFiles()
+        return this.props.serverFileWriter.clean()
+            .then( () => Promise.all([this.writeProjectFiles(), this.copyAssetFiles()]) )
+            .then(() => this.props.serverFileWriter.flush())
     }
 
     updateProject() {
@@ -67,11 +80,6 @@ export default class ProjectBuilder {
 
     private get project() { return this.props.projectLoader.getProject() }
     private get hasServerApps() { return this.project.findChildElements(ServerApp).length > 0 }
-
-    private async buildAndWriteProjectFiles() {
-        this.buildProjectFiles()
-        await this.writeProjectFiles()
-    }
 
     private async writeProjectFiles() {
         const clientFileWritePromises = Object.entries(this.generatedClientCode).map(([name, contents]) => this.props.clientFileWriter.writeFile(name, contents))

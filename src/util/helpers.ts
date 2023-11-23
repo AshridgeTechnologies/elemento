@@ -1,7 +1,9 @@
 import {ElementType, PropertyExpr, PropertyValue} from '../model/Types'
-import lodash from 'lodash'; const {isObject} = lodash;
+import lodash from 'lodash';
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
+
+const {isObject} = lodash;
 
 export function definedPropertiesOf(obj: object) {
     return Object.fromEntries(Object.entries(obj).filter(([,val]) => val !== undefined))
@@ -24,6 +26,7 @@ export const toArray = (value: any) => Array.isArray(value) ? value : [value]
 export const noSpaces = (s: string) => s.replace(/ /g, '')
 export const withDots = (...strings: string[]) => strings.join('.')
 
+export const startsWithUppercase = (name: string) => name.match(/^[A-Z]/)
 export const isTruthy = (x: any) => !!x
 export const notEmpty = (x: any) => x !== undefined && x !== null
 export const notBlank = (x: any) => x !== undefined && x !== null && x !== ''
@@ -75,3 +78,4 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
         return Promise.reject(e);
     }
 }
+export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))

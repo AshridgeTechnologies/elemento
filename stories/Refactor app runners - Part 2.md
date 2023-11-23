@@ -15,34 +15,42 @@ Requirements
 - ✅ Still works with studio preview
 - ✅ All client page requests redirected to the main page and still work
 - Serve/redirect to default client app on top level
-- Gets project id from environment
+- ✅ Gets project id from environment
 - ✅ Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
 - ✅ All capi calls redirected to the function
 - ✅ Gets firebaseConfig and whatever needed for authorization
-- Private repos - fetch and save and deploy
+- ✅ Private repos - fetch and save and deploy
 - ✅ Server app runner uploads and runs previews of server apps
 - ✅ Server apps in preview update immediately
-- Studio uploads server apps
-- Server apps in preview are secured
+- ✅ Studio uploads server apps to preview
+- ✅ Server apps in preview are secured
+- ✅ Show clear error messages if hosting problems, eg project not set
+- ✅ Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
+- ✅ Prompt for Google login when updates needed?
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
 - Can run server apps in cache default and specified versions concurrently
 - Can update client app quickly and easily when new version in GitHub
-- Tool in Studio to deploy
-- Tool works with access tokens from GitHub and Google logins
+- ✅ Tool in Studio to deploy to Firebase
+- ✅ Tool works with access tokens from GitHub and Google logins
 - Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
-- Use hosting where possible for faster response and lower costs
+- ✅ Use hosting where possible for faster response and lower costs
 - Appropriate caching for all files - use cache where possible, close-spaced deploys work
-- Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
+- Can deploy to preview channel
 - Password protect and test clear cache function - or remove
 - Extension and management tool independent of Elemento
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
 - Remove old dev server
+- ✅ Tools menu, with Firebase Deploy as a standard Tool
+- Project reload, or auto when update settings
+- ✅ Deal with expired access tokens
+- ✅ Login to Google auto, or prompt, if possible, when need to update
+- Elemento Apps is approved
 
 Preview server
 --------------
@@ -57,6 +65,67 @@ Preview server
 - ✅ Create a check for updated server runtime and download if needed
 - ✅ Do check when new preview version uploaded, throttled to 60 seconds 
 
+Studio uploads to preview server
+--------------------------------
+
+- ✅ Have firebase project id
+- ✅ Not have this in source files, or generated code
+- ✅ So - local settings for project
+- ✅ Store settings in settings.json file, exclude from git, available on Project
+- ✅ Deploy tool can update settings
+- ✅ Need to send Google access token
+- ✅ Limit preview server to one instance
+- ✅ Change preview put to handle multiple files
+- ✅ File writer wrapper to hold latest of each file and pass through only changed files
+- ✅ File writer wrapper that writes multiple files, throttles to interval, waits for each call to complete
+- ✅ Status message in Studio page (App bar?), updated from file writer onStatusChange
+- ✅ Throttled writer can retry and/or flush immediately
+- ✅ Throttled abandons waiting writes if fails
+- ✅ Throttled writer retries files in a failed write without overwriting updates that came in during the call
+- ✅ Clear caches on client when status changes to done
+- Need to clear out old project
+- Ensure could swap out for another hosting arrangement
+
+Store project settings
+----------------------
+
+- ✅ Editor Controller interface has GetSettings/UpdateSettings with a settingsName param
+- ✅ This is linked to an interface implemented by ProjectHandler
+- ✅ Which is implemented by creating/accessing the settings.json file in the project directory
+- ✅ Via a write-through cache initialised before use
+- ✅ Write the .gitignore and empty settings.json in EditorManager.newProject
+
+Use preview server from Studio
+------------------------------
+
+- ✅ Need to get version as preview
+- ✅ Need to direct to capi
+- ✅ Need to send to correct server
+- ✅ So need to have server url in EditorSW
+- ✅ AND need to update it when it changes
+
+Secure preview server and UX
+---------------------
+
+- ✅ Need to send access token to update the storage cache, and wait for it
+- ✅ When server updates required (including at project load), and no google access token, request one
+  - do this in getOrRequestGoogleAccessToken, return promise, reject if cannot get token
+- ✅ Store expiry time with token, check before using token
+- ✅ Wait for access token before continuing and warn if not present with error details
+  - do this by throwing exception in HttpCombinedFileWriter if error getting token, used by ThrottledCombinedFile Writer to update status
+- ✅ Show details of errors in updating
+- ✅ Button to retry updates
+  - do this by passing flushWrites fn to ProjectBuilder
+- ✅ No delay when updating server at project load time
+
+Later to secure calls to the functions:
+- Extension has a password hash in its config
+- Preview server checks password from a header X-Elemento-Preview-Password
+- All calls from preview or editor are accompanied by the password in the header
+- Firebase deploy sets preview password in project settings
+- Firebase deploy also shows the password hash
+- Editor Runner sets the password in EditorServiceWorker
+- User must put password hash in extension config 
 
 
 App Runner rework - client side

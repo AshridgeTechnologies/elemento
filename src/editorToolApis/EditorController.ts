@@ -12,13 +12,14 @@ import {
     setElementValue,
     showPointer
 } from './controllerHelpers'
+import ProjectHandler from '../editor/ProjectHandler'
 
 
 export default class EditorController {
     private actionQueue = new ActionQueue()
     private options: Options = {showBeforeActions: false, showWithPointer: false, delay: 1000}
 
-    constructor(private readonly editorElement: HTMLElement, private readonly gitHubUrl: string) {
+    constructor(private readonly editorElement: HTMLElement, private readonly gitHubUrl: string | null, private readonly projectHandler: ProjectHandler) {
     }
 
     private get container(): HTMLElement { return this.editorElement }
@@ -109,6 +110,14 @@ export default class EditorController {
     GetGitHubUrl() {
         console.log('GetGitHubUrl')
         return this.gitHubUrl
+    }
+
+    GetSettings(settingsName: string) {
+        return this.projectHandler.getSettings(settingsName)
+    }
+
+    UpdateSettings(settingsName: string, updates: object) {
+        return this.projectHandler.updateSettings(settingsName, updates)
     }
 
     private queueAction(selector: SelectorType | null, text: string | null, fn: ActionFn) {

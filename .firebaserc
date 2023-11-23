@@ -11,7 +11,7 @@
     },
     "elemento-hosting-test": {
       "extensionInstances": {
-        "elemento-app-server": "2ac6fa87c8839aa9a193b64bc2c4d3176a5a3f46ce3d3666c5a019f379efdb15"
+        "elemento-app-server": "56ea65642986edc7fc5208bfce63506d44a3711d9dae5e9ec2f107d72f166df7"
       }
     },
     "hosted-apps-spike-1": {
@@ -21,7 +21,7 @@
     },
     "stone-frog-world": {
       "extensionInstances": {
-        "elemento-app-server": "a53f7aa487ba53cb53a8936126e29e5402fdd57e04774e5cacbfed50eb0696e9"
+        "elemento-app-server": "52fd2357e890be4836f8e258e6b88e0941f65855c985a544db5670251b191554"
       }
     }
   }

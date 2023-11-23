@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Previews are mixed up if open two projects in different tabs
 - Fails to check out private project from GitHub - unauthorized
@@ -141,16 +142,20 @@ Epics
 Tech debt
 ---------
 
+- Improve PW testing - eg https://www.checklyhq.com/blog/track-frontend-javascript-exceptions-with-playwright/
 - run.css - needed?  where from?- Copying layouts does not change names of contents
+- Look at https://gist.github.com/khalidx/1c670478427cc0691bda00a80208c8cc
 - Remove barrel files: https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-7
 - Check for dodgy RegExp - see https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript
 - Remove Download from GitHub to new directory
+- Remove window.setProject/getProject - replace with OPFS?
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Builder/runner: 
   - Generator does not hard code runner location
   - ProjectBuilder only writes updated files
   - runForDev only refreshes code if a file in its path is changed
 - Use radash wherever possible, try to remove lodash
+- Consider replacing state management with self-updating immutable objects using Immer, maybe Proxies, useContext and useReducer
 - Consider Temporal
 - Consider TinyBase
 - Consider escodegen in generator

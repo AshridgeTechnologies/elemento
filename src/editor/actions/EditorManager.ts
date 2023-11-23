@@ -18,6 +18,7 @@ export default class EditorManager {
         const name = directory.name
         const projectStore = new DiskProjectStore(directory)
         await projectStore.writeProjectFile(editorEmptyProject(name))
+        await projectStore.writeTextFile('.gitignore', 'settings.json')
         await this.openProjectFunction(name, projectStore)
     }
 

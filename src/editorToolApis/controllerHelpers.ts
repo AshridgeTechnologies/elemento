@@ -1,6 +1,6 @@
-import {notEmpty, waitUntil} from '../util/helpers'
+import {notEmpty, wait, waitUntil} from '../util/helpers'
 //@ts-ignore
-import {caller} from 'postmsg-rpc'
+import {caller} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
 export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuItem' | 'propertyField' | 'propertyTypeButton'
@@ -14,8 +14,6 @@ export type Options = {
 export type ActionFn = () => void | Promise<void>
 
 export const highlightClassName = 'editor-highlight'
-
-export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 
 export const getOffsetWithin = (el: HTMLElement, outerEl: HTMLElement) => {
     let offsetX = el.offsetLeft, offsetY = el.offsetTop

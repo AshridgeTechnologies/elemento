@@ -1,12 +1,12 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useRef, useState} from 'react'
 //@ts-ignore
-import {expose} from 'postmsg-rpc'
+import {expose} from '../editorToolApis/postmsgRpc'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {AlertColor, Box, Grid, Typography,} from '@mui/material'
+import {AlertColor, Box, Button, Grid, Stack, Typography,} from '@mui/material'
 import Element, {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -14,7 +14,7 @@ import {theme} from '../shared/styling'
 import {DiskProjectStore} from './DiskProjectStore'
 import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState, isSignedIn} from '../shared/authentication'
+import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
@@ -23,12 +23,11 @@ import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
-import ProjectBuilder from "../generator/ProjectBuilder";
-import BrowserProjectLoader from "../generator/BrowserProjectLoader";
-import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
-import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
-import PostMessageFileWriter from "./PostMessageFileWriter";
-import HttpFileWriter from "./HttpFileWriter";
+import ProjectBuilder from '../generator/ProjectBuilder'
+import BrowserProjectLoader from '../generator/BrowserProjectLoader'
+import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
+import BrowserRuntimeLoader from './BrowserRuntimeLoader'
+import PostMessageFileWriter from './PostMessageFileWriter'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
@@ -50,6 +49,11 @@ import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
+import SettingsHandler from './SettingsHandler'
+import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
+import {getOrRequestGoogleAccessToken} from '../shared/gisProvider'
+import {Status} from './ThrottledCombinedFileWriter'
+import ServerMultiFileWriter from './ServerMultiFileWriter'
 
 const {debounce} = lodash;
 
@@ -85,24 +89,11 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
     }
 }
 
-const exposeBoundFunction = (objectName: string, functionName: string, object: any, getMessageData: (event: any) => object) => {
-    const nameToExpose = objectName + '.' + functionName
-    expose(nameToExpose, object[functionName].bind(object), {getMessageData})
-}
-
-const exposeEditorController = (getMessageData: (event: any) => object, gitHubUrl: string) => {
+const exposeEditorController = (gitHubUrl: string | null, projectHandler: ProjectHandler) => {
     const container = editorElement()
     if (container) {
-        const controller = new EditorController(container, gitHubUrl)
-        exposeBoundFunction('Editor', 'SetOptions', controller, getMessageData)
-        exposeBoundFunction('Editor', 'Show', controller, getMessageData)
-        exposeBoundFunction('Editor', 'Click', controller, getMessageData)
-        exposeBoundFunction('Editor', 'ContextClick', controller, getMessageData)
-        exposeBoundFunction('Editor', 'SetValue', controller, getMessageData)
-        exposeBoundFunction('Editor', 'GetValue', controller, getMessageData)
-        exposeBoundFunction('Editor', 'EnsureFormula', controller, getMessageData)
-        exposeBoundFunction('Editor', 'EnsureTreeItemsExpanded', controller, getMessageData)
-        exposeBoundFunction('Editor', 'GetGitHubUrl', controller, getMessageData)
+        const controller = new EditorController(container, gitHubUrl, projectHandler)
+        exposeFunctions('Editor', controller)
         console.log('Editor controller initialised')
     }
 }
@@ -112,23 +103,19 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 
     if (previewWindow) {
         const controller = new PreviewController(previewWindow)
-        exposeBoundFunction('Preview', 'SetOptions', controller, getMessageData)
-        exposeBoundFunction('Preview', 'Show', controller, getMessageData)
-        exposeBoundFunction('Preview', 'Click', controller, getMessageData)
-        exposeBoundFunction('Preview', 'SetValue', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetValue', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetState', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetTextContent', controller, getMessageData)
+        exposeFunctions('Preview', controller)
         console.log('Preview controller initialised')
     }
 }
 
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
+const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
+    const [serverUpdateStatus, setServerUpdateStatus] = useState<Status>('complete')
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [openFromGitHubUrl, setOpenFromGitHubUrl] = useState<string | null>('')
@@ -163,9 +150,13 @@ export default function EditorRunner() {
         projectBuilderRef.current?.updateProject()
     }
 
+    const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
+
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
-        projectHandler.setProject(proj)
-        projectHandler.setName(name)
+        const updatePreviewUrlFromSettings = () => setPreviewServerUrl(`https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer`)
+        const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
+        projectHandler.setProject(proj, name, settingsHandler)
+        updatePreviewUrlFromSettings()
         setProject(proj)
         await projectBuilderRef.current?.build()
 
@@ -173,6 +164,14 @@ export default function EditorRunner() {
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
+    }
+
+    const onServerUpdateStatusChange = (newStatus: Status) => {
+        if (newStatus === 'complete') {
+            refreshServerAppConnectors()
+        }
+
+        setServerUpdateStatus(newStatus)
     }
 
     const newProjectBuilder = (projectStore: DiskProjectStore) => {
@@ -184,17 +183,22 @@ export default function EditorRunner() {
             new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools'),
             new DiskProjectStoreFileWriter(projectStore, 'dist/tools')
         )
-        const serverFileWriter = new MultiFileWriter(
-            new HttpFileWriter(devServerUrl),
-            new DiskProjectStoreFileWriter(projectStore, 'dist/server')
-        )
+
+        const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
+        const serverFileWriter = new ServerMultiFileWriter({
+            previewUploadUrl,
+            getAccessToken: getOrRequestGoogleAccessToken,
+            onServerUpdateStatusChange,
+            writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/server')]
+        })
+
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
             runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
             clientFileWriter,
             toolFileWriter,
-            serverFileWriter
+            serverFileWriter,
         })
     }
 
@@ -208,6 +212,12 @@ export default function EditorRunner() {
         setTools(initialOpenTools)
         setSelectedTool(initialOpenTools[0]?.codeName ?? null)
         setShowTools(initialOpenTools.length > 0)
+    }
+
+    function refreshServerAppConnectors() {
+        const serverAppConnectorIds = getOpenProject().findElementsBy(el => el.kind === 'ServerAppConnector').map( el => el.id)
+        const paths = serverAppConnectorIds.map( id => getOpenProject().findElementPath(id))
+        paths.map( id => callFunctionInPreview(id!, 'Refresh'))
     }
 
     function renameFile(oldPath: string, newPath: string) {
@@ -224,6 +234,10 @@ export default function EditorRunner() {
 
     function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {
         navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
+    }
+
+    function setPreviewServerUrl(url: string) {
+        navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
     }
 
     function getMessageDataAndAuthorize(event: any) {
@@ -291,7 +305,7 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect(initServiceWorker, [])
-    useEffect(() => exposeEditorController(getMessageDataAndAuthorize, gitHubUrl), [editorElement()])
+    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [editorElement()])
     useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
@@ -403,6 +417,7 @@ export default function EditorRunner() {
     }
 
     const onHelp = () => showTool(helpToolImport)
+    const onFirebase = () => showTool(firebaseToolImport)
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
         editorManager={new EditorManager(openOrUpdateProjectFromStore)}
@@ -551,6 +566,14 @@ export default function EditorRunner() {
                 return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
             }
 
+            const projectTools = Object.fromEntries(
+                project.findElementsBy( el => el.kind === 'Tool' || el.kind === 'ToolImport')
+                .map( el => [el.name, ()=> showTool(el as Tool | ToolImport)]))
+            const toolItems = {
+                'Firebase': onFirebase,
+                ...projectTools
+            }
+
             if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
                 setFirebaseConfigName(projectFirebaseConfigName)
             }
@@ -559,6 +582,10 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
+            const isErrorStatus = serverUpdateStatus instanceof Error
+            const statusColor = isErrorStatus ? 'error' : 'inherit'
+            const retryButton = isErrorStatus ? <Button onClick={() => projectBuilderRef.current?.build()}>Retry</Button> : ''
+            const status = <Stack direction='row'><Typography minWidth='10em' fontSize='0.9em' paddingTop='8px' color={statusColor}>App updates: {serverUpdateStatus.toString()}</Typography>{retryButton}</Stack>
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
@@ -567,7 +594,9 @@ export default function EditorRunner() {
                     onAction,
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
-                    selectedItemIds, onHelp
+                    selectedItemIds, onHelp,
+                    toolItems,
+                    status
                 }}/>
             </Box>
 

@@ -1,4 +1,4 @@
-import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties} from '../../src/generator/ProjectBuilder'
+import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties, ServerFileWriter} from '../../src/generator/ProjectBuilder'
 import Project, {TOOLS_ID} from '../../src/model/Project'
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
@@ -77,9 +77,13 @@ const clientFileWriter = {
 const toolFileWriter = {
     writeFile: jest.fn()
 }
+
 const serverFileWriter = {
-    writeFile: jest.fn()
+    writeFile: jest.fn(),
+    flush: jest.fn().mockResolvedValue(undefined),
+    clean: jest.fn().mockResolvedValue(undefined)
 }
+
 const runtimeLoader = {
     getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
 }
@@ -94,6 +98,8 @@ const clearMocks = () => {
     clientFileWriter.writeFile.mockClear()
     toolFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
+    serverFileWriter.flush.mockClear().mockResolvedValue(undefined)
+    serverFileWriter.clean.mockClear().mockResolvedValue(undefined)
     runtimeLoader.getFile.mockClear()
 }
 
@@ -101,7 +107,8 @@ beforeEach(clearMocks)
 
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}) => {
-    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
+    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader,
+        clientFileWriter, toolFileWriter, serverFileWriter, ...props}
     return new ProjectBuilder(properties)
 }
 
@@ -137,7 +144,7 @@ test('skips asset files if dir does not exist', async () => {
     expect(fileLoader.listFiles).not.toHaveBeenCalled()
 })
 
-test('writes server files generated from Project for all apps', async () => {
+test('writes server files generated from Project for all apps after clean and flushes immediately', async () => {
     const builder = newProjectBuilder()
     await builder.build()
 
@@ -147,6 +154,8 @@ test('writes server files generated from Project for all apps', async () => {
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
         ...expectedGeneratedCalls,
     ])
+    expect(serverFileWriter.clean).toHaveBeenCalledTimes(1)
+    expect(serverFileWriter.flush).toHaveBeenCalledTimes(1)
 })
 
 test('writes tool files for all tools to tool build with one copy of asset but not ToolImports', async () => {
@@ -235,7 +244,9 @@ test('updates files generated from project', async () => {
         writeFile: jest.fn()
     }
     const serverFileWriter = {
-        writeFile: jest.fn()
+        writeFile: jest.fn(),
+        flush: jest.fn().mockResolvedValue(undefined),
+        clean: jest.fn().mockResolvedValue(undefined)
     }
     const runtimeLoader = {
         getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
@@ -246,6 +257,8 @@ test('updates files generated from project', async () => {
 
     clientFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
+    serverFileWriter.flush.mockClear().mockResolvedValue(undefined)
+    serverFileWriter.clean.mockClear().mockResolvedValue(undefined)
     runtimeLoader.getFile.mockClear()
 
     const project1Updated = project1.set('text1', 'name', 'Text 1 Updated')
