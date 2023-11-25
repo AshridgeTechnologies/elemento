@@ -1,6 +1,6 @@
 import {notEmpty, waitUntil} from '../util/helpers'
 //@ts-ignore
-import {caller} from 'postmsg-rpc'
+import {caller} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
 export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuItem' | 'propertyField' | 'propertyTypeButton'

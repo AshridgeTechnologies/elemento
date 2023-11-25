@@ -1,16 +1,18 @@
 import Project, {editorEmptyProject} from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {AppElementActionName} from './Types'
+import {AppElementActionName, ProjectSettings} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
 import {elementToJSON} from '../util/helpers'
-import {last} from 'ramda'
+import {last, mergeDeepRight, mergeRight} from 'ramda'
 import UndoRedoStack from './UndoRedoStack'
+import SettingsHandler from './SettingsHandler'
 
 export default class ProjectHandler {
     private projectStack: UndoRedoStack<Project> | null
     private _name: string | null = null
+    private settingsHandler: SettingsHandler | null = null
 
     private getProject(): Project {
         if (!this.projectStack) {
@@ -29,11 +31,11 @@ export default class ProjectHandler {
     }
     get name() { return this._name }
 
-    setProject(project: Project) {
+    setProject(project: Project, name: string, settingsHandler: SettingsHandler) {
         this.projectStack = new UndoRedoStack<Project>(project)
+        this._name = name
+        this.settingsHandler = settingsHandler
     }
-
-    setName(name: string) { this._name = name }
 
     setProperty(elementId: ElementId, propertyName: string, value: any) {
         const newProject = this.getProject().set(elementId, propertyName, value)
@@ -135,5 +137,15 @@ export default class ProjectHandler {
 
     redo() {
         this.projectStack?.redo()
+    }
+
+    getSettings(settingsName: string): object {
+        return this.settingsHandler?.settings?.[settingsName] ?? {}
+    }
+
+    updateSettings(settingsName: string, updates: object): void {
+        const existingSettings = this.settingsHandler?.settings ?? {}
+        const updatedSettings = mergeDeepRight(existingSettings, {[settingsName]: updates})
+        this.settingsHandler?.setSettings(updatedSettings)
     }
 }

@@ -9,14 +9,22 @@ import UnsupportedValueError from '../../src/util/UnsupportedValueError'
 import TextInput from '../../src/model/TextInput'
 import Text from '../../src/model/Text'
 import {editorEmptyProject} from '../../src/model/Project'
+import SettingsHandler from '../../src/editor/SettingsHandler'
 
 const project = projectFixture1()
 
 let handler: ProjectHandler
+const mockSettingsHandler = {
+    get settings() {
+        return {area1: {serverName: 'foo', remote: true}, area2: {delay: 1000}}
+    },
+    setSettings: jest.fn()
+} as unknown as SettingsHandler
+
 beforeEach(() => {
     jest.resetAllMocks()
     handler = new ProjectHandler()
-    handler.setProject(project)
+    handler.setProject(project, 'project 1', mockSettingsHandler)
 })
 
 beforeEach(() => {
@@ -225,5 +233,11 @@ test('can start a new project', () => {
     const handler = new ProjectHandler(welcomeProject())
     handler.newProject()
     expect(handler.current).toStrictEqual(editorEmptyProject())
+})
+
+test('gets and updates settings', () => {
+    expect(handler.getSettings('area1')).toStrictEqual({serverName: 'foo', remote: true})
+    handler.updateSettings('area1', {serverName: 'bar'})
+    expect(mockSettingsHandler.setSettings).toHaveBeenCalledWith({area1: {serverName: 'bar', remote: true}, area2: {delay: 1000}})
 })
 

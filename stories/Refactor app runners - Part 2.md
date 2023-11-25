@@ -60,15 +60,25 @@ Preview server
 Studio uploads to preview server
 --------------------------------
 
-- Need to have firebase project id
-- Best not to have this in source files, or generated code
-- So need local settings for project
-- Spike: store settings in .settings.json file, exclude from git, available on Project
-- Need to throttle updates to maybe one every 1-3 seconds - different to client side writes
+- ✅ have firebase project id
+- ✅  to have this in source files, or generated code
+- ✅ local settings for project
+- ✅ tore settings in settings.json file, exclude from git, available on Project
+- ✅  Deploy tool can update settings
+- Need to throttle updates to maybe one every 1-3 seconds - different to client side writes - https://github.com/sindresorhus/debounce
 - Need to update client after new version uploaded
 - Need to ensure all uploaded when load project
 - Need to clear out old project
 - Ensure could swap out for another hosting arrangement
+
+Store project settings
+----------------------
+
+- ✅ Editor Controller interface has GetSettings/UpdateSettings with a settingsName param
+- ✅ This is linked to an interface implemented by ProjectHandler
+- ✅ Which is implemented by creating/accessing the settings.json file in the project directory
+- ✅ Via a write-through cache initialised before use
+- ✅ Write the .gitignore and empty settings.json in EditorManager.newProject
 
 
 App Runner rework - client side

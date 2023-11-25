@@ -1,7 +1,7 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useRef, useState} from 'react'
 //@ts-ignore
-import {expose} from 'postmsg-rpc'
+import {expose} from '../editorToolApis/postmsgRpc'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
@@ -14,7 +14,7 @@ import {theme} from '../shared/styling'
 import {DiskProjectStore} from './DiskProjectStore'
 import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, signIn, useSignedInState, isSignedIn} from '../shared/authentication'
+import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useSignedInState} from '../shared/authentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
@@ -50,6 +50,8 @@ import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
+import SettingsHandler from './SettingsHandler'
+import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 
 const {debounce} = lodash;
 
@@ -85,24 +87,11 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
     }
 }
 
-const exposeBoundFunction = (objectName: string, functionName: string, object: any, getMessageData: (event: any) => object) => {
-    const nameToExpose = objectName + '.' + functionName
-    expose(nameToExpose, object[functionName].bind(object), {getMessageData})
-}
-
-const exposeEditorController = (getMessageData: (event: any) => object, gitHubUrl: string) => {
+const exposeEditorController = (gitHubUrl: string | null, projectHandler: ProjectHandler) => {
     const container = editorElement()
     if (container) {
-        const controller = new EditorController(container, gitHubUrl)
-        exposeBoundFunction('Editor', 'SetOptions', controller, getMessageData)
-        exposeBoundFunction('Editor', 'Show', controller, getMessageData)
-        exposeBoundFunction('Editor', 'Click', controller, getMessageData)
-        exposeBoundFunction('Editor', 'ContextClick', controller, getMessageData)
-        exposeBoundFunction('Editor', 'SetValue', controller, getMessageData)
-        exposeBoundFunction('Editor', 'GetValue', controller, getMessageData)
-        exposeBoundFunction('Editor', 'EnsureFormula', controller, getMessageData)
-        exposeBoundFunction('Editor', 'EnsureTreeItemsExpanded', controller, getMessageData)
-        exposeBoundFunction('Editor', 'GetGitHubUrl', controller, getMessageData)
+        const controller = new EditorController(container, gitHubUrl, projectHandler)
+        exposeFunctions('Editor', controller)
         console.log('Editor controller initialised')
     }
 }
@@ -112,13 +101,7 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 
     if (previewWindow) {
         const controller = new PreviewController(previewWindow)
-        exposeBoundFunction('Preview', 'SetOptions', controller, getMessageData)
-        exposeBoundFunction('Preview', 'Show', controller, getMessageData)
-        exposeBoundFunction('Preview', 'Click', controller, getMessageData)
-        exposeBoundFunction('Preview', 'SetValue', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetValue', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetState', controller, getMessageData)
-        exposeBoundFunction('Preview', 'GetTextContent', controller, getMessageData)
+        exposeFunctions('Preview', controller)
         console.log('Preview controller initialised')
     }
 }
@@ -164,9 +147,11 @@ export default function EditorRunner() {
     }
 
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
-        projectHandler.setProject(proj)
-        projectHandler.setName(name)
+        const settingsHandler = await SettingsHandler.new(projectStore)
+        projectHandler.setProject(proj, name, settingsHandler)
         setProject(proj)
+
+        // add to ProjectHandler: initial settings, disk project store, and async function to save them back to the DPS
         await projectBuilderRef.current?.build()
 
         setUpdateTime(Date.now())
@@ -291,7 +276,7 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect(initServiceWorker, [])
-    useEffect(() => exposeEditorController(getMessageDataAndAuthorize, gitHubUrl), [editorElement()])
+    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [editorElement()])
     useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'

@@ -4,6 +4,7 @@ import {Button, Stack, TextField, Typography} from '@mui/material'
 import GoogleLogin from './GoogleLogin'
 import {googleAccessToken} from '../shared/gisProvider'
 import {gitHubAccessToken} from '../shared/authentication'
+import {Editor} from '../editorToolApis/EditorControllerClient'
 
 const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     console.log('Deploying from', gitRepoUrl, 'to', firebaseProjectId)
@@ -30,25 +31,41 @@ const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
 
 export default function FirebaseDeploy() {
     const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
-    const [firebaseProject, setFirebaseProject] = useState<string>('')
+
+    const [firebaseProjectIdFromSettings, setFirebaseProjectIdFromSettings] = useState<string>()
+    const [settingsRequested, setSettingsRequested] = useState(false)
+    if (!settingsRequested) {
+        Editor.GetSettings('firebase').then( (settings: any)=> setFirebaseProjectIdFromSettings(settings.projectId))
+        setSettingsRequested(true)
+    }
+
+    const [firebaseProject, setFirebaseProject] = useState<string | null>(null)
     const [message, setMessage] = useState<string>('')
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
-    const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value)}
+    const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value || null)}
     const deploy = () => {
         setMessage('Deploying...')
-        deployProject(gitRepoUrl, firebaseProject).then(
+        deployProject(gitRepoUrl, firebaseProject!).then(
             () => setMessage('Deploy succeeded'),
             (e: Error) => setMessage('Deploy failed: ' + e.message)
         )
     }
     const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProject
+    const updateSettings = () => {
+        Editor.UpdateSettings('firebase', {projectId: firebaseProject})
+    }
+    const canUpdateSettings = window.parent !== window.self
+    const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
     return <Stack padding={2} spacing={2}>
         <Typography variant={'h1'} mb={2} fontSize={36}>Deploy to Firebase</Typography>
         <GitHubLogin/>
         <GoogleLogin/>
         <TextField label='Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl}/>
-        <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateFirebaseProject}/>
-        <Button variant='outlined'  sx={{width: '10em'}} disabled={!readyToDeploy} onClick={deploy}>Deploy</Button>
+        <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateFirebaseProject} value={firebaseProjectIdValue}/>
+        <Stack direction='row' spacing={2}>
+            <Button variant='contained'  sx={{width: '10em'}} disabled={!readyToDeploy} onClick={deploy}>Deploy</Button>
+            {canUpdateSettings ? <Button variant='outlined'  sx={{width: '15em'}} onClick={updateSettings}>Update Settings</Button> : null}
+        </Stack>
         <Typography variant={'h1'} mt={4} fontSize={18}>{message}</Typography>
     </Stack>
 }

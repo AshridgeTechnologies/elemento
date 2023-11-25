@@ -24,6 +24,7 @@ export const toArray = (value: any) => Array.isArray(value) ? value : [value]
 export const noSpaces = (s: string) => s.replace(/ /g, '')
 export const withDots = (...strings: string[]) => strings.join('.')
 
+export const startsWithUppercase = (name: string) => name.match(/^[A-Z]/)
 export const isTruthy = (x: any) => !!x
 export const notEmpty = (x: any) => x !== undefined && x !== null
 export const notBlank = (x: any) => x !== undefined && x !== null && x !== ''
