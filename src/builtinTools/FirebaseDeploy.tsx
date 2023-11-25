@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useState} from 'react'
+import {useAsync} from 'react-async'
 import GitHubLogin from './GitHubLogin'
 import {Button, Stack, TextField, Typography} from '@mui/material'
 import GoogleLogin from './GoogleLogin'
@@ -29,18 +30,14 @@ const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     }
 }
 
+const getSettings = ()=> Editor.GetSettings('firebase').then( (settings: any) => settings.projectId)
+
 export default function FirebaseDeploy() {
     const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
-
-    const [firebaseProjectIdFromSettings, setFirebaseProjectIdFromSettings] = useState<string>()
-    const [settingsRequested, setSettingsRequested] = useState(false)
-    if (!settingsRequested) {
-        Editor.GetSettings('firebase').then( (settings: any)=> setFirebaseProjectIdFromSettings(settings.projectId))
-        setSettingsRequested(true)
-    }
-
+    const {data: firebaseProjectIdFromSettings} = useAsync({promiseFn: getSettings})
     const [firebaseProject, setFirebaseProject] = useState<string | null>(null)
     const [message, setMessage] = useState<string>('')
+
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
     const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value || null)}
     const deploy = () => {
