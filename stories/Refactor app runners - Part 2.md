@@ -43,6 +43,7 @@ Requirements
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
 - Remove old dev server
+- Tools menu
 
 Preview server
 --------------
@@ -60,11 +61,11 @@ Preview server
 Studio uploads to preview server
 --------------------------------
 
-- ✅ have firebase project id
-- ✅  to have this in source files, or generated code
-- ✅ local settings for project
-- ✅ tore settings in settings.json file, exclude from git, available on Project
-- ✅  Deploy tool can update settings
+- ✅ Have firebase project id
+- ✅ Not have this in source files, or generated code
+- ✅ So - local settings for project
+- ✅ Store settings in settings.json file, exclude from git, available on Project
+- ✅ Deploy tool can update settings
 - Need to throttle updates to maybe one every 1-3 seconds - different to client side writes - https://github.com/sindresorhus/debounce
 - Need to update client after new version uploaded
 - Need to ensure all uploaded when load project

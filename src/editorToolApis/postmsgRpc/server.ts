@@ -5,19 +5,19 @@ export function expose (funcName: string, func:(...args: any[]) => any, opts: an
   const removeListener = opts.removeListener || window.removeEventListener
   const targetOrigin = opts.targetOrigin || '*'
 
-  const handler = function (event: MessageEvent) {
+  const handler = async function (event: MessageEvent) {
     const {data, source} = event
     if (!data || data.sender !== 'elemento-postmsg-rpc/client' || data.func !== funcName) return
 
-    const respond = (props: {res: any} | {err: any}) => {
-      const response = { sender: 'elemento-postmsg-rpc/server', id: data.id, ...props }
+    const respond = (props: { res: any } | { err: any }) => {
+      const response = {sender: 'elemento-postmsg-rpc/server', id: data.id, ...props}
       source?.postMessage(response, targetOrigin)
     }
 
     try {
-      respond({res: func(...data.args)})
-    } catch(e: any) {
-      const err: any = Object.assign({ message: e.message }, e.output && e.output.payload)
+      respond({res: await func(...data.args)})
+    } catch (e: any) {
+      const err: any = Object.assign({message: e.message}, e.output && e.output.payload)
 
       if (process.env.NODE_ENV !== 'production') {
         err.stack = err.stack || e.stack

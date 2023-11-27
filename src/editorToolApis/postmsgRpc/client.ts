@@ -1,5 +1,7 @@
 import {nanoid} from 'nanoid'
 
+const uniqueId = () => Date.now().toString() + '-' + (Math.random() * 1000000).toString().substring(6)
+
 export function caller (funcName: string, opts: any = {}) {
   const addListener = opts.addListener || window.addEventListener
   const removeListener = opts.removeListener || window.removeEventListener
@@ -9,7 +11,7 @@ export function caller (funcName: string, opts: any = {}) {
   return function (...args: any[]) {
     const msg = {
       sender: 'elemento-postmsg-rpc/client',
-      id: nanoid(6),
+      id: uniqueId(),
       func: funcName,
       args
     }
