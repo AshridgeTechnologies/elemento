@@ -10,6 +10,7 @@ export default class EditorServiceWorker {
 
     constructor(private swSelf: ServiceWorkerGlobalScope) {}
     private fileSystem: FileSystemTree = {}
+    private previewServerUrl: string | null = null
 
     fetch = (event: FetchEvent) => {
         event.respondWith(this.handleRequest(event.request))
@@ -39,6 +40,10 @@ export default class EditorServiceWorker {
         if (data?.type === 'callFunction') {
             this.sendCallFunction(data.componentId, data.functionName, data.args)
         }
+
+        if (data?.type === 'previewServer') {
+            this.previewServerUrl = data.url
+        }
     }
 
     install = (event: ExtendableEvent) => {
@@ -52,7 +57,7 @@ export default class EditorServiceWorker {
         const pathname = decodeURIComponent(url.pathname)
 
         if (pathname.startsWith('/capi/')) {
-            return fetch(`http://localhost:4444${url.pathname}${url.search}`)
+            return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`)
         }
 
         const [, filepath] = pathname.match(new RegExp(`^\/studio\/preview\/(.*)$`)) ?? []
@@ -67,6 +72,14 @@ export default class EditorServiceWorker {
             return new Response(file, {
                 headers: {
                     'Content-Type': contentType
+                }
+            })
+        }
+
+        if (pathname === '/version') {
+            return new Response(JSON.stringify({commitId: 'preview'}), {
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
         }

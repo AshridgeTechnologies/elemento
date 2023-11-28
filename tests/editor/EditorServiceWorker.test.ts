@@ -104,6 +104,30 @@ test('serves index.html if sub-dir path ends in /', async () => {
     expect(await result.text()).toBe('dir1 index.html contents')
 })
 
+test('serves version file with commitId of preview', async () => {
+    const result = await worker.handleRequest(request('https://example.com/version'))
+    const jsonResult = await result.json()
+    expect(jsonResult).toHaveProperty('commitId', 'preview')
+})
+
+test('stores preview server url and sends capi request to preview server', async () => {
+    const event = {data: {type: 'previewServer', url: 'https://preview.example.com/preview-function'}} as ExtendableMessageEvent
+    worker.message(event)
+    await wait(10)
+
+    const originalFetch = globalThis.fetch
+    globalThis.fetch = jest.fn()
+
+    try {
+        const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22')
+        await worker.handleRequest(req)
+        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22')
+    } finally {
+        globalThis.fetch = originalFetch
+    }
+
+})
+
 test('writes single new file in top-level directory from message', async () => {
     const event = {data: {type: 'write', path: 'morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
     worker.message(event)

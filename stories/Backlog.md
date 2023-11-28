@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Previews are mixed up if open two projects in different tabs
 - Fails to check out private project from GitHub - unauthorized

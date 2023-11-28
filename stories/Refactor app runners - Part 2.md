@@ -23,8 +23,9 @@ Requirements
 - ✅ Private repos - fetch and save and deploy
 - ✅ Server app runner uploads and runs previews of server apps
 - ✅ Server apps in preview update immediately
-- Studio uploads server apps to preview
+- ✅ Studio uploads server apps to preview
 - Server apps in preview are secured
+- Clear error messages if hosting project not set
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
@@ -43,7 +44,8 @@ Requirements
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
 - Remove old dev server
-- Tools menu
+- Tools menu, with Firebase Deploy as a standard Tool
+- Project reload, or auto when update settings
 
 Preview server
 --------------
@@ -80,6 +82,29 @@ Store project settings
 - ✅ Which is implemented by creating/accessing the settings.json file in the project directory
 - ✅ Via a write-through cache initialised before use
 - ✅ Write the .gitignore and empty settings.json in EditorManager.newProject
+
+Use preview server from Studio
+------------------------------
+
+- ✅ Need to get version as preview
+- ✅ Need to direct to capi
+- ✅ Need to send to correct server
+- ✅ So need to have server url in EditorSW
+- ✅ AND need to update it when it changes
+
+Secure preview server
+---------------------
+
+- Need to send access token to update the storage cache, and wait for it
+
+Later to secure calls to the functions:
+- Extension has a password hash in its config
+- Preview server checks password from a header X-Elemento-Preview-Password
+- All calls from preview or editor are accompanied by the password in the header
+- Firebase deploy sets preview password in project settings
+- Firebase deploy also shows the password hash
+- Editor Runner sets the password in EditorServiceWorker
+- User must put password hash in extension config 
 
 
 App Runner rework - client side

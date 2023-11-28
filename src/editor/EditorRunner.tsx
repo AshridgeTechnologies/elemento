@@ -146,9 +146,13 @@ export default function EditorRunner() {
         projectBuilderRef.current?.updateProject()
     }
 
+    const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
+
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
-        const settingsHandler = await SettingsHandler.new(projectStore)
+        const updatePreviewUrlFromSettings = () => setPreviewServerUrl(`https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer`)
+        const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
         projectHandler.setProject(proj, name, settingsHandler)
+        updatePreviewUrlFromSettings()
         setProject(proj)
 
         // add to ProjectHandler: initial settings, disk project store, and async function to save them back to the DPS
@@ -169,8 +173,10 @@ export default function EditorRunner() {
             new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools'),
             new DiskProjectStoreFileWriter(projectStore, 'dist/tools')
         )
+
+        const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview/server`
         const serverFileWriter = new MultiFileWriter(
-            new HttpFileWriter(devServerUrl),
+            new HttpFileWriter(previewUploadUrl),
             new DiskProjectStoreFileWriter(projectStore, 'dist/server')
         )
         return new ProjectBuilder({
@@ -209,6 +215,10 @@ export default function EditorRunner() {
 
     function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {
         navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
+    }
+
+    function setPreviewServerUrl(url: string) {
+        navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
     }
 
     function getMessageDataAndAuthorize(event: any) {
