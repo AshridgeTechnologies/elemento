@@ -25,24 +25,28 @@ let access_token: string | null = null
 
 export const googleAccessToken = ()=> access_token
 
-export const authorizeWithGoogle = async (callback: () => void) => {
+export const authorizeWithGoogle = async () => {
     await gsiScriptLoaded
-    const client = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (response: any) => {
-            console.log('Token client callback', response, client);
-            ({access_token} = response);
-            callback()
-        },
+    return new Promise<void>(resolve => {
+        const client = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: (response: any) => {
+                console.log('Token client callback', response, client);
+                ({access_token} = response);
+                resolve()
+            },
+        })
+        client.requestAccessToken()
     })
-    client.requestAccessToken()
+
 }
 
-export const deauthorize = async (callback: () => void) => {
-    if (!access_token) return
-
-    await google.accounts.oauth2.revoke(access_token, callback)
-    access_token = null
+export const deauthorize = async () => {
+    return new Promise<void>(resolve => {
+        if (!access_token) resolve()
+        access_token = null
+        google.accounts.oauth2.revoke(access_token, resolve)
+    })
 }
 
