@@ -107,6 +107,7 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 }
 
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
+const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
@@ -398,6 +399,7 @@ export default function EditorRunner() {
     }
 
     const onHelp = () => showTool(helpToolImport)
+    const onFirebase = () => showTool(firebaseToolImport)
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
         editorManager={new EditorManager(openOrUpdateProjectFromStore)}
@@ -546,6 +548,14 @@ export default function EditorRunner() {
                 return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
             }
 
+            const projectTools = Object.fromEntries(
+                project.findElementsBy( el => el.kind === 'Tool' || el.kind === 'ToolImport')
+                .map( el => [el.name, ()=> showTool(el as Tool | ToolImport)]))
+            const toolItems = {
+                'Firebase': onFirebase,
+                ...projectTools
+            }
+
             if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
                 setFirebaseConfigName(projectFirebaseConfigName)
             }
@@ -562,7 +572,8 @@ export default function EditorRunner() {
                     onAction,
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
-                    selectedItemIds, onHelp
+                    selectedItemIds, onHelp,
+                    toolItems
                 }}/>
             </Box>
 

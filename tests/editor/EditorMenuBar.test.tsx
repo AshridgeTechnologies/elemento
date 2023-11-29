@@ -25,8 +25,9 @@ const onGetFromGitHub = jest.fn()
 const onUpdateFromGitHub = jest.fn()
 const onInsert = ()=> '123'
 const insertMenuItems = jest.fn().mockImplementation((_, selectedItemId)=> selectedItemId ? ['Text', 'TextInput', 'NumberInput'] : [])
+const toolItems = {'Tool 1': jest.fn(), 'Tool 2': jest.fn(), }
 
-const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, insertMenuItems}
+const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, insertMenuItems, toolItems}
 
 let selectedItemIds: string[] = []
 
