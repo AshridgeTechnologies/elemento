@@ -12,8 +12,9 @@ export default function GoogleLogin() {
     return (
         <div>
             <Button variant='outlined'
+                    title='Authorize With Google'
                     aria-label='Authorize With Google'
-                    onClick={authorize}>Authorize With Google</Button>
+                    onClick={authorize}>Google</Button>
             <Typography mt={2}>{status}</Typography>
         </div>
     )

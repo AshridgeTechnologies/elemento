@@ -3,8 +3,9 @@ import Mui_AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import UserMenu from './UserMenu'
+import GitHubConnection from './GitHubConnection'
 import AppBarMenu from './AppBarMenu'
+import GoogleConnection from './GoogleConnection'
 
 type Properties = {title: string, userMenu?: boolean}
 export default function AppBar({title, userMenu = true}: Properties) {
@@ -16,7 +17,8 @@ export default function AppBar({title, userMenu = true}: Properties) {
                     <Typography variant="h6" component="div" sx={{ fontSize: 16, flexGrow: 1 }}>
                         {title}
                     </Typography>
-                    {userMenu && <UserMenu/>}
+                    {userMenu && <GitHubConnection/>}
+                    {userMenu && <GoogleConnection/>}
                 </Toolbar>
             </Mui_AppBar>
         </Box>

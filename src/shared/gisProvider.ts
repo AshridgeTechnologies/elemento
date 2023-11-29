@@ -39,3 +39,10 @@ export const authorizeWithGoogle = async (callback: () => void) => {
     client.requestAccessToken()
 }
 
+export const deauthorize = async (callback: () => void) => {
+    if (!access_token) return
+
+    await google.accounts.oauth2.revoke(access_token, callback)
+    access_token = null
+}
+
