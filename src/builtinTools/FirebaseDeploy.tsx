@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useState} from 'react'
 import {useAsync} from 'react-async'
-import GitHubLogin from './GitHubLogin'
 import {Button, Stack, TextField, Typography} from '@mui/material'
-import GoogleLogin from './GoogleLogin'
-import {googleAccessToken} from '../shared/gisProvider'
-import {gitHubAccessToken} from '../shared/authentication'
+import {googleAccessToken, useAuthorizedState} from '../shared/gisProvider'
+import {currentUser, gitHubAccessToken, useSignedInState} from '../shared/authentication'
 import {Editor} from '../editorToolApis/EditorControllerClient'
+import GitHubConnection from '../shared/GitHubConnection'
+import GoogleConnection from '../shared/GoogleConnection'
 
 const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     console.log('Deploying from', gitRepoUrl, 'to', firebaseProjectId)
@@ -31,6 +31,33 @@ const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
 }
 
 const getSettings = ()=> Editor.GetSettings('firebase').then( (settings: any) => settings.projectId)
+
+function GitHubLogin() {
+    const signedIn = useSignedInState()
+    const user = currentUser()
+
+    return (
+        <Stack direction='row' spacing={4}>
+            <GitHubConnection/>
+            <Typography>{signedIn
+                ? `Connected to GitHub as ${user!.email} - ${user!.displayName ?? ''}`
+                : 'Connection to GitHub required'}</Typography>
+        </Stack>
+    )
+}
+
+function GoogleLogin() {
+    const signedIn = useAuthorizedState()
+
+    return (
+        <Stack direction='row' spacing={4}>
+            <GoogleConnection/>
+            <Typography>{signedIn
+                ? `Connected to Google`
+                : 'Connection to Google required'}</Typography>
+        </Stack>
+    )
+}
 
 export default function FirebaseDeploy() {
     const [gitRepoUrl, setGitRepoUrl] = useState<string>('')

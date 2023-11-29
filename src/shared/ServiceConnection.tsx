@@ -24,7 +24,7 @@ export default function ServiceConnection({serviceName, icon: Icon, signIn, sign
 
     return (
         <div>
-            <Button variant='contained' disableElevation={true} startIcon={<Icon/>}
+            <Button variant='contained' disableElevation={true} startIcon={<Icon/>} sx={{width: '9em'}}
                           aria-label={`Connect to ${serviceName}`}
                           aria-controls='userPanel'
                           aria-haspopup='true'

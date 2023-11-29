@@ -25,7 +25,7 @@ Requirements
 - ✅ Server apps in preview update immediately
 - ✅ Studio uploads server apps to preview
 - Server apps in preview are secured
-- Clear error messages if hosting project not set
+- Show clear error messages if hosting project not set
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
@@ -68,6 +68,7 @@ Studio uploads to preview server
 - ✅ So - local settings for project
 - ✅ Store settings in settings.json file, exclude from git, available on Project
 - ✅ Deploy tool can update settings
+- Need to send Google access token
 - Need to throttle updates to maybe one every 1-3 seconds - different to client side writes - https://github.com/sindresorhus/debounce
 - Need to update client after new version uploaded
 - Need to ensure all uploaded when load project
@@ -95,7 +96,7 @@ Use preview server from Studio
 Secure preview server
 ---------------------
 
-- Need to send access token to update the storage cache, and wait for it
+- ✅ Need to send access token to update the storage cache, and wait for it
 
 Later to secure calls to the functions:
 - Extension has a password hash in its config
