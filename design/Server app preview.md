@@ -93,3 +93,57 @@ Decisions
 - Use Function constructor to wrap and create the Server app function
 - Remove the server runtime import from the code
 - get server runtime outside and pass into wrapper function as an argument, so still in closure
+
+Server app reloading throttling
+===============================
+
+Needs
+-----
+
+- Server app function is not overloaded
+- Out of order updates prevented
+- Always upload the latest version
+- Client flicker is reduced
+- Feedback to user about updates
+- Throttle updates to maybe one every 1-3 seconds - different to client side writes - https://github.com/sindresorhus/debounce
+- Ensure latest is uploaded
+- Update client after new version uploaded - clear caches
+- Ensure all uploaded when load project
+- Only upload if changed
+
+Forces
+------
+
+- HTTP calls could complete out of order
+- Could get multiple instances of preview serverless function
+- Update client only once server update is complete
+- Could get a new update before the HTTP call has completed
+- Different needs to client updates, which should be immediate
+- Longer wait for server updates acceptable if obvious to user
+- Server app updates currently done when anything updates
+- Only need to update the server app that has changed
+- ProjectBuilder already has many responsibilities
+- Important to write all files immediately and in parallel if possible when open project
+- Writing multiple files in one call would be quicker, easier to manage and avoid creating multiple server function instances
+
+Possibilities
+-------------
+
+- Ensure only one HTTP call at a time
+- Wait for interval (1s?) after server app update
+- Limit preview function to one instance
+- Hold last uploaded version of a file to compare
+- File writer wrapper to throttle updates and suppress unnecessary writes
+- Two separate wrappers for above
+- Do one or both in ProjectBuilder
+- File writer wrapper has onStatusChange used to set progress message in EditorRunner
+- Write multiple files in one call - separators in text, or JSON stringify
+
+Decisions
+---------
+
+- Limit preview server to one instance
+- Change preview put to handle multiple files
+- File writer wrapper to hold latest of each file and pass through only changed files
+- Replace existing file writer with one that writes multiple files, throttles to interval, waits for each call to complete and has status
+- Have a status message in Studio page (App bar?), updated from file writer onStatusChange

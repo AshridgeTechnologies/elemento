@@ -1,7 +1,9 @@
 import {ElementType, PropertyExpr, PropertyValue} from '../model/Types'
-import lodash from 'lodash'; const {isObject} = lodash;
+import lodash from 'lodash';
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
+
+const {isObject} = lodash;
 
 export function definedPropertiesOf(obj: object) {
     return Object.fromEntries(Object.entries(obj).filter(([,val]) => val !== undefined))
@@ -76,3 +78,4 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
         return Promise.reject(e);
     }
 }
+export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))

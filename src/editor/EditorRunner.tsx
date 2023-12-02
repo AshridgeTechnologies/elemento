@@ -52,6 +52,7 @@ import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
+import {googleAccessToken} from '../shared/gisProvider'
 
 const {debounce} = lodash;
 
@@ -155,8 +156,6 @@ export default function EditorRunner() {
         projectHandler.setProject(proj, name, settingsHandler)
         updatePreviewUrlFromSettings()
         setProject(proj)
-
-        // add to ProjectHandler: initial settings, disk project store, and async function to save them back to the DPS
         await projectBuilderRef.current?.build()
 
         setUpdateTime(Date.now())
@@ -177,7 +176,7 @@ export default function EditorRunner() {
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview/server`
         const serverFileWriter = new MultiFileWriter(
-            new HttpFileWriter(previewUploadUrl),
+            new HttpFileWriter(previewUploadUrl, googleAccessToken),
             new DiskProjectStoreFileWriter(projectStore, 'dist/server')
         )
         return new ProjectBuilder({

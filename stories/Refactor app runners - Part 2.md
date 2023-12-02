@@ -26,6 +26,7 @@ Requirements
 - ✅ Studio uploads server apps to preview
 - Server apps in preview are secured
 - Show clear error messages if hosting project not set
+- Show clear progress messages while loading to preview server
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
@@ -44,7 +45,7 @@ Requirements
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
 - Remove old dev server
-- Tools menu, with Firebase Deploy as a standard Tool
+- ✅ Tools menu, with Firebase Deploy as a standard Tool
 - Project reload, or auto when update settings
 
 Preview server
@@ -68,10 +69,13 @@ Studio uploads to preview server
 - ✅ So - local settings for project
 - ✅ Store settings in settings.json file, exclude from git, available on Project
 - ✅ Deploy tool can update settings
-- Need to send Google access token
-- Need to throttle updates to maybe one every 1-3 seconds - different to client side writes - https://github.com/sindresorhus/debounce
-- Need to update client after new version uploaded
-- Need to ensure all uploaded when load project
+- ✅ Need to send Google access token
+- ✅ Limit preview server to one instance
+- ✅ Change preview put to handle multiple files
+- File writer wrapper to hold latest of each file and pass through only changed files
+- File writer wrapper that writes multiple files, throttles to interval, waits for each call to complete
+- Status message in Studio page (App bar?), updated from file writer onStatusChange
+- Clear caches on client when status changes to done
 - Need to clear out old project
 - Ensure could swap out for another hosting arrangement
 

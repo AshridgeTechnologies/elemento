@@ -14,12 +14,15 @@ test('puts file to given URL', async () => {
     })
 })
 
-test('puts file to given URL supplied as a function', async () => {
-    const writer = new HttpFileWriter(() => 'http://the.dev.server/file')
+test('puts file to given URL supplied as a function with firebase access token', async () => {
+    const writer = new HttpFileWriter(() => 'http://the.dev.server/file', ()=> 'firebase-token-123')
     const contents = 'The file contents'
     await expect(writer.writeFile('dir1/TheApp.js', contents)).resolves.toBe(undefined)
     expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/file/dir1/TheApp.js', {
         method: "PUT",
         body: contents,
+        headers: {
+            'x-firebase-access-token': 'firebase-token-123'
+        }
     })
 })
