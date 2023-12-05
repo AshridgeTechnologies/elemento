@@ -24,9 +24,9 @@ Requirements
 - ✅ Server app runner uploads and runs previews of server apps
 - ✅ Server apps in preview update immediately
 - ✅ Studio uploads server apps to preview
-- Server apps in preview are secured
-- Show clear error messages if hosting project not set
-- Show clear progress messages while loading to preview server
+- ✅ Server apps in preview are secured
+- Show clear error messages if hosting problems, eg project not set
+- Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization

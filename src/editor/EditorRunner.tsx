@@ -53,6 +53,9 @@ import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {googleAccessToken} from '../shared/gisProvider'
+import ThrottledCombinedFileWriter, {Status} from './ThrottledCombinedFileWriter'
+import HttpCombinedFileWriter from './HttpCombinedFileWriter'
+import CachingFileWriter from './CachingFileWriter'
 
 const {debounce} = lodash;
 
@@ -114,6 +117,7 @@ export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
     const [updateTime, setUpdateTime] = useState<number | null>(null)
+    const [serverUpdateStatus, setServerUpdateStatus] = useState<Status>('complete')
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [openFromGitHubUrl, setOpenFromGitHubUrl] = useState<string | null>('')
@@ -174,9 +178,12 @@ export default function EditorRunner() {
             new DiskProjectStoreFileWriter(projectStore, 'dist/tools')
         )
 
-        const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview/server`
+        const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
+        const combinedWriter = new HttpCombinedFileWriter(previewUploadUrl, googleAccessToken)
+        const previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, 1000, setServerUpdateStatus)
+        const cachingWriter = new CachingFileWriter(previewServerWriter, 'server/')
         const serverFileWriter = new MultiFileWriter(
-            new HttpFileWriter(previewUploadUrl, googleAccessToken),
+            cachingWriter,
             new DiskProjectStoreFileWriter(projectStore, 'dist/server')
         )
         return new ProjectBuilder({
@@ -563,6 +570,7 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
+            const status = <Typography minWidth='10em' fontSize='0.9em' color={serverUpdateStatus === 'error' ? 'error' : 'inherit'}>App updates: {serverUpdateStatus}</Typography>
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
@@ -572,7 +580,8 @@ export default function EditorRunner() {
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
                     selectedItemIds, onHelp,
-                    toolItems
+                    toolItems,
+                    status
                 }}/>
             </Box>
 

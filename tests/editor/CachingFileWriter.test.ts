@@ -16,6 +16,13 @@ test('writes new file to downstream FileWriter', async () => {
     expect(mockFileWriter.writeFile).toHaveBeenCalledWith('file1.txt', contents)
 })
 
+test('writes new file with path prefix if supplied', async () => {
+    const mockFileWriter = mockWriter()
+    const writer = new CachingFileWriter(mockFileWriter, 'server/')
+    await writer.writeFile('file1.txt', contents)
+    expect(mockFileWriter.writeFile).toHaveBeenCalledWith('server/file1.txt', contents)
+})
+
 test('does not write unchanged file to downstream FileWriter', async () => {
     const mockFileWriter = mockWriter()
     const writer = new CachingFileWriter(mockFileWriter)

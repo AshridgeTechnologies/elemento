@@ -1,10 +1,9 @@
 import ThrottledCombinedFileWriter from '../../src/editor/ThrottledCombinedFileWriter'
-import {CombinedFileWriter, FileContents} from '../../src/generator/ProjectBuilder'
-import { wait } from '../testutil/testHelpers'
+import {CombinedFileWriter} from '../../src/generator/ProjectBuilder'
+import {wait} from '../testutil/testHelpers'
 
 const mockWriter = (delay: number = 0) => {
-    const writeFiles = jest.fn().mockImplementation( ()=> wait(delay))
-    return {writeFiles} as CombinedFileWriter
+    return {writeFiles: jest.fn().mockImplementation(() => wait(delay))} as CombinedFileWriter
 }
 
 const contents1 = 'The file 1 contents'
@@ -73,17 +72,37 @@ test('updates status until downstream write complete', async () => {
     const onStatusChange = jest.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
-    expect(onStatusChange).toHaveBeenLastCalledWith('waiting')
+    expect(onStatusChange).toHaveBeenLastCalledWith('waiting', undefined)
     await wait(90)
     await writer.writeFile('file2.txt', contents2)
     expect(onStatusChange).toHaveBeenCalledTimes(1)
 
     await wait(120)
     expect(onStatusChange).toHaveBeenCalledTimes(2)
-    expect(onStatusChange).toHaveBeenLastCalledWith('updating')
+    expect(onStatusChange).toHaveBeenLastCalledWith('updating', undefined)
 
     await wait(100)
     expect(onStatusChange).toHaveBeenCalledTimes(3)
-    expect(onStatusChange).toHaveBeenLastCalledWith('complete')
+    expect(onStatusChange).toHaveBeenLastCalledWith('complete', undefined)
+})
 
+test('updates status if write fails', async () => {
+    const mockFileWriter = {writeFiles: jest.fn().mockImplementation(() => wait(100).then( ()=> {
+            throw new Error('Cannot do this')
+        }))} as CombinedFileWriter
+    const onStatusChange = jest.fn()
+    const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
+    await writer.writeFile('file1.txt', contents1)
+    expect(onStatusChange).toHaveBeenLastCalledWith('waiting', undefined)
+    await wait(90)
+    await writer.writeFile('file2.txt', contents2)
+    expect(onStatusChange).toHaveBeenCalledTimes(1)
+
+    await wait(120)
+    expect(onStatusChange).toHaveBeenCalledTimes(2)
+    expect(onStatusChange).toHaveBeenLastCalledWith('updating', undefined)
+
+    await wait(100)
+    expect(onStatusChange).toHaveBeenCalledTimes(3)
+    expect(onStatusChange).toHaveBeenLastCalledWith('error', 'Cannot do this')
 })
