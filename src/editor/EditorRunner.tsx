@@ -168,6 +168,14 @@ export default function EditorRunner() {
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
 
+    const onServerUpdateStatusChange = (newStatus: Status) => {
+        if (newStatus === 'complete') {
+            refreshServerAppConnectors()
+        }
+
+        setServerUpdateStatus(newStatus)
+    }
+
     const newProjectBuilder = (projectStore: DiskProjectStore) => {
         const clientFileWriter = new MultiFileWriter(
             new PostMessageFileWriter(navigator.serviceWorker.controller!),
@@ -180,7 +188,7 @@ export default function EditorRunner() {
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
         const combinedWriter = new HttpCombinedFileWriter(previewUploadUrl, googleAccessToken)
-        const previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, 1000, setServerUpdateStatus)
+        const previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, 1000, onServerUpdateStatusChange)
         const cachingWriter = new CachingFileWriter(previewServerWriter, 'server/')
         const serverFileWriter = new MultiFileWriter(
             cachingWriter,
@@ -206,6 +214,12 @@ export default function EditorRunner() {
         setTools(initialOpenTools)
         setSelectedTool(initialOpenTools[0]?.codeName ?? null)
         setShowTools(initialOpenTools.length > 0)
+    }
+
+    function refreshServerAppConnectors() {
+        const serverAppConnectorIds = getOpenProject().findElementsBy(el => el.kind === 'ServerAppConnector').map( el => el.id)
+        const paths = serverAppConnectorIds.map( id => getOpenProject().findElementPath(id))
+        paths.map( id => callFunctionInPreview(id!, 'Refresh'))
     }
 
     function renameFile(oldPath: string, newPath: string) {

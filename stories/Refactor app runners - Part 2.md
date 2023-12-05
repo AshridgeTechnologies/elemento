@@ -38,8 +38,8 @@ Requirements
 - Clear instructions for the manual steps
 - ✅ Use hosting where possible for faster response and lower costs
 - Appropriate caching for all files - use cache where possible, close-spaced deploys work
-- Can deploy to preview channel
 - Use unique filenames with caching and/or ensure cache cleared
+- Can deploy to preview channel
 - Password protect and test clear cache function - or remove
 - Extension and management tool independent of Elemento
 - All runtime and generated server JS files inc cjs are served with correct content type
@@ -72,10 +72,12 @@ Studio uploads to preview server
 - ✅ Need to send Google access token
 - ✅ Limit preview server to one instance
 - ✅ Change preview put to handle multiple files
-- File writer wrapper to hold latest of each file and pass through only changed files
-- File writer wrapper that writes multiple files, throttles to interval, waits for each call to complete
-- Status message in Studio page (App bar?), updated from file writer onStatusChange
-- Clear caches on client when status changes to done
+- ✅ File writer wrapper to hold latest of each file and pass through only changed files
+- ✅ File writer wrapper that writes multiple files, throttles to interval, waits for each call to complete
+- ✅ Status message in Studio page (App bar?), updated from file writer onStatusChange
+- Throttled writer can retry and/or flush immediately
+- Throttled writer retries files in a failed write without overwriting updates that came in during the call
+- ✅ Clear caches on client when status changes to done
 - Need to clear out old project
 - Ensure could swap out for another hosting arrangement
 
