@@ -1,7 +1,7 @@
 import {CombinedFileWriter, FileContents, FileWriter} from '../generator/ProjectBuilder'
 import {noop, wait} from '../util/helpers'
 
-export type Status = 'waiting' | 'updating' | 'complete' | 'error'
+export type Status = 'waiting' | 'updating' | 'complete' | Error
 /**
  * Waits until interval ms have elapsed after the last writeFile call before writing to the downstream writer.
  * Also waits until the previous downstream write has completed before starting another.
@@ -45,13 +45,13 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         this.updateStatus('updating')
         return this.fileWriter.writeFiles(filesToWrite)
             .then( ()=> this.updateStatus('complete'))
-            .catch( (err: Error)=> this.updateStatus('error', err.message ) )
+            .catch( (err: Error)=> this.updateStatus(err) )
     }
 
-    private updateStatus(newStatus: Status, message?: string) {
+    private updateStatus(newStatus: Status) {
         if (newStatus !== this.status) {
             this.status = newStatus
-            this.onStatusChange(newStatus, message)
+            this.onStatusChange(newStatus)
         }
     }
 }

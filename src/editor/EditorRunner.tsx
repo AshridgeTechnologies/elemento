@@ -23,12 +23,11 @@ import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
-import ProjectBuilder from "../generator/ProjectBuilder";
-import BrowserProjectLoader from "../generator/BrowserProjectLoader";
-import DiskProjectStoreFileLoader from "./DiskProjectStoreFileLoader";
-import BrowserRuntimeLoader from "./BrowserRuntimeLoader";
-import PostMessageFileWriter from "./PostMessageFileWriter";
-import HttpFileWriter from "./HttpFileWriter";
+import ProjectBuilder from '../generator/ProjectBuilder'
+import BrowserProjectLoader from '../generator/BrowserProjectLoader'
+import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
+import BrowserRuntimeLoader from './BrowserRuntimeLoader'
+import PostMessageFileWriter from './PostMessageFileWriter'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
@@ -52,7 +51,7 @@ import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
-import {googleAccessToken} from '../shared/gisProvider'
+import {getOrRequestGoogleAccessToken} from '../shared/gisProvider'
 import ThrottledCombinedFileWriter, {Status} from './ThrottledCombinedFileWriter'
 import HttpCombinedFileWriter from './HttpCombinedFileWriter'
 import CachingFileWriter from './CachingFileWriter'
@@ -187,7 +186,7 @@ export default function EditorRunner() {
         )
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
-        const combinedWriter = new HttpCombinedFileWriter(previewUploadUrl, googleAccessToken)
+        const combinedWriter = new HttpCombinedFileWriter(previewUploadUrl, getOrRequestGoogleAccessToken)
         const previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, 1000, onServerUpdateStatusChange)
         const cachingWriter = new CachingFileWriter(previewServerWriter, 'server/')
         const serverFileWriter = new MultiFileWriter(
@@ -584,7 +583,7 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
-            const status = <Typography minWidth='10em' fontSize='0.9em' color={serverUpdateStatus === 'error' ? 'error' : 'inherit'}>App updates: {serverUpdateStatus}</Typography>
+            const status = <Typography minWidth='10em' fontSize='0.9em' color={serverUpdateStatus instanceof Error ? 'error' : 'inherit'}>App updates: {serverUpdateStatus.toString()}</Typography>
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,

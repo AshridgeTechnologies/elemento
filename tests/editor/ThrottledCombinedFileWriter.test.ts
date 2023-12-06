@@ -72,18 +72,18 @@ test('updates status until downstream write complete', async () => {
     const onStatusChange = jest.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
-    expect(onStatusChange).toHaveBeenLastCalledWith('waiting', undefined)
+    expect(onStatusChange).toHaveBeenLastCalledWith('waiting')
     await wait(90)
     await writer.writeFile('file2.txt', contents2)
     expect(onStatusChange).toHaveBeenCalledTimes(1)
 
     await wait(120)
     expect(onStatusChange).toHaveBeenCalledTimes(2)
-    expect(onStatusChange).toHaveBeenLastCalledWith('updating', undefined)
+    expect(onStatusChange).toHaveBeenLastCalledWith('updating')
 
     await wait(100)
     expect(onStatusChange).toHaveBeenCalledTimes(3)
-    expect(onStatusChange).toHaveBeenLastCalledWith('complete', undefined)
+    expect(onStatusChange).toHaveBeenLastCalledWith('complete')
 })
 
 test('updates status if write fails', async () => {
@@ -93,16 +93,16 @@ test('updates status if write fails', async () => {
     const onStatusChange = jest.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
-    expect(onStatusChange).toHaveBeenLastCalledWith('waiting', undefined)
+    expect(onStatusChange).toHaveBeenLastCalledWith('waiting')
     await wait(90)
     await writer.writeFile('file2.txt', contents2)
     expect(onStatusChange).toHaveBeenCalledTimes(1)
 
     await wait(120)
     expect(onStatusChange).toHaveBeenCalledTimes(2)
-    expect(onStatusChange).toHaveBeenLastCalledWith('updating', undefined)
+    expect(onStatusChange).toHaveBeenLastCalledWith('updating')
 
     await wait(100)
     expect(onStatusChange).toHaveBeenCalledTimes(3)
-    expect(onStatusChange).toHaveBeenLastCalledWith('error', 'Cannot do this')
+    expect(onStatusChange).toHaveBeenLastCalledWith(new Error('Cannot do this'))
 })

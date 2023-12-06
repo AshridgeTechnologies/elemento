@@ -6,7 +6,7 @@ import {SvgIconComponent} from '@mui/icons-material'
 export default function ServiceConnection({serviceName, icon: Icon, signIn, signOut, signedInInfo}: {
     serviceName: string,
     icon: SvgIconComponent,
-    signIn: () => Promise<void>,
+    signIn: () => Promise<any>,
     signOut: () => Promise<void>,
     signedInInfo: () => string | null,
 }) {
