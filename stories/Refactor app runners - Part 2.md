@@ -78,7 +78,8 @@ Studio uploads to preview server
 - ✅ File writer wrapper to hold latest of each file and pass through only changed files
 - ✅ File writer wrapper that writes multiple files, throttles to interval, waits for each call to complete
 - ✅ Status message in Studio page (App bar?), updated from file writer onStatusChange
-- Throttled writer can retry and/or flush immediately
+- ✅ Throttled writer can retry and/or flush immediately
+- ✅ Throttled abandons waiting writes if fails
 - Throttled writer retries files in a failed write without overwriting updates that came in during the call
 - ✅ Clear caches on client when status changes to done
 - Need to clear out old project

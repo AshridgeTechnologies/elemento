@@ -10,7 +10,7 @@ export type Status = 'waiting' | 'updating' | 'complete' | Error
 export default class ThrottledCombinedFileWriter implements FileWriter {
     private readonly filesPending: Map<string, FileContents> =
         new Map()
-    private writePromise: Promise<void> = Promise.resolve()
+    private writePromise: Promise<undefined | Error> = Promise.resolve(undefined)
     private updateCount = 0
     private status: Status = 'complete'
 
@@ -27,16 +27,24 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
     }
 
     private scheduleNextWrite() {
-        // ensure a write promise will just do nothing if more file changes have come in
+        // ensure a write promise will just do nothing if more file changes have come in or has been flushed
         const updateCountWhenScheduled = this.updateCount
-        const writeIfNoMoreUpdates = () => {
-            if (this.updateCount === updateCountWhenScheduled) {
+        const writeIfNoMoreUpdates = (maybeErr: Error | undefined) => {
+            if (this.updateCount === updateCountWhenScheduled && this.hasPendingFiles() && !maybeErr) {
                 this.writePromise = this.writePendingFiles()
             }
         }
 
         const intervalPromise = wait(this.interval)
-        Promise.all([intervalPromise, this.writePromise]).then(writeIfNoMoreUpdates)
+        // console.log('scheduleNextWrite', this.writePromise)
+        // this.writePromise.then(()=> console.log('write ok'), (err)=> console.log('write err', err))
+        Promise.all([intervalPromise, this.writePromise])
+            .then(([_, writeResult]) => writeIfNoMoreUpdates(writeResult))
+            .catch(noop) // already logged in writePendingFiles
+    }
+
+    private hasPendingFiles() {
+        return this.filesPending.size > 0
     }
 
     private writePendingFiles() {
@@ -44,8 +52,15 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         this.filesPending.clear()
         this.updateStatus('updating')
         return this.fileWriter.writeFiles(filesToWrite)
-            .then( ()=> this.updateStatus('complete'))
-            .catch( (err: Error)=> this.updateStatus(err) )
+            .then( ()=> {
+                this.updateStatus('complete')
+                return undefined
+            })
+            .catch( (err: Error)=> {
+                this.updateStatus(err)
+                console.error('Failed to update files', err)
+                return err
+            })
     }
 
     private updateStatus(newStatus: Status) {
@@ -53,5 +68,9 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
             this.status = newStatus
             this.onStatusChange(newStatus)
         }
+    }
+
+    async flush() {
+        await this.writePendingFiles()
     }
 }
