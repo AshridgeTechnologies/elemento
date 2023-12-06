@@ -80,7 +80,7 @@ Studio uploads to preview server
 - ✅ Status message in Studio page (App bar?), updated from file writer onStatusChange
 - ✅ Throttled writer can retry and/or flush immediately
 - ✅ Throttled abandons waiting writes if fails
-- Throttled writer retries files in a failed write without overwriting updates that came in during the call
+- ✅ Throttled writer retries files in a failed write without overwriting updates that came in during the call
 - ✅ Clear caches on client when status changes to done
 - Need to clear out old project
 - Ensure could swap out for another hosting arrangement

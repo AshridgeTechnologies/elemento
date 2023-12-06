@@ -6,15 +6,21 @@ const mockWriter = (delay: number = 0) => {
     return {writeFiles: jest.fn().mockImplementation(() => wait(delay))} as CombinedFileWriter
 }
 
+const failingMockWriter = (delay: number = 100) => {
+    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+    return {
+        writeFiles: jest.fn().mockImplementation(() => wait(delay).then(() => {
+            throw new Error('Cannot do this')
+        }))
+    } as CombinedFileWriter
+}
+
 const contents1 = 'The file 1 contents'
 const contents2 = 'The file 2 contents'
-const contents3 = 'The file 3 contents'
 
-let originalConsole: typeof globalThis.console
-beforeEach(() => {
-    originalConsole = console
-    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
-})
+const contents3 = 'The file 3 contents'
+let originalConsole = globalThis.console
+
 afterEach(() => {
     globalThis.console = originalConsole
 })
@@ -96,9 +102,7 @@ test('updates status until downstream write complete', async () => {
 })
 
 test('updates status if write fails', async () => {
-    const mockFileWriter = {writeFiles: jest.fn().mockImplementation(() => wait(100).then( ()=> {
-            throw new Error('Cannot do this')
-        }))} as CombinedFileWriter
+    const mockFileWriter = failingMockWriter()
     const onStatusChange = jest.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
@@ -116,7 +120,7 @@ test('updates status if write fails', async () => {
     expect(onStatusChange).toHaveBeenLastCalledWith(new Error('Cannot do this'))
 })
 
-test('flushes multiple new files immediately to downstream CombinedFileWriter', async () => {
+test('flushes multiple new files (if any) immediately to downstream CombinedFileWriter', async () => {
     const mockFileWriter = mockWriter()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
     await writer.writeFile('file1.txt', contents1)
@@ -126,12 +130,15 @@ test('flushes multiple new files immediately to downstream CombinedFileWriter', 
     expect(mockFileWriter.writeFiles).toHaveBeenCalledWith({'file1.txt': contents1, 'file2.txt': contents2})
     await wait(130)
     expect(mockFileWriter.writeFiles).toHaveBeenCalledTimes(1)
+
+    // should do nothing if no more updates
+    await writer.flush()
+    expect(mockFileWriter.writeFiles).toHaveBeenCalledTimes(1)
+
 })
 
 test('waits for downstream write but does not write if it fails', async () => {
-    const mockFileWriter = {writeFiles: jest.fn().mockImplementation(() => wait(100).then( ()=> {
-            throw new Error('Cannot do this')
-        }))} as CombinedFileWriter
+    const mockFileWriter = failingMockWriter()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
     await writer.writeFile('file1.txt', contents1)
     await wait(120)
@@ -143,6 +150,35 @@ test('waits for downstream write but does not write if it fails', async () => {
     expect(mockFileWriter.writeFiles).toHaveBeenCalledTimes(1)
     expect(console.error).toHaveBeenCalledWith('Failed to update files', new Error('Cannot do this'))
 })
+
+test('keeps files in a failed write and includes in next write unless further updated, until fixed', async () => {
+    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+    let throwError = true
+    const mockFileWriter =  {
+        writeFiles: jest.fn().mockImplementation(() => wait(0).then(() => {
+            if (throwError) throw new Error('Cannot do this')
+        }))
+    } as CombinedFileWriter
+
+    const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
+    await writer.writeFile('file1.txt', contents1)
+    await writer.writeFile('file2.txt', contents2)
+    await wait(120)
+    expect(mockFileWriter.writeFiles).toHaveBeenNthCalledWith(1, {'file1.txt': contents1, 'file2.txt': contents2})
+
+    await writer.writeFile('file1.txt', contents1 + 1)
+    await writer.writeFile('file3.txt', contents3)
+    await wait(120)
+    expect(mockFileWriter.writeFiles).toHaveBeenNthCalledWith(2, {'file1.txt': contents1 + 1, 'file2.txt': contents2, 'file3.txt': contents3})
+
+    throwError = false
+    await writer.flush()
+    expect(mockFileWriter.writeFiles).toHaveBeenNthCalledWith(3, {'file1.txt': contents1 + 1, 'file2.txt': contents2, 'file3.txt': contents3})
+
+    await writer.flush()
+    expect(mockFileWriter.writeFiles).toHaveBeenCalledTimes(3)
+})
+
 
 
 
