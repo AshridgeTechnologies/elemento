@@ -9,7 +9,7 @@ export type Status = 'waiting' | 'updating' | 'complete' | Error
  */
 export default class ThrottledCombinedFileWriter implements FileWriter {
     private filesPending: {[filepath: string]: FileContents} = {}
-    private writePromise: Promise<undefined | Error> = Promise.resolve(undefined)
+    private writePromise: Promise<void> = Promise.resolve(undefined)
     private updateCount = 0
     private status: Status = 'complete'
 
@@ -28,22 +28,13 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
     private scheduleNextWrite() {
         // ensure a write promise will just do nothing if more file changes have come in or has been flushed
         const updateCountWhenScheduled = this.updateCount
-        const writeIfNoMoreUpdates = (maybeErr: Error | undefined) => {
-            if (this.updateCount === updateCountWhenScheduled && this.hasPendingFiles() && !maybeErr) {
-                this.writePromise = this.writePendingFiles()
+        const writeIfNoMoreUpdates = () => {
+            if (this.updateCount === updateCountWhenScheduled && this.hasPendingFiles()) {
+                this.writePendingFiles()
             }
         }
 
-        const intervalPromise = wait(this.interval)
-        // console.log('scheduleNextWrite', this.writePromise)
-        // this.writePromise.then(()=> console.log('write ok'), (err)=> console.log('write err', err))
-        Promise.all([intervalPromise, this.writePromise])
-            .then(([_, writeResult]) => writeIfNoMoreUpdates(writeResult))
-            .catch(noop) // already logged in writePendingFiles
-        const resetWritePromise = () => {
-            this.writePromise = Promise.resolve(undefined)
-        }
-        this.writePromise.then( resetWritePromise, resetWritePromise )
+        wait(this.interval).then( () => this.writePromise ).then(writeIfNoMoreUpdates)
     }
 
     private hasPendingFiles() {
@@ -54,16 +45,14 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         const filesToWrite = this.filesPending
         this.filesPending = {}
         this.updateStatus('updating')
-        return this.fileWriter.writeFiles(filesToWrite)
+        this.writePromise = this.fileWriter.writeFiles(filesToWrite)
             .then( ()=> {
                 this.updateStatus('complete')
-                return undefined
             })
             .catch( (err: Error)=> {
                 this.filesPending = {...filesToWrite, ...this.filesPending}
                 this.updateStatus(err)
                 console.error('Failed to update files', err)
-                return err
             })
     }
 

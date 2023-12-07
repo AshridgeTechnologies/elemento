@@ -25,9 +25,9 @@ Requirements
 - ✅ Server apps in preview update immediately
 - ✅ Studio uploads server apps to preview
 - ✅ Server apps in preview are secured
-- Show clear error messages if hosting problems, eg project not set
-- Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
-- Prompt for Google login when updates needed?
+- ✅ Show clear error messages if hosting problems, eg project not set
+- ✅ Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
+- ✅ Prompt for Google login when updates needed?
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
@@ -48,8 +48,8 @@ Requirements
 - Remove old dev server
 - ✅ Tools menu, with Firebase Deploy as a standard Tool
 - Project reload, or auto when update settings
-- Deal with expired access tokens
-- Login to Google auto, or prompt, if possible, when need to update
+- ✅ Deal with expired access tokens
+- ✅ Login to Google auto, or prompt, if possible, when need to update
 
 Preview server
 --------------
@@ -113,9 +113,9 @@ Secure preview server and UX
 - ✅ Wait for access token before continuing and warn if not present with error details
   - do this by throwing exception in HttpCombinedFileWriter if error getting token, used by ThrottledCombinedFile Writer to update status
 - ✅ Show details of errors in updating
-- Button to retry updates
+- ✅ Button to retry updates
   - do this by passing flushWrites fn to ProjectBuilder
-- No delay when updating server at project load time
+- ✅ No delay when updating server at project load time
 
 Later to secure calls to the functions:
 - Extension has a password hash in its config
