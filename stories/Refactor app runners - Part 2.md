@@ -114,6 +114,7 @@ Secure preview server and UX
   - do this by throwing exception in HttpCombinedFileWriter if error getting token, used by ThrottledCombinedFile Writer to update status
 - ✅ Show details of errors in updating
 - Button to retry updates
+  - do this by passing flushWrites fn to ProjectBuilder
 - No delay when updating server at project load time
 
 Later to secure calls to the functions:

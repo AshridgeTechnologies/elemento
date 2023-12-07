@@ -84,6 +84,8 @@ const runtimeLoader = {
     getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
 }
 
+const flushWrites = jest.fn().mockResolvedValue(undefined)
+
 const getFileLoader = (dirContents: object = {}, exists = true) => ({
     exists: jest.fn().mockResolvedValue(exists),
     listFiles: jest.fn().mockResolvedValue(Object.keys(dirContents)),
@@ -101,7 +103,8 @@ beforeEach(clearMocks)
 
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}) => {
-    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
+    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader,
+        clientFileWriter, toolFileWriter, serverFileWriter, flushWrites, ...props}
     return new ProjectBuilder(properties)
 }
 
@@ -137,7 +140,7 @@ test('skips asset files if dir does not exist', async () => {
     expect(fileLoader.listFiles).not.toHaveBeenCalled()
 })
 
-test('writes server files generated from Project for all apps', async () => {
+test('writes server files generated from Project for all apps and flushes immediately', async () => {
     const builder = newProjectBuilder()
     await builder.build()
 
@@ -147,6 +150,7 @@ test('writes server files generated from Project for all apps', async () => {
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
         ...expectedGeneratedCalls,
     ])
+    expect(flushWrites).toHaveBeenCalledTimes(1)
 })
 
 test('writes tool files for all tools to tool build with one copy of asset but not ToolImports', async () => {

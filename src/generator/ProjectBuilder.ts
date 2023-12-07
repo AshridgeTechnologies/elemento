@@ -39,7 +39,8 @@ export type Properties = {
     runtimeLoader: RuntimeLoader,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
-    serverFileWriter: FileWriter
+    serverFileWriter: FileWriter,
+    flushWrites: () => Promise<void>
 }
 
 export default class ProjectBuilder {
@@ -55,7 +56,7 @@ export default class ProjectBuilder {
 
     async build() {
         this.buildProjectFiles()
-        return Promise.all([this.writeProjectFiles(), this.copyAssetFiles()])
+        return Promise.all([this.writeProjectFiles(), this.copyAssetFiles()]).then(() => this.props.flushWrites())
     }
 
     updateProject() {

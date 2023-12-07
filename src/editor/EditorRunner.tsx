@@ -6,7 +6,7 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {AlertColor, Box, Grid, Typography,} from '@mui/material'
+import {AlertColor, Box, Button, Grid, Stack, Typography,} from '@mui/material'
 import Element, {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -193,13 +193,15 @@ export default function EditorRunner() {
             cachingWriter,
             new DiskProjectStoreFileWriter(projectStore, 'dist/server')
         )
+        const flushWrites = () => previewServerWriter.flush()
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
             runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
             clientFileWriter,
             toolFileWriter,
-            serverFileWriter
+            serverFileWriter,
+            flushWrites
         })
     }
 
@@ -583,7 +585,10 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
-            const status = <Typography minWidth='10em' fontSize='0.9em' color={serverUpdateStatus instanceof Error ? 'error' : 'inherit'}>App updates: {serverUpdateStatus.toString()}</Typography>
+            const isErrorStatus = serverUpdateStatus instanceof Error
+            const statusColor = isErrorStatus ? 'error' : 'inherit'
+            const retryButton = isErrorStatus ? <Button onClick={() => projectBuilderRef.current?.build()}>Retry</Button> : ''
+            const status = <Stack direction='row'><Typography minWidth='10em' fontSize='0.9em' paddingTop='8px' color={statusColor}>App updates: {serverUpdateStatus.toString()}</Typography>{retryButton}</Stack>
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
