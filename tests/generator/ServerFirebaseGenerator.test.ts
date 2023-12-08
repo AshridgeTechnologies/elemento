@@ -17,8 +17,9 @@ describe('generates files for multiple apps', () => {
 
     test('app1 file', () => {
         expect(serverApp1File.name).toBe('ServerApp1.mjs')
-        expect(serverApp1File.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
-import {globalFunctions} from './serverRuntime.cjs'
+        expect(serverApp1File.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
+const {globalFunctions} = serverRuntime
 
 const {Sum} = globalFunctions
 
@@ -40,7 +41,8 @@ export default ServerApp1`)
 
     test('app2 file', () => {
         expect(serverApp2File.name).toBe('ServerApp2.mjs')
-        expect(serverApp2File.contents).toBe(`import {runtimeFunctions} from './serverRuntime.cjs'
+        expect(serverApp2File.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
 
 const ServerApp2 = (user) => {
 

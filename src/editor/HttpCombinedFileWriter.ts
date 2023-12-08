@@ -9,10 +9,7 @@ export default class HttpCombinedFileWriter implements CombinedFileWriter {
     }
 
     async writeFiles(files: { [p: string]: FileContents }): Promise<void> {
-        const accessToken = await this.accessTokenFn()
-        const headers = accessToken ? {
-            'x-firebase-access-token': accessToken
-        }: undefined
+        const headers = await this.headers()
         const fileItems = Object.entries(files).map(([name, contents]) => FILE_HEADER_PREFIX + name + '\n' + contents.toString() + '\n' + EOF_DELIMITER )
         const contents = fileItems.join('\n')
         return fetch(this.urlFn(), {method: 'PUT', body: contents, headers}).then( resp => {
@@ -20,5 +17,21 @@ export default class HttpCombinedFileWriter implements CombinedFileWriter {
                 throw new Error(resp.statusText + ' ' + resp.status)
             }
         } )
+    }
+
+    async clean(): Promise<void> {
+        const headers = await this.headers()
+        return fetch(this.urlFn() + '/clear', {method: 'POST', headers}).then( resp => {
+            if (!resp.ok) {
+                throw new Error(resp.statusText + ' ' + resp.status)
+            }
+        } )
+    }
+
+    private async headers() {
+        const accessToken = await this.accessTokenFn()
+        return accessToken ? {
+            'x-firebase-access-token': accessToken
+        } : undefined
     }
 }

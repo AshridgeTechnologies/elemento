@@ -52,9 +52,8 @@ import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {getOrRequestGoogleAccessToken} from '../shared/gisProvider'
-import ThrottledCombinedFileWriter, {Status} from './ThrottledCombinedFileWriter'
-import HttpCombinedFileWriter from './HttpCombinedFileWriter'
-import CachingFileWriter from './CachingFileWriter'
+import {Status} from './ThrottledCombinedFileWriter'
+import ServerMultiFileWriter from './ServerMultiFileWriter'
 
 const {debounce} = lodash;
 
@@ -186,14 +185,13 @@ export default function EditorRunner() {
         )
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
-        const combinedWriter = new HttpCombinedFileWriter(previewUploadUrl, getOrRequestGoogleAccessToken)
-        const previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, 1000, onServerUpdateStatusChange)
-        const cachingWriter = new CachingFileWriter(previewServerWriter, 'server/')
-        const serverFileWriter = new MultiFileWriter(
-            cachingWriter,
-            new DiskProjectStoreFileWriter(projectStore, 'dist/server')
-        )
-        const flushWrites = () => previewServerWriter.flush()
+        const serverFileWriter = new ServerMultiFileWriter({
+            previewUploadUrl,
+            getAccessToken: getOrRequestGoogleAccessToken,
+            onServerUpdateStatusChange,
+            writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/server')]
+        })
+
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
@@ -201,7 +199,6 @@ export default function EditorRunner() {
             clientFileWriter,
             toolFileWriter,
             serverFileWriter,
-            flushWrites
         })
     }
 

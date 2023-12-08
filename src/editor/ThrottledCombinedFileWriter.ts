@@ -15,7 +15,7 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
 
     constructor(private readonly fileWriter: CombinedFileWriter,
                 private readonly interval: number,
-                private readonly onStatusChange: (status: Status, message?: string) => void = noop) {
+                private readonly onStatusChange: (status: Status) => void = noop) {
     }
 
     async writeFile(filepath: string, contents: FileContents): Promise<void> {

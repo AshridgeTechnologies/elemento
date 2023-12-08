@@ -50,6 +50,7 @@ Requirements
 - Project reload, or auto when update settings
 - ✅ Deal with expired access tokens
 - ✅ Login to Google auto, or prompt, if possible, when need to update
+- Elemento Apps is approved
 
 Preview server
 --------------

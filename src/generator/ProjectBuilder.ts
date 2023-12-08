@@ -29,8 +29,14 @@ export interface FileWriter {
     writeFile(filepath: string, contents: FileContents): Promise<void>
 }
 
+export interface ServerFileWriter extends FileWriter {
+    clean(): Promise<void>
+    flush(): Promise<void>
+}
+
 export interface CombinedFileWriter {
     writeFiles(files: {[filepath: string]:FileContents}): Promise<void>
+    clean(): Promise<void>
 }
 
 export type Properties = {
@@ -39,8 +45,7 @@ export type Properties = {
     runtimeLoader: RuntimeLoader,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
-    serverFileWriter: FileWriter,
-    flushWrites: () => Promise<void>
+    serverFileWriter: ServerFileWriter,
 }
 
 export default class ProjectBuilder {
@@ -56,7 +61,9 @@ export default class ProjectBuilder {
 
     async build() {
         this.buildProjectFiles()
-        return Promise.all([this.writeProjectFiles(), this.copyAssetFiles()]).then(() => this.props.flushWrites())
+        return this.props.serverFileWriter.clean()
+            .then( () => Promise.all([this.writeProjectFiles(), this.copyAssetFiles()]) )
+            .then(() => this.props.serverFileWriter.flush())
     }
 
     updateProject() {

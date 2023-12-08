@@ -1,5 +1,4 @@
 import HttpCombinedFileWriter from '../../src/editor/HttpCombinedFileWriter'
-import {CombinedFileWriter} from '../../src/generator/ProjectBuilder'
 
 let originalFetch = globalThis.fetch
 afterAll(() => globalThis.fetch = originalFetch)
@@ -10,7 +9,6 @@ const makeWriter = (accessTokenFn: () => Promise<string> = async () => 'firebase
     new HttpCombinedFileWriter(() => 'http://the.dev.server/preview', accessTokenFn)
 
 test('puts file to given URL supplied as a function with firebase access token', async () => {
-    const writer: CombinedFileWriter = new HttpCombinedFileWriter(() => 'http://the.dev.server/preview', async ()=> 'firebase-token-123')
     const files = {'file1.txt': 'File 1 contents', 'dir1/file2.txt': 'File 2 contents\nLine 2'}
     globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 200}))
     const expectedBody = `
@@ -46,4 +44,20 @@ test('rejects promise if cannot get access token', async () => {
     const error = new Error('Cannot get token')
     const writer = makeWriter(async () => { throw error} )
     await expect(writer.writeFiles(files)).rejects.toBe(error)
+})
+
+test('calls clean url with access token', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 200}))
+    await expect(makeWriter().clean()).resolves.toBe(undefined)
+    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/clear', {
+        method: 'POST',
+        headers: {
+            'x-firebase-access-token': 'firebase-token-123'
+        }
+    })
+})
+
+test('rejects if clean url has bad status', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 401, statusText: 'No way'}))
+    await expect(makeWriter().clean()).rejects.toStrictEqual(new Error('No way 401'))
 })
