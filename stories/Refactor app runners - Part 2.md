@@ -41,7 +41,7 @@ Requirements
 - Appropriate caching for all files - use cache where possible, close-spaced deploys work
 - Use unique filenames with caching and/or ensure cache cleared
 - Can deploy to preview channel
-- Password protect and test clear cache function - or remove
+- ✅ Password protect and test clear cache function - or remove
 - Extension and management tool independent of Elemento
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
@@ -83,7 +83,7 @@ Studio uploads to preview server
 - ✅ Throttled abandons waiting writes if fails
 - ✅ Throttled writer retries files in a failed write without overwriting updates that came in during the call
 - ✅ Clear caches on client when status changes to done
-- Need to clear out old project
+- ✅ Need to clear out old project
 - Ensure could swap out for another hosting arrangement
 
 Store project settings

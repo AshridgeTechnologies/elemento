@@ -142,6 +142,7 @@ Epics
 Tech debt
 ---------
 
+- Improve jsdom test performance = try happy-dom
 - Improve PW testing - eg https://www.checklyhq.com/blog/track-frontend-javascript-exceptions-with-playwright/
 - run.css - needed?  where from?- Copying layouts does not change names of contents
 - Look at https://gist.github.com/khalidx/1c670478427cc0691bda00a80208c8cc
