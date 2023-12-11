@@ -16,7 +16,7 @@ beforeEach(() => {
 
 const makeWriter = (...writers: FileWriter[]) =>
     new ServerMultiFileWriter({previewUploadUrl: () => 'http://the.dev.server/preview',
-        getAccessToken: async () => 'firebase-token-123',
+        previewPassword: async () => 'firebase-123',
         delay: 50,
         onServerUpdateStatusChange: onStatusChange,
         writers
@@ -35,7 +35,7 @@ File 1 contents
         method: 'PUT',
         body: expectedBody,
         headers: {
-            'x-firebase-access-token': 'firebase-token-123'
+            'x-preview-password': 'firebase-123'
         }
     })
     expect(onStatusChange).toHaveBeenNthCalledWith(1, 'waiting')
@@ -66,7 +66,7 @@ File 1 contents
         method: 'PUT',
         body: expectedBody,
         headers: {
-            'x-firebase-access-token': 'firebase-token-123'
+            'x-preview-password': 'firebase-123'
         }
     })
     expect(onStatusChange).toHaveBeenNthCalledWith(1, 'waiting')
@@ -81,7 +81,7 @@ test('cleans preview server', async () => {
     expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/clear', {
         method: 'POST',
         headers: {
-            'x-firebase-access-token': 'firebase-token-123'
+            'x-preview-password': 'firebase-123'
         }
     })
 })

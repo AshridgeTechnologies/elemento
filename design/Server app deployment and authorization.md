@@ -30,6 +30,8 @@ Forces
 - May want a Firebase project to deploy a client-only app
 - Want to handle errors cleanly in app anyway
 - Need a clear/better error handling and warning mechanism for Studio
+- Google recommends getting a code on the client and exchanging for an access token on the server
+- BUT this requires a client secret available on the server, and server cannot be tested except from a browser
 
 Preview-specific forces
 -----------------------
@@ -66,4 +68,8 @@ Decisions
 - Return error object from failed calls that does not blow up React
 - Report preview errors due to auth or unavailability to Studio errors
 - Nice to have: Add password to get calls in service worker
-- Nice to have: Use server-side token checking in admin server
+- **Do not** use server-side token checking in admin server, as:
+  - it is more complex to implement
+  - it is difficult to test
+  - offline access and automatic refresh are not needed
+  - it is not clear what the extra security advantages are

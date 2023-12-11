@@ -6,8 +6,13 @@ import {createElement} from 'react'
 import {TextElement} from '../../../src/runtime/components/index'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
+import {ErrorResult} from '../../../src/runtime/DataStore'
 
 const {Sum} = globalFunctions
+
+class MyClass {
+    toString() { return 'This is a MyClass' }
+}
 
 test('TextElement element produces output containing string children',
     snapshot(createElement(TextElement, {path: 'page1.para1'}, 'Hello', 'where are you'))
@@ -33,6 +38,16 @@ test('TextElement element produces output containing string version of object ch
 test('TextElement element produces output containing string version of function children',
     // @ts-ignore
     snapshot(createElement(TextElement, {path: 'page1.para1'}, Sum))
+)
+
+test('TextElement element produces output containing toString of ErrorResult',
+    // @ts-ignore
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, new ErrorResult('Bad function', 'It went wrong')))
+)
+
+test('TextElement element produces output containing toString of class object',
+    // @ts-ignore
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, new MyClass() ))
 )
 
 test('TextElement element produces output containing ReactElement children', () => {

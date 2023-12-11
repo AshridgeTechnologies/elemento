@@ -28,6 +28,9 @@ export const pending = (p: Promise<any>) => {
 export const isPending = (val: any) => Boolean(val?.[pendingFlag])
 export class ErrorResult {
     constructor(public description: string, public errorMessage: string) {}
+    toString() {
+        return `Error: ${(this.description)} - ${this.errorMessage}`
+    }
 }
 
 export function queryMatcher(criteria: Criteria) {

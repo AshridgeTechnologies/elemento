@@ -67,6 +67,24 @@ exports[`TextElement element produces output containing string version of object
 </p>
 `;
 
+exports[`TextElement element produces output containing toString of ErrorResult 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  Error: Bad function - It went wrong
+</p>
+`;
+
+exports[`TextElement element produces output containing toString of class object 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  This is a MyClass
+</p>
+`;
+
 exports[`TextElement element produces output containing undefined children 1`] = `
 <p
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
