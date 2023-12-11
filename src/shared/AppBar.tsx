@@ -18,7 +18,6 @@ export default function AppBar({title, userMenu = true}: Properties) {
                         {title}
                     </Typography>
                     {userMenu && <GitHubConnection/>}
-                    {userMenu && <GoogleConnection/>}
                 </Toolbar>
             </Mui_AppBar>
         </Box>

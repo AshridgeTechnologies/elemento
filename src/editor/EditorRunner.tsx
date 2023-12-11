@@ -51,7 +51,6 @@ import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
-import {getOrRequestGoogleAccessToken} from '../shared/gisProvider'
 import {Status} from './ThrottledCombinedFileWriter'
 import ServerMultiFileWriter from './ServerMultiFileWriter'
 
