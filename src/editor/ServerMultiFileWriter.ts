@@ -6,7 +6,7 @@ import MultiFileWriter from '../generator/MultiFileWriter'
 
 export type Properties = Readonly<{
     previewUploadUrl: () => string,
-    getAccessToken: ()=> Promise<string>,
+    previewPassword: ()=> Promise<string>,
     onServerUpdateStatusChange?: (newStatus: Status) => void,
     delay?: number
     writers?: FileWriter[]
@@ -18,7 +18,7 @@ export default class ServerMultiFileWriter implements ServerFileWriter {
 
     constructor(private readonly props: Properties) {
         const {delay = 1000, writers = []} = props
-        this.combinedWriter = new HttpCombinedFileWriter(props.previewUploadUrl, props.getAccessToken)
+        this.combinedWriter = new HttpCombinedFileWriter(props.previewUploadUrl, props.previewPassword)
         this.previewServerWriter = new ThrottledCombinedFileWriter(this.combinedWriter, delay, props.onServerUpdateStatusChange)
         const cachingWriter = new CachingFileWriter(this.previewServerWriter, 'server/')
         this.writer = new MultiFileWriter(cachingWriter, ...writers)

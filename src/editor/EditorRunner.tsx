@@ -151,6 +151,7 @@ export default function EditorRunner() {
     }
 
     const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
+    const getPreviewPassword = ()=> (projectHandler.getSettings('firebase') as any).previewPassword
 
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         const updatePreviewUrlFromSettings = () => setPreviewServerUrl(`https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer`)
@@ -187,7 +188,7 @@ export default function EditorRunner() {
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
         const serverFileWriter = new ServerMultiFileWriter({
             previewUploadUrl,
-            getAccessToken: getOrRequestGoogleAccessToken,
+            previewPassword: getPreviewPassword,
             onServerUpdateStatusChange,
             writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/server')]
         })

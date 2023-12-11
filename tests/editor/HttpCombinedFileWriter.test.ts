@@ -5,10 +5,10 @@ afterAll(() => globalThis.fetch = originalFetch)
 
 const files = {'file1.txt': 'File 1 contents'}
 
-const makeWriter = (accessTokenFn: () => Promise<string> = async () => 'firebase-token-123') =>
-    new HttpCombinedFileWriter(() => 'http://the.dev.server/preview', accessTokenFn)
+const makeWriter = (passwordFn: () => Promise<string> = async () => 'preview123') =>
+    new HttpCombinedFileWriter(() => 'http://the.dev.server/preview', passwordFn)
 
-test('puts file to given URL supplied as a function with firebase access token', async () => {
+test('puts file to given URL supplied as a function with preview password', async () => {
     const files = {'file1.txt': 'File 1 contents', 'dir1/file2.txt': 'File 2 contents\nLine 2'}
     globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 200}))
     const expectedBody = `
@@ -25,7 +25,7 @@ Line 2
         method: 'PUT',
         body: expectedBody,
         headers: {
-            'x-firebase-access-token': 'firebase-token-123'
+            'x-preview-password': 'preview123'
         }
     })
 })
@@ -40,19 +40,19 @@ test('rejects promise if bad status in http call', async () => {
     await expect(makeWriter().writeFiles(files)).rejects.toStrictEqual(new Error('No way 401'))
 })
 
-test('rejects promise if cannot get access token', async () => {
+test('rejects promise if cannot get password', async () => {
     const error = new Error('Cannot get token')
     const writer = makeWriter(async () => { throw error} )
     await expect(writer.writeFiles(files)).rejects.toBe(error)
 })
 
-test('calls clean url with access token', async () => {
+test('calls clean url with password', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 200}))
     await expect(makeWriter().clean()).resolves.toBe(undefined)
     expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/clear', {
         method: 'POST',
         headers: {
-            'x-firebase-access-token': 'firebase-token-123'
+            'x-preview-password': 'preview123'
         }
     })
 })

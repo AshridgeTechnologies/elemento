@@ -5,7 +5,7 @@ const FILE_HEADER_PREFIX = '//// File: '
 const EOF_DELIMITER = '//// End of file'
 
 export default class HttpCombinedFileWriter implements CombinedFileWriter {
-    constructor(private readonly urlFn: () => string, private readonly accessTokenFn: () => Promise<string>) {
+    constructor(private readonly urlFn: () => string, private readonly passwordFn: () => Promise<string>) {
     }
 
     async writeFiles(files: { [p: string]: FileContents }): Promise<void> {
@@ -29,9 +29,9 @@ export default class HttpCombinedFileWriter implements CombinedFileWriter {
     }
 
     private async headers() {
-        const accessToken = await this.accessTokenFn()
-        return accessToken ? {
-            'x-firebase-access-token': accessToken
+        const password = await this.passwordFn()
+        return password ? {
+            'x-preview-password': password
         } : undefined
     }
 }

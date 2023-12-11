@@ -85,12 +85,12 @@ export default function FirebaseDeploy() {
         )
     }
     const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProject
-    const updateSettings = () => {
-        Editor.UpdateSettings('firebase', {projectId: firebaseProject, previewPassword})
-    }
     const isInToolWindow = window.parent !== window.self
     const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
     const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
+    const updateSettings = () => {
+        Editor.UpdateSettings('firebase', {projectId: firebaseProjectIdValue, previewPassword: previewPasswordValue})
+    }
     return <Stack padding={2} spacing={2}>
         <Typography variant={'h1'} mb={2} fontSize={32}>Deploy to Firebase</Typography>
 
