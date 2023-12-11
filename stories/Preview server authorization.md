@@ -11,7 +11,9 @@ Aims
 Requirements
 ------------
 
-- Use password in extension config for preview authorization
+- ✅ Use password in extension config for preview authorization
+- ✅ Firebase deploy tool sets password in settings
+- Studio and service worker send the password
 - Keep current mechanism for caching preview in storage, but use firebase-admin to access
 - Different root for preview cache, simplify clear cache mechanism
 - Remove Google Login from Studio

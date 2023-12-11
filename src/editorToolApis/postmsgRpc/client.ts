@@ -8,7 +8,7 @@ export function caller (funcName: string, opts: any = {}) {
   const postMessage = opts.postMessage || window.postMessage
   const targetOrigin = opts.targetOrigin || '*'
 
-  return function (...args: any[]) {
+  return function (...args: any[]): Promise<any> {
     const msg = {
       sender: 'elemento-postmsg-rpc/client',
       id: uniqueId(),

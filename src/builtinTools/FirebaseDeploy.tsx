@@ -30,7 +30,7 @@ const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     }
 }
 
-const getSettings = ()=> Editor.GetSettings('firebase').then( (settings: any) => settings.projectId)
+const getSettings = ()=> Editor.GetSettings('firebase')
 
 function GitHubLogin() {
     const signedIn = useSignedInState()
@@ -59,14 +59,24 @@ function GoogleLogin() {
     )
 }
 
+function FieldSet({title, children}: {title: string, children: React.ReactNode}) {
+    return <Stack mt={4} border='1px solid lightgray' borderRadius={2} padding={2} spacing={2}>
+        <Typography variant={'h2'} mb={2} fontSize={24}>{title}</Typography>
+        {children}
+    </Stack>
+}
+
 export default function FirebaseDeploy() {
     const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
-    const {data: firebaseProjectIdFromSettings} = useAsync({promiseFn: getSettings})
+    const settings = useAsync({promiseFn: getSettings})
+    const {projectId: firebaseProjectIdFromSettings, previewPassword: previewPasswordFromSettings} = settings.data ?? {}
     const [firebaseProject, setFirebaseProject] = useState<string | null>(null)
+    const [previewPassword, setPreviewPassword] = useState<string | null>(null)
     const [message, setMessage] = useState<string>('')
 
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
     const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value || null)}
+    const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value || null)}
     const deploy = () => {
         setMessage('Deploying...')
         deployProject(gitRepoUrl, firebaseProject!).then(
@@ -76,20 +86,29 @@ export default function FirebaseDeploy() {
     }
     const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProject
     const updateSettings = () => {
-        Editor.UpdateSettings('firebase', {projectId: firebaseProject})
+        Editor.UpdateSettings('firebase', {projectId: firebaseProject, previewPassword})
     }
-    const canUpdateSettings = window.parent !== window.self
+    const isInToolWindow = window.parent !== window.self
     const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
+    const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
     return <Stack padding={2} spacing={2}>
-        <Typography variant={'h1'} mb={2} fontSize={36}>Deploy to Firebase</Typography>
-        <GitHubLogin/>
-        <GoogleLogin/>
-        <TextField label='Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl}/>
-        <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateFirebaseProject} value={firebaseProjectIdValue}/>
-        <Stack direction='row' spacing={2}>
+        <Typography variant={'h1'} mb={2} fontSize={32}>Deploy to Firebase</Typography>
+
+        <FieldSet title='Settings'>
+            <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateFirebaseProject} value={firebaseProjectIdValue}/>
+            {isInToolWindow ?
+                <>
+                    <TextField label='Preview password' type='password' size='small' sx={{width: '40em'}} onChange={updatePreviewPassword} value={previewPasswordValue}/>
+                    <Button variant='outlined'  sx={{width: '10em'}} onClick={updateSettings}>Save</Button>
+                </> : null}
+        </FieldSet>
+
+        <FieldSet title='Deploy (Publish)'>
+            <GitHubLogin/>
+            <GoogleLogin/>
+            <TextField label='Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl}/>
             <Button variant='contained'  sx={{width: '10em'}} disabled={!readyToDeploy} onClick={deploy}>Deploy</Button>
-            {canUpdateSettings ? <Button variant='outlined'  sx={{width: '15em'}} onClick={updateSettings}>Update Settings</Button> : null}
-        </Stack>
-        <Typography variant={'h1'} mt={4} fontSize={18}>{message}</Typography>
+            <Typography variant={'h1'} mt={4} fontSize={18}>{message}</Typography>
+        </FieldSet>
     </Stack>
 }
