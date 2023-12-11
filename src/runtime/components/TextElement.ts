@@ -1,6 +1,6 @@
 import React from 'react'
 import {Typography} from '@mui/material'
-import lodash from 'lodash'; const {isArray, isFunction, isPlainObject, isString} = lodash;
+import lodash from 'lodash'; const {isArray, isFunction, isPlainObject, isObject, isString} = lodash;
 import {valueLiteral, valueOfProps} from '../runtimeFunctions'
 import {flatten} from 'ramda'
 
@@ -21,6 +21,9 @@ function asText(content: any) {
     }
     if (isFunction(contentValue)) {
         return 'function ' + contentValue.name
+    }
+    if (isObject(contentValue)) {
+        return contentValue.toString()
     }
     return contentValue
 }
