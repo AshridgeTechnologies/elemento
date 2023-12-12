@@ -13,7 +13,7 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
     private updateCount = 0
     private status: Status = 'complete'
 
-    constructor(private readonly fileWriter: CombinedFileWriter,
+    constructor(private readonly combinedWriter: CombinedFileWriter,
                 private readonly interval: number,
                 private readonly onStatusChange: (status: Status) => void = noop) {
     }
@@ -23,6 +23,13 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         this.updateCount++
         this.scheduleNextWrite()
         this.updateStatus('waiting')
+    }
+
+    clean(): Promise<void> {
+        return this.combinedWriter.clean().catch( (err: Error)=> {
+            this.updateStatus(err)
+            console.error('Failed to clean files', err)
+        })
     }
 
     private scheduleNextWrite() {
@@ -45,7 +52,7 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         const filesToWrite = this.filesPending
         this.filesPending = {}
         this.updateStatus('updating')
-        this.writePromise = this.fileWriter.writeFiles(filesToWrite)
+        this.writePromise = this.combinedWriter.writeFiles(filesToWrite)
             .then( ()=> {
                 this.updateStatus('complete')
             })

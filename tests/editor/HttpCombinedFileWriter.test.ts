@@ -36,8 +36,8 @@ test('rejects promise if error in http call', async () => {
 })
 
 test('rejects promise if bad status in http call', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 401, statusText: 'No way'}))
-    await expect(makeWriter().writeFiles(files)).rejects.toStrictEqual(new Error('No way 401'))
+    globalThis.fetch = jest.fn().mockResolvedValue(new Response('No way', {status: 401}))
+    await expect(makeWriter().writeFiles(files)).rejects.toStrictEqual(new Error('401 No way'))
 })
 
 test('rejects promise if cannot get password', async () => {
@@ -58,6 +58,6 @@ test('calls clean url with password', async () => {
 })
 
 test('rejects if clean url has bad status', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue(new Response('', {status: 401, statusText: 'No way'}))
-    await expect(makeWriter().clean()).rejects.toStrictEqual(new Error('No way 401'))
+    globalThis.fetch = jest.fn().mockResolvedValue(new Response('No way', {status: 401}))
+    await expect(makeWriter().clean()).rejects.toStrictEqual(new Error('401 No way'))
 })
