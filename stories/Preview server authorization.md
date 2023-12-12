@@ -18,7 +18,7 @@ Requirements
 - ✅ Remove Google Login from Studio
 - ✅ Handle error from failed calls so that it does not blow up React
 - ✅ Report preview errors due to auth or unavailability to Studio errors
-- Clear error messages and suggested fixes
-- Remove storage scope
+- ✅ Clear error messages and suggested fixes
+- ✅ Remove storage scope
 - Nice to have: Add password to get calls in service worker
 - ~~Nice to have: Use server-side token checking in admin server~~

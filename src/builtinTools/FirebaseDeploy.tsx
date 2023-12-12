@@ -77,19 +77,21 @@ export default function FirebaseDeploy() {
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
     const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value ?? null)}
     const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value ?? null)}
+    const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
+    const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
+    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProjectIdValue
+    const isInToolWindow = window.parent !== window.self
+
+    const updateSettings = () => {
+        Editor.UpdateSettings('firebase', {projectId: firebaseProjectIdValue, previewPassword: previewPasswordValue})
+    }
+
     const deploy = () => {
         setMessage('Deploying...')
-        deployProject(gitRepoUrl, firebaseProject!).then(
+        deployProject(gitRepoUrl, firebaseProjectIdValue!).then(
             () => setMessage('Deploy succeeded'),
             (e: Error) => setMessage('Deploy failed: ' + e.message)
         )
-    }
-    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProject
-    const isInToolWindow = window.parent !== window.self
-    const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
-    const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
-    const updateSettings = () => {
-        Editor.UpdateSettings('firebase', {projectId: firebaseProjectIdValue, previewPassword: previewPasswordValue})
     }
     return <Stack padding={2} spacing={2}>
         <Typography variant={'h1'} mb={2} fontSize={32}>Deploy to Firebase</Typography>
