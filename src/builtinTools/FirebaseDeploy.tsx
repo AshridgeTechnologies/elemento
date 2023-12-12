@@ -75,8 +75,8 @@ export default function FirebaseDeploy() {
     const [message, setMessage] = useState<string>('')
 
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
-    const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value || null)}
-    const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value || null)}
+    const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value ?? null)}
+    const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value ?? null)}
     const deploy = () => {
         setMessage('Deploying...')
         deployProject(gitRepoUrl, firebaseProject!).then(

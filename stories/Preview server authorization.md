@@ -7,7 +7,6 @@ Aims
 - Simplify use of Google authorization
 - Improve handling of errors in server app preview
 
-
 Requirements
 ------------
 
@@ -19,5 +18,7 @@ Requirements
 - ✅ Remove Google Login from Studio
 - ✅ Handle error from failed calls so that it does not blow up React
 - Report preview errors due to auth or unavailability to Studio errors
+- Clear error messages and suggested fixes
+- Remove storage scope
 - Nice to have: Add password to get calls in service worker
-- Nice to have: Use server-side token checking in admin server
+- ~~Nice to have: Use server-side token checking in admin server~~

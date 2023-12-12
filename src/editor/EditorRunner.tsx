@@ -110,6 +110,17 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
 const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
+function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "updating" | "complete" | Error, projectBuilder?: ProjectBuilder}) {
+    const isErrorStatus = status instanceof Error
+    const statusColor = isErrorStatus ? 'error' : 'inherit'
+    const statusText = isErrorStatus ? 'error' : status
+    const retryButton = isErrorStatus ? <Button onClick={() => projectBuilder?.build()}>Retry</Button> : null
+    return <Stack direction='row'>
+        <Typography minWidth='10em' fontSize='0.9em' paddingTop='8px' color={statusColor}>App updates: {statusText}</Typography>
+        {retryButton}
+    </Stack>
+}
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [projectStore, setProjectStore] = useState<DiskProjectStore>()
@@ -169,6 +180,10 @@ export default function EditorRunner() {
     const onServerUpdateStatusChange = (newStatus: Status) => {
         if (newStatus === 'complete') {
             refreshServerAppConnectors()
+        }
+
+        if (newStatus instanceof Error) {
+            showAlert('Server App Preview', 'Failed to update preview server', newStatus.message, 'error')
         }
 
         setServerUpdateStatus(newStatus)
@@ -582,10 +597,7 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
-            const isErrorStatus = serverUpdateStatus instanceof Error
-            const statusColor = isErrorStatus ? 'error' : 'inherit'
-            const retryButton = isErrorStatus ? <Button onClick={() => projectBuilderRef.current?.build()}>Retry</Button> : ''
-            const status = <Stack direction='row'><Typography minWidth='10em' fontSize='0.9em' paddingTop='8px' color={statusColor}>App updates: {serverUpdateStatus.toString()}</Typography>{retryButton}</Stack>
+            const status = ServerUpdateStatus({status: serverUpdateStatus, projectBuilder: projectBuilderRef.current})
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
