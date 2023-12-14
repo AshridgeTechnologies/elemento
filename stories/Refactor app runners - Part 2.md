@@ -14,7 +14,6 @@ Requirements
 - ✅ Serves files with correct headers
 - ✅ Still works with studio preview
 - ✅ All client page requests redirected to the main page and still work
-- Serve/redirect to default client app on top level
 - ✅ Gets project id from environment
 - ✅ Deploy server apps from GitHub to server app runner cache
 - ~~Connect to server apps from client in GitHub~~
@@ -27,30 +26,55 @@ Requirements
 - ✅ Server apps in preview are secured
 - ✅ Show clear error messages if hosting problems, eg project not set
 - ✅ Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
-- ✅ Prompt for Google login when updates needed?
+- ✅ Serve/redirect to default client app on top level
+- ✅ Show url when deployed
+- ✅ Warn about uncommitted changes
 - Can access Firebase
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
-- Can run server apps in cache default and specified versions concurrently
-- Can update client app quickly and easily when new version in GitHub
+- Can get firebase config from preview server
+- ✅ Can run server apps in cache default and specified versions concurrently
+- ✅ Can update client app quickly and easily when new version in GitHub
 - ✅ Tool in Studio to deploy to Firebase
 - ✅ Tool works with access tokens from GitHub and Google logins
-- Easy way of installing app server extension and setting up project
+- ✅ Easy way of installing app server extension and setting up project
 - Clear instructions for the manual steps
 - ✅ Use hosting where possible for faster response and lower costs
-- Appropriate caching for all files - use cache where possible, close-spaced deploys work
-- Use unique filenames with caching and/or ensure cache cleared
-- Can deploy to preview channel
 - ✅ Password protect and test clear cache function - or remove
-- Extension and management tool independent of Elemento
-- All runtime and generated server JS files inc cjs are served with correct content type
-- All generated server files are consistent and usable for other deployment environments
+- ✅ Extension and management tool independent of Elemento
 - Remove old dev server
 - ✅ Tools menu, with Firebase Deploy as a standard Tool
-- Project reload, or auto when update settings
 - ✅ Deal with expired access tokens
 - ✅ Login to Google auto, or prompt, if possible, when need to update
+- Check service worker js file caching
 - Elemento Apps is approved
+- Ping app server after deploy - and before to load it?
+
+Further requirements
+--------------------
+- Default GitHub URL to remote origin
+- Use secret for access token extension param, check all permissions and ordering for using secrets
+- Remove old Builder and build.ts, BrowserRuntimeLoader
+- Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting
+- Upgrade FB function to v2 and Node 20
+- Studio Tool to manage app server - or just use FB console?
+- Set the Firebase function location and stop it changing on reconfiguration
+- App runner gets default from tag
+- Preview and specified versions can run from app server on any device without being open in editor
+- Don't look up server app factory functions again once imported
+- Appropriate caching for all files - use cache where possible, close-spaced deploys work
+- Use unique filenames with caching and/or ensure cache cleared
+- Work out correct caching for runtime files
+- Can deploy to preview channel
+- All runtime and generated server JS files inc cjs are served with correct content type
+- All generated server files are consistent and usable for other deployment environments
+- Project reload, or auto when update settings
+- Review run and runForDev in index.html for prod and preview
+- Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
+
+
+Sub-stories
+===========
 
 Preview server
 --------------
@@ -118,46 +142,31 @@ Secure preview server and UX
   - do this by passing flushWrites fn to ProjectBuilder
 - ✅ No delay when updating server at project load time
 
-Later to secure calls to the functions:
-- Extension has a password hash in its config
-- Preview server checks password from a header X-Elemento-Preview-Password
-- All calls from preview or editor are accompanied by the password in the header
-- Firebase deploy sets preview password in project settings
-- Firebase deploy also shows the password hash
-- Editor Runner sets the password in EditorServiceWorker
-- User must put password hash in extension config 
 
 
-App Runner rework - client side
--------------------------------
+Deploy To Do
+------------
 
-- Review run and runForDev in index.html for prod and preview
-- Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
+- ✅ Find bug with serving app page instead of preview - after idle for a while? or service worker update problem?
+  - because previewServerUrl in sw is null
+  - which indicates it has never been set, as setter in EditorRunner is a template string
+- ✅ Bug with not downloading server runtime to preview when needed
+  - suspect the timeout preventing check after clear
+- ✅ Get GitHub auth status correctly in Firebase deploy
+- ✅ Get Google auth status correctly in Firebase deploy
+- ✅ version file is cached with max-age 3600 so deploys don't update
+- ✅ Show url when deployed
+- ~~Warn if uncommitted changes~~
+- ~~Default GitHub URL to remote origin~~
+- ✅ Serve/redirect to default client app on top level
+
 
 App Runner rework - server side
 -------------------------------
 
-- Builder writes preview to app server
-- Server app preview works
-- App server protects preview PUT and GET with secret key or Firebase login
-- Use secret for access token extension param, check all permissions and ordering for using secrets
-- Remove old Builder and build.ts, BrowserRuntimeLoader
-- Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting 
-
-Further requirements
---------------------
-- Upgrade FB function to v2 and Node 20
-- Studio Tool to manage app server - or just use FB console?
-- Set the Firebase function location and stop it changing on reconfiguration
-- App runner gets default from tag
-- Preview and specified versions can run from app server on any device without being open in editor
-
-Notes
------
-
-- Preview service worker can intercept capi calls
-- Will need to inject password or ask for it when load page
-- 
+- ✅ Builder writes preview to app server
+- ✅ Server app preview works
+- ✅ App server protects preview PUT and GET with secret key or Firebase login
 
 
 To do
@@ -170,11 +179,8 @@ To do
 - ✅ Server app runner loads the requested version
 - ✅ All capi requests must go the correct deploy id
 - ✅ Client reads version file to get deploy id
-- Generator writes metadata file to top level with default app in it
-- Deployment sets up redirect to default app at top level
-- Don't look up server app factory functions again once imported
-- Work out correct caching for runtime files
-- Work out how to make preview server functions update
+- ✅ Generator writes metadata file to top level with default app in it
+
 
 
 Technical (from Part 1)
@@ -215,5 +221,4 @@ Problems
 - Probably want hosting redirect to send all requests to the function
 - Stuck for long time because deploying extension appeared not to update the code - didn't rebuild lib code from TS source
 - CORS error getting runtime from elemento server
-- 
-- 
+

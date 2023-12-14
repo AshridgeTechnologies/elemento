@@ -192,6 +192,9 @@ export default function EditorRunner() {
     }
 
     const newProjectBuilder = (projectStore: DiskProjectStore) => {
+        const projectInfoFileWriter = new MultiFileWriter(
+            new DiskProjectStoreFileWriter(projectStore, 'dist')
+        )
         const clientFileWriter = new MultiFileWriter(
             new PostMessageFileWriter(navigator.serviceWorker.controller!),
             new DiskProjectStoreFileWriter(projectStore, 'dist/client')
@@ -213,6 +216,7 @@ export default function EditorRunner() {
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
             runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
+            projectInfoFileWriter,
             clientFileWriter,
             toolFileWriter,
             serverFileWriter,
@@ -322,7 +326,7 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect(initServiceWorker, [])
-    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [editorElement()])
+    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorElement()])
     useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'

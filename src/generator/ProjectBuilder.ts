@@ -43,19 +43,22 @@ export type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
     runtimeLoader: RuntimeLoader,
+    projectInfoFileWriter: FileWriter,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
     serverFileWriter: ServerFileWriter,
 }
 
+type FileSet = { [name: string]: string }
 export default class ProjectBuilder {
     private readonly debouncedWriteFiles: () => Promise<void> | undefined
-    private generatedClientCode: {[name: string]: string} = {}
-    private generatedToolCode: {[name: string]: string} = {}
-    private generatedServerCode: {[name: string]: string} = {}
+    private generatedProjectInfo: FileSet = {}
+    private generatedClientCode: FileSet = {}
+    private generatedToolCode: FileSet = {}
+    private generatedServerCode: FileSet = {}
     private generatedErrors: AllErrors = {}
 
-    constructor(private props: Properties) {
+    constructor(private readonly props: Properties) {
         this.debouncedWriteFiles = debounce( () => this.writeProjectFiles(), 100 )
     }
 
@@ -82,10 +85,13 @@ export default class ProjectBuilder {
     private get hasServerApps() { return this.project.findChildElements(ServerApp).length > 0 }
 
     private async writeProjectFiles() {
-        const clientFileWritePromises = Object.entries(this.generatedClientCode).map(([name, contents]) => this.props.clientFileWriter.writeFile(name, contents))
-        const toolFileWritePromises = Object.entries(this.generatedToolCode).map(([name, contents]) => this.props.toolFileWriter.writeFile(name, contents))
-        const serverFileWritePromises = Object.entries(this.generatedServerCode).map(([name, contents]) => this.props.serverFileWriter.writeFile(name, contents))
-        await Promise.all([...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
+        const writeFiles = (files: FileSet, fileWriter: FileWriter) => Object.entries(files).map(([name, contents]) => fileWriter.writeFile(name, contents))
+
+        const projectInfoFileWritePromises = writeFiles(this.generatedProjectInfo, this.props.projectInfoFileWriter)
+        const clientFileWritePromises = writeFiles(this.generatedClientCode, this.props.clientFileWriter)
+        const toolFileWritePromises = writeFiles(this.generatedToolCode, this.props.toolFileWriter)
+        const serverFileWritePromises = writeFiles(this.generatedServerCode, this.props.serverFileWriter)
+        await Promise.all([...projectInfoFileWritePromises, ...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
     }
 
     private buildProjectFiles() {
@@ -95,11 +101,19 @@ export default class ProjectBuilder {
         this.generatedServerCode = {}
         const project = this.project
         const apps = project.findChildElements(App)
+        this.buildProjectInfoFiles()
         apps.forEach(async (app, index) => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(async tool => this.buildToolAppFiles(tool))
         if (this.hasServerApps) {
             this.buildServerAppFiles()
+        }
+    }
+
+    private buildProjectInfoFiles() {
+        const appNames = this.project.findChildElements(App).map( el => el.codeName)
+        this.generatedProjectInfo = {
+            'projectInfo.json': JSON.stringify({apps: appNames})
         }
     }
 

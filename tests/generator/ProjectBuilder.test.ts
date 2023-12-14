@@ -65,6 +65,7 @@ const projectClientOnly = Project.new([app3], 'Project Client Only', 'proj2', {}
 
 const expectedClientCode = (app: App | Tool, project: Project = project1) => generate(app, project).code
 const expectedIndexFile = (app: App, project: Project = project1) => generate(app, project).html
+const expectedProjectInfo = (project: Project = project1) => `{"apps":[${project.findChildElements('App').map( el => `"${el.codeName}"` ).join(',')}]}`
 
 const getProjectLoader = (project: Project):ProjectLoader & {project: Project} => ({
     project,
@@ -75,6 +76,9 @@ const clientFileWriter = {
     writeFile: jest.fn()
 }
 const toolFileWriter = {
+    writeFile: jest.fn()
+}
+const projectInfoFileWriter = {
     writeFile: jest.fn()
 }
 
@@ -95,6 +99,7 @@ const getFileLoader = (dirContents: object = {}, exists = true) => ({
 })
 
 const clearMocks = () => {
+    projectInfoFileWriter.writeFile.mockClear()
     clientFileWriter.writeFile.mockClear()
     toolFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
@@ -108,7 +113,7 @@ beforeEach(clearMocks)
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}) => {
     const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader,
-        clientFileWriter, toolFileWriter, serverFileWriter, ...props}
+        projectInfoFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
     return new ProjectBuilder(properties)
 }
 
@@ -129,8 +134,6 @@ test('writes client files for all apps to client build with one copy of asset', 
         ['App1/index.html', expectedIndexFile(app1)],
         ['App2/App2.js', expectedClientCode(app2)],
         ['App2/index.html', expectedIndexFile(app2)],
-        // ['runtime.js', 'Contents of runtime.js'],
-        // ['runtime.js.map', 'Contents of runtime.js.map'],
         ['files/Image1.jpg', dirContents['Image1.jpg']],
         ['files/File2.pdf', dirContents['File2.pdf']],
     ])
@@ -167,6 +170,15 @@ test('writes tool files for all tools to tool build with one copy of asset but n
         ['Tool1/index.html', expectedIndexFile(tool1)],
         ['Tool2/Tool2.js', expectedClientCode(tool2)],
         ['Tool2/index.html', expectedIndexFile(tool2)],
+    ])
+})
+
+test('writes projectInfo file to top level', async () => {
+    const builder = newProjectBuilder()
+    await builder.build()
+
+    expect(projectInfoFileWriter.writeFile.mock.calls).toStrictEqual([
+        ['projectInfo.json', expectedProjectInfo()],
     ])
 })
 

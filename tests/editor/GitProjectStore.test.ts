@@ -58,6 +58,7 @@ test('clones repo from GitHub with clone URL', async () => {
     const projectFileContents = fs.readFileSync(`${localDirPath}/${projectFileName}`, 'utf8')
     const project = loadJSONFromString(projectFileContents) as Project
     expect(project.name).toBe('The Dogs Life Project')
+    await expect(store.isModified()).resolves.toBe(false)
 })
 
 test('clones repo from GitHub page URL', async () => {
@@ -76,12 +77,18 @@ test('updates repo in GitHub', async () => {
 
     const currentTime = new Date().toISOString()
     fs.writeFileSync(`${localDirPath}/${currentTimeFile}`, currentTime)
+    await expect(store.isModified()).resolves.toBe(false)
+
+    await store.addAllChanged()
+    await expect(store.isModified()).resolves.toBe(true)
+
     const message = 'The changes at ' + currentTime
     await store.commitAndPush(message)
     const commitResults = await git.log({fs, dir: localDirPath})
     expect(commitResults[0].commit.message).toBe(message + '\n')
     const updatedFileContent = () => fetch(`https://raw.githubusercontent.com/${username}/${repo}/main/${currentTimeFile}`).then(resp => resp.text())
     await waitUntil( async () => await updatedFileContent() === currentTime, 2000, 12000 )
+    await expect(store.isModified()).resolves.toBe(false)
 })
 
 test('adds and deletes files in repo in GitHub', async () => {
@@ -98,7 +105,10 @@ test('adds and deletes files in repo in GitHub', async () => {
 
     fs.unlinkSync(`${localDirPath}/${newFile}`)
     await store.deleteFile(newFile)
+    await expect(store.isModified()).resolves.toBe(true)
+
     await store.commitAndPush('Delete new stuff')
+    await expect(store.isModified()).resolves.toBe(false)
 
     await waitForGitHub( async () => await fileStatus() === 404 )
 })
@@ -118,7 +128,10 @@ test('renames files in repo in GitHub', async () => {
 
     fs.renameSync(`${localDirPath}/${newFile}`, `${localDirPath}/${renamedFile}`)
     await store.rename(newFile, renamedFile)
+    await expect(store.isModified()).resolves.toBe(true)
     await store.commitAndPush('Rename new stuff')
+
+    await expect(store.isModified()).resolves.toBe(false)
 
     await waitForGitHub( async () => await fileStatus(newFile) === 404 )
     await waitForGitHub( async () => await fileStatus(renamedFile) === 200 )

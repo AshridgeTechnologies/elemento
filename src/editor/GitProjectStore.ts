@@ -72,13 +72,19 @@ export default class GitProjectStore {
         return !! await this.getOriginRemote()
     }
 
+    async addAllChanged() {
+        const {fs} = this
+        const dir = `${this.workingDirRoot}/`
+        await git.add({ fs, dir, filepath: '.' })
+    }
+
     async commitAndPush(message: string = defaultMessage(), author: string = defaultAuthor()) {
         if (!(this.username && this.accessToken)) {
             throw new Error('Must be signed in to push')
         }
         const {fs, http} = this
         const dir = `${this.workingDirRoot}/`
-        await git.add({ fs, dir, filepath: '.' })
+        await this.addAllChanged()
         await git.commit({ fs, dir, message, author: {name: author} })
 
         return await git.push({
@@ -139,6 +145,14 @@ export default class GitProjectStore {
     //         const status = await git.status({fs, dir, filepath: file})
     //         return [file, status].join(': ')
     //     }))
-
     // }
+
+    async isModified() {
+        const {fs} = this
+        const dir = `${this.workingDirRoot}`
+        const statusMatrix = await git.statusMatrix({fs, dir})
+        const isRowModified = ([, head, workdir, stage]: [name: string, head: number, workdir: number, stage: number]) =>
+            !( (head === 0 && workdir === 0 && stage === 0) || (head === 1 && workdir === 1 && stage === 1))
+        return statusMatrix.some(isRowModified)
+    }
 }

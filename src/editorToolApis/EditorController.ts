@@ -108,7 +108,7 @@ export default class EditorController {
     }
 
     GetGitHubUrl() {
-        console.log('GetGitHubUrl')
+        console.log('GetGitHubUrl', this.gitHubUrl)
         return this.gitHubUrl
     }
 

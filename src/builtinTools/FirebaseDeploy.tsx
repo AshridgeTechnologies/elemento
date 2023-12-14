@@ -1,8 +1,8 @@
-import React, {ChangeEvent, useState} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
-import {Button, Stack, TextField, Typography} from '@mui/material'
+import {Button, Link, Stack, TextField, Typography} from '@mui/material'
 import {googleAccessToken, useAuthorizedState} from '../shared/gisProvider'
-import {currentUser, gitHubAccessToken, useSignedInState} from '../shared/authentication'
+import {currentUser, gitHubAccessToken, signIn, useSignedInState} from '../shared/authentication'
 import {Editor} from '../editorToolApis/EditorControllerClient'
 import GitHubConnection from '../shared/GitHubConnection'
 import GoogleConnection from '../shared/GoogleConnection'
@@ -36,6 +36,12 @@ function GitHubLogin() {
     const signedIn = useSignedInState()
     const user = currentUser()
 
+    useEffect(() => {
+        if (signedIn && !gitHubAccessToken()) {
+            signIn().then( ()=> console.log('Signed in to get access token'))
+        }
+    }, [signedIn])
+
     return (
         <Stack direction='row' spacing={4}>
             <GitHubConnection/>
@@ -67,50 +73,68 @@ function FieldSet({title, children}: {title: string, children: React.ReactNode})
 }
 
 export default function FirebaseDeploy() {
-    const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
+    useSignedInState()  // so refresh when it changes
+    useAuthorizedState() // so refresh when it changes
+
     const settings = useAsync({promiseFn: getSettings})
     const {projectId: firebaseProjectIdFromSettings, previewPassword: previewPasswordFromSettings} = settings.data ?? {}
-    const [firebaseProject, setFirebaseProject] = useState<string | null>(null)
+    const [previewFirebaseProject, setPreviewFirebaseProject] = useState<string | null>(null)
     const [previewPassword, setPreviewPassword] = useState<string | null>(null)
-    const [message, setMessage] = useState<string>('')
+    const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
+    const [deployFirebaseProject, setDeployFirebaseProject] = useState<string | null>(null)
+    const [message, setMessage] = useState<React.ReactNode>(null)
 
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
-    const updateFirebaseProject = (event: ChangeEvent) => {setFirebaseProject((event.target as HTMLInputElement).value ?? null)}
+    const updateDeployFirebaseProject = (event: ChangeEvent) => {setDeployFirebaseProject((event.target as HTMLInputElement).value ?? null)}
+    const updatePreviewFirebaseProject = (event: ChangeEvent) => {setPreviewFirebaseProject((event.target as HTMLInputElement).value ?? null)}
     const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value ?? null)}
-    const firebaseProjectIdValue = firebaseProject ?? firebaseProjectIdFromSettings ?? ''
+    const previewFirebaseProjectIdValue = previewFirebaseProject ?? firebaseProjectIdFromSettings ?? ''
     const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
-    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && firebaseProjectIdValue
+    const deployFirebaseProjectIdValue = deployFirebaseProject ?? firebaseProjectIdFromSettings ?? ''
+    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && deployFirebaseProjectIdValue
     const isInToolWindow = window.parent !== window.self
 
     const updateSettings = () => {
-        Editor.UpdateSettings('firebase', {projectId: firebaseProjectIdValue, previewPassword: previewPasswordValue})
+        Editor.UpdateSettings('firebase', {projectId: previewFirebaseProjectIdValue, previewPassword: previewPasswordValue})
     }
 
     const deploy = () => {
         setMessage('Deploying...')
-        deployProject(gitRepoUrl, firebaseProjectIdValue!).then(
-            () => setMessage('Deploy succeeded'),
+        deployProject(gitRepoUrl, deployFirebaseProjectIdValue!).then(
+            () => {
+                setMessage(<span>Deploy succeeded</span>)
+            },
             (e: Error) => setMessage('Deploy failed: ' + e.message)
         )
     }
-    return <Stack padding={2} spacing={2}>
-        <Typography variant={'h1'} mb={2} fontSize={32}>Deploy to Firebase</Typography>
 
-        <FieldSet title='Settings'>
-            <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateFirebaseProject} value={firebaseProjectIdValue}/>
-            {isInToolWindow ?
-                <>
-                    <TextField label='Preview password' type='password' size='small' sx={{width: '40em'}} onChange={updatePreviewPassword} value={previewPasswordValue}/>
-                    <Button variant='outlined'  sx={{width: '10em'}} onClick={updateSettings}>Save</Button>
-                </> : null}
+    const deployedUrl = deployFirebaseProjectIdValue && `https://${deployFirebaseProjectIdValue}.web.app`
+
+    return <Stack padding={2} spacing={2}>
+        <Typography variant={'h1'} mb={2} fontSize={32}>Firebase</Typography>
+
+        {isInToolWindow ?
+        <FieldSet title='Preview Settings'>
+            <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updatePreviewFirebaseProject} value={previewFirebaseProjectIdValue}/>
+            <TextField label='Preview password' type='password' size='small' sx={{width: '40em'}} onChange={updatePreviewPassword} value={previewPasswordValue}/>
+            <Button variant='outlined'  sx={{width: '10em'}} onClick={updateSettings}>Save</Button>
         </FieldSet>
+            : null}
 
         <FieldSet title='Deploy (Publish)'>
             <GitHubLogin/>
             <GoogleLogin/>
-            <TextField label='Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl}/>
+            <TextField label='Deploy from Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl} />
+            <TextField label='Deploy to Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateDeployFirebaseProject} value={deployFirebaseProjectIdValue}/>
+            <Typography variant={'h1'} mt={4} fontSize={16} fontWeight='600'>
+                Note: the project is deployed from GitHub, not this computer.
+                If you have made changes that you have not saved to GitHub, they will not be included.
+            </Typography>
+
             <Button variant='contained'  sx={{width: '10em'}} disabled={!readyToDeploy} onClick={deploy}>Deploy</Button>
             <Typography variant={'h1'} mt={4} fontSize={18}>{message}</Typography>
+            <Typography variant={'h1'} mt={4} fontSize={18}>App URL when deployed: <Link href={deployedUrl} target='_blank'>{deployedUrl}</Link></Typography>
+
         </FieldSet>
     </Stack>
 }

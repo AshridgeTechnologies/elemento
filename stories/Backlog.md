@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Previews are mixed up if open two projects in different tabs
 - Fails to check out private project from GitHub - unauthorized
@@ -87,6 +86,8 @@ Stories
 
 ### Priority 1
 - OPFS file store
+- SQLite WASM data store
+- SQL or IDB table creation and updating from Data Types
 - Better queries
 - Database and data sync review - consider RxDB, CRDTs, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
@@ -296,3 +297,4 @@ Bugs fixed
 - Copy/Paste not working
 - Cannot load project from Git if files dir empty, and Git does not commit empty dirs
 - Menu on Studio etc not working
+- Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
