@@ -8,13 +8,13 @@ import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project from '../../src/model/Project'
 import Layout from '../../src/model/Layout'
-import FirebasePublish from '../../src/model/FirebasePublish'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
 import {ConfirmAction} from '../../src/editor/Types'
 import ToolFolder from '../../src/model/ToolFolder'
 import Tool from '../../src/model/Tool'
 import ToolImport from '../../src/model/ToolImport'
+import ServerApp from '../../src/model/ServerApp'
 
 const newToolFolder = new ToolFolder('_TOOLS', 'Tools', {})
 
@@ -138,10 +138,10 @@ test('can find child elements by type', () => {
     const page1 = new Page('p1', 'Page 1', {}, [text1,])
 
     const app = new App('app1', 'App 1', {}, [page1])
-    const publish1 = new FirebasePublish('fp1', 'Live', {})
-    const publish2 = new FirebasePublish('fp1', 'Live', {})
-    const project = Project.new([app, publish1, publish2])
-    expect(project.findChildElements(FirebasePublish)).toStrictEqual([publish1, publish2])
+    const serverApp1 = new ServerApp('sa1', 'Live', {})
+    const serverApp2 = new ServerApp('sa2', 'Live 2', {})
+    const project = Project.new([app, serverApp1, serverApp2])
+    expect(project.findChildElements(ServerApp)).toStrictEqual([serverApp1, serverApp2])
 })
 
 test('can find elements under project by selector function', () => {

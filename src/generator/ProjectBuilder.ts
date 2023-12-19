@@ -42,7 +42,6 @@ export interface CombinedFileWriter {
 export type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
-    runtimeLoader: RuntimeLoader,
     projectInfoFileWriter: FileWriter,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,

@@ -26,7 +26,6 @@ import {NewProjectDialog} from './actions/NewProject'
 import ProjectBuilder from '../generator/ProjectBuilder'
 import BrowserProjectLoader from '../generator/BrowserProjectLoader'
 import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
-import BrowserRuntimeLoader from './BrowserRuntimeLoader'
 import PostMessageFileWriter from './PostMessageFileWriter'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
@@ -34,7 +33,6 @@ import App from '../model/App'
 import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../shared/AppBar'
-import FirebasePublish from '../model/FirebasePublish'
 import {elementTypes} from '../model/elements'
 import EditorMenuBar from './EditorMenuBar'
 import {without} from 'ramda'
@@ -136,8 +134,6 @@ export default function EditorRunner() {
     const [selectedTool, setSelectedTool] = useState<string | null>(null)
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
-    const [firebaseConfigName, setFirebaseConfigName] = useState<string | null>(null)
-
     const projectBuilderRef = useRef<ProjectBuilder>()
     const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
@@ -215,7 +211,6 @@ export default function EditorRunner() {
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
-            runtimeLoader: new BrowserRuntimeLoader(elementoUrl()),
             projectInfoFileWriter,
             clientFileWriter,
             toolFileWriter,
@@ -581,8 +576,6 @@ export default function EditorRunner() {
             const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
-            const firebasePublishForPreview = project.findChildElements(FirebasePublish)[0]
-            const projectFirebaseConfigName = firebasePublishForPreview?.name
             const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {
                 return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
             }
@@ -593,10 +586,6 @@ export default function EditorRunner() {
             const toolItems = {
                 'Firebase': onFirebase,
                 ...projectTools
-            }
-
-            if (projectFirebaseConfigName && projectFirebaseConfigName !== firebaseConfigName) {
-                setFirebaseConfigName(projectFirebaseConfigName)
             }
 
             const appBarTitle = `Elemento Studio - ${projectStoreName}`
@@ -654,8 +643,7 @@ export default function EditorRunner() {
                                                         border: 'none',
                                                         backgroundColor: 'white'
                                                     }}/>
-                                        }
-                                        configName={firebaseConfigName} runUrl={runUrl}/>
+                                        } />
                                 </Grid>
                             </Grid>
                         </Box>

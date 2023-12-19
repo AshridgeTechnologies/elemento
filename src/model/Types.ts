@@ -70,7 +70,6 @@ export type ElementType =
     'FunctionImport' |
     'Collection' |
     'Layout' |
-    'FirebasePublish' |
     'FirestoreDataStore' |
     'ServerApp' |
     'ServerAppConnector' |

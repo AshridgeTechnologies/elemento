@@ -22,7 +22,6 @@ import Function from './FunctionDef' // Note: use ElementType name for Function
 import Collection from './Collection'
 import Layout from './Layout'
 import {DataTypeElementType, ElementType} from './Types'
-import FirebasePublish from './FirebasePublish'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
@@ -94,7 +93,6 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         FunctionImport: FunctionImport,
         Collection: Collection,
         Layout: Layout,
-        FirebasePublish: FirebasePublish,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         File: File,

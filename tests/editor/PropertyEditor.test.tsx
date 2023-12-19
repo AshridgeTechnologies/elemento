@@ -26,7 +26,6 @@ import FunctionDef from '../../src/model/FunctionDef'
 import FileDataStore from '../../src/model/FileDataStore'
 import Layout from '../../src/model/Layout'
 import AppBar from '../../src/model/AppBar'
-import FirebasePublish from '../../src/model/FirebasePublish'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
@@ -429,41 +428,6 @@ service cloud.firestore {
     expect(inputValue('Collections')).toBe('Things: user-private')
     expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
     expect(input('Security Rules').readOnly).toBe(true)
-})
-
-test('has fields and actions for FirebasePublish', async () => {
-    const config = {
-        apiKey: "Abcde",
-        authDomain: "xyz.firebaseapp.com",
-        projectId: "xyz123",
-        storageBucket: "xyz123.appspot.com",
-        messagingSenderId: "222222222",
-        appId: "1:22222222:web:aaaabbbbccccdddd"
-    }
-    const configStr = `{
-        apiKey: "Abcde",
-        authDomain: "xyz.firebaseapp.com",
-        projectId: "xyz123",
-        storageBucket: "xyz123.appspot.com",
-        messagingSenderId: "222222222",
-        appId: "1:22222222:web:aaaabbbbccccdddd"
-    }
-    `
-    const element = new FirebasePublish('id1', 'Firebase Publish 1', {
-        firebaseProject: 'project-one',
-        firebaseConfiguration: {expr: configStr}
-    })
-    element.publish = jest.fn()
-    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
-    expect(nameInputValue()).toBe('Firebase Publish 1')
-    expect(inputValue('Firebase Project')).toBe('project-one')
-    expect(inputValue('Firebase Configuration')).toBe(configStr)
-
-    const publishButton = screen.getByText('Publish')
-    fireEvent.click(publishButton)
-    expect(element.publish).toHaveBeenCalledWith(project)
-
-    expect(await element.getConfig()).toStrictEqual(config)
 })
 
 test('shows errors for each property', () => {

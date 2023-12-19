@@ -88,10 +88,6 @@ const serverFileWriter = {
     clean: jest.fn().mockResolvedValue(undefined)
 }
 
-const runtimeLoader = {
-    getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
-}
-
 const getFileLoader = (dirContents: object = {}, exists = true) => ({
     exists: jest.fn().mockResolvedValue(exists),
     listFiles: jest.fn().mockResolvedValue(Object.keys(dirContents)),
@@ -105,14 +101,13 @@ const clearMocks = () => {
     serverFileWriter.writeFile.mockClear()
     serverFileWriter.flush.mockClear().mockResolvedValue(undefined)
     serverFileWriter.clean.mockClear().mockResolvedValue(undefined)
-    runtimeLoader.getFile.mockClear()
 }
 
 beforeEach(clearMocks)
 
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}) => {
-    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(), runtimeLoader,
+    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(),
         projectInfoFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
     return new ProjectBuilder(properties)
 }
@@ -153,7 +148,6 @@ test('writes server files generated from Project for all apps after clean and fl
 
     const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
     const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
-    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([ ]) // copy runtime files currently disabled
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
         ...expectedGeneratedCalls,
     ])
@@ -238,7 +232,6 @@ test('copies runtime files only to client build if no server app', async () => {
     const builder = newProjectBuilder({projectLoader: getProjectLoader(projectClientOnly)})
     await builder.build()
 
-    expect(runtimeLoader.getFile.mock.calls).toStrictEqual([ ])
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App3/App3.js', expectedClientCode(app3, projectClientOnly)],
         ['App3/index.html', expectedIndexFile(app3, projectClientOnly)],
@@ -260,18 +253,14 @@ test('updates files generated from project', async () => {
         flush: jest.fn().mockResolvedValue(undefined),
         clean: jest.fn().mockResolvedValue(undefined)
     }
-    const runtimeLoader = {
-        getFile: jest.fn().mockImplementation((filename: string) => Promise.resolve(`Contents of ${filename}`))
-    }
     const projectLoader = getProjectLoader(project1)
-    const builder = newProjectBuilder({projectLoader, fileLoader: getFileLoader(dirContents), runtimeLoader, clientFileWriter, serverFileWriter})
+    const builder = newProjectBuilder({projectLoader, fileLoader: getFileLoader(dirContents), clientFileWriter, serverFileWriter})
     await builder.build()
 
     clientFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
     serverFileWriter.flush.mockClear().mockResolvedValue(undefined)
     serverFileWriter.clean.mockClear().mockResolvedValue(undefined)
-    runtimeLoader.getFile.mockClear()
 
     const project1Updated = project1.set('text1', 'name', 'Text 1 Updated')
     projectLoader.project = project1Updated
@@ -287,7 +276,6 @@ test('updates files generated from project', async () => {
     const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
     const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual(expectedGeneratedCalls)
-    expect(runtimeLoader.getFile).not.toHaveBeenCalled()
 })
 
 test('updates from project are throttled to one update every 100ms', async () => {

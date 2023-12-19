@@ -390,7 +390,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'FirestoreDataStore':
             case 'Function':
             case 'FunctionImport':
-            case 'FirebasePublish':
             case 'ServerApp':
             case 'ServerAppConnector':
             case 'File':

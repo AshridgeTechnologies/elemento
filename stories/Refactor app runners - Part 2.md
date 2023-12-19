@@ -54,7 +54,7 @@ Further requirements
 --------------------
 - Default GitHub URL to remote origin
 - Use secret for access token extension param, check all permissions and ordering for using secrets
-- Remove old Builder and build.ts, BrowserRuntimeLoader
+- ✅ Remove old Builder and build.ts, BrowserRuntimeLoader
 - Don't load runtimes and other unnecessary files into GitHub - get from elemento hosting
 - Upgrade FB function to v2 and Node 20
 - Studio Tool to manage app server - or just use FB console?
