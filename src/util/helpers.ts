@@ -79,3 +79,4 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
     }
 }
 export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
+export const pathSegments = (path: string) => path.split('/')

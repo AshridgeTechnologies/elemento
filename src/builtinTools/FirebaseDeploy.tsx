@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import {Button, Link, Stack, TextField, Typography} from '@mui/material'
-import {googleAccessToken, useAuthorizedState} from '../shared/gisProvider'
-import {currentUser, gitHubAccessToken, signIn, useSignedInState} from '../shared/authentication'
+import {googleAccessToken, useAuthorizedState} from '../appsShared/gisProvider'
+import {currentUser, gitHubAccessToken, signIn, useSignedInState} from '../appsShared/gitHubAuthentication'
 import {Editor} from '../editorToolApis/EditorControllerClient'
-import GitHubConnection from '../shared/GitHubConnection'
-import GoogleConnection from '../shared/GoogleConnection'
+import GitHubConnection from '../appsShared/GitHubConnection'
+import GoogleConnection from '../appsShared/GoogleConnection'
 
 const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     console.log('Deploying from', gitRepoUrl, 'to', firebaseProjectId)

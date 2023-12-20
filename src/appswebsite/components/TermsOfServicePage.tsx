@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box, Stack, Typography} from '@mui/material'
-import AppBar from '../../shared/AppBar'
+import AppBar from '../../appsShared/AppBar'
 
 export default function TermsOfServicePage() {
 

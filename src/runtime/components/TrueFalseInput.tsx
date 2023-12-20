@@ -3,7 +3,7 @@ import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/mate
 import {valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
-import {TrueFalseType} from '../../shared/types'
+import {TrueFalseType} from '../types'
 import {InputWithInfo} from './InputWithInfo'
 
 type Properties = {path: string, label?: string}

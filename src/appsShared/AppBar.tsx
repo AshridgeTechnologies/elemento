@@ -5,7 +5,6 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import GitHubConnection from './GitHubConnection'
 import AppBarMenu from './AppBarMenu'
-import GoogleConnection from './GoogleConnection'
 
 type Properties = {title: string, userMenu?: boolean}
 export default function AppBar({title, userMenu = true}: Properties) {

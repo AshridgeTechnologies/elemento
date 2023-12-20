@@ -15,14 +15,14 @@ import {
     Rule,
     TextType,
     TrueFalseType
-} from '../../../src/shared/types'
+} from '../../../src/runtime/types'
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
 import MockedFunction = jest.MockedFunction
 import React, {KeyboardEventHandler} from 'react'
 import {useGetObjectState} from '../../../src/runtime'
 import {useObjectStates} from '../../../src/runtime/appData'
 import BigNumber from 'bignumber.js'
-import DecimalType from '../../../src/shared/types/DecimalType'
+import DecimalType from '../../../src/runtime/types/DecimalType'
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Box Size', {max: 20})

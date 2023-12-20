@@ -1,5 +1,5 @@
-import ChoiceType from '../../../src/shared/types/ChoiceType'
-import Rule from '../../../src/shared/types/Rule'
+import ChoiceType from '../../../src/runtime/types/ChoiceType'
+import Rule from '../../../src/runtime/types/Rule'
 import {expect} from 'expect'
 
 test('has expected properties', () => {

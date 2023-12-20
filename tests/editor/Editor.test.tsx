@@ -31,7 +31,7 @@ import {AppElementAction} from '../../src/editor/Types'
 
 const {startCase} = lodash;
 
-jest.mock('../../src/shared/authentication')
+jest.mock('../../src/appsShared/gitHubAuthentication')
 
 let container: any = null, unmount: any
 

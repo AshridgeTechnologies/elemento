@@ -1,5 +1,6 @@
 import mime from 'mime-types'
-import {internalProjectsDir, pathSegments} from '../shared/fileSystem'
+import {internalProjectsDir} from './fileSystem'
+import {pathSegments} from '../util/helpers'
 
 function makeRequestFilepath(filepath: string) {
     if (!filepath) return 'index.html'

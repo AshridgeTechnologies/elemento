@@ -1,5 +1,5 @@
-import NumberType from '../../../src/shared/types/NumberType'
-import Rule from '../../../src/shared/types/Rule'
+import NumberType from '../../../src/runtime/types/NumberType'
+import Rule from '../../../src/runtime/types/Rule'
 import {expect} from 'expect'
 
 const type = new NumberType('Product price', {required: true, min: 10, max: 20000, format: 'integer', description: 'Price of a product'}, [

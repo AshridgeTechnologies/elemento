@@ -1,5 +1,5 @@
 import InputComponentState, {InputComponentExternalProps} from './InputComponentState'
-import {RecordType} from '../../shared/types'
+import {RecordType} from '../types'
 import {equals} from 'ramda'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => void

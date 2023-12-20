@@ -1,5 +1,5 @@
-import DecimalType from '../../../src/shared/types/DecimalType'
-import Rule from '../../../src/shared/types/Rule'
+import DecimalType from '../../../src/runtime/types/DecimalType'
+import Rule from '../../../src/runtime/types/Rule'
 import {expect} from 'expect'
 import BigNumber from 'bignumber.js'
 

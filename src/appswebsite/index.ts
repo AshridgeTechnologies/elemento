@@ -1,4 +1,4 @@
-export {run} from '../shared/renderInPage'
+export {run} from '../appsShared/renderInPage'
 export {default as HomePage} from './components/HomePage'
 export {default as LearnPage} from './components/LearnPage'
 export {default as MainHelpPanel} from '../docs/MainHelpPanel'

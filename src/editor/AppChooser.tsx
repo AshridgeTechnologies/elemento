@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {VoidFn} from './Types'
-import AppBar from '../shared/AppBar'
+import AppBar from '../appsShared/AppBar'
 
 import {AlertColor, Box, Grid, Icon, List, ListItem, ListItemIcon, Typography, useTheme} from '@mui/material'
 import './splitPane.css'
@@ -9,9 +9,8 @@ import ListItemText from '@mui/material/ListItemText'
 import {RunLocalDialog} from './actions/RunLocal'
 import {RunFromDiskDialog} from './actions/RunFromDisk'
 import {AlertMessage, UIManager} from './actions/actionHelpers'
-import {theme} from '../shared/styling'
+import {theme} from '../appsShared/styling'
 import {ThemeProvider} from '@mui/material/styles'
-import {noop} from '../util/helpers'
 import {RunAppFn} from './runLocalApp'
 import {RunGitHubDialog} from './actions/RunGitHub'
 

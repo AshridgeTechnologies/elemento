@@ -4,11 +4,11 @@ import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
-import {NumberType} from '../../shared/types'
+import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
 import {InputWithInfo} from './InputWithInfo'
 import BigNumber from 'bignumber.js'
-import DecimalType from '../../shared/types/DecimalType'
+import DecimalType from '../types/DecimalType'
 
 type Properties = {path: string, label?: PropVal<string>, }
 

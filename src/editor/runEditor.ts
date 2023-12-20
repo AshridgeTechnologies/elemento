@@ -1,5 +1,5 @@
-import {run} from '../shared/renderInPage'
+import {run} from '../appsShared/renderInPage'
 import EditorRunner from './EditorRunner'
-import {registerServiceWorker} from '../shared/serviceWorker'
+import {registerServiceWorker} from './serviceWorker'
 
 registerServiceWorker('/sw.js', '/studio', 'Studio').then( ()=> run(EditorRunner))

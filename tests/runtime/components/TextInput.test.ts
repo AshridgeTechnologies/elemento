@@ -9,7 +9,7 @@ import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
-import {TextType} from '../../../src/shared/types'
+import {TextType} from '../../../src/runtime/types'
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 

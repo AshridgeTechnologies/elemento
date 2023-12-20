@@ -48,6 +48,5 @@ let appManager = new FirebaseAppManager()
 
 export type {FirebaseApp} from 'firebase/app'
 export const getAppAndSubscribeToChanges = (callback: Callback) => appManager.getAppAndSubscribeToChanges(callback)
-export const getConfig = () => appManager.config
 export const setConfig = (config: any) => appManager.setConfig(config)
 export const test_resetAppManager = () => appManager = new FirebaseAppManager()

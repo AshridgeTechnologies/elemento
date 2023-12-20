@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {GitHub} from '@mui/icons-material'
-import {currentUser, signIn, signOut, useSignedInState} from './authentication'
+import {currentUser, signIn, signOut, useSignedInState} from './gitHubAuthentication'
 import ServiceConnection from './ServiceConnection'
 
 export default function GitHubConnection() {

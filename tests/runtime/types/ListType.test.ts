@@ -1,8 +1,8 @@
-import TextType from '../../../src/shared/types/TextType'
-import Rule from '../../../src/shared/types/Rule'
+import TextType from '../../../src/runtime/types/TextType'
+import Rule from '../../../src/runtime/types/Rule'
 import {expect} from 'expect'
-import RecordType from '../../../src/shared/types/RecordType'
-import ListType from '../../../src/shared/types/ListType'
+import RecordType from '../../../src/runtime/types/RecordType'
+import ListType from '../../../src/runtime/types/ListType'
 import {isNil} from 'ramda'
 
 const nameType = new TextType('Name', {required: true, description: 'Customers full name', minLength: 2})

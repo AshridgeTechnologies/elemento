@@ -29,7 +29,7 @@ Requirements
 - ✅ Serve/redirect to default client app on top level
 - ✅ Show url when deployed
 - ✅ Warn about uncommitted changes
-- Can access Firebase
+- Can access Firebase on the _hosting_ project, not Elemento
 - Can access third party APIs with secret credentials
 - Can use Firebase authorization
 - Can get firebase config from preview server
@@ -75,6 +75,11 @@ Further requirements
 
 Sub-stories
 ===========
+
+Use Firebase on hosting server
+------------------------------
+
+
 
 Preview server
 --------------

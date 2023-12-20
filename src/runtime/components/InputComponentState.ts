@@ -1,6 +1,6 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {PropVal, valueOf} from '../runtimeFunctions'
-import BaseType from '../../shared/types/BaseType'
+import BaseType from '../types/BaseType'
 
 export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
 type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}

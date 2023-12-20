@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import AppBar from '../../src/shared/AppBar'
+import AppBar from '../../src/appsShared/AppBar'
 import MenuBar from '../../src/editor/MenuBar'
 import InsertMenuWithButton from '../../src/editor/InsertMenuWithButton'
 import {snapshotTest} from '../testutil/testHelpers'

@@ -8,10 +8,10 @@ import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'
-import {NumberType} from '../../../src/shared/types'
+import {NumberType} from '../../../src/runtime/types'
 import {render} from '@testing-library/react'
 import BigNumber from 'bignumber.js'
-import DecimalType from '../../../src/shared/types/DecimalType'
+import DecimalType from '../../../src/runtime/types/DecimalType'
 
 const [numberInput, appStoreHook] = wrappedTestElement(NumberInput, NumberInputState)
 

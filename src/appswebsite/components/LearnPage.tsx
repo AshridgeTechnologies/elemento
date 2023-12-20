@@ -1,7 +1,7 @@
 import React from 'react'
 import {Box, Link, Typography} from '@mui/material'
-import AppBar from '../../shared/AppBar'
-import {theme} from '../../shared/styling'
+import AppBar from '../../appsShared/AppBar'
+import {theme} from '../../appsShared/styling'
 import {ThemeProvider} from '@mui/material/styles'
 
 const Para = ({children, ...props}: any) => <Typography variant={'body1'} fontSize='1.1em' mt={2} marginBottom='1.25em' {...props}>{children}</Typography>

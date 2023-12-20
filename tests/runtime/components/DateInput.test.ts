@@ -8,7 +8,7 @@ import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {DateInputState} from '../../../src/runtime/components/DateInput'
-import {DateType, TextType} from '../../../src/shared/types'
+import {DateType, TextType} from '../../../src/runtime/types'
 import {act, render, waitFor} from '@testing-library/react'
 
 const [dateInput, appStoreHook] = wrappedTestElement(DateInput, DateInputState)

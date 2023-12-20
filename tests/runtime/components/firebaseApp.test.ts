@@ -1,5 +1,4 @@
 import {
-    getConfig,
     setConfig,
     getAppAndSubscribeToChanges,
     test_resetAppManager

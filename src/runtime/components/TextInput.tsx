@@ -4,7 +4,7 @@ import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
-import {TextType} from '../../shared/types'
+import {TextType} from '../types'
 import {pick} from 'ramda'
 import {InputWithInfo} from './InputWithInfo'
 

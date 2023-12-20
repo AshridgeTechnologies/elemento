@@ -1,4 +1,4 @@
 import thePage from './TermsOfServicePage'
-import {run} from '../../shared/renderInPage'
+import {run} from '../../appsShared/renderInPage'
 
 run(thePage)

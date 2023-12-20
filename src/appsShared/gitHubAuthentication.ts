@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import * as auth from 'firebase/auth'
 import {signInWithPopup, GithubAuthProvider} from 'firebase/auth'
-import {app} from './firebaseApp'
+import {app} from './elementoFirebaseApp'
 
 let ghAccessToken: string | null = null
 let ghUsername: string | null = null

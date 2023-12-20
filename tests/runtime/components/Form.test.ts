@@ -8,7 +8,7 @@ import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../..
 import renderer from 'react-test-renderer'
 import {useGetObjectState, useObjectState, useObjectStates} from '../../../src/runtime/appData'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
-import {NumberType, RecordType, Rule, TextType} from '../../../src/shared/types'
+import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
 import MockedFunction = jest.MockedFunction
 
 const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})

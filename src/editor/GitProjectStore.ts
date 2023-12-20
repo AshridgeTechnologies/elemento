@@ -1,5 +1,5 @@
 import git, {CallbackFsClient, HttpClient, PromiseFsClient} from 'isomorphic-git'
-import {gitHubUsername} from '../shared/authentication'
+import {gitHubUsername} from '../appsShared/gitHubAuthentication'
 import assert from 'assert'
 import {Octokit} from 'octokit'
 

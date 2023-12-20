@@ -1,7 +1,7 @@
 import React from 'react'
 import {Box, Container, Link, Stack, Typography} from '@mui/material'
-import AppBar from '../../shared/AppBar'
-import {theme} from '../../shared/styling'
+import AppBar from '../../appsShared/AppBar'
+import {theme} from '../../appsShared/styling'
 import {ThemeProvider} from '@mui/material/styles'
 import {
     AodTwoTone as AodIcon,

@@ -1,4 +1,4 @@
 import thePage from './DownloadsPage'
-import {run} from '../../shared/renderInPage'
+import {run} from '../../appsShared/renderInPage'
 
 run(thePage)

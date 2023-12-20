@@ -5,8 +5,8 @@ declare global {
 }
 
 // these are unique but non-secret identifiers - see https://firebase.google.com/docs/projects/learn-more#config-files-objects
-export const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
-export const SCOPES = [
+const CLIENT_ID = '366833305772-0fjtfge6ntlgs9pjdkbatte1vpti21ic.apps.googleusercontent.com'
+const SCOPES = [
     'https://www.googleapis.com/auth/firebase'
 ].join(' ')
 
@@ -24,9 +24,18 @@ const gsiScriptLoaded = loadScriptElement('https://accounts.google.com/gsi/clien
 
 let access_token: string | null = null
 let access_token_expires_time: Date = new Date(0)
+let authListeners = new Set<VoidFunction>()
+
+const googleAccessTokenExpired = ()=> access_token_expires_time < new Date()
+const addAuthListener = (fn: VoidFunction) => authListeners.add(fn)
+const removeAuthListener = (fn: VoidFunction) => { authListeners.delete(fn) }
+const setAccessToken = (token: string | null, expiresInSeconds: number) => {
+    access_token = token
+    access_token_expires_time = new Date(Date.now() + expiresInSeconds * 1000)
+    authListeners.forEach( l => l() )
+}
 
 export const googleAccessToken = ()=> googleAccessTokenExpired() ? null : access_token
-export const googleAccessTokenExpired = ()=> access_token_expires_time < new Date()
 
 export const authorizeWithGoogle = async () => {
     await gsiScriptLoaded
@@ -64,15 +73,6 @@ export const deauthorize = async () => {
         google.accounts.oauth2.revoke(access_token, resolve)
         setAccessToken(null, 0)
     })
-}
-
-let authListeners = new Set<VoidFunction>()
-const addAuthListener = (fn: VoidFunction) => authListeners.add(fn)
-const removeAuthListener = (fn: VoidFunction) => { authListeners.delete(fn) }
-const setAccessToken = (token: string | null, expiresInSeconds: number) => {
-    access_token = token
-    access_token_expires_time = new Date(Date.now() + expiresInSeconds * 1000)
-    authListeners.forEach( l => l() )
 }
 
 export function useAuthorizedState() {

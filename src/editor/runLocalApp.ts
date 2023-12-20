@@ -1,7 +1,7 @@
-import {run} from '../shared/renderInPage'
+import {run} from '../appsShared/renderInPage'
 import AppMain from '../runner/AppMain'
 import AppChooser from './AppChooser'
-import {registerServiceWorker} from '../shared/serviceWorker'
+import {registerServiceWorker} from './serviceWorker'
 import {RunArea} from './Types'
 
 
