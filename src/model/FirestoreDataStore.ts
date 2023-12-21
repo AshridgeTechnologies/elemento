@@ -53,11 +53,5 @@ export default class FirestoreDataStore extends BaseElement<Properties> implemen
             propDef('securityRules', 'string multiline', {readOnly: true}),
         ]
     }
-
-    async publishSecurityRules(project: Project) {
-        console.log('Security Rules')
-        console.log(this.securityRules)
-    }
-
 }
 

@@ -29,10 +29,12 @@ Requirements
 - ✅ Serve/redirect to default client app on top level
 - ✅ Show url when deployed
 - ✅ Warn about uncommitted changes
-- Can access Firebase on the _hosting_ project, not Elemento
-- Can access third party APIs with secret credentials
-- Can use Firebase authorization
+- ✅ Can access Firebase on the _hosting_ project, not Elemento
 - Can get firebase config from preview server
+- Can access third party APIs with secret credentials
+- Can use Firebase user on server
+- Firestore security rules are set when deploy
+- Firestore data store can be used in preview, possibly with simulated security rules
 - ✅ Can run server apps in cache default and specified versions concurrently
 - ✅ Can update client app quickly and easily when new version in GitHub
 - ✅ Tool in Studio to deploy to Firebase
@@ -115,7 +117,7 @@ Use Firebase on hosting server
 - Firebase tool checks if extension initialised in the project set and warns if not
 - Link to install extension opens in a new tab
 - If extension present, checks if preview is set up and prompts to do it if not
-- Sets default storage location in setup
+- Sets default storage location in setup (maybe from client)
 - Firebase Tool has extension install link
   - https://console.firebase.google.com/project/_/extensions/install?ref=elemento/elemento-app-server@0.1.1-alpha.0
 - Document the extension warning
