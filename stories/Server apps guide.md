@@ -23,6 +23,7 @@ Requirements
 - Developer info
 
 ### Firebase hosting
+- Intro
 - What it is
 - Why it is needed
   - Hosting
