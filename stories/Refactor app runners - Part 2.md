@@ -79,6 +79,18 @@ Sub-stories
 Use Firebase on hosting server
 ------------------------------
 
+- ✅ Extension admin server has a setup feature
+- ✅ Setup sets the preview password and ensures default app and config are generated
+- ✅ Config and password are saved in a settings folder in storage bucket, file settings
+- Preview server serves firebaseConfig.json from the saved settings
+- Preview server gets the password from the saved settings
+- Extension param for preview password is removed
+- Firebase tool generates a random password if none found
+- Firebase tool checks if extension initialised in the project set and warns if not
+- Link to install extension opens in a new tab
+- If extension present, checks if preview is set up and prompts to do it if not
+- Sets default storage location in setup
+
 
 
 Preview server

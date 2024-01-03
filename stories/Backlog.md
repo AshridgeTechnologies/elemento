@@ -47,6 +47,7 @@ Stories
 - Server apps guide
 - Data types guide
 - Other how-to guides
+- Look into using driver.js
 
 ### Priority for internal apps
 - Type expressions
@@ -159,6 +160,7 @@ Tech debt
 - Use radash wherever possible, try to remove lodash
 - Consider replacing state management with self-updating immutable objects using Immer, maybe Proxies, useContext and useReducer
 - Consider Temporal
+- Upgrade date-fns v3
 - Consider TinyBase
 - Consider escodegen in generator
 - Latest yarn
