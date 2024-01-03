@@ -91,54 +91,17 @@ export default () =>
         <SubSection id='server-apps-what-you-need'>
             <SubHeading>What you need to use Server Apps</SubHeading>
             <Para>
-                There are a few straightforward things you need to do to prepare to use Server Apps.
-                As Elemento is provided as a free service, it is not possible to include the cloud services needed as part of the package.
-                So instead we make it easy to run your apps on Google Firebase, an easy to use cloud hosting service.
-                You will need to create your own account with Google, and arrange to pay for any charges you incur,
-                and then follow a few instructions to set things up.
+                A Server App needs to run on a server connected to the internet.
+                There are many ways to do this, and if you are an experienced developer you can choose any way you like to
+                run the Server App code that Elemento generates.  But for those without the knowledge to do that,
+                Elemento provides easy-to-use tools which let you
+                set up the Google Firebase cloud service to host your Project and run your Server Apps.
+                See the Firebase Hosting guide for details.
             </Para>
             <Para>
-                The good news is that the costs will usually be lower than other low code/no code services,
-                and for many small sites with low visitor numbers it will be free, as Google gives you a generous free allowance.
-                And if you do get a sudden spike of traffic to your site, Google automatically scales up the number of servers allocated to you to meet the demand,
-                so you don't need to worry about your site collapsing under the pressure.
+                Once you have developed and tested your Project with Server Apps, and each time you have changes that you want to release,
+                you will need to deploy your Project to Firebase Hosting.  See the Firebase Hosting guide, Deployment section.
             </Para>
-            <NamedList>
-                <NLItem name='Set up a Google account'>
-                    Many people already have a Google account for using Gmail and other services.
-                    You could use this, but you may prefer to set up a separate one for running your Elemento apps.
-                    Go to this page <Link href='https://support.google.com/accounts/answer/27441?hl=en'>Create a Google Account</Link> and follow the instructions.
-                </NLItem>
-                <NLItem name='Create a Firebase project'>
-                    Go to the <Link href='https://firebase.google.com'>Firebase home page</Link>.
-                    Have a look around if you are curious, and when you are ready, click the Get Started button.
-                    Click the account button in the top right corner to check you are using the right account, and change it if not.
-                    then click the Add project link
-                </NLItem>
-                <NLItem name='Enter the project name'>
-                    You probably want your project name to reflect what your app is about, so if you already have a name for your app (like Ballpoint Pen World),
-                    use that name here. This name may appear to users of your app occasionally, so make it sensible.
-                    You will see another name below it, in lower case with hyphens, based on your main name (eg "ballpoint-pen-world").
-                    This is an id for your project that will be used in the URLs for your app website, so you will want to choose a clear id that reflacts your app name.
-                    It has to be unique across all the projects in Firebase, so the most obvious one may have been taken.
-                    If the one suggested looks a bit odd, click on it and try different names until you find one that is OK.  When you are happy, click Continue.
-                </NLItem>
-                <NLItem name='Upgrade to a paid account'>
-                    This doesn't commit you to any regular monthly payment - you pay only for the computer time and resources that your site needs,
-                    and you will be probably stay within the free allowance until you get a reasonable volume of visitors.
-                    But you have to set up a payment method so that Google can charge you if necessary.  Click the button that says "Spark Plan" next
-                    to the project name, Select the Blaze plan, and follow the instructions to set up a billing account.
-                </NLItem>
-                <NLItem name='Set up Firebase Services'>
-                    Go to the <Link href='https://console.firebase.google.com/u/0/project/_/storage'>Firebase console Storage page</Link>, and select your project.
-                    Click the Get Started button.  Make sure the Start in production mode button is selected, then click Next.
-                    On the next step, select the Cloud Storage location europe-west2, then click Done and wait for it to finish working.
-                </NLItem>
-                <NLItem name='Install the Elemento extension'>
-                    Go to the <Link href='https://console.firebase.google.com/u/0/project/_/extensions'>Firebase console Extensions page</Link>, and select your project.
-                    Next steps TBC
-                </NLItem>
-            </NamedList>
         </SubSection>
 
         <SubSection id='server-apps-how-to-create'>
@@ -204,7 +167,13 @@ export default () =>
                 named after the formula name of the Server App, with a .mjs extension, as it uses ESM imports.
             </Para>
 
-            <Para> to be continued... </Para>
+            <Para>There is also a file called ExpressApp.js that creates a standard Express app to run the Server Apps.
+                It imports the Elemento server runtime library from serverRuntime.cjs in the same directory.  This file is available from
+                https://elemento.online/lib/serverRuntime.cjs.</Para>
+            <Para>
+                The generated index.js and package.json are intended for running with Firebase, so you would probably need to replace them
+                with files suitable for your hosting environment.
+            </Para>
 
         </SubSection>
 

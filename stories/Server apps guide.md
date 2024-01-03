@@ -33,3 +33,4 @@ Requirements
 - Setting up an account
 - Setting up a project
 - Setting up GitHub
+- Deployment

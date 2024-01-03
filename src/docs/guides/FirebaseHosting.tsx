@@ -93,6 +93,7 @@ export default () =>
         </SubSection>
 
         <SubSection id='firebase-project-setup'>
+            <SubHeading>Setting up Firebase for your project</SubHeading>
             <Para>To use Firebase, you will need to set up a Firebase Project,
                 connect your Elemento Project to it, and then install a Firebase extension in it.
                 This is a piece of software, provided by Elemento, that runs inside Firebase and takes care of deploying (publishing) your Project
@@ -136,11 +137,28 @@ export default () =>
                     In the Setup section, enter the name of the Firebase Project you have created, and Save.
                     Then click the Install Elemento Extension link.
                     This will open a new tab showing the Firebase Console ready to install the extension
-                    Go to the <Link href='https://console.firebase.google.com/u/0/project/_/extensions'>Firebase console Extensions page</Link>, and select your project.
-                    Next steps TBC
+                    Follow the instructions there, and wait for the extension to install - this will take a few minutes.
                 </NLItem>
             </NamedList>
+        </SubSection>
 
+        <SubSection id='firebase-deploy'>
+            <SubHeading>Deploying your project to Firebase</SubHeading>
+            <Para>When you have developed and tested your Project in the Elemento Studio, you will want to publish it for others to use
+            by deploying it to Firebase.  You will do this again whenever you have built new features that you are ready to publish.
+            </Para>
+
+            <Para>First you will need to <HelpLink id='firebase-project-setup'>set up Firebase for your project</HelpLink>.
+                Then, still using the Firebase Tool:
+            </Para>
+            <BulletList>
+                <li>Scroll to the Deploy section</li>
+                <li>Make sure that you are connected to the correct Google Account and GitHub account</li>
+                <li>Make sure you have saved all the changes you want to deploy to GitHub</li>
+                <li>Enter the URL of the GitHub repository that you want to deploy from</li>
+                <li>Click Deploy and wait for it to finish (should be less than a minute)</li>
+                <li>Try out your App(s) at the address shown</li>
+            </BulletList>
         </SubSection>
 
     </Section>
