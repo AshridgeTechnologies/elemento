@@ -24,7 +24,7 @@ export const clientConfig = {
         nodeModulesPolyfillPlugin({modules: ['os', 'path', 'crypto', 'buffer'], globals: {Buffer: true} }),
         copy({
             assets: {
-                from: ['src/appswebsite/**/index.html' ],
+                from: ['src/appswebsite/**/*.html' ],
                 to: ['.'],
             },
         })

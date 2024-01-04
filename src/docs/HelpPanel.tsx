@@ -29,12 +29,12 @@ function HelpContents({items, selected, onSelected}: {items: ContentsItem[], sel
     </TreeView>)
 }
 
-function HelpBar() {
+function HelpBar(props: {title: string}) {
     return (
         <Mui_AppBar position='relative'>
             <Toolbar variant="dense" sx={{minHeight: 40}}>
                 <Typography variant="h6" component="div" sx={{fontSize: 16, flexGrow: 1}}>
-                    Elemento Help
+                    {props.title}
                 </Typography>
             </Toolbar>
         </Mui_AppBar>
@@ -51,7 +51,14 @@ const NavButtons = () => <Box sx={{position: 'absolute', top: '10px', right: '30
     </IconButton>
 </Box>
 
-export default function HelpPanel({children, showTitleBar = false}: { children: React.ReactNode, showTitleBar?: boolean }) {
+export function shouldShowTitleBar(): boolean {
+    const headerParam = new URL(window.location.href).searchParams.get('header')
+    return headerParam !== '0'
+}
+
+export default function HelpPanel({children, showTitleBar, title}: { children: React.ReactNode, showTitleBar?: boolean, title: string }) {
+
+
     const [helpItems, setHelpItems] = useState<ContentsItem[]>([])
     const [selectedId, setSelectedId] = useState<string | null>(null)
     const helpTextPanel = useRef<HTMLElement>(null)
@@ -107,11 +114,12 @@ export default function HelpPanel({children, showTitleBar = false}: { children: 
     }
 
 
+    const titleBar = (showTitleBar ?? shouldShowTitleBar()) ? <Box flex='0'>
+        <HelpBar title={title}/>
+    </Box> : null
 
     return <Box display='flex' flexDirection='column' id="helpPanel" height='100%'>
-        {showTitleBar && <Box flex='0'>
-            <HelpBar/>
-        </Box>}
+        {titleBar}
         <Box flex='1' minHeight={0}>
             <Box display='flex' flexDirection='row' height='100%' sx={{position: 'relative'}}>
                 <NavButtons/>

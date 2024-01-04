@@ -48,7 +48,9 @@ Requirements
 - ✅ Login to Google auto, or prompt, if possible, when need to update
 - Check service worker js file caching
 - Elemento Apps is approved
-- Ping app server after deploy - and before to load it?
+- Ping app server after deploy - and before to load it? 
+- Server app express file serves all server apps
+- Serving preview app is documented
 
 Further requirements
 --------------------

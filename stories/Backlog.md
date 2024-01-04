@@ -44,7 +44,6 @@ Stories
 
 ### Priority for learning Elemento
 - Server apps example
-- Server apps guide
 - Data types guide
 - Other how-to guides
 - Look into using driver.js
@@ -278,6 +277,7 @@ Done
 - Move examples to separate repos
 - New Run page can enter and run an app from GitHub or local projects
 - New Learn page with links to Help, Guides and Examples
+- Server apps guide
 
 Bugs fixed
 ----------
