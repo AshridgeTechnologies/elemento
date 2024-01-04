@@ -144,6 +144,19 @@ test('can find child elements by type', () => {
     expect(project.findChildElements(ServerApp)).toStrictEqual([serverApp1, serverApp2])
 })
 
+test('knows if has server apps', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const page1 = new Page('p1', 'Page 1', {}, [text1,])
+
+    const app = new App('app1', 'App 1', {}, [page1])
+    const serverApp1 = new ServerApp('sa1', 'Live', {})
+    const projectClientOnly = Project.new([app])
+    const projectWithServerApps = Project.new([app, serverApp1])
+    expect(projectClientOnly.hasServerApps).toBe(false)
+    expect(projectWithServerApps.hasServerApps).toBe(true)
+
+})
+
 test('can find elements under project by selector function', () => {
     const {project, text2, text5} = testProject()
     expect(project.findElementsBy( el => el.name === 'Text 3')).toStrictEqual([text2, text5])

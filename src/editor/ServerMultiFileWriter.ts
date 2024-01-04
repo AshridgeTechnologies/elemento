@@ -15,7 +15,7 @@ export default class ServerMultiFileWriter implements ServerFileWriter {
     private readonly previewServerWriter: ThrottledCombinedFileWriter
     private readonly writer: MultiFileWriter
 
-    constructor(private readonly props: Properties) {
+    constructor(props: Properties) {
         const {delay = 1000, writers = []} = props
         const combinedWriter = new HttpCombinedFileWriter(props.previewUploadUrl, props.previewPassword)
         this.previewServerWriter = new ThrottledCombinedFileWriter(combinedWriter, delay, props.onServerUpdateStatusChange)

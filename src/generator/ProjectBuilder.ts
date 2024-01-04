@@ -63,9 +63,14 @@ export default class ProjectBuilder {
 
     async build() {
         this.buildProjectFiles()
-        return this.props.serverFileWriter.clean()
-            .then( () => Promise.all([this.writeProjectFiles(), this.copyAssetFiles()]) )
-            .then(() => this.props.serverFileWriter.flush())
+        const {serverFileWriter} = this.props
+        if (this.project.hasServerApps) {
+            await serverFileWriter.clean()
+        }
+        await Promise.all([this.writeProjectFiles(), this.copyAssetFiles()])
+        if (this.project.hasServerApps) {
+            await serverFileWriter.flush()
+        }
     }
 
     updateProject() {
@@ -81,7 +86,6 @@ export default class ProjectBuilder {
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
-    private get hasServerApps() { return this.project.findChildElements(ServerApp).length > 0 }
 
     private async writeProjectFiles() {
         const writeFiles = (files: FileSet, fileWriter: FileWriter) => Object.entries(files).map(([name, contents]) => fileWriter.writeFile(name, contents))
@@ -104,7 +108,7 @@ export default class ProjectBuilder {
         apps.forEach(async (app, index) => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(async tool => this.buildToolAppFiles(tool))
-        if (this.hasServerApps) {
+        if (this.project.hasServerApps) {
             this.buildServerAppFiles()
         }
     }

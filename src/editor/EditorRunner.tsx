@@ -592,7 +592,7 @@ export default function EditorRunner() {
             const OverallAppBar = <Box flex='0'>
                 <AppBar title={appBarTitle}/>
             </Box>
-            const status = ServerUpdateStatus({status: serverUpdateStatus, projectBuilder: projectBuilderRef.current})
+            const status = project.hasServerApps ? ServerUpdateStatus({status: serverUpdateStatus, projectBuilder: projectBuilderRef.current}) : null
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
                     onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,

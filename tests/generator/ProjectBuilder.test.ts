@@ -106,8 +106,8 @@ const clearMocks = () => {
 beforeEach(clearMocks)
 
 
-const newProjectBuilder = (props: Partial<PBProperties> = {}) => {
-    const properties = {projectLoader: getProjectLoader(project1), fileLoader: getFileLoader(),
+const newProjectBuilder = (props: Partial<PBProperties> = {}, project = project1) => {
+    const properties = {projectLoader: getProjectLoader(project), fileLoader: getFileLoader(),
         projectInfoFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
     return new ProjectBuilder(properties)
 }
@@ -153,6 +153,15 @@ test('writes server files generated from Project for all apps after clean and fl
     ])
     expect(serverFileWriter.clean).toHaveBeenCalledTimes(1)
     expect(serverFileWriter.flush).toHaveBeenCalledTimes(1)
+})
+
+test('does not clean or flush server files for Project with no server apps', async () => {
+    const builder = newProjectBuilder({}, projectClientOnly)
+    await builder.build()
+
+    expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
+    expect(serverFileWriter.clean).not.toHaveBeenCalled()
+    expect(serverFileWriter.flush).not.toHaveBeenCalled()
 })
 
 test('writes tool files for all tools to tool build with one copy of asset but not ToolImports', async () => {

@@ -14,6 +14,7 @@ import Text from './Text'
 import ToolFolder from './ToolFolder'
 import {fork} from 'radash'
 import {intersection} from 'ramda'
+import ServerApp from './ServerApp'
 
 type Properties = { author?: PropertyValue }
 
@@ -56,6 +57,7 @@ export default class Project extends BaseElement<Properties> implements Element 
     get dataTypesContainer() {
         return new DataTypesContainer('_dt1', 'DataTypes Container', {}, this.dataTypes)
     }
+    get hasServerApps() {return this.findChildElements(ServerApp).length > 0 }
 
     get propertyDefs(): PropertyDef[] {
         return [
