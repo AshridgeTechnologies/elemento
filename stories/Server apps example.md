@@ -47,7 +47,7 @@ Requirements
 - View team holiday bookings
 - View all holiday bookings
 - Send emails for changes
-- Store email service credentials in db
+- Store email service credentials in secret permanent store
 
 ## Part 2 - Server App Quick Tour
 - Highlight important features of each function

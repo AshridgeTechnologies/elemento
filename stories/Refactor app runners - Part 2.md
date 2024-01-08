@@ -24,7 +24,7 @@ Requirements
 - ✅ Server apps in preview update immediately
 - ✅ Studio uploads server apps to preview
 - ✅ Server apps in preview are secured
-- ✅ Show clear error messages if hosting problems, eg project not set
+- Show clear error messages if hosting problems, eg project not set, extension not there
 - ✅ Show clear progress messages while loading to preview server, eg not logged in to Google, allow retry
 - ✅ Serve/redirect to default client app on top level
 - ✅ Show url when deployed
@@ -52,6 +52,14 @@ Requirements
 - Server app express file serves all server apps
 - Serving preview app is documented
 
+- Document setting up Preview server
+
+Usability
+---------
+
+- Extra dropdown on Help button to show Guides
+- Use GitHub signin if there but don't immediately prompt when open Firebase tool
+
 Further requirements
 --------------------
 - Default GitHub URL to remote origin
@@ -78,6 +86,22 @@ Further requirements
 Sub-stories
 ===========
 
+Server app features needed
+--------------------------
+
+- Collection's Collection Name defaults to model object formula name
+- Find Data Store collection names from Project
+- Document how to set collection names if cannot do above
+- Document enabling Firestore and/or do in setup
+- Can use Current User in Server App functions
+- Validation expression(s) for Server App functions
+- Check Server App functions only called from app unless marked as API? How?
+- DataType validation for function inputs
+- Decode ISO dates into JS Dates
+- Investigate why and fix: This project is set up to use Cloud Firestore in Datastore mode.
+- Find a better way of setting permissions
+
+
 Use Firebase on hosting server
 ------------------------------
 
@@ -92,7 +116,12 @@ Use Firebase on hosting server
 - Link to install extension opens in a new tab
 - If extension present, checks if preview is set up and prompts to do it if not
 - Sets default storage location in setup
-
+- Firebase Tool has extension install link
+  - https://console.firebase.google.com/project/_/extensions/install?ref=elemento/elemento-app-server@0.1.1-alpha.0
+- Document the extension warning
+- Fix the Preview password docs in Guide and in extension
+- Feedback on saving Preview details
+- Get all names right - eg Install complete for {NAME}
 
 
 Preview server

@@ -120,12 +120,14 @@ export default () =>
                     This is an id for your project that will be used in the URLs for your app website, so you will want to choose a clear id that reflacts your app name.
                     It has to be unique across all the projects in Firebase, so the most obvious one may have been taken.
                     If the one suggested looks a bit odd, click on it and try different names until you find one that is OK.  When you are happy, click Continue.
+                    On the Google Analytics page, click Continue again, and then again when the project ready page appears.
                 </NLItem>
                 <NLItem name='Upgrade to a paid account'>
                     This doesn't commit you to any regular monthly payment - you pay only for the computer time and resources that your site needs,
                     and you will be probably stay within the free allowance until you get a reasonable volume of visitors.
                     But you have to set up a payment method so that Google can charge you if necessary.  Click the button that says "Spark Plan" next
                     to the project name, Select the Blaze plan, and follow the instructions to set up a billing account.
+                    You may want to set a low budget amount, like $10/month, to start with.
                 </NLItem>
                 <NLItem name='Set up Firebase Services'>
                     Go to the <Link href='https://console.firebase.google.com/u/0/project/_/storage'>Firebase console Storage page</Link>, and select your project.
