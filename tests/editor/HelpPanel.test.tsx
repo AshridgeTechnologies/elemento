@@ -50,7 +50,7 @@ const helpContent = (<>
 )
 
 test("content tree shows headings from help contents",  async () => {
-    await actWait( () => ({container} = render(<HelpPanel>{helpContent}</HelpPanel>)))
+    await actWait( () => ({container} = render(<HelpPanel title='Test panel'>{helpContent}</HelpPanel>)))
     expect(itemLabels()).toStrictEqual(['Help item 1', 'Help item 2'])
 
     await actWait(() => fireEvent.click(expandControl(0)))

@@ -36,7 +36,7 @@ test.skip('generated app can be shown in runner page', async ()=> {
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
-    await act( () => runAppFromWindowUrl('/web/some.funky.app', 'main1'))
+    await act( () => runAppFromWindowUrl({origin: 'http://example.com', pathname: '/web/some.funky.app'}, 'main1'))
     await act( () => wait(20) )
 
     const {expectEl} = containerFunctions(document.getElementById('main1') as HTMLElement)
@@ -61,7 +61,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     // @ts-ignore
     global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
-    await act( () => runAppFromWindowUrl('/web/some.funky.app', 'main2'))
+    await act( () => runAppFromWindowUrl({origin: 'http://example.com', pathname: '/web/some.funky.app'}, 'main2'))
     await act( () => wait(20) )
 
     const {expectEl} = containerFunctions(document.getElementById('main2') as HTMLElement)

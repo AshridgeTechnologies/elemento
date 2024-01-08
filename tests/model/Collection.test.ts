@@ -10,7 +10,7 @@ test('Collection has correct properties with default values', ()=> {
     expect(collection1.name).toBe('Collection 1')
     expect(collection1.initialValue).toBe(undefined)
     expect(collection1.dataStore).toBe(undefined)
-    expect(collection1.collectionName).toBe(undefined)
+    expect(collection1.collectionName).toBe('Collection1')
     expect(collection1.display).toBe(false)
 })
 

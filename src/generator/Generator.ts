@@ -11,7 +11,7 @@ import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, last, omit} from 'ramda'
 import Parser from './Parser'
-import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeFileName, runtimeFileSourcePath, runtimeImportPath} from './Types'
+import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty, trimParens} from '../util/helpers'
 import {
     allElements,
@@ -51,6 +51,11 @@ export const DEFAULT_IMPORTS = [
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
     return new Generator(app, project, imports).output()
 }
+
+function printAst(ast: any) {
+    return print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
+}
+
 export default class Generator {
     private parser
     private typesGenerator
@@ -522,7 +527,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
 
         // remove braces if the ast is a block statement from wrapping in a function
-        const exprCode = print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '').replace(/^\{\n/, '').replace(/\n\}$/, '')
+        const exprCode = printAst(ast).replace(/^\{\n/, '').replace(/\n\}$/, '')
 
         switch (exprType) {
             case 'singleExpression':

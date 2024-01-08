@@ -37,9 +37,7 @@ export default function AppBarMenu(props: object) {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            MenuListProps={{dense: true, 'aria-labelledby': 'fileButton',
-                // @ts-expect-error https://github.com/mui-org/material-ui/issues/17579
-                component: 'nav'}}
+            MenuListProps={{dense: true, 'aria-labelledby': 'fileButton', component: 'nav'}}
             anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
             transformOrigin={{vertical: 5, horizontal: -5,}}
             container={editorElement()}

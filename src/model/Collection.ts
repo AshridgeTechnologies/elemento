@@ -18,7 +18,7 @@ export default class Collection extends BaseElement<Properties> implements Eleme
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}
     get dataStore() {return this.properties.dataStore}
-    get collectionName() {return this.properties.collectionName}
+    get collectionName() {return this.properties.collectionName ?? this.codeName}
 
     get propertyDefs(): PropertyDef[] {
         return [

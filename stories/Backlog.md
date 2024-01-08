@@ -86,6 +86,8 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Extension auto-loads latest code from git repo via CDN
+- Single copy of expressUtils between two projects
 - OPFS file store
 - SQLite WASM data store
 - SQL or IDB table creation and updating from Data Types

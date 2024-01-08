@@ -33,6 +33,7 @@ Requirements
 - Send emails to manager and user as appropriate
 - Managers approve holiday changes
 - View holiday calendar for own team
+- User management
 
 ## Part 1 - Server App only
 - Data store with collections:

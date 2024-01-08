@@ -203,10 +203,10 @@ export default () =>
                         It can be given a pre-filled value which the user can change or replace.
                         It has a label that is shown in or near the element to tell the user what the date entered is for.'
                         properties={<>
-                            <PropertyEntry name='Initial Value' type='number' id='dateInput-initialValue'>The pre-filled date that is displayed when
-                                the element is first shown.</PropertyEntry>
-                            <PropertyEntry name='Label' type='text' id='dateInput-label'>The descriptive label that is shown in or near the
-                                element.</PropertyEntry>
+                            <PropertyEntry name='Initial Value' type='number' id='dateInput-initialValue'>The pre-filled date that is displayed
+                                until the user enters something.</PropertyEntry>
+                            <PropertyEntry name='Label' type='text' id='textInput-label'>The descriptive label that is shown in or near the
+                                element.  Defaults to the Name of the element.</PropertyEntry>
                             <PropertyEntry name='Read Only' type='true-false' id='dateInput-readOnly'>Whether the date shown is read-only ie cannot be
                                 changed by the user.</PropertyEntry>
                             <PropertyEntry name='Data Type' type='data type' id='dateInput-dataType'>
@@ -443,9 +443,9 @@ export default () =>
                         It has a label that is shown in or near the element to tell the user what the number entered is for.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='number' id='numberInput-initialValue'>The pre-filled number that is displayed
-                                when the element is first shown.</PropertyEntry>
-                            <PropertyEntry name='Label' type='text' id='numberInput-label'>The descriptive label that is shown in or near the
-                                element.</PropertyEntry>
+                                until the user enters something.</PropertyEntry>
+                            <PropertyEntry name='Label' type='text' id='textInput-label'>The descriptive label that is shown in or near the
+                                element.  Defaults to the Name of the element.</PropertyEntry>
                             <PropertyEntry name='Read Only' type='true-false' id='numberInput-readOnly'>Whether the number shown is read-only ie
                                 cannot be changed by the user.</PropertyEntry>
                             <PropertyEntry name='Data Type' type='data type' id='numberInput-dataType'>
@@ -479,10 +479,10 @@ export default () =>
                         It has a label that is shown in or near the element to tell the user what the choice is for.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='string' id='selectInput-initialValue'>
-                                The pre-filled option that is displayed when the element is first shown. Must be one of the items in the Values
+                                The pre-filled option that is displayed until the user changes it. Must be one of the items in the Values
                                 property.</PropertyEntry>
-                            <PropertyEntry name='Label' type='text' id='selectInput-label'>The descriptive label that is shown in or near the
-                                element.</PropertyEntry>
+                            <PropertyEntry name='Label' type='text' id='textInput-label'>The descriptive label that is shown in or near the
+                                element.  Defaults to the Name of the element.</PropertyEntry>
                             <PropertyEntry name='Read Only' type='true-false' id='selectInput-readOnly'>Whether the option shown is read-only ie
                                 cannot be changed by the user.</PropertyEntry>
                             <PropertyEntry name='Data Type' type='data type' id='selectInput-dataType'>
@@ -567,10 +567,9 @@ export default () =>
                         It can be given some pre-filled text which the user can change or replace.
                         It has a label that is shown in or near the element to tell the user what the text entered is for.'
                         properties={<>
-                            <PropertyEntry name='Initial Value' type='text' id='textInput-initialValue'>The pre-filled text that is displayed when the
-                                element is first shown.</PropertyEntry>
+                            <PropertyEntry name='Initial Value' type='text' id='textInput-initialValue'>The pre-filled text that is displayed until the user enters something.</PropertyEntry>
                             <PropertyEntry name='Label' type='text' id='textInput-label'>The descriptive label that is shown in or near the
-                                element.</PropertyEntry>
+                                element.  Defaults to the Name of the element.</PropertyEntry>
                             <PropertyEntry name='Read Only' type='true-false' id='textInput-readOnly'>Whether the text shown is read-only ie cannot be
                                 changed by the user.</PropertyEntry>
                             <PropertyEntry name='Data Type' type='data type' id='textInput-dataType'>
@@ -614,9 +613,9 @@ export default () =>
                         It has a label that is shown in or near the element to tell the user what the true-false setting is for.'
                         properties={<>
                             <PropertyEntry name='Initial Value' type='true-false' id='trueFalseInput-initialValue'>The pre-filled true-false value
-                                that is displayed when the element is first shown.</PropertyEntry>
+                                that is displayed until the user changes it.</PropertyEntry>
                             <PropertyEntry name='Label' type='text' id='trueFalseInput-label'>The descriptive label that is shown in or near the
-                                element.</PropertyEntry>
+                                element.  Defaults to the Name of the element.</PropertyEntry>
                             <PropertyEntry name='Read Only' type='true-false' id='trueFalseInput-readOnly'>Whether the true-false value shown is
                                 read-only ie cannot be changed by the user.</PropertyEntry>
                             <PropertyEntry name='Data Type' type='data type' id='trueFalseInput-dataType'>

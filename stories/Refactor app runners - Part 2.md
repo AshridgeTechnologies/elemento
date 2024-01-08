@@ -64,6 +64,10 @@ Usability
 
 Further requirements
 --------------------
+- Firebase tool generates a random password if none found
+- Firebase tool checks if extension is up to date and warns if not
+- If extension present, checks if preview is set up and prompts to do it if not
+- Sets default storage location in setup (maybe from client)
 - Default GitHub URL to remote origin
 - Use secret for access token extension param, check all permissions and ordering for using secrets
 - ✅ Remove old Builder and build.ts, BrowserRuntimeLoader
@@ -91,17 +95,21 @@ Sub-stories
 Server app features needed
 --------------------------
 
-- Collection's Collection Name defaults to model object formula name
-- Find Data Store collection names from Project
-- Document how to set collection names if cannot do above
-- Document enabling Firestore and/or do in setup
+- ✅ Collection's Collection Name defaults to model object formula name
 - Can use Current User in Server App functions
+- User management - creation, approval, permissions
+- ✅ Decode ISO dates in JSON into JS Dates
+- ✅ Store JS Dates in Firestore as Timestamps
+- Record manipulation functions - Merge, Pick
+- Better record construction
 - Validation expression(s) for Server App functions
-- Check Server App functions only called from app unless marked as API? How?
 - DataType validation for function inputs
-- Decode ISO dates into JS Dates
+- Find Data Store collection names from Project - or document
+- Enable Firestore in setup - or document
+- Check Server App functions only called from app unless marked as API? How?
 - Investigate why and fix: This project is set up to use Cloud Firestore in Datastore mode.
 - Find a better way of setting permissions
+- TODO: retest Firestore date storage on deployed app
 
 
 Use Firebase on hosting server
@@ -110,20 +118,18 @@ Use Firebase on hosting server
 - ✅ Extension admin server has a setup feature
 - ✅ Setup sets the preview password and ensures default app and config are generated
 - ✅ Config and password are saved in a settings folder in storage bucket, file settings
-- Preview server serves firebaseConfig.json from the saved settings
-- Preview server gets the password from the saved settings
-- Extension param for preview password is removed
-- Firebase tool generates a random password if none found
-- Firebase tool checks if extension initialised in the project set and warns if not
-- Link to install extension opens in a new tab
-- If extension present, checks if preview is set up and prompts to do it if not
-- Sets default storage location in setup (maybe from client)
-- Firebase Tool has extension install link
+- ✅ Preview server serves firebaseConfig.json from the saved settings
+- ✅ Editor service worker requests firebaseConfig.json from the preview server
+- ✅ Preview server gets the password from the saved settings
+- ✅ Extension param for preview password is removed
+- ✅ Firebase tool checks if extension initialised in the project set and warns if not
+- ✅ Firebase Tool has extension install link, opens in new tab
   - https://console.firebase.google.com/project/_/extensions/install?ref=elemento/elemento-app-server@0.1.1-alpha.0
 - Document the extension warning
 - Fix the Preview password docs in Guide and in extension
 - Feedback on saving Preview details
 - Get all names right - eg Install complete for {NAME}
+- Elemento favicon
 
 
 Preview server

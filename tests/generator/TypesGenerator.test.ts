@@ -114,7 +114,7 @@ test('generates TextType with built in and ad-hoc rules', async () => {
         const MyTypes = (() => {
         
             const TextType1 = new TextType('TextType 1', {description: 'The blurb', required: false, minLength: 5, maxLength: 20, format: 'url'}, [
-                new Rule('Dot Com', $item => $item.endsWith(".com"), {description: 'Must end with .com'})
+                new Rule('Dot Com', $item => $item.endsWith('.com'), {description: 'Must end with .com'})
             ])
         
             return {

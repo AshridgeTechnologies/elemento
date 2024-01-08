@@ -1,12 +1,10 @@
 import Topo from '@hapi/topo'
 import lodash from 'lodash';
 import Element from '../model/Element'
-import App from '../model/App'
 import {flatten} from 'ramda'
 import List from '../model/List'
 import {ListItem} from './Types'
 import Form from '../model/Form'
-import Tool from '../model/Tool'
 import {BaseApp} from '../model/BaseApp'
 
 const {isArray, isPlainObject} = lodash;

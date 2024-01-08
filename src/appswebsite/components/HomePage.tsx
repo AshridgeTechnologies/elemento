@@ -28,7 +28,7 @@ function SectionLink(props: {title: string, href: string, icon: any, children: a
         <Link href={props.href} underline='none'>
             <Stack spacing={2}>
                 <Box textAlign='center'><Icon sx={{ fontSize: 180 }} /></Box>
-                <Link component='div' underline='hover' href={props.href} variant='h5' textAlign='center'>{props.title}</Link>
+                <Box><Link underline='hover' href={props.href} variant='h5' textAlign='center'>{props.title}</Link></Box>
                 <Typography fontSize='20px' color='#555'>{props.children}</Typography>
                 <Box textAlign='center'><ArrowCircleIcon sx={{ fontSize: 32, color: secondary }} /></Box>
             </Stack>

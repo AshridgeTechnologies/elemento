@@ -62,7 +62,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
     const [actionNode, setActionNode] = useState<null | {id: string, name: string}>(null)
     const [expandedKeys, setExpandedKeys] = useState<Key[]>([])
 
-    const showContextMenu = (event: React.MouseEvent, nodeId: string | number,  nodeTitle: string) => {
+    const showContextMenu = (event: React.MouseEvent, nodeId: React.Key,  nodeTitle: string) => {
         setActionEl((event as React.MouseEvent<HTMLElement>).currentTarget)
         setActionNode({id: nodeId.toString(), name: nodeTitle})
     }

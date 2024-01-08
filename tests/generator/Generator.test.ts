@@ -246,7 +246,7 @@ function Page1(props) {
     const {Page, TextElement} = Elemento.components
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, "Uses Data Types 2" + Types2.ItemAmount.max),
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Uses Data Types 2' + Types2.ItemAmount.max),
     )
 }
 
@@ -364,7 +364,7 @@ test('generates TextInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
     const t1 = Elemento.useObjectState(pathWith('t1'), new TextInput.State({value: 'Hi there!'}))
-    const t2 = Elemento.useObjectState(pathWith('t2'), new TextInput.State({value: "Some" + " things"}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new TextInput.State({value: 'Some' + ' things'}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -505,7 +505,7 @@ test('generates SelectInput elements with initial value', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, SelectInput} = Elemento.components
     const Select1 = Elemento.useObjectState(pathWith('Select1'), new SelectInput.State({value: '44'}))
-    const Select2 = Elemento.useObjectState(pathWith('Select2'), new SelectInput.State({value: 4+"4"}))
+    const Select2 = Elemento.useObjectState(pathWith('Select2'), new SelectInput.State({value: 4+'4'}))
     const Select3 = Elemento.useObjectState(pathWith('Select3'), new SelectInput.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -559,14 +559,14 @@ test('generates Button elements with properties including await in action', ()=>
     const {Log} = Elemento.globalFunctions
     const b1_action = React.useCallback(() => {
     const doAction = async () => {
-        const message = "You clicked me!"; await Log(message)
-            Log("Didn't you?")
+        const message = 'You clicked me!'; await Log(message)
+            Log('Didn\\'t you?')
     }
     doAction()
     }, [])
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && "filled", display: false, action: b1_action}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && 'filled', display: false, action: b1_action}),
     )
 }
 `)
@@ -634,7 +634,7 @@ test('generates Data elements with initial value and no errors on object express
     const pathWith = name => props.path + '.' + name
     const {Page, Data} = Elemento.components
     const t1 = Elemento.useObjectState(pathWith('t1'), new Data.State({value: 44}))
-    const t2 = Elemento.useObjectState(pathWith('t2'), new Data.State({value: ({a:10, b: "Bee"})}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new Data.State({value: ({a:10, b: 'Bee'})}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Data.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -661,7 +661,7 @@ test('generates Calculation elements with initial value and no errors on object 
     const pathWith = name => props.path + '.' + name
     const {Page, Calculation} = Elemento.components
     const t1 = Elemento.useObjectState(pathWith('t1'), new Calculation.State({value: 44 + 7}))
-    const t2 = Elemento.useObjectState(pathWith('t2'), new Calculation.State({value: ({a:10, b: "Bee"})}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new Calculation.State({value: ({a:10, b: 'Bee'})}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Calculation.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -691,7 +691,7 @@ test('generates Collection elements with initial value and no errors on object e
     const {Page, Collection} = Elemento.components
     const Store1 = Elemento.useGetObjectState('app.Store1')
     const t1 = Elemento.useObjectState(pathWith('t1'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
-    const t2 = Elemento.useObjectState(pathWith('t2'), new Collection.State({value: ["red", "yellow"]}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new Collection.State({value: ['red', 'yellow']}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Collection.State({}))
 
     return React.createElement(Page, {id: props.path},
@@ -1098,13 +1098,13 @@ test('generates List element with separate child component and global functions 
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
     const TextInput1 = Elemento.useGetObjectState(parentPathWith('TextInput1'))
-    const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: "from " + Left($item, 3)}))
+    const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: 'from ' + Left($item, 3)}))
     const ButtonUpdate_action = React.useCallback(() => {
         Update('Things', '123', {done: true})
     }, [])
 
     return React.createElement(React.Fragment, null,
-        React.createElement(TextElement, {path: pathWith('Text1')}, "Hi there " + TextInput2 + " in " + TextInput1),
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
@@ -1357,9 +1357,9 @@ test('generates Form element with separate child component', ()=> {
 
     return React.createElement(Form, props,
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
-        React.createElement(TextElement, {path: pathWith('Text1')}, "Hi there " + Left(TextInput2, 2)),
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + Left(TextInput2, 2)),
         React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
-        React.createElement(TextElement, {path: pathWith('Text2')}, "Number is " + \$form.value.NumberInput1),
+        React.createElement(TextElement, {path: pathWith('Text2')}, 'Number is ' + \$form.value.NumberInput1),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
 }
@@ -1810,7 +1810,7 @@ test('page elements available in content expression', ()=> {
     const SurnameInput = Elemento.useObjectState(pathWith('SurnameInput'), new TextInput.State({}))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + " " + SurnameInput.value),
+        React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + ' ' + SurnameInput.value),
         React.createElement(TextInput, {path: pathWith('ForenameInput'), label: 'Forename Input'}),
         React.createElement(TextInput, {path: pathWith('SurnameInput'), label: 'Surname Input'}),
     )

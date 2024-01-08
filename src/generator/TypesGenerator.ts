@@ -162,7 +162,7 @@ export default class TypesGenerator {
             addReturnStatement(ast)
         }
 
-        const exprCode = print(ast).code.replace(/;$/, '')
+        const exprCode = print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
         switch (exprType) {
             case 'singleExpression':
                 return exprCode

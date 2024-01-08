@@ -61,6 +61,10 @@ export default class EditorServiceWorker {
             return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`)
         }
 
+        if (pathname === '/firebaseConfig.json') {
+            return fetch(`${this.previewServerUrl}/preview${url.pathname}`)
+        }
+
         const [, filepath] = pathname.match(new RegExp(`^\/studio\/preview\/(.*)$`)) ?? []
         if (filepath !== undefined) {
             const requestFilepath = pathname.endsWith('/') ? filepath + 'index.html' : filepath

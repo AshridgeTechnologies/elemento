@@ -1,6 +1,6 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ParentType, PropertyDef, PropertyValueType} from './Types'
 
 type Properties = {
     readonly initialValue?: PropertyValueType<any>,

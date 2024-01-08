@@ -26,6 +26,8 @@ Forces
 - Preview will normally be used before deploy, so web app will not be there
 - Preview does not have an access token - it uses a separate password
 - You only need to create the default web app once, and the config once if store it
+- If client code asks for config at /, this needs to be redirected by service worker
+- Must prevent private settings eg preview password from being downloaded
 
 Possibilities
 -------------
@@ -43,3 +45,18 @@ Decision
 
 - A setup project feature is not too much of a burden, as it is one off and will be used by advanced users
 - Can be combined with setting preview password from Firebase tool, so actually simplifies extension installation
+- Editor service worker sends request for /firebaseConfig.json to {previewServerHost}/preview/firebaseConfig.json
+
+After initial work...
+---------------------
+
+- The Firebase Tool starts to look really complicated
+- The complexity of installing the extension and initialising is too great
+  - being in a half-installed state is confusing and difficult to manage
+  - the developer doesn't care where their project and preview runs - they just want to use it
+  - assuming advanced users for server apps goes against the grain of the Elemento approach
+- Extensions are still a bit inconsistent and difficult to use and encumbered with restrictions
+- Updating extension versions seems difficult - unless published, maybe
+- But... 
+  - extension would make Elemento look more acceptable
+  - extension in Google directory would raise profile
