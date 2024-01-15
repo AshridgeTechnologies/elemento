@@ -691,8 +691,8 @@ test('generates Collection elements with initial value and no errors on object e
     const {Page, Collection} = Elemento.components
     const Store1 = Elemento.useGetObjectState('app.Store1')
     const t1 = Elemento.useObjectState(pathWith('t1'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
-    const t2 = Elemento.useObjectState(pathWith('t2'), new Collection.State({value: ['red', 'yellow']}))
-    const t3 = Elemento.useObjectState(pathWith('t3'), new Collection.State({}))
+    const t2 = Elemento.useObjectState(pathWith('t2'), new Collection.State({value: ['red', 'yellow'], collectionName: 't2'}))
+    const t3 = Elemento.useObjectState(pathWith('t3'), new Collection.State({collectionName: 't3'}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Collection, {path: pathWith('t1'), display: false}),
