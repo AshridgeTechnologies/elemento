@@ -103,8 +103,8 @@ Server app features needed
 - Record manipulation functions - Merge, Pick
 - Better record construction
 - Validation expression(s) for Server App functions
-- CurrentUser() is allowed in server app functions
-- CurrentUser has Id property from uid
+- ✅ CurrentUser() is allowed in server app functions
+- ✅ CurrentUser has Id property from uid
 - DataType validation for function inputs
 - Find Data Store collection names from Project - or document
 - Enable Firestore in setup - or document
