@@ -1,1 +1,1 @@
-yarn run build && firebase deploy
+yarn run build && yarn run firebase deploy

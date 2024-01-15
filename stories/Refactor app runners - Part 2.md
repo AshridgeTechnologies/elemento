@@ -103,6 +103,8 @@ Server app features needed
 - Record manipulation functions - Merge, Pick
 - Better record construction
 - Validation expression(s) for Server App functions
+- CurrentUser() is allowed in server app functions
+- CurrentUser has Id property from uid
 - DataType validation for function inputs
 - Find Data Store collection names from Project - or document
 - Enable Firestore in setup - or document
@@ -125,11 +127,13 @@ Use Firebase on hosting server
 - ✅ Firebase tool checks if extension initialised in the project set and warns if not
 - ✅ Firebase Tool has extension install link, opens in new tab
   - https://console.firebase.google.com/project/_/extensions/install?ref=elemento/elemento-app-server@0.1.1-alpha.0
+- Fix problem with logging in to existing email account
 - Document the extension warning
 - Fix the Preview password docs in Guide and in extension
 - Feedback on saving Preview details
 - Get all names right - eg Install complete for {NAME}
 - Elemento favicon
+- Editor service worker updated when update the Preview settings in Firebase tool
 
 
 Preview server
