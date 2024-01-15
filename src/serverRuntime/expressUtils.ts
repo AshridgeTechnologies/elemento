@@ -11,11 +11,9 @@ import {parseParam} from '../util/helpers'
 const convertDataValues = (val: any): any => {
     const date = parseISO(val)
     if (!Number.isNaN(date.getTime())) {
-        console.log('Converting to date', val)
         return date
     }
     if (isObject(val)) {
-        console.log('Converting as object', val)
         return mapValues(val, convertDataValues)
     }
 

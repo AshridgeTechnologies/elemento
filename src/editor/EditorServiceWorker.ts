@@ -58,7 +58,10 @@ export default class EditorServiceWorker {
         const pathname = decodeURIComponent(url.pathname)
 
         if (pathname.startsWith('/capi/')) {
-            return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`)
+            const {method, headers} = request
+            const body = await request.arrayBuffer()
+            const options = method === 'POST' ? {method, body, headers} : {}
+            return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`, options)
         }
 
         if (pathname === '/firebaseConfig.json') {

@@ -1,6 +1,9 @@
 import EditorServiceWorker from '../../src/editor/EditorServiceWorker'
 import {FileSystemTree} from '../../src/editor/Types'
 import {wait} from '../testutil/testHelpers'
+// @ts-ignore
+import str2ab from 'string-to-arraybuffer'
+import Dexie from 'dexie'
 
 const files: FileSystemTree = {
     'index.html': {
@@ -29,7 +32,16 @@ const files: FileSystemTree = {
     }
 }
 
-const request = (url: string) => ({url}) as Request
+const request = (url: string, options?: {method?: string, body?: any, headers: any}) => {
+    const requestBody = options?.body ? str2ab(options.body) : new ArrayBuffer(0)
+    return {
+        url, method: options?.method, headers: options?.headers,
+        body: options?.body ? str2ab(options.body) : undefined,
+        arrayBuffer(): Promise<ArrayBuffer> {
+            return Promise.resolve(requestBody)
+        }
+    } as unknown as Request
+}
 
 let worker: EditorServiceWorker
 let swScope: any
@@ -138,7 +150,25 @@ test('stores preview server url and sends capi request to preview server', async
     try {
         const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22')
         await worker.handleRequest(req)
-        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22')
+        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22', {})
+    } finally {
+        globalThis.fetch = originalFetch
+    }
+})
+
+test('sends capi POST request to preview server', async () => {
+    const event = {data: {type: 'previewServer', url: 'https://preview.example.com/preview-function'}} as ExtendableMessageEvent
+    worker.message(event)
+    await wait(10)
+
+    const originalFetch = globalThis.fetch
+    globalThis.fetch = jest.fn()
+
+    try {
+        const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22', {method: 'POST', body: '{"a": 10}', headers: {'Content-Type': 'stuff'}})
+        await worker.handleRequest(req)
+        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22',
+            {method: 'POST', body: str2ab('{"a": 10}'), headers: {'Content-Type': 'stuff'}})
     } finally {
         globalThis.fetch = originalFetch
     }

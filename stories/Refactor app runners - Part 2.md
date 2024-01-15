@@ -30,9 +30,9 @@ Requirements
 - ✅ Show url when deployed
 - ✅ Warn about uncommitted changes
 - ✅ Can access Firebase on the _hosting_ project, not Elemento
-- Can get firebase config from preview server
+- ✅ Can get firebase config from preview server
 - Can access third party APIs with secret credentials
-- Can use Firebase user on server
+- ✅ Can use Firebase user on server
 - Firestore security rules are set when deploy
 - Firestore data store can be used in preview, possibly with simulated security rules
 - ✅ Can run server apps in cache default and specified versions concurrently
@@ -96,22 +96,25 @@ Server app features needed
 --------------------------
 
 - ✅ Collection's Collection Name defaults to model object formula name
-- Can use Current User in Server App functions
-- User management - creation, approval, permissions
+- ✅ Can use Current User in Server App functions
 - ✅ Decode ISO dates in JSON into JS Dates
 - ✅ Store JS Dates in Firestore as Timestamps
-- Record manipulation functions - Merge, Pick
-- Better record construction
-- Validation expression(s) for Server App functions
-- CurrentUser() is allowed in server app functions
-- CurrentUser has Id property from uid
+- ✅ Record manipulation functions - Merge, Pick
+- ✅ Better record construction
+- ✅ Check function
+- ✅ Comparison functions work with dates and strings
+- Error management on client - expected/unexpected, link to fields
+- User management - creation, approval, permissions
+- GetOrCreate, UpdateOrCreate functions - good idea?
+- Separate validation conditions for Server App functions - can be used in docs, return better error codes, catch all errors together
+- ✅ CurrentUser() is allowed in server app functions
+- ✅ CurrentUser has Id property from uid
 - DataType validation for function inputs
 - Find Data Store collection names from Project - or document
 - Enable Firestore in setup - or document
 - Check Server App functions only called from app unless marked as API? How?
 - Investigate why and fix: This project is set up to use Cloud Firestore in Datastore mode.
 - Find a better way of setting permissions
-- TODO: retest Firestore date storage on deployed app
 
 
 Use Firebase on hosting server
@@ -134,6 +137,7 @@ Use Firebase on hosting server
 - Get all names right - eg Install complete for {NAME}
 - Elemento favicon
 - Editor service worker updated when update the Preview settings in Firebase tool
+- Editor service worker sometimes does not get preview settings when open project
 
 
 Preview server

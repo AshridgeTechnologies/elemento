@@ -6,9 +6,9 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, List, Select, ForEach, First, Last, Sort,
+    Record, Pick, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
-    Random,
+    Random, Check,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -19,9 +19,9 @@ const pendingValue = pending(Promise.resolve(42))
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valueObj(10))).toBe(10))
-    test('returns an object with no specific valueOf', () => {
+    test('returns an identical equivalent of an object with no specific valueOf', () => {
         const obj = {a: 10}
-        expect(valueOf(obj)).toBe(obj)
+        expect(valueOf(obj)).toStrictEqual(obj)
     })
 
     test.each([10])('returns the same value for primitives', (x: any) => expect(valueOf(x)).toBe(x))
@@ -97,6 +97,69 @@ describe('Decimal arithmetic', () => {
         expect(Eq('10', valueObj(D`10.000001`))).toBe(false)
 
     })
+})
+
+describe('Comparison functions', () => {
+    describe('Work with Dates', () => {
+        const date1 = new Date('2020-01-01')
+        const date2 = new Date('2020-01-02')
+        test('Can be compared with Lt', () => {
+            expect(Lt(date1, date2)).toBe(true)
+            expect(Lt(date2, date1)).toBe(false)
+            expect(Lt(date1, date1)).toBe(false)
+        })
+        test('Can be compared with Lte', () => {
+            expect(Lte(date1, date2)).toBe(true)
+            expect(Lte(date2, date1)).toBe(false)
+            expect(Lte(date1, date1)).toBe(true)
+        })
+        test('Can be compared with Gt', () => {
+            expect(Gt(date1, date2)).toBe(false)
+            expect(Gt(date2, date1)).toBe(true)
+            expect(Gt(date1, date1)).toBe(false)
+        })
+        test('Can be compared with Gte', () => {
+            expect(Gte(date1, date2)).toBe(false)
+            expect(Gte(date2, date1)).toBe(true)
+            expect(Gte(date1, date1)).toBe(true)
+        })
+        test('Can be compared with Eq', () => {
+            expect(Eq(date1, date2)).toBe(false)
+            expect(Eq(date2, date1)).toBe(false)
+            expect(Eq(date1, date1)).toBe(true)
+        })
+    })
+
+    describe('Work with strings', () => {
+        const s1 = 'abc'
+        const s2 = 'abcd'
+        test('Can be compared with Lt', () => {
+            expect(Lt(s1, s2)).toBe(true)
+            expect(Lt(s2, s1)).toBe(false)
+            expect(Lt(s1, s1)).toBe(false)
+        })
+        test('Can be compared with Lte', () => {
+            expect(Lte(s1, s2)).toBe(true)
+            expect(Lte(s2, s1)).toBe(false)
+            expect(Lte(s1, s1)).toBe(true)
+        })
+        test('Can be compared with Gt', () => {
+            expect(Gt(s1, s2)).toBe(false)
+            expect(Gt(s2, s1)).toBe(true)
+            expect(Gt(s1, s1)).toBe(false)
+        })
+        test('Can be compared with Gte', () => {
+            expect(Gte(s1, s2)).toBe(false)
+            expect(Gte(s2, s1)).toBe(true)
+            expect(Gte(s1, s1)).toBe(true)
+        })
+        test('Can be compared with Eq', () => {
+            expect(Eq(s1, s2)).toBe(false)
+            expect(Eq(s2, s1)).toBe(false)
+            expect(Eq(s1, s1)).toBe(true)
+        })
+    })
+
 })
 
 describe('Sum', () => {
@@ -280,6 +343,34 @@ describe('Record', () => {
     test('returns an empty object for no arguments', ()=> expect(Record()).toStrictEqual({}))
     test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee')).toStrictEqual({a: 10, b: 'Bee'}))
     test('gets value of objects', ()=> expect(Record(valueObj('c'), valueObj(2))).toStrictEqual({c: 2}))
+    test('converts an initial JavaScript object', ()=> expect(Record({a: 10, b: 'Bee'})).toStrictEqual({a: 10, b: 'Bee'}))
+    test('gets values of objects in a single level initial JavaScript object', ()=> expect(Record({a: valueObj(10), b: valueObj('Bee')})).toStrictEqual({a: 10, b: 'Bee'}))
+    test('merges multiple initial JavaScript objects', ()=> expect(Record({a: 10, b: 'Bee'}, {a: 20, c: true})).toStrictEqual({a: 20, b: 'Bee', c: true}))
+    test('gets values of objects at nested levels in initial JavaScript objects', ()=> {
+        const nestedObj = {x: valueObj(99), y: valueObj({ z: valueObj(42)})}
+        expect(Record({a: valueObj(10), b: valueObj('Bee')}, {p: nestedObj})).toStrictEqual({a: 10, b: 'Bee', p: {x: 99, y: {z: 42}}})
+    })
+    test('merges properties from pairs of arguments into single initial JavaScript object', () => {
+        const record = Record({a: 10, b: 'Bee'}, 'a', 20, 'c', true)
+        expect(record).toStrictEqual({a: 20, b: 'Bee', c: true})
+    })
+    test('merges properties from pairs of arguments into two initial JavaScript objects', () => {
+        const record = Record({a: 10, b: 'Bee'}, {p: 99}, 'a', 20, 'c', valueObj(true))
+        expect(record).toStrictEqual({a: 20, b: 'Bee', c: true, p: 99})
+    })
+    test('errors where the first of an argument pair is not a string', () => {
+        expect( () => Record(new Date(), 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
+        expect( () => Record({a: 10}, 20, 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
+    })
+})
+
+describe('Pick', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Pick()).toThrow('Wrong number of arguments to Pick. Expected record, names....'))
+    test('returns the selected properties', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'c', 'a')).toStrictEqual({a: 10, c: true}))
+    test('gets values of the selected properties', ()=> expect(Pick({a: valueObj(10), b: valueObj('Bee'), c: true}, 'b', 'a')).toStrictEqual({a: 10, b: 'Bee'}))
+    test('returns empty record if no property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true})).toStrictEqual({}))
+    test('ignores non-existent and multiple property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'a', 'z', 'a')).toStrictEqual({a: 10}))
 })
 
 describe('List', () => {
@@ -644,6 +735,19 @@ describe('Random', () => {
 
         expect(upperLimitGenerated).toBe(true)
     })
+
+    test('gets values of arguments', () => {
+        const num = Random(valueObj(10))
+        expect(num).toBe(Math.floor(num))
+        expect(num).toBeGreaterThanOrEqual(0)
+        expect(num).toBeLessThanOrEqual(10)
+    })
+})
+
+describe('Check', () => {
+    test('does nothing if condition returns truthy', () => expect(() => Check('xyz', 'Should be xyz')).not.toThrow())
+    test('throws error with message if condition returns truthy', () => expect(() => Check('abc' > 'xyz', 'Should be xyz')).toThrow('Should be xyz'))
+    test('gets values of arguments', () => expect(() => Check(valueObj(false), valueObj('Should be xyz'))).toThrow('Should be xyz'))
 })
 
 describe('CsvToRecords', () => {

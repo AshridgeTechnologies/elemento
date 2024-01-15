@@ -1,5 +1,6 @@
 import lodash from 'lodash'; const {isArray, isObject, isPlainObject} = lodash;
 import {map} from 'ramda'
+import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
 
@@ -105,6 +106,7 @@ export type PropVal<T> = T | { valueOf: () => T }
 export function valueOf<T>(x: Value<T>): T {
     if (x instanceof Date) return x as T
     if (x instanceof BigNumber) return x as T
+    if (isPlainObject(x)) return mapValues(x as object, valueOf) as T
     return isObject(x) ? x.valueOf() : x
 }
 
