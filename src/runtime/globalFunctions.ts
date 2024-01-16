@@ -323,8 +323,16 @@ export const globalFunctions = {
         return format(dateVal, pattern)
     },
 
-    Random(upperLimit: number) {
-        return Math.floor((upperLimit + 1) * Math.random())
+    Random(upperLimit: Value<number>) {
+        const upperLimitVal = valueOf(upperLimit)
+        return Math.floor((upperLimitVal + 1) * Math.random())
+    },
+
+    Check(condition: Value<any>, message: Value<string>) {
+        const [conditionVal, messageVal] = valuesOf(condition, message)
+        if (!conditionVal) {
+            throw new Error(messageVal)
+        }
     },
 
     CsvToRecords(csvText: string, columnNames?: string[]) {

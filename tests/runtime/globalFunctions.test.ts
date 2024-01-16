@@ -8,7 +8,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Round, Ceiling, Floor,
     Record, Pick, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
-    Random,
+    Random, Check,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -672,6 +672,19 @@ describe('Random', () => {
 
         expect(upperLimitGenerated).toBe(true)
     })
+
+    test('gets values of arguments', () => {
+        const num = Random(valueObj(10))
+        expect(num).toBe(Math.floor(num))
+        expect(num).toBeGreaterThanOrEqual(0)
+        expect(num).toBeLessThanOrEqual(10)
+    })
+})
+
+describe('Check', () => {
+    test('does nothing if condition returns truthy', () => expect(() => Check('xyz', 'Should be xyz')).not.toThrow())
+    test('throws error with message if condition returns truthy', () => expect(() => Check('abc' > 'xyz', 'Should be xyz')).toThrow('Should be xyz'))
+    test('gets values of arguments', () => expect(() => Check(valueObj(false), valueObj('Should be xyz'))).toThrow('Should be xyz'))
 })
 
 describe('CsvToRecords', () => {

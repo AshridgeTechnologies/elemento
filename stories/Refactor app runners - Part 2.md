@@ -30,9 +30,9 @@ Requirements
 - ✅ Show url when deployed
 - ✅ Warn about uncommitted changes
 - ✅ Can access Firebase on the _hosting_ project, not Elemento
-- Can get firebase config from preview server
+- ✅ Can get firebase config from preview server
 - Can access third party APIs with secret credentials
-- Can use Firebase user on server
+- ✅ Can use Firebase user on server
 - Firestore security rules are set when deploy
 - Firestore data store can be used in preview, possibly with simulated security rules
 - ✅ Can run server apps in cache default and specified versions concurrently
@@ -101,7 +101,7 @@ Server app features needed
 - ✅ Store JS Dates in Firestore as Timestamps
 - ✅ Record manipulation functions - Merge, Pick
 - ✅ Better record construction
-- Check function
+- ✅ Check function
 - User management - creation, approval, permissions
 - GetOrCreate, UpdateOrCreate functions - good idea?
 - Separate validation conditions for Server App functions - can be used in docs
