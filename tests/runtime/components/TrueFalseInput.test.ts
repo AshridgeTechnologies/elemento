@@ -3,7 +3,7 @@
  */
 
 import {TrueFalseInput} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 
@@ -52,11 +52,7 @@ test('TrueFalseInput shows empty value when state value is set to null and initi
 test('TrueFalseInput element produces output with other properties supplied as state objects', () => {
     const {el} = testContainer(trueFalseInput('app.page1.widget1', {value: true},
         {
-            label: {
-                valueOf() {
-                    return 'Is it OK'
-                }
-            }
+            label: valueObj('Is it OK')
         }))
     expect(el`label`.textContent).toBe('Is it OK')
 })

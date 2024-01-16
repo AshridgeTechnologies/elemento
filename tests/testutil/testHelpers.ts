@@ -206,11 +206,12 @@ export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<
     return [testElementCreatorFn, appStoreHook]
 }
 
-export const valueObj = (val: any): any => ({
-    valueOf() {
-        return val
-    }
-})
+class ValueObj<T> {
+    constructor(readonly val: T) {}
+    valueOf() {return this.val}
+}
+
+export const valueObj = <T>(val: T) => new ValueObj<T>(val)
 
 function mockReturn(fn: any, value: any) {
     const mock_fn = fn as jest.MockedFunction<any>

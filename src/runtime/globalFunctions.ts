@@ -1,4 +1,4 @@
-import {fromPairs, isNil, last, sort, splitEvery} from 'ramda'
+import {fromPairs, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -18,6 +18,7 @@ import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {isArray} from 'lodash'
+import {assign, isObject, mapValues, pick} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -171,10 +172,24 @@ export const globalFunctions = {
     },
 
     Record(...args: Value<any>[]) {
-        if (args.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')
-        const argVals = args.map( valueOf )
-        const pairs = splitEvery(2, argVals) as [string, any][]
-        return fromPairs(pairs)
+        const argVals = args.map(valueOf)
+        const objectArgs = takeWhile(isObject, argVals)
+        const objectArgVals = objectArgs.map( x => mapValues(x, valueOf))
+        const mergedBaseResult = objectArgVals.reduce(assign, {})
+
+        const nameValuePairArgs = argVals.slice(objectArgs.length)
+        if (nameValuePairArgs.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')
+        const pairs = splitEvery(2, nameValuePairArgs) as [string, any][]
+        if (!pairs.every( ([name]) => typeof name === 'string')) throw new Error('Incorrect argument types - must have pairs of name, value')
+        const pairsResult = fromPairs(pairs)
+
+        return assign(mergedBaseResult, pairsResult)
+    },
+
+    Pick(record: {[k: string]: any}, ...propertyNames: string[]) {
+        if (!record) throw new Error('Wrong number of arguments to Pick. Expected record, names....')
+        const pickedObj = pick(record, propertyNames)
+        return mapValues(pickedObj, valueOf)
     },
 
     List(...args: Value<any>[]) {

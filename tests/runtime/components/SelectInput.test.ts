@@ -3,7 +3,7 @@
  */
 
 import {SelectInput} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
@@ -46,8 +46,8 @@ test('SelectInput element produces output with properties supplied as state obje
         {
         value: 'Red'},
     {
-        values: {valueOf() { return ['Green', 'Red']}},
-        label: {valueOf() { return 'Item Number'}}
+        values: valueObj(['Green', 'Red']),
+        label: valueObj('Item Number')
     }))
     container = localContainer
     expect(container.querySelector('label').innerHTML).toBe('Item Number')

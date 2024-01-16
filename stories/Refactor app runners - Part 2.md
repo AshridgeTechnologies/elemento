@@ -96,13 +96,15 @@ Server app features needed
 --------------------------
 
 - ✅ Collection's Collection Name defaults to model object formula name
-- Can use Current User in Server App functions
-- User management - creation, approval, permissions
+- ✅ Can use Current User in Server App functions
 - ✅ Decode ISO dates in JSON into JS Dates
 - ✅ Store JS Dates in Firestore as Timestamps
-- Record manipulation functions - Merge, Pick
-- Better record construction
-- Validation expression(s) for Server App functions
+- ✅ Record manipulation functions - Merge, Pick
+- ✅ Better record construction
+- Check function
+- User management - creation, approval, permissions
+- GetOrCreate, UpdateOrCreate functions - good idea?
+- Separate validation conditions for Server App functions - can be used in docs
 - ✅ CurrentUser() is allowed in server app functions
 - ✅ CurrentUser has Id property from uid
 - DataType validation for function inputs
@@ -111,7 +113,6 @@ Server app features needed
 - Check Server App functions only called from app unless marked as API? How?
 - Investigate why and fix: This project is set up to use Cloud Firestore in Datastore mode.
 - Find a better way of setting permissions
-- TODO: retest Firestore date storage on deployed app
 
 
 Use Firebase on hosting server

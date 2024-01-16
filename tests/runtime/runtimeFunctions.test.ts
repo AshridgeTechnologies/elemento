@@ -1,19 +1,30 @@
-/**
- * @jest-environment jsdom
- */
-
-import {asArray} from '../../src/runtime'
 import {valueObj} from '../testutil/testHelpers'
-import {parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
+import {parentPath, valueOf, asArray} from '../../src/runtime/runtimeFunctions'
 import BigNumber from 'bignumber.js'
 
 test('gets correct valueOf for date, object, primitive, decimal', () => {
-    expect(valueOf({valueOf() { return 42}})).toBe(42)
+    expect(valueOf(valueObj(42))).toBe(42)
     const date = new Date(2022, 6, 1)
     expect(valueOf(date)).toBe(date)
     const decimal = new BigNumber('123.45')
     expect(valueOf(decimal)).toBe(decimal)
     expect(valueOf('Hi!')).toBe('Hi!')
+})
+
+test('gets valueOf recursively for plain objects', () => {
+    const date = new Date()
+    const objectValue = {
+        a: valueObj(10),
+        b: valueObj('Bee'),
+        c: {
+            p: valueObj(true),
+            q: {
+                d: valueObj(date)
+            }
+        }
+    }
+
+    expect(valueOf(objectValue)).toStrictEqual({a: 10, b: 'Bee', c: {p: true, q: {d: date}}})
 })
 
 test('gets values of object', () => {

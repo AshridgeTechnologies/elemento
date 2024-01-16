@@ -6,7 +6,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, List, Select, ForEach, First, Last, Sort,
+    Record, Pick, List, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random,
     CsvToRecords} = globalFunctions
@@ -19,9 +19,9 @@ const pendingValue = pending(Promise.resolve(42))
 
 describe('valueOf', () => {
     test('gets valueOf from an object with a specific valueOf', () => expect(valueOf(valueObj(10))).toBe(10))
-    test('returns an object with no specific valueOf', () => {
+    test('returns an identical equivalent of an object with no specific valueOf', () => {
         const obj = {a: 10}
-        expect(valueOf(obj)).toBe(obj)
+        expect(valueOf(obj)).toStrictEqual(obj)
     })
 
     test.each([10])('returns the same value for primitives', (x: any) => expect(valueOf(x)).toBe(x))
@@ -280,6 +280,34 @@ describe('Record', () => {
     test('returns an empty object for no arguments', ()=> expect(Record()).toStrictEqual({}))
     test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee')).toStrictEqual({a: 10, b: 'Bee'}))
     test('gets value of objects', ()=> expect(Record(valueObj('c'), valueObj(2))).toStrictEqual({c: 2}))
+    test('converts an initial JavaScript object', ()=> expect(Record({a: 10, b: 'Bee'})).toStrictEqual({a: 10, b: 'Bee'}))
+    test('gets values of objects in a single level initial JavaScript object', ()=> expect(Record({a: valueObj(10), b: valueObj('Bee')})).toStrictEqual({a: 10, b: 'Bee'}))
+    test('merges multiple initial JavaScript objects', ()=> expect(Record({a: 10, b: 'Bee'}, {a: 20, c: true})).toStrictEqual({a: 20, b: 'Bee', c: true}))
+    test('gets values of objects at nested levels in initial JavaScript objects', ()=> {
+        const nestedObj = {x: valueObj(99), y: valueObj({ z: valueObj(42)})}
+        expect(Record({a: valueObj(10), b: valueObj('Bee')}, {p: nestedObj})).toStrictEqual({a: 10, b: 'Bee', p: {x: 99, y: {z: 42}}})
+    })
+    test('merges properties from pairs of arguments into single initial JavaScript object', () => {
+        const record = Record({a: 10, b: 'Bee'}, 'a', 20, 'c', true)
+        expect(record).toStrictEqual({a: 20, b: 'Bee', c: true})
+    })
+    test('merges properties from pairs of arguments into two initial JavaScript objects', () => {
+        const record = Record({a: 10, b: 'Bee'}, {p: 99}, 'a', 20, 'c', valueObj(true))
+        expect(record).toStrictEqual({a: 20, b: 'Bee', c: true, p: 99})
+    })
+    test('errors where the first of an argument pair is not a string', () => {
+        expect( () => Record(new Date(), 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
+        expect( () => Record({a: 10}, 20, 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
+    })
+})
+
+describe('Pick', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Pick()).toThrow('Wrong number of arguments to Pick. Expected record, names....'))
+    test('returns the selected properties', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'c', 'a')).toStrictEqual({a: 10, c: true}))
+    test('gets values of the selected properties', ()=> expect(Pick({a: valueObj(10), b: valueObj('Bee'), c: true}, 'b', 'a')).toStrictEqual({a: 10, b: 'Bee'}))
+    test('returns empty record if no property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true})).toStrictEqual({}))
+    test('ignores non-existent and multiple property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'a', 'z', 'a')).toStrictEqual({a: 10}))
 })
 
 describe('List', () => {
