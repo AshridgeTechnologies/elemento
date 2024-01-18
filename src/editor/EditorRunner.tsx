@@ -253,6 +253,7 @@ export default function EditorRunner() {
     }
 
     function setPreviewServerUrl(url: string) {
+        console.log('setPreviewServerUrl', url)
         navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
     }
 

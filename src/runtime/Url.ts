@@ -20,7 +20,7 @@ export const asQueryObject = (query: object | null) => {
 }
 
 export default class Url {
-    static previous = 'goback'
+    static previous = 'previous'
 
     constructor(
         private origin: string,

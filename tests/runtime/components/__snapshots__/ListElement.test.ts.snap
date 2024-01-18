@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ListElement produces empty output if items is null 1`] = `
+<ul
+  className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"
+  id="app.page1.list1"
+  onScroll={[Function]}
+  style="color: red"
+/>
+`;
+
+exports[`ListElement produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `
+<ul
+  className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
+  id="app.page1.list1"
+  onScroll={[Function]}
+/>
+`;
+
 exports[`ListElement produces output containing ReactElement children 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"

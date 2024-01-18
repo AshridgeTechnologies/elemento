@@ -38,7 +38,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     const {items = [], width, style, selectable = true} = valueOfProps(props)
 
     useEffect(() => {
-        if (selectedItem && selectable) {
+        if (selectedItem && selectable && items) {
             const currentSelectedItem = items.find((it:any) => it.id === selectedItem.id)
             if (!equals(selectedItem, currentSelectedItem)) {
                 state._setSelectedItem(currentSelectedItem)

@@ -253,11 +253,25 @@ export default () =>
         />
 
         <ElementSection name='Form' id='form'
-                        description='Organises a group of elements within a page that show and update the data for the items in a Record.
-                        The Form can be given a Record containing the initial values, and it provides a value property which is a new Record containing all the updated values.
-                        It has a label that is shown above the Form to tell the user what the details shown relate to.
-                         The elements in the form can be arranged vertically (the normal way), or horizontally.
-                         Forms can also contain other Forms.  This can be useful when one of the items in the Record is itself a Record, such as an Address record  within an Order record'
+                        description={<><Para>Organises a group of elements within a page that show and update the data for the items in a Record.
+                            It has a label that is shown above the Form to tell the user what the details shown relate to.
+                            Forms can contain most of the types of element that can belong to a Page.
+                            The elements in the form can be arranged vertically (the normal way), or horizontally.
+                            Forms can also contain other Forms.
+                            This can be useful when one of the items in the Record is itself a Record, such as an Address record within an Order
+                            record
+                            </Para>
+                            <Para>
+                                The Form can be given a Record containing the initial values, and it provides a <code>value</code> property which is a new Record
+                                containing all the updated values.
+                                It also has an <code>originalValue</code> property to access the initial values.
+                            </Para>
+                            <Para>Formulas used in elements inside the form can use the special name <code>$form</code> to refer to the form that
+                                contains them.
+                                You could write formula expressions such as <code>$form.value.FirstName</code> and <code>$form.originalValue.FirstName</code>
+                                to get the current and initial values of an item in the Form Record called <code>FirstName</code>.
+                            </Para>
+                        </>}
                         properties={<>
                             <PropertyEntry name='Initial Value' type='record' id='form-initialValue'>The Record with the values that are displayed
                                 when the form is first shown.</PropertyEntry>

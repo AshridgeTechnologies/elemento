@@ -3,6 +3,7 @@ import {map} from 'ramda'
 import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
+import {parseISO} from 'date-fns'
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined
@@ -131,3 +132,15 @@ export function asArray(value: any[] | object | any) {
 }
 
 export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''
+
+export const isoDateReviver = (key: string, value: any) => {
+    if (typeof value === 'string') {
+        const date = parseISO(value)
+        if (!Number.isNaN(date.getTime())) {
+            return date
+        }
+    }
+
+    return value
+}
+

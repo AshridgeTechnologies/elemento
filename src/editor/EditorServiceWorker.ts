@@ -9,7 +9,9 @@ const dirName = (path: string) => pathSegments(path).slice(0, -1).join('/')
 
 export default class EditorServiceWorker {
 
-    constructor(private swSelf: ServiceWorkerGlobalScope) {}
+    constructor(private swSelf: ServiceWorkerGlobalScope) {
+        console.log('New EditorServiceWorker')
+    }
     private fileSystem: FileSystemTree = {}
     private previewServerUrl: string | null = null
 
@@ -43,6 +45,7 @@ export default class EditorServiceWorker {
         }
 
         if (data?.type === 'previewServer') {
+            console.log('EditorServiceWorker previewServerUrl', data.url)
             this.previewServerUrl = data.url
         }
     }
@@ -60,11 +63,13 @@ export default class EditorServiceWorker {
         if (pathname.startsWith('/capi/')) {
             const {method, headers} = request
             const body = await request.arrayBuffer()
-            const options = method === 'POST' ? {method, body, headers} : {}
+            const options = method === 'POST' ? {method, body, headers} : {headers}
+            if (!this.previewServerUrl) console.warn('EditorServiceWorker - previewServerUrl is', this.previewServerUrl)
             return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`, options)
         }
 
         if (pathname === '/firebaseConfig.json') {
+            if (!this.previewServerUrl) console.warn('EditorServiceWorker - previewServerUrl is', this.previewServerUrl)
             return fetch(`${this.previewServerUrl}/preview${url.pathname}`)
         }
 

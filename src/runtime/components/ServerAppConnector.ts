@@ -2,7 +2,7 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
-import {valueOf} from '../runtimeFunctions'
+import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import auth from './authentication'
 import lodash from 'lodash'; const {startCase} = lodash;
 
@@ -106,7 +106,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                     return this.fetch!(url, options)
                         .then(resp => {
                             if (resp.ok) {
-                                return resp.json()
+                                return resp.text().then( jsonText => JSON.parse(jsonText, isoDateReviver) )
                             } else {
                                 return resp.json().then(data => this.handleError(name, data.error))
                             }
@@ -148,6 +148,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             // @ts-ignore
             .then(resp => {
                 if (resp.ok) {
+                    this.Refresh()
                     return resp.text()
                 } else {
                     return resp.json().then(data => this.handleError(name, data.error))

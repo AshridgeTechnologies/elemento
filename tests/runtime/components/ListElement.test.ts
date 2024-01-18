@@ -39,8 +39,8 @@ test('ListElement shows selectedItem as selected', () => {
     snapshot(listElement('app.page1.list1', {selectedItem: listData[1]}, {itemContentComponent: ListItem1, items: listData}))()
 })
 
-test('ListElement shows selectedItem as selected from id', () => {
-    snapshot(listElement('app.page1.list1', {selectedItem: listData[1].id}, {itemContentComponent: ListItem1, items: listData}))()
+test('ListElement produces empty output if items is null but there is a selected item, as may happen when refreshing data', () => {
+    snapshot(listElement('app.page1.list1', {selectedItem: listData[1]}, {itemContentComponent: ListItem1, items: null}))()
 })
 
 test('ListElement updates its selectedItem in the app state', async () => {

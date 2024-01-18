@@ -120,7 +120,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const newVersion2 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[1][0]
     expect(newVersion2.currentPage).toBe(Page3)
 
-    ShowPage('goback')
+    ShowPage('previous')
     const newVersion3 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[2][0]
     expect(newVersion3.currentPage).toBe(Page2)
 })

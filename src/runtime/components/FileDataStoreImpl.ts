@@ -14,7 +14,7 @@ import DataStore, {
 import MemoryDataStore from './MemoryDataStore'
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
-import {parseISO} from 'date-fns'
+import {isoDateReviver} from '../runtimeFunctions'
 
 declare global {
     var showOpenFilePicker: (options: object) => any
@@ -28,17 +28,6 @@ const globalExternals = {
 type Externals = { showOpenFilePicker: (options: object) => any; showSaveFilePicker: (options: object) => any }
 
 const userCancelledFilePick = (e:any) => /*e instanceof DOMException &&*/ e.name === 'AbortError'
-
-const isoDateReviver = (key: string, value: any) => {
-    if (typeof value === 'string') {
-        const date = parseISO(value)
-        if (!Number.isNaN(date.getTime())) {
-            return date
-        }
-    }
-
-    return value
-}
 
 export default class FileDataStoreImpl implements DataStore {
     constructor(private externals: Externals = globalExternals) {}

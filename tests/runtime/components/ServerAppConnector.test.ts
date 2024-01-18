@@ -31,7 +31,7 @@ const configuration: Configuration = {
 }
 const urlWithVersion = configuration.url.replace(':versionId', versionId)
 
-const mockResponse = (data: any) => ({status: 200, ok: true, json: jest.fn().mockResolvedValue(data)})
+const mockJsonResponse = (data: any) => ({status: 200, ok: true, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: jest.fn().mockResolvedValue(data)})
 const mockError = (message: string) => ({status: 500, ok: false, json: jest.fn().mockResolvedValue({error: {message}})})
 const mock_getIdToken = auth.getIdToken as jest.MockedFunction<any>
@@ -74,8 +74,8 @@ test('returns self as update result for equivalent configuration', () => {
 test('calls get functions, returns pending and then cached result', async () => {
     const [conn, appInterface] = initConnector()
     const data1 = {a: 10, b: true}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValueOnce(mockResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
@@ -96,14 +96,28 @@ test('calls get functions, returns pending and then cached result', async () => 
     expect(appInterface.latest().state.versionId).toBe(versionId)
 })
 
+test('translates ISO dates in received data', async () => {
+    const [conn, appInterface] = initConnector()
+    const date1 = new Date()
+    const data1 = {date: date1.toISOString()}
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
+
+    expect(isPending(conn.GetWidget('id1', true))).toBe(true)
+
+    await wait(10)
+    const resultData = conn.GetWidget('id1', true)
+    expect(resultData).toStrictEqual({date: date1})
+})
+
 test('only gets version once for successive calls', async () => {
     const [conn, appInterface] = initConnector()
 
     const data1 = {a: 10, b: true}
     const data2 = {a: 20, b: true}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValueOnce(mockResponse(data1))
-    mockFetch.mockResolvedValueOnce(mockResponse(data2))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data2))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     await wait(10)
@@ -127,8 +141,8 @@ test('only gets version once for successive calls', async () => {
 test('caches pending until result arrives', async () => {
     const [conn] = initConnector()
     const data1 = {a: 10, b: true}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValue(mockResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValue(mockJsonResponse(data1))
     const connAny = conn as any
 
     expect(isPending(connAny.GetWidget('id1', true))).toBe(true)
@@ -142,8 +156,8 @@ test('caches pending until result arrives', async () => {
 test('pending result can be used as a promise', async () => {
     const [conn] = initConnector()
     const data1 = {a: 10, b: true}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValue(mockResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValue(mockJsonResponse(data1))
     const connAny = conn as any
 
     await expect(connAny.GetWidget('id1', true)).resolves.toStrictEqual(data1)
@@ -155,10 +169,10 @@ test('gets correct cached result for parallel calls but only gets version once',
     const data2 = {a: 20, b: false}
     const data3 = {a: 30, c: "high"}
     mockFetch
-        .mockResolvedValueOnce(mockResponse(versionInfo))
-        .mockResolvedValueOnce(mockResponse(data1))
-        .mockResolvedValueOnce(mockResponse(data2))
-        .mockResolvedValueOnce(mockResponse(data3))
+        .mockResolvedValueOnce(mockJsonResponse(versionInfo))
+        .mockResolvedValueOnce(mockJsonResponse(data1))
+        .mockResolvedValueOnce(mockJsonResponse(data2))
+        .mockResolvedValueOnce(mockJsonResponse(data3))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -177,10 +191,10 @@ test('refreshes individual cached result for each call', async () => {
     const data2 = {a: 20, b: false}
     const data3 = {a: 30, c: "high"}
     mockFetch
-        .mockResolvedValueOnce(mockResponse(versionInfo))
-        .mockResolvedValueOnce(mockResponse(data1))
-        .mockResolvedValueOnce(mockResponse(data2))
-        .mockResolvedValueOnce(mockResponse(data3))
+        .mockResolvedValueOnce(mockJsonResponse(versionInfo))
+        .mockResolvedValueOnce(mockJsonResponse(data1))
+        .mockResolvedValueOnce(mockJsonResponse(data2))
+        .mockResolvedValueOnce(mockJsonResponse(data3))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -202,7 +216,7 @@ test('refreshes individual cached result for each call', async () => {
             'GetSprocket#["id1",false]': data3,
         })
 
-    mockFetch.mockResolvedValueOnce(mockResponse(data1a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     await wait(10)
     expect(conn.GetWidget('id1', true)).toStrictEqual(data1a)
@@ -227,10 +241,10 @@ test('refreshes all cached results for one function', async () => {
     const data2a = {a: 220, b: false}
     const data3 = {a: 30, c: "high"}
     mockFetch
-        .mockResolvedValueOnce(mockResponse(versionInfo))
-        .mockResolvedValueOnce(mockResponse(data1))
-        .mockResolvedValueOnce(mockResponse(data2))
-        .mockResolvedValueOnce(mockResponse(data3))
+        .mockResolvedValueOnce(mockJsonResponse(versionInfo))
+        .mockResolvedValueOnce(mockJsonResponse(data1))
+        .mockResolvedValueOnce(mockJsonResponse(data2))
+        .mockResolvedValueOnce(mockJsonResponse(data3))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -251,8 +265,8 @@ test('refreshes all cached results for one function', async () => {
             'GetSprocket#["id1",false]': data3,
         })
 
-    mockFetch.mockResolvedValueOnce(mockResponse(data1a))
-    mockFetch.mockResolvedValueOnce(mockResponse(data2a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data2a))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -275,10 +289,10 @@ test('refreshes all cached results', async () => {
     const data3 = {a: 30, c: "high"}
     const data3a = {a: 330, c: "high"}
     mockFetch
-        .mockResolvedValueOnce(mockResponse(versionInfo))
-        .mockResolvedValueOnce(mockResponse(data1))
-        .mockResolvedValueOnce(mockResponse(data2))
-        .mockResolvedValueOnce(mockResponse(data3))
+        .mockResolvedValueOnce(mockJsonResponse(versionInfo))
+        .mockResolvedValueOnce(mockJsonResponse(data1))
+        .mockResolvedValueOnce(mockJsonResponse(data2))
+        .mockResolvedValueOnce(mockJsonResponse(data3))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -293,9 +307,9 @@ test('refreshes all cached results', async () => {
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(9)
     expect(appInterface.latest().state.resultCache).toStrictEqual({})
 
-    mockFetch.mockResolvedValueOnce(mockResponse(data1a))
-    mockFetch.mockResolvedValueOnce(mockResponse(data2a))
-    mockFetch.mockResolvedValueOnce(mockResponse(data3a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data2a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data3a))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', false))).toBe(true)
@@ -315,11 +329,63 @@ test('refreshes all cached results', async () => {
         })
 })
 
+test('refreshes all cached results after action function call', async () => {
+    const [conn, appInterface] = initConnector()
+    const data1 = {a: 10, b: true}
+    const data1a = {a: 110, b: true}
+    const data2 = {a: 20, b: false}
+    const data2a = {a: 220, b: false}
+    const data3 = {a: 30, c: "high"}
+    const data3a = {a: 330, c: "high"}
+    mockFetch
+        .mockResolvedValueOnce(mockJsonResponse(versionInfo))
+        .mockResolvedValueOnce(mockJsonResponse(data1))
+        .mockResolvedValueOnce(mockJsonResponse(data2))
+        .mockResolvedValueOnce(mockJsonResponse(data3))
+        .mockResolvedValue(mockTextResponse(''))
+
+    expect(isPending(conn.GetWidget('id1', true))).toBe(true)
+    expect(isPending(conn.GetWidget('id1', false))).toBe(true)
+    expect(isPending(conn.GetSprocket('id1', false))).toBe(true)
+    await wait(10)
+    expect(conn.GetWidget('id1', true)).toStrictEqual(data1)
+    expect(conn.GetWidget('id1', false)).toStrictEqual(data2)
+    expect(conn.GetSprocket('id1', false)).toStrictEqual(data3)
+    expect(mockFetch).toHaveBeenCalledTimes(4)
+
+    expect(await conn.UpdateWidget('id1', {c: 'foo'})).toBe('')
+    expect(mockFetch).toHaveBeenCalledTimes(5)
+
+    expect(appInterface.updateVersion).toHaveBeenCalledTimes(9)
+    expect(appInterface.latest().state.resultCache).toStrictEqual({})
+
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data2a))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data3a))
+
+    expect(isPending(conn.GetWidget('id1', true))).toBe(true)
+    expect(isPending(conn.GetWidget('id1', false))).toBe(true)
+    expect(isPending(conn.GetSprocket('id1', false))).toBe(true)
+
+    await wait(10)
+    expect(conn.GetWidget('id1', true)).toStrictEqual(data1a)
+    expect(conn.GetWidget('id1', false)).toStrictEqual(data2a)
+    expect(conn.GetSprocket('id1', false)).toStrictEqual(data3a)
+    expect(mockFetch).toHaveBeenCalledTimes(8)
+    expect(appInterface.updateVersion).toHaveBeenCalledTimes(15)
+    expect(appInterface.latest().state.resultCache).toStrictEqual(
+        {
+            'GetWidget#["id1",true]': data1a,
+            'GetWidget#["id1",false]': data2a,
+            'GetSprocket#["id1",false]': data3a,
+        })
+})
+
 test('can use object values in arguments', async () => {
     const [conn] = initConnector()
     const data1 = {a: 10, b: true}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValueOnce(mockResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
 
     expect(isPending(conn.GetWidget(valueObj('id1'), valueObj(true)))).toBe(true)
     await wait(10)
@@ -331,8 +397,8 @@ test('can use object values in arguments', async () => {
 test('caches falsy values correctly', async () => {
     const [conn] = initConnector()
     const data1 = 0
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValueOnce(mockResponse(data1))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
@@ -345,7 +411,7 @@ test('caches falsy values correctly', async () => {
 test('calls action functions with post', async () => {
     const [conn] = initConnector()
     const changes = {c: 'foo'}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValue(mockTextResponse(''))
     expect(await conn.UpdateWidget('id1', changes)).toBe('')
     expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -359,7 +425,7 @@ test('calls action functions with post', async () => {
 test('calls action functions with post using object values', async () => {
     const [conn] = initConnector()
     const changes = {c: 'foo'}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValueOnce(mockTextResponse(''))
     expect(await conn.UpdateWidget(valueObj('id1'), changes)).toBe('')
     expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -373,7 +439,7 @@ test('calls action functions with post using object values', async () => {
 test('does not cache action functions', async () => {
     const [conn] = initConnector()
     const changes = {c: 'foo'}
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValue(mockTextResponse(''))
     expect(await conn.UpdateWidget('id1', changes)).toBe('')
     expect(await conn.UpdateWidget('id1', changes)).toBe('')
@@ -386,8 +452,8 @@ test('sends auth token with get request if user is logged in', async () => {
     const mock_getIdToken = auth.getIdToken as jest.MockedFunction<() => Promise<string>>
     mock_getIdToken.mockResolvedValue(token)
 
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
-    mockFetch.mockResolvedValue(mockResponse({a:1}))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
+    mockFetch.mockResolvedValue(mockJsonResponse({a:1}))
     conn.GetWidget('id1')
     await wait(10)
     expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -403,7 +469,7 @@ test('sends auth token with post request if user is logged in', async () => {
     const mock_getIdToken = auth.getIdToken as jest.MockedFunction<() => Promise<string>>
     mock_getIdToken.mockResolvedValue(token)
 
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValue(mockTextResponse(''))
     expect(await conn.UpdateWidget('id1', changes)).toBe('')
     expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -417,7 +483,7 @@ test('sends auth token with post request if user is logged in', async () => {
 test('handles error returned from server in get call', async () => {
     const [conn, appInterface] = initConnector()
     const message = 'That is wrong'
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValue(mockError(message))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
@@ -441,7 +507,7 @@ test('handles error returned from server in get call', async () => {
 test('handles error in making get call', async () => {
     const [conn, appInterface] = initConnector()
     const message = 'It did not work'
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockRejectedValue( new Error(message) )
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
@@ -463,7 +529,7 @@ test('handles error in making post call', async () => {
     const [conn] = initConnector()
     const changes = {c: 'foo'}
     const message = 'It did not work'
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockRejectedValue(new Error(message))
     expect(await conn.UpdateWidget('id1', changes)).toStrictEqual(new ErrorResult("Server App 1: Update Widget", message))
     expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -474,7 +540,7 @@ test('handles error returned from server in post call', async () => {
     const [conn, appInterface] = initConnector()
     const changes = {c: 'foo'}
     const message = 'That is wrong'
-    mockFetch.mockResolvedValueOnce(mockResponse(versionInfo))
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
     mockFetch.mockResolvedValue(mockError(message))
     expect(await conn.UpdateWidget('id1', changes)).toStrictEqual(new ErrorResult("Server App 1: Update Widget", message))
     expect(mockFetch).toHaveBeenCalledTimes(2)

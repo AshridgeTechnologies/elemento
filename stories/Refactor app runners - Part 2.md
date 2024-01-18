@@ -106,7 +106,7 @@ Server app features needed
 - ✅ CurrentUser() is allowed in server app functions
 - ✅ CurrentUser has Id property from uid
 - Editor Service Worker keeps losing the preview server
-- Server App Caching changes
+- ✅ Server App Caching changes
 - Form behaviour changes
 - Page authorization and error handling and logout action
 - Refresh data when auth changes - either log in or out, don't show errors while waiting

@@ -55,6 +55,10 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         return (this._appStateInterface?.getChildState(name) as InputComponentState<any, any>)
     }
 
+    get originalValue() {
+        return super.originalValue ?? {}
+    }
+
     Reset() {
         super.Reset();
         this.fieldNames.forEach(name => this.getChildState(name)?.Reset())

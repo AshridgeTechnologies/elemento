@@ -157,6 +157,15 @@ test('State class has correct properties and functions', () => {
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined, errorsShown: false}))
 })
 
+test('State class has empty object original value if props value is null', () => {
+    const state = new TestFormState({value: null })
+    const appInterface = testAppInterface(null, {})
+    state.init(appInterface, 'formPath')
+    expect(state.originalValue).toStrictEqual({})
+    expect(state.value).toStrictEqual({})
+    expect(state.defaultValue).toStrictEqual({})
+})
+
 test('State class compares values as objects', () => {
     const state1 = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
     const state2 = new TestFormState({value: {Description: 'Big', BoxSize: 17}})

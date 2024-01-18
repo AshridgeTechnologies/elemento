@@ -139,7 +139,7 @@ test('sends firebaseConfig request to preview server', async () => {
     }
 })
 
-test('stores preview server url and sends capi request to preview server', async () => {
+test('stores preview server url and sends capi request to preview server with headers supplied', async () => {
     const event = {data: {type: 'previewServer', url: 'https://preview.example.com/preview-function'}} as ExtendableMessageEvent
     worker.message(event)
     await wait(10)
@@ -148,9 +148,9 @@ test('stores preview server url and sends capi request to preview server', async
     globalThis.fetch = jest.fn()
 
     try {
-        const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22')
+        const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22', {headers: {'Authorization': 'Bearer xyz123'}})
         await worker.handleRequest(req)
-        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22', {})
+        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/capi/preview/SomeApp/SomeFunction?abc=22', {headers: {'Authorization': 'Bearer xyz123'}})
     } finally {
         globalThis.fetch = originalFetch
     }
