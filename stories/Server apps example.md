@@ -26,7 +26,7 @@ Requirements
 
 ## Overall App features
 - Staff holiday booking
-- Users view, add, update, delete their own holiday bookings
+- Users view, add, update, cancel their own holiday bookings
 - View holiday calendar for everyone
 - Holiday calendar API
 - Send Emails for changes via API

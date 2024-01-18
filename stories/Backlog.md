@@ -4,6 +4,12 @@ Elemento Backlog
 
 Bugs
 ----
+- Form can contain things that cannot be reset like Calculation, Button
+- Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
+  - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))
+    const StartDate = Elemento.useObjectState(pathWith('StartDate'), new DateInput.State({value: Booking.StartDate}))`
+- ListElement errors if items is null (as it is with a pending result)
+- Preview cannot reload named pages - service worker gives 404
 - Does not show preview on new project - sw gives 404 - until reload frame
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
 - Previews are mixed up if open two projects in different tabs
@@ -86,6 +92,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- ShowDialog to show a Page or Form in a modal dialog
 - Extension auto-loads latest code from git repo via CDN
 - Single copy of expressUtils between two projects
 - OPFS file store
@@ -303,3 +310,5 @@ Bugs fixed
 - Cannot load project from Git if files dir empty, and Git does not commit empty dirs
 - Menu on Studio etc not working
 - Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
+- Authorization header not sent with server app get requests
+- Dates in data from server app function are left as ISO strings
