@@ -21,6 +21,10 @@ test('DateInput element produces output with properties supplied',
     snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date'}))
 )
 
+test('DateInput element produces readonly output with properties supplied',
+    snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', readOnly: true}))
+)
+
 test('DateInput element produces output with DataType supplied',
     snapshot(dateInput('app.page1.start1', {value: new Date('2021-11-12'), dataType: dateType1}, {label: 'Starting Date'}))
 )

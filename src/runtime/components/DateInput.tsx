@@ -1,18 +1,15 @@
-import React, {ChangeEvent, FocusEvent} from 'react'
-import {TextField} from '@mui/material'
-import {definedPropertiesOf} from '../../util/helpers'
+import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
-import {DateType, NumberType} from '../types'
-import {pick} from 'ramda'
+import {DateType} from '../types'
 import {InputWithInfo} from './InputWithInfo'
-import {DatePicker} from '@mui/x-date-pickers'
+import {DatePicker, DateField} from '@mui/x-date-pickers'
 
-type Properties = {path: string, label?: PropVal<string>, }
+type Properties = {path: string, label?: PropVal<string>, readOnly?: PropVal<boolean> }
 
 export default function DateInput({path, ...props}: Properties) {
-    const {label} = valueOfProps(props)
+    const {label, readOnly} = valueOfProps(props)
 
     const state = useGetObjectState<DateInputState>(path)
     const {value} = state
@@ -35,7 +32,15 @@ export default function DateInput({path, ...props}: Properties) {
             onBlur
         }
     }
-    const formControl = React.createElement(DatePicker, {
+    const formControl = readOnly
+        ? React.createElement(DateField, {
+            label,
+            slotProps,
+            value,
+            format: 'dd MMM yyyy',
+            readOnly
+        })
+        : React.createElement(DatePicker, {
         label,
         slotProps,
         value,

@@ -246,7 +246,7 @@ ${declarations}
 }
 `.trimStart()
 
-        const stateNames = statefulComponents.map( el => el.codeName )
+        const stateNames = statefulComponents.filter( el => el.kind !== 'Calculation').map( el => el.codeName )
         const stateClass = componentIsForm ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseFormState {
     ownFieldNames = [${stateNames.map(quote).join(', ')}]
 }

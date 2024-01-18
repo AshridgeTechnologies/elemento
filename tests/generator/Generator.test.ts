@@ -1203,14 +1203,16 @@ test('generates Layout element with properties and children', ()=> {
 `)
 })
 
-test('generates simple Form element with separate child component', ()=> {
+test('generates simple Form element with separate child component and includes Data but not Calculation', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`},
                     [
                     new TextInput('id2', 'Text Input 2', {}),
-                    new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
-                ])
+                        new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
+                        new Calculation('id4', 'Calculation 1', { calculation: ex`1 + 2`}),
+                        new Data('id5', 'Data 1', { initialValue: ex`1 + 2`}),
+                    ])
             ]
         ),
     ])
@@ -1219,21 +1221,25 @@ test('generates simple Form element with separate child component', ()=> {
 
     expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
     const pathWith = name => props.path + '.' + name
-    const {Form, TextInput, NumberInput} = Elemento.components
+    const {Form, TextInput, NumberInput, Calculation, Data} = Elemento.components
     const \$form = Elemento.useGetObjectState(props.path)
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: \$form.originalValue?.TextInput2}))
     const NumberInput1 = Elemento.useObjectState(pathWith('NumberInput1'), new NumberInput.State({value: 5 + 3}))
+    const Calculation1 = Elemento.useObjectState(pathWith('Calculation1'), new Calculation.State({value: 1 + 2}))
+    const Data1 = Elemento.useObjectState(pathWith('Data1'), new Data.State({value: 1 + 2}))
     \$form._updateValue()
 
     return React.createElement(Form, props,
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
+        React.createElement(Calculation, {path: pathWith('Calculation1'), display: true}),
+        React.createElement(Data, {path: pathWith('Data1'), display: false}),
     )
 }
 
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
-    ownFieldNames = ['TextInput2', 'NumberInput1']
+    ownFieldNames = ['TextInput2', 'NumberInput1', 'Data1']
 }
 
 

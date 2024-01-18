@@ -113,11 +113,11 @@ Server app features needed
 - Sort out id vs Id
 - ✅ Components whose value is an object do not expose sub-props on top-level - very confusing
 - ✅ Confusing how to access form values, such as data given to form, within the form
-- How to use form values if not in fields - Calculation, Data
+- ✅ How to use form values if not in fields - Calculation, Data
 - Auto form reset after submit action
 - Don't cache error results from Server Apps - or only for a short time
-- Read only Date component is not read only
-- Pending value shows loading spinner
+- ✅ Read only Date component is not read only
+- Pending value should show loading spinner
 - Better argument type checking on runtime functions eg Update
 - Server Error management on client - expected/unexpected, link to fields
 - User management - creation, approval, permissions
