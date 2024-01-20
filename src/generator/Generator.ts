@@ -1,24 +1,25 @@
-import {parse, prettyPrint, print, types} from 'recast'
-import {visit,} from 'ast-types'
+import {parse, prettyPrint} from 'recast'
 
 import App from '../model/App'
 import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
-import {functionArgIndexes} from '../runtime/globalFunctions'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
-import {flatten, identity, last, omit} from 'ramda'
+import {flatten, identity, omit} from 'ramda'
 import Parser from './Parser'
 import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty, trimParens} from '../util/helpers'
 import {
     allElements,
+    convertAstToValidJavaScript,
     DefinedFunction,
+    indent,
     isAppLike,
     objectLiteral,
     objectLiteralEntries,
+    printAst,
     quote,
     StateEntry,
     topoSort,
@@ -36,7 +37,6 @@ import Tool from '../model/Tool'
 
 type FunctionCollector = {add(s: string): void}
 
-const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel2 = '        '
 const indentLevel3 = '            '
 
@@ -50,10 +50,6 @@ export const DEFAULT_IMPORTS = [
 
 export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
     return new Generator(app, project, imports).output()
-}
-
-function printAst(ast: any) {
-    return print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
 }
 
 export default class Generator {
@@ -158,11 +154,10 @@ export default class Generator {
         const actionHandler = (el: Element, def: PropertyDef) => {
             const actionDef = def.type as EventActionPropertyDef
             const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
-            const voidReturnFunctionCode = functionCode?.startsWith('async ') ? `() => {\n    const doAction = ${functionCode}\n    doAction()\n    }` : functionCode
             const functionName = `${el.codeName}_${def.name}`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
             const dependencies = identifiers.filter(id => id !== el.codeName && (isStatefulComponentName(id) || (componentIsForm && id === '$form')))
-             return functionCode && `    const ${functionName} = React.useCallback(${voidReturnFunctionCode}, [${dependencies.join(', ')}])`
+             return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
         }
 
         const uiElementActionHandlers = (el: Element) => {
@@ -523,11 +518,10 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
         const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
         if (!isJavascriptFunctionBody) {
-            this.convertAstToValidJavaScript(ast, exprType);
+            convertAstToValidJavaScript(ast, exprType, ['action'])
         }
 
-        // remove braces if the ast is a block statement from wrapping in a function
-        const exprCode = printAst(ast).replace(/^\{\n/, '').replace(/\n\}$/, '')
+        const exprCode = printAst(ast)
 
         switch (exprType) {
             case 'singleExpression':
@@ -544,52 +538,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'reference': {
                 return `${element.codeName}_${propertyName}`
             }
-        }
-    }
-
-    private convertAstToValidJavaScript(ast:any, exprType: ExprType) {
-        function isShorthandProperty(node: any) {
-            return node.shorthand
-        }
-
-        function addReturnStatement(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            const lastStatement = last(bodyStatements)
-            const b = types.builders
-            ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
-        }
-
-        visit(ast, {
-            visitAssignmentExpression(path) {
-                const node = path.value
-                node.type = 'BinaryExpression'
-                node.operator = '=='
-                this.traverse(path)
-            },
-
-            visitProperty(path) {
-                const node = path.value
-                if (isShorthandProperty(node)) {
-                    node.value.name = 'undefined'
-                }
-                this.traverse(path)
-            },
-
-            visitCallExpression(path) {
-                const b = types.builders
-                const node = path.value
-                const functionName = node.callee.name
-                const argsToTransform = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
-                argsToTransform?.forEach(index => {
-                    const bodyExpr = node.arguments[index] ?? b.nullLiteral()
-                    node.arguments[index] = b.arrowFunctionExpression([b.identifier('$item')], bodyExpr)
-                })
-                this.traverse(path)
-            }
-        })
-
-        if (exprType === 'multilineExpression') {
-            addReturnStatement(ast)
         }
     }
 

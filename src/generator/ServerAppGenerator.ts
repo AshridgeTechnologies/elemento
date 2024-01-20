@@ -2,18 +2,13 @@ import ServerApp from '../model/ServerApp'
 import FunctionDef from '../model/FunctionDef'
 import ServerAppParser from './ServerAppParser'
 import Element from '../model/Element'
-import {functionArgIndexes} from '../serverRuntime/globalFunctions'
 import {ExprType} from './Types'
-import {last} from 'ramda'
-import {print, types} from 'recast'
-import {visit} from 'ast-types'
 import {isTruthy} from '../util/helpers'
-import {objectLiteral, quote, StateEntry, topoSort} from './generatorHelpers'
+import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateEntry, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
 
-const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
-const indentLevel2 = '        '
+const indentLevel1 = '    '
 
 export function generateServerApp(app:ServerApp, project: Project) {
     return new ServerAppGenerator(app, project).output()
@@ -77,11 +72,11 @@ export default class ServerAppGenerator {
     public serverApp() {
         const generateFunction = (fn: FunctionDef) => {
             const paramList = fn.inputs.join(', ')
-            const exprType = fn.action ? 'action' : 'singleExpression'
+            const exprType = fn.action ? 'action' : 'multilineExpression'//'singleExpression'
             const expr = this.getExpr(fn, 'calculation', exprType)
-            const functionBody = fn.action ? expr : `return ${expr}`
+            const functionBody = fn.action || fn.javascript ? expr : `${expr}`
             return `async function ${fn.codeName}(${paramList}) {
-    ${functionBody}
+${indent(functionBody ?? '', indentLevel1)}
 }`
         }
 
@@ -157,81 +152,32 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
-        function isShorthandProperty(node: any) {
-            return node.shorthand
-        }
-
-        function addReturnStatement(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            const lastStatement = last(bodyStatements)
-            const b = types.builders
-            ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
-        }
-
+        const isSingleExpr = exprType === 'singleExpression'
         const errorMessage = this.parser.propertyError(element.id, propertyName)
         if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
-            return `runtimeFunctions.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
+            const returnStmt = isSingleExpr ? '' : 'return '
+            return `${returnStmt}runtimeFunctions.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
         }
 
         const ast = this.parser.getAst(element.id, propertyName)
         if (ast === undefined) {
-            return undefined
-        }
-        const globalFunctions = this.parser.allGlobalFunctionIdentifiers()
-
-        visit(ast, {
-            visitAssignmentExpression(path) {
-                const node = path.value
-                node.type = 'BinaryExpression'
-                node.operator = '=='
-                this.traverse(path)
-            },
-
-            visitProperty(path) {
-                const node = path.value
-                if (isShorthandProperty(node)) {
-                    node.value.name = 'undefined'
-                }
-                this.traverse(path)
-            },
-
-            visitCallExpression(path) {
-                const callExpr = path.value
-                const b = types.builders
-
-                const functionName = callExpr.callee.name
-                const argsToTransform = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
-                argsToTransform?.forEach(index => {
-                    const bodyExpr = callExpr.arguments[index]
-                    const b = types.builders
-                    callExpr.arguments[index] = b.arrowFunctionExpression([b.identifier('$item')], bodyExpr)
-                })
-
-                const knownSync = globalFunctions.includes(callExpr.callee.name)
-                if (!knownSync) {
-                    const awaitExpr = b.awaitExpression(callExpr)
-                    path.replace(awaitExpr)
-                    this.traverse(path.get('argument')) // start one level down so don't parse this node again
-                } else {
-                    this.traverse(path)
-                }
-            }
-        })
-
-        if (exprType === 'multilineExpression') {
-            addReturnStatement(ast)
+            return isSingleExpr ? undefined : 'return undefined'
         }
 
-        const exprCode = print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
+        const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
+        if (!isJavascriptFunctionBody) {
+            convertAstToValidJavaScript(ast, exprType, ['action', 'multilineExpression']);
+        }
+
+        const exprCode = printAst(ast)
         switch (exprType) {
             case 'singleExpression':
                 return exprCode
             case 'action':
                 return `${exprCode}`
             case 'multilineExpression': {
-                return `{\n${indent(exprCode, indentLevel2)}\n    }`
+                return `${exprCode}`
             }
         }
     }
-
 }

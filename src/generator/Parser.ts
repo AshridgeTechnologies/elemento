@@ -1,6 +1,3 @@
-import {parse} from 'recast'
-import * as acorn from 'acorn'
-import {visit,} from 'ast-types'
 import Page from '../model/Page'
 import Element from '../model/Element'
 import {globalFunctions} from '../runtime/globalFunctions'
@@ -9,16 +6,15 @@ import {isExpr} from '../util/helpers'
 import {ElementId, ElementType, EventActionPropertyDef, PropertyDef, PropertyValue} from '../model/Types'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
-import {last, without} from 'ramda'
-import {AllErrors, ExprType, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
+import {AllErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
 import {allElements, valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
 import {elementTypes} from '../model/elements'
 import Form from '../model/Form'
+import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 
-type IdentifierCollector = {add(s: string): void}
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
@@ -36,44 +32,12 @@ const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name
 const isItemVar = (name: string) => name === '$item'
 const isFormVar = (name: string) => name === '$form'
 
-function parseExpr(expr: string) {
-
-    function parseAcorn(source: string, options?: any) {
-        const comments: any[] = []
-        const tokens: any[] = []
-        const ast = acorn.parse(source, {
-            allowHashBang: false,
-            allowImportExportEverywhere: false,
-            allowReturnOutsideFunction: true,
-            allowAwaitOutsideFunction: true,
-            ecmaVersion: 11,  //2020
-            sourceType: "module",
-            locations: true,
-            onComment: comments,
-            onToken: tokens,
-        })
-
-        const astAsAny = (ast as any)
-        if (!astAsAny.comments) {
-            astAsAny.comments = comments
-        }
-
-        if (!astAsAny.tokens) {
-            astAsAny.tokens = tokens
-        }
-
-        return ast
-    }
-
-    const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
-    return parse(exprToParse, {parser: {parse: parseAcorn}})
-}
-
 const addAllTo = (to: IdentifierCollector, from: Iterable<string>): void => {
     for( const item of from ) {
         to.add(item)
     }
 }
+
 
 export default class Parser {
     private readonly errors = {} as AllErrors
@@ -118,14 +82,7 @@ export default class Parser {
     }
 
     getAst(elementId: ElementId, propertyName: string): any {
-
-            const element = this.project.findElement(elementId)!
-            const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
-            if (propertyValue === undefined) {
-                return undefined
-            }
-        const expr = isExpr(propertyValue) ? propertyValue.expr.trim() : valueLiteral(propertyValue)
-
+        const expr = this.getExpression(elementId, propertyName)
         if (expr === undefined) {
             return undefined
         }
@@ -138,16 +95,12 @@ export default class Parser {
     }
 
     getExpression(elementId: ElementId, propertyName: string): any {
-        const element = this.project.findElement(elementId)!
+        const element = this.globalScopeElement.findElement(elementId)!
         const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
         if (propertyValue === undefined) {
             return undefined
         }
-        if (isExpr(propertyValue)) {
-            return propertyValue.expr.trim()
-        } else {
-            return valueLiteral(propertyValue)
-        }
+        return isExpr(propertyValue) ? propertyValue.expr.trim() : valueLiteral(propertyValue)
     }
 
     private addError(elementId: ElementId, propertyName: string, error: string) {
@@ -210,7 +163,8 @@ export default class Parser {
         const parseProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
             const propertyIdentifiers = new Set<ElementId>()
             const exprType: ExprType = (def.type as EventActionPropertyDef).type === 'Action' ? 'action': 'singleExpression'
-            this.parseExprAndIdentifiers(element, def.name, propertyIdentifiers, isKnown, exprType)
+            const onError = (err: string) => this.addError(element.id, def.name, err)
+            parseExprAndIdentifiers(element, def.name, propertyIdentifiers, isKnown, exprType, onError)
             this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(propertyIdentifiers.values())
             return propertyIdentifiers
         }
@@ -222,7 +176,8 @@ export default class Parser {
                 case 'Function': {
                     const functionDef = element as FunctionDef
                     const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
-                    this.parseExprAndIdentifiers(functionDef, 'calculation', elementIdentifiers, isKnownOrParam, 'multilineExpression')
+                    const onError = (err: string) => this.addError(element.id, 'calculation', err)
+                    parseExprAndIdentifiers(functionDef, 'calculation', elementIdentifiers, isKnownOrParam, 'multilineExpression', onError)
                     break
                 }
 
@@ -267,114 +222,6 @@ export default class Parser {
             this.parseComponent(element)
         } else if (includeChildren) {
             parseChildren(element, containingComponent)
-        }
-    }
-
-    private parseExprAndIdentifiers(element: Element, propertyName: string, identifiers: IdentifierCollector,
-        isKnown: (name: string) => boolean, exprType: ExprType = 'singleExpression'): void {
-
-        const onError = (err: string) => this.addError(element.id, propertyName, err)
-        const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
-        if (propertyValue === undefined) {
-            return undefined
-        }
-
-        function checkIsExpression(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            if (exprType === 'singleExpression') {
-                if (bodyStatements.length !== 1) {
-                    throw new Error('Must be a single expression')
-                }
-                const mainStatement = bodyStatements[0]
-                if (mainStatement.type !== 'ExpressionStatement') {
-                    throw new Error('Invalid expression')
-                }
-            }
-
-            if (exprType === 'multilineExpression') {
-                const lastStatement = last(bodyStatements)
-                if (lastStatement.type !== 'ExpressionStatement') {
-                    throw new Error('Invalid expression')
-                }
-            }
-        }
-
-        function checkErrors(ast: any) {
-            if (ast.program.errors?.length) {
-                throw new Error(ast.program.errors[0].description)
-            }
-        }
-
-        function isShorthandProperty(node: any) {
-            return node.shorthand
-        }
-        if (isExpr(propertyValue)) {
-            const {expr} = propertyValue
-            try {
-                const ast = parseExpr(expr)
-                const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
-
-                if (!isJavascriptFunctionBody) {
-                    checkIsExpression(ast)
-                }
-                checkErrors(ast)
-                const thisIdentifiers = new Set<string>()
-                const variableIdentifiers = new Set<string>()
-                visit(ast, {
-                    visitVariableDeclarator(path) {
-                        const node = path.value
-                        variableIdentifiers.add(node.id.name)
-                        this.traverse(path)
-                    },
-                    visitIdentifier(path) {
-                        const node = path.value
-                        const parentNode = path.parentPath.value
-                        const isPropertyIdentifier = parentNode.type === 'MemberExpression' && parentNode.property === node
-                        const isPropertyKey = parentNode.type === 'Property' && parentNode.key === node
-                        const isVariableDeclaration = parentNode.type === 'VariableDeclarator' && parentNode.id === node
-                        if (!isPropertyIdentifier && !isPropertyKey && !isVariableDeclaration) {
-                            thisIdentifiers.add(node.name)
-                        }
-                        this.traverse(path)
-                    },
-                    visitProperty(path) {
-                        const node = path.value
-                        if (isShorthandProperty(node)) {
-                            node.value.name = 'undefined'
-                            const errorMessage = `Incomplete item: ${node.key.name}`
-                            onError(errorMessage)
-                        }
-                        this.traverse(path)
-                    },
-
-                })
-
-                const identifierNames = Array.from(thisIdentifiers.values())
-                const isLocal = (id: string) => variableIdentifiers.has(id)
-                const isSpecialVar = (id: string) => {
-                    return propertyName === 'keyAction' && id === '$key'
-                    || propertyName === 'submitAction' && id === '$data'
-                }
-                const isArgument = (id: string) => {
-                    const def = element.getPropertyDef(propertyName)
-                    const eventActionDef = def.type as EventActionPropertyDef
-                    return eventActionDef.type === 'Action' && eventActionDef.argumentNames.includes(id)
-                }
-                const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id) && !isSpecialVar(id) && !isArgument(id))
-                if (unknownIdentifiers.length && !isJavascriptFunctionBody) {
-                    const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
-                    onError(errorMessage)
-                }
-
-                const externalIdentifiers = without(Array.from(variableIdentifiers), identifierNames)
-                externalIdentifiers.forEach(name => identifiers.add(name))
-            } catch(e: any) {
-                const humanizedMessage = e.message.replace(/\((\d+):(\d+)\)$/, (_:any, lineNo: string, charIndex: string) => `(Line ${lineNo} Position ${charIndex})`)
-                    .replace(/\btoken\b/, 'character(s)')
-                    .replace(/'return' outside of function/, 'return not allowed here')
-                const errorMessage = `Error: ${humanizedMessage}`
-                onError(errorMessage)
-            }
         }
     }
 }

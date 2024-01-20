@@ -8,7 +8,7 @@ import Element from '../model/Element'
 import {last, without} from 'ramda'
 import {print, types} from 'recast'
 import {visit} from 'ast-types'
-import {functionArgIndexes} from '../runtime/globalFunctions'
+import {functionArgs} from '../runtime/globalFunctions'
 import Parser from './Parser'
 import {EventActionPropertyDef} from '../model/Types'
 import {dataTypeElementTypes} from '../model/elements'
@@ -146,13 +146,14 @@ export default class TypesGenerator {
             },
 
             visitCallExpression(path) {
-                const node = path.value
-                const functionName = node.callee.name
-                const argsToTransform = functionArgIndexes[functionName as keyof typeof functionArgIndexes]
-                argsToTransform?.forEach(index => {
-                    const bodyExpr = node.arguments[index]
-                    const b = types.builders
-                    node.arguments[index] = b.arrowFunctionExpression([b.identifier('$item')], bodyExpr)
+                const callExpr = path.value
+                const b = types.builders
+                const functionName = callExpr.callee.name
+                const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
+                Object.entries(argsCalledAsFunctions).forEach( ([index, argNames]) => {
+                    const argIdentifiers = argNames.map( name => b.identifier(name))
+                    const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
+                    callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
                 })
                 this.traverse(path)
             }

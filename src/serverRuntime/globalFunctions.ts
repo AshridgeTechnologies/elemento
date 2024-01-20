@@ -1,1 +1,1 @@
-export {globalFunctions, functionArgIndexes} from '../runtime/globalFunctions'
+export {globalFunctions} from '../runtime/globalFunctions'

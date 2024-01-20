@@ -181,18 +181,19 @@ describe('handles errors and special cases', () => {
     const statementErrorFn = new FunctionDef('fn3', 'StateThis', {calculation: ex`while (true) Log(10)`, private: true})
     const returnErrorFn = new FunctionDef('fn4', 'ReturnIt', {calculation: ex`return 42`, private: true})
     const selectFunction = new FunctionDef('fn103', 'SelectStuff', {input1: 'min', calculation: ex`Select(Widgets.getAllData(), \$item.height > min)`})
+    const multipleStatementQuery = new FunctionDef('fn104', 'Subtract5', {input1: 'when', calculation: ex`Check(when > 10, 'Must be at least 10')\nwhen - 5`})
     const multipleStatementAction = new FunctionDef('fn105', 'DoItAll', {input1: 'when', action: true, calculation: ex`while (true) Log(10); let answer = 42
                 Log(answer)`, private: true})
     const assignmentFunction = new FunctionDef('fn106', 'AssignmentsToEquals', {input1: 'foo', action: true, calculation: ex`let a = If(true, 10, Sum(Log= 12, 3, 4))
-    let b = If(foo.value = 42, 10, 20)
-    Sum = 1`})
+let b = If(foo.value = 42, 10, 20)
+Sum = 1`})
     const propertyShorthandFn = new FunctionDef('fn107', 'PropShorthand', {calculation: ex`{a: 10, xxx}`, private: true})
     const unexpectedNumberFn = new FunctionDef('fn108', 'UnexpectedNumber', {calculation: ex`If(Sum(1)    1, Log(10), Log(20))`, private: true})
     const widgetCollection = new Collection('coll2', 'Widgets', {dataStore: ex`DataStore1`, collectionName: 'Widgets'})
     const dataStore = new FirestoreDataStore('ds1', 'DataStore1', {collections: 'Widgets'})
     const app = new ServerApp('sa1', 'Widget App', {}, [
         emptyFn, syntaxErrorFn, unknownNameErrorFn,statementErrorFn, returnErrorFn,
-        selectFunction, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
+        selectFunction, multipleStatementQuery, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
     ])
     const project = Project1.new([app], 'Project 1', 'proj1', {})
@@ -208,7 +209,7 @@ const {runtimeFunctions} = serverRuntime
 const {globalFunctions} = serverRuntime
 const {components} = serverRuntime
 
-const {Log, Select, If, Sum} = globalFunctions
+const {Log, Select, Check, If, Sum} = globalFunctions
 const {Collection, FirestoreDataStore} = components
 
 const DataStore1 = new FirestoreDataStore({collections: 'Widgets'})
@@ -223,7 +224,7 @@ async function SayNothing(id) {
 }
 
 async function SayHello(id) {
-    return runtimeFunctions.codeGenerationError(\`Log('Hello ', id\`, 'Error: Line 1: Unexpected end of input')
+    return runtimeFunctions.codeGenerationError(\`Log('Hello ', id\`, 'Error: Unexpected character(s) (Line 1 Position 16)')
 }
 
 async function SayWhat() {
@@ -242,9 +243,14 @@ async function SelectStuff(min) {
     return Select(await Widgets.getAllData(), \$item => \$item.height > min)
 }
 
+async function Subtract5(when) {
+    Check(when > 10, 'Must be at least 10')
+    return when - 5
+}
+
 async function DoItAll(when) {
     while (true) Log(10); let answer = 42
-                Log(answer)
+                    Log(answer)
 }
 
 async function AssignmentsToEquals(foo) {
@@ -254,16 +260,17 @@ async function AssignmentsToEquals(foo) {
 }
 
 async function PropShorthand() {
-    return ({a: 10, xxx: undefined})
+    return {a: 10, xxx: undefined}
 }
 
 async function UnexpectedNumber() {
-    return runtimeFunctions.codeGenerationError(\`If(Sum(1)    1, Log(10), Log(20))\`, 'Error: Unexpected token 1')
+    return runtimeFunctions.codeGenerationError(\`If(Sum(1)    1, Log(10), Log(20))\`, 'Error: Unexpected character(s) (Line 1 Position 13)')
 }
 
 return {
     SayHello: {func: SayHello, update: false, argNames: ['id']},
     SelectStuff: {func: SelectStuff, update: false, argNames: ['min']},
+    Subtract5: {func: Subtract5, update: false, argNames: ['when']},
     AssignmentsToEquals: {func: AssignmentsToEquals, update: true, argNames: ['foo']}
 }
 }
@@ -273,13 +280,13 @@ export default WidgetApp`)
 
     expect(gen.output().errors).toStrictEqual({
         fn1: {
-            calculation: "Error: Line 1: Unexpected end of input",
+            calculation: "Error: Unexpected character(s) (Line 1 Position 16)",
         },
         fn107: {
             calculation: 'Incomplete item: xxx'
         },
         fn108: {
-            calculation: 'Error: Unexpected token 1'
+            calculation: 'Error: Unexpected character(s) (Line 1 Position 13)'
         },
         fn2: {
             calculation: "Unknown names: whoAreYou"
@@ -291,4 +298,70 @@ export default WidgetApp`)
             calculation: "Error: Invalid expression"
         }
     })
+})
+
+test('generates javascript functions', () => {
+    const javascriptCode =
+        `let y = 10
+for (let i = 1; i < 10; i++) {
+    y += Sum(widget, 10)
+}
+return y
+`
+    const javascriptActionCode =
+        `let y = 10
+for (let i = 1; i < y; i++) {
+    Update(Things, i, {a: i})
+}
+`
+    const javaScriptFn = new FunctionDef('fn1', 'DoSum', {input1: 'widget', calculation: {expr: javascriptCode}, javascript: true})
+    const javaScriptActionFn = new FunctionDef('fn2', 'DoUpdate', {input1: 'widget', calculation: {expr: javascriptActionCode}, action: true, javascript: true})
+    const thingsCollection = new Collection('coll2', 'Things', {})
+
+    const app = new ServerApp('sa1', 'Widget App', {}, [javaScriptFn, javaScriptActionFn, thingsCollection])
+    const project = Project1.new([app], 'Project 1', 'proj1', {})
+
+    const gen = new ServerAppGenerator(app, project)
+    const {files} = gen.output()
+    const [serverAppFile] = files
+
+    expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+const {runtimeFunctions} = serverRuntime
+const {globalFunctions} = serverRuntime
+const {appFunctions} = serverRuntime
+const {components} = serverRuntime
+
+const {Sum} = globalFunctions
+const {Update} = appFunctions
+const {Collection} = components
+
+const Things = new Collection({collectionName: 'Things'})
+
+const WidgetApp = (user) => {
+
+function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
+
+async function DoSum(widget) {
+    let y = 10
+    for (let i = 1; i < 10; i++) {
+        y += Sum(widget, 10)
+    }
+    return y
+}
+
+async function DoUpdate(widget) {
+    let y = 10
+    for (let i = 1; i < y; i++) {
+        Update(Things, i, {a: i})
+    }
+}
+
+return {
+    DoSum: {func: DoSum, update: false, argNames: ['widget']},
+    DoUpdate: {func: DoUpdate, update: true, argNames: ['widget']}
+}
+}
+
+export default WidgetApp`)
+
 })

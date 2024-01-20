@@ -117,7 +117,7 @@ test('combines errors from multiple apps', () => {
     const gen = new ServerFirebaseGenerator(project)
     expect(gen.output().errors).toStrictEqual({
         fn1: {
-            calculation: "Error: Line 1: Unexpected end of input",
+            calculation: "Error: Unexpected character(s) (Line 1 Position 16)",
         },
         fn2: {
             calculation: "Unknown names: whoAreYou"

@@ -1,5 +1,3 @@
-import {parse} from 'recast'
-import {visit,} from 'ast-types'
 import Element from '../model/Element'
 import {componentNames} from '../serverRuntime/names'
 import {globalFunctions} from '../serverRuntime/globalFunctions'
@@ -7,12 +5,13 @@ import {appFunctionsNames} from '../serverRuntime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import FunctionDef from '../model/FunctionDef'
-import {flatten, last, uniq, without} from 'ramda'
+import {flatten, uniq} from 'ramda'
 import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
 import {valueLiteral} from './generatorHelpers'
 import {dummyAppContext} from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
+import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 
 type IdentifierCollector = {add(s: string): void}
 type ElementErrors = {[propertyName: string]: string}
@@ -26,11 +25,6 @@ const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponentType = (name: string) => componentNames().includes(name)
 const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
 const isItemVar = (name: string) => name === '$item'
-
-function parseExpr(expr: string) {
-    const exprToParse = expr.trim().startsWith('{') ? `(${expr})` : expr
-    return parse(exprToParse)
-}
 
 export default class ServerAppParser {
     private readonly errors: AllErrors
@@ -74,26 +68,26 @@ export default class ServerAppParser {
         return this.allIdentifiers().filter(isComponentType)
     }
 
+    getAst(elementId: ElementId, propertyName: string): any {
+        const expr = this.getExpression(elementId, propertyName)
+        if (expr === undefined) {
+            return undefined
+        }
+        try {
+            return parseExpr(expr)
+        } catch (e: any) {
+            console.error('Error parsing expression', elementId, propertyName, '"'+ expr + '"', e.message)
+            return undefined
+        }
+    }
+
     getExpression(elementId: ElementId, propertyName: string): any {
         const element = this.app.findElement(elementId)!
         const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
         if (propertyValue === undefined) {
             return undefined
         }
-        if (isExpr(propertyValue)) {
-            const {expr} = propertyValue
-            return expr.trim()
-        } else {
-            return valueLiteral(propertyValue)
-        }
-    }
-
-    getAst(elementId: ElementId, propertyName: string): any {
-        const expr = this.getExpression(elementId, propertyName)
-        if (expr === undefined) {
-            return undefined
-        }
-        return parseExpr(expr)
+        return isExpr(propertyValue) ? propertyValue.expr.trim() : valueLiteral(propertyValue)
     }
 
     private allIdentifiers() {
@@ -123,8 +117,9 @@ export default class ServerAppParser {
             element.propertyDefs.forEach(def => {
                 const isActionCalculation = element instanceof FunctionDef && def.name === 'calculation' && element.action
                 const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
-                const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'singleExpression'
-                this.parseExprAndIdentifiers(element, def.name, identifierSet, isKnown, exprType)
+                const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'multilineExpression'
+                const onError = (err: string) => this.addError(element.id, def.name, err)
+                parseExprAndIdentifiers(element, def.name, identifierSet, isKnown, exprType, onError)
             })
 
         if (isComponentType(element.kind)) {
@@ -133,97 +128,4 @@ export default class ServerAppParser {
 
         this.identifiers[element.id] = Array.from(identifierSet.values())
     }
-
-    private parseExprAndIdentifiers(element: Element, propertyName: string, identifiers: IdentifierCollector,
-        isKnown: (name: string) => boolean, exprType: ExprType = 'singleExpression'): void {
-
-        const onError = (err: string) => this.addError(element.id, propertyName, err)
-        const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
-        if (propertyValue === undefined) {
-            return undefined
-        }
-
-        function checkIsExpression(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            if (exprType === 'singleExpression') {
-                if (bodyStatements.length !== 1) {
-                    throw new Error('Must be a single expression')
-                }
-                const mainStatement = bodyStatements[0]
-                if (mainStatement.type !== 'ExpressionStatement') {
-                    throw new Error('Invalid expression')
-                }
-            }
-
-            if (exprType === 'multilineExpression') {
-                const lastStatement = last(bodyStatements)
-                if (lastStatement.type !== 'ExpressionStatement') {
-                    throw new Error('Invalid expression')
-                }
-            }
-        }
-
-        function checkErrors(ast: any) {
-            if (ast.program.errors?.length) {
-                throw new Error(ast.program.errors[0].description)
-            }
-        }
-
-        function isShorthandProperty(node: any) {
-            return node.shorthand
-        }
-        if (isExpr(propertyValue)) {
-            const {expr} = propertyValue
-            try {
-                const ast = parseExpr(expr)
-                checkIsExpression(ast)
-                checkErrors(ast)
-                const thisIdentifiers = new Set<string>()
-                const variableIdentifiers = new Set<string>()
-                visit(ast, {
-                    visitVariableDeclarator(path) {
-                        const node = path.value
-                        variableIdentifiers.add(node.id.name)
-                        this.traverse(path)
-                    },
-                    visitIdentifier(path) {
-                        const node = path.value
-                        const parentNode = path.parentPath.value
-                        const isPropertyIdentifier = parentNode.type === 'MemberExpression' && parentNode.property === node
-                        const isPropertyKey = parentNode.type === 'Property' && parentNode.key === node
-                        const isVariableDeclaration = parentNode.type === 'VariableDeclarator' && parentNode.id === node
-                        if (!isPropertyIdentifier && !isPropertyKey && !isVariableDeclaration) {
-                            thisIdentifiers.add(node.name)
-                        }
-                        this.traverse(path)
-                    },
-                    visitProperty(path) {
-                        const node = path.value
-                        if (isShorthandProperty(node)) {
-                            node.value.name = 'undefined'
-                            const errorMessage = `Incomplete item: ${node.key.name}`
-                            onError(errorMessage)
-                        }
-                        this.traverse(path)
-                    },
-
-                })
-
-                const identifierNames = Array.from(thisIdentifiers.values())
-                const isLocal = (id: string) => variableIdentifiers.has(id)
-                const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id))
-                if (unknownIdentifiers.length) {
-                    const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
-                    onError(errorMessage)
-                }
-
-                const externalIdentifiers = without(Array.from(variableIdentifiers), identifierNames)
-                externalIdentifiers.forEach(name => identifiers.add(name))
-            } catch(e: any) {
-                const errorMessage = `${e.constructor.name}: ${e.message}`
-                onError(errorMessage)
-            }
-        }
-    }
-
 }

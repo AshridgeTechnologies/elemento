@@ -10,6 +10,7 @@ import {
     ServerAppHandler
 } from '../../src/serverRuntime/expressUtils'
 import {expressApp} from '../../src/serverRuntime'
+import {ValidationError} from '../../src/runtime/globalFunctions'
 
 jest.mock('firebase-admin/auth')
 jest.mock('../../src/serverRuntime/firebaseApp')
@@ -214,12 +215,8 @@ test('requestHandler passes on error if malformed URL', async () => {
     expect(next).toHaveBeenCalledWith(new Error('Not Found'))
 })
 
-test('error handler sends message from HTTP error as JSON', () => {
-    const res: any = {
-            status: jest.fn(() => res),
-            send: jest.fn()
-    }
-
+test('error handler sends message with HTTP status as JSON', () => {
+    const res = mockRes()
     const err = new Error('Method Not Allowed')
     // @ts-ignore
     err.status = 405
@@ -230,16 +227,21 @@ test('error handler sends message from HTTP error as JSON', () => {
 })
 
 test('error handler sends message from app error as JSON', () => {
-    const res: any = {
-            status: jest.fn(() => res),
-            send: jest.fn()
-    }
-
+    const res = mockRes()
     const err = new Error('Bad stuff happened')
 
     errorHandler(err, {}, res, jest.fn())
     expect(res.status).toHaveBeenCalledWith(500)
     expect(res.send).toHaveBeenCalledWith({error: {status: 500, message: 'Bad stuff happened' }})
+})
+
+test('error handler sends message from validation error as JSON', () => {
+    const res = mockRes()
+    const err = new ValidationError('That is wrong')
+
+    errorHandler(err, {}, res, jest.fn())
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith({error: {status: 400, message: 'That is wrong' }})
 })
 
 test('express app handles get request', async () => {

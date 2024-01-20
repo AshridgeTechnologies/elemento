@@ -3,7 +3,6 @@ import {generate} from './Generator'
 import App from '../model/App'
 import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
-import ServerApp from '../model/ServerApp'
 import lodash from 'lodash';
 import {AllErrors} from "./Types";
 import Tool from '../model/Tool'

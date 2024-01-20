@@ -18,7 +18,7 @@ import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {isArray} from 'lodash'
-import {assign, isObject, mapValues, pick} from 'radash'
+import {assign, isFunction, isObject, mapValues, pick} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -28,6 +28,8 @@ type DecimalOrNumber = DecimalType | number
 type DecimalVal = Value<string | number | BigNumber>
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
+
+export class ValidationError extends Error {}
 
 function Decimal(arg: DecimalVal) {
     return new BigNumber(valueOf(arg))
@@ -115,7 +117,8 @@ export const globalFunctions = {
     },
 
     If(condition: any, trueValue: any, falseValue?: any) {
-        return valueOf(condition) ? trueValue : falseValue
+        const getVal = (fnOrVal: any) => isFunction(fnOrVal) ? fnOrVal() : fnOrVal
+        return valueOf(condition) ? getVal(trueValue) : getVal(falseValue)
     },
 
     Left(s: Value<string>, length: Value<number>) {
@@ -343,7 +346,7 @@ export const globalFunctions = {
     Check(condition: Value<any>, message: Value<string>) {
         const [conditionVal, messageVal] = valuesOf(condition, message)
         if (!conditionVal) {
-            throw new Error(messageVal)
+            throw new ValidationError(messageVal)
         }
     },
 
@@ -381,10 +384,11 @@ export const globalFunctions = {
     }
 }
 
-export const functionArgIndexes = {
-    Select: [1],
-    ForEach: [1],
-    First: [1],
-    Last: [1],
-    Sort: [1],
+// for each function, the arguments that should be functions, and the argument namess of those functions
+export const functionArgs = {
+    Select: {1: ['$item']},
+    ForEach: {1: ['$item']},
+    First: {1: ['$item']},
+    Last: {1: ['$item']},
+    Sort: {1: ['$item']},
 }

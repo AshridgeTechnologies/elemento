@@ -361,18 +361,14 @@ test('State calls ShowErrors on all its component states', async () => {
     expect(stateAt('app.page4.form1.Description').errorsShown).toBe(false)
 })
 
-test('State Submit calls submit action if present', () => {
+test('State Submit calls submit action if present', async () => {
     const submitAction = jest.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const stateNoAction = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17} })
-    const appInterface = testAppInterface(null, {})
+    const appInterface = testAppInterface(state, {})
     state.init(appInterface, 'formPath')
 
     const data = {a: 10}
-    stateNoAction.Submit(data)
-    expect(submitAction).not.toHaveBeenCalled()
-
-    state.Submit(data)
+    await state.Submit(data)
     expect(submitAction).toHaveBeenCalledWith(state, data)
 })
 

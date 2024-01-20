@@ -10,6 +10,7 @@ import {useGetObjectState, useObjectState, useObjectStates} from '../../../src/r
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
 import MockedFunction = jest.MockedFunction
+import {ErrorResult} from '../../../src/runtime/DataStore'
 
 const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})
 const sizeType = new NumberType('nt1', {min: 1, max: 20})
@@ -399,18 +400,35 @@ test('State calls ShowErrors on all its component states', async () => {
     expect(stateAt('app.page4.form1.Description').errorsShown).toBe(false)
 })
 
-test('State Submit calls submit action if present', () => {
+test('State Submit calls submit action if present and calls Reset after if succeeds', async () => {
     const submitAction = jest.fn()
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
     const stateNoAction = new TestFormState({value: {Description: 'Big', BoxSize: 17} })
+    state.Reset = jest.fn()
+    stateNoAction.Reset = jest.fn()
     const appInterface = testAppInterface(null, {})
     state.init(appInterface, 'formPath')
 
     const data = {a: 10}
-    stateNoAction.Submit(data)
+    await stateNoAction.Submit(data)
     expect(submitAction).not.toHaveBeenCalled()
+    expect(stateNoAction.Reset).toHaveBeenCalled()
 
-    state.Submit(data)
+    const submitResult = state.Submit(data)
+    expect(submitResult).toBeInstanceOf(Promise)
+    await submitResult
     expect(submitAction).toHaveBeenCalledWith(state, data)
+    expect(state.Reset).toHaveBeenCalled()
 })
 
+test('State Submit calls submit action and adds Error Result to errors and does not call Reset', async () => {
+    const submitAction = jest.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
+    const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
+    state.Reset = jest.fn()
+    const appInterface = testAppInterface(state)
+    state.init(appInterface, 'formPath')
+
+    await state.Submit(null)
+    expect(state.Reset).not.toHaveBeenCalled()
+    expect(state.latest().errors?._self).toStrictEqual(['This has all gone wrong'])
+})

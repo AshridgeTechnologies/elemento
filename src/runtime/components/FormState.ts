@@ -1,8 +1,9 @@
-import InputComponentState, {InputComponentExternalProps} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {RecordType} from '../types'
-import {equals} from 'ramda'
+import {equals, mergeDeepRight} from 'ramda'
+import {ErrorResult} from '../DataStore'
 
-type SubmitActionFn = (form: BaseFormState, data: any) => void
+type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 
 export default abstract class BaseFormState extends InputComponentState<object, RecordType, {submitAction?: SubmitActionFn}> {
     defaultValue = {}
@@ -31,7 +32,10 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         const ownErrorResult = (validationResult && (validationResult as any)._self) as string[]
         const ownErrors = ownErrorResult ? {_self: ownErrorResult} : {}
         const componentErrors =  componentErrorEntries.length ? Object.fromEntries(componentErrorEntries) : {}
-        const allErrors = {...ownErrors, ...componentErrors}
+        // @ts-ignore there is probably some adjustment to the type parameters of InputComponentState that would allow this....
+        const submitErrors = this.state.submitErrors
+        const selfErrors = mergeDeepRight(ownErrors, submitErrors ?? {})
+        const allErrors = {...selfErrors, ...componentErrors, }
         return Object.keys(allErrors).length ? allErrors : null
     }
 
@@ -69,8 +73,14 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         this.fieldNames.forEach(name => this.getChildState(name)?.ShowErrors(errorsShown))
     }
 
-    Submit(data: any) {
-        this.submitAction?.(this, data)
+    async Submit(data: any) {
+        const submitResult = await this.submitAction?.(this, data)
+        if (submitResult instanceof ErrorResult) {
+            // @ts-ignore
+            this.latest().updateState({submitErrors: {_self: [submitResult.errorMessage]}})
+        } else {
+            this.Reset()
+        }
     }
 
     _updateValue() {

@@ -1,5 +1,5 @@
 import {pending} from '../../src/runtime/DataStore'
-import {DecimalType, globalFunctions} from '../../src/runtime/globalFunctions'
+import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
@@ -203,9 +203,11 @@ describe('Log', () => {
 
 describe('If', () => {
     test('with condition and one argument returns the argument if condition true', () => expect(If(true, 'Yes')).toBe('Yes'))
-    test('with condition and two arguments returns the argument if condition truthy', () => expect(If('X', 'Yes', 'No')).toBe('Yes'))
+    test('with condition and two arguments returns the first argument if condition truthy', () => expect(If('X', 'Yes', 'No')).toBe('Yes'))
+    test('with condition and two function arguments returns the first argument value if condition truthy', () => expect(If('X', () => 'Yes', () => 'No')).toBe('Yes'))
     test('with condition and one argument returns undefined if condition false', () => expect(If(false, 'Yes')).toBeUndefined())
     test('with condition and two argument returns second argument if condition falsy', () => expect(If(0, 'Yes', 'No')).toBe('No'))
+    test('with condition and two funciton arguments returns second argument if condition falsy', () => expect(If(0, () => 'Yes', () => 'No')).toBe('No'))
     test('uses valueOf for condition but returns other objects as they are', () => {
         const conditionTrue = valueObj(true)
         const conditionFalse = valueObj(false)
@@ -213,6 +215,23 @@ describe('If', () => {
         const no = valueObj('no')
         expect(If(conditionTrue, yes, no)).toBe(yes)
         expect(If(conditionFalse, yes, no)).toBe(no)
+    })
+    test('does not call argument functions that are not needed', () => {
+        {
+            const arg1 = jest.fn()
+            const arg2 = jest.fn()
+            If(true, arg1, arg2)
+            expect(arg1).toHaveBeenCalled()
+            expect(arg2).not.toHaveBeenCalled()
+        }
+
+        {
+            const arg1 = jest.fn()
+            const arg2 = jest.fn()
+            If(false, arg1, arg2)
+            expect(arg1).not.toHaveBeenCalled()
+            expect(arg2).toHaveBeenCalled()
+        }
     })
 })
 
@@ -746,7 +765,8 @@ describe('Random', () => {
 
 describe('Check', () => {
     test('does nothing if condition returns truthy', () => expect(() => Check('xyz', 'Should be xyz')).not.toThrow())
-    test('throws error with message if condition returns truthy', () => expect(() => Check('abc' > 'xyz', 'Should be xyz')).toThrow('Should be xyz'))
+    test('throws error with message if condition returns falsy', () => expect(() => Check('abc' > 'xyz', 'Should be xyz')).toThrowError('Should be xyz'))
+    test('throws error with message if condition returns falsy', () => expect(() => Check('abc' > 'xyz', 'Should be xyz')).toThrowError(ValidationError))
     test('gets values of arguments', () => expect(() => Check(valueObj(false), valueObj('Should be xyz'))).toThrow('Should be xyz'))
 })
 

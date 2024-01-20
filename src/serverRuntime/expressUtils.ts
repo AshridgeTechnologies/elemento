@@ -3,6 +3,7 @@ import {DecodedIdToken, getAuth} from 'firebase-admin/auth'
 import {isObject, mapValues} from 'radash'
 import {parseISO} from 'date-fns'
 import {parseParam} from '../util/helpers'
+import {ValidationError} from '../runtime/globalFunctions'
 
 /**
  * NOTE: technical debt - this file is copied in the elemento-app-server project - changes must be synchronized
@@ -29,7 +30,8 @@ export function parseQueryParams(req: {query: { [key: string]: string; }}): obje
     return mapValues(req.query as any, parseParam) as object
 }
 export function errorHandler (err: any, req: any, res: any, _next: any) {
-    const {status = 500, message} = err
+    const status = err.status ?? (err instanceof ValidationError ? 400 : 500)
+    const {message} = err
     console.error(message)
     res?.status(status)
     res?.send({error: {status, message}})

@@ -109,8 +109,8 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, Button} = Elemento.components
     const {Editor, Preview} = Elemento
-    const Button1_action = React.useCallback(() => {
-        Editor.Highlight('menuItem+File')
+    const Button1_action = React.useCallback(async () => {
+        await Editor.Highlight('menuItem+File')
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -557,12 +557,9 @@ test('generates Button elements with properties including await in action', ()=>
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const {Log} = Elemento.globalFunctions
-    const b1_action = React.useCallback(() => {
-    const doAction = async () => {
+    const b1_action = React.useCallback(async () => {
         const message = 'You clicked me!'; await Log(message)
             Log('Didn\\'t you?')
-    }
-    doAction()
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -727,8 +724,8 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const Connector1 = Elemento.useGetObjectState('app.Connector1')
-    const DoItButton_action = React.useCallback(() => {
-        Connector1.DoStuff('Number1')
+    const DoItButton_action = React.useCallback(async () => {
+        await Connector1.DoStuff('Number1')
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -1099,8 +1096,8 @@ test('generates List element with separate child component and global functions 
     const {Update} = Elemento.appFunctions
     const TextInput1 = Elemento.useGetObjectState(parentPathWith('TextInput1'))
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: 'from ' + Left($item, 3)}))
-    const ButtonUpdate_action = React.useCallback(() => {
-        Update('Things', '123', {done: true})
+    const ButtonUpdate_action = React.useCallback(async () => {
+        await Update('Things', '123', {done: true})
     }, [])
 
     return React.createElement(React.Fragment, null,
@@ -1334,7 +1331,7 @@ test('generates Form element with separate child component', ()=> {
                 new TrueFalseInput('tf1', 'TF Input 1', {}),
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`, label: 'The Details',
                     width: '93%', horizontal: true, wrap: false,
-                        keyAction: ex`Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit)`,
+                        keyAction: ex`Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit())`,
                         submitAction: ex`Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)`},
                     [
                     new TextInput('id2', 'Text Input 2', {}),
@@ -1357,8 +1354,8 @@ test('generates Form element with separate child component', ()=> {
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: \$form.originalValue?.TextInput2}))
     const NumberInput1 = Elemento.useObjectState(pathWith('NumberInput1'), new NumberInput.State({value: 5 + 3}))
     \$form._updateValue()
-    const ButtonUpdate_action = React.useCallback(() => {
-        \$form.Submit('normal')
+    const ButtonUpdate_action = React.useCallback(async () => {
+        await \$form.Submit('normal')
     }, [\$form])
 
     return React.createElement(Form, props,
@@ -1383,13 +1380,13 @@ function Page1(props) {
     const {Update} = Elemento.appFunctions
     const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
     const TFInput1 = Elemento.useObjectState(pathWith('TFInput1'), new TrueFalseInput.State({}))
-    const DetailsForm_submitAction = React.useCallback((\$form, \$data) => {
-        Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)
+    const DetailsForm_submitAction = React.useCallback(async (\$form, \$data) => {
+        Log(\$data, TextInput1, TFInput1); await Update('Things', '123', \$form.updates)
     }, [TextInput1, TFInput1])
     const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27}), submitAction: DetailsForm_submitAction}))
-    const DetailsForm_keyAction = React.useCallback((\$event) => {
+    const DetailsForm_keyAction = React.useCallback(async (\$event) => {
         const \$key = \$event.key
-        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit)
+        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', await DetailsForm.submit())
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -1788,8 +1785,8 @@ test('app state functions and Page names available in expression', ()=> {
     const {Page, Button} = Elemento.components
     const app = Elemento.useGetObjectState('app')
     const {ShowPage} = app
-    const b1_action = React.useCallback(() => {
-        ShowPage(Page2)
+    const b1_action = React.useCallback(async () => {
+        await ShowPage(Page2)
     }, [])
 
     return React.createElement(Page, {id: props.path},

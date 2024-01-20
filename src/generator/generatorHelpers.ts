@@ -1,11 +1,14 @@
 import Topo from '@hapi/topo'
 import lodash from 'lodash';
 import Element from '../model/Element'
-import {flatten} from 'ramda'
+import {flatten, last} from 'ramda'
 import List from '../model/List'
-import {ListItem} from './Types'
+import {ExprType, ListItem} from './Types'
 import Form from '../model/Form'
 import {BaseApp} from '../model/BaseApp'
+import {print, types} from 'recast'
+import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
+import {visit} from 'ast-types'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -75,4 +78,65 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
 
     const childElements = component.elements || []
     return flatten(childElements.map(el => [el, allElements(el)]))
+}
+
+export function printAst(ast: any) {
+    return print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
+}
+
+export const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map(line => indent + line).join('\n')
+export const isGlobalFunction = (name: string) => name in globalFunctions
+export const knownSync = (functionName: string) => isGlobalFunction(functionName)
+
+export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[]) {
+    function isShorthandProperty(node: any) {
+        return node.shorthand
+    }
+
+    function addReturnStatement(ast: any) {
+        const bodyStatements = ast.program.body as any[]
+        const lastStatement = last(bodyStatements)
+        const b = types.builders
+        ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
+    }
+
+    visit(ast, {
+        visitAssignmentExpression(path) {
+            const node = path.value
+            node.type = 'BinaryExpression'
+            node.operator = '=='
+            this.traverse(path)
+        },
+
+        visitProperty(path) {
+            const node = path.value
+            if (isShorthandProperty(node)) {
+                node.value.name = 'undefined'
+            }
+            this.traverse(path)
+        },
+
+        visitCallExpression(path) {
+            const callExpr = path.value
+            const b = types.builders
+            const functionName = callExpr.callee.name
+            const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
+            Object.entries(argsCalledAsFunctions).forEach(([index, argNames]) => {
+                const argIdentifiers = argNames.map(name => b.identifier(name))
+                const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
+                callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
+            })
+            if (asyncExprTypes.includes(exprType) && !knownSync(callExpr.callee.name)) {
+                const awaitExpr = b.awaitExpression(callExpr)
+                path.replace(awaitExpr)
+                this.traverse(path.get('argument')) // start one level down so don't parse this node again
+            } else {
+                this.traverse(path)
+            }
+        }
+    })
+
+    if (exprType === 'multilineExpression') {
+        addReturnStatement(ast)
+    }
 }

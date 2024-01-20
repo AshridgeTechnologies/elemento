@@ -213,7 +213,7 @@ test('has errors generated from Project for all apps', async () => {
             content: 'Unknown names: Badname'
         },
         fn2:   {
-            calculation: 'Error: Line 1: Unexpected end of input'
+            calculation: 'Error: Unexpected character(s) (Line 1 Position 5)'
         },
     })
 })
