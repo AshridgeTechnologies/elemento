@@ -3,17 +3,13 @@ import {ExprType} from './Types'
 import DataTypes from '../model/types/DataTypes'
 import Rule from '../model/types/Rule'
 import BaseTypeElement from '../model/types/BaseTypeElement'
-import {objectLiteral, quote} from './generatorHelpers'
+import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote} from './generatorHelpers'
 import Element from '../model/Element'
-import {last, without} from 'ramda'
-import {print, types} from 'recast'
-import {visit} from 'ast-types'
-import {functionArgs} from '../runtime/globalFunctions'
+import {without} from 'ramda'
 import Parser from './Parser'
 import {EventActionPropertyDef} from '../model/Types'
 import {dataTypeElementTypes} from '../model/elements'
 
-const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map( line => indent + line).join('\n')
 const indentLevel1 = '    '
 const indentLevel2 = indentLevel1 + indentLevel1
 
@@ -107,18 +103,8 @@ export default class TypesGenerator {
             typesClassNames: without(['DataTypes'], Object.keys(dataTypeElementTypes()))
         }
     }
+
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
-        function isShorthandProperty(node: any) {
-            return node.shorthand
-        }
-
-        function addReturnStatement(ast: any) {
-            const bodyStatements = ast.program.body as any[]
-            const lastStatement = last(bodyStatements)
-            const b = types.builders
-            ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
-        }
-
         const errorMessage = this.parser.propertyError(element.id, propertyName)
         if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
             return `Elemento.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
@@ -129,41 +115,9 @@ export default class TypesGenerator {
             return undefined
         }
 
-        visit(ast, {
-            visitAssignmentExpression(path) {
-                const node = path.value
-                node.type = 'BinaryExpression'
-                node.operator = '=='
-                this.traverse(path)
-            },
+        convertAstToValidJavaScript(ast, exprType, [])
 
-            visitProperty(path) {
-                const node = path.value
-                if (isShorthandProperty(node)) {
-                    node.value.name = 'undefined'
-                }
-                this.traverse(path)
-            },
-
-            visitCallExpression(path) {
-                const callExpr = path.value
-                const b = types.builders
-                const functionName = callExpr.callee.name
-                const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
-                Object.entries(argsCalledAsFunctions).forEach( ([index, argNames]) => {
-                    const argIdentifiers = argNames.map( name => b.identifier(name))
-                    const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
-                    callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
-                })
-                this.traverse(path)
-            }
-        })
-
-        if (exprType === 'multilineExpression') {
-            addReturnStatement(ast)
-        }
-
-        const exprCode = print(ast, {quote: 'single', objectCurlySpacing: false}).code.replace(/;$/, '')
+        const exprCode = printAst(ast)
         switch (exprType) {
             case 'singleExpression':
                 return exprCode

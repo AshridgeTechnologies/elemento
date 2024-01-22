@@ -23,14 +23,14 @@ Requirements
 - ✅ CurrentUser has Id property from uid
 - Editor Service Worker keeps losing the preview server
 - ✅ Server App Caching changes
-- Form behaviour changes
+- ✅ Form behaviour changes
 - Page authorization and error handling and logout action
 - Refresh data when auth changes - either log in or out, don't show errors while waiting
 - Sort out id vs Id
 - ✅ Components whose value is an object do not expose sub-props on top-level - very confusing
 - ✅ Confusing how to access form values, such as data given to form, within the form
 - ✅ How to use form values if not in fields - Calculation, Data
-- Auto form reset after submit action
+- ✅ Auto form reset after submit action
 - Don't cache error results from Server Apps - or only for a short time
 - ✅ Read only Date component is not read only
 - Pending value should show loading spinner
