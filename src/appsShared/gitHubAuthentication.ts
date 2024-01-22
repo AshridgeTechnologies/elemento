@@ -8,7 +8,7 @@ let ghUsername: string | null = null
 
 const getAuth = () => auth.getAuth(app)
 
-export function useSignedInState() {
+export function useGitHubSignInState() {
     const [isSignedIn, setIsSignedIn] = useState(false)
 
     useEffect(() => {

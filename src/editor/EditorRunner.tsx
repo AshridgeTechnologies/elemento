@@ -14,7 +14,7 @@ import {theme} from '../appsShared/styling'
 import {DiskProjectStore} from './DiskProjectStore'
 import GitProjectStore from './GitProjectStore'
 import http from 'isomorphic-git/http/web'
-import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useSignedInState} from '../appsShared/gitHubAuthentication'
+import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useGitHubSignInState} from '../appsShared/gitHubAuthentication'
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
@@ -565,7 +565,7 @@ export default function EditorRunner() {
         onSelectedItemsChange([newElementId])
     }
 
-    const signedIn = useSignedInState()
+    const signedIn = useGitHubSignInState()
 
     function mainContent() {
 

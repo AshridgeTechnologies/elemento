@@ -25,7 +25,7 @@ import {
     where,
     writeBatch
 } from 'firebase/firestore'
-import auth from './authentication'
+import {onAuthChange, currentUser} from './authentication'
 
 import Observable from 'zen-observable'
 import SendObservable from '../SendObservable'
@@ -65,7 +65,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
 
     private getCurrentUser() {
-        return auth.currentUser()
+        return currentUser()
     }
 
     private collectionRef(collectionName: CollectionName) {
@@ -148,7 +148,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
             observable = new SendObservable()
             this.collectionObservables.set(collection, observable)
             if (!this.authObserver) {
-                this.authObserver = auth.onAuthChange(() => {
+                this.authObserver = onAuthChange(() => {
                     this.notifyAll(InvalidateAll)
                 })
             }

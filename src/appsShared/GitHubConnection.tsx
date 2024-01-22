@@ -1,10 +1,10 @@
 import * as React from 'react'
 import {GitHub} from '@mui/icons-material'
-import {currentUser, signIn, signOut, useSignedInState} from './gitHubAuthentication'
+import {currentUser, signIn, signOut, useGitHubSignInState} from './gitHubAuthentication'
 import ServiceConnection from './ServiceConnection'
 
 export default function GitHubConnection() {
-    const isSignedIn = useSignedInState()
+    const isSignedIn = useGitHubSignInState()
     const user = currentUser()
 
     return ServiceConnection({

@@ -3,8 +3,10 @@ import {ErrorResult, pending} from '../DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
-import auth from './authentication'
-import lodash from 'lodash'; const {startCase} = lodash;
+import {getIdToken, onAuthChange} from './authentication'
+import {AppStateForObject} from '../appData'
+import lodash from 'lodash';
+const {startCase} = lodash;
 
 type Properties = {path: string}
 
@@ -20,7 +22,7 @@ export interface Configuration {
 }
 
 type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
-type StateProperties = {resultCache: object, versionId: string, versionFetch: Promise<string> }
+type StateProperties = {resultCache: object, versionId: string, versionFetch: Promise<string>, authSubscription?: VoidFunction }
 
 export default function ServerAppConnector({path}: Properties) {
     return null
@@ -38,6 +40,14 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         super({fetch: globalThis.fetch.bind(globalThis), ...props})
         const functions = this.props.configuration?.functions ?? []
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
+    }
+
+    init(asi: AppStateForObject, path: string) {
+        super.init(asi, path);
+        if (!this.state.authSubscription) {
+            this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({resultCache: {}}) )
+        }
+
     }
 
     Refresh(functionName?: string, ...args: any[]) {
@@ -99,7 +109,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             const paramNames = functionDef.params.slice(0, params.length)
             const queryString = paramNames.map((name, index) => `${name}=${valueOf(params[index])}`).join('&')
             const resultPromise = this.getVersion()
-                .then(() => auth.getIdToken())
+                .then(() => getIdToken())
                 .then(token => {
                     const url = `${config.url.replace(':versionId', this.versionId)}/${name}?${queryString}`
                     const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
@@ -134,7 +144,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         const objectEntries = paramNames.map((name, index) => [name, valueOf(params[index])])
         const bodyData = Object.fromEntries(objectEntries)
         return this.getVersion()
-            .then(() => auth.getIdToken())
+            .then(() => getIdToken())
             .then(token => {
                 const url = `${config.url.replace(':versionId', this.versionId)}/${name}`
                 const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}

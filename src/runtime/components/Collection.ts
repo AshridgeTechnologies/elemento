@@ -15,11 +15,12 @@ import DataStore, {
 } from '../DataStore'
 import {AppStateForObject, useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
+import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
-type StateProperties = {value?: object, queries?: object, subscription?: any}
+type StateProperties = {value?: object, queries?: object, subscription?: any, authSubscription?: VoidFunction}
 
 let lastGeneratedId = 1
 
@@ -91,7 +92,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     init(asi: AppStateForObject, path: string): void {
         super.init(asi, path)
         const {dataStore, collectionName} = this.props
-        const {subscription} = this.state
+        const {subscription, authSubscription} = this.state
 
         if (dataStore && collectionName && !subscription) {
             this.state.subscription = dataStore.observable(collectionName).subscribe((update: UpdateNotification) => {
@@ -101,6 +102,10 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
                     console.error('Error updating collection', e)
                 }
             })
+        }
+
+        if (!authSubscription) {
+            this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({value: {}, queries: {}}) )
         }
     }
 

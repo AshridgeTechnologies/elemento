@@ -1,8 +1,8 @@
-import auth from '../../../src/runtime/components/authentication'
+import * as auth from '../../../src/runtime/components/authentication'
 
 import {getAppAndSubscribeToChanges} from '../../../src/runtime/components/firebaseApp'
 import * as firebaseAuth from 'firebase/auth'
-import {mockImplementation} from '../../testutil/testHelpers'
+import {mockImplementation, wait} from '../../testutil/testHelpers'
 
 jest.mock('../../../src/runtime/components/firebaseApp')
 jest.mock('firebase/auth')
@@ -30,16 +30,32 @@ mockImplementation(firebaseAuth.onAuthStateChanged, (auth: any, authChanged: any
     authChangedCallback = authChanged
     return authStateObserverUnsubscribe
 })
-mockImplementation(getAppAndSubscribeToChanges, (callback: any) => appCallback = callback)
+mockImplementation(getAppAndSubscribeToChanges, (callback: any) => {
+    appCallback = callback
+    appCallback(null)
+})
 
+beforeEach(() => {
+    appCallback = null
+    authForStateChanges = null
+    authChangedCallback = null
+    theMockAuth = null
+})
 
-test('onAuthChange calls back when app is ready', () => {
+beforeEach(()=> auth.test_resetAuthManager())
+
+test('current user is null and signed out before logon', () => {
     expect(auth.currentUser()).toBeNull()
+    expect(auth.isSignedIn()).toBe(false)
+})
 
+test('onAuthChange calls back when app is ready but not before returning the callback', async () => {
     const authChangeCallback = jest.fn()
     const unsubscribe = auth.onAuthChange(authChangeCallback)
+    expect(authChangeCallback).not.toHaveBeenCalled()
 
-    appCallback(null)
+    await wait()
+
     expect(authChangeCallback).toHaveBeenCalledWith(false)
     expect(auth.authIsReady()).toBe(false)
 
@@ -52,12 +68,14 @@ test('onAuthChange calls back when app is ready', () => {
     expect(authChangeCallback).toHaveBeenCalledTimes(3)
     expect(authChangeCallback).toHaveBeenLastCalledWith(false)
     expect(auth.currentUser()).toBeNull()
+    expect(auth.isSignedIn()).toBe(false)
 
     theMockAuth.currentUser = {user: 'JoJo'}
     authChangedCallback()
     expect(authChangeCallback).toHaveBeenCalledTimes(4)
     expect(authChangeCallback).toHaveBeenLastCalledWith(true)
     expect(auth.currentUser()).toStrictEqual({user: 'JoJo'})
+    expect(auth.isSignedIn()).toBe(true)
 
     theMockAuth.currentUser = null
     authChangedCallback()

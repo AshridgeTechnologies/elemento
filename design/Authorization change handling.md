@@ -50,3 +50,4 @@ Decision
 - Redisplay any page when login state changes
 - Create a RefreshAllData function - clears all Server App Connector and Collection caches
 - Call RefreshAllData when login state changes
+- OR some other way of arranging for each connector and collection to Reset on auth change

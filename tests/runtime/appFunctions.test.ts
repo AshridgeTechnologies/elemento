@@ -1,6 +1,6 @@
 import appFunctions, {appFunctionsNames} from '../../src/runtime/appFunctions'
-import {valueObj} from '../testutil/testHelpers'
-import authentication from '../../src/runtime/components/authentication'
+import {mockReturn, valueObj} from '../testutil/testHelpers'
+import * as authentication from '../../src/runtime/components/authentication'
 
 jest.mock('../../src/runtime/appData')
 jest.mock('../../src/runtime/components/authentication')
@@ -54,15 +54,13 @@ describe('Set', () => {
 describe('CurrentUser', () => {
 
     test('returns current user if logged on', () => {
-        const mock_currentUser = authentication.currentUser as jest.MockedFunction<any>
-        mock_currentUser.mockReturnValue({ displayName: 'Franko', email: 'franko@fr.com'})
+        mockReturn(authentication.currentUser, { displayName: 'Franko', email: 'franko@fr.com'})
         expect(CurrentUser()!.Name).toBe('Franko')
         expect(CurrentUser()!.Email).toBe('franko@fr.com')
     })
 
     test('returns null if not logged on', () => {
-        const mock_currentUser = authentication.currentUser as jest.MockedFunction<any>
-        mock_currentUser.mockReturnValue(null)
+        mockReturn(authentication.currentUser, null)
         expect(CurrentUser()).toBe(null)
 
     })

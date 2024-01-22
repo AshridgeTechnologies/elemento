@@ -3,7 +3,7 @@
  */
 
 import React, {createElement} from 'react'
-import {componentJSON, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, mockReturn, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
@@ -13,11 +13,18 @@ import Url from '../../../src/runtime/Url'
 import {createMemoryHistory, MemoryHistory} from 'history'
 import {AppData} from '../../../src/runtime/components/AppData'
 import MockedFunction = jest.MockedFunction
+import * as authentication from '../../../src/runtime/components/authentication'
+
+jest.mock('../../../src/runtime/components/authentication')
 
 const [appComponent, appStoreHook] = wrappedTestElement(App, AppData)
 
-const text = () => createElement(TextElement, {path: 'app1.page1.para1'}, 'Hello', 'where are you')
-const mainPage = () => createElement(Page, {path: 'app1.page1'}, text())
+const text = (...content: string[]) => createElement(TextElement, {path: 'app1.page1.para1'}, ...content)
+const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello', 'where are you'))
+const notLoggedInPage = () => createElement(Page, {path: 'app1.page1'}, text('Please log in'))
+const loggedInOnlyPage = ()=> createElement(Page, {path: 'app1.page1'}, text('You are logged in'))
+loggedInOnlyPage.notLoggedInPage = 'notLoggedInPage'
+
 const urlForPage = (page: string): UrlType => ({
     location: {
         origin: 'http://foo.com', pathname: '/' + page, query: {}, hash: ''
@@ -34,6 +41,7 @@ function getRealAppContext(initialPath = '/'): [AppContext, MemoryHistory] {
 
 beforeEach(() => {
     appContext = getRealAppContext()[0]
+    mockReturn(authentication.isSignedIn, false)
 })
 
 test('App element produces output containing page', () => {
@@ -58,6 +66,31 @@ test('App element produces output containing page and additional components with
         return createElement(App, {path: 'app1', topChildren: appBar1}, collection1, collection2)
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    expect(componentJSON(runningApp)).toMatchSnapshot()
+})
+
+test('App element produces output containing not logged in page if it exists and not logged in', () => {
+    const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
+
+    const app = () => {
+        useObjectState('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
+        return createElement(App, {path: 'app1', topChildren: appBar1})
+    }
+    const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    expect(JSON.stringify(componentJSON(runningApp))).toContain('Please log in')
+    expect(componentJSON(runningApp)).toMatchSnapshot()
+})
+
+test('App element produces output containing normal page if logged in', () => {
+    mockReturn(authentication.isSignedIn, true)
+    const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
+
+    const app = () => {
+        useObjectState('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
+        return createElement(App, {path: 'app1', topChildren: appBar1})
+    }
+    const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    expect(JSON.stringify(componentJSON(runningApp))).toContain('You are logged in')
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
 

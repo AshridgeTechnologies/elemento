@@ -1,7 +1,7 @@
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import {FirestoreDataStoreImpl} from '../../../src/runtime/components/index'
 
-import auth, {test_signInWithEmailAndPassword} from '../../../src/runtime/components/authentication'
+import {test_signInWithEmailAndPassword, signOut as authSignOut} from '../../../src/runtime/components/authentication'
 import fs from 'fs'
 import {setConfig} from '../../../src/runtime/components/firebaseApp'
 
@@ -13,7 +13,7 @@ async function signInAs(testAccountFile: string) {
 }
 
 async function signOut() {
-    return auth.signOut()
+    return authSignOut()
 }
 
 beforeAll(async () => {

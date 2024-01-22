@@ -6,7 +6,7 @@ import MenuBar from './MenuBar'
 import {Box, Button, Grid, Icon, List, ListItem, ListItemIcon, Typography, useTheme} from '@mui/material'
 import FileMenu from './FileMenu'
 import './splitPane.css'
-import {useSignedInState} from '../appsShared/gitHubAuthentication'
+import {useGitHubSignInState} from '../appsShared/gitHubAuthentication'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import MainHelpPanel from '../docs/MainHelpPanel'
@@ -34,7 +34,7 @@ export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onGetFro
     const [helpVisible, setHelpVisible] = useState(false)
     const onHelp = () => {setHelpVisible(!helpVisible)}
 
-    const signedIn = useSignedInState()
+    const signedIn = useGitHubSignInState()
     const appBarTitle = `Elemento Studio`
     const OverallAppBar = <Box flex='0'>
         <AppBar title={appBarTitle}/>

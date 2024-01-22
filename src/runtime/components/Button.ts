@@ -1,11 +1,11 @@
 import React from 'react'
 import {Button as MuiButton, Link as MuiLink, Typography} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {valueOf, valueOfProps} from '../runtimeFunctions'
+import {Value, valueOf, valueOfProps} from '../runtimeFunctions'
 
 const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
-type Properties = {path: string, appearance?: Appearance , content: React.ReactNode, action?: () => void, display?: boolean, enabled?: boolean}
+type Properties = {path: string, appearance?: Appearance , content: Value<React.ReactNode>, action?: () => void, display?: Value<boolean>, enabled?: Value<boolean>}
 
 export default function Button({path, action, content, appearance, display, enabled = true}: Properties) {
     const optionalProps = definedPropertiesOf({onClick: action})

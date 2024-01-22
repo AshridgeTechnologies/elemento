@@ -41,6 +41,15 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         return pageName ? this.props.pages[pageName] ?? defaultPage : defaultPage
     }
 
+    pageToDisplay(signedIn: boolean) {
+        const notLoggedInPageName = (this.currentPage as any).notLoggedInPage
+        if (signedIn || !notLoggedInPageName) {
+            return this.currentPage
+        }
+
+        return this.props.pages[notLoggedInPageName]
+    }
+
     CurrentUrl = () => {
         const {appContext} = this.props
         const {location, pathPrefix} = appContext.getUrl()

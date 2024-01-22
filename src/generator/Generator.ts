@@ -110,10 +110,11 @@ export default class Generator {
         return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 
-    private generateComponent(app: App, component: Page | App | Form | ListItem, containingComponent?: Page) {
+    private generateComponent(app: App, component: Page | App | Form | ListItem, containingComponent?: Page | Form) {
         const componentIsApp = isAppLike(component)
         const canUseContainerElements = component instanceof ListItem && containingComponent
         const componentIsForm = component instanceof Form
+        const componentIsPage = component instanceof Page
         const topLevelFunctions = new Set<string>()
         const allPages = app.pages
         const allComponentElements = allElements(component, true)
@@ -234,11 +235,13 @@ export default class Generator {
             backgroundFixedDeclarations, stateBlock, uiElementActionFunctions
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
+        const notLoggedInPage = componentIsPage && component.notLoggedInPage ? `\n${functionName}.notLoggedInPage = '${component.notLoggedInPage.expr}'` : ''
+
         const componentFunction = `${exportClause}function ${functionName}(props) {
 ${declarations}
 
     return ${uiElementCode}
-}
+}${notLoggedInPage}
 `.trimStart()
 
         const stateNames = statefulComponents.filter( el => el.kind !== 'Calculation').map( el => el.codeName )
@@ -311,9 +314,9 @@ ${generateChildren(form, indentLevel2, form)}
         throw new Error('Cannot generate component code for ' + element.kind)
     }
 
-    private generateElement(element: Element, app: App, topLevelFunctions: FunctionCollector, containingComponent?: Page): string {
+    private generateElement(element: Element, app: App, topLevelFunctions: FunctionCollector, containingComponent?: Page | Form): string {
 
-        const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page) => {
+        const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
             const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, containingComponent))
             const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)

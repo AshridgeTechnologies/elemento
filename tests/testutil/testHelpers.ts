@@ -213,9 +213,14 @@ class ValueObj<T> {
 
 export const valueObj = <T>(val: T) => new ValueObj<T>(val)
 
-function mockReturn(fn: any, value: any) {
+export function mockReturn(fn: any, value: any) {
     const mock_fn = fn as jest.MockedFunction<any>
     mock_fn.mockReturnValue(value)
+}
+
+export function mockClear(fn: any) {
+    const mock_fn = fn as jest.MockedFunction<any>
+    mock_fn.mockClear()
 }
 
 export function mockImplementation(fn: any, impl: any) {

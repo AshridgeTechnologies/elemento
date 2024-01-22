@@ -3,7 +3,7 @@
  */
 
 import {Collection} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {mockClear, mockImplementation, snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import DataStore, {
     ErrorResult,
@@ -15,9 +15,13 @@ import SendObservable from '../../../src/runtime/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
 import {AppStateForObject} from '../../../src/runtime/appData'
+import * as authentication from '../../../src/runtime/components/authentication'
+import {noop} from 'lodash'
 
 let dataStore: DataStore
 let testObservable: SendObservable<UpdateNotification>
+
+jest.mock('../../../src/runtime/components/authentication')
 
 const mockDataStore = (): DataStore => ({
     getById: jest.fn(),
@@ -814,6 +818,41 @@ describe('subscribe with external data store', () => {
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}],
             }
         )
+    })
+})
+
+describe('subscribe to auth changes', () => {
+
+    beforeEach(()=> mockClear(authentication.onAuthChange))
+
+    test('subscribes to onAuthChange when not in the state', () => {
+        const [state, appInterface] = initState({});
+        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(authentication.onAuthChange).toHaveBeenCalled()
+    })
+
+    test('uses same onAuthChange subscription when already in the state', () => {
+        const authSubscription = noop
+        const dataStore = mockDataStore()
+        const state = new Collection.State({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({authSubscription})
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+
+        expect(authentication.onAuthChange).not.toHaveBeenCalled()
+        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    })
+
+    test('clears data and queries on auth change', () => {
+        let authCallback: VoidFunction
+        mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
+        const state = new Collection.State({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+            value: {id1: {a: 10}},
+            queries: {'{"a":10}': [{a: 10}]}
+        })
+        const appInterface = testAppInterface(state);
+        state.init(appInterface, 'testPath')
+
+        authCallback!()
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {}, queries: {}}))
     })
 })
 

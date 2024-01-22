@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect, useState} from 'react'
 import {useAsync} from 'react-async'
 import {Button, Link, Stack, TextField, Typography} from '@mui/material'
 import {googleAccessToken, useAuthorizedState} from '../appsShared/gisProvider'
-import {currentUser, gitHubAccessToken, signIn, useSignedInState} from '../appsShared/gitHubAuthentication'
+import {currentUser, gitHubAccessToken, signIn, useGitHubSignInState} from '../appsShared/gitHubAuthentication'
 import {Editor} from '../editorToolApis/EditorControllerClient'
 import GitHubConnection from '../appsShared/GitHubConnection'
 import GoogleConnection from '../appsShared/GoogleConnection'
@@ -82,7 +82,7 @@ const getFirebaseProjectStatus = async (firebaseProjectId: string): Promise<Proj
 const getSettings = ()=> Editor.GetSettings('firebase')
 
 function GitHubLogin() {
-    const signedIn = useSignedInState()
+    const signedIn = useGitHubSignInState()
     const user = currentUser()
 
     useEffect(() => {
@@ -122,7 +122,7 @@ function FieldSet({title, children}: {title: string, children: React.ReactNode})
 }
 
 export default function FirebaseDeploy() {
-    useSignedInState()  // so refresh when it changes
+    useGitHubSignInState()  // so refresh when it changes
     useAuthorizedState() // so refresh when it changes
 
     const [settingsUpdateTime, setSettingsUpdateTime] = useState(0)

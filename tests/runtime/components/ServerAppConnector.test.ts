@@ -1,10 +1,11 @@
-import {ServerAppConnector} from '../../../src/runtime/components'
+import {Collection, ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
 import {AppStateForObject} from '../../../src/runtime/appData'
-import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
-import auth from '../../../src/runtime/components/authentication'
+import {mockClear, mockImplementation, testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
+import * as authentication from '../../../src/runtime/components/authentication'
+import {noop} from 'lodash'
 
 jest.mock('../../../src/runtime/components/authentication')
 jest.mock('../../../src/runtime/appFunctions')
@@ -34,7 +35,7 @@ const urlWithVersion = configuration.url.replace(':versionId', versionId)
 const mockJsonResponse = (data: any) => ({status: 200, ok: true, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: jest.fn().mockResolvedValue(data)})
 const mockError = (message: string) => ({status: 500, ok: false, json: jest.fn().mockResolvedValue({error: {message}})})
-const mock_getIdToken = auth.getIdToken as jest.MockedFunction<any>
+const mock_getIdToken = authentication.getIdToken as jest.MockedFunction<any>
 
 
 let mockFetch: jest.MockedFunction<any>
@@ -449,7 +450,7 @@ test('does not cache action functions', async () => {
 test('sends auth token with get request if user is logged in', async () => {
     const [conn] = initConnector()
     const token = 'the_id_token'
-    const mock_getIdToken = auth.getIdToken as jest.MockedFunction<() => Promise<string>>
+    const mock_getIdToken = authentication.getIdToken as jest.MockedFunction<() => Promise<string>>
     mock_getIdToken.mockResolvedValue(token)
 
     mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
@@ -466,7 +467,7 @@ test('sends auth token with post request if user is logged in', async () => {
     const [conn] = initConnector()
     const changes = {c: 'foo'}
     const token = 'the_id_token'
-    const mock_getIdToken = auth.getIdToken as jest.MockedFunction<() => Promise<string>>
+    const mock_getIdToken = authentication.getIdToken as jest.MockedFunction<() => Promise<string>>
     mock_getIdToken.mockResolvedValue(token)
 
     mockFetch.mockResolvedValueOnce(mockJsonResponse(versionInfo))
@@ -546,4 +547,39 @@ test('handles error returned from server in post call', async () => {
     expect(mockFetch).toHaveBeenCalledTimes(2)
     expect(appFunctions.NotifyError).toHaveBeenCalledWith('Server App 1: Update Widget', new Error(message))
 })
+
+describe('subscribe to auth changes', () => {
+
+    beforeEach(()=> mockClear(authentication.onAuthChange))
+
+    test('subscribes to onAuthChange when not in the state', () => {
+        const [state, appInterface] = initConnector();
+        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(authentication.onAuthChange).toHaveBeenCalled()
+    })
+
+    test('uses same onAuthChange subscription when already in the state', () => {
+        const authSubscription = noop
+        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}, versionId: '1', versionFetch: Promise.resolve('')})
+        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+
+        expect(authentication.onAuthChange).not.toHaveBeenCalled()
+        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    })
+
+    test('clears data and queries on auth change', () => {
+        let authCallback: VoidFunction
+        mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
+        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({resultCache: {
+                'GetWidget#["id1",true]': 'xyz',
+            }, versionId: '1', versionFetch: Promise.resolve('')})
+        const appInterface = testAppInterface(state);
+        state.init(appInterface, 'testPath')
+
+        authCallback!()
+        expect(appInterface.latest().state.resultCache).toStrictEqual({})
+    })
+})
+
+
 

@@ -47,7 +47,7 @@ test('generates app and all page output files', ()=> {
                 new Text('id2', 't2', {content: ex`23 + 45`}),
             ]
         ),
-        new Page('p2', 'Page 2', {}, [
+        new Page('p2', 'Page 2', {notLoggedInPage: ex`Page1`}, [
                 new Text('id3', 'Text 2', {content: 'Green!'}),
                 new Text('id4', 't3', {content: 'Red!'}),
             ]
@@ -76,6 +76,7 @@ test('generates app and all page output files', ()=> {
         React.createElement(TextElement, {path: pathWith('t3')}, 'Red!'),
     )
 }
+Page2.notLoggedInPage = 'Page1'
 `)
     expect(gen.output().files[2].name).toBe('appMain.js')
     expect(gen.output().files[2].contents).toBe(`export default function App1(props) {

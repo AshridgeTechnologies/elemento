@@ -1,15 +1,16 @@
 import Element from './Element'
-import BaseElement from './BaseElement'
-import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
+import BaseElement, {propDef} from './BaseElement'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyExpr} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
-type Properties = {}
+type Properties = {notLoggedInPage?: PropertyExpr}
 
 export default class Page extends BaseElement<Properties> implements Element {
 
     static kind = 'Page'
     static get iconClass() { return 'web' }
     type(): ComponentType { return 'statefulUI' }
+    get notLoggedInPage() { return this.properties.notLoggedInPage}
 
     canContain(elementType: ElementType) {
         return elementHasParentTypeOf(elementType, this)
@@ -17,6 +18,8 @@ export default class Page extends BaseElement<Properties> implements Element {
 
     static get parentType(): ParentType { return 'App' }
 
-    get propertyDefs(): PropertyDef[] { return [] }
+    get propertyDefs(): PropertyDef[] { return [
+        propDef('notLoggedInPage', 'expr'),
+    ] }
 
 }

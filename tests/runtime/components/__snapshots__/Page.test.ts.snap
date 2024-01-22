@@ -14,3 +14,12 @@ exports[`Page element produces output containing children 1`] = `
   </p>
 </div>
 `;
+
+exports[`Page shows not logged in page if given and not logged in 1`] = `
+<div
+  className="css-1b8j02i-MuiStack-root"
+  id="page1"
+>
+  You are not logged in
+</div>
+`;

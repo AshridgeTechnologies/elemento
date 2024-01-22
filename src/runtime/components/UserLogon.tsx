@@ -1,13 +1,11 @@
 import * as React from 'react'
+import {createElement, useEffect, useRef, useState} from 'react'
 import {Box, Button, Icon, IconButton, Link, Popover, Typography} from '@mui/material'
-import authentication from './authentication'
-import {createElement, useEffect, useState} from 'react'
+import {authIsReady, getAuth, onAuthChange, currentUser, signOut, useSignedInState, isSignedIn} from './authentication'
 import * as auth from 'firebase/auth'
 import {StyledFirebaseAuth} from 'react-firebaseui'
 
-const {authIsReady, getAuth, onAuthChange, currentUser, signOut, useSignedInState} = authentication
-
-function AuthDialog() {
+function AuthDialog(props: {onSignIn: VoidFunction}) {
     const uiConfig = {
         signInFlow: 'popup',
         signInOptions: [
@@ -17,7 +15,10 @@ function AuthDialog() {
         tosUrl: '/terms',
         privacyPolicyUrl: '/privacy',
         callbacks: {
-            signInSuccessWithAuthResult: () => false
+            signInSuccessWithAuthResult: () => {
+                props.onSignIn()
+                return false
+            }
         }
     }
 
@@ -30,22 +31,27 @@ function AuthDialog() {
 export default function UserLogon() {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
+
+    const [isAuthReady, setAuthReady] = useState(authIsReady)
+    useSignedInState()
+    useEffect(() => onAuthChange( () => setAuthReady(authIsReady) ), [])
+    const buttonRef = useRef(null)
+
     const handleClose = () => setAnchorEl(null)
-    const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget)}
+    const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(buttonRef.current)}
     const handleLogout = () => {
         signOut()
         handleClose()
     }
-
-    const [isAuthReady, setAuthReady] = useState(authIsReady)
-    const isSignedIn = useSignedInState()
-    useEffect(() => onAuthChange( () => setAuthReady(authIsReady) ), [])
-
-    if (!isAuthReady) {
-        return <div>Connecting...</div>
+    const handleSignIn = () => {
+        setTimeout(handleClose, 4000)
     }
 
-    const userPanel = isSignedIn ?
+    if (!isAuthReady) {
+        return <Typography>Connecting...</Typography>
+    }
+
+    const userPanel = isSignedIn() ?
         <Box minWidth={300} margin={2}>
             <Typography variant='body1'>Logged in as {currentUser()!.displayName}</Typography>
             <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1}
@@ -53,13 +59,13 @@ export default function UserLogon() {
         </Box>
         : <Box minWidth={400} margin={2}>
             <Typography variant='body1'>Please log in</Typography>
-            <AuthDialog/>
+            <AuthDialog onSignIn={handleSignIn}/>
         </Box>
 
     return (
-        <div>{
+        <div ref={buttonRef}>{
 
-            isSignedIn
+            isSignedIn()
                 ? <IconButton
                 size="large"
                 aria-label="account of current user"

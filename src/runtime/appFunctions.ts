@@ -1,8 +1,6 @@
 import {valueOf} from './runtimeFunctions'
-import authentication from './components/authentication'
+import {currentUser} from './components/authentication'
 import dataFunctions from './dataFunctions'
-
-const {currentUser} = authentication
 
 const appFunctions = {
 

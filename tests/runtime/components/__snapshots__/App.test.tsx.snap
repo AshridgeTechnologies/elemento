@@ -1,5 +1,109 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`App element produces output containing normal page if logged in 1`] = `
+<div
+  className="ElApp MuiBox-root css-3j596c"
+  id="app1"
+>
+  <div
+    className="MuiBox-root css-72fd9l"
+  >
+    <header
+      className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+      id="app1.appBar1"
+    >
+      <div
+        className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+      >
+        <div
+          className="css-y5np4p-MuiStack-root"
+        >
+          <div
+            className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            The App bar
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+  <div
+    className="MuiBox-root css-zi2l0h"
+  >
+    <div
+      className="MuiContainer-root css-169v6mb-MuiContainer-root"
+    >
+      <div
+        className="css-1b8j02i-MuiStack-root"
+        id="app1.page1"
+      >
+        <p
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          id="app1.page1.para1"
+        >
+          You are logged in
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiBox-root css-72fd9l"
+  />
+</div>
+`;
+
+exports[`App element produces output containing not logged in page if it exists and not logged in 1`] = `
+<div
+  className="ElApp MuiBox-root css-3j596c"
+  id="app1"
+>
+  <div
+    className="MuiBox-root css-72fd9l"
+  >
+    <header
+      className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+      id="app1.appBar1"
+    >
+      <div
+        className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+      >
+        <div
+          className="css-y5np4p-MuiStack-root"
+        >
+          <div
+            className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            The App bar
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+  <div
+    className="MuiBox-root css-zi2l0h"
+  >
+    <div
+      className="MuiContainer-root css-169v6mb-MuiContainer-root"
+    >
+      <div
+        className="css-1b8j02i-MuiStack-root"
+        id="app1.page1"
+      >
+        <p
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          id="app1.page1.para1"
+        >
+          Please log in
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiBox-root css-72fd9l"
+  />
+</div>
+`;
+
 exports[`App element produces output containing page 1`] = `
 <div
   className="ElApp MuiBox-root css-3j596c"
