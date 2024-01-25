@@ -30,3 +30,5 @@ Forces
 - Use a robust logon solution - don't want to hold user credentials or code logon screens in Elemento or the app itself
 - Firebase authorization is a strong contender for logon
 - Some user management things may be common BUT don't know which they are yet and need to keep flexibility
+- Inconvenient for developer to get CurrentUser() and then Get(Users, CurrentUser().Id)
+- But Users collection may not always exist

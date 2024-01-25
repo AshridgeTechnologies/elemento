@@ -1,9 +1,9 @@
-import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
-import {FirestoreDataStoreImpl} from '../../../src/runtime/components/index'
+import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../src/runtime/DataStore'
+import {FirestoreDataStoreImpl} from '../../src/runtime/components'
 
-import {test_signInWithEmailAndPassword, signOut as authSignOut} from '../../../src/runtime/components/authentication'
+import {test_signInWithEmailAndPassword, signOut as authSignOut} from '../../src/runtime/components/authentication'
 import fs from 'fs'
-import {setConfig} from '../../../src/runtime/components/firebaseApp'
+import {setConfig} from '../../src/runtime/components/firebaseApp'
 
 let store: FirestoreDataStoreImpl
 

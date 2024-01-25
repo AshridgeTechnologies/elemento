@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Show me for Properties panel in Tutorial not working
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
   - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))

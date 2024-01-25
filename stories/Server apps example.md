@@ -37,21 +37,24 @@ Requirements
 
 ## Part 1 - Server App only
 - Data store with collections:
-  - Booking - user id, startDate, finishDate, approved
-  - Users - id, manager
+  - Booking - user id, startDate, finishDate, status (requested, approved, declined, updated, cancelled)
+  - Users - id, admin, approver
   - Settings
-- Add own holiday booking
-- Update own holiday booking
-- Delete own holiday booking
-- Approve holiday booking
-- View own holiday bookings
+- ✅ Add own holiday booking
+- ✅ Update own holiday booking
+- ✅ Cancel own holiday booking
+- ✅ Approve holiday booking
+- ✅ View own holiday bookings
 - View team holiday bookings
-- View all holiday bookings
+- ✅ View all holiday bookings
 - Send emails for changes
 - Store email service credentials in secret permanent store
+- Data validation throughout
+- Authorisation throughout
 
 ## Part 2 - Server App Quick Tour
 - Highlight important features of each function
+- Description on each component
 
 ## Part 3 - User interface
 - User page

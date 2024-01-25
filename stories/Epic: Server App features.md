@@ -21,11 +21,20 @@ Requirements
 - ✅ Comparison functions work with dates and strings
 - ✅ CurrentUser() is allowed in server app functions
 - ✅ CurrentUser has Id property from uid
-- Editor Service Worker keeps losing the preview server
+- Editor Service Worker keeps losing the preview server - Activates again and creates new ESW
+- Editor Service worker not always loaded correctly the first time
+- Preview page can be reloaded even with a page name
 - ✅ Server App Caching changes
 - ✅ Form behaviour changes
-- Page authorization and error handling and logout action
-- Refresh data when auth changes - either log in or out, don't show errors while waiting
+- ✅ Page authorization and error handling and logout action
+- ✅ Refresh data when auth changes - either log in or out, don't show errors while waiting
+- No caching on Server get functions if many requested together
+- Very chatty if get joined entities on client eg Booking - User
+- Refreshing Bookings also refreshes Users - limited refresh on wildcard?
+- Errors from server while editing formula really interrupting eg below
+- Should be able to write If(CurrentUser(), Get(Users, CurrentUser().Id), null) - server runtime up to date?
+- Intermediate vars in client side calculation formulas
+- Description on every model object
 - Sort out id vs Id
 - ✅ Components whose value is an object do not expose sub-props on top-level - very confusing
 - ✅ Confusing how to access form values, such as data given to form, within the form
@@ -33,6 +42,7 @@ Requirements
 - ✅ Auto form reset after submit action
 - Don't cache error results from Server Apps - or only for a short time
 - ✅ Read only Date component is not read only
+- Data functions has Query, not GetAll
 - Pending value should show loading spinner
 - Better argument type checking on runtime functions eg Update
 - Server Error management on client - expected/unexpected, link to fields
