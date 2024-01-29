@@ -69,6 +69,18 @@ Stories
 - Uploaded files
 - Web file datastores
 
+### Priority for admin apps
+- Autocomplete text box
+- File upload and storage
+- Complex queries, criteria input via forms
+  - Partial string match, multiple values in field, number ranges, date ranges
+- Generating documents - pdf, docx - jsPDF? HTML to PDF or direct PDF gen?  Print CSS?
+- Tables - including different row contents?
+- Multi-level reports
+- Ability to print any of the above
+- Scheduled jobs - from uptime checker?
+- Backup - and also use for reporting
+
 ### Priority for education and games
 - Event actions
 - Speech synthesis

@@ -21,6 +21,7 @@ Needs
 - Authorize server app functions based on user data (eg role or permissions)
 - Authorize things or change UI on client side based on user data
 - Authorize page display on client based on user data
+- Link in to a group/roles/permissions system later
 
 
 
@@ -32,3 +33,16 @@ Forces
 - Some user management things may be common BUT don't know which they are yet and need to keep flexibility
 - Inconvenient for developer to get CurrentUser() and then Get(Users, CurrentUser().Id)
 - But Users collection may not always exist
+
+
+Decision - Stage 1
+------------------
+
+- Provide server side CreateUser function - takes id
+- Also GetUser and UpdateUser and ListUsers
+- Up to dev to link this with a record in another data store
+
+Stage 2
+-------
+
+- Find way of making automatic link between CurrentUser and a User data collection
