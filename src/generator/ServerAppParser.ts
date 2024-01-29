@@ -1,7 +1,6 @@
 import Element from '../model/Element'
-import {componentNames} from '../serverRuntime/names'
+import {appFunctionsNames, componentNames} from '../serverRuntime/names'
 import {globalFunctions} from '../serverRuntime/globalFunctions'
-import {appFunctionsNames} from '../serverRuntime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import FunctionDef from '../model/FunctionDef'

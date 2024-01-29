@@ -1,5 +1,8 @@
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {Id} from './DataStore'
+import {customAlphabet} from 'nanoid'
+
+const idSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 4)
 
 const dataFunctions = {
     Update(component: { Update: (idOrChanges: object | Value<Id>, changes?: object) => void }, idOrChanges: object | Value<Id>, changes?: object) {
@@ -30,7 +33,10 @@ const dataFunctions = {
 
     GetAll(component: { GetAll: () => any[] }) {
         return component.GetAll()
-    }
+    },
+
+    GetRandomId: async () => Date.now() + '-' + idSuffix()
+
 }
 
 export default dataFunctions

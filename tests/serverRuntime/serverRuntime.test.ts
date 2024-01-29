@@ -1,7 +1,8 @@
 import {globalFunctions} from '../../src/serverRuntime'
 import {appFunctions} from '../../src/serverRuntime'
 import {runtimeFunctions} from '../../src/serverRuntime'
-import {appFunctionsNames} from '../../src/serverRuntime/appFunctions'
+
+import {appFunctionsNames} from '../../src/serverRuntime/names'
 
 const {Sum} = globalFunctions
 
