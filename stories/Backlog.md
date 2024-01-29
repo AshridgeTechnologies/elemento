@@ -301,6 +301,7 @@ Done
 - New Run page can enter and run an app from GitHub or local projects
 - New Learn page with links to Help, Guides and Examples
 - Server apps guide
+- App user management
 
 Bugs fixed
 ----------

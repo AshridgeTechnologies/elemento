@@ -18,4 +18,7 @@ module.exports = {
     // transform: {
     //     '^.+\\.tsx?$': ['@swc/jest'],
     // }
+    setupFiles: [
+        "<rootDir>/tests/setupTests.ts"
+    ]
 };

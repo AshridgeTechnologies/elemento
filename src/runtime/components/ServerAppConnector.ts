@@ -5,8 +5,7 @@ import {equals, mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import {AppStateForObject} from '../appData'
-import lodash from 'lodash';
-const {startCase} = lodash;
+import lodash from 'lodash'; const {startCase} = lodash;
 
 type Properties = {path: string}
 

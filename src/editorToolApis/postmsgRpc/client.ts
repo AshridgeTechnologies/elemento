@@ -1,5 +1,3 @@
-import {nanoid} from 'nanoid'
-
 const uniqueId = () => Date.now().toString() + '-' + (Math.random() * 1000000).toString().substring(6)
 
 export function caller (funcName: string, opts: any = {}) {

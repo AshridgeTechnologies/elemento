@@ -46,7 +46,7 @@ Requirements
 - Pending value should show loading spinner
 - Better argument type checking on runtime functions eg Update
 - Server Error management on client - expected/unexpected, link to fields
-- User management - creation, approval, permissions
+- ✅ User management - creation, approval, permissions
 - GetOrCreate, UpdateOrCreate functions - good idea?
 - Intermediate values in actions, including from async functions
 - Separate validation conditions for Server App functions - can be used in docs, return better error codes, catch all errors together

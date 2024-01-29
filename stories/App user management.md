@@ -9,9 +9,9 @@ Aims
 Requirements
 ------------
 
-- User management functions available only in ServerApps
-- AddUser(Id, Details)
-- GetUser(Id)
-- UpdateUser(Id, Changes)
-- GetRandomId()
-- 
+- ✅ User management functions available only in ServerApps
+- ✅ AddUser(Id, Details)
+- ✅ GetUser(Id)
+- ✅ UpdateUser(Id, Changes)
+- ✅ GetRandomId()
+
