@@ -6,7 +6,7 @@ import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import Firestore = admin.firestore.Firestore
 import {getApp} from './firebaseApp'
 
-const convertValue = (value: any) => typeof value.toDate === 'function' ? value.toDate() : value
+const convertValue = (value: any) => typeof value?.toDate === 'function' ? value.toDate() : value
 const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
 
 type Properties = {collections: string}

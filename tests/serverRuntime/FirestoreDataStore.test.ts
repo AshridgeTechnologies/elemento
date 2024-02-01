@@ -50,12 +50,17 @@ describe('shared collections', () => {
     })
 
     test('stores dates', async () => {
-
         const hour = 10
         const theDate = new Date(2022, 6, 2, hour, 11, 12)
         await store.add('Widgets', 'w1', {a: 10, date: theDate})
         const item = await store.getById('Widgets', 'w1')
         expect(item.date.getTime()).toStrictEqual(theDate.getTime())
+    })
+
+    test('stores nulls', async () => {
+        await store.add('Widgets', 'w99', {a: 10, date: null})
+        const item = await store.getById('Widgets', 'w99')
+        expect(item.date).toBeNull()
     })
 
 })

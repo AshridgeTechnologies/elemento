@@ -1387,7 +1387,7 @@ function Page1(props) {
     const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27}), submitAction: DetailsForm_submitAction}))
     const DetailsForm_keyAction = React.useCallback(async (\$event) => {
         const \$key = \$event.key
-        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', await DetailsForm.submit())
+        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', () => await DetailsForm.submit())
     }, [])
 
     return React.createElement(Page, {id: props.path},
@@ -1405,6 +1405,9 @@ test('transforms expressions to functions where needed and does not fail where n
                 new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), \$item.height > 10)`}),
                 new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), \$item.height + 10)`}),
                 new Data('d3', 'NoWidgets', {initialValue: ex`Select(Widgets.getAllData())`}),
+                new Data('d4', 'IfPlainValues', {initialValue: ex`If(true, 1, Date)`}),
+                new Data('d5', 'IfOneArg', {initialValue: ex`If(false, Sum(10, 20))`}),
+                new Data('d6', 'IfTwoArgs', {initialValue: ex`If(false, 2, Sum(10, 20))`}),
             ]
         ),
         new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
@@ -1415,16 +1418,22 @@ test('transforms expressions to functions where needed and does not fail where n
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Data} = Elemento.components
-    const {Select, ForEach} = Elemento.globalFunctions
+    const {Select, ForEach, If, Sum} = Elemento.globalFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => \$item.height > 10)}))
     const TallerWidgets = Elemento.useObjectState(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), \$item => \$item.height + 10)}))
     const NoWidgets = Elemento.useObjectState(pathWith('NoWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => null)}))
+    const IfPlainValues = Elemento.useObjectState(pathWith('IfPlainValues'), new Data.State({value: If(true, 1, Date)}))
+    const IfOneArg = Elemento.useObjectState(pathWith('IfOneArg'), new Data.State({value: If(false, () => Sum(10, 20))}))
+    const IfTwoArgs = Elemento.useObjectState(pathWith('IfTwoArgs'), new Data.State({value: If(false, 2, () => Sum(10, 20))}))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
         React.createElement(Data, {path: pathWith('TallerWidgets'), display: false}),
         React.createElement(Data, {path: pathWith('NoWidgets'), display: false}),
+        React.createElement(Data, {path: pathWith('IfPlainValues'), display: false}),
+        React.createElement(Data, {path: pathWith('IfOneArg'), display: false}),
+        React.createElement(Data, {path: pathWith('IfTwoArgs'), display: false}),
     )
 }
 `)
@@ -2005,7 +2014,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     const {If, Sum, Log} = Elemento.globalFunctions
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, Sum(Log == 12, 3, 4))),
+        React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, () => Sum(Log == 12, 3, 4))),
     )
 }
 `)
@@ -2028,7 +2037,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const {Page, Button} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
     const b1_action = React.useCallback(() => {
-        let a = If(true, 10, Sum(Log == 12, 3, 4))
+        let a = If(true, 10, () => Sum(Log == 12, 3, 4))
             let b = If(Sum == 42, 10, 20)
             Sum == 1
     }, [])

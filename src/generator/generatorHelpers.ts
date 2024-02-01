@@ -121,10 +121,18 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
             const b = types.builders
             const functionName = callExpr.callee.name
             const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
+            const isPlainValue = (expr: {type: string}) => expr.type === 'Identifier' || expr.type === 'Literal'
             Object.entries(argsCalledAsFunctions).forEach(([index, argNames]) => {
-                const argIdentifiers = argNames.map(name => b.identifier(name))
-                const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
-                callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
+                if (argNames === 'lazy') {
+                    const argExpr = callExpr.arguments[index]
+                    if (argExpr && !isPlainValue(argExpr)) {
+                        callExpr.arguments[index] = b.arrowFunctionExpression([], argExpr)
+                    }
+                } else {
+                    const argIdentifiers = argNames.map((name: string) => b.identifier(name))
+                    const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
+                    callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
+                }
             })
             if (asyncExprTypes.includes(exprType) && !knownSync(callExpr.callee.name)) {
                 const awaitExpr = b.awaitExpression(callExpr)

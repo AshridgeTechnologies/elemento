@@ -181,6 +181,7 @@ describe('handles errors and special cases', () => {
     const statementErrorFn = new FunctionDef('fn3', 'StateThis', {calculation: ex`while (true) Log(10)`, private: true})
     const returnErrorFn = new FunctionDef('fn4', 'ReturnIt', {calculation: ex`return 42`, private: true})
     const selectFunction = new FunctionDef('fn103', 'SelectStuff', {input1: 'min', calculation: ex`Select(Widgets.getAllData(), \$item.height > min)`})
+    const ifFunction = new FunctionDef('fn103a', 'IfSomething', {input1: 'min', calculation: ex`If(min > 0, 1, Sum(min, 10))`})
     const multipleStatementQuery = new FunctionDef('fn104', 'Subtract5', {input1: 'when', calculation: ex`Check(when > 10, 'Must be at least 10')\nwhen - 5`})
     const multipleStatementAction = new FunctionDef('fn105', 'DoItAll', {input1: 'when', action: true, calculation: ex`while (true) Log(10); let answer = 42
                 Log(answer)`, private: true})
@@ -193,7 +194,7 @@ Sum = 1`})
     const dataStore = new FirestoreDataStore('ds1', 'DataStore1', {collections: 'Widgets'})
     const app = new ServerApp('sa1', 'Widget App', {}, [
         emptyFn, syntaxErrorFn, unknownNameErrorFn,statementErrorFn, returnErrorFn,
-        selectFunction, multipleStatementQuery, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
+        selectFunction, ifFunction, multipleStatementQuery, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
     ])
     const project = Project1.new([app], 'Project 1', 'proj1', {})
@@ -209,7 +210,7 @@ const {runtimeFunctions} = serverRuntime
 const {globalFunctions} = serverRuntime
 const {components} = serverRuntime
 
-const {Log, Select, Check, If, Sum} = globalFunctions
+const {Log, Select, If, Sum, Check} = globalFunctions
 const {Collection, FirestoreDataStore} = components
 
 const DataStore1 = new FirestoreDataStore({collections: 'Widgets'})
@@ -243,6 +244,10 @@ async function SelectStuff(min) {
     return Select(await Widgets.getAllData(), \$item => \$item.height > min)
 }
 
+async function IfSomething(min) {
+    return If(min > 0, 1, () => Sum(min, 10))
+}
+
 async function Subtract5(when) {
     Check(when > 10, 'Must be at least 10')
     return when - 5
@@ -254,7 +259,7 @@ async function DoItAll(when) {
 }
 
 async function AssignmentsToEquals(foo) {
-    let a = If(true, 10, Sum(Log == 12, 3, 4))
+    let a = If(true, 10, () => Sum(Log == 12, 3, 4))
     let b = If(foo.value == 42, 10, 20)
     Sum == 1
 }
@@ -270,6 +275,7 @@ async function UnexpectedNumber() {
 return {
     SayHello: {func: SayHello, update: false, argNames: ['id']},
     SelectStuff: {func: SelectStuff, update: false, argNames: ['min']},
+    IfSomething: {func: IfSomething, update: false, argNames: ['min']},
     Subtract5: {func: Subtract5, update: false, argNames: ['when']},
     AssignmentsToEquals: {func: AssignmentsToEquals, update: true, argNames: ['foo']}
 }

@@ -29,7 +29,7 @@ Requirements
 - Users view, add, update, cancel their own holiday bookings
 - View holiday calendar for everyone
 - Holiday calendar API
-- Send Emails for changes via API
+- Send Emails for changes
 - Send emails to manager and user as appropriate
 - Managers approve holiday changes
 - View holiday calendar for own team

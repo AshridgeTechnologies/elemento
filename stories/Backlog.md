@@ -47,29 +47,15 @@ Bugs
 Stories
 -------
 
-### Run from GitHub
-- Refactor app runners - Part 2
-
-### Priority for learning Elemento
-- Server apps example
-- Data types guide
-- Other how-to guides
-- Look into using driver.js
-
-### Priority for internal apps
-- Type expressions
-
-
-### Priority for customer-facing apps
-- Payments
-- API calls from browser
-- External API calls (eg for webhook)
-- Styling
-- Email
-- Uploaded files
-- Web file datastores
+### Run and deploy
+- Server app containers
 
 ### Priority for admin apps
+- Server app features
+- Validation improvements
+- Email
+- Uploaded files
+- Type expressions
 - Autocomplete text box
 - File upload and storage
 - Complex queries, criteria input via forms
@@ -81,6 +67,19 @@ Stories
 - Scheduled jobs - from uptime checker?
 - Backup - and also use for reporting
 
+### Priority for learning Elemento
+- Server apps example
+- Data types guide
+- Other how-to guides
+- Look into using driver.js
+
+### Priority for customer-facing apps
+- Payments
+- API calls from browser
+- External API calls (eg for webhook)
+- Styling
+- Web file datastores
+
 ### Priority for education and games
 - Event actions
 - Speech synthesis
@@ -88,6 +87,7 @@ Stories
 - Dynamic elements from a list
 
 ### Priority for credibility
+- Elemento favicon
 - Dependency vulnerability review
 - Supply-chain review - https://github.com/readme/guides/dependency-risk
 - Security review
@@ -105,6 +105,9 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- DataType rules can show cross-field rules against a particular field OR field rules can refer to object 
+- Any calculation can be fixed, formula or JavaScript
+- Any formula can have intermediate values, client or server
 - ShowDialog to show a Page or Form in a modal dialog
 - Extension auto-loads latest code from git repo via CDN
 - Single copy of expressUtils between two projects

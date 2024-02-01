@@ -113,7 +113,6 @@ Use Firebase on hosting server
 - Fix the Preview password docs in Guide and in extension
 - Feedback on saving Preview details
 - Get all names right - eg Install complete for {NAME}
-- Elemento favicon
 - Editor service worker updated when update the Preview settings in Firebase tool
 - Editor service worker sometimes does not get preview settings when open project
 

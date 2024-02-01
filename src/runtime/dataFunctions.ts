@@ -1,5 +1,5 @@
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
-import {Id} from './DataStore'
+import {Criteria, Id} from './DataStore'
 import {customAlphabet} from 'nanoid'
 
 const idSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 4)
@@ -31,11 +31,11 @@ const dataFunctions = {
         return component.Get(valueOf(id))
     },
 
-    GetAll(component: { GetAll: () => any[] }) {
-        return component.GetAll()
+    Query(component: { Query: (criteria: Criteria) => any[] }, criteria: Value<Criteria>) {
+        return component.Query(valueOf(criteria))
     },
 
-    GetRandomId: async () => Date.now() + '-' + idSuffix()
+    GetRandomId: () => Date.now() + '-' + idSuffix()
 
 }
 

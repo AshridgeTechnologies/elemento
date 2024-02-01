@@ -9,7 +9,7 @@ const serviceAccount = JSON.parse(fs.readFileSync('private/service-account-key.j
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)})
 
 test('creates and updates user', async () => {
-    const userId = await GetRandomId()
+    const userId = GetRandomId()
     const email = 'user'+ userId + '@example.com'
     //console.log('userId', userId)
 
@@ -20,7 +20,7 @@ test('creates and updates user', async () => {
     expect(user.email).toBe(email)
     expect(user.displayName).toBe('Jo Doe')
 
-    const password = 'pass' + (await GetRandomId())
+    const password = 'pass' + GetRandomId()
     const newEmail = 'dodo' + userId + '@example.com'
     await UpdateUser(userId, {email: newEmail, password })
 
@@ -33,7 +33,7 @@ test('creates and updates user', async () => {
 })
 
 test('get correct app function names', () => {
-    expect(appFunctionsNames()).toStrictEqual([ 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetAll',
+    expect(appFunctionsNames()).toStrictEqual([ 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query',
         'GetRandomId', 'CreateUser', 'UpdateUser', 'GetUser', 'CurrentUser'])
 
 })

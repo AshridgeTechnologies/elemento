@@ -3,7 +3,7 @@ import dataFunctions from '../../src/runtime/dataFunctions'
 
 const dataStoreResult = "result"
 const mockFn = jest.fn().mockResolvedValue(dataStoreResult)
-const {Update, Add, AddAll, Remove, Get, GetAll} = dataFunctions
+const {Update, Add, AddAll, Remove, Get, Query, GetRandomId} = dataFunctions
 
 describe('Update single item', () => {
     test('updates object state value', () => {
@@ -97,11 +97,17 @@ describe('Get', () => {
     })
 })
 
-describe('GetAll', () => {
-    test('gets all objects', () => {
-        const elementState = {value: {}, GetAll: mockFn.mockReturnValue([{a: 50, b: 'Bee'}, {c: 30}])}
-        const result = GetAll(elementState)
+describe('Query', () => {
+    test('gets query results', () => {
+        const elementState = {value: {}, Query: mockFn.mockReturnValue([{a: 50, b: 'Bee'}, {c: 30}])}
+        const result = Query(elementState, valueObj({p: 10}))
         expect(result).toStrictEqual([{a: 50, b: 'Bee'}, {c: 30}])
-        expect(elementState.GetAll).toBeCalledWith()
+        expect(elementState.Query).toBeCalledWith({p: 10})
+    })
+})
+
+describe('GetRandomId', () => {
+    test('gets a random id', () => {
+        expect(GetRandomId()).toMatch(/^\d{13}-[a-z0-9]{4}$/)
     })
 })
