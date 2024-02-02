@@ -32,13 +32,13 @@ Requirements
 - ✅ Read only Date component is not read only
 - ✅ User management - creation, approval, permissions
 - ✅ Intermediate values in actions, including from async functions
-- TX - Server FirestoreDataImpl chokes on nulls in convertValue
+- ❓ - Server FirestoreDataImpl chokes on nulls in convertValue
 - ✅ Create User: Credential implementation provided to initializeApp() via the "credential" property has insufficient permission to access the requested resource
-- TX - Data functions has Query, not GetAll
+- ❓ - Data functions has Query, not GetAll
 - Editor Service Worker keeps losing the preview server - Activates again and creates new ESW
 - Preview page can be reloaded even with a page name
 - Errors from server while editing formula really interrupting eg below
-- TX - Should be able to write If(CurrentUser(), Get(Users, CurrentUser().Id), null) - server runtime up to date?
+- ❓ - Should be able to write If(CurrentUser(), Get(Users, CurrentUser().Id), null) - server runtime up to date?
 - Sort out id vs Id
 - Better argument type checking on runtime functions eg Update
 - Description/Comments on every model object

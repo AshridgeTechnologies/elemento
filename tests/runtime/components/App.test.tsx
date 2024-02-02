@@ -8,12 +8,14 @@ import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/c
 import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
+import '@testing-library/jest-dom'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
 import {createMemoryHistory, MemoryHistory} from 'history'
 import {AppData} from '../../../src/runtime/components/AppData'
 import MockedFunction = jest.MockedFunction
 import * as authentication from '../../../src/runtime/components/authentication'
+import {addNotification} from '../../../src/runtime/components/notifications'
 
 jest.mock('../../../src/runtime/components/authentication')
 
@@ -67,6 +69,18 @@ test('App element produces output containing page and additional components with
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
     expect(componentJSON(runningApp)).toMatchSnapshot()
+})
+
+test('App element shows notifications', async () => {
+    const app = () => {
+        useObjectState('app1', new App.State({pages: {mainPage}, appContext}))
+        return createElement(App, {path: 'app1'})
+    }
+    const {el} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
+
+    addNotification('success', 'Something happened')
+    await wait()
+    expect(el`.notistack-Snackbar`).toContainHTML('Something happened')
 })
 
 test('App element produces output containing not logged in page if it exists and not logged in', () => {

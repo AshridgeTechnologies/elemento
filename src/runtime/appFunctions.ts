@@ -1,6 +1,7 @@
-import {valueOf} from './runtimeFunctions'
+import {Value, valueOf} from './runtimeFunctions'
 import {currentUser} from './components/authentication'
 import dataFunctions from './dataFunctions'
+import {addNotification, type NotificationLevel} from './components/notifications'
 
 const appFunctions = {
 
@@ -13,9 +14,11 @@ const appFunctions = {
     },
 
     NotifyError(description: string, error: Error) {
-        //temporary implementation
-        console.error(description, error)
-        alert(`${description}\n${error.message}`)
+        appFunctions.Notify('error', description, error.message)
+    },
+
+    Notify(level: Value<NotificationLevel>, message: Value<string>, details?: Value<string>) {
+        addNotification(valueOf(level), valueOf(message), valueOf(details))
     },
 
     CurrentUser() {
