@@ -100,6 +100,36 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
         ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
     }
 
+    function containsAwait(ast: any): boolean {
+        let awaitFound = false
+        visit(ast, {
+            visitAwaitExpression(path) {
+                awaitFound = true
+                this.abort()
+            }
+        })
+
+        return awaitFound
+    }
+
+    function addAwaitToAsyncFunctionCalls(ast: any) {
+        visit(ast, {
+            visitCallExpression(path) {
+                const callExpr = path.value
+                const b = types.builders
+                if (asyncExprTypes.includes(exprType) && !knownSync(callExpr.callee.name)) {
+                    const awaitExpr = b.awaitExpression(callExpr)
+                    path.replace(awaitExpr)
+                    this.traverse(path.get('argument')) // start one level down so don't parse this node again
+                } else {
+                    this.traverse(path)
+                }
+            }
+        })
+    }
+
+    addAwaitToAsyncFunctionCalls(ast)
+
     visit(ast, {
         visitAssignmentExpression(path) {
             const node = path.value
@@ -126,7 +156,8 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
                 if (argNames === 'lazy') {
                     const argExpr = callExpr.arguments[index]
                     if (argExpr && !isPlainValue(argExpr)) {
-                        callExpr.arguments[index] = b.arrowFunctionExpression([], argExpr)
+                        const isAsync = containsAwait(argExpr)
+                        callExpr.arguments[index] = b.arrowFunctionExpression.from({params: [], body: argExpr, async: isAsync})
                     }
                 } else {
                     const argIdentifiers = argNames.map((name: string) => b.identifier(name))
@@ -134,13 +165,7 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
                     callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
                 }
             })
-            if (asyncExprTypes.includes(exprType) && !knownSync(callExpr.callee.name)) {
-                const awaitExpr = b.awaitExpression(callExpr)
-                path.replace(awaitExpr)
-                this.traverse(path.get('argument')) // start one level down so don't parse this node again
-            } else {
-                this.traverse(path)
-            }
+            this.traverse(path)
         }
     })
 

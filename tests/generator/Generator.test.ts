@@ -1387,7 +1387,7 @@ function Page1(props) {
     const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27}), submitAction: DetailsForm_submitAction}))
     const DetailsForm_keyAction = React.useCallback(async (\$event) => {
         const \$key = \$event.key
-        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', () => await DetailsForm.submit())
+        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', async () => await DetailsForm.submit())
     }, [])
 
     return React.createElement(Page, {id: props.path},
