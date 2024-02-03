@@ -80,3 +80,17 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
 }
 export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 export const pathSegments = (path: string) => path.split('/')
+export const previewPathComponents = (pathname: string): {appName: string, prefix?: string, pageName?: string, filepath?: string} | null => {
+    const [, prefix, appName, remainder] = pathname.match(new RegExp(`^\/studio\/preview\/(tools/)?([^/]+)\/?(.*)$`)) ?? []
+    if (!appName) {
+        return null
+    }
+    const appNameAndPrefix = prefix ? {appName, prefix} : {appName}
+    if (remainder.match(/^[^./]+$/)) {
+        return {...appNameAndPrefix, pageName: remainder}
+    }
+    if (remainder) {
+        return {...appNameAndPrefix, filepath: remainder}
+    }
+    return appNameAndPrefix
+}

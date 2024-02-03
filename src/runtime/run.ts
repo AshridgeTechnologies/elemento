@@ -5,6 +5,7 @@ import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
+import {previewPathComponents} from '../util/helpers'
 
 let root: Root
 
@@ -38,13 +39,12 @@ let refreshCount = 0
 let selectedComponentIds: string[] = []
 let appModule: any
 
-export const runForDev = (urlPath: string) => {
-    const previewMatch = urlPath.match(/studio\/preview\/([\w]+\/)?([-\w]+)\/?$/)
-    let codeUrl: string | undefined
-    if (previewMatch) {
-        const [, prefix = '', appName] = previewMatch
-        codeUrl = `/studio/preview/${prefix}${appName}/${appName}.js`
-    }
+export const runPreview = (urlPath: string) => {
+    const pathComponents = previewPathComponents(urlPath)
+
+    if (!pathComponents) return
+    const {prefix = '', appName, filepath} = pathComponents
+    const codeUrl = `/studio/preview/${prefix}${appName}/${appName}.js`
     let appStore: StoreApi<AppStore>
     const appStoreHook: AppStoreHook = {
         setAppStore(sa: StoreApi<AppStore>){
@@ -55,7 +55,7 @@ export const runForDev = (urlPath: string) => {
     }
 
     function runModule() {
-        run(urlPath, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
+        run(`/studio/preview/${appName}`, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
     }
 
     async function refreshCode() {

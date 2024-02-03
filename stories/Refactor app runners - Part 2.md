@@ -85,7 +85,7 @@ Further requirements
 - All runtime and generated server JS files inc cjs are served with correct content type
 - All generated server files are consistent and usable for other deployment environments
 - Project reload, or auto when update settings
-- Review run and runForDev in index.html for prod and preview
+- Review run and runPreview in index.html for prod and preview
 - Update imports without hundreds of versions being kept - https://stackoverflow.com/questions/47675549/how-do-i-cache-bust-imported-modules-in-es6
 
 

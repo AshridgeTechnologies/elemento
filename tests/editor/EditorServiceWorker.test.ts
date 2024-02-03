@@ -29,6 +29,24 @@ const files: FileSystemTree = {
                 }
             },
         }
+    },
+    'tools': {
+        directory: {
+            'Tool1': {
+                directory: {
+                    'toolstuff.js': {
+                        file: {
+                            contents: 'toolstuff.js contents'
+                        }
+                    },
+                    'index.html': {
+                        file: {
+                            contents: 'Tool1 index.html contents'
+                        }
+                    },
+                }
+            }
+        }
     }
 }
 
@@ -64,11 +82,9 @@ beforeEach(() => {
     worker.mount(filesCopy)
 })
 
-test('can get response for mounted file at top level', async () => {
+test('can NOT get response for mounted file at top level', async () => {
     const result = await worker.handleRequest(request('http://example.com/studio/preview/index.html'))
-    expect(result.status).toBe(200)
-    expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
-    expect(await result.text()).toBe('top index.html contents')
+    expect(result.status).toBe(404)
 })
 
 test('can get response for mounted file in sub-directory', async () => {
@@ -76,6 +92,13 @@ test('can get response for mounted file in sub-directory', async () => {
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.text()).toBe('stuff.js contents')
+})
+
+test('can get response for mounted file in tools sub-directory', async () => {
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/tools/Tool1/toolstuff.js'))
+    expect(result.status).toBe(200)
+    expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
+    expect(await result.text()).toBe('toolstuff.js contents')
 })
 
 test('can get not found response for non-existent top-level file', async () => {
@@ -106,14 +129,19 @@ test('passes through non-preview request', async () => {
     }
 })
 
-test('serves index.html if top-level path ends in /', async () => {
+test('does NOT serve index.html if top-level path ends in /', async () => {
     const result = await worker.handleRequest(request('https://example.com/studio/preview/'))
-    expect(await result.text()).toBe('top index.html contents')
+    expect(result.status).toBe(404)
 })
 
 test('serves index.html if sub-dir path ends in /', async () => {
     const result = await worker.handleRequest(request('https://example.com/studio/preview/dir1/'))
     expect(await result.text()).toBe('dir1 index.html contents')
+})
+
+test('serves index.html if tools sub-dir path ends in /', async () => {
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/tools/Tool1/'))
+    expect(await result.text()).toBe('Tool1 index.html contents')
 })
 
 test('serves version file with commitId of preview', async () => {

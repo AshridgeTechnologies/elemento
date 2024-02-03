@@ -36,15 +36,15 @@ Requirements
 - ✅ Create User: Credential implementation provided to initializeApp() via the "credential" property has insufficient permission to access the requested resource
 - ✅ Data functions has Query, not GetAll
 - Editor Service Worker keeps losing the preview server - Activates again and creates new ESW
-- Preview page can be reloaded even with a page name
+- ✅ Preview page can be reloaded even with a page name
 - ✅ Errors from server while editing formula really interrupting eg below
 - ❓ - Should be able to write If(CurrentUser(), Get(Users, CurrentUser().Id), null) - server runtime up to date?
 - Many repeated calls to same server function close together
 - Sort out id vs Id
 - Better argument type checking on runtime functions eg Update
-- Notes on every model object
+- ✅ Notes on every model object
 - Change User management to object, because can't have function called CreateUser
-- Pending value should show loading spinner
+- Pending value should show loading or working indicator
 - DataTypes folder can't be called DataTypes
 - Ensure go to Home Page after log out
 - GetOwnUser error when logout - either don't call or make safe

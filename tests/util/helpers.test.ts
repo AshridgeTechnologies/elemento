@@ -1,4 +1,4 @@
-import {isNumeric} from '../../src/util/helpers'
+import {isNumeric, previewPathComponents} from '../../src/util/helpers'
 
 test('isNumeric gives correct result for all strings', () => {
      expect(isNumeric('a')).toBe(false)
@@ -12,4 +12,20 @@ test('isNumeric gives correct result for all strings', () => {
      expect(isNumeric('12.')).toBe(true)
      expect(isNumeric('12.89')).toBe(true)
      expect(isNumeric('.89')).toBe(true)
+})
+
+test('previewPathComponents extracts parts of pathname of studio preview url', () => {
+    expect(previewPathComponents('/version')).toBe(null)
+    expect(previewPathComponents('/version/xyz/123')).toBe(null)
+    expect(previewPathComponents('/studio/preview/MainApp')).toStrictEqual({appName: 'MainApp'})
+    expect(previewPathComponents('/studio/preview/MainApp/')).toStrictEqual({appName: 'MainApp'})
+    expect(previewPathComponents('/studio/preview/MainApp/MainPage')).toStrictEqual({appName: 'MainApp', pageName: 'MainPage'})
+    expect(previewPathComponents('/studio/preview/MainApp/MainApp.js')).toStrictEqual({appName: 'MainApp', filepath: 'MainApp.js'})
+})
+
+test('previewPathComponents extracts parts of pathname of studio preview tools url', () => {
+    expect(previewPathComponents('/studio/preview/tools/Tool1')).toStrictEqual({appName: 'Tool1', prefix: 'tools/'})
+    expect(previewPathComponents('/studio/preview/tools/Tool1/')).toStrictEqual({appName: 'Tool1', prefix: 'tools/'})
+    expect(previewPathComponents('/studio/preview/tools/Tool1/MainPage')).toStrictEqual({appName: 'Tool1', prefix: 'tools/', pageName: 'MainPage'})
+    expect(previewPathComponents('/studio/preview/tools/Tool1/MainApp.js')).toStrictEqual({appName: 'Tool1', prefix: 'tools/', filepath: 'MainApp.js'})
 })

@@ -61,7 +61,7 @@ To do
 Update preview after change
 ---------------------------
 
-- ✅ runForDev creates app store hook to hold current store
+- ✅ runPreview creates app store hook to hold current store
 - ✅ Pass hook into StoreProvider
 - ✅ Respond to 'callFunction' messages, use component id, function name, args from message to call the function
 - ✅ EditorRunner, after updating server app, finds all server app connectors for it

@@ -58,7 +58,7 @@ App Runner rework - client side
 - ✅ Editor ProjectBuilder writes generated code to disk
 - ✅ App runner gets built code from GitHub
 - ✅ App runner does not use service worker
-- Review run and runForDev in index.html for prod and preview
+- Review run and runPreview in index.html for prod and preview
 
 App Runner rework - server side
 -------------------------------

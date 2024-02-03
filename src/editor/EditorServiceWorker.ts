@@ -2,7 +2,7 @@ import mime from 'mime-types'
 import {DirectoryNode, FileNode, FileSystemTree} from './Types'
 import assert from "assert";
 
-import {pathSegments} from '../util/helpers'
+import {pathSegments, previewPathComponents} from '../util/helpers'
 
 
 const dirName = (path: string) => pathSegments(path).slice(0, -1).join('/')
@@ -73,20 +73,25 @@ export default class EditorServiceWorker {
             return fetch(`${this.previewServerUrl}/preview${url.pathname}`)
         }
 
-        const [, filepath] = pathname.match(new RegExp(`^\/studio\/preview\/(.*)$`)) ?? []
-        if (filepath !== undefined) {
-            const requestFilepath = pathname.endsWith('/') ? filepath + 'index.html' : filepath
-            const file = this.getFileContents(requestFilepath)
-            if (!file) {
-                return new Response(null, {status: 404, statusText: 'File not found (in service worker)'})
-            }
-            const extension = requestFilepath.match(/\.\w+$/)?.[0] ?? '.txt'
-            const contentType = mime.contentType(extension) || 'text/plain'
-            return new Response(file, {
-                headers: {
-                    'Content-Type': contentType
+        if (pathname.startsWith('/studio/preview/')) {
+            const pathComponents = previewPathComponents(pathname)
+            if (pathComponents) {
+                const {prefix = '', appName, filepath = 'index.html'} = pathComponents
+                let requestFilepath = prefix + appName + '/' + filepath
+                let file = this.getFileContents(requestFilepath)
+                if (file) {
+                    const extension = requestFilepath.match(/\.\w+$/)?.[0] ?? '.txt'
+                    const contentType = mime.contentType(extension) || 'text/plain'
+                    return new Response(file, {
+                        headers: {
+                            'Content-Type': contentType
+                        }
+                    })
                 }
-            })
+            }
+
+            return new Response(null, {status: 404, statusText: 'File not found (in service worker)'})
+
         }
 
         if (pathname === '/version') {
@@ -165,7 +170,7 @@ export default class EditorServiceWorker {
     }
 
     async sendUpdate(filepath: string) {
-        this.sendToClients('refreshCode', {path: filepath})
+        await this.sendToClients('refreshCode', {path: filepath})
     }
 
     async sendEditorHighlight(ids: string[]) {

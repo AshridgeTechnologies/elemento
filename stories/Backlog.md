@@ -5,6 +5,9 @@ Elemento Backlog
 Bugs
 ----
 - Show me for Properties panel in Tutorial not working
+- Menu button show me shows all buttons
+- r is not a function err when editing Text in prod version - suspect useEffect returning a promise
+- Typing in tutorial Show Me is duplicating each character
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
   - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))
@@ -185,7 +188,7 @@ Tech debt
 - Builder/runner: 
   - Generator does not hard code runner location
   - ProjectBuilder only writes updated files
-  - runForDev only refreshes code if a file in its path is changed
+  - runPreview only refreshes code if a file in its path is changed
 - Use radash wherever possible, try to remove lodash
 - Consider replacing state management with self-updating immutable objects using Immer, maybe Proxies, useContext and useReducer
 - Consider Temporal

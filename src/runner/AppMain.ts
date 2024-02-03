@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client'
 import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
-import {runForDev} from '../runtime/run'
+import {runPreview} from '../runtime/run'
 import {ASSET_DIR} from '../shared/constants'
 
 type Properties = {pathname: string, origin: string}
@@ -48,7 +48,7 @@ export default function AppMain({pathname, origin}: Properties) {
 export const runAppFromWindowUrl = (windowLocation: {origin: string, pathname: string} = window.location, containerElementId = 'main') => {
     const {origin, pathname} = windowLocation
     if (pathname.startsWith('/studio/preview')) {
-        runForDev(pathname)
+        runPreview(pathname)
     } else {
         const container = document.createElement('div')
         container.id = containerElementId

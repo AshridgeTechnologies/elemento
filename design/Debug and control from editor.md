@@ -26,7 +26,7 @@ Forces
 
 Possibilities
 -------------
-- Can pass through app store hook in runForDev
+- Can pass through app store hook in runPreview
 - Editor sends component id, function, params via service worker postMessage
 - Can start with one-way communication
 - Include element id from which code generated in comments
@@ -42,7 +42,7 @@ Decisions
 ---------
 
 - Re-use app store hook mechanism
-- Pass through hook from runForDev, hold current store
+- Pass through hook from runPreview, hold current store
 - Respond to 'callFunction' messages
 - Use component id, function, params from message to call the function
 - Rely on the updateState mechanism to update the app as necessary
