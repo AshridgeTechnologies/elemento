@@ -19,14 +19,14 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const store = new FileDataStore('id1', 'FileDataStore 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`, display: true})
+    const store = new FileDataStore('id1', 'FileDataStore 1', {})
     const updatedInFileDataStore1 = store.set('id1', 'name', 'FileDataStore 1A')
     expect(updatedInFileDataStore1.name).toBe('FileDataStore 1A')
     expect(store.name).toBe('FileDataStore 1')
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const store = new FileDataStore('id1', 'FileDataStore 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`})
+    const store = new FileDataStore('id1', 'FileDataStore 1', {})
     const updatedInFileDataStore = store.set('id2', 'name', ex`FileDataStore 1A`)
     expect(updatedInFileDataStore).toStrictEqual(store)
 })

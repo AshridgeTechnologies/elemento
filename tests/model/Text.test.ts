@@ -9,6 +9,7 @@ test('Text has correct properties with default values', ()=> {
     expect(text1.id).toBe('t1')
     expect(text1.name).toBe('Text 1')
     expect(text1.kind).toBe('Text')
+    expect(text1.notes).toBe(undefined)
     expect(text1.content).toStrictEqual(ex`"Some text"`)
     expect(text1.style).toBe(undefined)
     expect(text1.display).toBe(undefined)
@@ -17,11 +18,12 @@ test('Text has correct properties with default values', ()=> {
 })
 
 test('Text has correct properties with specified values', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`, style: 'cool', display: false,
+    const text1 = new Text('t1', 'Text 1', {notes:'This is some text', content: ex`"Some text"`, style: 'cool', display: false,
         fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 20})
 
     expect(text1.id).toBe('t1')
     expect(text1.name).toBe('Text 1')
+    expect(text1.notes).toBe('This is some text')
     expect(text1.content).toStrictEqual(ex`"Some text"`)
     expect(text1.style).toBe('cool')
     expect(text1.display).toBe(false)

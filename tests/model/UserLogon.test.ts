@@ -19,7 +19,7 @@ test('UserLogon has correct properties with specified values', ()=> {
 })
 
 test('tests if an object is this type', ()=> {
-    const userLogon = new UserLogon('id1', 'UserLogon 1', {content: 'Some userLogon', action: ex`doIt()`})
+    const userLogon = new UserLogon('id1', 'UserLogon 1', {})
     const page = new Page('p1', 'Page 1', {}, [])
 
     expect(UserLogon.is(userLogon)).toBe(true)
@@ -28,7 +28,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const userLogon = new UserLogon('id1', 'UserLogon 1', {content: ex`"Some userLogon"`, action: ex`doIt()`, filled: true, style:'cool', display: false})
+    const userLogon = new UserLogon('id1', 'UserLogon 1', {})
     expect(asJSON(userLogon)).toStrictEqual({
         kind: 'UserLogon',
         id: 'id1',
@@ -38,12 +38,12 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const userLogon = new UserLogon('id1', 'UserLogon 1', {content: ex`"Some userLogon"`, action: ex`doIt()`, filled: true, style: ex`red`, display: ex`false && true`})
+    const userLogon = new UserLogon('id1', 'UserLogon 1', {})
     const plainObj = asJSON(userLogon)
     const newUserLogon = loadJSON(plainObj)
     expect(newUserLogon).toStrictEqual<UserLogon>(userLogon)
 
-    const userLogon2 = new UserLogon('id1', 'UserLogon 2', {content: `Some userLogon`, style: `red`, display: false})
+    const userLogon2 = new UserLogon('id1', 'UserLogon 2', {})
     const plainObj2 = asJSON(userLogon2)
     const newUserLogon2 = loadJSON(plainObj2)
     expect(newUserLogon2).toStrictEqual<UserLogon>(userLogon2)

@@ -146,6 +146,7 @@ Stories
 
 ### The Rest
 - Server side HTML generation using same or similar elements as on client
+- Show element notes when hover in navigator
 - Table of Contents
 - Slick quick apps
 - CSV file datastore

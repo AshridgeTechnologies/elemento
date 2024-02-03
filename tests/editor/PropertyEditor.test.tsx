@@ -49,6 +49,8 @@ const select = (label: string) => (screen.getByLabelText(label).nextSibling as H
 const inputValue = (label: string) => input(label).value
 const nameInput = () => container.querySelector('#name')
 const nameInputValue = () => nameInput().value
+const notesInput = () => container.querySelector('#notes')
+const notesInputValue = () => notesInput().value
 const errorValue = (label: string) => {
     const helperId = `${(input(label).id)}-helper-text`
     return container.querySelector(`[id="${helperId}"]`).textContent
@@ -62,16 +64,17 @@ const kindButton = (index: number) => {
 
 const project = Project1.new([], 'proj1', 'id1', {})
 
-test('shows type and id', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+test('shows type and id and notes', () => {
+    const element = new Page('id1', 'Page 1', {notes: 'This is the first page'}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(typeField().textContent).toBe('Page')
     expect(nameInputValue()).toBe('Page 1')
+    expect(notesInputValue()).toBe('This is the first page')
 })
 
 test('updates name on blur', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
@@ -81,8 +84,19 @@ test('updates name on blur', () => {
     expect(changedValue).toBe('Page One')
 })
 
+test('updates notes on blur', () => {
+    const element = new Page('id1', 'Page 1', {notes: 'This is page 1'}, [])
+    render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
+    expect(notesInputValue()).toBe('This is page 1')
+    fireEvent.input(notesInput(), {target: {value: 'This is page One'}})
+    expect(notesInputValue()).toBe('This is page One')
+    expect(changedValue).toBe(undefined)
+    fireEvent.blur(notesInput(), {target: {value: 'This is page One'}})
+    expect(changedValue).toBe('This is page One')
+})
+
 test('updates name on enter', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
@@ -90,7 +104,7 @@ test('updates name on enter', () => {
 })
 
 test('does not update name if enter without typing', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
@@ -98,7 +112,7 @@ test('does not update name if enter without typing', () => {
 })
 
 test('does not update name if new name is the same', () => {
-    const element = new Page('id1', 'Page 1', {style: ex`funky`}, [])
+    const element = new Page('id1', 'Page 1', {}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page 1'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
@@ -144,10 +158,11 @@ test('has fields for Project', () => {
 })
 
 test('has fields for App', () => {
-    const element = new App('id1', 'App 1', {author: ex`Me + You`, maxWidth: '50%'}, [])
+    const element = new App('id1', 'App 1', {author: ex`Me + You`, maxWidth: '50%', notes: 'My new App'}, [])
     render(<PropertyEditor project={project} element={element} onChange={onChange}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('App 1')
+    expect(notesInputValue()).toBe('My new App')
     expect(inputValue('Formula Name')).toBe('App1')
     expect(inputValue('Author')).toBe('Me + You')
     expect(inputValue('Max Width')).toBe('50%')

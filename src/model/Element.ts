@@ -4,6 +4,7 @@ export default interface Element {
     kind: ElementType
     id: ElementId
     name: string
+    notes: string | undefined
     properties: object
     elements: ReadonlyArray<Element> | undefined
     type() : ComponentType

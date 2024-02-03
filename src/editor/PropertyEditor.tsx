@@ -9,7 +9,7 @@ import Project, {FILES_ID, TOOLS_ID} from '../model/Project'
 
 const {startCase} = lodash;
 
-function NameTextField(props: TextFieldProps) {
+function NameTextField(props: TextFieldProps & {readOnly: boolean}) {
     const [changedValue, setChangedValue] = useState<string | undefined>(undefined)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setChangedValue(event.target.value)
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -24,13 +24,42 @@ function NameTextField(props: TextFieldProps) {
         setChangedValue(undefined)
     }
 
-    return <TextField {...props}  value={changedValue ?? props.value}
+    return <TextField {...props}
+                      variant='outlined' size='small'
+                      sx={{flexGrow: 0.7 }}
+                      InputProps={{sx: {fontSize: 20}}}
+                      inputProps={{readOnly: props.readOnly}}
+                      value={changedValue ?? props.value}
                       data-eltype='elementName'
                       label='Name'
                       onChange={onChange}
                       onBlur={onFinishChange}
                       onKeyDown={onKeyDown}
                       helperText={changedValue !== undefined ? 'Renaming - Enter to confirm' : undefined}
+    />
+}
+
+function NotesTextField(props: TextFieldProps) {
+    const [changedValue, setChangedValue] = useState<string | undefined>(undefined)
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setChangedValue(event.target.value)
+    const onFinishChange = () => {
+        if (changedValue !== undefined && changedValue !== props.value) {
+            props.onChange?.({target: {value: changedValue ?? ''}} as any)
+        }
+        setChangedValue(undefined)
+    }
+
+    return <TextField {...props}
+                      variant='filled' size='small'
+                      multiline
+                      // sx={{flexGrow: 0.7 }}
+                      // InputProps={{sx: {fontSize: 20}}}
+                      value={changedValue ?? props.value ?? ''}
+                      data-eltype='elementNotes'
+                      label='Notes'
+                      onChange={onChange}
+                      onBlur={onFinishChange}
+                      // helperText={changedValue !== undefined ? 'Renaming - Enter to confirm' : undefined}
     />
 }
 
@@ -63,6 +92,7 @@ export default function PropertyEditor({project, element, onChange, errors = {}}
     const readOnly = element.id === FILES_ID || element.id === TOOLS_ID
     if (children) {
         const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)
+        const onNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'notes', (event.target as HTMLInputElement).value)
         return <Box
             component="form"
             sx={{
@@ -72,15 +102,14 @@ export default function PropertyEditor({project, element, onChange, errors = {}}
             autoComplete="off"
         >
             <Stack direction='row' spacing={2}>
-                <NameTextField id='name' variant='outlined' size='small' value={element.name}
-                           onChange={ onNameChange }
-                           sx={{flexGrow: 0.7 }} InputProps={{sx: {fontSize: 20}}} inputProps={{readOnly}}/>
+                <NameTextField id='name' value={element.name} readOnly={readOnly} onChange={ onNameChange }/>
                 <TextField id="formulaName" label="Formula Name" variant='filled' size='small' value={element.codeName} inputProps={{readOnly: true}} sx={{flexGrow: 0.3}}/>
             </Stack>
             <Stack direction='row' spacing={2} alignItems='baseline'>
                 <Typography data-testid="elementType" variant='body1'>{startCase(element.kind)}</Typography>
                 <Typography data-testid="elementId" variant='body2' title='Elemento internal id for this element'>{element.id}</Typography>
             </Stack>
+            <NotesTextField id='notes' value={element.notes} onChange={ onNotesChange }/>
             {children}
         </Box>
     }

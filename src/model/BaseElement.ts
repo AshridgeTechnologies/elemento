@@ -14,6 +14,8 @@ import {uniq} from 'ramda'
 
 type Class<T> = new (...args: any[]) => T
 
+export type BaseElementProperties = {notes?: string}
+
 export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     if (a === b) return true
     if (a.length !== b.length) return false
@@ -29,13 +31,11 @@ export function propDef(name: string, type: PropertyType = 'string', options: Pr
     return {name, type, ...options}
 }
 
-export function actionDef(name: string): ActionDef {
-    return {name}
-}
 
 export default abstract class BaseElement<PropertiesType extends object> {
     readonly id: ElementId
     readonly name: string
+    readonly notes: string | undefined
     readonly kind: ElementType
     readonly properties: PropertiesType
     readonly elements: ReadonlyArray<Element> | undefined
@@ -43,14 +43,16 @@ export default abstract class BaseElement<PropertiesType extends object> {
     constructor(
         id: ElementId,
         name: string,
-        properties: PropertiesType,
+        properties: PropertiesType & BaseElementProperties,
         elements: ReadonlyArray<Element> | undefined = undefined,
     ) {
         const thisClass = this.constructor as typeof BaseElement
         this.id = id
         this.name = name
         this.kind = thisClass.kind as ElementType
-        this.properties = {...thisClass.initialProperties, ...properties}
+        const {notes, ...ownProperties} = properties
+        this.notes = notes
+        this.properties = {...thisClass.initialProperties, ...ownProperties} as PropertiesType
         this.elements = elements
     }
 
