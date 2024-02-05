@@ -3,7 +3,7 @@ import {notEmpty, wait, waitUntil} from '../util/helpers'
 import {caller} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
-export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuItem' | 'propertyField' | 'propertyTypeButton'
+export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' | 'propertyTypeButton'
 
 export type Options = {
     showBeforeActions: boolean,
@@ -79,7 +79,7 @@ export const textMatch = (elementOrText: Element | string, textToMatch: string) 
     return regex.test(text)
 }
 
-export const selectElements = (selector: SelectorType, text: string = ''): HTMLElement[] => {
+export const selectElements = (selector: SelectorType, container: HTMLElement = document.body, text: string = ''): HTMLElement[] => {
     switch(selector) {
         case 'treeItem':
             return els(`.rc-tree-node-content-wrapper`).filter( (el) => textMatch((el as HTMLElement).title, text) )
@@ -94,6 +94,9 @@ export const selectElements = (selector: SelectorType, text: string = ''): HTMLE
 
         case 'button':
             return els(`button:not([data-eltype="propertyTypeButton"])`).filter( el => textMatch(el, text) )
+
+        case 'menuButton':
+            return els(`#editorMain .MuiToolbar-root button`).filter( el => textMatch(el, text) )
 
         case 'menuItem':
             return els(`[role=menuitem]`).filter( el => textMatch(el, text) )
@@ -113,8 +116,8 @@ export const selectElements = (selector: SelectorType, text: string = ''): HTMLE
     }
 }
 
-export const selectSingleElement = (selector: SelectorType, text: string) => {
-    const element = selectElements(selector, text)[0]
+export const selectSingleElement = (selector: SelectorType, container: HTMLElement = document.body, text: string) => {
+    const element = selectElements(selector, container, text)[0]
     if (element) {
         return element
     } else {

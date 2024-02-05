@@ -9,9 +9,7 @@ const dirName = (path: string) => pathSegments(path).slice(0, -1).join('/')
 
 export default class EditorServiceWorker {
 
-    constructor(private swSelf: ServiceWorkerGlobalScope) {
-        console.log('New EditorServiceWorker')
-    }
+    constructor(private swSelf: ServiceWorkerGlobalScope) {}
     private fileSystem: FileSystemTree = {}
     private previewServerUrl: string | null = null
 

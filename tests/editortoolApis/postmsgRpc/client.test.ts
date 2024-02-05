@@ -1,7 +1,8 @@
 import { caller } from '../../../src/editorToolApis/postmsgRpc/client'
-import { expose } from '../../../src/editorToolApis/postmsgRpc/server'
+import {expose, exposeFunctions} from '../../../src/editorToolApis/postmsgRpc/server'
 import fakeWindows from './helpers/fake-windows'
 import fs from 'fs'
+import {wait} from '../../testutil/testHelpers'
 
 const Fruits = JSON.parse(fs.readFileSync(__dirname + '/fixtures/fruits.json', 'utf8'))
 
@@ -81,4 +82,44 @@ test('should pass arguments', async () => {
   const fruits = await getFruits(true, true)
 
   expect(fruits).toStrictEqual(Fruits)
+})
+
+test('exposeFunctions exposes bound object functions and returns function to close them all', async () => {
+    const [ server, client ] = fakeWindows()
+
+    const fruitService = new class FruitService {
+        private juice = 99
+        GetFruits() { return Promise.resolve(Fruits)}
+        GetJuice() { return Promise.resolve(this.juice)}
+    }
+
+    const closeFn = exposeFunctions('FruitService', fruitService, {
+        addListener: server.addEventListener,
+            removeListener: server.removeEventListener,
+    })
+
+    const getFruits = caller('FruitService.GetFruits', {
+        addListener: client.addEventListener,
+        removeListener: client.removeEventListener,
+        postMessage: server.postMessage
+    })
+
+    const fruits = await getFruits()
+    expect(fruits).toStrictEqual(Fruits)
+
+    const getJuice = caller('FruitService.GetJuice', {
+        addListener: client.addEventListener,
+        removeListener: client.removeEventListener,
+        postMessage: server.postMessage
+    })
+
+    const juice = await getJuice()
+    expect(juice).toBe(99)
+
+    closeFn()
+
+    let juice2
+    getJuice().then( j => juice2 = j)
+    await wait(20)
+    expect(juice2).toBeUndefined()
 })

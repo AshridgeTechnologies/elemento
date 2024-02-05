@@ -90,8 +90,9 @@ const exposeEditorController = (gitHubUrl: string | null, projectHandler: Projec
     const container = editorElement()
     if (container) {
         const controller = new EditorController(container, gitHubUrl, projectHandler)
-        exposeFunctions('Editor', controller)
+        const closeFn = exposeFunctions('Editor', controller)
         console.log('Editor controller initialised')
+        return closeFn
     }
 }
 
@@ -100,8 +101,9 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 
     if (previewWindow) {
         const controller = new PreviewController(previewWindow)
-        exposeFunctions('Preview', controller)
+        const closeFn = exposeFunctions('Preview', controller)
         console.log('Preview controller initialised')
+        return closeFn
     }
 }
 

@@ -31,7 +31,7 @@ export default class EditorController {
     Show(selector?: SelectorType, text?: string) {
         console.log('Show', selector, text)
         this.queueAction(null, null, async () => {
-            const elements = selector ? selectElements(selector, text) : []
+            const elements = selector ? selectElements(selector, this.container, text) : []
             highlightElements(elements, this.container)
             if (elements.length === 1) {
                 await ensureVisible(elements[0])
@@ -47,7 +47,7 @@ export default class EditorController {
     Click(selector: SelectorType, text: string) {
         console.log('Click', selector, text)
         this.queueAction(selector, text, () => {
-            const element = selectSingleElement(selector, text)
+            const element = selectSingleElement(selector, this.editorElement, text)
             if (element) {
                 return userEvent.click(element)
             }
@@ -57,7 +57,7 @@ export default class EditorController {
     ContextClick(selector: SelectorType, text: string) {
         console.log('ContextClick', selector, text)
         this.queueAction(selector, text, async () => {
-            const element = selectSingleElement(selector, text)
+            const element = selectSingleElement(selector, this.editorElement, text)
             if (element) {
                 await userEvent.pointer([{target: element}, {keys: '[MouseRight]', target: element}])
             }
@@ -67,7 +67,7 @@ export default class EditorController {
     SetValue(selector: SelectorType, text: string, value: string) {
         console.log('SetValue', selector, text, value)
         this.queueAction(selector, text, async () => {
-            const element = selectSingleElement(selector, text)
+            const element = selectSingleElement(selector, this.editorElement, text)
             if (element) {
                 await setElementValue(element, this.container, value)
             }
@@ -76,13 +76,13 @@ export default class EditorController {
 
     GetValue(selector: SelectorType, text: string) {
         console.log('GetValue', selector, text)
-        const element = selectSingleElement(selector, text)
+        const element = selectSingleElement(selector, this.editorElement, text)
         return element ? (element as HTMLInputElement).value : undefined
     }
 
     EnsureFormula(propertyFieldLabel: string, shouldBeFormula = true) {
         this.queueAction('propertyTypeButton', propertyFieldLabel, async () => {
-            const element = selectSingleElement('propertyTypeButton', propertyFieldLabel)
+            const element = selectSingleElement('propertyTypeButton', this.editorElement, propertyFieldLabel)
             if (element) {
                 const currentStateIsFormula = element.textContent?.toLowerCase() === 'fx='
                 if (currentStateIsFormula !== shouldBeFormula) {
@@ -95,7 +95,7 @@ export default class EditorController {
     EnsureTreeItemsExpanded(...treeItemNames: string[]) {
         treeItemNames.forEach((name) => {
             this.queueAction('treeExpand', name, async () => {
-                const element = selectSingleElement('treeExpand', name)
+                const element = selectSingleElement('treeExpand', this.editorElement, name)
                 if (element) {
                     const isClosed = element.classList.contains('rc-tree-switcher_close')
                     if (isClosed) {

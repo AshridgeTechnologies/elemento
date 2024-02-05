@@ -4,9 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Show me for Properties panel in Tutorial not working
-- Menu button show me shows all buttons
-- Typing in tutorial Show Me is duplicating each character
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
   - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))
@@ -337,4 +334,6 @@ Bugs fixed
 - Authorization header not sent with server app get requests
 - Dates in data from server app function are left as ISO strings
 - Async Startup action causes error (as useEffect tries to call the Promise)
+- Multiple EditorControllers listening, causing effects such as Show me clicking and typing not working correctly (being called twice)
+- Menu button Show me shows all buttons
 
