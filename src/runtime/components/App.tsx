@@ -34,7 +34,7 @@ export default function App({path, maxWidth, startupAction = noop, children, top
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 
-    useEffect( startupAction, [] )
+    useEffect( () => { startupAction() }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect(() => subscribeToNotifications( notify ), [])
     useSignedInState()
     const pageToDisplay = state.pageToDisplay(isSignedIn())

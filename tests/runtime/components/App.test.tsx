@@ -108,7 +108,7 @@ test('App element produces output containing normal page if logged in', () => {
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
 
-test('App shows first page initially and other page when state changes and only runs startup action once', async () => {
+test('App shows first page initially and other page when state changes and only runs startup action once and does not return anything from the startup action', async () => {
     let startupCount = 0
     const [appContext] = getRealAppContext()
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1'}, 'this is page ' + pageName)
@@ -130,16 +130,20 @@ test('App shows first page initially and other page when state changes and only 
         useObjectState('app1', new App.State({pages: {MainPage, OtherPage}, appContext}))
         return createElement(App, {path: 'app1', startupAction: () => {
                 startupCount++
+                return () => {
+                    throw new Error('Should not be called!')
+                }
             }})
     }
 
-    const {el, click} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
+    const {el, click, unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
     expect(el`p[id="app1.page1.para1"`?.textContent).toBe('this is page Main')
     expect(startupCount).toBe(1)
 
     await actWait( () => click('button'))
     expect(el`p[id="app1.page1.para1`?.textContent).toBe('this is page Other')
     expect(startupCount).toBe(1)
+    unmount() // to check nothing returned from the startup action is called
 })
 
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {

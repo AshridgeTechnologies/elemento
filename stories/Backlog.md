@@ -6,7 +6,6 @@ Bugs
 ----
 - Show me for Properties panel in Tutorial not working
 - Menu button show me shows all buttons
-- r is not a function err when editing Text in prod version - suspect useEffect returning a promise
 - Typing in tutorial Show Me is duplicating each character
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
@@ -337,3 +336,5 @@ Bugs fixed
 - Shows Objects are not valid as a React child (found: object with keys {description, errorMessage}) when server call fails
 - Authorization header not sent with server app get requests
 - Dates in data from server app function are left as ISO strings
+- Async Startup action causes error (as useEffect tries to call the Promise)
+

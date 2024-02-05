@@ -36,6 +36,7 @@ export const containerFunctions = (container: HTMLElement) => {
     const renderThe = (element: React.ReactElement) => {
         renderResult = render(element, {container})
     }
+    const unmount = ()=> renderResult.unmount()
     const elIn = (containingEl: HTMLElement, selector: string): HTMLElement => {
         return containingEl.querySelector(selector) as HTMLElement
         ?? containingEl.querySelector(`[id$="${selector}"]`) as HTMLElement
@@ -60,5 +61,5 @@ export const containerFunctions = (container: HTMLElement) => {
     const el = ([s]: TemplateStringsArray): any => element(s)
     const querySelector = (selector: string): HTMLElement => container.querySelector(selector)!
     const user = userEvent.setup()
-    return {domContainer: container, renderThe, elIn, el, element, querySelector, expectEl, user, enter, click, keyDown}
+    return {domContainer: container, renderThe, elIn, el, element, querySelector, expectEl, user, enter, click, keyDown, unmount}
 }
