@@ -1,4 +1,4 @@
-import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType, Styling} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
@@ -9,29 +9,30 @@ type Properties = Partial<Readonly<{
     action: PropertyExpr,
     appearance: PropertyValueType<Appearance>,
     enabled: PropertyValueType<boolean>,
-    display: PropertyValueType<boolean>,
-}>>
+    show: PropertyValueType<boolean>,
+}>> & Styling
 
 export default class Button extends BaseElement<Properties> implements Element {
 
     static kind = 'Button'
     static get iconClass() { return 'crop_3_2' }
-    static get initialProperties() { return {content: 'Do something', appearance: appearanceChoices[0]} }
     type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}
     get appearance() {return this.properties.appearance ?? appearanceChoices[0]}
-    get display() {return this.properties.display}
+    get show() {return this.properties.show}
     get enabled() {return this.properties.enabled}
     get action() {return this.properties.action}
+    get styles() {return this.properties.styles}
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('content', 'string'),
             propDef('appearance', appearanceChoices),
-            propDef('display', 'boolean'),
+            propDef('show', 'boolean'),
             propDef('enabled', 'boolean'),
             propDef('action', eventAction()),
+            propDef('styles', 'styles'),
         ]
     }
 }

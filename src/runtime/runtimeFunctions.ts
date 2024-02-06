@@ -3,7 +3,9 @@ import {map} from 'ramda'
 import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
-import {parseISO} from 'date-fns'
+import {StylingProp} from '../model/StylingTypes'
+
+export {isoDateReviver} from '../util/helpers'
 
 const {isArray, isObject, isPlainObject} = lodash;
 
@@ -105,6 +107,9 @@ export const highlightElement = (id: string | undefined) => {
 
 export type Value<T>   = T | { valueOf: () => T }
 export type PropVal<T> = T | { valueOf: () => T }
+export type StylesProps = Partial<Readonly<{
+    [k in StylingProp]: PropVal<string | number>
+}>>
 
 export function valueOf<T>(x: Value<T>): T {
     if (x instanceof Date) return x as T
@@ -134,17 +139,5 @@ export function asArray(value: any[] | object | any) {
 }
 
 export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''
-
-export const isoDateReviver = (key: string, value: any) => {
-    if (typeof value === 'string') {
-        const date = parseISO(value)
-        if (!Number.isNaN(date.getTime())) {
-            return date
-        }
-    }
-
-    return value
-}
-
 export const lastItemIdOfPath = (path: string) => path.match(/\.#(\w+)[^#]*$/)?.[1]
 export const indexedPath = (path: string, index: number) => path + '.#' + index

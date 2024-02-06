@@ -20,7 +20,8 @@ test('TextInput element produces output with properties supplied', () => {
             maxLength: 11,
             width: 23,
             readOnly: true,
-            label: 'Item Description'
+            label: 'Item Description',
+            styles: {border: '1px solid green'}
         })
         expect(componentJSON(component)).toMatchSnapshot()
 })
@@ -143,7 +144,7 @@ test('TextInput shows required', async () => {
     await actWait( () => stateAt('app.page1.sprocket2').props.dataType = requiredType )
 
     await actWait( () => stateAt('app.page1.sprocket2').Reset() )
-    expect(el`.requiredButton`.textContent).toBe('emergency')
+    expect(el`label`.textContent).toBe('The Input *')
 })
 
 test('TextInput uses properties from dataType', async () => {

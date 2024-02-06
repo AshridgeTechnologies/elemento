@@ -8,9 +8,9 @@ import UnsupportedValueError from '../util/UnsupportedValueError'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, omit} from 'ramda'
-import Parser from './Parser'
-import {ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
-import {notBlank, notEmpty, trimParens} from '../util/helpers'
+import Parser, {PropertyError} from './Parser'
+import {ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
+import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
     convertAstToValidJavaScript,
@@ -28,7 +28,7 @@ import {
 import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
-import {EventActionPropertyDef, PropertyDef} from '../model/Types'
+import {CombinedPropertyValue, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
@@ -39,6 +39,7 @@ type FunctionCollector = {add(s: string): void}
 
 const indentLevel2 = '        '
 const indentLevel3 = '            '
+const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 
 const isActionProperty = (def: PropertyDef) => (def.type as EventActionPropertyDef).type === 'Action'
 
@@ -82,7 +83,6 @@ export default class Generator {
 
         const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
         const typesConstants = typesFiles.length ? `const {types: {${typesClassNames.join(', ')}}} = Elemento\n\n` : ''
-        const dirPrefix = this.app.kind === 'Tool' ? 'tools/' : ''
         return <GeneratorOutput>{
             files: [...typesFiles, ...pageFiles, appFile],
             errors: this.parser.allErrors(),
@@ -260,7 +260,7 @@ ${declarations}${debugHook}
         const propertyDefs = element.propertyDefs.filter(def => !def.state)
         const propertyExprs = propertyDefs.map(def => {
             const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
-            const expr = this.getExpr(element, def.name, exprType)
+            const expr = this.getExprWithoutParens(element, def.name, exprType)
             return [def.name, expr]
         })
 
@@ -296,7 +296,9 @@ ${generateChildren(element.list)}
 
             case 'Page': {
                 const page = element as Page
-                return `React.createElement(Page, {id: props.path},
+                const propsEntries = objectLiteralEntries(omit(['notLoggedInPage'], this.modelProperties(page)))
+                const propsEntriesStr = propsEntries.length ? ', ' + propsEntries : ''
+                return `React.createElement(Page, {id: props.path${propsEntriesStr}},
 ${generateChildren(page, indentLevel2, page)}
     )`
             }
@@ -423,6 +425,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
         const propName = (def: PropertyDef) => {
             if (def.name === 'initialValue') return 'value'
+            // see CalculationState for reason for this conversion
             if (element.kind === 'Calculation' && def.name === 'calculation') return 'value'
             return def.name
         }
@@ -509,38 +512,59 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
-        const errorMessage = this.parser.propertyError(element.id, propertyName)
-        if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
-            return `Elemento.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
+
+        const getExprCode = (propertyValue: PropertyValue | undefined, error: PropertyError)=> {
+            const isIncompleteItemError = (errorMessage: PropertyError) => errorMessage && typeof errorMessage === 'string' && errorMessage.startsWith('Incomplete item')
+            if (error && (typeof error === 'string') && !isIncompleteItemError(error)) {
+                return `Elemento.codeGenerationError(\`${this.parser.getExpression(propertyValue)}\`, '${error}')`
+            }
+
+            const ast = this.parser.getAst(propertyValue)
+            if (ast === undefined) {
+                return undefined
+            }
+            const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
+            if (!isJavascriptFunctionBody) {
+                convertAstToValidJavaScript(ast, exprType, ['action'])
+            }
+
+            const exprCode = printAst(ast)
+
+            switch (exprType) {
+                case 'singleExpression':
+                    return exprCode
+                case 'action': {
+                    const argList = (argumentNames ?? []).join(', ')
+                    const body = propertyName === 'keyAction' ? `const \$key = \$event.key\n${exprCode}` : exprCode
+                    const asyncPrefix = body.match(/\bawait\b/) ? 'async ' : ''
+                    return `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }`
+                }
+                case 'multilineExpression': {
+                    return exprCode.trim() ? `{\n${indent(exprCode, '        ')}\n    }` : '{}'
+                }
+                case 'reference': {
+                    return `${element.codeName}_${propertyName}`
+                }
+            }
         }
 
-        const ast = this.parser.getAst(element.id, propertyName)
-        if (ast === undefined) {
-            return undefined
-        }
-        const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
-        if (!isJavascriptFunctionBody) {
-            convertAstToValidJavaScript(ast, exprType, ['action'])
+        const propertyValue = element[propertyName as keyof Element] as CombinedPropertyValue | undefined
+        if (propertyValue === undefined) return undefined
+        const error = this.parser.propertyError(element.id, propertyName)
+
+        const propType = element.getPropertyDef(propertyName).type
+        if (propType === 'styles') {
+            const multiplePropValue = propertyValue as MultiplePropertyValue
+
+            return '{'
+                + Object.entries(multiplePropValue).map( ([name, val]) => {
+                    const subValueError = (error as ElementErrors)?.[name]
+                    return `${name}: ${getExprCode(val, subValueError)}`
+                }).join(', ')
+                + '}'
         }
 
-        const exprCode = printAst(ast)
-
-        switch (exprType) {
-            case 'singleExpression':
-                return exprCode
-            case 'action': {
-                const argList = (argumentNames ?? []).join(', ')
-                const body = propertyName === 'keyAction' ? `const \$key = \$event.key\n${exprCode}` : exprCode
-                const asyncPrefix = body.match(/\bawait\b/) ? 'async ' : ''
-                return `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }`
-            }
-            case 'multilineExpression': {
-                return exprCode.trim() ? `{\n${indent(exprCode, '        ')}\n    }` : '{}'
-            }
-            case 'reference': {
-                return `${element.codeName}_${propertyName}`
-            }
-        }
+        return getExprCode(propertyValue as PropertyValue, error)
     }
 
     private getExprWithoutParens(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
@@ -548,7 +572,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     }
 
     private htmlRunnerFile() {
-        const appName = this.app.codeName
         return `<!DOCTYPE html>
 <html lang="en">
 <head>

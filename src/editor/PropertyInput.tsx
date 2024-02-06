@@ -126,7 +126,6 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const fixedBoolean = type === 'boolean' && !expr
     const fixedChoiceList = isArray(type) && !expr
-    const selectSlotProps = {root: {container: editorElement()}}
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button()}
         {fixedBoolean ?

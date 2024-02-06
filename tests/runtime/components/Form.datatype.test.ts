@@ -6,23 +6,14 @@ import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../t
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
-import {
-    ChoiceType,
-    DateType,
-    ListType,
-    NumberType,
-    RecordType,
-    Rule,
-    TextType,
-    TrueFalseType
-} from '../../../src/runtime/types'
+import {ChoiceType, DateType, NumberType, RecordType, Rule, TextType, TrueFalseType} from '../../../src/runtime/types'
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
-import MockedFunction = jest.MockedFunction
 import React, {KeyboardEventHandler} from 'react'
 import {useGetObjectState} from '../../../src/runtime'
 import {useObjectStates} from '../../../src/runtime/appData'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
+import MockedFunction = jest.MockedFunction
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Box Size', {max: 20})
@@ -73,7 +64,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     $form._updateValue()
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description of the thing', width: '50%'}),
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description of the thing', styles: {width: '50%'}}),
         React.createElement(NumberInput, {path: pathWith('Count'), label: 'Count'}),
         // @ts-ignore
         React.createElement(TextElement, {path: pathWith('Feedback'), }, 'BoxSize is ' + $form.value.BoxSize)

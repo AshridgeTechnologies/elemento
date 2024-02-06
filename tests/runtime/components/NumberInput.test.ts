@@ -18,7 +18,7 @@ const [numberInput, appStoreHook] = wrappedTestElement(NumberInput, NumberInputS
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('NumberInput element produces output with properties supplied',
-    snapshot(numberInput('app.page1.width', {value: 27}, {label: 'Width'}))
+    snapshot(numberInput('app.page1.width', {value: 27}, {label: 'Width', styles: {border: '1px solid green'}}))
 )
 
 test('NumberInput element produces output with default values where properties omitted',

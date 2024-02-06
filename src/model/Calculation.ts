@@ -1,13 +1,12 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType, Styling} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
 type Properties = Partial<Readonly<{
     calculation: PropertyExpr,
     label: PropertyValueType<string>,
-    display: PropertyValueType<boolean>,
-    width: PropertyValueType<number | string>,
-}>>
+    show: PropertyValueType<boolean>,
+}>> & Styling
 
 export default class Calculation extends BaseElement<Properties> implements Element {
 
@@ -17,15 +16,15 @@ export default class Calculation extends BaseElement<Properties> implements Elem
 
     get calculation() {return this.properties.calculation}
     get label() {return this.properties.label}
-    get display() {return this.properties.display ?? true}
-    get width() {return this.properties.width}
+    get show() {return this.properties.show ?? true}
+    get styles() {return this.properties.styles}
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('calculation', 'expr', {state: true}),
             propDef('label', 'string'),
-            propDef('display', 'boolean'),
-            propDef('width', 'string|number'),
+            propDef('show', 'boolean'),
+            propDef('styles', 'styles')
         ]
     }
 }

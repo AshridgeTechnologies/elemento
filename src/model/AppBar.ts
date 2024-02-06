@@ -1,9 +1,9 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
-type Properties = { title?: PropertyValueType<string> }
+type Properties = { readonly title?: PropertyValueType<string> } & Styling & Show
 
 export default class AppBar extends BaseElement<Properties> implements Element {
 
@@ -13,6 +13,8 @@ export default class AppBar extends BaseElement<Properties> implements Element {
     isLayoutOnly() { return true }
 
     get title() { return this.properties.title }
+    get show() { return this.properties.show }
+    get styles() { return this.properties.styles }
 
     canContain(elementType: ElementType) {
         return elementHasParentTypeOf(elementType, this)
@@ -20,7 +22,9 @@ export default class AppBar extends BaseElement<Properties> implements Element {
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('title')
+            propDef('title'),
+            propDef('show', 'boolean'),
+            propDef('styles', 'styles')
         ]
     }
 

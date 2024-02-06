@@ -9,6 +9,7 @@ import {BaseApp} from '../model/BaseApp'
 import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
+import {camel} from 'radash'
 
 const {isArray, isPlainObject} = lodash;
 

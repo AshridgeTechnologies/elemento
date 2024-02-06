@@ -2,7 +2,6 @@ import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import NumberInput from '../../src/model/NumberInput'
 
 test('Button has correct properties with default values', ()=> {
     const button1 = new Button('id1', 'Button 1', {})
@@ -10,24 +9,25 @@ test('Button has correct properties with default values', ()=> {
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
     expect(button1.type()).toBe('statelessUI')
-    expect(button1.content).toBe('Do something')
+    expect(button1.content).toBe('Button 1')
     expect(button1.action).toBe(undefined)
     expect(button1.appearance).toBe('outline')
-    expect(button1.display).toBe(undefined)
+    expect(button1.show).toBe(undefined)
     expect(button1.enabled).toBe(undefined)
-    expect(button1.properties).toStrictEqual({content: 'Do something', appearance: 'outline'})
+    expect(button1.styles).toBe(undefined)
 })
 
 test('Button has correct properties with specified values', ()=> {
-    const button1 = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, appearance: 'filled', display: false, enabled: true})
+    const button1 = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, appearance: 'filled', show: false, enabled: true, styles: {width: 300}})
 
     expect(button1.id).toBe('id1')
     expect(button1.name).toBe('Button 1')
     expect(button1.content).toStrictEqual(ex`"Some button"`)
     expect(button1.action).toStrictEqual(ex`doIt()`)
     expect(button1.appearance).toBe('filled')
-    expect(button1.display).toBe(false)
+    expect(button1.show).toBe(false)
     expect(button1.enabled).toBe(true)
+    expect(button1.styles).toStrictEqual({width: 300})
 })
 
 test('tests if an object is this type', ()=> {
@@ -61,7 +61,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 
 test('has correct property names', () => {
     expect(new Button('id1', 'Button 1', {content: 'Some button'}).propertyDefs.map( ({name}) => name ))
-        .toStrictEqual(['content', 'appearance', 'display', 'enabled', 'action'])
+        .toStrictEqual(['content', 'appearance', 'show', 'enabled', 'action', 'styles'])
 })
 
 test('converts to JSON without optional proerties', ()=> {
@@ -75,7 +75,7 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, appearance: 'link', display: false, enabled: false})
+    const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, appearance: 'link', show: false, enabled: false, styles: {width: 300}})
     expect(asJSON(button)).toStrictEqual({
         kind: 'Button',
         id: 'id1',
@@ -86,12 +86,12 @@ test('converts to JSON with optional properties', ()=> {
 
 test('converts from plain object', ()=> {
     const button = new Button('id1', 'Button 1', {content: ex`"Some button"`, action: ex`doIt()`, appearance: 'outline',
-        display: ex`false && true`, enabled: ex`1 == 1`})
+        show: ex`false && true`, enabled: ex`1 == 1`, styles: {width: ex`300 + 1`}})
     const plainObj = asJSON(button)
     const newButton = loadJSON(plainObj)
     expect(newButton).toStrictEqual<Button>(button)
 
-    const button2 = new Button('id1', 'Button 2', {content: `Some button`, display: false, enabled: false})
+    const button2 = new Button('id1', 'Button 2', {content: `Some button`, show: false, enabled: false})
     const plainObj2 = asJSON(button2)
     const newButton2 = loadJSON(plainObj2)
     expect(newButton2).toStrictEqual<Button>(button2)

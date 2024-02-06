@@ -5,23 +5,23 @@ import {asJSON, ex} from '../testutil/testHelpers'
 
 test('MenuItem has correct properties with default values', ()=> {
     const menuItem1 = new MenuItem('id1', 'MenuItem 1', {})
-
     expect(menuItem1.id).toBe('id1')
     expect(menuItem1.name).toBe('MenuItem 1')
     expect(menuItem1.type()).toBe('statelessUI')
     expect(menuItem1.label).toBe('MenuItem 1')
     expect(menuItem1.action).toBe(undefined)
-    expect(menuItem1.display).toBe(undefined)
+    expect(menuItem1.show).toBe(undefined)
+    expect(menuItem1.styles).toBe(undefined)
 })
 
 test('MenuItem has correct properties with specified values', ()=> {
-    const menuItem1 = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, display: false})
-
+    const menuItem1 = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: false, styles: {color: 'red'}})
     expect(menuItem1.id).toBe('id1')
     expect(menuItem1.name).toBe('MenuItem 1')
     expect(menuItem1.label).toStrictEqual(ex`"Some menuItem"`)
     expect(menuItem1.action).toStrictEqual(ex`doIt()`)
-    expect(menuItem1.display).toBe(false)
+    expect(menuItem1.show).toBe(false)
+    expect(menuItem1.styles).toStrictEqual({color: 'red'})
 })
 
 test('tests if an object is this type', ()=> {
@@ -64,7 +64,7 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const menuItem = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, display: false})
+    const menuItem = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: false})
     expect(asJSON(menuItem)).toStrictEqual({
         kind: 'MenuItem',
         id: 'id1',
@@ -74,12 +74,12 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const menuItem = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, display: ex`false && true`})
+    const menuItem = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: ex`false && true`, styles: {color: 'red'}})
     const plainObj = asJSON(menuItem)
     const newMenuItem = loadJSON(plainObj)
     expect(newMenuItem).toStrictEqual<MenuItem>(menuItem)
 
-    const menuItem2 = new MenuItem('id1', 'MenuItem 2', {label: `Some menuItem`, display: false})
+    const menuItem2 = new MenuItem('id1', 'MenuItem 2', {label: `Some menuItem`, show: false})
     const plainObj2 = asJSON(menuItem2)
     const newMenuItem2 = loadJSON(plainObj2)
     expect(newMenuItem2).toStrictEqual<MenuItem>(menuItem2)

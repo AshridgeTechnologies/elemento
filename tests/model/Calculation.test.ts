@@ -9,19 +9,19 @@ test('Calculation has correct properties with default values', ()=> {
     expect(calculation1.id).toBe('id1')
     expect(calculation1.name).toBe('Calculation 1')
     expect(calculation1.calculation).toBe(undefined)
-    expect(calculation1.display).toBe(true)
-    expect(calculation1.width).toBe(undefined)
+    expect(calculation1.show).toBe(true)
+    expect(calculation1.styles).toBe(undefined)
     expect(calculation1.label).toBe(undefined)
 })
 
 test('Calculation has correct properties with specified values', ()=> {
-    const calculation1 = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, display: true, width: 300, label: 'My Calculation'})
+    const calculation1 = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, show: true, styles: {width: 300}, label: 'My Calculation'})
 
     expect(calculation1.id).toBe('id1')
     expect(calculation1.name).toBe('Calculation 1')
     expect(calculation1.calculation).toStrictEqual(ex`"Some calculation"`)
-    expect(calculation1.display).toBe(true)
-    expect(calculation1.width).toBe(300)
+    expect(calculation1.show).toBe(true)
+    expect(calculation1.styles).toStrictEqual({width: 300})
     expect(calculation1.label).toBe('My Calculation')
 })
 
@@ -40,7 +40,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Calculation('id1', 'Calculation 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['calculation', 'label', 'display', 'width'])
+    expect(new Calculation('id1', 'Calculation 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['calculation', 'label', 'show', 'styles'])
 })
 
 test('converts to JSON without optional properties', ()=> {
@@ -54,7 +54,7 @@ test('converts to JSON without optional properties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const calculation = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, display: true, width: 200, label: 'A Calculation'})
+    const calculation = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, show: true, styles: {width: 300}, label: 'A Calculation'})
     expect(asJSON(calculation)).toStrictEqual({
         kind: 'Calculation',
         id: 'id1',
@@ -64,12 +64,12 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const calculation = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, display: ex`false && true`, width: ex`3+4`, label: 'A Calculation'})
+    const calculation = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, show: ex`false && true`, styles: {width: ex`3+4`}, label: 'A Calculation'})
     const plainObj = asJSON(calculation)
     const newCalculation = loadJSON(plainObj)
     expect(newCalculation).toStrictEqual<Calculation>(calculation)
 
-    const calculation2 = new Calculation('id1', 'Calculation 2', {calculation: ex`"Some calculation"`, display: false})
+    const calculation2 = new Calculation('id1', 'Calculation 2', {calculation: ex`"Some calculation"`, show: false})
     const plainObj2 = asJSON(calculation2)
     const newCalculation2 = loadJSON(plainObj2)
     expect(newCalculation2).toStrictEqual<Calculation>(calculation2)

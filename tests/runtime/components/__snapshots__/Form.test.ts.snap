@@ -14,7 +14,7 @@ exports[`Form element produces output containing children 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -59,7 +59,7 @@ exports[`Form element produces output containing children 1`] = `
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -127,7 +127,7 @@ exports[`Form element produces output containing nested form 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -172,7 +172,7 @@ exports[`Form element produces output containing nested form 1`] = `
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -227,7 +227,7 @@ exports[`Form element produces output containing nested form 1`] = `
         className="css-1q4ho6v-MuiStack-root"
       >
         <div
-          className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
+          className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
         >
           <label
             className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -309,7 +309,7 @@ exports[`Form element produces output with one child 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-136h9lv-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"

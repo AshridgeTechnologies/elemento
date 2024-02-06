@@ -10,7 +10,6 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import {ListElementState} from '../../../src/runtime/components/ListElement'
 import {highlightClassName, highlightElement} from '../../../src/runtime/runtimeFunctions'
-import {fireEvent} from '@testing-library/react/pure'
 
 function ListItem1(props: {path: string, $item: {text: string}}) {
     return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text) )
@@ -24,15 +23,15 @@ const [listElement, appStoreHook] = wrappedTestElement(ListElement, ListElementS
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('ListElement produces output containing ReactElement children', () => {
-    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, style: 'color: red', width: 200}))()
+    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, styles: {color: 'red'}, width: 200}))()
 })
 
 test('ListElement produces output with indexes if items have no ids', () => {
-    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listDataNoIds, style: 'color: red', width: 200}))()
+    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listDataNoIds, styles: {color: 'red'}, width: 200}))()
 })
 
 test('ListElement produces output containing ReactElement children', () => {
-    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, style: 'color: red', width: 200}))()
+    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, styles: {color: 'red'}, width: 200}))()
 })
 
 test('ListElement shows selectedItem as selected', () => {

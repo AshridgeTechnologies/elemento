@@ -4,13 +4,15 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
 
 test('DateInput has correct properties', ()=> {
-    const dateInput = new DateInput('t1', 'Date Input 1', {initialValue: {expr: 'DateVal("2002-03-04")'}, label: ex`Date One`, dataType: ex`dataType1`})
+    const dateInput = new DateInput('t1', 'Date Input 1', {initialValue: {expr: 'DateVal("2002-03-04")'}, label: ex`Date One`, dataType: ex`dataType1`, show: ex`1 || 2`, styles: {color: 'red'}})
 
     expect(dateInput.id).toBe('t1')
     expect(dateInput.name).toBe('Date Input 1')
     expect(dateInput.initialValue).toStrictEqual({expr: 'DateVal("2002-03-04")'})
     expect(dateInput.label).toStrictEqual(ex`Date One`)
     expect(dateInput.dataType).toStrictEqual(ex`dataType1`)
+    expect(dateInput.show).toStrictEqual(ex`1 || 2`)
+    expect(dateInput.styles).toStrictEqual({color: 'red'})
 })
 
 test('DateInput has default values', ()=> {
@@ -22,6 +24,8 @@ test('DateInput has default values', ()=> {
     expect(dateInput.label).toBe(`Date Input 1`)
     expect(dateInput.properties.label).toBeUndefined()
     expect(dateInput.dataType).toBeUndefined()
+    expect(dateInput.show).toBeUndefined()
+    expect(dateInput.styles).toBeUndefined()
 })
 
 test('tests if an object is this type', ()=> {
@@ -33,7 +37,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new DateInput('t1', 'Date Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
+    expect(new DateInput('t1', 'Date Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

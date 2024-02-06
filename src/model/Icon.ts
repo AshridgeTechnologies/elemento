@@ -1,15 +1,12 @@
-import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType, Show, Styling} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
-type Properties = {
-    readonly iconName?: PropertyValueType<string>,
-    readonly label?: PropertyValueType<string>,
-    readonly color?: PropertyValueType<string>,
-    readonly fontSize?: PropertyValueType<string | number>,
-    readonly action?: PropertyExpr,
-    readonly display?: PropertyValueType<boolean>,
-}
+type Properties = Partial<Readonly<{
+    iconName: PropertyValueType<string>,
+    label: PropertyValueType<string>,
+    action: PropertyExpr,
+}>> & Styling & Show
 
 export default class Icon extends BaseElement<Properties> implements Element {
 
@@ -20,20 +17,17 @@ export default class Icon extends BaseElement<Properties> implements Element {
 
     get iconName() {return this.properties.iconName}
     get label() {return this.properties.label}
-    get color() {return this.properties.color}
-    get fontSize() {return this.properties.fontSize}
-    get display() {return this.properties.display}
     get action() {return this.properties.action}
+    get show() { return this.properties.show }
+    get styles() { return this.properties.styles }
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('iconName', 'string'),
             propDef('label', 'string'),
             propDef('action', eventAction()),
-            propDef('display', 'boolean'),
-            propDef('color', 'string'),
-            propDef('fontSize', 'number'),
+            propDef('show', 'boolean'),
+            propDef('styles', 'styles')
         ]
     }
 }
-

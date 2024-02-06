@@ -14,7 +14,17 @@ exports[`TextElement adds line break before line ends 1`] = `
 </p>
 `;
 
-exports[`TextElement element produces normal output with display true 1`] = `
+exports[`TextElement element produces display: none output with show false 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-body1 css-1yb50b0-MuiTypography-root"
+  id="page1.para1"
+>
+  Hello
+  where are you
+</p>
+`;
+
+exports[`TextElement element produces normal output with show true 1`] = `
 <p
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
@@ -24,11 +34,9 @@ exports[`TextElement element produces normal output with display true 1`] = `
 </p>
 `;
 
-exports[`TextElement element produces null output with display false 1`] = `null`;
-
 exports[`TextElement element produces output containing ReactElement children 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 css-d7cqv5-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-z32pgy-MuiTypography-root"
   id="page1.para1"
 >
   Hello
@@ -92,15 +100,6 @@ exports[`TextElement element produces output containing undefined children 1`] =
 />
 `;
 
-exports[`TextElement element produces output containing valueOf  object 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  where are you
-</p>
-`;
-
 exports[`TextElement element produces output containing valueOf object 1`] = `
 <p
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -112,7 +111,7 @@ exports[`TextElement element produces output containing valueOf object 1`] = `
 
 exports[`TextElement gets property values supplied as state objects 1`] = `
 <p
-  className="MuiTypography-root MuiTypography-body1 css-1yr004l-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-1g108wm-MuiTypography-root"
   id="page1.para1"
 >
   Hello

@@ -1,10 +1,21 @@
 import React from 'react'
 import {Button, Menu as Mui_Menu} from '@mui/material'
 import {compose} from 'ramda'
+import {PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
 
-type Properties = { path: string, label: string, filled?: boolean, children?: any }
+type Properties = Readonly<{
+    path: string,
+    label?: PropVal<string>,
+    filled?: PropVal<boolean>,
+    show?: PropVal<boolean>,
+    styles?: StylesProps
+    children?: any
+}>
 
-export default function Menu({path, label, filled, children = []}: Properties) {
+export default function Menu({path, children = [], ...props}: Properties) {
+    const {label, filled, show = true, styles = {}} = valueOfProps(props)
+    const showProps = show ? {} : {display: 'none'}
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,7 +33,7 @@ export default function Menu({path, label, filled, children = []}: Properties) {
         const key = props.key ?? props.label ?? index
         return React.cloneElement(child, {action: newAction, key})
     })
-    return <div>
+    return <div style={showProps}>
         <Button
             id={buttonId}
             variant={filled ? 'contained' : 'text'}
@@ -36,12 +47,13 @@ export default function Menu({path, label, filled, children = []}: Properties) {
             {label}
         </Button>
         <Mui_Menu
-            id={path}
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
             MenuListProps={{
+                id: path,
                 'aria-labelledby': buttonId,
+                sx: styles
             }}
         >
             {modifiedChildren}

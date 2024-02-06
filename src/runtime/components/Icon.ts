@@ -1,25 +1,35 @@
 import React from 'react'
 import {Icon as MuiIcon, IconButton as MuiIconButton} from '@mui/material'
-import {valueOf, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesProps, valueOf, valueOfProps} from '../runtimeFunctions'
 
-type Properties = {path: string, iconName: string, label?: string, color?: string, fontSize?: string | number, action?: () => void, display?: boolean}
+type Properties = Readonly<{
+    path: string,
+    iconName: PropVal<string>,
+    label?: PropVal<string>,
+    action?: () => void,
+    show?: PropVal<boolean>,
+    styles?: StylesProps
+}>
 
 export default function Icon({path, action,  ...props}: Properties) {
-    const {iconName, label, color, fontSize, display} = valueOfProps(props)
+    const {iconName, label, show = true, styles = {}} = valueOfProps(props)
 
-
-    const sxDisplay = display !== undefined && !display ? {display: 'none'} : {}
-    const sx = {display: sxDisplay, color, fontSize}
+    const showProps = !show ? {display: 'none'} : {}
+    const sx = {
+        ...showProps,
+        ...styles
+    }
 
     if (action) {
         return React.createElement(MuiIconButton, {
             id: path,
             'aria-label': label,
             title: label,
-            sx: {display: sxDisplay},
+            sx: showProps,
             onClick: action,
-        }, React.createElement(MuiIcon, {sx: {color, fontSize}}, valueOf(iconName)))
+        }, React.createElement(MuiIcon, {sx: styles}, valueOf(iconName)))
 
     }
-    return React.createElement(MuiIcon, {id: path, 'aria-label': label, title: label, sx: {display: sxDisplay, color, fontSize}}, valueOf(iconName))
+    return React.createElement(MuiIcon, {id: path, 'aria-label': label, title: label,
+        sx: {...showProps, ...styles}}, valueOf(iconName))
 }

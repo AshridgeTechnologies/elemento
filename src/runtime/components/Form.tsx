@@ -13,9 +13,9 @@ import SelectInput, {SelectInputState} from './SelectInput'
 import TrueFalseInput, {TrueFalseInputState} from './TrueFalseInput'
 import DateInput, {DateInputState} from './DateInput'
 import {isNil, last, without} from 'ramda'
-import {InfoButton, InputWithInfo} from './InputWithInfo'
 import DecimalType from '../types/DecimalType'
 import BigNumber from 'bignumber.js'
+import {BaseInputComponentProperties, InfoButton} from './InputComponentHelpers'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -26,7 +26,7 @@ const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     }
 }
 
-type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean>, horizontal?: boolean, width?: string | number, wrap?: boolean, keyAction?: KeyboardEventHandler, children?: any }
+type Properties = BaseInputComponentProperties & { horizontal?: boolean, wrap?: boolean, keyAction?: KeyboardEventHandler, children?: any }
 
 const formField = (parentPath: string, type: BaseType<any, any>) => {
     const {name, codeName} = type
@@ -88,10 +88,11 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>) => 
     return {}
 }
 
-export default function Form({children, path, horizontal = false, wrap = false, keyAction, ...props}: Properties) {
-    const {width, label, ...propVals} = valueOfProps(props)
+export default function Form({children, path, ...props}: Properties) {
+    const {horizontal = false, wrap = false, show = true, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
     const flexWrap = wrap ? 'wrap' : 'nowrap'
+    const showProps = show ? {} : {display: 'none'}
     const sx = {
         py: horizontal ? 0 : 1,
         overflow: horizontal ? 'visible' : 'scroll',
@@ -100,6 +101,8 @@ export default function Form({children, path, horizontal = false, wrap = false, 
         boxSizing: 'border-box',
         alignItems: horizontal ? 'baseline' : 'flex-start',
         padding: horizontal ? 0 : 1,
+        ...showProps,
+        ...styles
     }
 
     const state = useGetObjectState<BaseFormState>(path)
@@ -130,21 +133,18 @@ export default function Form({children, path, horizontal = false, wrap = false, 
     const formChildrenFragment = createElement(Fragment, {}, ...dataTypeChildren, ...additionalChildren)
 
     const infoButton = dataType?.description ? <InfoButton description = {dataType?.description}/> : null
-    const formControl =
-        <Box id={path} onKeyDown={keyAction}>
-            <Typography variant='h6'>{label}{infoButton}</Typography>
-            <Stack
-                direction={direction}
-                flexWrap={flexWrap}
-                justifyContent='flex-start'
-                alignItems='flex-start'
-                spacing={2}
-                sx={sx}
-                {...propVals}>
-                {formChildrenFragment}
-            </Stack>
-            {error ? <FormHelperText error={error}>{helperText}</FormHelperText> : null}
-        </Box>
-    return formControl
+    return <Box id={path} onKeyDown={keyAction}>
+        <Typography variant='h6'>{label}{infoButton}</Typography>
+        <Stack
+            direction={direction}
+            flexWrap={flexWrap}
+            justifyContent='flex-start'
+            alignItems='flex-start'
+            spacing={2}
+            sx={sx}>
+            {formChildrenFragment}
+        </Stack>
+        {error ? <FormHelperText error={error}>{helperText}</FormHelperText> : null}
+    </Box>
 }
 

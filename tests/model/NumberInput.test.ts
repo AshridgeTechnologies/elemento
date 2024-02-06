@@ -4,13 +4,15 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
 test('NumberInput has correct properties', ()=> {
-    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`, dataType: ex`dataType1`})
+    const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`, dataType: ex`dataType1`, show: false, styles: {border: '1px solid red', color: ex`"text.primary"`}})
 
     expect(numberInput.id).toBe('t1')
     expect(numberInput.name).toBe('Number Input 1')
     expect(numberInput.initialValue).toStrictEqual({expr: '40'})
     expect(numberInput.label).toStrictEqual(ex`Number One`)
     expect(numberInput.dataType).toStrictEqual(ex`dataType1`)
+    expect(numberInput.show).toBe(false)
+    expect(numberInput.styles).toStrictEqual({border: '1px solid red', color: ex`"text.primary"`})
 })
 
 test('NumberInput has default values', ()=> {
@@ -22,6 +24,8 @@ test('NumberInput has default values', ()=> {
     expect(numberInput.label).toBe(`Number Input 1`)
     expect(numberInput.properties.label).toBeUndefined()
     expect(numberInput.dataType).toBeUndefined()
+    expect(numberInput.show).toBeUndefined()
+    expect(numberInput.styles).toBeUndefined()
 })
 
 test('tests if an object is this type', ()=> {
@@ -33,7 +37,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new NumberInput('t1', 'Number Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
+    expect(new NumberInput('t1', 'Number Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
 })
 
 test('has correct state property names', () => {

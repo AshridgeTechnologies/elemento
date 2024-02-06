@@ -11,23 +11,23 @@ import {testContainer} from '../../testutil/rtlHelpers'
 const doIt = () => {}
 
 test('Icon element produces button output with properties supplied',
-    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', label: 'Star it', action: () => {doIt()}}))
+    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', label: 'Star it', styles: {color: 'red'}, action: () => {doIt()}}))
 )
 
 test('Icon element produces empty output with display false',
-    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action: () => {doIt()}, display: false}))
+    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action: () => {doIt()}, show: false}))
 )
 
 test('Icon element produces icon output with properties supplied',
-    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', label: 'Star it'}))
+    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', label: 'Star it', styles: {color: 'blue'}}))
 )
 
 test('Icon element produces empty  output with display false',
-    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action: () => {doIt()}, display: false}))
+    snapshot(createElement(Icon, {path: 'app.page1.save', iconName: 'star', action: () => {doIt()}, show: false}))
 )
 
 test('Icon element produces output with properties supplied as state values', async () => {
-        const element = createElement(Icon, {path: 'app.page1.save', iconName: valueObj('star'), action: () => {doIt()}, display: valueObj(true)})
+        const element = createElement(Icon, {path: 'app.page1.save', iconName: valueObj('star'), action: () => {doIt()}, show: valueObj(true)})
         await wait(10)
         expect(componentJSON(element)).toMatchSnapshot()
     }
@@ -47,4 +47,3 @@ test('Icon does action when clicked', async () => {
     await user.click(iconEl)
     expect(action).toBeCalled()
 } )
-

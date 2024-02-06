@@ -24,59 +24,6 @@ exports[`Button element produces output with default values where properties omi
 </button>
 `;
 
-exports[`Button element produces output with display false 1`] = `
-<button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation css-bx9fca-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
-  id="app.page1.save"
-  onBlur={[Function]}
-  onClick={[Function]}
-  onContextMenu={[Function]}
-  onDragLeave={[Function]}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  onKeyUp={[Function]}
-  onMouseDown={[Function]}
-  onMouseLeave={[Function]}
-  onMouseUp={[Function]}
-  onTouchEnd={[Function]}
-  onTouchMove={[Function]}
-  onTouchStart={[Function]}
-  tabIndex={0}
-  type="button"
->
-  Click me!
-  <span
-    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-  />
-</button>
-`;
-
-exports[`Button element produces output with display true 1`] = `
-<button
-  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation css-zt059t-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
-  id="app.page1.save"
-  onBlur={[Function]}
-  onClick={[Function]}
-  onContextMenu={[Function]}
-  onDragLeave={[Function]}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  onKeyUp={[Function]}
-  onMouseDown={[Function]}
-  onMouseLeave={[Function]}
-  onMouseUp={[Function]}
-  onTouchEnd={[Function]}
-  onTouchMove={[Function]}
-  onTouchStart={[Function]}
-  tabIndex={0}
-  type="button"
->
-  Click me!
-</button>
-`;
-
 exports[`Button element produces output with enabled false 1`] = `
 <button
   className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
@@ -143,6 +90,22 @@ exports[`Button element produces output with link style 1`] = `
 </a>
 `;
 
+exports[`Button element produces output with link style and styles 1`] = `
+<a
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-167u9bt-MuiTypography-root-MuiLink-root"
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-dpqqps-MuiTypography-root"
+  >
+    Click me!
+  </p>
+</a>
+`;
+
 exports[`Button element produces output with properties supplied 1`] = `
 <button
   className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
@@ -190,5 +153,86 @@ exports[`Button element produces output with properties supplied as state values
   type="button"
 >
   Click me!
+</button>
+`;
+
+exports[`Button element produces output with show false 1`] = `
+<button
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation css-bx9fca-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+  <span
+    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;
+
+exports[`Button element produces output with show true 1`] = `
+<button
+  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-disableElevation css-zt059t-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+</button>
+`;
+
+exports[`Button element produces output with styles supplied 1`] = `
+<button
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-disableElevation css-1bh4wyw-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  Click me!
+  <span
+    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
 </button>
 `;

@@ -41,15 +41,14 @@ export function parseExpr(expr: string) {
     return parse(exprToParse, {parser: {parse: parseAcorn}})
 }
 
-export function parseExprAndIdentifiers(element: Element, propertyName: string, identifiers: IdentifierCollector,
-                                        isKnown: (name: string) => boolean, exprType: ExprType = 'singleExpression', onError: (err: string) => void): void {
+export function parseExprAndIdentifiers(propertyValue: PropertyValue | undefined, identifiers: IdentifierCollector,
+                                        isKnown: (name: string) => boolean, exprType: ExprType = 'singleExpression', onError: (err: string) => void, isJavaScript: boolean): void {
 
-    const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
     if (propertyValue === undefined) {
         return undefined
     }
 
-    function checkIsExpression(ast: any) {
+    const checkIsExpression = (ast: any) => {
         const bodyStatements = ast.program.body as any[]
         if (exprType === 'singleExpression') {
             if (bodyStatements.length !== 1) {
@@ -69,23 +68,20 @@ export function parseExprAndIdentifiers(element: Element, propertyName: string, 
         }
     }
 
-    function checkErrors(ast: any) {
+    const checkErrors = (ast: any) => {
         if (ast.program.errors?.length) {
             throw new Error(ast.program.errors[0].description)
         }
     }
 
-    function isShorthandProperty(node: any) {
-        return node.shorthand
-    }
+    const isShorthandProperty = (node: any) => node.shorthand
 
     if (isExpr(propertyValue)) {
         const {expr} = propertyValue
         try {
             const ast = parseExpr(expr)
-            const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
 
-            if (!isJavascriptFunctionBody) {
+            if (!isJavaScript) {
                 checkIsExpression(ast)
             }
             checkErrors(ast)
@@ -122,17 +118,8 @@ export function parseExprAndIdentifiers(element: Element, propertyName: string, 
 
             const identifierNames = Array.from(thisIdentifiers.values())
             const isLocal = (id: string) => variableIdentifiers.has(id)
-            const isSpecialVar = (id: string) => {
-                return propertyName === 'keyAction' && id === '$key'
-                    || propertyName === 'submitAction' && id === '$data'
-            }
-            const isArgument = (id: string) => {
-                const def = element.getPropertyDef(propertyName)
-                const eventActionDef = def.type as EventActionPropertyDef
-                return eventActionDef.type === 'Action' && eventActionDef.argumentNames.includes(id)
-            }
-            const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id) && !isSpecialVar(id) && !isArgument(id))
-            if (unknownIdentifiers.length && !isJavascriptFunctionBody) {
+            const unknownIdentifiers = identifierNames.filter(id => !isKnown(id) && !isLocal(id))
+            if (unknownIdentifiers.length && !isJavaScript) {
                 const errorMessage = `Unknown names: ${unknownIdentifiers.join(', ')}`
                 onError(errorMessage)
             }

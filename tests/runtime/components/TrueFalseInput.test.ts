@@ -12,7 +12,7 @@ const [trueFalseInput, appStoreHook] = wrappedTestElement(TrueFalseInput, TrueFa
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('TrueFalseInput element produces output with properties supplied',
-    snapshot(trueFalseInput('app.page1.width', {value: true}, {label: 'Covered'}))
+    snapshot(trueFalseInput('app.page1.width', {value: true}, {label: 'Covered', styles: {color: 'red'}}))
 )
 
 test('TrueFalseInput element produces output with default values where properties omitted',

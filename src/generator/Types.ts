@@ -22,7 +22,7 @@ const runtimeNames = {
 export const runtimeElementName = (element: Element) => runtimeElementTypeName(element.kind)
 export const runtimeElementTypeName = (elementType: ElementType) => runtimeNames[elementType as keyof typeof runtimeNames] ?? elementType
 export type ExprType = 'singleExpression' | 'action' | 'multilineExpression' | 'reference'
-export type ElementErrors = { [propertyName: string]: string }
+export type ElementErrors = { [propertyName: string]: string | ElementErrors }
 export type AllErrors = { [elementId: ElementId]: ElementErrors }
 
 export interface GeneratorOutput {

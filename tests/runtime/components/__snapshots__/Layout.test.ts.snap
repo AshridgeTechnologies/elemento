@@ -2,7 +2,7 @@
 
 exports[`Layout element produces output containing children horizontal 1`] = `
 <div
-  className="css-tr2fgy-MuiStack-root"
+  className="css-1leqdyc-MuiStack-root"
   id="app.page1.things"
 >
   <p
@@ -20,9 +20,9 @@ exports[`Layout element produces output containing children horizontal 1`] = `
 </div>
 `;
 
-exports[`Layout element produces output containing children horizontal and wrapped with background color 1`] = `
+exports[`Layout element produces output containing children horizontal and wrapped with styles 1`] = `
 <div
-  className="css-xfzjat-MuiStack-root"
+  className="css-1fu79s8-MuiStack-root"
   id="app.page1.things"
 >
   <p
@@ -42,7 +42,7 @@ exports[`Layout element produces output containing children horizontal and wrapp
 
 exports[`Layout element produces output containing children vertical 1`] = `
 <div
-  className="css-146qj8d-MuiStack-root"
+  className="css-14r3ihu-MuiStack-root"
   id="app.page1.things"
 >
   <p

@@ -4,7 +4,7 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
 test('SelectInput has correct properties', ()=> {
-    const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`Select One`, dataType: ex`dataType1`})
+    const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`, label: ex`Select One`, dataType: ex`dataType1`, show: true, styles: {color: 'red'}})
 
     expect(selectInput.id).toBe('t1')
     expect(selectInput.name).toBe('Select Input 1')
@@ -12,6 +12,8 @@ test('SelectInput has correct properties', ()=> {
     expect(selectInput.initialValue).toStrictEqual(ex`Blue`)
     expect(selectInput.label).toStrictEqual(ex`Select One`)
     expect(selectInput.dataType).toStrictEqual(ex`dataType1`)
+    expect(selectInput.show).toBe(true)
+    expect(selectInput.styles).toStrictEqual( {color: 'red'})
 })
 
 test('SelectInput has correct default values', ()=> {
@@ -24,6 +26,8 @@ test('SelectInput has correct default values', ()=> {
     expect(selectInput.label).toBe('Select Input 1')
     expect(selectInput.properties.label).toBeUndefined()
     expect(selectInput.dataType).toBeUndefined()
+    expect(selectInput.show).toBeUndefined()
+    expect(selectInput.styles).toBeUndefined()
 })
 
 test('tests if an object is this type', ()=> {
@@ -35,7 +39,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'values'])
+    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'values', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

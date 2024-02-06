@@ -1,14 +1,5 @@
 import Element from './Element'
-import {
-    ActionDef,
-    ComponentType,
-    ElementId,
-    ElementType,
-    InsertPosition,
-    ParentType,
-    PropertyDef,
-    PropertyType
-} from './Types'
+import {ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
 import {uniq} from 'ramda'
 
@@ -73,10 +64,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     abstract get propertyDefs(): PropertyDef[]
-
-    get actionDefs(): ActionDef[] {
-        return []
-    }
 
     get stateProperties(): string[] {
         return []

@@ -4,16 +4,26 @@ import {valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {TrueFalseType} from '../types'
-import {InputWithInfo} from './InputWithInfo'
+import {
+    BaseInputComponentProperties,
+    getLabelWithRequired,
+    inputElementProps,
+    propsForInputComponent,
+    sxPropsForFormControl
+} from './InputComponentHelpers'
 
-type Properties = {path: string, label?: string}
+type Properties = BaseInputComponentProperties
 
 export default function TrueFalseInput({path, ...props}: Properties) {
+    const {label = '', readOnly, show = true, styles = {}} = valueOfProps(props)
+    const sxProps = {sx: sxPropsForFormControl(styles, show)}
+
     const state = useGetObjectState<TrueFalseInputState>(path)
-    const value = state .dataValue ?? false
-    const dataType = state.dataType
-    const {label = ''} = valueOfProps(props)
-    const required = dataType?.required
+    const {dataValue, dataType} = state
+    const value = dataValue ?? false
+    const labelWithRequired = getLabelWithRequired(dataType, label)
+    const inputComponentProps = propsForInputComponent(dataType, styles)
+    const inputProps = inputElementProps(styles, false, {})
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -30,17 +40,20 @@ export default function TrueFalseInput({path, ...props}: Properties) {
         size: 'small',
         color: 'primary',
         checked: value,
+        readOnly,
         onChange: onChange,
-        onBlur
+        onBlur,
+        ...inputProps,
+        ...inputComponentProps.InputProps,
     })
-    const formControl = <FormControl error variant="standard">
-        <FormControlLabel label={label}
+    return <FormControl error={error} variant="standard">
+        <FormControlLabel label={labelWithRequired}
                           labelPlacement='start'
                           htmlFor={path}
-                          control={checkbox}/>
+                          control={checkbox}
+                          sx={sxProps.sx}/>
         <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
-    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseType> {
@@ -51,7 +64,6 @@ export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseT
         return stateValue !== undefined
             && (stateValue ?? false) !== (this.originalValue ?? false)
     }
-
 }
 
 TrueFalseInput.State = TrueFalseInputState

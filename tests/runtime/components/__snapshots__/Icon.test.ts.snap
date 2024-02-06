@@ -25,7 +25,7 @@ exports[`Icon element produces button output with properties supplied 1`] = `
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1mup3j0-MuiIcon-root"
   >
     star
   </span>
@@ -99,7 +99,7 @@ exports[`Icon element produces icon output with properties supplied 1`] = `
 <span
   aria-hidden={true}
   aria-label="Star it"
-  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-oo23qg-MuiIcon-root"
   id="app.page1.save"
   title="Star it"
 >

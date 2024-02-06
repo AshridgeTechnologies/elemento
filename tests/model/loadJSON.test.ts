@@ -35,3 +35,9 @@ test('converts ISO date string to Date', () => {
     const newDateType = loadJSONFromString(JSON.stringify(dateType1))
     expect(newDateType).toStrictEqual<DateType>(dateType1)
 })
+
+test('does not convert numeric string to Date', () => {
+    const textInput = new TextInput('t1', 'Text 1', {label: "32"})
+    const newTextInput = loadJSONFromString(JSON.stringify(textInput))
+    expect(newTextInput).toStrictEqual<TextInput>(textInput)
+})

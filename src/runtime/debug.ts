@@ -6,10 +6,8 @@ export const useDebugExpr = () => {
         const listener = ((event: CustomEvent<string>)=> {
             setDebugExprUpdateTime(Date.now())
         })as EventListener
-        console.log('adding debugExpr event listener')
         window.addEventListener('debugExpr', listener)
         return () => {
-            console.log('removing debugExpr event listener')
             window.removeEventListener('debugExpr', listener)
         }
     }, [])
@@ -17,7 +15,6 @@ export const useDebugExpr = () => {
 }
 
 export const elementoDebug = (val: any) => {
-    console.log('elementoDebug', val)
     const event = new CustomEvent('debugData', { detail: val })
     window.dispatchEvent(event)
 }

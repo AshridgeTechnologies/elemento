@@ -1,24 +1,16 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
-import {
-    ComponentType,
-    ElementType, eventAction,
-    ParentType,
-    PropertyDef,
-    PropertyExpr,
-    PropertyType,
-    PropertyValueType
-} from './Types'
+import {propDef} from './BaseElement'
+import {ComponentType, ElementType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyType, PropertyValueType} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 import BaseInputElement, {BaseInputProperties} from './BaseInputElement'
 
-type Properties = BaseInputProperties<object> & {
-    readonly horizontal?: PropertyValueType<boolean>,
-    readonly width?: PropertyValueType<number | string>,
-    readonly wrap?: PropertyValueType<boolean>,
-    readonly keyAction?: PropertyExpr,
-    readonly submitAction?: PropertyExpr,
-}
+type Properties = BaseInputProperties<object> & Partial<Readonly<{
+    horizontal: PropertyValueType<boolean>,
+    width: PropertyValueType<number | string>,
+    wrap: PropertyValueType<boolean>,
+    keyAction: PropertyExpr,
+    submitAction: PropertyExpr,
+}>>
 
 export default class Form extends BaseInputElement<Properties> implements Element {
 
@@ -41,12 +33,16 @@ export default class Form extends BaseInputElement<Properties> implements Elemen
     get propertyDefs(): PropertyDef[] { return [
         propDef('initialValue', 'expr', {state: true}),
         ...super.propertyDefs.filter( ({name}) => name !== 'initialValue'),
-        propDef('horizontal', 'boolean'),
-        propDef('width', 'string|number'),
-        propDef('wrap', 'boolean'),
-        propDef('keyAction', eventAction('$event')),
-        propDef('submitAction', eventAction('$form', '$data'), {state: true, multilineExpr: true}),
     ] }
+
+    protected ownPropertyDefs(): PropertyDef[] {
+        return [
+            propDef('horizontal', 'boolean'),
+            propDef('wrap', 'boolean'),
+            propDef('keyAction', eventAction('$event')),
+            propDef('submitAction', eventAction('$form', '$data'), {state: true, multilineExpr: true}),
+        ]
+    }
 
     get valueType(): PropertyType {
         return 'object'

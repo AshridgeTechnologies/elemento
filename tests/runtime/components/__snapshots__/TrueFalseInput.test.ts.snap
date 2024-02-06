@@ -5,7 +5,7 @@ exports[`TrueFalseInput element produces output with default values where proper
   className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
 >
   <label
-    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart Mui-error css-1f2kvjf-MuiFormControlLabel-root"
+    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1fp819w-MuiFormControlLabel-root"
     htmlFor="app.page1.height"
   >
     <span
@@ -31,6 +31,7 @@ exports[`TrueFalseInput element produces output with default values where proper
         disabled={false}
         id="app.page1.height"
         onChange={[Function]}
+        readOnly={false}
         type="checkbox"
       />
       <svg
@@ -53,7 +54,7 @@ exports[`TrueFalseInput element produces output with default values where proper
     />
   </label>
   <p
-    className="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
   />
 </div>
 `;
@@ -63,11 +64,12 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
   className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
 >
   <label
-    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart Mui-error css-1f2kvjf-MuiFormControlLabel-root"
+    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1fp819w-MuiFormControlLabel-root"
     htmlFor="app.page1.width"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-6nizlf-MuiButtonBase-root-MuiCheckbox-root"
+      endAdornment={null}
       onBlur={[Function]}
       onContextMenu={[Function]}
       onDragLeave={[Function]}
@@ -89,6 +91,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
         disabled={false}
         id="app.page1.width"
         onChange={[Function]}
+        readOnly={false}
         type="checkbox"
       />
       <svg
@@ -110,7 +113,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
     </span>
   </label>
   <p
-    className="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
   />
 </div>
 `;

@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import {Calculation, Data} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
+import {Calculation} from '../../../src/runtime/components/index'
+import {testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {testContainer} from '../../testutil/rtlHelpers'
@@ -13,7 +13,7 @@ const [calculation] = wrappedTestElement(Calculation, CalculationState)
 
 test('Calculation element produces output with properties supplied', () => {
     const {container} = render(calculation('app.page1.width', {value: 'Hi there!'}, {
-            width: 23,
+            styles: {width: 23},
             label: 'Item Description'
         }))
     expect(container.innerHTML).toMatchSnapshot()

@@ -17,15 +17,23 @@ test('Button element produces output with properties supplied',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'outline', action: () => {doIt()}}))
 )
 
+test('Button element produces output with styles supplied',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'outline', styles: {width: 300}, action: () => {doIt()}}))
+)
+
 test('Button element produces output with link style',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'link', action: () => {doIt()}}))
 )
 
-test('Button element produces output with display true',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'filled', action: () => {doIt()}, display: true}))
+test('Button element produces output with link style and styles',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'link', styles: {fontFamily: 'serif'}, action: () => {doIt()}}))
 )
-test('Button element produces output with display false',
-    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}, display: false}))
+
+test('Button element produces output with show true',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'filled', action: () => {doIt()}, show: true}))
+)
+test('Button element produces output with show false',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', action: () => {doIt()}, show: false}))
 )
 
 test('Button element produces output with enabled true',
@@ -36,7 +44,7 @@ test('Button element produces output with enabled false',
 )
 
 test('Button element produces output with properties supplied as state values', async () => {
-        const element = createElement(Button, {path: 'app.page1.save', content: valueObj('Click me!'), action: () => {doIt()}, display: valueObj(false)})
+        const element = createElement(Button, {path: 'app.page1.save', content: valueObj('Click me!'), action: () => {doIt()}, show: valueObj(false)})
         await wait(10)
         expect(componentJSON(element)).toMatchSnapshot()
     }

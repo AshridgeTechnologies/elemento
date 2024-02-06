@@ -18,7 +18,7 @@ exports[`AppBar element produces output with children 1`] = `
         First text
       </p>
       <p
-        className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
         id="app.bar1.text2"
       >
         Second text
@@ -30,7 +30,7 @@ exports[`AppBar element produces output with children 1`] = `
 
 exports[`AppBar element produces output with children and title 1`] = `
 <header
-  className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+  className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-gxjovy-MuiPaper-root-MuiAppBar-root"
   id="app.bar1"
 >
   <div
@@ -51,7 +51,7 @@ exports[`AppBar element produces output with children and title 1`] = `
         First text
       </p>
       <p
-        className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
         id="app.bar1.text2"
       >
         Second text
@@ -63,7 +63,7 @@ exports[`AppBar element produces output with children and title 1`] = `
 
 exports[`AppBar element produces output with title 1`] = `
 <header
-  className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+  className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-gxjovy-MuiPaper-root-MuiAppBar-root"
   id="app.bar1"
 >
   <div

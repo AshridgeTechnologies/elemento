@@ -1,14 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ListElement produces empty output if items is null 1`] = `
-<ul
-  className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"
-  id="app.page1.list1"
-  onScroll={[Function]}
-  style="color: red"
-/>
-`;
-
 exports[`ListElement produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `
 <ul
   className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
@@ -19,10 +10,9 @@ exports[`ListElement produces empty output if items is null but there is a selec
 
 exports[`ListElement produces output containing ReactElement children 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"
+  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
-  style="color: red"
 >
   <div
     className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
@@ -81,10 +71,9 @@ exports[`ListElement produces output containing ReactElement children 1`] = `
 
 exports[`ListElement produces output containing ReactElement children 2`] = `
 <ul
-  className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"
+  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
-  style="color: red"
 >
   <div
     className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
@@ -143,10 +132,9 @@ exports[`ListElement produces output containing ReactElement children 2`] = `
 
 exports[`ListElement produces output with indexes if items have no ids 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-kqs5al-MuiList-root"
+  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
-  style="color: red"
 >
   <div
     className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
@@ -272,67 +260,6 @@ exports[`ListElement shows selectedItem as selected 1`] = `
     <span
       className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
     />
-  </div>
-</ul>
-`;
-
-exports[`ListElement shows selectedItem as selected from id 1`] = `
-<ul
-  className="MuiList-root MuiList-padding css-swnyro-MuiList-root"
-  id="app.page1.list1"
-  onScroll={[Function]}
->
-  <div
-    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
-    id="app.page1.list1.#id1"
-    onBlur={[Function]}
-    onClick={[Function]}
-    onContextMenu={[Function]}
-    onDragLeave={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="button"
-    tabIndex={0}
-  >
-    <p
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.list1.#id1.Text99"
-    >
-      where are you?
-    </p>
-  </div>
-  <div
-    className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider Mui-selected css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
-    id="app.page1.list1.#id2"
-    onBlur={[Function]}
-    onClick={[Function]}
-    onContextMenu={[Function]}
-    onDragLeave={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="button"
-    tabIndex={0}
-  >
-    <p
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.list1.#id2.Text99"
-    >
-      over here!
-    </p>
   </div>
 </ul>
 `;

@@ -6,37 +6,44 @@ import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
-import {InputWithInfo} from './InputWithInfo'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../types/DecimalType'
+import BaseType from '../types/BaseType'
+import {
+    BaseInputComponentProperties,
+    getLabelWithRequired,
+    inputElementProps,
+    propsForInputComponent,
+    sxPropsForFormControl
+} from './InputComponentHelpers'
 
-type Properties = {path: string, label?: PropVal<string>, }
+type Properties = BaseInputComponentProperties
+
+const decPlaces = (dataType: BaseType<any, any> | undefined) => dataType?.kind === 'Decimal' ? (dataType as DecimalType).decimalPlaces : undefined
+
+const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
+    const props = definedPropertiesOf(pick(['max', 'min'], dataType ?? {}))
+    props.step = decPlaces(dataType) === 0 ? 1 : undefined
+    return props
+}
 
 export default function NumberInput({path, ...props}: Properties) {
-    const {label} = valueOfProps(props)
+    const {label, readOnly, show = true, styles = {}} = valueOfProps(props)
+    const sxProps = {sx: sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})}
 
     const state = useGetObjectState<NumberInputState>(path)
-    const dataType = state.dataType
-    const decPlaces = dataType?.kind === 'Decimal' ? (dataType as DecimalType).decimalPlaces : undefined
-    const numericProps = {type: 'number', sx: { minWidth: 120, flex: 0 }}
+    const {dataValue, dataType} = state
 
     const formatValue = () => {
-        const {dataValue} = state
         if (isNil(dataValue)) return ''
-        if (decPlaces !== undefined){
-            return dataValue.toFixed(decPlaces)
-        }
-        return dataValue.toString()
+        const dp = decPlaces(dataType)
+        return dp !== undefined ? dataValue.toFixed(dp) : dataValue.toString()
     }
     const value = state.controlValue ?? formatValue()
-    const required = dataType?.required
-    const optionalProps = definedPropertiesOf({label})
-
-    const dataTypeProps = definedPropertiesOf(pick(['max', 'min'], dataType ?? {}))
-    const step = decPlaces === 0 ? 1 : undefined
-
-    const inputPropsValues = {...dataTypeProps, step}
-    const inputProps = Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
+    const labelWithRequired = getLabelWithRequired(dataType, label)
+    const optionalProps = definedPropertiesOf({label: labelWithRequired})
+    const inputComponentProps = propsForInputComponent(dataType, styles)
+    const inputProps = inputElementProps(styles, readOnly, dataTypeProps(dataType))
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -52,21 +59,21 @@ export default function NumberInput({path, ...props}: Properties) {
     }
     const onBlur = (_event: FocusEvent) => state._setBlurred()
 
-    const formControl = React.createElement(TextField, {
+    return React.createElement(TextField, {
         id: path,
         variant: 'outlined',
         size: 'small',
+        type: 'number',
         value,
         error,
         helperText,
         onChange,
         onBlur,
         ...inputProps,
-        ...numericProps,
+        ...inputComponentProps,
+        ...sxProps,
         ...optionalProps
     })
-
-    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {

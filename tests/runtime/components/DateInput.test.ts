@@ -18,7 +18,7 @@ const stateAt = (path: string) => appStoreHook.stateAt(path)
 const dateType1 = new DateType('startDate', {min: new Date('2020-01-01'), max: new Date('2021-12-31')})
 
 test('DateInput element produces output with properties supplied',
-    snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date'}))
+    snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', styles: {color: 'red'}}))
 )
 
 test('DateInput element produces readonly output with properties supplied',

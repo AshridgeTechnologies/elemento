@@ -1,15 +1,12 @@
 import Element from './Element'
-import {PropertyExpr, PropertyType, PropertyValueType} from './Types'
+import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement, {BaseInputProperties} from './BaseInputElement'
 import {propDef} from './BaseElement'
 
-export type Properties = BaseInputProperties<string> & {
-    readonly multiline?: PropertyValueType<boolean>,
-    readonly width?: PropertyValueType<string|number>,
-    readonly readOnly?: PropertyValueType<boolean>,
-    readonly label?: PropertyValueType<string>
-    readonly dataType?: PropertyExpr
-}
+export type Properties = BaseInputProperties<string>
+    & Partial<Readonly<{
+    multiline: PropertyValueType<boolean>,
+}>>
 
 export default class TextInput extends BaseInputElement<Properties> implements Element {
 
@@ -18,12 +15,9 @@ export default class TextInput extends BaseInputElement<Properties> implements E
     get valueType(): PropertyType { return 'string' }
 
     get multiline() { return this.properties.multiline }
-    get width() { return this.properties.width }
 
-    get propertyDefs() {
+    protected ownPropertyDefs() {
         return [
-            ...super.propertyDefs,
-            propDef('width', 'string|number'),
             propDef('multiline', 'boolean'),
         ]
     }

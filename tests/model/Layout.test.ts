@@ -14,8 +14,8 @@ test('Layout has correct defaults', ()=> {
     expect(layout.name).toBe('Layout the First')
     expect(layout.codeName).toBe('LayouttheFirst')
     expect(layout.horizontal).toBe(false)
-    expect(layout.width).toBe(undefined)
-    expect(layout.backgroundColor).toBe(undefined)
+    expect(layout.show).toBe(undefined)
+    expect(layout.styles).toBe(undefined)
     expect(layout.wrap).toBe(false)
     expect(layout.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
@@ -23,14 +23,14 @@ test('Layout has correct defaults', ()=> {
 test('Layout has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout the First', {horizontal: ex`1 === 2`, width: 500, backgroundColor: 'blue', wrap: true}, [text1, text2])
+    const layout = new Layout('lay1', 'Layout the First', {horizontal: ex`1 === 2`, show: true, styles: {width: 500, backgroundColor: 'blue'}, wrap: true}, [text1, text2])
 
     expect(layout.id).toBe('lay1')
     expect(layout.name).toBe('Layout the First')
     expect(layout.codeName).toBe('LayouttheFirst')
     expect(layout.horizontal).toStrictEqual(ex`1 === 2`)
-    expect(layout.width).toBe(500)
-    expect(layout.backgroundColor).toBe('blue')
+    expect(layout.show).toBe(true)
+    expect(layout.styles).toStrictEqual({width: 500, backgroundColor: 'blue'})
     expect(layout.wrap).toBe(true)
     expect(layout.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
@@ -96,7 +96,7 @@ test('finds itself and children in a page', () => {
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const layout = new Layout('lay1', 'Layout 1', {horizontal: ex`1 == 2`, width: '50%', backgroundColor: 'green'}, [text1, text2])
+    const layout = new Layout('lay1', 'Layout 1', {horizontal: ex`1 == 2`, styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
 
     expect(asJSON(layout)).toStrictEqual({
         kind: 'Layout',
@@ -115,12 +115,11 @@ test('converts to JSON', ()=> {
         properties: layout2.properties,
         elements: [asJSON(text1), asJSON(text2)]
     })
-
 })
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, width: ex`7`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const layout = new Layout('lay1', 'Layout 1', {horizontal: ex`false`}, [text, textInput])
     const newLayout = loadJSON(asJSON(layout))
     expect(newLayout).toStrictEqual<Layout>(layout)

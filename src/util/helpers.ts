@@ -30,7 +30,6 @@ export const isTruthy = (x: any) => !!x
 export const notEmpty = (x: any) => x !== undefined && x !== null
 export const notBlank = (x: any) => x !== undefined && x !== null && x !== ''
 export const noop = () => {}
-export const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|\)$/g, '') : expr
 export const parseParam = (param: string) => {
     if (isNumeric(param)) {
         return parseFloat(param)
@@ -92,4 +91,16 @@ export const previewPathComponents = (pathname: string): {appName: string, prefi
         return {...appNameAndPrefix, filepath: remainder}
     }
     return appNameAndPrefix
+}
+
+const isoDateRegex = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/
+export const isoDateReviver = (key: string, value: any) => {
+    if (typeof value === 'string' && value.match(isoDateRegex)) {
+        const date = parseISO(value)
+        if (!Number.isNaN(date.getTime())) {
+            return date
+        }
+    }
+
+    return value
 }

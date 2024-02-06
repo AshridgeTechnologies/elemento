@@ -1,11 +1,11 @@
 import React from 'react'
-import {valueOfProps} from '../runtimeFunctions'
+import {StylesProps, valueOfProps} from '../runtimeFunctions'
 import {Stack} from '@mui/material'
 
-type Properties = { path: string, children?: any }
+type Properties = { path: string, children?: any, styles?: StylesProps }
 
 export default function Page({children, path, ...props}: Properties) {
-    const propVals = valueOfProps(props)
+    const {styles = {}} = valueOfProps(props)
 
     return React.createElement(Stack, {
         id: path,
@@ -13,8 +13,12 @@ export default function Page({children, path, ...props}: Properties) {
         alignItems: 'flex-start',
         spacing: 2,
         height: '100%', width: '100%',
-        sx: {overflowY: 'scroll', padding: 1, position: 'relative'},
-        ...propVals,
+        sx: {
+            overflowY: 'scroll',
+            padding: 1,
+            position: 'relative',
+            ...styles
+        },
         children
     })
 }

@@ -308,10 +308,10 @@ test('generates html runner file', () => {
 test('generates App Bar elements with contents', ()=> {
     const app = new App('app1', 'Test1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            new Text('id0', 'Text 0', {width: 200, content: 'Welcome!'})
+            new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", width: 150}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
             new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
             new TextInput('id2', 't3', {}),
     ]
@@ -326,7 +326,7 @@ test('generates App Bar elements with contents', ()=> {
     const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
-            React.createElement(TextElement, {path: pathWith('Text0'), width: 200}, 'Welcome!'),
+            React.createElement(TextElement, {path: pathWith('Text0'), styles: {width: 200}}, 'Welcome!'),
     ))
     },)
 }
@@ -357,11 +357,11 @@ test('generates startup action for App', ()=> {
 `)
 })
 
-test('generates TextInput elements with initial value', ()=> {
+test('generates TextInput elements with initial value and styles including expressions', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", width: 150, readOnly: true}),
-            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, width: ex`50 + 50`}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}, readOnly: true}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, styles: {borderBottom: ex`50 + 50`}}),
             new TextInput('id3', 't3', {}),
     ]
         )])
@@ -376,8 +376,8 @@ test('generates TextInput elements with initial value', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', readOnly: true, width: 150, multiline: true}),
-        React.createElement(TextInput, {path: pathWith('t2'), label: 't2', width: 50 + 50}),
+        React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', readOnly: true, multiline: true, styles: {width: 150}}),
+        React.createElement(TextInput, {path: pathWith('t2'), label: 't2', styles: {borderBottom: 50 + 50}}),
         React.createElement(TextInput, {path: pathWith('t3'), label: 't3'}),
     )
 }
@@ -388,7 +388,7 @@ test('generates Text elements with multiline content', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday',
-                    fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}),
+                    styles: {fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}}),
             ]
         )])
 
@@ -399,7 +399,7 @@ test('generates Text elements with multiline content', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}, \`Hi there!
+        React.createElement(TextElement, {path: pathWith('Text1'), styles: {fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}}, \`Hi there!
 How are you?
 Today\`),
     )
@@ -563,7 +563,7 @@ test('generates Button elements with properties including await in action', ()=>
     Log("Didn't you?")`
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, appearance: ex`22 && "filled"`, display: false}),
+            new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, appearance: ex`22 && "filled"`, show: false}),
     ]
         )])
 
@@ -579,7 +579,7 @@ test('generates Button elements with properties including await in action', ()=>
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && 'filled', display: false, action: b1_action}),
+        React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && 'filled', show: false, action: b1_action}),
     )
 }
 `)
@@ -667,7 +667,7 @@ test('generates Calculation elements with initial value and no errors on object 
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Calculation('id1', 't1', {calculation: ex`44 + 7`}),
-                new Calculation('id2', 't2', {calculation: ex`{a:10, b: "Bee"}`, display: true, label: 'My Calc', width: ex`3+100`}),
+                new Calculation('id2', 't2', {calculation: ex`{a:10, b: "Bee"}`, show: true, label: 'My Calc', styles: {width: ex`3+100`}}),
                 new Calculation('id3', 't3', {}),
             ]
         )])
@@ -682,9 +682,9 @@ test('generates Calculation elements with initial value and no errors on object 
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Calculation, {path: pathWith('t1'), display: true}),
-        React.createElement(Calculation, {path: pathWith('t2'), label: 'My Calc', display: true, width: 3+100}),
-        React.createElement(Calculation, {path: pathWith('t3'), display: true}),
+        React.createElement(Calculation, {path: pathWith('t1'), show: true}),
+        React.createElement(Calculation, {path: pathWith('t2'), label: 'My Calc', show: true, styles: {width: 3+100}}),
+        React.createElement(Calculation, {path: pathWith('t3'), show: true}),
     )
 }
 `)
@@ -1100,7 +1100,7 @@ test('generates List element with separate child component and global functions 
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
             new Layout('la1', 'Layout 1', {}, [
-                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], style: 'color: red', width: 200, selectAction: ex`Log(\$item.id)`}, [
+                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], styles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
@@ -1147,7 +1147,7 @@ function Page1(props) {
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], width: 200, selectAction: List1_selectAction, style: 'color: red'}),
+            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], selectAction: List1_selectAction, styles: {color: 'red', width: 200}}),
     ),
     )
 }
@@ -1197,7 +1197,7 @@ test('generates Layout element with properties and children', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            new Layout('lay1', 'Layout 1', {horizontal: true, width: 500, wrap: ex`100 < 200`, backgroundColor: 'pink'}, [
+            new Layout('lay1', 'Layout 1', {horizontal: true, wrap: ex`100 < 200`, styles: {width: 500, backgroundColor: 'pink'}}, [
                 new Text('text1', 'T1', {content: ex`23 + 45`}),
                 new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
@@ -1217,7 +1217,7 @@ test('generates Layout element with properties and children', ()=> {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
-        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, width: 500, wrap: 100 < 200, backgroundColor: 'pink'},
+        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, wrap: 100 < 200, styles: {width: 500, backgroundColor: 'pink'}},
             React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),
@@ -1257,7 +1257,7 @@ test('generates simple Form element with separate child component and includes D
     return React.createElement(Form, props,
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
-        React.createElement(Calculation, {path: pathWith('Calculation1'), display: true}),
+        React.createElement(Calculation, {path: pathWith('Calculation1'), show: true}),
         React.createElement(Data, {path: pathWith('Data1'), display: false}),
     )
 }
@@ -1360,7 +1360,8 @@ test('generates Form element with separate child component', ()=> {
                 new TextInput('id0', 'Text Input 1', {}),
                 new TrueFalseInput('tf1', 'TF Input 1', {}),
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`, label: 'The Details',
-                    width: '93%', horizontal: true, wrap: false,
+                    styles: {width: '93%'},
+                        horizontal: true, wrap: false,
                         keyAction: ex`Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit())`,
                         submitAction: ex`Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)`},
                     [
@@ -1423,7 +1424,7 @@ function Page1(props) {
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(TrueFalseInput, {path: pathWith('TFInput1'), label: 'TF Input 1'}),
-        React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'The Details', horizontal: true, width: '93%', wrap: false, keyAction: DetailsForm_keyAction}),
+        React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'The Details', horizontal: true, wrap: false, keyAction: DetailsForm_keyAction, styles: {width: '93%'}}),
     )
 }
 `)
@@ -1741,10 +1742,40 @@ test('generates error for syntax error in expression', ()=> {
 `)
     expect(output.errors).toStrictEqual({
         id1: {
-            content: "Error: Unexpected character(s) (Line 1 Position 8)"
+            content: 'Error: Unexpected character(s) (Line 1 Position 8)'
         }
     })
 
+})
+
+test('generates errors for styles sub-property expressions', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new TextInput('id1', 't1', {label: 'Some Text', styles: {color: 'red', borderWidth: ex`10~`, backgroundColor: ex`'pink'x`}}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({
+        id1: {
+            styles: {
+                backgroundColor: 'Error: Unexpected character(s) (Line 1 Position 6)',
+                borderWidth: 'Error: Unexpected character(s) (Line 1 Position 2)'
+            }
+        }
+    })
+
+    expect(output.files[0].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextInput} = Elemento.components
+    const t1 = Elemento.useObjectState(pathWith('t1'), new TextInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextInput, {path: pathWith('t1'), label: 'Some Text', styles: {color: 'red', borderWidth: Elemento.codeGenerationError(\`10~\`, 'Error: Unexpected character(s) (Line 1 Position 2)'), backgroundColor: Elemento.codeGenerationError(\`'pink'x\`, 'Error: Unexpected character(s) (Line 1 Position 6)')}}),
+    )
+}
+`)
 })
 
 test('generates error on correct line for syntax error in multiline content expression', ()=> {
@@ -2075,7 +2106,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
 test('assignment deep in complex expression is treated as comparison', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Button('id1', 'b1', {action: ex`let a = If(true, 10, Sum(Log= 12, 3, 4))
+                new Button('b1', 'Button 1', {action: ex`let a = If(true, 10, Sum(Log= 12, 3, 4))
     let b = If(Sum = 42, 10, 20)
     Sum = 1`})
             ]
@@ -2087,7 +2118,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
-    const b1_action = React.useCallback(() => {
+    const Button1_action = React.useCallback(() => {
         let a = If(true, 10, () => Sum(Log == 12, 3, 4))
             let b = If(Sum == 42, 10, 20)
             Sum == 1
@@ -2095,7 +2126,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(Button, {path: pathWith('b1'), content: 'Do something', appearance: 'outline', action: b1_action}),
+        React.createElement(Button, {path: pathWith('Button1'), content: 'Button 1', appearance: 'outline', action: Button1_action}),
     )
 }
 `)

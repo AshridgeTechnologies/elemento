@@ -2,13 +2,15 @@ import React from 'react'
 import {TextField} from '@mui/material'
 import yaml from 'js-yaml'
 import {definedPropertiesOf} from '../../util/helpers'
-import {PropVal, valueOf, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesProps, valueOf, valueOfProps} from '../runtimeFunctions'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {isObject, isArray} from 'radash'
+import {isArray, isObject} from 'radash'
+import {pick} from 'ramda'
+import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps} from './InputComponentHelpers'
 
 
-type Properties = {path: string, label?: PropVal<string>, width?: PropVal<string | number>, display?: PropVal<boolean>}
+type Properties = {path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesProps}
 type StateProperties = {value: any}
 
 const isObjOrArray = (value: any) => isObject(value) ?? isArray(value)
@@ -25,33 +27,36 @@ const formatDisplay = (value: any) => {
 }
 
 export default function Calculation({path, ...props}: Properties) {
-    const {label, display: displayProp, width} = valueOfProps(props)
-    const widthProp = width !== undefined ? {width} : {}
-    const sxProps = {sx: {...widthProp}}
+    const {label, show = true, styles = {}} = valueOfProps(props)
+    const sxProps = {sx: {...pick(formControlStyles, styles), fieldset: sxFieldSetProps(styles)}}
 
     const state = useGetObjectState<CalculationState>(path)
     const {value} = state
     const multiline = true
     const multilineProps = multiline ? {minRows: 1, maxRows: 10} : {}
     const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})
+    const inputComponentProps = propsForInputComponent(undefined, styles)
+    const inputProps = inputElementProps(styles, false, {})
 
-    const display = displayProp ?? true
-    const formControl =  display ? React.createElement(TextField, {
+    return show ? React.createElement(TextField, {
         id: path,
         type: 'text',
         variant: 'outlined',
         size: 'small',
         value: formatDisplay(value),
-        InputLabelProps:{ shrink: true },
+        InputLabelProps: {shrink: true},
+        ...inputProps,
+        ...inputComponentProps,
         ...sxProps,
         ...optionalProps
     }) : null
-    return formControl
 }
 
 export class CalculationState extends BaseComponentState<StateProperties>
     implements ComponentState<CalculationState> {
 
+    // 'calculation' is called value in the state object to be consistent with input elements
+    // AND so it will work with Form
     get value() {
         return valueOf(this.props.value)
     }

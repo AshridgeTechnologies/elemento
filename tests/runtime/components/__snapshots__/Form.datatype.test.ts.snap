@@ -14,7 +14,7 @@ exports[`Form element produces output containing children 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -58,7 +58,7 @@ exports[`Form element produces output containing children 1`] = `
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -119,7 +119,7 @@ exports[`Form element produces output containing nested form 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -163,7 +163,7 @@ exports[`Form element produces output containing nested form 1`] = `
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -219,7 +219,7 @@ exports[`Form element produces output containing nested form 1`] = `
         className="css-1q4ho6v-MuiStack-root"
       >
         <div
-          className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+          className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
         >
           <label
             className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -282,7 +282,7 @@ exports[`Form element produces output from data type with extra and override chi
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1g1iitx-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-1ezkvdu-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -326,7 +326,7 @@ exports[`Form element produces output from data type with extra and override chi
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -370,7 +370,7 @@ exports[`Form element produces output from data type with extra and override chi
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
@@ -435,7 +435,7 @@ exports[`Form element produces output with all types of children and description
     <button
       aria-label="The record type with them all"
       aria-labelledby={null}
-      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-n5iuq0-MuiButtonBase-root-MuiIconButton-root"
+      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-ea2eqt-MuiButtonBase-root-MuiIconButton-root"
       data-mui-internal-clone-element={true}
       disabled={false}
       onBlur={[Function]}
@@ -470,7 +470,7 @@ exports[`Form element produces output with all types of children and description
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
       onClick={[Function]}
       onMouseUp={[Function]}
     >
@@ -560,7 +560,7 @@ exports[`Form element produces output with all types of children and description
       </div>
     </div>
     <div
-      className="MuiFormControl-root MuiTextField-root css-yg1gz6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
@@ -605,7 +605,7 @@ exports[`Form element produces output with all types of children and description
       </div>
     </div>
     <div
-      className="MuiFormControl-root css-pe0pe4-MuiFormControl-root"
+      className="MuiFormControl-root css-4d3iom-MuiFormControl-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
@@ -660,98 +660,102 @@ exports[`Form element produces output with all types of children and description
       />
     </div>
     <div
-      className="MuiBox-root css-1yp4ln"
+      className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
     >
-      <div
-        className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
-      >
-        <label
-          className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart Mui-error css-1f2kvjf-MuiFormControlLabel-root"
-          htmlFor="app.page1.form1.Internal"
-        >
-          <span
-            className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
-            onBlur={[Function]}
-            onContextMenu={[Function]}
-            onDragLeave={[Function]}
-            onFocus={[Function]}
-            onKeyDown={[Function]}
-            onKeyUp={[Function]}
-            onMouseDown={[Function]}
-            onMouseLeave={[Function]}
-            onMouseUp={[Function]}
-            onTouchEnd={[Function]}
-            onTouchMove={[Function]}
-            onTouchStart={[Function]}
-            tabIndex={null}
-          >
-            <input
-              checked={true}
-              className="PrivateSwitchBase-input css-1m9pwf3"
-              data-indeterminate={false}
-              disabled={false}
-              id="app.page1.form1.Internal"
-              onChange={[Function]}
-              type="checkbox"
-            />
-            <svg
-              aria-hidden={true}
-              className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
-              data-testid="CheckBoxIcon"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
-            </svg>
-            <span
-              className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </span>
-          <span
-            className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
-          >
-            Internal
-          </span>
-        </label>
-        <p
-          className="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
-        />
-      </div>
-      <button
-        aria-label="Internal sign up"
-        aria-labelledby={null}
-        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-n5iuq0-MuiButtonBase-root-MuiIconButton-root"
-        data-mui-internal-clone-element={true}
-        disabled={false}
-        onBlur={[Function]}
-        onContextMenu={[Function]}
-        onDragLeave={[Function]}
-        onFocus={[Function]}
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        onMouseDown={[Function]}
-        onMouseLeave={[Function]}
-        onMouseOver={[Function]}
-        onMouseUp={[Function]}
-        onTouchEnd={[Function]}
-        onTouchMove={[Function]}
-        onTouchStart={[Function]}
-        tabIndex={0}
-        type="button"
+      <label
+        className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1fp819w-MuiFormControlLabel-root"
+        htmlFor="app.page1.form1.Internal"
       >
         <span
-          aria-hidden={true}
-          aria-label="Help"
-          className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root"
+          className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+          endAdornment={
+            <ForwardRef(InputAdornment)
+              position="end"
+              sx={
+                {
+                  "marginLeft": 0,
+                }
+              }
+            >
+              <ForwardRef(Tooltip)
+                placement="top-end"
+                title="Internal sign up"
+              >
+                <ForwardRef(IconButton)
+                  edge="end"
+                  sx={
+                    {
+                      "marginRight": "-16px",
+                      "px": 0.15,
+                    }
+                  }
+                >
+                  <ForwardRef(Icon)
+                    aria-label="Help"
+                    sx={
+                      {
+                        "color": "action.active",
+                        "fontSize": "0.8em",
+                        "ml": 0.5,
+                        "mr": 1,
+                        "mt": 0.25,
+                      }
+                    }
+                  >
+                    info_outlined
+                  </ForwardRef(Icon)>
+                </ForwardRef(IconButton)>
+              </ForwardRef(Tooltip)>
+            </ForwardRef(InputAdornment)>
+          }
+          onBlur={[Function]}
+          onContextMenu={[Function]}
+          onDragLeave={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onMouseDown={[Function]}
+          onMouseLeave={[Function]}
+          onMouseUp={[Function]}
+          onTouchEnd={[Function]}
+          onTouchMove={[Function]}
+          onTouchStart={[Function]}
+          tabIndex={null}
         >
-          info_outlined
+          <input
+            checked={true}
+            className="PrivateSwitchBase-input css-1m9pwf3"
+            data-indeterminate={false}
+            disabled={false}
+            id="app.page1.form1.Internal"
+            onChange={[Function]}
+            readOnly={false}
+            type="checkbox"
+          />
+          <svg
+            aria-hidden={true}
+            className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+            data-testid="CheckBoxIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          <span
+            className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
         </span>
         <span
-          className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-        />
-      </button>
+          className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+        >
+          Internal
+        </span>
+      </label>
+      <p
+        className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+      />
     </div>
   </div>
 </div>
@@ -787,7 +791,7 @@ exports[`Form element produces output with one child 1`] = `
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
     >
       <label
         className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"

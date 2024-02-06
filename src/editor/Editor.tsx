@@ -41,7 +41,7 @@ export default function Editor({
 
     const element = project.findElement(firstSelectedItemId)
     const propertyArea = (firstSelectedItemId && element)
-        ? <PropertyEditor project={project} element={element} onChange={onChange} errors={errors[element.id]}/>
+        ? <PropertyEditor element={element} onChange={onChange} errors={errors[element.id]}/>
         : null
 
     const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {

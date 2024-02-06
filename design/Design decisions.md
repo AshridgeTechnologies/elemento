@@ -1,6 +1,11 @@
 Design decisions
 ================
 
+MUI sx properties
+-----------------
+
+- Don't use these - they are confusing for beginners, non-standard, not widely documented and use different units
+
 Rendering approach
 ------------------
 

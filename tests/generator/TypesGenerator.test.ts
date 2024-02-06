@@ -201,7 +201,7 @@ test('generates RecordType with all types', () => {
                 new NumberType('Price', {description: 'The entry cost', required: false, max: 50}),
                 new TrueFalseType('Visited', {description: 'Have we been there?', required: false}),
                 new ListType('Dates Visited', {description: 'When we went there', required: false}, [], 
-                    new DateType('Date of visit', {})
+                    new DateType('Date of visit', {required: false})
                 )
             ])
         

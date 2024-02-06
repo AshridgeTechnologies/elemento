@@ -10,27 +10,28 @@ test('Image has correct properties with default values', ()=> {
     expect(image1.name).toBe('Image 1')
     expect(image1.kind).toBe('Image')
     expect(image1.source).toBe(undefined)
-    expect(image1.display).toBe(undefined)
-    expect(image1.marginBottom).toBe(undefined)
-    expect(image1.width).toBe(undefined)
-    expect(image1.height).toBe(undefined)
     expect(image1.description).toBe(undefined)
+    expect(image1.show).toBe(undefined)
+    expect(image1.styles).toBe(undefined)
     expect(image1.type()).toBe('statelessUI')
 })
 
 test('Image has correct properties with specified values', ()=> {
-    const image1 = new Image('im1', 'Image 1', {display: false,
-        source: 'http://example.com/img1.jpg',
-        width: 100, height: 200, marginBottom: 20, description: 'A mountain'})
+    const image1 = new Image('im1', 'Image 1', {
+        source: 'http://example.com/img1.jpg', description: 'A mountain',
+        show: ex`1 && 2`,
+        styles: {width: 100, height: 200, marginBottom: 20}, })
 
     expect(image1.id).toBe('im1')
     expect(image1.name).toBe('Image 1')
     expect(image1.source).toStrictEqual('http://example.com/img1.jpg')
-    expect(image1.display).toBe(false)
-    expect(image1.width).toBe(100)
-    expect(image1.height).toBe(200)
-    expect(image1.marginBottom).toBe(20)
     expect(image1.description).toBe('A mountain')
+    expect(image1.show).toStrictEqual(ex`1 && 2`)
+    expect(image1.styles).toStrictEqual({width: 100, height: 200, marginBottom: 20})
+})
+
+test('has correct property names', () => {
+    expect(new Image('im1', 'Image 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['source', 'description', 'show', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -73,9 +74,9 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const image = new Image('im1', 'Image 1', {display: false,
+    const image = new Image('im1', 'Image 1', {show: true,
         source: 'http://example.com/img1.jpg',
-        width: 100, height: 200, marginBottom: 20, description: 'A mountain'})
+        styles: {width: 100, height: 200, marginBottom: 20}, description: 'A mountain'})
     expect(asJSON(image)).toStrictEqual({
         kind: 'Image',
         id: 'im1',
@@ -90,9 +91,9 @@ test('converts from plain object', ()=> {
     const newImage = loadJSON(plainObj)
     expect(newImage).toStrictEqual<Image>(image)
 
-    const image2 = new Image('im1', 'Image 2', {display: false,
+    const image2 = new Image('im1', 'Image 2', {show: false,
         source: 'http://example.com/img1.jpg',
-        width: 100, height: 200, marginBottom: 20, description: 'A mountain'})
+        styles: {width: 100, height: 200, marginBottom: 20}, description: 'A mountain'})
     const plainObj2 = asJSON(image2)
     const newImage2 = loadJSON(plainObj2)
     expect(newImage2).toStrictEqual<Image>(image2)

@@ -113,12 +113,12 @@ test('can create a new element in the project', () => {
 })
 
 test('can create a new element in the project and set name and properties', () => {
-    const newId = handler.insertNewElement('inside', 'page_2', 'Text', {name: 'The Stuff', width: '100%'})
+    const newId = handler.insertNewElement('inside', 'page_2', 'TextInput', {name: 'The Stuff', styles:{width: '100%'}})
     expect(handler.current).not.toBe(project)
     const newElement = handler.current?.findElement(newId) as TextInput
     expect(newElement.id).toBe(newId)
     expect(newElement.name).toBe('The Stuff')
-    expect(newElement.width).toBe('100%')
+    expect(newElement.styles?.width).toBe('100%')
 })
 
 test('can insert an element into the project', () => {

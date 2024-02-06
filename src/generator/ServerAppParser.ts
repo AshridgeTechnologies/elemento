@@ -118,7 +118,9 @@ export default class ServerAppParser {
                 const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
                 const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'multilineExpression'
                 const onError = (err: string) => this.addError(element.id, def.name, err)
-                parseExprAndIdentifiers(element, def.name, identifierSet, isKnown, exprType, onError)
+                const isJavaScript = (element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).javascript) ?? false
+                const propertyValue = element[def.name as keyof Element] as PropertyValue | undefined
+                parseExprAndIdentifiers(propertyValue, identifierSet, isKnown, exprType, onError, isJavaScript)
             })
 
         if (isComponentType(element.kind)) {

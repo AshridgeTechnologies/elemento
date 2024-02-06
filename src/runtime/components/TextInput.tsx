@@ -6,31 +6,39 @@ import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {TextType} from '../types'
 import {pick} from 'ramda'
-import {InputWithInfo} from './InputWithInfo'
+import BaseType from '../types/BaseType'
+import {
+    BaseInputComponentProperties,
+    getLabelWithRequired,
+    inputElementProps,
+    propsForInputComponent,
+    sxPropsForFormControl
+} from './InputComponentHelpers'
 
+type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>}
 
-type Properties = {path: string, label?: PropVal<string>, width?: PropVal<string | number>, multiline?: PropVal<boolean>, readOnly?: PropVal<boolean>}
+const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
+    const props = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))
+    const format = (dataType as TextType)?.format
+    if (format && ['url', 'email'].includes(format)) {
+        props.type = format
+    }
+
+    return props
+}
 
 export default function TextInput({path, ...props}: Properties) {
-    const {label, multiline: multilineProp, width, readOnly} = valueOfProps(props)
-    const widthProp = width !== undefined ? {width} : {}
-    const sxProps = {sx: {...widthProp}}
+    const {label, multiline: multilineProp, readOnly, show = true, styles = {}} = valueOfProps(props)
+    const sxProps = {sx: sxPropsForFormControl(styles, show)}
 
     const state = useGetObjectState<TextInputState>(path)
-    const {value} = state
-    const dataType = state.dataType
-    const required = dataType?.required
+    const {value, dataType} = state
     const multiline = dataType?.format === 'multiline' || multilineProp
     const multilineProps = multiline ? {minRows: 2, maxRows: 10} : {}
-    const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})
-
-    const dataTypeProps = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))
-    const format = dataType?.format
-    if (format && ['url', 'email'].includes(format)) {
-        dataTypeProps.type = format
-    }
-    const inputPropsValues = {...dataTypeProps, ...definedPropertiesOf({readOnly}), }
-    const inputProps = Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
+    const labelWithRequired = getLabelWithRequired(dataType, label)
+    const optionalProps = definedPropertiesOf({label: labelWithRequired, multiline, ...multilineProps})
+    const inputComponentProps = propsForInputComponent(dataType, styles)
+    const inputProps = inputElementProps(styles, readOnly, dataTypeProps(dataType))
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -42,7 +50,7 @@ export default function TextInput({path, ...props}: Properties) {
     }
     const onBlur = (_event: FocusEvent) => state._setBlurred()
 
-    const formControl =  React.createElement(TextField, {
+    return React.createElement(TextField, {
         id: path,
         type: 'text',
         variant: 'outlined',
@@ -53,10 +61,10 @@ export default function TextInput({path, ...props}: Properties) {
         onChange,
         onBlur,
         ...inputProps,
+        ...inputComponentProps,
         ...sxProps,
         ...optionalProps
     })
-    return InputWithInfo({description: dataType?.description, required, width, formControl})
 }
 
 export class TextInputState extends InputComponentState<string, TextType> {

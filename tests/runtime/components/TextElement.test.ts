@@ -18,12 +18,12 @@ test('TextElement element produces output containing string children',
     snapshot(createElement(TextElement, {path: 'page1.para1'}, 'Hello', 'where are you'))
 )
 
-test('TextElement element produces normal output with display true',
-    snapshot(createElement(TextElement, {path: 'page1.para1', display: true}, 'Hello', 'where are you'))
+test('TextElement element produces normal output with show true',
+    snapshot(createElement(TextElement, {path: 'page1.para1', show: true}, 'Hello', 'where are you'))
 )
 
-test('TextElement element produces null output with display false',
-    snapshot(createElement(TextElement, {path: 'page1.para1', display: false}, 'Hello', 'where are you'))
+test('TextElement element produces display: none output with show false',
+    snapshot(createElement(TextElement, {path: 'page1.para1', show: false}, 'Hello', 'where are you'))
 )
 
 test('TextElement element produces output containing undefined children',
@@ -53,7 +53,7 @@ test('TextElement element produces output containing toString of class object',
 test('TextElement element produces output containing ReactElement children', () => {
         const para = createElement('p', null, 'where are you')
         snapshot(createElement(TextElement, {path: 'page1.para1',
-            fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 44}, 'Hello', para))()
+            styles: {fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 44}}, 'Hello', para))()
     }
 )
 
@@ -69,8 +69,8 @@ test('TextElement adds line break before line ends', () => {
 test('TextElement gets property values supplied as state objects', () => {
     const para = createElement('p', null, 'where are you')
     snapshot(createElement(TextElement, {path: 'page1.para1',
-        fontSize: valueObj(32), fontFamily: valueObj('Courier'), color: valueObj('red'),
+        styles: {fontSize: valueObj(32), fontFamily: valueObj('Courier'), color: valueObj('red'),
         backgroundColor: valueObj('green'), border: valueObj(10), borderColor: valueObj('black'),
-        width: valueObj(100), height: valueObj(200), marginBottom: valueObj(55)}, 'Hello', para))()
+        width: valueObj(100), height: valueObj(200), marginBottom: valueObj(55)}}, 'Hello', para))()
 
 })

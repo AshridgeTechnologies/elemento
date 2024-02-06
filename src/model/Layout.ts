@@ -1,11 +1,12 @@
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementType, PropertyDef, PropertyValueType} from './Types'
-import {elementOfType} from './elements'
+import {ComponentType, ElementType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
-type Properties = { horizontal?: PropertyValueType<boolean>, width?: PropertyValueType<number | string>,
-    backgroundColor?: PropertyValueType<string>, wrap?: PropertyValueType<boolean> }
+type Properties = Partial<Readonly<{
+    horizontal: PropertyValueType<boolean>,
+    wrap: PropertyValueType<boolean>
+}>> & Styling & Show
 
 export default class Layout extends BaseElement<Properties> implements Element {
 
@@ -15,22 +16,20 @@ export default class Layout extends BaseElement<Properties> implements Element {
     isLayoutOnly() { return true }
 
     get horizontal() { return this.properties.horizontal ?? false }
-    get width() { return this.properties.width }
-    get backgroundColor() { return this.properties.backgroundColor }
     get wrap() { return this.properties.wrap ?? false }
+    get show() { return this.properties.show }
+    get styles() { return this.properties.styles }
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('horizontal', 'boolean'),
-            propDef('width', 'string|number'),
             propDef('wrap', 'boolean'),
-            propDef('backgroundColor', 'string'),
+            propDef('show', 'boolean'),
+            propDef('styles', 'styles'),
         ]
     }
-
 
     canContain(elementType: ElementType) {
         return elementHasParentTypeOf(elementType, this)
     }
-
 }

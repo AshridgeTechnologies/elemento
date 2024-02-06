@@ -7,17 +7,16 @@ exports[`Image element not visible with display false 1`] = `
     {
       "alignItems": "center",
       "backgroundColor": "inherit",
-      "display": "flex",
+      "display": "none",
       "height": "100%",
       "justifyContent": "center",
-      "marginBottom": undefined,
       "width": "100%",
     }
   }
 >
   <img
     alt=""
-    className="mui-image-img  css-7e4lz0"
+    className="mui-image-img  css-jlmoib"
     id="app.page1.photo"
     onError={[Function]}
     onLoad={[Function]}
@@ -62,7 +61,6 @@ exports[`Image element produces image output with default properties 1`] = `
       "display": "flex",
       "height": "100%",
       "justifyContent": "center",
-      "marginBottom": undefined,
       "width": "100%",
     }
   }

@@ -1,5 +1,5 @@
 import React, {SyntheticEvent, useCallback, useEffect, useMemo, useRef} from 'react'
-import {asArray, indexedPath, lastItemIdOfPath, valueOfProps} from '../runtimeFunctions'
+import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
@@ -7,15 +7,15 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'; const {debounce} = lodash;
 import {equals, isNil} from 'ramda'
 
-type Properties = {
+type Properties = Readonly<{
     path: string,
     items?: any[],
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
-    width?: string | number,
     selectable?: boolean,
     selectAction?: ($item: any) => void,
-    style?: string
-}
+    show?: PropVal<boolean>,
+    styles?: StylesProps
+}>
 type StateProperties = {selectedItem?: any, scrollTop?: number}
 
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0}
@@ -35,7 +35,8 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM
 
     const {selectedItem = undefined} = state
-    const {items = [], width, style, selectable = true} = valueOfProps(props)
+    const {items = [], show = true, styles = {}, selectable = true} = valueOfProps(props)
+    const showProps = show ? {} : {display: 'none'}
 
     useEffect(() => {
         if (selectedItem && selectable && items) {
@@ -72,8 +73,8 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         }
     )
 
-    const sx = {...fixedSx, width}
-    return React.createElement(List, {id: path, sx, style, onScroll: debouncedScrollHandler, ref: listRef}, children)
+    const sx = {...fixedSx, ...showProps, ...styles}
+    return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
 export default ListElement

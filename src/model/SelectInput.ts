@@ -3,9 +3,9 @@ import {PropertyType, PropertyValueType} from './Types'
 import BaseInputElement, {BaseInputProperties} from './BaseInputElement'
 import {propDef} from './BaseElement'
 
-export type Properties = BaseInputProperties<string> & {
-    values?: PropertyValueType<string[]>
-}
+export type Properties = BaseInputProperties<string> & Partial<Readonly<{
+    values: PropertyValueType<string[]>
+}>>
 
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 
@@ -14,11 +14,9 @@ export default class SelectInput extends BaseInputElement<Properties> implements
     get valueType(): PropertyType { return 'string list'}
     get values() { return this.properties.values }
 
-    get propertyDefs() {
+    protected ownPropertyDefs() {
         return [
-            ...super.propertyDefs,
             propDef('values', 'string list'),
         ]
     }
-
 }

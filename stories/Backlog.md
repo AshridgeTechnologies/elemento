@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- TrueFalse readOnly does not work
 - Vertical layout with text and button shows only the top few pixels
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
@@ -49,6 +50,7 @@ Stories
 
 ### Run and deploy
 - Server app containers
+- Shared preview and admin service
 
 ### Priority for admin apps
 - Server app features
@@ -83,11 +85,16 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Event actions
+- Styling
+- Block element - or combine with Layout
+- Components
+- Horizontal list
+- Freeform list, generated from a list, with positions set by data
+- Event actions: double click, drop
 - Speech synthesis
 - Shapes, drawing, 
 - Animation - see https://sparkbox.github.io/bouncy-ball/#vanilla-js
-- Dynamic elements from a list
+- When condition actions
 
 ### Priority for credibility
 - Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
@@ -102,12 +109,15 @@ Stories
 ### Priority for usability
 - Runtime error and notification handling
 - Function editing and validation
+- Complex formula editing - auto format on separate lines where it helps eg for nested function calls
 - Inspector Part 2
 - General usability Part 3
 - Preview improvements - screen size, scrolling, etc
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- More styling options work on SelectInput
+- True False input can be made to be not valid unless checked
 - Check out FedCM change
 - Resizable panels in Editor - https://react-resizable-panels.vercel.app/
 - New datepicker and range picker: https://reactdatepicker.com/
@@ -154,6 +164,7 @@ Stories
 - Clean old files from generated code dir
 
 ### The Rest
+- Choice component to generate one of children based on condition OR a condition prop on every component?
 - Tools can be included or excluded from deployment
 - Server side HTML generation using same or similar elements as on client
 - Show element notes when hover in navigator
@@ -183,6 +194,7 @@ Epics
 Tech debt
 ---------
 
+- PropertyEditor test really slow on some tests
 - Improve jsdom test performance = try happy-dom
 - Improve PW testing - eg https://www.checklyhq.com/blog/track-frontend-javascript-exceptions-with-playwright/
 - run.css - needed?  where from?- Copying layouts does not change names of contents
@@ -191,7 +203,6 @@ Tech debt
 - Check for dodgy RegExp - see https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript
 - Remove Download from GitHub to new directory
 - Remove window.setProject/getProject - replace with OPFS?
-- Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Builder/runner: 
   - Generator does not hard code runner location
   - ProjectBuilder only writes updated files
@@ -203,6 +214,7 @@ Tech debt
 - Consider TinyBase
 - Consider escodegen in generator
 - Latest yarn
+- Remove initialProperties
 - Consider a better bundler - esbuild, rspack, Rome
 - Reduce size of serverRuntime, consider firebase-admin external
 - Look for ways to have imports that update dynamically in preview, both client and server
@@ -321,6 +333,7 @@ Done
 - App user management
 - Improved runtime notifications
 - Tutorial and general improvements - Part 1
+- Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 
 Bugs fixed
 ----------

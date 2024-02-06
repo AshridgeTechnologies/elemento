@@ -2,16 +2,17 @@ import TrueFalseInput from '../../src/model/TrueFalseInput'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import SelectInput from '../../src/model/SelectInput'
 
 test('TrueFalseInput has correct properties', ()=> {
-    const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`True-False One`, dataType: ex`dataType1`})
+    const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`, label: ex`True-False One`, dataType: ex`dataType1`, show: false, styles: {color: 'red'}})
 
     expect(trueFalseInput.id).toBe('t1')
     expect(trueFalseInput.name).toBe('True-False Input 1')
     expect(trueFalseInput.initialValue).toStrictEqual(ex`true`)
     expect(trueFalseInput.label).toStrictEqual(ex`True-False One`)
     expect(trueFalseInput.dataType).toStrictEqual(ex`dataType1`)
+    expect(trueFalseInput.show).toStrictEqual(false)
+    expect(trueFalseInput.styles).toStrictEqual({color: 'red'})
 })
 
 test('TrueFalseInput has correct defaults', ()=> {
@@ -22,6 +23,8 @@ test('TrueFalseInput has correct defaults', ()=> {
     expect(trueFalseInput.initialValue).toBeUndefined()
     expect(trueFalseInput.label).toBe('True-False Input 1')
     expect(trueFalseInput.dataType).toBe(undefined)
+    expect(trueFalseInput.show).toBe(undefined)
+    expect(trueFalseInput.styles).toBe(undefined)
 })
 
 test('tests if an object is this type', ()=> {
@@ -33,9 +36,8 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new TrueFalseInput('t1', 'True False Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
+    expect(new TrueFalseInput('t1', 'True False Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
 })
-
 
 test('creates an updated object with a property set to a new value', ()=> {
     const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`})

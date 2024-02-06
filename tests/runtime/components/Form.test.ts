@@ -40,7 +40,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     $form._updateValue()
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', width: '100%'}),
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}}),
         React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
         // @ts-ignore
         React.createElement(TextElement, {path: pathWith('Feedback'), }, 'Size is ' + $form.value.BoxSize)
@@ -60,7 +60,7 @@ function TestOneElementForm(props: {path: string}) {
     $form._updateValue()
 
     return React.createElement(Form, {path: props.path},
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', width: '100%'})
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}})
     )
 }
 
@@ -81,7 +81,7 @@ function TestNestedForm(props: {path: string, keyAction: KeyboardEventHandler}) 
     $form._updateValue()
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', width: '100%'}),
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}}),
         React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
         React.createElement(TestOneElementForm, {path: pathWith('Extra')}),
         // @ts-ignore
@@ -94,10 +94,7 @@ class TestEmptyFormState extends BaseFormState {
 }
 
 function TestEmptyForm(props: {path: string}) {
-    const pathWith = (name: string) => props.path + '.' + name
-
-    const formState = useGetObjectState<BaseFormState>(props.path)
-
+    useGetObjectState<BaseFormState>(props.path)
     return React.createElement(Form, {path: props.path})
 }
 

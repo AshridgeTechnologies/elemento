@@ -1,19 +1,28 @@
-import React, {createElement as el, FocusEvent} from 'react'
+import {createElement as el, FocusEvent} from 'react'
 import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
-import {valueOfProps} from '../runtimeFunctions'
+import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {ChoiceType} from '../types'
-import {InputWithInfo} from './InputWithInfo'
+import {
+    BaseInputComponentProperties,
+    getLabelWithRequired,
+    inputElementProps,
+    propsForInputComponent,
+    sxPropsForFormControl
+} from './InputComponentHelpers'
 
-type Properties = {path: string,  label?: string, values?: string[]}
+type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
 
 export default function SelectInput({path, ...props}: Properties) {
-    const {values: valuesFromProps = [], label} = valueOfProps(props)
+    const {label, values: valuesFromProps = [], readOnly, show = true, styles = {}} = valueOfProps(props)
+    const sxProps = {sx: sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})}
+
     const state = useGetObjectState<SelectInputState>(path)
-    const {value} = state
-    const dataType = state.dataType
-    const required = dataType?.required
+    const {value, dataType} = state
+    const labelWithRequired = getLabelWithRequired(dataType, label)
+    const inputComponentProps = propsForInputComponent(dataType, styles)
+    const inputProps = inputElementProps(styles, readOnly, {})
 
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
@@ -30,8 +39,13 @@ export default function SelectInput({path, ...props}: Properties) {
     const values = (valuesFromProps?.length ? valuesFromProps : dataType?.values) ?? []
     const menuItems = [noSelectionItem, ...values.map((v: any) => el(MenuItem, {key: v, value: v}, v))]
 
-    const formControl = el(FormControl, {variant: 'filled', size: 'small', sx: {minWidth: 120}, error},
-        el(InputLabel, {id: labelId}, label),
+    return el(FormControl, {
+            variant: 'filled',
+            size: 'small',
+            ...sxProps,
+            error
+        },
+        el(InputLabel, {id: labelId}, labelWithRequired),
         el(Select, {
             labelId,
             id: path,
@@ -39,10 +53,11 @@ export default function SelectInput({path, ...props}: Properties) {
             // @ts-ignore
             onChange,
             onBlur,
+            ...inputProps,
+            ...inputComponentProps.InputProps,
         }, ...menuItems),
         el(FormHelperText, {}, helperText)
     )
-    return InputWithInfo({description: dataType?.description, required, formControl})
 }
 
 export class SelectInputState extends InputComponentState<string, ChoiceType> {

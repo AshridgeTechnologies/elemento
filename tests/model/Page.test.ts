@@ -3,18 +3,18 @@ import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import NumberInput from '../../src/model/NumberInput'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const page = new Page('p1', 'Page the First', {notLoggedInPage: ex`OtherPage`, }, [text1, text2])
+    const page = new Page('p1', 'Page the First', {notLoggedInPage: ex`OtherPage`, styles: {backgroundColor: 'red'}}, [text1, text2])
 
     expect(page.id).toBe('p1')
     expect(page.name).toBe('Page the First')
     expect(page.codeName).toBe('PagetheFirst')
-    expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(page.styles).toStrictEqual({backgroundColor: 'red'})
     expect(page.notLoggedInPage).toStrictEqual(ex`OtherPage`)
+    expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('Page has default properties', ()=> {
@@ -23,12 +23,13 @@ test('Page has default properties', ()=> {
     expect(page.id).toBe('p1')
     expect(page.name).toBe('Page the First')
     expect(page.codeName).toBe('PagetheFirst')
-    expect(page.elementArray()).toStrictEqual([])
+    expect(page.styles).toBeUndefined()
     expect(page.notLoggedInPage).toBeUndefined()
+    expect(page.elementArray()).toStrictEqual([])
 })
 
 test('has correct property names', () => {
-    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['notLoggedInPage'])
+    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['notLoggedInPage', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -111,11 +112,11 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, width: ex`7`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text, textInput])
     const newPage = loadJSON(asJSON(page))
     expect(newPage).toStrictEqual<Page>(page)
-    const page2 = new Page('p1', 'Page 2', {notLoggedInPage: ex`OtherPage`}, [text, textInput])
+    const page2 = new Page('p1', 'Page 2', {notLoggedInPage: ex`OtherPage`, styles: {backgroundColor: ex`'red'`}}, [text, textInput])
     const newPage2 = loadJSON(asJSON(page2))
     expect(newPage2).toStrictEqual<Page>(page2)
 })

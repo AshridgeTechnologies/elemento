@@ -6,6 +6,7 @@ import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
 import Layout from '../../src/model/Layout'
+import AppBar from '../../src/model/AppBar'
 
 test('Form has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -16,7 +17,7 @@ test('Form has correct defaults', ()=> {
     expect(form.name).toBe('Form the First')
     expect(form.codeName).toBe('FormtheFirst')
     expect(form.horizontal).toBe(false)
-    expect(form.width).toBe(undefined)
+    expect(form.styles).toBe(undefined)
     expect(form.wrap).toBe(false)
     expect(form.keyAction).toBe(undefined)
     expect(form.submitAction).toBe(undefined)
@@ -26,7 +27,7 @@ test('Form has correct defaults', ()=> {
 test('Form has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const form = new Form('form1', 'Form the First', {initialValue: ex`{a: 'foo', b: 42}`, horizontal: ex`1 === 2`, width: 500,
+    const form = new Form('form1', 'Form the First', {initialValue: ex`{a: 'foo', b: 42}`, horizontal: ex`1 === 2`, styles: {width: 500},
         wrap: true, label: ex`Text One`, readOnly: true, dataType: ex`recordType1`,
     keyAction: ex`Log('You pressed ' + \$key)`, submitAction: ex`Log('You submitted ' + \$data)`}, [text1, text2])
 
@@ -38,7 +39,7 @@ test('Form has correct properties', ()=> {
     expect(form.label).toStrictEqual(ex`Text One`)
     expect(form.dataType).toStrictEqual(ex`recordType1`)
     expect(form.horizontal).toStrictEqual(ex`1 === 2`)
-    expect(form.width).toBe(500)
+    expect(form.styles).toStrictEqual({width: 500})
     expect(form.wrap).toBe(true)
     expect(form.keyAction).toStrictEqual(ex`Log('You pressed ' + \$key)`)
     expect(form.submitAction).toStrictEqual(ex`Log('You submitted ' + \$data)`)
@@ -121,7 +122,7 @@ test('finds itself and children in a page', () => {
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const form = new Form('form1', 'Form 1', {horizontal: ex`1 == 2`, width: '50%'}, [text1, text2])
+    const form = new Form('form1', 'Form 1', {horizontal: ex`1 == 2`, styles: {width: '50%'}}, [text1, text2])
 
     expect(asJSON(form)).toStrictEqual({
         kind: 'Form',
@@ -145,7 +146,7 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, width: ex`7`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const form = new Form('form1', 'Form 1', {horizontal: ex`false`}, [text, textInput])
     const newForm = loadJSON(asJSON(form))
     expect(newForm).toStrictEqual<Form>(form)
@@ -158,7 +159,7 @@ test('has correct property defs', () => {
     const form = new Form('f1', 'Form 1', {})
     const {propertyDefs} = form
     expect(propertyDefs.map( ({name}) => name ))
-        .toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'horizontal', 'width', 'wrap', 'keyAction', 'submitAction'])
+        .toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'horizontal', 'wrap', 'keyAction', 'submitAction', 'styles'])
     const initialValueDef = form.getPropertyDef('initialValue')
     expect(initialValueDef?.type).toBe('expr')
 })

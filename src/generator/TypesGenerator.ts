@@ -7,7 +7,7 @@ import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote} fro
 import Element from '../model/Element'
 import {without} from 'ramda'
 import Parser from './Parser'
-import {EventActionPropertyDef} from '../model/Types'
+import {CombinedPropertyValue, EventActionPropertyDef} from '../model/Types'
 import {dataTypeElementTypes} from '../model/elements'
 
 const indentLevel1 = '    '
@@ -105,12 +105,13 @@ export default class TypesGenerator {
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
+        const propertyValue = element[propertyName as keyof Element] as CombinedPropertyValue | undefined
         const errorMessage = this.parser.propertyError(element.id, propertyName)
-        if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
-            return `Elemento.codeGenerationError(\`${this.parser.getExpression(element.id, propertyName)}\`, '${errorMessage}')`
+        if (errorMessage && (typeof errorMessage === 'string') && !errorMessage.startsWith('Incomplete item')) {
+            return `Elemento.codeGenerationError(\`${this.parser.getExpression(propertyValue)}\`, '${errorMessage}')`
         }
 
-        const ast = this.parser.getAst(element.id, propertyName)
+        const ast = this.parser.getAst(propertyValue)
         if (ast === undefined) {
             return undefined
         }

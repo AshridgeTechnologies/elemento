@@ -17,7 +17,7 @@ let container: any
 const theSelect = (id: string) => container.querySelector(`[id="${id}"] + input`)
 
 test('SelectInput element produces output with properties supplied',
-    snapshot(selectInput('app.page1.background', {value: 'Pink'}, {label: 'Background', values: ['Green', 'Blue', 'Pink'], }))
+    snapshot(selectInput('app.page1.background', {value: 'Pink'}, {label: 'Background', values: ['Green', 'Blue', 'Pink'], styles: {color: 'red'}}))
 )
 
 test('SelectInput element produces output with default values where properties omitted',

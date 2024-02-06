@@ -18,13 +18,13 @@ test('Image element produces image output with default properties',
 )
 
 test('Image element not visible with display false',
-    snapshot(inAppUtilsProvider('http://example.com/anApp/somewhere', createElement(Image, {path: 'app.page1.photo', source: 'star.jpg', display: false})))
+    snapshot(inAppUtilsProvider('http://example.com/anApp/somewhere', createElement(Image, {path: 'app.page1.photo', source: 'star.jpg', show: false})))
 )
 
 test('Image element produces output with properties supplied as state values', async () => {
         const element = inAppUtilsProvider('http://example.com/anApp/somewhere',
-            createElement(Image, {path: 'app.page1.photo', source: valueObj('star.jpg'), display: valueObj(true),
-                                                            width: 200, height: 100, marginBottom:'1em', description: 'A big mountain'}))
+            createElement(Image, {path: 'app.page1.photo', source: valueObj('star.jpg'), description: 'A big mountain', show: valueObj(true),
+                                                            styles: {width: 200, height: 100, marginBottom:'1em'} }))
         await wait(10)
         expect(componentJSON(element)).toMatchSnapshot()
     }

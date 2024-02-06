@@ -1,9 +1,13 @@
+import {StylingProp} from './StylingTypes'
+
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
 export type ChoiceList = readonly string[]
-export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'object' | 'expr' | ChoiceList | EventActionPropertyDef
+export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'object' | 'expr' | 'styles' | ChoiceList | EventActionPropertyDef
 export type PropertyExpr = {expr: string}
 export type PropertyValue = string | number | boolean | string[] | Date | PropertyExpr
+export type MultiplePropertyValue = {[p: string]: PropertyValue}
+export type CombinedPropertyValue = PropertyValue | MultiplePropertyValue
 export type PropertyValueType<T> = T | PropertyExpr
 
 export const InsertPositions = ['before', 'after', 'inside'] as const
@@ -23,9 +27,6 @@ export type PropertyDef = {
     state?: boolean,
     fixedOnly?: boolean,
     readOnly?: boolean
-}
-export type ActionDef = {
-    name: string,
 }
 
 export type DataTypeElementType =
@@ -80,3 +81,9 @@ export type ElementType =
     DataTypeElementType
 
 export type ParentType = ElementType | ElementType[] | 'any' | null
+
+export type StylingProps = Partial<Readonly<{
+    [k in StylingProp]: PropertyValueType<string | number>
+}>>
+export type Styling = { readonly styles?: StylingProps }
+export type Show = { readonly show?: PropertyValueType<boolean> }

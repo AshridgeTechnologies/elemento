@@ -3,10 +3,18 @@ import Element from '../model/Element'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {ElementId, ElementType, EventActionPropertyDef, PropertyDef, PropertyValue} from '../model/Types'
+import {
+    CombinedPropertyValue,
+    ElementId,
+    ElementType,
+    EventActionPropertyDef,
+    MultiplePropertyValue,
+    PropertyDef,
+    PropertyValue
+} from '../model/Types'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
-import {AllErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
+import {AllErrors, ElementErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
 import {allElements, valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
@@ -14,9 +22,11 @@ import {AppData} from '../runtime/components/AppData'
 import {elementTypes} from '../model/elements'
 import Form from '../model/Form'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
+import {isPlainObject} from 'lodash'
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
+export type PropertyError = string | ElementErrors | undefined
 
 const appFunctions = appFunctionsNames()
 const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
@@ -47,7 +57,7 @@ export default class Parser {
     constructor(private globalScopeElement: Element, private project: Project) {
     }
 
-    propertyError(elementId: ElementId, propertyName: string): string | undefined {
+    propertyError(elementId: ElementId, propertyName: string): PropertyError {
         return this.errors[elementId]?.[propertyName]
     }
 
@@ -81,29 +91,33 @@ export default class Parser {
         return this.elementPropertyIdentifiers[elementId + '_' + propertyName] ?? []
     }
 
-    getAst(elementId: ElementId, propertyName: string): any {
-        const expr = this.getExpression(elementId, propertyName)
+    getAst(propertyValue: PropertyValue | undefined): any {
+        const expr = this.getExpression(propertyValue)
         if (expr === undefined) {
             return undefined
         }
         try {
             return parseExpr(expr)
         } catch (e: any) {
-            console.error('Error parsing expression', elementId, propertyName, '"'+ expr + '"', e.message)
+            console.warn('Error parsing expression', '"'+ expr + '"', e.message)
             return undefined
         }
     }
 
-    getExpression(elementId: ElementId, propertyName: string): any {
-        const element = this.globalScopeElement.findElement(elementId)!
-        const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
+    getExpression(propertyValue: PropertyValue | undefined): string | undefined {
         if (propertyValue === undefined) {
             return undefined
         }
-        return isExpr(propertyValue) ? propertyValue.expr.trim() : valueLiteral(propertyValue)
+
+        const singlePropertyValue = propertyValue as PropertyValue
+        if (isExpr(singlePropertyValue)) {
+            return singlePropertyValue.expr.trim()
+        }
+
+        return valueLiteral(singlePropertyValue)
     }
 
-    private addError(elementId: ElementId, propertyName: string, error: string) {
+    private addError(elementId: ElementId, propertyName: string, error: string | ElementErrors) {
         if (!(elementId in this.errors)) {
             this.errors[elementId] = {}
         }
@@ -162,11 +176,40 @@ export default class Parser {
 
         const parseProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
             const propertyIdentifiers = new Set<ElementId>()
-            const exprType: ExprType = (def.type as EventActionPropertyDef).type === 'Action' ? 'action': 'singleExpression'
+            const eventActionDef = def.type as EventActionPropertyDef
+            const isAction = eventActionDef.type === 'Action'
+            const exprType: ExprType = isAction ? 'action': 'singleExpression'
             const onError = (err: string) => this.addError(element.id, def.name, err)
-            parseExprAndIdentifiers(element, def.name, propertyIdentifiers, isKnown, exprType, onError)
+            const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
+            const isArgument = (id: string) => isAction && eventActionDef.argumentNames.includes(id)
+            const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
+            const isJavaScript = (element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).javascript) ?? false
+
+            const propertyValue = element[def.name as keyof Element] as PropertyValue | undefined
+            parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnownOrArgument, exprType, onError, isJavaScript)
             this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(propertyIdentifiers.values())
             return propertyIdentifiers
+        }
+
+        const parseStylesProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
+            const overallPropertyIdentifiers = new Set<ElementId>()
+            const stylesPropertyValue = element[def.name as keyof Element] as MultiplePropertyValue | undefined
+            if (stylesPropertyValue) {
+                const errors: ElementErrors = {}
+                Object.entries(stylesPropertyValue).forEach( ([name, propertyValue]) => {
+                    const propertyIdentifiers = new Set<ElementId>()
+                    const onError: (err: string) => void = (err: string) => errors[name] = err
+                    parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnown, 'singleExpression', onError, false)
+                    addAllTo(overallPropertyIdentifiers, propertyIdentifiers)
+                })
+                if (Object.keys(errors).length > 0) {
+                    this.addError(element.id, def.name, errors)
+                }
+            }
+
+
+            this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(overallPropertyIdentifiers.values())
+            return overallPropertyIdentifiers
         }
 
         const parseStateProperties = (element: Element) => {
@@ -177,7 +220,7 @@ export default class Parser {
                     const functionDef = element as FunctionDef
                     const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
                     const onError = (err: string) => this.addError(element.id, 'calculation', err)
-                    parseExprAndIdentifiers(functionDef, 'calculation', elementIdentifiers, isKnownOrParam, 'multilineExpression', onError)
+                    parseExprAndIdentifiers(functionDef.calculation, elementIdentifiers, isKnownOrParam, 'multilineExpression', onError, true)
                     break
                 }
 
@@ -195,8 +238,8 @@ export default class Parser {
 
         const parseNonStateProperties = (element: Element) => {
             element.propertyDefs.filter( ({state}) => !state).forEach(def => {
-                const propertyIdentifiers = parseProperty(element, def)
-                propertyIdentifiers.forEach( val => identifiers.add(val))
+                const propertyIdentifiers = def.type === 'styles' ? parseStylesProperty(element, def) : parseProperty(element, def)
+                addAllTo(identifiers, propertyIdentifiers)
             })
         }
 

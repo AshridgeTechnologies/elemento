@@ -19,12 +19,14 @@ test('Menu has correct properties with default values', ()=> {
 })
 
 test('Menu has correct properties with specified values', ()=> {
-    const menu1 = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`, filled: true}, [item1, item2])
+    const menu1 = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`, filled: true, show: false, styles: {color: 'red'}}, [item1, item2])
 
     expect(menu1.id).toBe('id1')
     expect(menu1.name).toBe('Menu 1')
     expect(menu1.label).toStrictEqual(ex`"Some menu"`)
     expect(menu1.filled).toBe(true)
+    expect(menu1.show).toBe(false)
+    expect(menu1.styles).toStrictEqual({color: 'red'})
 })
 
 test('tests if an object is this type', ()=> {
@@ -79,7 +81,7 @@ test('converts to JSON without optional proerties', ()=> {
 })
 
 test('converts to JSON with optional properties', ()=> {
-    const menu = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`}, [item1, item2])
+    const menu = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`, show: false, styles: {color: 'red'}}, [item1, item2])
     expect(asJSON(menu)).toStrictEqual({
         kind: 'Menu',
         id: 'id1',
@@ -90,7 +92,7 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const menu = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`}, [item1, item2])
+    const menu = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`, show: false, styles: {color: 'red'}}, [item1, item2])
     const plainObj = asJSON(menu)
     const newMenu = loadJSON(plainObj)
     expect(newMenu).toStrictEqual<Menu>(menu)
