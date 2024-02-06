@@ -14,7 +14,7 @@ Requirements
 - App blows up on invalid code far too often
 - Random gives 0 when want minimum 1
 - ✅ Range function
-- Uppercase function
+- ✅ Uppercase function
 - Contains function
 - List manipulation - Join, Unique, Sort, Without, Contains, Append
 - Intuitive way of joining lists and keeping unique

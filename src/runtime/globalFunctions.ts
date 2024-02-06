@@ -137,6 +137,21 @@ export const globalFunctions = {
         return sVal.substring(sVal.length - lengthVal)
     },
 
+    Lowercase(s: Value<string>) {
+        const sVal = valueOf(s)
+        return sVal.toLowerCase()
+    },
+
+    Uppercase(s: Value<string>) {
+        const sVal = valueOf(s)
+        return sVal.toUpperCase()
+    },
+
+    Split(s: Value<string>, sep?: Value<string>) {
+        const sVal = valueOf(s), sepVal = valueOf(sep)
+        return sVal.split(sepVal ?? '')
+    },
+
     And(...args: Value<any>[]) {
         return args.reduce( (prev, curr) => prev && !!valueOf(curr), true )
     },

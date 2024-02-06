@@ -4,7 +4,8 @@ import {valueObj} from '../testutil/testHelpers'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
+    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split,
+    And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
     Record, Pick, List, Range, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
@@ -267,6 +268,24 @@ describe('Right', () => {
     test('Gets whole string for length same as string length', ()=> expect(Right('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Right('abc', 4)).toBe('abc'))
     test('Gets value of objects', ()=> expect(Right(valueObj('abc'), valueObj(2))).toBe('bc'))
+})
+
+describe('Lowercase', () => {
+    test('Gets a lower case version of a string', () => expect(Lowercase('AbC123?')).toBe('abc123?'))
+    test('Gets value of objects', () => expect(Lowercase(valueObj('AbC123?'))).toBe('abc123?'))
+})
+
+describe('Uppercase', () => {
+    test('Gets an upper case version of a string', () => expect(Uppercase('AbC123?')).toBe('ABC123?'))
+    test('Gets value of objects', () => expect(Uppercase(valueObj('AbC123?'))).toBe('ABC123?'))
+})
+
+describe('Split', () => {
+    test('Splits on separator', () => expect(Split('ab,cd,ef', ',')).toStrictEqual(['ab', 'cd', 'ef']))
+    test('Splits all chars on empty separator', () => expect(Split('abcd', '')).toStrictEqual(['a', 'b', 'c', 'd']))
+    test('Splits all chars on omitted separator', () => expect(Split('abcd')).toStrictEqual(['a', 'b', 'c', 'd']))
+    test('Returns original string in a list if separator does not occur', () => expect(Split('abcd', ',')).toStrictEqual(['abcd']))
+    test('Gets value of objects', () => expect(Split(valueObj('ab,cd'), valueObj(','))).toStrictEqual(['ab','cd']))
 })
 
 describe('And', () => {

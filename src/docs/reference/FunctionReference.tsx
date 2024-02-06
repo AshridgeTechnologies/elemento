@@ -465,6 +465,20 @@ export default () =>
                          </>}
         />
 
+
+        <FunctionSection name='Lowercase' id='Lowercase' resultType='text'
+                         description='Get a text value converted to lower case'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Lowercase' inputs={['ABC123']}>Result: "abc123"</FunctionExample>
+                             <FunctionExample name='Lowercase' inputs={['Aaron']}>Result: "aaron"</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Lt' id='Lt' resultType='true-false'
                          description='Compare two numbers to see if the first is less than the second'
 
@@ -879,6 +893,24 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Split' id='Split' resultType='text'
+                         description='Split a text value into a list of smaller text values.
+                         The text is split at each ocurrence of Separator.  The Separators are removed.
+                         If the Separator does not occur, the result is a List containing one item - the original Text.
+                         If Separator is empty, or left out, the Text is split into its individual characters.'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                             <FunctionInput name='Separator' type='text'>The separator value to split the text on</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Split' inputs={['"One,Two,Three"', ","]}>Result: list containing "One", "Two", "Three"</FunctionExample>
+                             <FunctionExample name='Split' inputs={['"One,Two,Three"', ";"]}>Result: list containing "One,Two,Three" </FunctionExample>
+                             <FunctionExample name='Split' inputs={['"Abc1"']}>Result: list containing "A", "b", "c", "1" </FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Sub' id='Sub' resultType='number or Decimal'
                          description='Subtract one or more numbers from the first number.  If any of the numbers is a Decimal, the result will be a Decimal'
 
@@ -1008,6 +1040,21 @@ export default () =>
                              </FunctionExample>
                          </>}
         />
+
+        <FunctionSection name='Uppercase' id='Uppercase' resultType='text'
+                         description='Get a text value converted to upper case'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Uppercase' inputs={['abc']}>Result: "ABC"</FunctionExample>
+                             <FunctionExample name='Uppercase' inputs={['Aaron']}>Result: "AARON"</FunctionExample>
+
+                         </>}
+        />
+
 
 
     </Section>
