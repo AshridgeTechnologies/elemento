@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Calculation} from '../../../src/runtime/components/index'
+import {Calculation, Data} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import '@testing-library/jest-dom'
@@ -51,3 +51,10 @@ test('State class gives correct value when its value is a value object', () => {
     const state = new Calculation.State({value: valueObj('car')})
     expect(state.value).toBe('car')
 })
+
+test('string conversion uses the value toString', () => {
+    const value = [1, 2, 3]
+    const state = new Calculation.State({value})
+    expect('x' + state).toBe('x1,2,3')
+})
+

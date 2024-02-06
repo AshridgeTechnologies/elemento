@@ -161,8 +161,10 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
                     }
                 } else {
                     const argIdentifiers = argNames.map((name: string) => b.identifier(name))
-                    const bodyExpr = callExpr.arguments[index] ?? b.nullLiteral()
-                    callExpr.arguments[index] = b.arrowFunctionExpression(argIdentifiers, bodyExpr)
+                    const argExpr = callExpr.arguments[index]
+                    if (argExpr && !isPlainValue(argExpr)) {
+                        callExpr.arguments[index] = b.arrowFunctionExpression.from({params: argIdentifiers, body: argExpr, async: false})
+                    }
                 }
             })
             this.traverse(path)

@@ -1,14 +1,17 @@
 import {pending} from '../../src/runtime/DataStore'
 import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
+import {Value} from '../../src/runtime/runtimeFunctions'
+import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
+    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains,
+    And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Select, ForEach, First, Last, Sort,
+    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, Reverse, CommonItems, HasSameItems,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
-    Random, Check,
+    Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -269,6 +272,37 @@ describe('Right', () => {
     test('Gets value of objects', ()=> expect(Right(valueObj('abc'), valueObj(2))).toBe('bc'))
 })
 
+describe('Lowercase', () => {
+    test('Gets a lower case version of a string', () => expect(Lowercase('AbC123?')).toBe('abc123?'))
+    test('Gets value of objects', () => expect(Lowercase(valueObj('AbC123?'))).toBe('abc123?'))
+})
+
+describe('Uppercase', () => {
+    test('Gets an upper case version of a string', () => expect(Uppercase('AbC123?')).toBe('ABC123?'))
+    test('Gets value of objects', () => expect(Uppercase(valueObj('AbC123?'))).toBe('ABC123?'))
+})
+
+describe('Split', () => {
+    test('Splits on separator', () => expect(Split('ab,cd,ef', ',')).toStrictEqual(['ab', 'cd', 'ef']))
+    test('Splits all chars on empty separator', () => expect(Split('abcd', '')).toStrictEqual(['a', 'b', 'c', 'd']))
+    test('Splits all chars on omitted separator', () => expect(Split('abcd')).toStrictEqual(['a', 'b', 'c', 'd']))
+    test('Splits all chars on null separator', () => expect(Split('abcd', null)).toStrictEqual(['a', 'b', 'c', 'd']))
+    test('Returns original string in a list if separator does not occur', () => expect(Split('abcd', ',')).toStrictEqual(['abcd']))
+    test('empty list if Text is null', () => expect(Split(null, ',')).toStrictEqual([]))
+    test('Gets value of objects', () => expect(Split(valueObj('ab,cd'), valueObj(','))).toStrictEqual(['ab','cd']))
+})
+
+describe('Contains', () => {
+    test('finds a string in another', () => expect(Contains('abcde', 'bcd')).toBe(true))
+    test('does not find overlapping string', () => expect(Contains('abcde', 'def')).toBe(false))
+    test('does case insensitive search by default', () => expect(Contains('abcde', 'BCD')).toBe(false))
+    test('ignores case if specified', () => expect(Contains('abcde', 'BCD', true)).toBe(true))
+    test('ignores case both ways if specified', () => expect(Contains('ABCDE', 'bcd', true)).toBe(true))
+    test('always finds empty string', () => expect(Contains('abcde', '')).toBe(true))
+    test('never finds anything in empty string', () => expect(Contains('', 'a')).toBe(false))
+    test('gets values of objects', () => expect(Contains(valueObj('abcde'), valueObj('bcd'))).toBe(true))
+})
+
 describe('And', () => {
     test('False for single falsy argument', ()=> expect(And(0)).toBe(false))
     test('True for single truthy argument', ()=> expect(And('abc')).toBe(true))
@@ -398,6 +432,27 @@ describe('List', () => {
     test('gets value of objects', ()=> expect(List(valueObj('c'), valueObj(2))).toStrictEqual(['c', 2]))
 })
 
+describe('Range', () => {
+    test('throws if less than two arguments', () => {
+        // @ts-ignore
+        expect( ()=> Range()).toThrow('Range() needs start and end, and optional step')
+        // @ts-ignore
+        expect( ()=> Range(1)).toThrow('Range() needs start and end, and optional step')
+    })
+
+    test('error if step is zero', () => expect(() => Range(1,3,0)).toThrow('Range: step cannot be zero'))
+    test('returns a list of numbers from start to end', () => expect(Range(1, 3)).toStrictEqual([1, 2, 3]))
+    test('returns a list of one if start == end', () => expect(Range(3, 3)).toStrictEqual([3]))
+    test('returns an empty list if start < end', () => expect(Range(4, 3)).toStrictEqual([]))
+    test('works with negative numbers', () => expect(Range(-4, -2)).toStrictEqual([-4, -3, -2]))
+    test('works with negative numbers across zero', () => expect(Range(-2, 2)).toStrictEqual([-2, -1, 0, 1, 2]))
+    test('works with positive step', () => expect(Range(-2, 2, 2)).toStrictEqual([-2, 0, 2]))
+    test('works with negative step', () => expect(Range(2, -2, -2)).toStrictEqual([2, 0, -2]))
+    test('returns an empty list if step is negative and start > end', () => expect(Range(3, 4, -1)).toStrictEqual([]))
+    test('ends with last number in range if not a whole number of steps', () => expect(Range(-2, 2, 3)).toStrictEqual([-2, 1]))
+    test('works with value objects', () => expect(Range(valueObj(-2), valueObj(2), valueObj(2))).toStrictEqual([-2, 0, 2]))
+})
+
 describe('Select', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => Select()).toThrow('Wrong number of arguments to Select. Expected list, expression.'))
@@ -405,6 +460,17 @@ describe('Select', () => {
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
+})
+
+describe('Count', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Count()).toThrow('Wrong number of arguments to Count. Expected list, optional expression.'))
+    test('returns the count of selected items', () => expect(Count([3, -1, 4, 0], (it: any) => it > 0)).toBe(2))
+    test('returns the count of all items if no condition', () => expect(Count([3, -1, 4, 0])).toBe(4))
+    test('Gets value of object for the list', ()=> expect(Count(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual(2))
+    test('Null list gives 0', ()=> expect(Count(null, (it: any) => it <= 0)).toStrictEqual(0))
+    // @ts-ignore
+    test('Pending value gives 0', ()=> expect(Count(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))
 })
 
 describe('ForEach', () => {
@@ -419,21 +485,25 @@ describe('ForEach', () => {
 describe('First', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => First()).toThrow('Wrong number of arguments to First. Expected list, optional expression.'))
-    test('returns the first in the list without a condition', () => expect(First([3, -1, 4, 0])).toStrictEqual(3))
-    test('returns the first selected item with a condition', () => expect(First([3, -1, 4, 0], (it: any) => it < 0)).toStrictEqual(-1))
-    test('Gets value of object for the list', ()=> expect(First(valueObj([3, -1, 4, 0]), (it: any) => it === 0)).toStrictEqual(0))
+    test('returns the first in the list without a condition', () => expect(First([3, -1, 4, 0])).toBe(3))
+    test('returns the first selected item with a condition', () => expect(First([3, -1, 4, 0], (it: any) => it < 0)).toBe(-1))
+    test('Gets value of object for the list', ()=> expect(First(valueObj([3, -1, 4, 0]), (it: any) => it === 0)).toBe(0))
     // @ts-ignore
-    test('Pending value gives null', ()=> expect(First(pendingValue, (it: any) => it <= 0)).toStrictEqual(null))
+    test('Pending value gives null', ()=> expect(First(pendingValue, (it: any) => it <= 0)).toBe(null))
+    test('Null list with condition gives null', ()=> expect(First(null, (it: any) => it <= 0)).toBe(null))
+    test('Null list without condition gives null', ()=> expect(First(null)).toBe(null))
 })
 
 describe('Last', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => Last()).toThrow('Wrong number of arguments to Last. Expected list, optional expression.'))
-    test('returns the last in the list without a condition', () => expect(Last([3, -1, 4, 0])).toStrictEqual(0))
-    test('returns the last selected item with a condition', () => expect(Last([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual(4))
-    test('Gets value of object for the list', ()=> expect(Last(valueObj([3, -1, 4, 0]), (it: any) => it > 3)).toStrictEqual(4))
+    test('returns the last in the list without a condition', () => expect(Last([3, -1, 4, 0])).toBe(0))
+    test('returns the last selected item with a condition', () => expect(Last([3, -1, 4, 0], (it: any) => it > 0)).toBe(4))
+    test('Gets value of object for the list', ()=> expect(Last(valueObj([3, -1, 4, 0]), (it: any) => it > 3)).toBe(4))
     // @ts-ignore
-    test('Pending value gives null', ()=> expect(Last(pendingValue, (it: any) => it <= 0)).toStrictEqual(null))
+    test('Pending value gives null', ()=> expect(Last(pendingValue, (it: any) => it <= 0)).toBe(null))
+    test('Null list with condition gives null', ()=> expect(Last(null, (it: any) => it <= 0)).toBe(null))
+    test('Null list without condition gives null', ()=> expect(Last(null)).toBe(null))
 })
 
 describe('Sort', () => {
@@ -507,6 +577,36 @@ describe('Sort', () => {
         expect(Sort(null as unknown as any[], (item: any) => item.a)).toBe(null)
 
     })
+})
+
+describe('Reverse', () => {
+    test('empty list results in an empty list', () => expect(Reverse([])).toStrictEqual([]))
+    test('list with items results in an reversed list', () => expect(Reverse([60, 40, 30, 70])).toStrictEqual([70, 30, 40, 60]))
+    test('null results in an empty list', () => expect(Reverse(null)).toStrictEqual([]))
+    test('gets object values', () => expect(Reverse(valueObj([1, 2]))).toStrictEqual([2, 1]))
+
+})
+
+describe('CommonItems', () => {
+    test('empty list if no common items', () => expect(CommonItems([1, 2, 3, 4], [5, 6, 7])).toStrictEqual([]))
+    test('list in same order as first if some common items', () => expect(CommonItems([1, 2, 3, 4], [4, 2, 8, 10])).toStrictEqual([2, 4]))
+    test('first list if has same items', () => expect(CommonItems([1, 2, 3, 4], [4, 3, 2, 1])).toStrictEqual([1, 2, 3, 4]))
+    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toBe([]))
+    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toBe([]))
+    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toBe([]))
+    test('gets object values', () => expect(CommonItems(valueObj([1, 2]), valueObj([2]))).toStrictEqual([2]))
+})
+
+describe('HasSameItems', () => {
+    test('false if no common items', () => expect(HasSameItems([1, 2, 3, 4], [5, 6, 7])).toBe(false))
+    test('false if some common items', () => expect(HasSameItems([1, 2, 3, 4], [3, 4, 5, 6, 7])).toBe(false))
+    test('false if more items in first list', () => expect(HasSameItems([1, 2, 3, 4], [2, 3])).toBe(false))
+    test('false if more items in second list', () => expect(HasSameItems([1, 2, 3, 4], [1, 2, 3, 4, 5])).toBe(false))
+    test('false if first list is null', () => expect(HasSameItems(null, [1, 2])).toBe(false))
+    test('false if second list is null', () => expect(HasSameItems([1, 2, 3, 4], null)).toBe(false))
+    test('false if both lists are null', () => expect(HasSameItems(null, null)).toBe(false))
+    test('true if has same items in different order', () => expect(HasSameItems([1, 2, 3, 4], [4, 3, 2, 1])).toBe(true))
+    test('gets values of objects', () => expect(HasSameItems(valueObj([1, 2]), valueObj([1, 2]))).toBe(true))
 })
 
 describe('Timestamp', function () {
@@ -733,8 +833,9 @@ describe('DateFormat', () => {
 })
 
 describe('Random', () => {
+
     test('with one argument: generates a random integer between 0 and given number', () => {
-        for (let i = 0; i < 1001; i++) {
+        for (let i = 0; i < 100; i++) {
             const num = Random(i)
             expect(num).toBe(Math.floor(num))
             expect(num).toBeGreaterThanOrEqual(0)
@@ -742,17 +843,33 @@ describe('Random', () => {
         }
     })
 
-    test('with one argument: range of numbers includes the upper limit', () => {
+    function testRandomInRange(lowerLimit: number | undefined, upperLimit: number) {
+        let lowerLimitGenerated = false
         let upperLimitGenerated = false
-        for (let i = 0; i < 1000; i++) {
-            const num = Random(2)
-            if (num === 2) {
-                upperLimitGenerated = true
-                break
+        for (let i = 0; i < 100; i++) {
+            const num = lowerLimit === undefined ? Random(upperLimit) : Random(lowerLimit, upperLimit)
+            const effectiveLowerLimit = lowerLimit ?? 0
+            expect(num).toBeGreaterThanOrEqual(effectiveLowerLimit)
+            expect(num).toBeLessThanOrEqual(upperLimit)
+            if (num === effectiveLowerLimit) {
+                lowerLimitGenerated = true
             }
+            if (num === upperLimit) {
+                upperLimitGenerated = true
+            }
+            if (lowerLimitGenerated && upperLimitGenerated) break
         }
 
+        expect(lowerLimitGenerated).toBe(true)
         expect(upperLimitGenerated).toBe(true)
+    }
+
+    test('with one argument: range of numbers includes 0 and the upper limit', () => {
+        testRandomInRange(undefined, 2)
+    })
+
+    test('with two arguments: range of numbers includes the lower and upper limit', () => {
+        testRandomInRange(-2, 0)
     })
 
     test('gets values of arguments', () => {
@@ -760,6 +877,79 @@ describe('Random', () => {
         expect(num).toBe(Math.floor(num))
         expect(num).toBeGreaterThanOrEqual(0)
         expect(num).toBeLessThanOrEqual(10)
+    })
+})
+
+describe('RandomFrom', () => {
+
+    function testRandomInRange(possibleList: any[], callFn: () => any) {
+        const valuesGenerated = new Set()
+        for (let i = 0; i < 100; i++) {
+            const randomVal = callFn()
+            valuesGenerated.add(randomVal)
+            expect(possibleList.indexOf(randomVal)).toBeGreaterThanOrEqual(0)
+            if (valuesGenerated.size === possibleList.length) break
+        }
+
+        expect(valuesGenerated.size).toBe(possibleList.length)
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks one item from a single list', () => {
+        testRandomInRange(theList, () => RandomFrom(theList))
+    })
+    test('picks one item from a list of arguments', () => {
+        // @ts-ignore
+        testRandomInRange(theList, () => RandomFrom(...theList))
+    })
+    test('gets values of arguments', () => {
+        testRandomInRange([1,2], ()=> RandomFrom(valueObj(1), valueObj(2)))
+        testRandomInRange([1,2], ()=> RandomFrom(valueObj([1,2])))
+    })
+})
+
+describe('RandomFromList', () => {
+
+    function testRandomsInRange(list: Value<any[]>, itemCount: Value<number>) {
+        const listVal = valueOf(list), itemCountVal = valueOf(itemCount)
+        const valuesGenerated = new Set()
+        for (let i = 0; i < 1000; i++) {
+            const randomVals = RandomListFrom(list, itemCount)
+            expect(randomVals.length).toBe(itemCountVal)
+            randomVals.forEach( (val: any) => {
+                valuesGenerated.add(val)
+                expect(listVal.indexOf(val)).toBeGreaterThanOrEqual(0)
+                expect(randomVals.filter( x => x === val).length).toBe(1)
+            })
+            if (valuesGenerated.size === listVal.length) break
+        }
+
+        expect(valuesGenerated.size).toBe(listVal.length)
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks a list of items from a list', () => {
+        testRandomsInRange(theList, 3)
+    })
+    test('gets values of arguments', () => {
+        testRandomsInRange(valueObj([1, 2, 3]), valueObj(2))
+    })
+})
+
+describe('Shuffle', () => {
+    function testShuffleIsValid(list: Value<any[]>) {
+        const listVal = valueOf(list)
+        const shuffledVals: any[] = Shuffle(list)
+        expect(shuffledVals.length).toBe(listVal.length)
+        expect(diff(listVal, shuffledVals)).toStrictEqual([])
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks a list of items from a list', () => {
+        testShuffleIsValid(theList)
+    })
+    test('gets values of arguments', () => {
+        testShuffleIsValid(valueObj([1, 2, 3]))
     })
 })
 

@@ -26,6 +26,7 @@ Forces
 
 Possibilities
 -------------
+- Tracing with argument values can be switched on in all of our functions
 - Can pass through app store hook in runPreview
 - Editor sends component id, function, params via service worker postMessage
 - Can start with one-way communication

@@ -50,6 +50,9 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     protected updateState(changes: Partial<StateProps>) {
         const newState = Object.assign({}, this.state, changes) as StateProps
+        for (const p in newState) {
+            if (newState[p] === undefined) delete newState[p]
+        }
         this._appStateInterface!.updateVersion(this.withState(newState))
     }
 

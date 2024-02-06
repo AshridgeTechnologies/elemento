@@ -59,6 +59,10 @@ export class CalculationState extends BaseComponentState<StateProperties>
     valueOf() {
         return this.value
     }
+
+    toString() {
+        return this.value.toString()
+    }
 }
 
 Calculation.State = CalculationState

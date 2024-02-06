@@ -1,4 +1,4 @@
-import {fromPairs, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, identity, isEmpty, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -17,8 +17,8 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {isArray} from 'lodash'
-import {assign, isFunction, isObject, mapValues, pick} from 'radash'
+import {diff, isArray, range} from 'radash'
+import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -137,6 +137,27 @@ export const globalFunctions = {
         return sVal.substring(sVal.length - lengthVal)
     },
 
+    Lowercase(s: Value<string>) {
+        const sVal = valueOf(s)
+        return sVal.toLowerCase()
+    },
+
+    Uppercase(s: Value<string>) {
+        const sVal = valueOf(s)
+        return sVal.toUpperCase()
+    },
+
+    Split(sVal: Value<string> | null, sepVal?: Value<string> | null) {
+        const [s, sep] = valuesOf(sVal, sepVal)
+        if (isNil(s)) return []
+        return s.split(sep ?? '')
+    },
+
+    Contains(sVal: Value<string>, searchVal: Value<string>, ignoreCase?: boolean) {
+        const [s, search] = valuesOf(sVal, searchVal) as [string, string]
+        return ignoreCase ? s.toLowerCase().includes(search.toLowerCase()) : s.includes(search)
+    },
+
     And(...args: Value<any>[]) {
         return args.reduce( (prev, curr) => prev && !!valueOf(curr), true )
     },
@@ -211,10 +232,34 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
+    Range(startVal: Value<number>, endVal: Value<number>, stepVal?: Value<number>): number[] {
+        if (startVal === undefined || endVal === undefined) {
+            throw Error('Range() needs start and end, and optional step')
+        }
+
+        const [start, end, step = 1] = valuesOf(startVal, endVal, stepVal)
+        if (step === 0) {
+            throw Error('Range: step cannot be zero')
+        }
+        if (step > 0) {
+            return Array.from(range(start, end, identity, Math.abs(step))) as number[]
+        } else {
+            return (Array.from(range(end, start, identity, Math.abs(step))) as number[]).reverse()
+
+        }
+    },
+
     Select(list: Value<any[]>, condition: (item: any) => boolean) {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
+    },
+
+    Count(listVal: Value<any[]> | null, condition?: (item: any) => boolean) {
+        const list = valueOf(listVal)
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to Count. Expected list, optional expression.')
+        if (isNil(list)) return 0
+        return condition ? list.filter(condition!).length : list.length
     },
 
     ForEach(list: Value<any[]>, transform: (item: any) => any) {
@@ -223,16 +268,17 @@ export const globalFunctions = {
         return listVal.map(transform)
     },
 
-    First(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
+    First(list: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
         const listVal = valueOf(list) ?? []
         if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
         return listVal.filter(condition)[0] ?? null
     },
 
-    Last(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
-        const listVal = valueOf(list) ?? []
-        if (list === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
-        return last(listVal.filter(condition)) ?? null
+    Last(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
+        const list = valueOf(listVal)
+        if (isNil(list)) return null
+        return last(list.filter(condition))
     },
 
     Sort(list: Value<any[]>, sortKeyFn: (item: any) => any | any[]): any[] {
@@ -270,6 +316,26 @@ export const globalFunctions = {
             return listVal
         }
         return sort(compareItems, listVal)
+    },
+
+
+
+    Reverse(listVal: Value<any[]> | null) {
+        const list = valueOf(listVal)
+        if (isNil(list)) return []
+        return reverse(list)
+    },
+
+    CommonItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
+        const [list1, list2] = valuesOf(list1Val, list2Val)
+        if (isNil(list1) || isNil(list2) ) return []
+        return list1.filter( (x:any) => list2.includes(x))
+    },
+
+    HasSameItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
+        const [list1, list2] = valuesOf(list1Val, list2Val)
+        if (isNil(list1) || isNil(list2) ) return false
+        return list1.length === list2.length && list1.every( (x:any) => list2.includes(x))
     },
 
     Timestamp() {
@@ -338,9 +404,30 @@ export const globalFunctions = {
         return format(dateVal, pattern)
     },
 
-    Random(upperLimit: Value<number>) {
-        const upperLimitVal = valueOf(upperLimit)
-        return Math.floor((upperLimitVal + 1) * Math.random())
+    Random(firstArg?: Value<number>, secondArg?: Value<number>) {
+        const [firstArgVal, secondArgVal] = valuesOf(firstArg, secondArg)
+        if (arguments.length === 0) {
+            return Math.random()
+        }
+        const [lowerLimit, upperLimit] = arguments.length === 1 ? [0, firstArgVal] : [firstArgVal, secondArgVal]
+        const range = upperLimit - lowerLimit + 1
+        return lowerLimit + Math.floor(range * Math.random())
+    },
+
+    RandomFrom(firstArg: Value<any>, ...furtherArgs: Value<any>[]): any {
+        const list = furtherArgs.length === 0 ? valueOf(firstArg) : valuesOf(firstArg, ...furtherArgs)
+        const randomIndex = Math.floor(list.length * Math.random())
+        return list[randomIndex]
+    },
+
+    RandomListFrom(listVal: Value<any[]>, itemCountVal: Value<number>): any[] {
+        const [list, itemCount] = valuesOf(listVal, itemCountVal)
+        return shuffle(list).slice(0, itemCount)
+    },
+
+    Shuffle(listVal: Value<any[]>): any[] {
+        const list = valueOf(listVal)
+        return shuffle(list)
     },
 
     Check(condition: Value<any>, message: Value<string>) {
@@ -387,6 +474,7 @@ export const globalFunctions = {
 // for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when neeeded
 export const functionArgs = {
     Select: {1: ['$item']},
+    Count: {1: ['$item']},
     ForEach: {1: ['$item']},
     First: {1: ['$item']},
     Last: {1: ['$item']},

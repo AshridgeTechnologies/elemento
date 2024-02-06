@@ -84,6 +84,67 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='CommonItems' id='CommonItems' resultType='list of any type'
+                         description='Find the items in a list that are also in a second list.  The items in the result will be in the order they occur in the first list.
+                         if either input list is a null value, the result is an empty list.'
+
+                         inputs={<>
+                             <FunctionInput name='List 1' type='list of any type'>The first list of values to check</FunctionInput>
+                             <FunctionInput name='List 2' type='list of any type'>The second list of values to check</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 20, 30, 40)', 'List(40, 10, 50)']}>Result: list containing 50, 10, 40</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10)', 'List(40, 10, 50, 60)']}>Result: list containing just 10</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10)', 'List(40, 60)']}>Result: empty list</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 30)', 'List(10, 20, 30, 40, 50)']}>Result: the same as the first list 50, 10, 30</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 30)', 'null']}>Result: empty list</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Contains' id='Contains' resultType='true-false'
+                         description='See whether a text value contains another text value.  It is case sensitive, unless you supply true for the Ignore Case input.'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The text to search in</FunctionInput>
+                             <FunctionInput name='Text to Find' type='text'>The text to search for.</FunctionInput>
+                             <FunctionInput name='Ignore Case' type='true-false' optional>Whether to ignore the case when searching</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"bc"']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"e"']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"def"']}>Result: false</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"DE"']}>Result: false - case of "DE" is not the same as "de"</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"DE"', 'true']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '""']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['""', '"a"']}>Result: false</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Count' id='Count' resultType='number'
+                         description='Count the values from a list where a given condition is true.'
+
+                         inputs={<>
+                             <FunctionInput name='Values' type='list of any type'>The list of values to check.  If it is null, the result is 0.</FunctionInput>
+                             <FunctionInput name='Condition' type='formula giving true-false' optional>Controls which of the
+                                 values are included in the count.
+                                 It is applied to each of Values in turn, and if it results in true, the count is increased by one.
+                                 It should use the special name <code>$item</code> to mean the item that is being checked.
+                                 If this input is not supplied, the result is just the number of values in the list
+                             </FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 25)']}>Result: 3</FunctionExample>
+                             <FunctionExample name='Count'
+                                              inputs={['List("Andrew", "Bobo", "Candice", "Jo")', 'Gt($item.length, 5)']}>Result: 2</FunctionExample>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: 0</FunctionExample>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)']}>Result: 5</FunctionExample>
+                             <FunctionExample name='Count' inputs={['null']}>Result: 0</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='CsvToRecords' id='CsvToRecords' resultType='list of records'
                          description='Reads data from text in CSV format.'
 
@@ -370,6 +431,24 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='HasSameItems' id='HasSameItems' resultType='true-false'
+                         description='Find whether the items in two lists are the same.  The order of the items in the lists does not matter.
+                         If both lists are empty lists, then they have the same items.  If either list is a null value, the result is false.'
+
+                         inputs={<>
+                             <FunctionInput name='List 1' type='list of any type'>The first list of values to check</FunctionInput>
+                             <FunctionInput name='List 2' type='list of any type'>The second list of values to check</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='HasSameItems' inputs={['List(50, 10, 30, 40)', 'List(40, 10, 50)']}>Result: false</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(40, 10, 50)', 'List(50, 10, 20, 30, 40)']}>Result: false</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(50, 10, 40)', 'List(10, 40, 50)']}>Result: true</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(50)', 'List()']}>Result: true</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List()', 'null']}>Result: false</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='If' id='If' resultType='any'
                          description='Choose between two values, depending on another value'
 
@@ -392,7 +471,8 @@ export default () =>
         />
 
         <FunctionSection name='Last' id='Last' resultType='any'
-                         description='Get the last value from a list where a given condition is true, or an empty value (null) if the condition is not true for any value in the list.'
+                         description='Get the last value from a list where a given condition is true, or an empty value (null) if the condition is not true for any value in the list.
+                         If the list itself is null, the result is null'
 
                          inputs={<>
                              <FunctionInput name='Values' type='list of any type'>The list of values to select
@@ -412,8 +492,22 @@ export default () =>
                              <FunctionExample name='Last'
                                               inputs={['List("Ahmed", "Bobo", "Candice", "Jo")', 'Gt($item.length, 4)']}>Result:
                                  "Candice"</FunctionExample>
-                             <FunctionExample name='Last' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result:
-                                 empty (null)</FunctionExample>
+                             <FunctionExample name='Last' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: empty (null)</FunctionExample>
+                             <FunctionExample name='Last' inputs={['null', 'Gt($item, 100)']}>Result: empty value (null)</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Reverse' id='Reverse' resultType='list of any type'
+                         description='Get a list in reverse order.
+                         If the input list is null, the result is an empty list.'
+
+                         inputs={<>
+                             <FunctionInput name='List' type='list of any type'>The list of values to reverse</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Reverse' inputs={['List(10, 20, 30, 40)']}>Result: list containing 40, 30, 20, 10</FunctionExample>
+                             <FunctionExample name='Reverse' inputs={['null']}>Result: empty list</FunctionExample>
                          </>}
         />
 
@@ -462,6 +556,20 @@ export default () =>
                              <FunctionExample name='Log' inputs={['10', '20', '30']}>Logs: 10 20 30</FunctionExample>
                              <FunctionExample name='Log' inputs={['"The delivery amount is"', 'Delivery']}>If Delivery
                                  had the value 20, this would log: The delivery amount is 20</FunctionExample>
+                         </>}
+        />
+
+
+        <FunctionSection name='Lowercase' id='Lowercase' resultType='text'
+                         description='Get a text value converted to lower case'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Lowercase' inputs={['ABC123']}>Result: "abc123"</FunctionExample>
+                             <FunctionExample name='Lowercase' inputs={['Aaron']}>Result: "aaron"</FunctionExample>
                          </>}
         />
 
@@ -661,9 +769,9 @@ export default () =>
                          </>}
         />
 
-        <FunctionSection name='Random' id='Random' resultType='date'
+        <FunctionSection name='Random' id='Random' resultType='number'
                          description={<>
-                             <Para>A Random number or other value generated in various ways.</Para>
+                             <Para>A Random number generated in various ways.</Para>
                              <Para><em>Note:</em>If you want to do multiple calculations with the same random value,
                                  or keep it the same while other values on the same page are changing,
                                  you need to store the value in a Data element.</Para>
@@ -675,11 +783,9 @@ export default () =>
                                      <Para>A random whole number between 0 and the number given (including 0 and the
                                          number given)</Para>
                                  </NLItem>
-                                 <NLItem name='Multiple values'>
-                                     <Para>One of the values, chosen at random</Para>
+                                 <NLItem name='Two numbers'>
+                                     <Para>A random whole number between the first and the second number given (including the first and second numbers)</Para>
                                  </NLItem>
-                                 <NLItem name='A single List of values'>
-                                     <Para>One of the values in the list, chosen at random</Para></NLItem>
                              </NamedList>
                          </>
                          }
@@ -690,14 +796,79 @@ export default () =>
                          }
                          examples={<>
                              <FunctionExample name='Random' inputs={[]}>Example result: 0.7184023</FunctionExample>
-                             <FunctionExample name='Random' inputs={['10']}>A random value between 0 and
-                                 10</FunctionExample>
-                             <FunctionExample name='Random' inputs={['10', '20', '30']}>Random choice from 10, 20 or
-                                 30</FunctionExample>
-                             <FunctionExample name='Random' inputs={['true', 'false']}>Random choice of true or
-                                 false</FunctionExample>
-                             <FunctionExample name='Random' inputs={['List("Red", "Green", "Blue")']}>Random choice from
-                                 "Red", "Green" or "Blue"</FunctionExample>
+                             <FunctionExample name='Random' inputs={['10']}>A random value between 0 and 10</FunctionExample>
+                             <FunctionExample name='Random' inputs={['10', '15']}>Random choice from 10, 11, 12, 13, 14 or 15</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='RandomFrom' id='RandomFrom' resultType='any'
+                         description={<>
+                             <Para>A single value selected at random from a list.</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same random value,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                         </>
+                         }
+
+                         inputs={<NamedList>
+                             <NLItem name='Single list input'>
+                                 <FunctionInput name='List' type='List'>The List of values from which to select the item.</FunctionInput>
+                             </NLItem>
+                             <NLItem name='Multiple separate items'>
+                                 <FunctionInput name='Item 1' type='any'>The first of the items from which to select at random</FunctionInput>
+                                 <FunctionInput name='Item 2' type='any'>The second item from which to select at random</FunctionInput>
+                                 <FunctionInput name='Item 3, 4, 5, ...' type='any'>Further items from which to select at random</FunctionInput>
+                             </NLItem>
+                         </NamedList>
+                         }
+
+                         examples={<>
+                             <FunctionExample name='RandomFrom' inputs={['List(1,2, 5, 10)']}>Result: One of 1, 2, 5 or 10</FunctionExample>
+                             <FunctionExample name='RandomFrom' inputs={['Range(10, 30, 5)']}>Result: One of 10, 15, 20, 25 or 30 (see the Range function)</FunctionExample>
+                             <FunctionExample name='RandomFrom' inputs={['"A"', '"B"', '"C"', ]}>Result: One of "A", "B" or "C"</FunctionExample>
+                             <FunctionExample name='Random' inputs={['true', 'false']}>Random choice of true or false</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='RandomListFrom' id='RandomListFrom' resultType='list of any'
+                         description={<>
+                             <Para>A list of values selected at random from a list.  All the values will be different items from the list.
+                                 The items will be in the same order that they occur in the list</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same random result,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                             <Para>See also <HelpLink id='Shuffle'/></Para>
+                         </>
+                         }
+
+                         inputs={<>
+                             <FunctionInput name='List' type='List'>The List of values from which to select the items.</FunctionInput>
+                             <FunctionInput name='Item Count' type='number'>The number of items to select from the list.
+                                 If the number is greater than or equal to the size of the list, all the items will be selected.</FunctionInput>
+                             </>}
+
+                         examples={<>
+                             <FunctionExample name='RandomListFrom' inputs={['List(1,2, 5, 10)', '2']}>Result: One of [1, 2], [1, 5], [1, 10], [2, 5], [2, 10] or [5, 10]</FunctionExample>
+                             <FunctionExample name='RandomListFrom' inputs={['List(1,2, 5, 10)', '4']}>Result: always [1, 2, 5, 10]</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Range' id='Range' resultType='list of number'
+                         description='Create a list of numbers between a given start and end value'
+
+                         inputs={<>
+                             <FunctionInput name='Start' type='number'>The number to start from.</FunctionInput>
+                             <FunctionInput name='End' type='number'>The number to end with.</FunctionInput>
+                             <FunctionInput name='Step' type='number' optional>The gap between each number - 1 is used if not given.
+                                 If Step is negative the numbers are in descending order.</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Range' inputs={['5', '10']}>Result: 5, 6, 7, 8, 9, 10</FunctionExample>
+                             <FunctionExample name='Range' inputs={['6', '15', '3']}>Result: 6, 9, 12, 15</FunctionExample>
+                             <FunctionExample name='Range' inputs={['20', '-20', '-5']}>Result: 20, 15, 10, 5, 0, -5</FunctionExample>
+                             <FunctionExample name='Range' inputs={['6', '15', '4']}>Result: 6, 10, 14</FunctionExample>
+
                          </>}
         />
 
@@ -835,6 +1006,25 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Shuffle' id='Shuffle' resultType='list of any'
+                         description={<>
+                             <Para>A list of values shuffled into a random order.</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same shuffled result,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                             <Para>See also <HelpLink id='RandomListFrom'/></Para>
+                         </>
+                         }
+
+                         inputs={<>
+                             <FunctionInput name='List' type='List'>The List of values to shuffle.</FunctionInput>
+                         </>}
+
+                         examples={<>
+                             <FunctionExample name='Shuffle' inputs={['List(1,2, 5, 10)']}>Example result: 5, 2, 1, 10</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Sort' id='Sort' resultType='list of any type'
                          description='Create a new list from the values in a given list, sorted according to the value from a formula applied to each value.'
 
@@ -857,6 +1047,25 @@ export default () =>
                              <FunctionExample name='Sort'
                                               inputs={['List("Andrew", "Bobo", "Candice", "Jo")', '$item.length']}>Result:
                                  list containing "Jo", "Bobo", "Andrew", "Candice"</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Split' id='Split' resultType='text'
+                         description='Split a text value into a list of smaller text values.
+                         The text is split at each ocurrence of Separator.  The Separators are removed.
+                         If the Separator does not occur, the result is a List containing one item - the original Text.
+                         If Text is null, the result is an empty list.
+                         If Separator is null, or left out, the Text is split into its individual characters.'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text to split</FunctionInput>
+                             <FunctionInput name='Separator' type='text'>The separator value to split the text on</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Split' inputs={['"One,Two,Three"', ","]}>Result: list containing "One", "Two", "Three"</FunctionExample>
+                             <FunctionExample name='Split' inputs={['"One,Two,Three"', ";"]}>Result: list containing "One,Two,Three" </FunctionExample>
+                             <FunctionExample name='Split' inputs={['"Abc1"']}>Result: list containing "A", "b", "c", "1" </FunctionExample>
                          </>}
         />
 
@@ -989,6 +1198,21 @@ export default () =>
                              </FunctionExample>
                          </>}
         />
+
+        <FunctionSection name='Uppercase' id='Uppercase' resultType='text'
+                         description='Get a text value converted to upper case'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Uppercase' inputs={['abc']}>Result: "ABC"</FunctionExample>
+                             <FunctionExample name='Uppercase' inputs={['Aaron']}>Result: "AARON"</FunctionExample>
+
+                         </>}
+        />
+
 
 
     </Section>

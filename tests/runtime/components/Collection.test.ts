@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Collection} from '../../../src/runtime/components/index'
+import {Collection, Data, TextInput} from '../../../src/runtime/components/index'
 import {mockClear, mockImplementation, snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import DataStore, {
@@ -132,6 +132,11 @@ test('does deep compare on value in props', () => {
         const state2 = new Collection.State({value: {a: 10, b: 20}})
         expect(state1.updateFrom(state2)).not.toBe(state1)
     }
+})
+
+test('valueOf returns the values as an array', () => {
+    const state = new CollectionState({value: ['green', 'Blue']})
+    expect(state.valueOf()).toStrictEqual(['green', 'Blue'])
 })
 
 describe('Update', () => {
@@ -869,4 +874,39 @@ describe('GetAll', () => {
         ])
     })
 
+})
+
+describe('Reset', () => {
+    const initialCollection = {
+        x1: {id: 'x1', a: 10},
+        x2: {id: 'x2', a: 20},
+    }
+
+    test('removes an item from a collection', () => {
+        const state = new Collection.State({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+        state.Remove('x1')
+        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(newState).toStrictEqual(state._withStateChanges({
+            value: {
+                x2: {id: 'x2', a: 20},
+            }
+        }))
+    })
+
+    test('clears all objects and restores initial value', () => {
+        const state = new Collection.State({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+        state.Remove('x1')
+        const newState = appInterface.latest()
+        expect(newState).toStrictEqual(state._withStateChanges({
+            value: {
+                x2: {id: 'x2', a: 20},
+            }
+        }))
+
+        state.latest().Reset()
+        const newState2 = appInterface.latest()
+        expect(newState2).toStrictEqual(state)
+    })
 })

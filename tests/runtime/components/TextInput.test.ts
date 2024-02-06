@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {DateInput, TextInput} from '../../../src/runtime/components/index'
+import {Data, DateInput, TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
 import '@testing-library/jest-dom'
@@ -201,6 +201,16 @@ test('State class gives correct value when its value is another value whose valu
     const state1 = new TextInput.State({value: valueObj('car')})
     const state2 = new TextInput.State({value: state1})
     expect(state2.value).toBe('car')
+})
+
+test('valueOf returns the value', () => {
+    const state = new TextInput.State({value: 'car'})
+    expect(state.valueOf()).toBe('car')
+})
+
+test('string conversion uses the value', () => {
+    const state = new TextInput.State({value: 'car'})
+    expect('x' + state).toBe('xcar')
 })
 
 test('State is valid and has no errors when it has no data type', () => {
