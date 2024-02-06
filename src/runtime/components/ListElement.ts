@@ -1,5 +1,5 @@
 import React, {SyntheticEvent, useCallback, useEffect, useMemo, useRef} from 'react'
-import {asArray, valueOfProps} from '../runtimeFunctions'
+import {asArray, indexedPath, lastItemIdOfPath, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
@@ -48,7 +48,8 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
 
     const onClickFn = useCallback((event:SyntheticEvent) => {
         const targetId = (event.target as HTMLElement).id
-        const itemId = targetId.match(/\.#(\w+)/)?.[1]
+        const itemId = lastItemIdOfPath(targetId)
+
         const selectedItem = items.find((it:any) => it.id === itemId)
         if (selectable) {
             state._setSelectedItem(selectedItem)
@@ -65,7 +66,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     }
     const children = asArray(items).map((item, index) => {
             const itemId = item.id ?? index
-            const itemPath = `${path}.#${itemId}`
+            const itemPath = indexedPath(path, itemId)
             const selected = isSelected(item)
             return React.createElement(ListItem, {path: itemPath, selected, onClick, item, itemContentComponent, key: itemId})
         }

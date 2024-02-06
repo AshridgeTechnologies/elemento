@@ -1,5 +1,5 @@
 import {valueObj} from '../testutil/testHelpers'
-import {parentPath, valueOf, asArray} from '../../src/runtime/runtimeFunctions'
+import {asArray, indexedPath, lastItemIdOfPath, parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
 import BigNumber from 'bignumber.js'
 
 test('gets correct valueOf for date, object, primitive, decimal', () => {
@@ -57,10 +57,25 @@ test('parentPath finds parent path', () => {
 })
 
 test('parentPath finds parent path above index at end', () => {
-    expect(parentPath('app.mainpage.foolist.4')).toBe('app.mainpage')
+    expect(parentPath('app.mainpage.foolist.#4')).toBe('app.mainpage')
+    expect(parentPath('app.mainpage.foolist.#id2')).toBe('app.mainpage')
 })
 
 test('parentPath finds parent path above index at end with nested indexes', () => {
-    expect(parentPath('app.mainpage.toplist.3.foolist.4')).toBe('app.mainpage.toplist.3')
+    expect(parentPath('app.mainpage.toplist.#3.foolist.#4')).toBe('app.mainpage.toplist.#3')
+    expect(parentPath('app.mainpage.toplist.#id3.foolist.#id4')).toBe('app.mainpage.toplist.#id3')
+    expect(parentPath('app.mainpage.toplist.#id3.foolist.#id4.barlist.#id5')).toBe('app.mainpage.toplist.#id3.foolist.#id4')
 })
 
+test('indexedPath creates indexed path', () => {
+    expect(indexedPath('app.thing.widget', 3)).toBe('app.thing.widget.#3')
+})
+
+test('lastItemIdOfPath gets last item id for number and string', () => {
+    expect(lastItemIdOfPath('app.thing.widget.#3')).toBe('3')
+    expect(lastItemIdOfPath('app.thing.widget.#id3')).toBe('id3')
+    expect(lastItemIdOfPath('app.thing.widget.#3.foolist.#id3')).toBe('id3')
+    expect(lastItemIdOfPath('app.thing.widget.#3.theText')).toBe('3')
+    expect(lastItemIdOfPath('app.thing.widget.#id3.theText')).toBe('id3')
+    expect(lastItemIdOfPath('app.thing.widget.#3.foolist.#id3.theText')).toBe('id3')
+})

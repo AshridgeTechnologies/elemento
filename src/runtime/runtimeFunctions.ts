@@ -1,9 +1,11 @@
-import lodash from 'lodash'; const {isArray, isObject, isPlainObject} = lodash;
+import lodash from 'lodash';
 import {map} from 'ramda'
 import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
 import {parseISO} from 'date-fns'
+
+const {isArray, isObject, isPlainObject} = lodash;
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined
@@ -52,7 +54,7 @@ export const valueLiteral = function (propertyValue: any): string {
 export const idOf = (val: any) => val?.id
 
 export function parentPath(path: string) {
-    const pathWithoutTrailingIndex = path.replace(/\.\d+$/, '')
+    const pathWithoutTrailingIndex = path.replace(/\.#\w+$/, '')
     return pathWithoutTrailingIndex.replace(/\.\w+$/, '')
 }
 
@@ -144,3 +146,5 @@ export const isoDateReviver = (key: string, value: any) => {
     return value
 }
 
+export const lastItemIdOfPath = (path: string) => path.match(/\.#(\w+)[^#]*$/)?.[1]
+export const indexedPath = (path: string, index: number) => path + '.#' + index
