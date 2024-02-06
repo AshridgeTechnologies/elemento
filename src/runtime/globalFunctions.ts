@@ -17,8 +17,8 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {isArray} from 'lodash'
-import {assign, isFunction, isObject, mapValues, pick} from 'radash'
+import {isArray, range} from 'lodash'
+import {assign, isFunction, isObject, list, mapValues, pick} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -209,6 +209,15 @@ export const globalFunctions = {
 
     List(...args: Value<any>[]) {
         return args.map( valueOf )
+    },
+
+    Range(start: Value<number>, end: Value<number>, step?: Value<number>): number[] {
+        if (start === undefined || end === undefined) {
+            throw Error('Range() needs start and end, and optional step')
+        }
+        const [startVal, endVal, stepVal] = valuesOf(start, end, step)
+        const adjustment = (stepVal !== undefined && stepVal <0) ? -1 : 1
+        return range(startVal, endVal + adjustment, stepVal)
     },
 
     Select(list: Value<any[]>, condition: (item: any) => boolean) {

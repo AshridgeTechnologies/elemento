@@ -6,7 +6,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, If, Left, Mid, Right, And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Select, ForEach, First, Last, Sort,
+    Record, Pick, List, Range, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, Check,
     CsvToRecords} = globalFunctions
@@ -396,6 +396,27 @@ describe('List', () => {
     test('returns an empty list for no arguments', ()=> expect(List()).toStrictEqual([]))
     test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee')).toStrictEqual(['a', 10, true, 'Bee']))
     test('gets value of objects', ()=> expect(List(valueObj('c'), valueObj(2))).toStrictEqual(['c', 2]))
+})
+
+describe('Range', () => {
+    test('throws if less than two arguments', () => {
+        // @ts-ignore
+        expect( ()=> Range()).toThrow('Range() needs start and end, and optional step')
+        // @ts-ignore
+        expect( ()=> Range(1)).toThrow('Range() needs start and end, and optional step')
+    })
+
+    test('returns list of the start value if step is zero', () => expect(Range(1,3,0)).toStrictEqual([1, 1, 1]))
+    test('returns a list of numbers from start to end', () => expect(Range(1, 3)).toStrictEqual([1, 2, 3]))
+    test('returns a list of one if start == end', () => expect(Range(3, 3)).toStrictEqual([3]))
+    test('returns an empty list if start < end', () => expect(Range(4, 3)).toStrictEqual([]))
+    test('works with negative numbers', () => expect(Range(-4, -2)).toStrictEqual([-4, -3, -2]))
+    test('works with negative numbers across zero', () => expect(Range(-2, 2)).toStrictEqual([-2, -1, 0, 1, 2]))
+    test('works with positive step', () => expect(Range(-2, 2, 2)).toStrictEqual([-2, 0, 2]))
+    test('works with negative step', () => expect(Range(2, -2, -2)).toStrictEqual([2, 0, -2]))
+    test('returns an empty list if step is negative and start > end', () => expect(Range(3, 4, -1)).toStrictEqual([]))
+    test('ends with last number in range if not a whole number of steps', () => expect(Range(-2, 2, 3)).toStrictEqual([-2, 1]))
+    test('works with value objects', () => expect(Range(valueObj(-2), valueObj(2), valueObj(2))).toStrictEqual([-2, 0, 2]))
 })
 
 describe('Select', () => {

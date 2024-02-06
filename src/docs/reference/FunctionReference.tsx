@@ -701,6 +701,25 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Range' id='Range' resultType='list of number'
+                         description='Create a list of numbers between a given start and end value'
+
+                         inputs={<>
+                             <FunctionInput name='Start' type='number'>The number to start from.</FunctionInput>
+                             <FunctionInput name='End' type='number'>The number to end with.</FunctionInput>
+                             <FunctionInput name='Step' type='number' optional>The gap between each number - 1 is used if not given.
+                                 If Step is negative the numbers are in descending order.</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Range' inputs={['5', '10']}>Result: 5, 6, 7, 8, 9, 10</FunctionExample>
+                             <FunctionExample name='Range' inputs={['6', '15', '3']}>Result: 6, 9, 12, 15</FunctionExample>
+                             <FunctionExample name='Range' inputs={['20', '-20', '-5']}>Result: 20, 15, 10, 5, 0, -5</FunctionExample>
+                             <FunctionExample name='Range' inputs={['6', '15', '4']}>Result: 6, 10, 14</FunctionExample>
+
+                         </>}
+        />
+
         <FunctionSection name='Record' id='Record' resultType='record'
                          description='Create a record from successive pairs of item name and value.'
 
