@@ -152,6 +152,11 @@ export const globalFunctions = {
         return sVal.split(sepVal ?? '')
     },
 
+    Contains(sVal: Value<string>, searchVal: Value<string>, ignoreCase?: boolean) {
+        const [s, search] = valuesOf(sVal, searchVal) as [string, string]
+        return ignoreCase ? s.toLowerCase().includes(search.toLowerCase()) : s.includes(search)
+    },
+
     And(...args: Value<any>[]) {
         return args.reduce( (prev, curr) => prev && !!valueOf(curr), true )
     },
@@ -239,6 +244,12 @@ export const globalFunctions = {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
+    },
+
+    Count(list: Value<any[]>, condition?: (item: any) => boolean) {
+        if (list === undefined) throw new Error('Wrong number of arguments to Count. Expected list, optional expression.')
+        const listVal = valueOf(list) ?? []
+        return condition ? listVal.filter(condition!).length : listVal.length
     },
 
     ForEach(list: Value<any[]>, transform: (item: any) => any) {

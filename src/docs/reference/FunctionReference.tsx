@@ -84,6 +84,48 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='Contains' id='Contains' resultType='true-false'
+                         description='See whether a text value contains another text value.  It is case sensitive, unless you supply true for the Ignore Case input.'
+
+                         inputs={<>
+                             <FunctionInput name='Text' type='text'>The text to search in</FunctionInput>
+                             <FunctionInput name='Text to Find' type='text'>The text to search for.</FunctionInput>
+                             <FunctionInput name='Ignore Case' type='true-false' optional>Whether to ignore the case when searching</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"bc"']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"e"']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"def"']}>Result: false</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"DE"']}>Result: false - case of "DE" is not the same as "de"</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '"DE"', 'true']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['"abcde"', '""']}>Result: true</FunctionExample>
+                             <FunctionExample name='Contains' inputs={['""', '"a"']}>Result: false</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Count' id='Count' resultType='number'
+                         description='Count the values from a list where a given condition is true.'
+
+                         inputs={<>
+                             <FunctionInput name='Values' type='list of any type'>The list of values to check</FunctionInput>
+                             <FunctionInput name='Condition' type='formula giving true-false' optional>Controls which of the
+                                 values are included in the count.
+                                 It is applied to each of Values in turn, and if it results in true, the count is increased by one.
+                                 It should use the special name <code>$item</code> to mean the item that is being checked.
+                                 If this input is not supplied, the result is just the number of values in the list
+                             </FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 25)']}>Result: 3</FunctionExample>
+                             <FunctionExample name='Count'
+                                              inputs={['List("Andrew", "Bobo", "Candice", "Jo")', 'Gt($item.length, 5)']}>Result: 2</FunctionExample>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: 0</FunctionExample>
+                             <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)']}>Result: 5</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='CsvToRecords' id='CsvToRecords' resultType='list of records'
                          description='Reads data from text in CSV format.'
 

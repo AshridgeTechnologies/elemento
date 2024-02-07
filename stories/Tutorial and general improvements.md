@@ -15,14 +15,14 @@ Requirements
 - ✅ Random gives 0 when want minimum 1
 - ✅ Range function
 - ✅ Uppercase function
-- List manipulation - Join, Unique, Sort, Without, Contains, Append
+- List manipulation - Join, Unique, Sort, Without, Contains, Append, Count✅ 
 - Intuitive way of joining lists and keeping unique
-- Can use collections as lists - take the values
+- ✅ Can use collections as lists - just use GetAll()
 - ✅ RandomFrom(list/collection)
 - ✅ RandomListFrom(list/collection, count)
 - ✅ Shuffle
-- Split function on string
-- Contains on string checks for match
+- ✅ Split function on string
+- ✅ Contains on string checks for match
 - Newline to split on lines
 - Need to scroll list up or to position
 - List items cannot refer to things in page - parentPath is incorrect if ends in #0

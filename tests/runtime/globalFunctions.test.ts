@@ -5,10 +5,10 @@ import {Value} from '../../src/runtime/runtimeFunctions'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split,
+    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Range, Select, ForEach, First, Last, Sort,
+    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
@@ -289,6 +289,17 @@ describe('Split', () => {
     test('Gets value of objects', () => expect(Split(valueObj('ab,cd'), valueObj(','))).toStrictEqual(['ab','cd']))
 })
 
+describe('Contains', () => {
+    test('finds a string in another', () => expect(Contains('abcde', 'bcd')).toBe(true))
+    test('does not find overlapping string', () => expect(Contains('abcde', 'def')).toBe(false))
+    test('does case insensitive search by default', () => expect(Contains('abcde', 'BCD')).toBe(false))
+    test('ignores case if specified', () => expect(Contains('abcde', 'BCD', true)).toBe(true))
+    test('ignores case both ways if specified', () => expect(Contains('ABCDE', 'bcd', true)).toBe(true))
+    test('always finds empty string', () => expect(Contains('abcde', '')).toBe(true))
+    test('never finds anything in empty string', () => expect(Contains('', 'a')).toBe(false))
+    test('gets values of objects', () => expect(Contains(valueObj('abcde'), valueObj('bcd'))).toBe(true))
+})
+
 describe('And', () => {
     test('False for single falsy argument', ()=> expect(And(0)).toBe(false))
     test('True for single truthy argument', ()=> expect(And('abc')).toBe(true))
@@ -446,6 +457,16 @@ describe('Select', () => {
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
+})
+
+describe('Count', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => Count()).toThrow('Wrong number of arguments to Count. Expected list, optional expression.'))
+    test('returns the count of selected items', () => expect(Count([3, -1, 4, 0], (it: any) => it > 0)).toBe(2))
+    test('returns the count of all items if no condition', () => expect(Count([3, -1, 4, 0])).toBe(4))
+    test('Gets value of object for the list', ()=> expect(Count(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual(2))
+    // @ts-ignore
+    test('Pending value gives 0', ()=> expect(Count(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))
 })
 
 describe('ForEach', () => {
