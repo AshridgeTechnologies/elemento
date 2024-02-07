@@ -675,9 +675,9 @@ export default () =>
                          </>}
         />
 
-        <FunctionSection name='Random' id='Random' resultType='date'
+        <FunctionSection name='Random' id='Random' resultType='number'
                          description={<>
-                             <Para>A Random number or other value generated in various ways.</Para>
+                             <Para>A Random number generated in various ways.</Para>
                              <Para><em>Note:</em>If you want to do multiple calculations with the same random value,
                                  or keep it the same while other values on the same page are changing,
                                  you need to store the value in a Data element.</Para>
@@ -689,11 +689,9 @@ export default () =>
                                      <Para>A random whole number between 0 and the number given (including 0 and the
                                          number given)</Para>
                                  </NLItem>
-                                 <NLItem name='Multiple values'>
-                                     <Para>One of the values, chosen at random</Para>
+                                 <NLItem name='Two numbers'>
+                                     <Para>A random whole number between the first and the second number given (including the first and second numbers)</Para>
                                  </NLItem>
-                                 <NLItem name='A single List of values'>
-                                     <Para>One of the values in the list, chosen at random</Para></NLItem>
                              </NamedList>
                          </>
                          }
@@ -704,14 +702,60 @@ export default () =>
                          }
                          examples={<>
                              <FunctionExample name='Random' inputs={[]}>Example result: 0.7184023</FunctionExample>
-                             <FunctionExample name='Random' inputs={['10']}>A random value between 0 and
-                                 10</FunctionExample>
-                             <FunctionExample name='Random' inputs={['10', '20', '30']}>Random choice from 10, 20 or
-                                 30</FunctionExample>
-                             <FunctionExample name='Random' inputs={['true', 'false']}>Random choice of true or
-                                 false</FunctionExample>
-                             <FunctionExample name='Random' inputs={['List("Red", "Green", "Blue")']}>Random choice from
-                                 "Red", "Green" or "Blue"</FunctionExample>
+                             <FunctionExample name='Random' inputs={['10']}>A random value between 0 and 10</FunctionExample>
+                             <FunctionExample name='Random' inputs={['10', '15']}>Random choice from 10, 11, 12, 13, 14 or 15</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='RandomFrom' id='RandomFrom' resultType='any'
+                         description={<>
+                             <Para>A single value selected at random from a list.</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same random value,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                         </>
+                         }
+
+                         inputs={<NamedList>
+                             <NLItem name='Single list input'>
+                                 <FunctionInput name='List' type='List'>The List of values from which to select the item.</FunctionInput>
+                             </NLItem>
+                             <NLItem name='Multiple separate items'>
+                                 <FunctionInput name='Item 1' type='any'>The first of the items from which to select at random</FunctionInput>
+                                 <FunctionInput name='Item 2' type='any'>The second item from which to select at random</FunctionInput>
+                                 <FunctionInput name='Item 3, 4, 5, ...' type='any'>Further items from which to select at random</FunctionInput>
+                             </NLItem>
+                         </NamedList>
+                         }
+
+                         examples={<>
+                             <FunctionExample name='RandomFrom' inputs={['List(1,2, 5, 10)']}>Result: One of 1, 2, 5 or 10</FunctionExample>
+                             <FunctionExample name='RandomFrom' inputs={['Range(10, 30, 5)']}>Result: One of 10, 15, 20, 25 or 30 (see the Range function)</FunctionExample>
+                             <FunctionExample name='RandomFrom' inputs={['"A"', '"B"', '"C"', ]}>Result: One of "A", "B" or "C"</FunctionExample>
+                             <FunctionExample name='Random' inputs={['true', 'false']}>Random choice of true or false</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='RandomListFrom' id='RandomListFrom' resultType='list of any'
+                         description={<>
+                             <Para>A list of values selected at random from a list.  All the values will be different items from the list.
+                                 The items will be in the same order that they occur in the list</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same random result,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                             <Para>See also <HelpLink id='Shuffle'/></Para>
+                         </>
+                         }
+
+                         inputs={<>
+                             <FunctionInput name='List' type='List'>The List of values from which to select the items.</FunctionInput>
+                             <FunctionInput name='Item Count' type='number'>The number of items to select from the list.
+                                 If the number is greater than or equal to the size of the list, all the items will be selected.</FunctionInput>
+                             </>}
+
+                         examples={<>
+                             <FunctionExample name='RandomListFrom' inputs={['List(1,2, 5, 10)', '2']}>Result: One of [1, 2], [1, 5], [1, 10], [2, 5], [2, 10] or [5, 10]</FunctionExample>
+                             <FunctionExample name='RandomListFrom' inputs={['List(1,2, 5, 10)', '4']}>Result: always [1, 2, 5, 10]</FunctionExample>
                          </>}
         />
 
@@ -865,6 +909,25 @@ export default () =>
                          }
                          examples={<>
                              <FunctionExample name='ShowPage' inputs={['UserPage']}/>
+                         </>}
+        />
+
+        <FunctionSection name='Shuffle' id='Shuffle' resultType='list of any'
+                         description={<>
+                             <Para>A list of values shuffled into a random order.</Para>
+                             <Para><em>Note:</em>If you want to do multiple calculations with the same shuffled result,
+                                 or keep it the same while other values on the same page are changing,
+                                 you need to store the value in a Data element.</Para>
+                             <Para>See also <HelpLink id='RandomListFrom'/></Para>
+                         </>
+                         }
+
+                         inputs={<>
+                             <FunctionInput name='List' type='List'>The List of values to shuffle.</FunctionInput>
+                         </>}
+
+                         examples={<>
+                             <FunctionExample name='Shuffle' inputs={['List(1,2, 5, 10)']}>Example result: 5, 2, 1, 10</FunctionExample>
                          </>}
         />
 

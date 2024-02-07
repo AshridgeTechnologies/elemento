@@ -1,4 +1,4 @@
-import {fromPairs, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, isEmpty, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -18,7 +18,7 @@ import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {isArray, range} from 'lodash'
-import {assign, isFunction, isObject, list, mapValues, pick} from 'radash'
+import {assign, isFunction, isObject, list, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -362,9 +362,30 @@ export const globalFunctions = {
         return format(dateVal, pattern)
     },
 
-    Random(upperLimit: Value<number>) {
-        const upperLimitVal = valueOf(upperLimit)
-        return Math.floor((upperLimitVal + 1) * Math.random())
+    Random(firstArg?: Value<number>, secondArg?: Value<number>) {
+        const [firstArgVal, secondArgVal] = valuesOf(firstArg, secondArg)
+        if (arguments.length === 0) {
+            return Math.random()
+        }
+        const [lowerLimit, upperLimit] = arguments.length === 1 ? [0, firstArgVal] : [firstArgVal, secondArgVal]
+        const range = upperLimit - lowerLimit + 1
+        return lowerLimit + Math.floor(range * Math.random())
+    },
+
+    RandomFrom(firstArg: Value<any>, ...furtherArgs: Value<any>[]): any {
+        const list = furtherArgs.length === 0 ? valueOf(firstArg) : valuesOf(firstArg, ...furtherArgs)
+        const randomIndex = Math.floor(list.length * Math.random())
+        return list[randomIndex]
+    },
+
+    RandomListFrom(listVal: Value<any[]>, itemCountVal: Value<number>): any[] {
+        const [list, itemCount] = valuesOf(listVal, itemCountVal)
+        return shuffle(list).slice(0, itemCount)
+    },
+
+    Shuffle(listVal: Value<any[]>): any[] {
+        const list = valueOf(listVal)
+        return shuffle(list)
     },
 
     Check(condition: Value<any>, message: Value<string>) {

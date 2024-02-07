@@ -1,6 +1,7 @@
 import {pending} from '../../src/runtime/DataStore'
 import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
+import {Value} from '../../src/runtime/runtimeFunctions'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
@@ -9,7 +10,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Round, Ceiling, Floor,
     Record, Pick, List, Range, Select, ForEach, First, Last, Sort,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
-    Random, Check,
+    Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
 const {valueOf} = globalFunctions
 
@@ -773,6 +774,7 @@ describe('DateFormat', () => {
 })
 
 describe('Random', () => {
+
     test('with one argument: generates a random integer between 0 and given number', () => {
         for (let i = 0; i < 1001; i++) {
             const num = Random(i)
@@ -782,17 +784,33 @@ describe('Random', () => {
         }
     })
 
-    test('with one argument: range of numbers includes the upper limit', () => {
+    function testRandomInRange(lowerLimit: number | undefined, upperLimit: number) {
+        let lowerLimitGenerated = false
         let upperLimitGenerated = false
         for (let i = 0; i < 1000; i++) {
-            const num = Random(2)
-            if (num === 2) {
-                upperLimitGenerated = true
-                break
+            const num = lowerLimit === undefined ? Random(upperLimit) : Random(lowerLimit, upperLimit)
+            const effectiveLowerLimit = lowerLimit ?? 0
+            expect(num).toBeGreaterThanOrEqual(effectiveLowerLimit)
+            expect(num).toBeLessThanOrEqual(upperLimit)
+            if (num === effectiveLowerLimit) {
+                lowerLimitGenerated = true
             }
+            if (num === upperLimit) {
+                upperLimitGenerated = true
+            }
+            if (lowerLimitGenerated && upperLimitGenerated) break
         }
 
+        expect(lowerLimitGenerated).toBe(true)
         expect(upperLimitGenerated).toBe(true)
+    }
+
+    test('with one argument: range of numbers includes 0 and the upper limit', () => {
+        testRandomInRange(undefined, 2)
+    })
+
+    test('with two arguments: range of numbers includes the lower and upper limit', () => {
+        testRandomInRange(-2, 0)
     })
 
     test('gets values of arguments', () => {
@@ -800,6 +818,84 @@ describe('Random', () => {
         expect(num).toBe(Math.floor(num))
         expect(num).toBeGreaterThanOrEqual(0)
         expect(num).toBeLessThanOrEqual(10)
+    })
+})
+
+describe('RandomFrom', () => {
+
+    function testRandomInRange(possibleList: any[], callFn: () => any) {
+        const valuesGenerated = new Set()
+        for (let i = 0; i < 1000; i++) {
+            const randomVal = callFn()
+            valuesGenerated.add(randomVal)
+            expect(possibleList.indexOf(randomVal)).toBeGreaterThanOrEqual(0)
+            if (valuesGenerated.size === possibleList.length) break
+        }
+
+        expect(valuesGenerated.size).toBe(possibleList.length)
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks one item from a single list', () => {
+        testRandomInRange(theList, () => RandomFrom(theList))
+    })
+    test('picks one item from a list of arguments', () => {
+        // @ts-ignore
+        testRandomInRange(theList, () => RandomFrom(...theList))
+    })
+    test('gets values of arguments', () => {
+        testRandomInRange([1,2], ()=> RandomFrom(valueObj(1), valueObj(2)))
+        testRandomInRange([1,2], ()=> RandomFrom(valueObj([1,2])))
+    })
+})
+
+describe('RandomFromList', () => {
+
+    function testRandomsInRange(list: Value<any[]>, itemCount: Value<number>) {
+        const listVal = valueOf(list), itemCountVal = valueOf(itemCount)
+        const valuesGenerated = new Set()
+        for (let i = 0; i < 1000; i++) {
+            const randomVals = RandomListFrom(list, itemCount)
+            expect(randomVals.length).toBe(itemCountVal)
+            randomVals.forEach( (val: any) => {
+                valuesGenerated.add(val)
+                expect(listVal.indexOf(val)).toBeGreaterThanOrEqual(0)
+                expect(randomVals.filter( x => x === val).length).toBe(1)
+            })
+            if (valuesGenerated.size === listVal.length) break
+        }
+
+        expect(valuesGenerated.size).toBe(listVal.length)
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks a list of items from a list', () => {
+        testRandomsInRange(theList, 3)
+    })
+    test('gets values of arguments', () => {
+        testRandomsInRange(valueObj([1, 2, 3]), valueObj(2))
+    })
+})
+
+describe('Shuffle', () => {
+    function testShuffleIsValid(list: Value<any[]>) {
+        const listVal = valueOf(list)
+        for (let i = 0; i < 1000; i++) {
+            const shuffledVals: any[] = Shuffle(list)
+            expect(shuffledVals.length).toBe(listVal.length)
+            shuffledVals.forEach( (val: any) => {
+                expect(listVal.indexOf(val)).toBeGreaterThanOrEqual(0)
+                expect(shuffledVals.filter( x => x === val).length).toBe(1)
+            })
+        }
+    }
+
+    const theList = [1, 2, 3, 4, 5]
+    test('picks a list of items from a list', () => {
+        testShuffleIsValid(theList)
+    })
+    test('gets values of arguments', () => {
+        testShuffleIsValid(valueObj([1, 2, 3]))
     })
 })
 
