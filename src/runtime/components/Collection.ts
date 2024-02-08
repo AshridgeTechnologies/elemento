@@ -215,6 +215,10 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         return Object.values(this.value)
     }
 
+    Reset() {
+        this.updateState({value: undefined})
+    }
+
     private storedValue(id: Id) {
         return this.value[id as keyof object]
     }
@@ -302,7 +306,6 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             this.latest().updateState({value: updatedValue, queries: updatedQueries})
         }
     }
-
 }
 
 Collection.State = CollectionState

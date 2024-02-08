@@ -443,6 +443,7 @@ export const globalFunctions = {
 // for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when neeeded
 export const functionArgs = {
     Select: {1: ['$item']},
+    Count: {1: ['$item']},
     ForEach: {1: ['$item']},
     First: {1: ['$item']},
     Last: {1: ['$item']},

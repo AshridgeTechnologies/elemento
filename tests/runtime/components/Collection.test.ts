@@ -870,3 +870,38 @@ describe('GetAll', () => {
     })
 
 })
+
+describe('Reset', () => {
+    const initialCollection = {
+        x1: {id: 'x1', a: 10},
+        x2: {id: 'x2', a: 20},
+    }
+
+    test('removes an item from a collection', () => {
+        const state = new Collection.State({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+        state.Remove('x1')
+        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(newState).toStrictEqual(state._withStateChanges({
+            value: {
+                x2: {id: 'x2', a: 20},
+            }
+        }))
+    })
+
+    test('clears all objects and restores initial value', () => {
+        const state = new Collection.State({value: initialCollection})
+        const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+        state.Remove('x1')
+        const newState = appInterface.latest()
+        expect(newState).toStrictEqual(state._withStateChanges({
+            value: {
+                x2: {id: 'x2', a: 20},
+            }
+        }))
+
+        state.latest().Reset()
+        const newState2 = appInterface.latest()
+        expect(newState2).toStrictEqual(state)
+    })
+})
