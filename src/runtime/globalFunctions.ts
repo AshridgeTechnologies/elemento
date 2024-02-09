@@ -1,4 +1,4 @@
-import {fromPairs, isEmpty, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, identity, isEmpty, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -17,8 +17,8 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {isArray, range} from 'lodash'
-import {assign, isFunction, isObject, list, mapValues, pick, shuffle} from 'radash'
+import {diff, isArray, range} from 'radash'
+import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -147,9 +147,10 @@ export const globalFunctions = {
         return sVal.toUpperCase()
     },
 
-    Split(s: Value<string>, sep?: Value<string>) {
-        const sVal = valueOf(s), sepVal = valueOf(sep)
-        return sVal.split(sepVal ?? '')
+    Split(sVal: Value<string> | null, sepVal?: Value<string> | null) {
+        const [s, sep] = valuesOf(sVal, sepVal)
+        if (isNil(s)) return []
+        return s.split(sep ?? '')
     },
 
     Contains(sVal: Value<string>, searchVal: Value<string>, ignoreCase?: boolean) {
@@ -231,13 +232,21 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
-    Range(start: Value<number>, end: Value<number>, step?: Value<number>): number[] {
-        if (start === undefined || end === undefined) {
+    Range(startVal: Value<number>, endVal: Value<number>, stepVal?: Value<number>): number[] {
+        if (startVal === undefined || endVal === undefined) {
             throw Error('Range() needs start and end, and optional step')
         }
-        const [startVal, endVal, stepVal] = valuesOf(start, end, step)
-        const adjustment = (stepVal !== undefined && stepVal <0) ? -1 : 1
-        return range(startVal, endVal + adjustment, stepVal)
+
+        const [start, end, step = 1] = valuesOf(startVal, endVal, stepVal)
+        if (step === 0) {
+            throw Error('Range: step cannot be zero')
+        }
+        if (step > 0) {
+            return Array.from(range(start, end, identity, Math.abs(step))) as number[]
+        } else {
+            return (Array.from(range(end, start, identity, Math.abs(step))) as number[]).reverse()
+
+        }
     },
 
     Select(list: Value<any[]>, condition: (item: any) => boolean) {
@@ -246,10 +255,11 @@ export const globalFunctions = {
         return listVal.filter(condition)
     },
 
-    Count(list: Value<any[]>, condition?: (item: any) => boolean) {
-        if (list === undefined) throw new Error('Wrong number of arguments to Count. Expected list, optional expression.')
-        const listVal = valueOf(list) ?? []
-        return condition ? listVal.filter(condition!).length : listVal.length
+    Count(listVal: Value<any[]> | null, condition?: (item: any) => boolean) {
+        const list = valueOf(listVal)
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to Count. Expected list, optional expression.')
+        if (isNil(list)) return 0
+        return condition ? list.filter(condition!).length : list.length
     },
 
     ForEach(list: Value<any[]>, transform: (item: any) => any) {
@@ -258,16 +268,17 @@ export const globalFunctions = {
         return listVal.map(transform)
     },
 
-    First(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
+    First(list: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
         const listVal = valueOf(list) ?? []
         if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
         return listVal.filter(condition)[0] ?? null
     },
 
-    Last(list: Value<any[]>, condition: (item: any) => boolean = () => true) {
-        const listVal = valueOf(list) ?? []
-        if (list === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
-        return last(listVal.filter(condition)) ?? null
+    Last(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
+        const list = valueOf(listVal)
+        if (isNil(list)) return null
+        return last(list.filter(condition))
     },
 
     Sort(list: Value<any[]>, sortKeyFn: (item: any) => any | any[]): any[] {
@@ -305,6 +316,18 @@ export const globalFunctions = {
             return listVal
         }
         return sort(compareItems, listVal)
+    },
+
+    CommonItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
+        const [list1, list2] = valuesOf(list1Val, list2Val)
+        if (isNil(list1) || isNil(list2) ) return false
+        return list1.filter( (x:any) => list2.includes(x))
+    },
+
+    HasSameItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
+        const [list1, list2] = valuesOf(list1Val, list2Val)
+        if (isNil(list1) || isNil(list2) ) return false
+        return list1.length === list2.length && list1.every( (x:any) => list2.includes(x))
     },
 
     Timestamp() {

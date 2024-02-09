@@ -84,6 +84,24 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='CommonItems' id='CommonItems' resultType='list of any type'
+                         description='Find the items in a list that are also in a second list.  The items in the result will be in the order they occur in the first list.
+                         if either input list is a null value, the result is an empty list.'
+
+                         inputs={<>
+                             <FunctionInput name='List 1' type='list of any type'>The first list of values to check</FunctionInput>
+                             <FunctionInput name='List 2' type='list of any type'>The second list of values to check</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 20, 30, 40)', 'List(40, 10, 50)']}>Result: list containing 50, 10, 40</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10)', 'List(40, 10, 50, 60)']}>Result: list containing just 10</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10)', 'List(40, 60)']}>Result: empty list</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 30)', 'List(10, 20, 30, 40, 50)']}>Result: the same as the first list 50, 10, 30</FunctionExample>
+                             <FunctionExample name='CommonItems' inputs={['List(50, 10, 30)', 'null']}>Result: empty list</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='Contains' id='Contains' resultType='true-false'
                          description='See whether a text value contains another text value.  It is case sensitive, unless you supply true for the Ignore Case input.'
 
@@ -108,7 +126,7 @@ export default () =>
                          description='Count the values from a list where a given condition is true.'
 
                          inputs={<>
-                             <FunctionInput name='Values' type='list of any type'>The list of values to check</FunctionInput>
+                             <FunctionInput name='Values' type='list of any type'>The list of values to check.  If it is null, the result is 0.</FunctionInput>
                              <FunctionInput name='Condition' type='formula giving true-false' optional>Controls which of the
                                  values are included in the count.
                                  It is applied to each of Values in turn, and if it results in true, the count is increased by one.
@@ -123,6 +141,7 @@ export default () =>
                                               inputs={['List("Andrew", "Bobo", "Candice", "Jo")', 'Gt($item.length, 5)']}>Result: 2</FunctionExample>
                              <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: 0</FunctionExample>
                              <FunctionExample name='Count' inputs={['List(50, 10, 20, 30, 40)']}>Result: 5</FunctionExample>
+                             <FunctionExample name='Count' inputs={['null']}>Result: 0</FunctionExample>
                          </>}
         />
 
@@ -412,6 +431,24 @@ export default () =>
                          </>}
         />
 
+        <FunctionSection name='HasSameItems' id='HasSameItems' resultType='true-false'
+                         description='Find whether the items in two lists are the same.  The order of the items in the lists does not matter.
+                         If both lists are empty lists, then they have the same items.  If either list is a null value, the result is false.'
+
+                         inputs={<>
+                             <FunctionInput name='List 1' type='list of any type'>The first list of values to check</FunctionInput>
+                             <FunctionInput name='List 2' type='list of any type'>The second list of values to check</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='HasSameItems' inputs={['List(50, 10, 30, 40)', 'List(40, 10, 50)']}>Result: false</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(40, 10, 50)', 'List(50, 10, 20, 30, 40)']}>Result: false</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(50, 10, 40)', 'List(10, 40, 50)']}>Result: true</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List(50)', 'List()']}>Result: true</FunctionExample>
+                             <FunctionExample name='HasSameItems' inputs={['List()', 'null']}>Result: false</FunctionExample>
+                         </>}
+        />
+
         <FunctionSection name='If' id='If' resultType='any'
                          description='Choose between two values, depending on another value'
 
@@ -434,7 +471,8 @@ export default () =>
         />
 
         <FunctionSection name='Last' id='Last' resultType='any'
-                         description='Get the last value from a list where a given condition is true, or an empty value (null) if the condition is not true for any value in the list.'
+                         description='Get the last value from a list where a given condition is true, or an empty value (null) if the condition is not true for any value in the list.
+                         If the list itself is null, the result is null'
 
                          inputs={<>
                              <FunctionInput name='Values' type='list of any type'>The list of values to select
@@ -454,8 +492,8 @@ export default () =>
                              <FunctionExample name='Last'
                                               inputs={['List("Ahmed", "Bobo", "Candice", "Jo")', 'Gt($item.length, 4)']}>Result:
                                  "Candice"</FunctionExample>
-                             <FunctionExample name='Last' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result:
-                                 empty (null)</FunctionExample>
+                             <FunctionExample name='Last' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: empty (null)</FunctionExample>
+                             <FunctionExample name='Last' inputs={['null', 'Gt($item, 100)']}>Result: empty (null)</FunctionExample>
                          </>}
         />
 
@@ -1002,10 +1040,11 @@ export default () =>
                          description='Split a text value into a list of smaller text values.
                          The text is split at each ocurrence of Separator.  The Separators are removed.
                          If the Separator does not occur, the result is a List containing one item - the original Text.
-                         If Separator is empty, or left out, the Text is split into its individual characters.'
+                         If Text is null, the result is an empty list.
+                         If Separator is null, or left out, the Text is split into its individual characters.'
 
                          inputs={<>
-                             <FunctionInput name='Text' type='text'>The original text</FunctionInput>
+                             <FunctionInput name='Text' type='text'>The original text to split</FunctionInput>
                              <FunctionInput name='Separator' type='text'>The separator value to split the text on</FunctionInput>
                          </>
                          }

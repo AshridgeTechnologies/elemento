@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Collection, Data} from '../../../src/runtime/components/index'
+import {Collection, Data, TextInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {DataState} from '../../../src/runtime/components/Data'
@@ -50,6 +50,12 @@ test('valueOf returns the value', () => {
     const value = {a: 10, b: 'Bee1', c: true}
     const state = new Data.State({value})
     expect(state.valueOf()).toBe(value)
+})
+
+test('string conversion uses the value toString', () => {
+    const value = [1, 2, 3]
+    const state = new Data.State({value})
+    expect('x' + state).toBe('x1,2,3')
 })
 
 test('properties of the value are copied onto the Data instance', () => {

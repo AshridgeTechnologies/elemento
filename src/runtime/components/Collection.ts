@@ -117,6 +117,8 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     get dataStore() { return this.props.dataStore }
     private get queries() { return this.state.queries ?? {} }
 
+    valueOf() { return Object.values(this.value) }
+
     Update(id: Id, changes: object) {
         const safeChanges = omit(['id'], changes)
         const storedItem = this.storedValue(id)

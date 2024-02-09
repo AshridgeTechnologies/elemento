@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Collection} from '../../../src/runtime/components/index'
+import {Collection, Data, TextInput} from '../../../src/runtime/components/index'
 import {mockClear, mockImplementation, snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import DataStore, {
@@ -132,6 +132,11 @@ test('does deep compare on value in props', () => {
         const state2 = new Collection.State({value: {a: 10, b: 20}})
         expect(state1.updateFrom(state2)).not.toBe(state1)
     }
+})
+
+test('valueOf returns the values as an array', () => {
+    const state = new CollectionState({value: ['green', 'Blue']})
+    expect(state.valueOf()).toStrictEqual(['green', 'Blue'])
 })
 
 describe('Update', () => {
