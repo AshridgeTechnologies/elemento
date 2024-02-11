@@ -1,4 +1,4 @@
-import {fromPairs, identity, isEmpty, isNil, last, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, identity, isEmpty, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -318,9 +318,17 @@ export const globalFunctions = {
         return sort(compareItems, listVal)
     },
 
+
+
+    Reverse(listVal: Value<any[]> | null) {
+        const list = valueOf(listVal)
+        if (isNil(list)) return []
+        return reverse(list)
+    },
+
     CommonItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
         const [list1, list2] = valuesOf(list1Val, list2Val)
-        if (isNil(list1) || isNil(list2) ) return false
+        if (isNil(list1) || isNil(list2) ) return []
         return list1.filter( (x:any) => list2.includes(x))
     },
 

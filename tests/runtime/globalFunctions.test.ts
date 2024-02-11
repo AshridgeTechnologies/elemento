@@ -9,7 +9,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, CommonItems, HasSameItems,
+    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, Reverse, CommonItems, HasSameItems,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
@@ -579,13 +579,21 @@ describe('Sort', () => {
     })
 })
 
+describe('Reverse', () => {
+    test('empty list results in an empty list', () => expect(Reverse([])).toStrictEqual([]))
+    test('list with items results in an reversed list', () => expect(Reverse([60, 40, 30, 70])).toStrictEqual([70, 30, 40, 60]))
+    test('null results in an empty list', () => expect(Reverse(null)).toStrictEqual([]))
+    test('gets object values', () => expect(Reverse(valueObj([1, 2]))).toStrictEqual([2, 1]))
+
+})
+
 describe('CommonItems', () => {
     test('empty list if no common items', () => expect(CommonItems([1, 2, 3, 4], [5, 6, 7])).toStrictEqual([]))
     test('list in same order as first if some common items', () => expect(CommonItems([1, 2, 3, 4], [4, 2, 8, 10])).toStrictEqual([2, 4]))
     test('first list if has same items', () => expect(CommonItems([1, 2, 3, 4], [4, 3, 2, 1])).toStrictEqual([1, 2, 3, 4]))
-    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toBe(false))
-    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toBe(false))
-    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toBe(false))
+    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toBe([]))
+    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toBe([]))
+    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toBe([]))
     test('gets object values', () => expect(CommonItems(valueObj([1, 2]), valueObj([2]))).toStrictEqual([2]))
 })
 

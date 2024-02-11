@@ -493,7 +493,21 @@ export default () =>
                                               inputs={['List("Ahmed", "Bobo", "Candice", "Jo")', 'Gt($item.length, 4)']}>Result:
                                  "Candice"</FunctionExample>
                              <FunctionExample name='Last' inputs={['List(50, 10, 20, 30, 40)', 'Gt($item, 100)']}>Result: empty (null)</FunctionExample>
-                             <FunctionExample name='Last' inputs={['null', 'Gt($item, 100)']}>Result: empty (null)</FunctionExample>
+                             <FunctionExample name='Last' inputs={['null', 'Gt($item, 100)']}>Result: empty value (null)</FunctionExample>
+                         </>}
+        />
+
+        <FunctionSection name='Reverse' id='Reverse' resultType='list of any type'
+                         description='Get a list in reverse order.
+                         If the input list is null, the result is an empty list.'
+
+                         inputs={<>
+                             <FunctionInput name='List' type='list of any type'>The list of values to reverse</FunctionInput>
+                         </>
+                         }
+                         examples={<>
+                             <FunctionExample name='Reverse' inputs={['List(10, 20, 30, 40)']}>Result: list containing 40, 30, 20, 10</FunctionExample>
+                             <FunctionExample name='Reverse' inputs={['null']}>Result: empty list</FunctionExample>
                          </>}
         />
 
