@@ -1,5 +1,5 @@
-Tutorial and general improvements
-=================================
+Tutorial and general improvements - Part 1
+==========================================
 
 Aims
 ----
@@ -29,6 +29,8 @@ Requirements
 - ✅ Can Reset a collection
 - ✅ List items cannot refer to things in page - parentPath is incorrect if ends in #0
 - ✅ Generates a function $item => null when function arg not supplied
+- Need to ensure service worker loads when trying for first time
+- Click Name in Getting Started selects many items
 - Blows up when a null is supplied to HasSameItems
 - Treat Collection as a List if passed to a function that expects a list
 - Need to scroll list up or to position

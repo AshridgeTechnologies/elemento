@@ -302,7 +302,7 @@ Done
 - Tools
 - Move Help to a Tool
 - Data Types example app
-- Automatic open from GitHu
+- Automatic open from GitHub
 - Help Content and Presentation
 - Priority improvements
 - Move examples to separate repos
@@ -311,6 +311,7 @@ Done
 - Server apps guide
 - App user management
 - Improved runtime notifications
+- Tutorial and general improvements - Part 1
 
 Bugs fixed
 ----------
