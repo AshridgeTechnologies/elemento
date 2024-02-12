@@ -33,11 +33,13 @@ Forces
 - Keeping generated code efficient
 - Conventional code would use JSX anyway
 - !!! React elements must be given the actual prop values, not just a big lump
+- Some warnings will pass through the unusual value
+- Errors may want to substitute a harmless value and report error 
 
 Possibilities
 -------------
 
-- State object init values are in a function, wrapped in error handling with the component name by the constructor or useGetObjectState
+- State object init values are in a function, wrapped in error handling with the component name by the constructor or useObjectState
 - Function is only called when needed (but that is on every render...)
 - Builder pattern for state objects that knows what property is being initialised
 - State object property expressions always wrapped in functions
@@ -51,7 +53,7 @@ Possibilities
 - useObjectState could take constructor and buildable args separately, and build/check the args first before passing to state object constructor, and have path to report
 - Translate/explain JS errors into plain language
 - Actions catch programming errors and notify
-- All Elemento functions check their arguments and throw errors with as much detail as poss
+- All Elemento functions check their arguments and report errors with as much detail as poss
 
 Tolerance
 ---------

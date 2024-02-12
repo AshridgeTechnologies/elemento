@@ -52,6 +52,10 @@ describe('Decimals', () => {
         expect(dec1.toString()).toBe('1234.567')
         expect(dec2.eq(dec1)).toBe(true)
     })
+
+    test('has zero value for null', () => {
+       expect(Decimal(null).toString()).toBe('0')
+    })
 })
 
 describe('Decimal arithmetic', () => {
@@ -78,6 +82,14 @@ describe('Decimal arithmetic', () => {
         expect(Div(1000000, '3')).toStrictEqual(D`333333.33333333333333333333`)
     })
 
+    test('treats nulls as zero in arithmetic ops', () => {
+        expect(Sum(null, 2, 3, null)).toBe(5)
+        expect(Sub(null, 1, 2, null)).toBe(-3)
+        expect(Mult(null, 2, 3, null)).toBe(0)
+        expect(Div(null, 3)).toBe(0)
+        expect(Div(3, null)).toBe(Infinity)
+    })
+
     test('compares numbers from any source', () => {
         expect(Gt(10, '2')).toBe(true)
         expect(Gt('10', D`10`)).toBe(false)
@@ -98,6 +110,26 @@ describe('Decimal arithmetic', () => {
         expect(Eq(10, '2')).toBe(false)
         expect(Eq('10', D`10`)).toBe(true)
         expect(Eq('10', valueObj(D`10.000001`))).toBe(false)
+
+    })
+
+    test('treats nulls as zero in number comparisons', () => {
+        expect(Gt(null, 2)).toBe(false)
+        expect(Gt(2, null)).toBe(true)
+        expect(Gte(0, null)).toBe(true)
+        expect(Lt(0, null)).toBe(false)
+        expect(Lte(null, 0)).toBe(true)
+        expect(Eq(null, 0)).toBe(true)
+        expect(Eq(0, null)).toBe(true)
+        expect(Eq(1, null)).toBe(false)
+    })
+
+    test('treats two nulls as equal', () => {
+        expect(Gt(null, null)).toBe(false)
+        expect(Gte(null, null)).toBe(true)
+        expect(Lt(null, null)).toBe(false)
+        expect(Lte(null, null)).toBe(true)
+        expect(Eq(null, null)).toBe(true)
 
     })
 })
@@ -131,6 +163,14 @@ describe('Comparison functions', () => {
             expect(Eq(date2, date1)).toBe(false)
             expect(Eq(date1, date1)).toBe(true)
         })
+        test('treats nulls as zero in date comparisons', () => {
+            expect(Gt(null, date1)).toBe(false)
+            expect(Gt(date1, null)).toBe(true)
+            expect(Gte(date2, null)).toBe(true)
+            expect(Lt(date1, null)).toBe(false)
+            expect(Lte(null, date2)).toBe(true)
+            expect(Eq(null, date1)).toBe(false)
+        })
     })
 
     describe('Work with strings', () => {
@@ -161,8 +201,19 @@ describe('Comparison functions', () => {
             expect(Eq(s2, s1)).toBe(false)
             expect(Eq(s1, s1)).toBe(true)
         })
-    })
 
+        test('treats nulls as empty string in string comparisons', () => {
+            expect(Gt(null, '2')).toBe(false)
+            expect(Gt('2', null)).toBe(true)
+            expect(Gte('', null)).toBe(true)
+            expect(Lt('', null)).toBe(false)
+            expect(Lt(null, '')).toBe(false)
+            expect(Lt(null, 'x')).toBe(true)
+            expect(Lte(null, '')).toBe(true)
+            expect(Eq(null, 'x')).toBe(false)
+            expect(Eq(null, '')).toBe(true)
+        })
+    })
 })
 
 describe('Sum', () => {
@@ -210,7 +261,7 @@ describe('If', () => {
     test('with condition and two function arguments returns the first argument value if condition truthy', () => expect(If('X', () => 'Yes', () => 'No')).toBe('Yes'))
     test('with condition and one argument returns undefined if condition false', () => expect(If(false, 'Yes')).toBeUndefined())
     test('with condition and two argument returns second argument if condition falsy', () => expect(If(0, 'Yes', 'No')).toBe('No'))
-    test('with condition and two funciton arguments returns second argument if condition falsy', () => expect(If(0, () => 'Yes', () => 'No')).toBe('No'))
+    test('with condition and two function arguments returns second argument if condition falsy', () => expect(If(null, () => 'Yes', () => 'No')).toBe('No'))
     test('uses valueOf for condition but returns other objects as they are', () => {
         const conditionTrue = valueObj(true)
         const conditionFalse = valueObj(false)
@@ -244,6 +295,8 @@ describe('Left', () => {
     test('Gets a part string for non-zero length', ()=> expect(Left('abc', 2)).toBe('ab'))
     test('Gets whole string for length same as string length', ()=> expect(Left('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Left('abc', 4)).toBe('abc'))
+    test('Gets empty string for null length', ()=> expect(Left('abc', null)).toBe(''))
+    test('Gets empty string if string is null', ()=> expect(Left(null, 4)).toBe(''))
     test('Gets value of objects', ()=> expect(Left(valueObj('abc'), valueObj(2))).toBe('ab'))
 })
 
@@ -254,11 +307,14 @@ describe('Mid', () => {
     test('Gets an empty string for 1 start, zero length', ()=> expect(Mid('abc', 1, 0)).toBe(''))
     test('Gets a part string for 1 start, non-zero length', ()=> expect(Mid('abc', 1, 2)).toBe('ab'))
     test('Gets whole string for 1 start, undefined length', ()=> expect(Mid('abc', 1)).toBe('abc'))
+    test('Gets whole string for null start, undefined length', ()=> expect(Mid('abc', null)).toBe('abc'))
     test('Gets whole string for 1 start, length same as string length', ()=> expect(Mid('abc', 1, 3)).toBe('abc'))
     test('Gets a part string for 2 start, length less than string length', ()=> expect(Mid('abcdefg', 2, 3)).toBe('bcd'))
     test('Gets a part string for 2 start, length greater than string length', ()=> expect(Mid('abc', 2, 4)).toBe('bc'))
     test('Gets a part string for 2 start, undefined length', ()=> expect(Mid('abc', 2)).toBe('bc'))
     test('Gets an empty string for start greater than length', ()=> expect(Mid('abc', 4)).toBe(''))
+    test('Gets empty string if string is null', ()=> expect(Mid(null, 4)).toBe(''))
+    test('Gets empty string if length is null', ()=> expect(Mid('abc', 2, null)).toBe('bc'))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2), valueObj(3))).toBe('bcd'))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2))).toBe('bcdef'))
 })
@@ -266,19 +322,23 @@ describe('Mid', () => {
 describe('Right', () => {
     test('Gets an empty string for negative length', ()=> expect(Right('abc', -1)).toBe(''))
     test('Gets an empty string for zero length', ()=> expect(Right('abc', 0)).toBe(''))
+    test('Gets an empty string for null length', ()=> expect(Right('abc', 0)).toBe(''))
     test('Gets a part string for non-zero length', ()=> expect(Right('abc', 2)).toBe('bc'))
     test('Gets whole string for length same as string length', ()=> expect(Right('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Right('abc', 4)).toBe('abc'))
+    test('Gets empty string for null string', ()=> expect(Right(null, 4)).toBe(''))
     test('Gets value of objects', ()=> expect(Right(valueObj('abc'), valueObj(2))).toBe('bc'))
 })
 
 describe('Lowercase', () => {
     test('Gets a lower case version of a string', () => expect(Lowercase('AbC123?')).toBe('abc123?'))
+    test('Gets empty string for null string', ()=> expect(Lowercase(null)).toBe(''))
     test('Gets value of objects', () => expect(Lowercase(valueObj('AbC123?'))).toBe('abc123?'))
 })
 
 describe('Uppercase', () => {
     test('Gets an upper case version of a string', () => expect(Uppercase('AbC123?')).toBe('ABC123?'))
+    test('Gets empty string for null string', ()=> expect(Uppercase(null)).toBe(''))
     test('Gets value of objects', () => expect(Uppercase(valueObj('AbC123?'))).toBe('ABC123?'))
 })
 
@@ -299,21 +359,40 @@ describe('Contains', () => {
     test('ignores case if specified', () => expect(Contains('abcde', 'BCD', true)).toBe(true))
     test('ignores case both ways if specified', () => expect(Contains('ABCDE', 'bcd', true)).toBe(true))
     test('always finds empty string', () => expect(Contains('abcde', '')).toBe(true))
+    test('always finds null treated as empty string', () => expect(Contains('abcde', null)).toBe(true))
     test('never finds anything in empty string', () => expect(Contains('', 'a')).toBe(false))
+    test('never finds anything in null', () => expect(Contains(null, 'a')).toBe(false))
     test('gets values of objects', () => expect(Contains(valueObj('abcde'), valueObj('bcd'))).toBe(true))
 })
 
+describe('Substitute', () => {
+    test('returns empty string if original string is null', () => expect(Substitute(null, 'yy', 'xx')).toBe(''))
+    test('returns same string if string to replace is empty', () => expect(Substitute('abcde', '', 'xx')).toBe('abcde'))
+    test('returns same string if string to replace is null', () => expect(Substitute('abcde', null, 'xx')).toBe('abcde'))
+    test('returns same string if string to replace is not found', () => expect(Substitute('abcde', 'pq', 'xx')).toBe('abcde'))
+    test('replaces single occurrence if string to replace is found', () => expect(Substitute('abcde', 'bc', 'xx')).toBe('axxde'))
+    test('replaces single occurrence with empty if replacement string is null', () => expect(Substitute('abcde', 'bc', null)).toBe('ade'))
+    test('replaces all occurrences if string to replace is found multiple times', () => expect(Substitute('abcdeffdeggde', 'de', 'xx')).toBe('abcxxffxxggxx'))
+    test('Gets value of objects', ()=> expect(Substitute(valueObj('abcdeffdeggde'), valueObj('de'), valueObj('xx'))).toBe('abcxxffxxggxx'))
+})
+
 describe('And', () => {
+    test('True for no arguments', ()=> expect(And()).toBe(true))
     test('False for single falsy argument', ()=> expect(And(0)).toBe(false))
+    test('False for single null argument', ()=> expect(And(null)).toBe(false))
     test('True for single truthy argument', ()=> expect(And('abc')).toBe(true))
     test('False for three falsy arguments', ()=> expect(And(0, false, null)).toBe(false))
     test('False for one truthy argument and two falsy arguments', ()=> expect(And(false, true, '')).toBe(false))
+    test('False for one truthy argument and null', ()=> expect(And(true, null)).toBe(false))
+    test('False for null and one truthy argument', ()=> expect(And(null, true)).toBe(false))
     test('True for two truthy arguments', ()=> expect(And('abc', true)).toBe(true))
     test('Gets value of objects if false', ()=> expect(And(valueObj(false), valueObj(true))).toBe(false))
     test('Gets value of objects if true', ()=> expect(And(valueObj(true), valueObj(true))).toBe(true))
 })
 
 describe('Or', () => {
+    test('False for no arguments', ()=> expect(Or()).toBe(false))
+    test('False for single null argument', ()=> expect(Or(0)).toBe(false))
     test('False for single falsy argument', ()=> expect(Or(0)).toBe(false))
     test('True for single truthy argument', ()=> expect(Or('abc')).toBe(true))
     test('False for three falsy arguments', ()=> expect(Or(0, false, null)).toBe(false))
@@ -324,44 +403,44 @@ describe('Or', () => {
 })
 
 describe('Not', () => {
+    test('true for null argument', ()=> expect(Not(null)).toBe(true))
     test('true for falsy argument', ()=> expect(Not(0)).toBe(true))
     test('false for truthy argument', ()=> expect(Not('xx')).toBe(false))
     test('Gets value of object if false', ()=> expect(Not(valueObj(false))).toBe(true))
     test('Gets value of object if true', ()=> expect(Not(valueObj(true))).toBe(false))
 })
 
-describe('Substitute', () => {
-    test('returns same string if string to replace is empty', () => expect(Substitute('abcde', '', 'xx')).toBe('abcde'))
-    test('returns same string if string to replace is not found', () => expect(Substitute('abcde', 'pq', 'xx')).toBe('abcde'))
-    test('replaces single occurrence if string to replace is found', () => expect(Substitute('abcde', 'pq', 'xx')).toBe('abcde'))
-    test('replaces all occurrences if string to replace is found multiple times', () => expect(Substitute('abcdeffdeggde', 'de', 'xx')).toBe('abcxxffxxggxx'))
-    test('Gets value of objects', ()=> expect(Substitute(valueObj('abcdeffdeggde'), valueObj('de'), valueObj('xx'))).toBe('abcxxffxxggxx'))
-})
-
 describe('Max', () => {
     test('errors for no arguments', () => expect(() => Max()).toThrow('Wrong number of arguments to Max. Expected at least 1 argument.'))
+    test('returns 0 for null argument', () => expect(Max(null)).toBe(0))
     test('returns the argument for single argument', () => expect(Max(3)).toBe(3))
     test('returns the max argument for multiple arguments', () => expect(Max(3, -1, 4, 0)).toBe(4))
+    test('returns the max argument for arguments treating null as zero', () => expect(Max(-1, null)).toBe(0))
     test('returns a Decimal argument for mixed arguments', () => expect(Max(3, '-1', D`4`, 0)).toStrictEqual(D`4`))
-    test('returns a Decimal argument for mixed arguments even if Max is a number', () => expect(Max(5, '-1', D`4`, 0)).toStrictEqual(D`5`))
+    test('returns a Decimal argument for mixed arguments even if Max is a number', () => expect(Max(5, '-1', D`4`, 0, null)).toStrictEqual(D`5`))
     test('Gets value of objects', ()=> expect(Max(valueObj(3), valueObj(2))).toBe(3))
     test('Gets value of objects with Decimal', ()=> expect(Max(valueObj(3), valueObj(D`2`))).toStrictEqual(D`3`))
 })
 
 describe('Min', () => {
     test('errors for no arguments', () => expect(() => Min()).toThrow('Wrong number of arguments to Min. Expected at least 1 argument.'))
+    test('returns 0 for null argument', () => expect(Min(null)).toBe(0))
     test('returns the argument for single argument', () => expect(Min(3)).toBe(3))
     test('returns the min argument for multiple arguments', () => expect(Min(3, -1, 4, 0)).toBe(-1))
+    test('returns the min argument treating null as zero', () => expect(Min(null, 1)).toBe(0))
     test('returns a Decimal argument for mixed arguments', () => expect(Min(3, '-1', D`4`, 0)).toStrictEqual(D`-1`))
-    test('returns a Decimal argument for mixed arguments even if Min is a number', () => expect(Min(5, '-1', D`4`, 0)).toStrictEqual(D`-1`))
+    test('returns a Decimal argument for mixed arguments even if Min is a number', () => expect(Min(5, '-1', D`4`, 0, null)).toStrictEqual(D`-1`))
+    test('returns a Decimal argument for mixed arguments even if Min is a null', () => expect(Min(null, D`4`)).toStrictEqual(D`0`))
     test('Gets value of objects', ()=> expect(Min(valueObj(3), valueObj(2))).toBe(2))
     test('Gets value of objects with Decimal', ()=> expect(Min(valueObj(3), valueObj(D`2`))).toStrictEqual(D`2`))
 })
 
 describe('Round', () => {
     test('zero for no arguments', () => expect(Round()).toBe(0))
+    test('zero for null', () => expect(Round(null)).toBe(0))
     test('same for integer with default precision', () => expect(Round(2)).toBe(2))
     test('rounds to integer with default precision', () => expect(Round(2.4999999)).toBe(2))
+    test('rounds to integer with null precision', () => expect(Round(2.4999999, null)).toBe(2))
     test('rounds up to integer with default precision', () => expect(Round(2.5)).toBe(3))
     test('rounds to given dec places', () => expect(Round(2.5454, 2)).toBe(2.55))
     test('rounds to given negative dec places', () => expect(Round(20060, -2)).toBe(20100))
@@ -371,6 +450,7 @@ describe('Round', () => {
 
 describe('Ceiling', () => {
     test('zero for no arguments', () => expect(Ceiling()).toBe(0))
+    test('zero for null argument', () => expect(Ceiling(null)).toBe(0))
     test('same for integer with default precision', () => expect(Ceiling(2)).toBe(2))
     test('rounds up to integer with default precision', () => expect(Ceiling(2.01)).toBe(3))
     test('rounds up to integer with default precision', () => expect(Ceiling(2.5)).toBe(3))
@@ -382,6 +462,7 @@ describe('Ceiling', () => {
 
 describe('Floor', () => {
     test('zero for no arguments', () => expect(Floor()).toBe(0))
+    test('zero for null argument', () => expect(Floor(null)).toBe(0))
     test('same for integer with default precision', () => expect(Floor(2)).toBe(2))
     test('rounds down to integer with default precision', () => expect(Floor(2.01)).toBe(2))
     test('rounds down to integer with default precision', () => expect(Floor(2.6)).toBe(2))
@@ -394,7 +475,7 @@ describe('Floor', () => {
 describe('Record', () => {
     test('errors for uneven number of arguments', ()=> expect( () => Record('x')).toThrow('Odd number of arguments - must have pairs of name, value'))
     test('returns an empty object for no arguments', ()=> expect(Record()).toStrictEqual({}))
-    test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee')).toStrictEqual({a: 10, b: 'Bee'}))
+    test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee', 'c', null)).toStrictEqual({a: 10, b: 'Bee', c: null}))
     test('gets value of objects', ()=> expect(Record(valueObj('c'), valueObj(2))).toStrictEqual({c: 2}))
     test('converts an initial JavaScript object', ()=> expect(Record({a: 10, b: 'Bee'})).toStrictEqual({a: 10, b: 'Bee'}))
     test('gets values of objects in a single level initial JavaScript object', ()=> expect(Record({a: valueObj(10), b: valueObj('Bee')})).toStrictEqual({a: 10, b: 'Bee'}))
@@ -423,12 +504,13 @@ describe('Pick', () => {
     test('returns the selected properties', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'c', 'a')).toStrictEqual({a: 10, c: true}))
     test('gets values of the selected properties', ()=> expect(Pick({a: valueObj(10), b: valueObj('Bee'), c: true}, 'b', 'a')).toStrictEqual({a: 10, b: 'Bee'}))
     test('returns empty record if no property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true})).toStrictEqual({}))
-    test('ignores non-existent and multiple property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'a', 'z', 'a')).toStrictEqual({a: 10}))
+    // @ts-ignore
+    test('ignores non-existent and multiple property names', ()=> expect(Pick({a: 10, b: 'Bee', c: true}, 'a', 'z', 'a', null)).toStrictEqual({a: 10}))
 })
 
 describe('List', () => {
     test('returns an empty list for no arguments', ()=> expect(List()).toStrictEqual([]))
-    test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee')).toStrictEqual(['a', 10, true, 'Bee']))
+    test('returns a list from the arguments', ()=> expect(List('a', 10, true, 'Bee', null)).toStrictEqual(['a', 10, true, 'Bee', null]))
     test('gets value of objects', ()=> expect(List(valueObj('c'), valueObj(2))).toStrictEqual(['c', 2]))
 })
 
@@ -441,14 +523,20 @@ describe('Range', () => {
     })
 
     test('error if step is zero', () => expect(() => Range(1,3,0)).toThrow('Range: step cannot be zero'))
+    test('error if step is null', () => expect(() => Range(1,3,null)).toThrow('Range: step cannot be zero'))
     test('returns a list of numbers from start to end', () => expect(Range(1, 3)).toStrictEqual([1, 2, 3]))
+    test('returns a list of numbers from null as zero to end', () => expect(Range(null, 3)).toStrictEqual([0, 1, 2, 3]))
+    test('returns a list of numbers from start to null as zero', () => expect(Range(-2, null)).toStrictEqual([-2, -1, 0]))
     test('returns a list of one if start == end', () => expect(Range(3, 3)).toStrictEqual([3]))
-    test('returns an empty list if start < end', () => expect(Range(4, 3)).toStrictEqual([]))
+    test('returns a descending list if start < end', () => expect(Range(4, 3)).toStrictEqual([4, 3]))
     test('works with negative numbers', () => expect(Range(-4, -2)).toStrictEqual([-4, -3, -2]))
     test('works with negative numbers across zero', () => expect(Range(-2, 2)).toStrictEqual([-2, -1, 0, 1, 2]))
-    test('works with positive step', () => expect(Range(-2, 2, 2)).toStrictEqual([-2, 0, 2]))
+    test('works with positive step ascending', () => expect(Range(-2, 2, 2)).toStrictEqual([-2, 0, 2]))
+    test('works with positive step decending', () => expect(Range(2, -2, 2)).toStrictEqual([2, 0, -2]))
+    test('works with negative step ascending', () => expect(Range(-2, 2, -2)).toStrictEqual([-2, 0, 2]))
+    test('works with negative step decending', () => expect(Range(2, -2, -2)).toStrictEqual([2, 0, -2]))
     test('works with negative step', () => expect(Range(2, -2, -2)).toStrictEqual([2, 0, -2]))
-    test('returns an empty list if step is negative and start > end', () => expect(Range(3, 4, -1)).toStrictEqual([]))
+    test('ignores sign of step if start < end', () => expect(Range(3, 4, -1)).toStrictEqual([3, 4]))
     test('ends with last number in range if not a whole number of steps', () => expect(Range(-2, 2, 3)).toStrictEqual([-2, 1]))
     test('works with value objects', () => expect(Range(valueObj(-2), valueObj(2), valueObj(2))).toStrictEqual([-2, 0, 2]))
 })
@@ -460,6 +548,7 @@ describe('Select', () => {
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
+    test('Null list input gives empty list', ()=> expect(Select(null, (it: any) => it <= 0)).toStrictEqual([]))
 })
 
 describe('Count', () => {
@@ -480,6 +569,7 @@ describe('ForEach', () => {
     test('Gets value of object for the list', ()=> expect(ForEach(valueObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(ForEach(pendingValue, (it: any) => it + 10)).toStrictEqual([]))
+    test('Null value gives empty list', ()=> expect(ForEach(null, (it: any) => it + 10)).toStrictEqual([]))
 })
 
 describe('First', () => {
@@ -572,9 +662,9 @@ describe('Sort', () => {
         expect(Sort(valueObj(objects), (item: any) => item.a)).toStrictEqual([obj2, obj3, obj1])
     })
 
-    test('returns undefined or null list as is', () => {
-        expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toBe(undefined)
-        expect(Sort(null as unknown as any[], (item: any) => item.a)).toBe(null)
+    test('returns undefined or null list as an empty list', () => {
+        expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toStrictEqual([])
+        expect(Sort(null as unknown as any[], (item: any) => item.a)).toStrictEqual([])
 
     })
 })
@@ -584,16 +674,15 @@ describe('Reverse', () => {
     test('list with items results in an reversed list', () => expect(Reverse([60, 40, 30, 70])).toStrictEqual([70, 30, 40, 60]))
     test('null results in an empty list', () => expect(Reverse(null)).toStrictEqual([]))
     test('gets object values', () => expect(Reverse(valueObj([1, 2]))).toStrictEqual([2, 1]))
-
 })
 
 describe('CommonItems', () => {
     test('empty list if no common items', () => expect(CommonItems([1, 2, 3, 4], [5, 6, 7])).toStrictEqual([]))
     test('list in same order as first if some common items', () => expect(CommonItems([1, 2, 3, 4], [4, 2, 8, 10])).toStrictEqual([2, 4]))
     test('first list if has same items', () => expect(CommonItems([1, 2, 3, 4], [4, 3, 2, 1])).toStrictEqual([1, 2, 3, 4]))
-    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toBe([]))
-    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toBe([]))
-    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toBe([]))
+    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toStrictEqual([]))
+    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toStrictEqual([]))
+    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toStrictEqual([]))
     test('gets object values', () => expect(CommonItems(valueObj([1, 2]), valueObj([2]))).toStrictEqual([2]))
 })
 
@@ -902,20 +991,22 @@ describe('RandomFrom', () => {
         // @ts-ignore
         testRandomInRange(theList, () => RandomFrom(...theList))
     })
+    test('returns null if the list is empty', () => expect(RandomFrom([])).toBe(null))
+    test('returns null if the list is null', () => expect(RandomFrom(null)).toBe(null))
     test('gets values of arguments', () => {
         testRandomInRange([1,2], ()=> RandomFrom(valueObj(1), valueObj(2)))
         testRandomInRange([1,2], ()=> RandomFrom(valueObj([1,2])))
     })
 })
 
-describe('RandomFromList', () => {
+describe('RandomListFrom', () => {
 
     function testRandomsInRange(list: Value<any[]>, itemCount: Value<number>) {
         const listVal = valueOf(list), itemCountVal = valueOf(itemCount)
         const valuesGenerated = new Set()
         for (let i = 0; i < 1000; i++) {
             const randomVals = RandomListFrom(list, itemCount)
-            expect(randomVals.length).toBe(itemCountVal)
+            expect(randomVals.length).toBe(Math.min(itemCountVal, listVal.length))
             randomVals.forEach( (val: any) => {
                 valuesGenerated.add(val)
                 expect(listVal.indexOf(val)).toBeGreaterThanOrEqual(0)
@@ -928,12 +1019,12 @@ describe('RandomFromList', () => {
     }
 
     const theList = [1, 2, 3, 4, 5]
-    test('picks a list of items from a list', () => {
-        testRandomsInRange(theList, 3)
-    })
-    test('gets values of arguments', () => {
-        testRandomsInRange(valueObj([1, 2, 3]), valueObj(2))
-    })
+    test('picks a list of items from a list', () => testRandomsInRange(theList, 3))
+    test('picks a list of items from a list shorter than needed', () => testRandomsInRange(theList, 7))
+    test('picks an empty list from an empty list', ()=> expect(RandomListFrom([], 3)).toStrictEqual([]))
+    test('picks an empty list from a null list', () => expect(RandomListFrom(null, 3)).toStrictEqual([]))
+    test('picks an empty list with a null item count', () => expect(RandomListFrom(theList, null)).toStrictEqual([]))
+    test('gets values of arguments', () => testRandomsInRange(valueObj([1, 2, 3]), valueObj(2)))
 })
 
 describe('Shuffle', () => {
@@ -945,12 +1036,10 @@ describe('Shuffle', () => {
     }
 
     const theList = [1, 2, 3, 4, 5]
-    test('picks a list of items from a list', () => {
-        testShuffleIsValid(theList)
-    })
-    test('gets values of arguments', () => {
-        testShuffleIsValid(valueObj([1, 2, 3]))
-    })
+    test('picks a list of items from a list', () => testShuffleIsValid(theList))
+    test('gets values of arguments', () => testShuffleIsValid(valueObj([1, 2, 3])))
+    test('picks an empty list from an empty list', ()=> expect(Shuffle([])).toStrictEqual([]))
+    test('picks an empty list from a null list', () => expect(Shuffle(null)).toStrictEqual([]))
 })
 
 describe('Check', () => {
@@ -1037,6 +1126,10 @@ describe('CsvToRecords', () => {
             {id: 'id3', Description: 'Widget 3 no tab in this line'},
         ])
 
+    })
+
+    test('empty list for a null csv string', () => {
+        expect(CsvToRecords(null, ['Id', 'Description'])).toStrictEqual([])
     })
 
 })

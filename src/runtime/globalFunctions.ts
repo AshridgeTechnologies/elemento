@@ -1,4 +1,4 @@
-import {fromPairs, identity, isEmpty, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -17,7 +17,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {diff, isArray, range} from 'radash'
+import {isArray} from 'radash'
 import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
@@ -26,24 +26,25 @@ const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years'
 export type DecimalType = BigNumber
 type DecimalOrNumber = DecimalType | number
 type DecimalVal = Value<string | number | BigNumber>
+type DecimalValOrNull = DecimalVal | null
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
 
 export class ValidationError extends Error {}
 
-function Decimal(arg: DecimalVal) {
-    return new BigNumber(valueOf(arg))
+function Decimal(arg: DecimalValOrNull) {
+    return new BigNumber(valueOf(arg ?? 0))
 }
 
-function decimalOp(op: OpType, initialValue: number | undefined, ...args: DecimalVal[]): DecimalOrNumber {
-    const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-        const [accVal, valVal] = valuesOf(acc, val)
-        if (typeof accVal === 'number' && typeof valVal === 'number') {
+function decimalOp(op: OpType, initialValue: number | undefined, ...args: DecimalValOrNull[]): DecimalOrNumber {
+    const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+        const acc = valueOf(accVal) ?? 0, val =  valueOf(valVal) ?? 0
+        if (typeof acc === 'number' && typeof val === 'number') {
             switch(op) {
-                case 'plus': return accVal + valVal
-                case 'minus': return accVal - valVal
-                case 'times': return accVal * valVal
-                case 'div': return accVal / valVal
+                case 'plus': return acc + val
+                case 'minus': return acc - val
+                case 'times': return acc * val
+                case 'div': return acc / val
             }
         }
         return Decimal(acc)[op](Decimal(val))
@@ -51,19 +52,35 @@ function decimalOp(op: OpType, initialValue: number | undefined, ...args: Decima
     return initialValue !== undefined ? <BigNumber>args.reduce(reducer, initialValue) : <BigNumber>args.reduce(reducer)
 }
 
-function comparisonOp(op: ComparisonOpType, arg1: DecimalVal | Date, arg2: DecimalVal | Date): boolean {
-    if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+function comparisonOp(op: ComparisonOpType, arg1: DecimalValOrNull | Date, arg2: DecimalValOrNull | Date): boolean {
+    if (isNil(arg1) && isNil(arg2)) {
         switch(op) {
-            case "gt":  return arg1 >  arg2
-            case "gte": return arg1 >= arg2
-            case "lt":  return arg1 <  arg2
-            case "lte": return arg1 <= arg2
-            case "eq":  return arg1 === arg2
+            case 'gt':
+            case 'lt':  return false
+            case 'gte':
+            case 'lte':
+            case 'eq':  return true
         }
     }
-    if (arg1 instanceof Date && arg2 instanceof Date) {
-        return Decimal(arg1.getTime())[op](Decimal(arg2.getTime()))
+
+    const isStringOrNil = (arg: any) => isNil(arg) || typeof arg === 'string'
+    if (isStringOrNil(arg1) && isStringOrNil(arg2)) {
+        const arg1ToCompare = arg1 ?? '',  arg2ToCompare = arg2 ?? ''
+        switch(op) {
+            case 'gt':  return arg1ToCompare >  arg2ToCompare
+            case 'gte': return arg1ToCompare >= arg2ToCompare
+            case 'lt':  return arg1ToCompare <  arg2ToCompare
+            case 'lte': return arg1ToCompare <= arg2ToCompare
+            case 'eq':  return arg1ToCompare === arg2ToCompare
+        }
     }
+
+    const isDateOrNil = (arg: any) => isNil(arg) || arg instanceof Date
+    const asTime = (arg: typeof arg1) => arg instanceof Date ? arg.getTime() : 0
+    if (isDateOrNil(arg1) && isDateOrNil(arg2)) {
+        return Decimal(asTime(arg1))[op](Decimal(asTime(arg2)))
+    }
+
     return Decimal(arg1)[op](Decimal(arg2))
 }
 
@@ -76,39 +93,39 @@ export const globalFunctions = {
         return isArray(s) ? Decimal(s[0]) : Decimal(s as DecimalVal)
     },
 
-    Sub(...args: DecimalVal[]): DecimalOrNumber {
+    Sub(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('minus', undefined, ...args)
     },
 
-    Mult(...args: DecimalVal[]): DecimalOrNumber {
+    Mult(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('times', 1, ...args)
     },
 
-    Div(...args: DecimalVal[]): DecimalOrNumber {
+    Div(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('div', undefined, ...args)
     },
 
-    Gt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Gt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('gt', arg1, arg2)
     },
 
-    Gte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Gte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('gte', arg1, arg2)
     },
 
-    Lt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Lt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('lt', arg1, arg2)
     },
 
-    Lte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Lte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('lte', arg1, arg2)
     },
 
-    Eq(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Eq(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('eq', arg1, arg2)
     },
 
-    Sum(...args: DecimalVal[]) {
+    Sum(...args: DecimalValOrNull[]) {
         return decimalOp('plus', 0, ...args)
     },
 
@@ -121,30 +138,31 @@ export const globalFunctions = {
         return valueOf(condition) ? getVal(trueValue) : getVal(falseValue)
     },
 
-    Left(s: Value<string>, length: Value<number>) {
-        return valueOf(s).substring(0, valueOf(length))
+    Left(sVal: Value<string | null>, lengthVal: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', length = valueOf(lengthVal) ?? 0
+        return s.substring(0, length)
     },
 
-    Mid(s: Value<string>, start: Value<number>, length?: Value<number>) {
-        const sVal = valueOf(s), startVal = valueOf(start), lengthVal = valueOf(length)
-        if (startVal < 1) throw new Error(`Function Mid parameter 2 (start) is ${startVal}. It should be greater than or equal to 1.`)
-        if (lengthVal !== undefined && lengthVal < 0) throw new Error(`Function Mid parameter 3 (length) is ${lengthVal}. It should be greater than or equal to 0.`)
-        return sVal.substring(startVal - 1, startVal - 1 + (lengthVal ?? sVal.length))
+    Mid(sVal: Value<string | null>, startVal: Value<number | null>, lengthVal?: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', start = valueOf(startVal) ?? 1, length = valueOf(lengthVal) ?? s.length
+        if (start < 1) throw new Error(`Function Mid parameter 2 (start) is ${start}. It should be greater than or equal to 1.`)
+        if (length !== undefined && length < 0) throw new Error(`Function Mid parameter 3 (length) is ${length}. It should be greater than or equal to 0.`)
+        return s.substring(start - 1, start - 1 + (length ?? s.length))
     },
 
-    Right(s: Value<string>, length: Value<number>) {
-        const sVal = valueOf(s), lengthVal = valueOf(length)
-        return sVal.substring(sVal.length - lengthVal)
+    Right(sVal: Value<string | null>, lengthVal: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', length = valueOf(lengthVal) ?? 0
+        return s.substring(s.length - length)
     },
 
-    Lowercase(s: Value<string>) {
-        const sVal = valueOf(s)
-        return sVal.toLowerCase()
+    Lowercase(sVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? ''
+        return s.toLowerCase()
     },
 
-    Uppercase(s: Value<string>) {
-        const sVal = valueOf(s)
-        return sVal.toUpperCase()
+    Uppercase(sVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? ''
+        return s.toUpperCase()
     },
 
     Split(sVal: Value<string> | null, sepVal?: Value<string> | null) {
@@ -153,9 +171,16 @@ export const globalFunctions = {
         return s.split(sep ?? '')
     },
 
-    Contains(sVal: Value<string>, searchVal: Value<string>, ignoreCase?: boolean) {
-        const [s, search] = valuesOf(sVal, searchVal) as [string, string]
+    Contains(sVal: Value<string | null>, searchVal: Value<string | null>, ignoreCase?: boolean) {
+        const s = valueOf(sVal) ?? ''
+        const search = valueOf(searchVal) ?? ''
         return ignoreCase ? s.toLowerCase().includes(search.toLowerCase()) : s.includes(search)
+    },
+
+    Substitute(sVal: Value<string | null>, toReplaceVal: Value<string | null>, replaceWithVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? '', toReplace = valueOf(toReplaceVal) ?? '', replaceWith = valueOf(replaceWithVal) ?? ''
+        if (toReplace === '') return s
+        return s.replace(new RegExp(toReplace, 'g'), replaceWith)
     },
 
     And(...args: Value<any>[]) {
@@ -170,41 +195,35 @@ export const globalFunctions = {
         return !valueOf(arg)
     },
 
-    Substitute(s: Value<string>, toReplace: Value<string>, replaceWith: Value<string>) {
-        const sVal = valueOf(s), toReplaceVal = valueOf(toReplace), replaceWithVal = valueOf(replaceWith)
-        if (toReplaceVal === '') return sVal
-        return sVal.replace(new RegExp(toReplaceVal, 'g'), replaceWithVal)
-    },
-
-    Max(...args: DecimalVal[]) {
+    Max: function (...args: DecimalValOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Max. Expected at least 1 argument.')
-        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-            const [accVal, valVal] = valuesOf(acc, val)
-            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.max(accVal, valVal)
-            return Decimal(acc).gte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+            const acc = valueOf(accVal), val = valueOf(valVal) ?? 0
+            if (typeof acc === 'number' && typeof val === 'number') return Math.max(acc, val)
+            return Decimal(acc).gte(Decimal(val)) ? Decimal(acc) : Decimal(val)
         }
-        return <BigNumber>args.reduce(reducer, Number.MIN_VALUE)
+        return <BigNumber>args.reduce(reducer, -Number.MAX_VALUE)
     },
 
-    Min(...args: DecimalVal[]) {
+    Min(...args: DecimalValOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
-        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-            const [accVal, valVal] = valuesOf(acc, val)
-            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.min(accVal, valVal)
-            return Decimal(acc).lte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+            const acc = valueOf(accVal) , val = valueOf(valVal) ?? 0
+            if (typeof acc === 'number' && typeof val === 'number') return Math.min(acc, val)
+            return Decimal(accVal).lte(Decimal(valVal)) ? Decimal(accVal)  : Decimal(valVal)
         }
         return <BigNumber>args.reduce(reducer, Number.MAX_VALUE)    },
 
-    Round(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return round(valueOf(n), valueOf(decimalDigits))
+    Round(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return round(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
-    Ceiling(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return ceil(valueOf(n), valueOf(decimalDigits))
+    Ceiling(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return ceil(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
-    Floor(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return floor(valueOf(n), valueOf(decimalDigits))
+    Floor(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return floor(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
     Record(...args: Value<any>[]) {
@@ -232,24 +251,26 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
-    Range(startVal: Value<number>, endVal: Value<number>, stepVal?: Value<number>): number[] {
+    Range(startVal: Value<number | null>, endVal: Value<number | null>, stepVal: Value<number | null> = 1): number[] {
         if (startVal === undefined || endVal === undefined) {
             throw Error('Range() needs start and end, and optional step')
         }
 
-        const [start, end, step = 1] = valuesOf(startVal, endVal, stepVal)
-        if (step === 0) {
+        const start = valueOf(startVal) ?? 0, end = valueOf(endVal) ?? 0, step = valueOf(stepVal) ?? 0
+        if (isNil(step) || step === 0 ) {
             throw Error('Range: step cannot be zero')
         }
-        if (step > 0) {
-            return Array.from(range(start, end, identity, Math.abs(step))) as number[]
-        } else {
-            return (Array.from(range(end, start, identity, Math.abs(step))) as number[]).reverse()
-
+        const ascending = start < end
+        const stepDirection = ascending ? 1 : -1
+        const result: number[] = []
+        const isFinished = (i: number) => ascending ? i > end : i < end
+        for (let i = start; !isFinished(i); i += Math.abs(step) * stepDirection) {
+            result.push(i)
         }
+        return result
     },
 
-    Select(list: Value<any[]>, condition: (item: any) => boolean) {
+    Select(list: Value<any[]> | null, condition: (item: any) => boolean) {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
@@ -262,26 +283,25 @@ export const globalFunctions = {
         return condition ? list.filter(condition!).length : list.length
     },
 
-    ForEach(list: Value<any[]>, transform: (item: any) => any) {
-        const listVal = valueOf(list) ?? []
+    ForEach(listVal: Value<any[]> | null, transform: (item: any) => any) {
+        const list = valueOf(listVal) ?? []
         if (transform === undefined) throw new Error('Wrong number of arguments to ForEach. Expected list, expression.')
-        return listVal.map(transform)
+        return list.map(transform)
     },
 
-    First(list: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
-        const listVal = valueOf(list) ?? []
-        if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
-        return listVal.filter(condition)[0] ?? null
+    First(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
+        if (listVal === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
+        const list = valueOf(listVal) ?? []
+        return list.filter(condition)[0] ?? null
     },
 
     Last(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
-        if (arguments.length < 1) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
-        const list = valueOf(listVal)
-        if (isNil(list)) return null
-        return last(list.filter(condition))
+        if (listVal === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
+        const list = valueOf(listVal) ?? []
+        return last(list.filter(condition)) ?? null
     },
 
-    Sort(list: Value<any[]>, sortKeyFn: (item: any) => any | any[]): any[] {
+    Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[]): any[] {
         const compareItems = (a: any, b: any): -1 | 0 | 1 => {
             const aa = sortKeyFn(a), bb = sortKeyFn(b)
             return compareValues(aa, bb)
@@ -311,24 +331,17 @@ export const globalFunctions = {
             return 0
         }
 
-        const listVal = valueOf(list)
-        if (isNil(listVal)) {
-            return listVal
-        }
-        return sort(compareItems, listVal)
+        const list = valueOf(listVal) ?? []
+        return sort(compareItems, list)
     },
 
-
-
     Reverse(listVal: Value<any[]> | null) {
-        const list = valueOf(listVal)
-        if (isNil(list)) return []
+        const list = valueOf(listVal) ?? []
         return reverse(list)
     },
 
     CommonItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
-        const [list1, list2] = valuesOf(list1Val, list2Val)
-        if (isNil(list1) || isNil(list2) ) return []
+        const list1 = valueOf(list1Val) ?? [], list2 = valueOf(list2Val) ?? []
         return list1.filter( (x:any) => list2.includes(x))
     },
 
@@ -346,6 +359,10 @@ export const globalFunctions = {
         return new Date()
     },
 
+    Today(date = new Date()) {
+        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
+    },
+
     DateVal(arg1?: string | number | null, arg2?: string | number, arg3?: number) {
         if (!arg1) return null
 
@@ -360,10 +377,6 @@ export const globalFunctions = {
             if (isValid(isoDate)) return isoDate
         }
         return new Date(arg1)
-    },
-
-    Today(date = new Date()) {
-        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
     },
 
     TimeBetween(date1Val: Value<Date>, date2Val: Value<Date>, unitVal: Value<TimeUnit>) {
@@ -415,18 +428,18 @@ export const globalFunctions = {
     },
 
     RandomFrom(firstArg: Value<any>, ...furtherArgs: Value<any>[]): any {
-        const list = furtherArgs.length === 0 ? valueOf(firstArg) : valuesOf(firstArg, ...furtherArgs)
+        const list = furtherArgs.length === 0 ? valueOf(firstArg) ?? [] : valuesOf(firstArg, ...furtherArgs)
         const randomIndex = Math.floor(list.length * Math.random())
-        return list[randomIndex]
+        return list[randomIndex] ?? null
     },
 
-    RandomListFrom(listVal: Value<any[]>, itemCountVal: Value<number>): any[] {
-        const [list, itemCount] = valuesOf(listVal, itemCountVal)
+    RandomListFrom(listVal: Value<any[]> | null, itemCountVal: Value<number> | null): any[] {
+        const list = valueOf(listVal) ?? [], itemCount = valueOf(itemCountVal) ?? 0
         return shuffle(list).slice(0, itemCount)
     },
 
-    Shuffle(listVal: Value<any[]>): any[] {
-        const list = valueOf(listVal)
+    Shuffle(listVal: Value<any[]> | null): any[] {
+        const list = valueOf(listVal) ?? []
         return shuffle(list)
     },
 
@@ -437,7 +450,9 @@ export const globalFunctions = {
         }
     },
 
-    CsvToRecords(csvText: string, columnNames?: string[]) {
+    CsvToRecords(csvText: string | null, columnNames?: string[]) {
+        if (isNil(csvText)) return []
+
         const transform = (fieldRaw: string) => {
             const field = fieldRaw.trim()
             if (field === '') return undefined
