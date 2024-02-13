@@ -247,7 +247,8 @@ export default function EditorRunner() {
     }
 
     function selectItemsInPreview(ids: string[]) {
-        navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids})
+        const idsWithinApp = ids.map( id => id.replace(/^Tools\./, ''))
+        navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids: idsWithinApp})
     }
 
     function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {

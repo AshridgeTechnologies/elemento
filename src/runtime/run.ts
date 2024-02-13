@@ -32,6 +32,7 @@ const run = (urlPath: string,
     const resourceUrl = '/studio/preview/' + ASSET_DIR
     // @ts-ignore
     const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
+    console.log('Rendering', urlPath)
     root.render(appRunner)
 }
 
@@ -44,7 +45,8 @@ export const runPreview = (urlPath: string) => {
 
     if (!pathComponents) return
     const {prefix = '', appName, filepath} = pathComponents
-    const codeUrl = `/studio/preview/${prefix}${appName}/${appName}.js`
+    const appPath = prefix + appName
+    const codeUrl = `/studio/preview/${appPath}/${appName}.js`
     let appStore: StoreApi<AppStore>
     const appStoreHook: AppStoreHook = {
         setAppStore(sa: StoreApi<AppStore>){
@@ -53,6 +55,8 @@ export const runPreview = (urlPath: string) => {
             window.appStore = appStore
         }
     }
+
+    let hasSelections = false
 
     function runModule() {
         run(`/studio/preview/${appName}`, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
@@ -73,11 +77,17 @@ export const runPreview = (urlPath: string) => {
     navigator.serviceWorker.onmessage = (event) => {
         const message = event.data
         if (message.type === 'refreshCode') {
-            refreshCode()
+            if (message.path.startsWith(appPath + '/')) {
+                refreshCode()
+            }
         }
         if (message.type === 'selectedItems') {
             selectedComponentIds = message.ids
-            runModule()
+            const previousHasSelections = hasSelections
+            hasSelections = selectedComponentIds.some(id => id.startsWith(appName + '.'))
+            if (hasSelections || (previousHasSelections && !hasSelections)) {
+                runModule()
+            }
         }
         if (message.type === 'callFunction') {
             const {componentId, functionName, args = []} = message

@@ -1,9 +1,10 @@
-import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties, ServerFileWriter} from '../../src/generator/ProjectBuilder'
+import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties} from '../../src/generator/ProjectBuilder'
 import Project, {TOOLS_ID} from '../../src/model/Project'
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
 import {generate} from '../../src/generator/index'
+import {generateServerApp} from '../../src/generator/ServerAppGenerator'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
@@ -64,6 +65,7 @@ const project1 = Project.new([app1, app2, serverApp1, serverApp2, dataTypes1, da
 const projectClientOnly = Project.new([app3], 'Project Client Only', 'proj2', {})
 
 const expectedClientCode = (app: App | Tool, project: Project = project1) => generate(app, project).code
+const expectedServerFiles = (app: ServerApp, project: Project = project1) => generateServerApp(app, project).files
 const expectedIndexFile = (app: App, project: Project = project1) => generate(app, project).html
 const expectedProjectInfo = (project: Project = project1) => `{"apps":[${project.findChildElements('App').map( el => `"${el.codeName}"` ).join(',')}]}`
 
@@ -73,17 +75,17 @@ const getProjectLoader = (project: Project):ProjectLoader & {project: Project} =
 })
 
 const clientFileWriter = {
-    writeFile: jest.fn()
+    writeFile: jest.fn().mockResolvedValue(undefined)
 }
 const toolFileWriter = {
-    writeFile: jest.fn()
+    writeFile: jest.fn().mockResolvedValue(undefined)
 }
 const projectInfoFileWriter = {
-    writeFile: jest.fn()
+    writeFile: jest.fn().mockResolvedValue(undefined)
 }
 
 const serverFileWriter = {
-    writeFile: jest.fn(),
+    writeFile: jest.fn().mockResolvedValue(undefined),
     flush: jest.fn().mockResolvedValue(undefined),
     clean: jest.fn().mockResolvedValue(undefined)
 }
@@ -249,16 +251,16 @@ test('copies runtime files only to client build if no server app', async () => {
     expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
 })
 
-test('updates files generated from project', async () => {
+test('updates files generated from project only where changed', async () => {
     const dirContents = {
         'File1.txt': 'File 1',
     }
 
     const clientFileWriter = {
-        writeFile: jest.fn()
+        writeFile: jest.fn().mockResolvedValue(undefined)
     }
     const serverFileWriter = {
-        writeFile: jest.fn(),
+        writeFile: jest.fn().mockResolvedValue(undefined),
         flush: jest.fn().mockResolvedValue(undefined),
         clean: jest.fn().mockResolvedValue(undefined)
     }
@@ -266,25 +268,26 @@ test('updates files generated from project', async () => {
     const builder = newProjectBuilder({projectLoader, fileLoader: getFileLoader(dirContents), clientFileWriter, serverFileWriter})
     await builder.build()
 
-    clientFileWriter.writeFile.mockClear()
-    serverFileWriter.writeFile.mockClear()
+    clientFileWriter.writeFile.mockClear().mockResolvedValue(undefined)
+    serverFileWriter.writeFile.mockClear().mockResolvedValue(undefined)
     serverFileWriter.flush.mockClear().mockResolvedValue(undefined)
     serverFileWriter.clean.mockClear().mockResolvedValue(undefined)
 
-    const project1Updated = project1.set('text1', 'name', 'Text 1 Updated')
+    const project1Updated = project1.set('text1', 'name', 'Text 1 Updated').set('fn2', 'input1', 'ccc')
     projectLoader.project = project1Updated
-    await builder.updateProject()
+    builder.updateProject()
     await wait(110)  // writes are throttled
     const updatedApp1 = project1Updated.findElement('app1') as App
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App1/App1.js', expectedClientCode(updatedApp1)],
-        ['App1/index.html', expectedIndexFile(updatedApp1)],
-        ['App2/App2.js', expectedClientCode(app2)],
-        ['App2/index.html', expectedIndexFile(app2)],
     ])
-    const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
-    const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
-    expect(serverFileWriter.writeFile.mock.calls).toStrictEqual(expectedGeneratedCalls)
+    const serverApp2Updated = project1Updated.findElement('sa2') as ServerApp
+    const [appFile] = expectedServerFiles(serverApp2Updated)
+    const appFileContents = appFile.contents
+    expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
+        ['ServerApp2.mjs', appFileContents],
+        // express file not changed
+    ])
 })
 
 test('updates from project are throttled to one update every 100ms', async () => {
@@ -307,11 +310,10 @@ test('updates from project are throttled to one update every 100ms', async () =>
 
     await wait(110)
     const updatedApp3 = projectLoader.project!.findElement('app3') as App
-    expect(clientFileWriter.writeFile.mock.calls.length).toBe(2)
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App3/App3.js', expectedClientCode(updatedApp3, updatedProject)],
-        ['App3/index.html', expectedIndexFile(updatedApp3, updatedProject)],
     ])
+    expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
 })
 
 test('updates an asset file', async () => {

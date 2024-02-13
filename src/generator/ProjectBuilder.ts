@@ -6,6 +6,7 @@ import {ASSET_DIR} from '../shared/constants'
 import lodash from 'lodash';
 import {AllErrors} from "./Types";
 import Tool from '../model/Tool'
+import {pickBy} from 'ramda'
 
 const {debounce} = lodash;
 
@@ -18,10 +19,6 @@ export interface FileLoader {
     exists(dirPath: string): Promise<boolean>
     listFiles(dirPath: string): Promise<string[]>
     readFile(filePath: string): Promise<FileContents>
-}
-
-export interface RuntimeLoader {
-    getFile(filename: string): Promise<string>
 }
 
 export interface FileWriter {
@@ -48,12 +45,37 @@ export type Properties = {
 }
 
 type FileSet = { [name: string]: string }
+class FileHolder {
+    private files: FileSet = {}
+    private updatedFiles: { [name: string]: boolean } = {}
+
+    storeFile(name: string, content: string) {
+        if (this.files[name] !== content) {
+            this.files[name] = content
+            this.updatedFiles[name] = true
+        }
+    }
+
+    getFiles(): FileSet {
+        return {...this.files}
+    }
+
+    getUpdatedFiles(): FileSet {
+        return pickBy( (_, key) => this.updatedFiles[key], this.files)
+    }
+
+    writeComplete(name: string) {
+        this.updatedFiles[name] = false
+    }
+
+}
+
 export default class ProjectBuilder {
     private readonly debouncedWriteFiles: () => Promise<void> | undefined
-    private generatedProjectInfo: FileSet = {}
-    private generatedClientCode: FileSet = {}
-    private generatedToolCode: FileSet = {}
-    private generatedServerCode: FileSet = {}
+    private generatedProjectInfo = new FileHolder()
+    private generatedClientCode = new FileHolder()
+    private generatedToolCode = new FileHolder()
+    private generatedServerCode = new FileHolder()
     private generatedErrors: AllErrors = {}
 
     constructor(private readonly props: Properties) {
@@ -81,13 +103,18 @@ export default class ProjectBuilder {
         await this.copyAssetFile(path)
     }
 
-    get code() { return {...this.generatedClientCode, ...this.generatedServerCode}}
+    get code() { return {...this.generatedClientCode.getFiles(), ...this.generatedServerCode.getFiles()}}
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
 
     private async writeProjectFiles() {
-        const writeFiles = (files: FileSet, fileWriter: FileWriter) => Object.entries(files).map(([name, contents]) => fileWriter.writeFile(name, contents))
+        const writeFiles = (fileHolder: FileHolder, fileWriter: FileWriter) => {
+            const files = fileHolder.getUpdatedFiles()
+            return Object.entries(files).map(([name, contents]) => {
+                fileWriter.writeFile(name, contents).then( ()=> fileHolder.writeComplete(name))
+            })
+        }
 
         const projectInfoFileWritePromises = writeFiles(this.generatedProjectInfo, this.props.projectInfoFileWriter)
         const clientFileWritePromises = writeFiles(this.generatedClientCode, this.props.clientFileWriter)
@@ -98,13 +125,10 @@ export default class ProjectBuilder {
 
     private buildProjectFiles() {
         this.generatedErrors = {}
-        this.generatedClientCode = {}
-        this.generatedToolCode = {}
-        this.generatedServerCode = {}
         const project = this.project
         const apps = project.findChildElements(App)
         this.buildProjectInfoFiles()
-        apps.forEach(async (app, index) => this.buildClientAppFiles(app))
+        apps.forEach(async (app) => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(async tool => this.buildToolAppFiles(tool))
         if (this.project.hasServerApps) {
@@ -114,17 +138,15 @@ export default class ProjectBuilder {
 
     private buildProjectInfoFiles() {
         const appNames = this.project.findChildElements(App).map( el => el.codeName)
-        this.generatedProjectInfo = {
-            'projectInfo.json': JSON.stringify({apps: appNames})
-        }
+        this.generatedProjectInfo.storeFile('projectInfo.json', JSON.stringify({apps: appNames}))
     }
 
     private buildClientAppFiles(app: App) {
         const {code, html, errors} = generate(app, this.project)
         const appName = app.codeName + '/' + app.codeName + '.js'
         const htmlRunnerFileName = app.codeName + '/' + 'index.html'
-        this.generatedClientCode[appName] = code
-        this.generatedClientCode[htmlRunnerFileName] = html
+        this.generatedClientCode.storeFile(appName, code)
+        this.generatedClientCode.storeFile(htmlRunnerFileName, html)
         Object.assign(this.generatedErrors, errors)
     }
 
@@ -132,14 +154,14 @@ export default class ProjectBuilder {
         const {code, html, errors} = generate(tool, this.project)
         const toolName = tool.codeName + '/' + tool.codeName + '.js'
         const htmlRunnerFileName = tool.codeName + '/' + 'index.html'
-        this.generatedToolCode[toolName] = code
-        this.generatedToolCode[htmlRunnerFileName] = html
+        this.generatedToolCode.storeFile(toolName, code)
+        this.generatedToolCode.storeFile(htmlRunnerFileName, html)
         Object.assign(this.generatedErrors, errors)
     }
 
     private buildServerAppFiles() {
         const {files, errors} = new ServerFirebaseGenerator(this.project).output()
-        files.forEach( ({name, contents}) => this.generatedServerCode[name] = contents )
+        files.forEach( ({name, contents}) => this.generatedServerCode.storeFile(name, contents) )
         Object.assign(this.generatedErrors, errors)
     }
 
