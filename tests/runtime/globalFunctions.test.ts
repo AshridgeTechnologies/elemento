@@ -261,7 +261,7 @@ describe('If', () => {
     test('with condition and two function arguments returns the first argument value if condition truthy', () => expect(If('X', () => 'Yes', () => 'No')).toBe('Yes'))
     test('with condition and one argument returns undefined if condition false', () => expect(If(false, 'Yes')).toBeUndefined())
     test('with condition and two argument returns second argument if condition falsy', () => expect(If(0, 'Yes', 'No')).toBe('No'))
-    test('with condition and two funciton arguments returns second argument if condition falsy', () => expect(If(0, () => 'Yes', () => 'No')).toBe('No'))
+    test('with condition and two function arguments returns second argument if condition falsy', () => expect(If(null, () => 'Yes', () => 'No')).toBe('No'))
     test('uses valueOf for condition but returns other objects as they are', () => {
         const conditionTrue = valueObj(true)
         const conditionFalse = valueObj(false)
@@ -295,6 +295,8 @@ describe('Left', () => {
     test('Gets a part string for non-zero length', ()=> expect(Left('abc', 2)).toBe('ab'))
     test('Gets whole string for length same as string length', ()=> expect(Left('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Left('abc', 4)).toBe('abc'))
+    test('Gets empty string for null length', ()=> expect(Left('abc', null)).toBe(''))
+    test('Gets empty string if string is null', ()=> expect(Left(null, 4)).toBe(''))
     test('Gets value of objects', ()=> expect(Left(valueObj('abc'), valueObj(2))).toBe('ab'))
 })
 
@@ -305,11 +307,14 @@ describe('Mid', () => {
     test('Gets an empty string for 1 start, zero length', ()=> expect(Mid('abc', 1, 0)).toBe(''))
     test('Gets a part string for 1 start, non-zero length', ()=> expect(Mid('abc', 1, 2)).toBe('ab'))
     test('Gets whole string for 1 start, undefined length', ()=> expect(Mid('abc', 1)).toBe('abc'))
+    test('Gets whole string for null start, undefined length', ()=> expect(Mid('abc', null)).toBe('abc'))
     test('Gets whole string for 1 start, length same as string length', ()=> expect(Mid('abc', 1, 3)).toBe('abc'))
     test('Gets a part string for 2 start, length less than string length', ()=> expect(Mid('abcdefg', 2, 3)).toBe('bcd'))
     test('Gets a part string for 2 start, length greater than string length', ()=> expect(Mid('abc', 2, 4)).toBe('bc'))
     test('Gets a part string for 2 start, undefined length', ()=> expect(Mid('abc', 2)).toBe('bc'))
     test('Gets an empty string for start greater than length', ()=> expect(Mid('abc', 4)).toBe(''))
+    test('Gets empty string if string is null', ()=> expect(Mid(null, 4)).toBe(''))
+    test('Gets empty string if length is null', ()=> expect(Mid('abc', 2, null)).toBe('bc'))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2), valueObj(3))).toBe('bcd'))
     test('Gets value of objects', ()=> expect(Mid(valueObj('abcdef'), valueObj(2))).toBe('bcdef'))
 })
@@ -317,19 +322,23 @@ describe('Mid', () => {
 describe('Right', () => {
     test('Gets an empty string for negative length', ()=> expect(Right('abc', -1)).toBe(''))
     test('Gets an empty string for zero length', ()=> expect(Right('abc', 0)).toBe(''))
+    test('Gets an empty string for null length', ()=> expect(Right('abc', 0)).toBe(''))
     test('Gets a part string for non-zero length', ()=> expect(Right('abc', 2)).toBe('bc'))
     test('Gets whole string for length same as string length', ()=> expect(Right('abc', 3)).toBe('abc'))
     test('Gets whole string for length greater than string length', ()=> expect(Right('abc', 4)).toBe('abc'))
+    test('Gets empty string for null string', ()=> expect(Right(null, 4)).toBe(''))
     test('Gets value of objects', ()=> expect(Right(valueObj('abc'), valueObj(2))).toBe('bc'))
 })
 
 describe('Lowercase', () => {
     test('Gets a lower case version of a string', () => expect(Lowercase('AbC123?')).toBe('abc123?'))
+    test('Gets empty string for null string', ()=> expect(Lowercase(null)).toBe(''))
     test('Gets value of objects', () => expect(Lowercase(valueObj('AbC123?'))).toBe('abc123?'))
 })
 
 describe('Uppercase', () => {
     test('Gets an upper case version of a string', () => expect(Uppercase('AbC123?')).toBe('ABC123?'))
+    test('Gets empty string for null string', ()=> expect(Uppercase(null)).toBe(''))
     test('Gets value of objects', () => expect(Uppercase(valueObj('AbC123?'))).toBe('ABC123?'))
 })
 
@@ -350,7 +359,9 @@ describe('Contains', () => {
     test('ignores case if specified', () => expect(Contains('abcde', 'BCD', true)).toBe(true))
     test('ignores case both ways if specified', () => expect(Contains('ABCDE', 'bcd', true)).toBe(true))
     test('always finds empty string', () => expect(Contains('abcde', '')).toBe(true))
+    test('always finds null treated as empty string', () => expect(Contains('abcde', null)).toBe(true))
     test('never finds anything in empty string', () => expect(Contains('', 'a')).toBe(false))
+    test('never finds anything in null', () => expect(Contains(null, 'a')).toBe(false))
     test('gets values of objects', () => expect(Contains(valueObj('abcde'), valueObj('bcd'))).toBe(true))
 })
 

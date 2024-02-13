@@ -138,30 +138,31 @@ export const globalFunctions = {
         return valueOf(condition) ? getVal(trueValue) : getVal(falseValue)
     },
 
-    Left(s: Value<string>, length: Value<number>) {
-        return valueOf(s).substring(0, valueOf(length))
+    Left(sVal: Value<string | null>, lengthVal: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', length = valueOf(lengthVal) ?? 0
+        return s.substring(0, length)
     },
 
-    Mid(s: Value<string>, start: Value<number>, length?: Value<number>) {
-        const sVal = valueOf(s), startVal = valueOf(start), lengthVal = valueOf(length)
-        if (startVal < 1) throw new Error(`Function Mid parameter 2 (start) is ${startVal}. It should be greater than or equal to 1.`)
-        if (lengthVal !== undefined && lengthVal < 0) throw new Error(`Function Mid parameter 3 (length) is ${lengthVal}. It should be greater than or equal to 0.`)
-        return sVal.substring(startVal - 1, startVal - 1 + (lengthVal ?? sVal.length))
+    Mid(sVal: Value<string | null>, startVal: Value<number | null>, lengthVal?: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', start = valueOf(startVal) ?? 1, length = valueOf(lengthVal) ?? s.length
+        if (start < 1) throw new Error(`Function Mid parameter 2 (start) is ${start}. It should be greater than or equal to 1.`)
+        if (length !== undefined && length < 0) throw new Error(`Function Mid parameter 3 (length) is ${length}. It should be greater than or equal to 0.`)
+        return s.substring(start - 1, start - 1 + (length ?? s.length))
     },
 
-    Right(s: Value<string>, length: Value<number>) {
-        const sVal = valueOf(s), lengthVal = valueOf(length)
-        return sVal.substring(sVal.length - lengthVal)
+    Right(sVal: Value<string | null>, lengthVal: Value<number | null>) {
+        const s = valueOf(sVal) ?? '', length = valueOf(lengthVal) ?? 0
+        return s.substring(s.length - length)
     },
 
-    Lowercase(s: Value<string>) {
-        const sVal = valueOf(s)
-        return sVal.toLowerCase()
+    Lowercase(sVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? ''
+        return s.toLowerCase()
     },
 
-    Uppercase(s: Value<string>) {
-        const sVal = valueOf(s)
-        return sVal.toUpperCase()
+    Uppercase(sVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? ''
+        return s.toUpperCase()
     },
 
     Split(sVal: Value<string> | null, sepVal?: Value<string> | null) {
@@ -170,8 +171,9 @@ export const globalFunctions = {
         return s.split(sep ?? '')
     },
 
-    Contains(sVal: Value<string>, searchVal: Value<string>, ignoreCase?: boolean) {
-        const [s, search] = valuesOf(sVal, searchVal) as [string, string]
+    Contains(sVal: Value<string | null>, searchVal: Value<string>, ignoreCase?: boolean) {
+        const s = valueOf(sVal) ?? ''
+        const search = valueOf(searchVal) ?? ''
         return ignoreCase ? s.toLowerCase().includes(search.toLowerCase()) : s.includes(search)
     },
 
