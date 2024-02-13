@@ -1,4 +1,4 @@
-import {fromPairs, identity, isEmpty, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, identity, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -17,7 +17,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {diff, isArray, range} from 'radash'
+import {isArray, range} from 'radash'
 import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
@@ -26,24 +26,25 @@ const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years'
 export type DecimalType = BigNumber
 type DecimalOrNumber = DecimalType | number
 type DecimalVal = Value<string | number | BigNumber>
+type DecimalValOrNull = DecimalVal | null
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
 
 export class ValidationError extends Error {}
 
-function Decimal(arg: DecimalVal) {
-    return new BigNumber(valueOf(arg))
+function Decimal(arg: DecimalValOrNull) {
+    return new BigNumber(valueOf(arg ?? 0))
 }
 
-function decimalOp(op: OpType, initialValue: number | undefined, ...args: DecimalVal[]): DecimalOrNumber {
-    const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-        const [accVal, valVal] = valuesOf(acc, val)
-        if (typeof accVal === 'number' && typeof valVal === 'number') {
+function decimalOp(op: OpType, initialValue: number | undefined, ...args: DecimalValOrNull[]): DecimalOrNumber {
+    const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+        const acc = valueOf(accVal) ?? 0, val =  valueOf(valVal) ?? 0
+        if (typeof acc === 'number' && typeof val === 'number') {
             switch(op) {
-                case 'plus': return accVal + valVal
-                case 'minus': return accVal - valVal
-                case 'times': return accVal * valVal
-                case 'div': return accVal / valVal
+                case 'plus': return acc + val
+                case 'minus': return acc - val
+                case 'times': return acc * val
+                case 'div': return acc / val
             }
         }
         return Decimal(acc)[op](Decimal(val))
@@ -51,19 +52,35 @@ function decimalOp(op: OpType, initialValue: number | undefined, ...args: Decima
     return initialValue !== undefined ? <BigNumber>args.reduce(reducer, initialValue) : <BigNumber>args.reduce(reducer)
 }
 
-function comparisonOp(op: ComparisonOpType, arg1: DecimalVal | Date, arg2: DecimalVal | Date): boolean {
-    if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+function comparisonOp(op: ComparisonOpType, arg1: DecimalValOrNull | Date, arg2: DecimalValOrNull | Date): boolean {
+    if (isNil(arg1) && isNil(arg2)) {
         switch(op) {
-            case "gt":  return arg1 >  arg2
-            case "gte": return arg1 >= arg2
-            case "lt":  return arg1 <  arg2
-            case "lte": return arg1 <= arg2
-            case "eq":  return arg1 === arg2
+            case 'gt':
+            case 'lt':  return false
+            case 'gte':
+            case 'lte':
+            case 'eq':  return true
         }
     }
-    if (arg1 instanceof Date && arg2 instanceof Date) {
-        return Decimal(arg1.getTime())[op](Decimal(arg2.getTime()))
+
+    const isStringOrNil = (arg: any) => isNil(arg) || typeof arg === 'string'
+    if (isStringOrNil(arg1) && isStringOrNil(arg2)) {
+        const arg1ToCompare = arg1 ?? '',  arg2ToCompare = arg2 ?? ''
+        switch(op) {
+            case 'gt':  return arg1ToCompare >  arg2ToCompare
+            case 'gte': return arg1ToCompare >= arg2ToCompare
+            case 'lt':  return arg1ToCompare <  arg2ToCompare
+            case 'lte': return arg1ToCompare <= arg2ToCompare
+            case 'eq':  return arg1ToCompare === arg2ToCompare
+        }
     }
+
+    const isDateOrNil = (arg: any) => isNil(arg) || arg instanceof Date
+    const asTime = (arg: typeof arg1) => arg instanceof Date ? arg.getTime() : 0
+    if (isDateOrNil(arg1) && isDateOrNil(arg2)) {
+        return Decimal(asTime(arg1))[op](Decimal(asTime(arg2)))
+    }
+
     return Decimal(arg1)[op](Decimal(arg2))
 }
 
@@ -76,39 +93,39 @@ export const globalFunctions = {
         return isArray(s) ? Decimal(s[0]) : Decimal(s as DecimalVal)
     },
 
-    Sub(...args: DecimalVal[]): DecimalOrNumber {
+    Sub(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('minus', undefined, ...args)
     },
 
-    Mult(...args: DecimalVal[]): DecimalOrNumber {
+    Mult(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('times', 1, ...args)
     },
 
-    Div(...args: DecimalVal[]): DecimalOrNumber {
+    Div(...args: DecimalValOrNull[]): DecimalOrNumber {
         return decimalOp('div', undefined, ...args)
     },
 
-    Gt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Gt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('gt', arg1, arg2)
     },
 
-    Gte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Gte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('gte', arg1, arg2)
     },
 
-    Lt(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Lt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('lt', arg1, arg2)
     },
 
-    Lte(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Lte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('lte', arg1, arg2)
     },
 
-    Eq(arg1: DecimalVal, arg2: DecimalVal): boolean {
+    Eq(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
         return comparisonOp('eq', arg1, arg2)
     },
 
-    Sum(...args: DecimalVal[]) {
+    Sum(...args: DecimalValOrNull[]) {
         return decimalOp('plus', 0, ...args)
     },
 

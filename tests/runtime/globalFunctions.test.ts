@@ -52,6 +52,10 @@ describe('Decimals', () => {
         expect(dec1.toString()).toBe('1234.567')
         expect(dec2.eq(dec1)).toBe(true)
     })
+
+    test('has zero value for null', () => {
+       expect(Decimal(null).toString()).toBe('0')
+    })
 })
 
 describe('Decimal arithmetic', () => {
@@ -78,6 +82,14 @@ describe('Decimal arithmetic', () => {
         expect(Div(1000000, '3')).toStrictEqual(D`333333.33333333333333333333`)
     })
 
+    test('treats nulls as zero in arithmetic ops', () => {
+        expect(Sum(null, 2, 3, null)).toBe(5)
+        expect(Sub(null, 1, 2, null)).toBe(-3)
+        expect(Mult(null, 2, 3, null)).toBe(0)
+        expect(Div(null, 3)).toBe(0)
+        expect(Div(3, null)).toBe(Infinity)
+    })
+
     test('compares numbers from any source', () => {
         expect(Gt(10, '2')).toBe(true)
         expect(Gt('10', D`10`)).toBe(false)
@@ -98,6 +110,26 @@ describe('Decimal arithmetic', () => {
         expect(Eq(10, '2')).toBe(false)
         expect(Eq('10', D`10`)).toBe(true)
         expect(Eq('10', valueObj(D`10.000001`))).toBe(false)
+
+    })
+
+    test('treats nulls as zero in number comparisons', () => {
+        expect(Gt(null, 2)).toBe(false)
+        expect(Gt(2, null)).toBe(true)
+        expect(Gte(0, null)).toBe(true)
+        expect(Lt(0, null)).toBe(false)
+        expect(Lte(null, 0)).toBe(true)
+        expect(Eq(null, 0)).toBe(true)
+        expect(Eq(0, null)).toBe(true)
+        expect(Eq(1, null)).toBe(false)
+    })
+
+    test('treats two nulls as equal', () => {
+        expect(Gt(null, null)).toBe(false)
+        expect(Gte(null, null)).toBe(true)
+        expect(Lt(null, null)).toBe(false)
+        expect(Lte(null, null)).toBe(true)
+        expect(Eq(null, null)).toBe(true)
 
     })
 })
@@ -131,6 +163,14 @@ describe('Comparison functions', () => {
             expect(Eq(date2, date1)).toBe(false)
             expect(Eq(date1, date1)).toBe(true)
         })
+        test('treats nulls as zero in date comparisons', () => {
+            expect(Gt(null, date1)).toBe(false)
+            expect(Gt(date1, null)).toBe(true)
+            expect(Gte(date2, null)).toBe(true)
+            expect(Lt(date1, null)).toBe(false)
+            expect(Lte(null, date2)).toBe(true)
+            expect(Eq(null, date1)).toBe(false)
+        })
     })
 
     describe('Work with strings', () => {
@@ -161,8 +201,19 @@ describe('Comparison functions', () => {
             expect(Eq(s2, s1)).toBe(false)
             expect(Eq(s1, s1)).toBe(true)
         })
-    })
 
+        test('treats nulls as empty string in string comparisons', () => {
+            expect(Gt(null, '2')).toBe(false)
+            expect(Gt('2', null)).toBe(true)
+            expect(Gte('', null)).toBe(true)
+            expect(Lt('', null)).toBe(false)
+            expect(Lt(null, '')).toBe(false)
+            expect(Lt(null, 'x')).toBe(true)
+            expect(Lte(null, '')).toBe(true)
+            expect(Eq(null, 'x')).toBe(false)
+            expect(Eq(null, '')).toBe(true)
+        })
+    })
 })
 
 describe('Sum', () => {
@@ -591,9 +642,9 @@ describe('CommonItems', () => {
     test('empty list if no common items', () => expect(CommonItems([1, 2, 3, 4], [5, 6, 7])).toStrictEqual([]))
     test('list in same order as first if some common items', () => expect(CommonItems([1, 2, 3, 4], [4, 2, 8, 10])).toStrictEqual([2, 4]))
     test('first list if has same items', () => expect(CommonItems([1, 2, 3, 4], [4, 3, 2, 1])).toStrictEqual([1, 2, 3, 4]))
-    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toBe([]))
-    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toBe([]))
-    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toBe([]))
+    test('empty list if first list is null', () => expect(CommonItems(null, [1, 2])).toStrictEqual([]))
+    test('empty list if second list is null', () => expect(CommonItems([1, 2, 3, 4], null)).toStrictEqual([]))
+    test('empty list if both lists are null', () => expect(CommonItems(null, null)).toStrictEqual([]))
     test('gets object values', () => expect(CommonItems(valueObj([1, 2]), valueObj([2]))).toStrictEqual([2]))
 })
 
