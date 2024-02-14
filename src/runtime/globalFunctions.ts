@@ -251,7 +251,7 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
-    Range(startVal: Value<number>, endVal: Value<number>, stepVal: Value<number | null> = 1): number[] {
+    Range(startVal: Value<number | null>, endVal: Value<number | null>, stepVal: Value<number | null> = 1): number[] {
         if (startVal === undefined || endVal === undefined) {
             throw Error('Range() needs start and end, and optional step')
         }
