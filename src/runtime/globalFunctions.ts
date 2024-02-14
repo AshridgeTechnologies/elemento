@@ -270,7 +270,7 @@ export const globalFunctions = {
         return result
     },
 
-    Select(list: Value<any[]>, condition: (item: any) => boolean) {
+    Select(list: Value<any[]> | null, condition: (item: any) => boolean) {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
@@ -283,26 +283,25 @@ export const globalFunctions = {
         return condition ? list.filter(condition!).length : list.length
     },
 
-    ForEach(list: Value<any[]>, transform: (item: any) => any) {
-        const listVal = valueOf(list) ?? []
+    ForEach(listVal: Value<any[]> | null, transform: (item: any) => any) {
+        const list = valueOf(listVal) ?? []
         if (transform === undefined) throw new Error('Wrong number of arguments to ForEach. Expected list, expression.')
-        return listVal.map(transform)
+        return list.map(transform)
     },
 
-    First(list: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
-        const listVal = valueOf(list) ?? []
-        if (list === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
-        return listVal.filter(condition)[0] ?? null
+    First(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
+        if (listVal === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
+        const list = valueOf(listVal) ?? []
+        return list.filter(condition)[0] ?? null
     },
 
     Last(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
-        if (arguments.length < 1) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
-        const list = valueOf(listVal)
-        if (isNil(list)) return null
-        return last(list.filter(condition))
+        if (listVal === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
+        const list = valueOf(listVal) ?? []
+        return last(list.filter(condition)) ?? null
     },
 
-    Sort(list: Value<any[]>, sortKeyFn: (item: any) => any | any[]): any[] {
+    Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[]): any[] {
         const compareItems = (a: any, b: any): -1 | 0 | 1 => {
             const aa = sortKeyFn(a), bb = sortKeyFn(b)
             return compareValues(aa, bb)
@@ -332,24 +331,17 @@ export const globalFunctions = {
             return 0
         }
 
-        const listVal = valueOf(list)
-        if (isNil(listVal)) {
-            return listVal
-        }
-        return sort(compareItems, listVal)
+        const list = valueOf(listVal) ?? []
+        return sort(compareItems, list)
     },
 
-
-
     Reverse(listVal: Value<any[]> | null) {
-        const list = valueOf(listVal)
-        if (isNil(list)) return []
+        const list = valueOf(listVal) ?? []
         return reverse(list)
     },
 
     CommonItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
-        const [list1, list2] = valuesOf(list1Val, list2Val)
-        if (isNil(list1) || isNil(list2) ) return []
+        const list1 = valueOf(list1Val) ?? [], list2 = valueOf(list2Val) ?? []
         return list1.filter( (x:any) => list2.includes(x))
     },
 
@@ -367,6 +359,10 @@ export const globalFunctions = {
         return new Date()
     },
 
+    Today(date = new Date()) {
+        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
+    },
+
     DateVal(arg1?: string | number | null, arg2?: string | number, arg3?: number) {
         if (!arg1) return null
 
@@ -381,10 +377,6 @@ export const globalFunctions = {
             if (isValid(isoDate)) return isoDate
         }
         return new Date(arg1)
-    },
-
-    Today(date = new Date()) {
-        return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() ))
     },
 
     TimeBetween(date1Val: Value<Date>, date2Val: Value<Date>, unitVal: Value<TimeUnit>) {
@@ -436,18 +428,18 @@ export const globalFunctions = {
     },
 
     RandomFrom(firstArg: Value<any>, ...furtherArgs: Value<any>[]): any {
-        const list = furtherArgs.length === 0 ? valueOf(firstArg) : valuesOf(firstArg, ...furtherArgs)
+        const list = furtherArgs.length === 0 ? valueOf(firstArg) ?? [] : valuesOf(firstArg, ...furtherArgs)
         const randomIndex = Math.floor(list.length * Math.random())
-        return list[randomIndex]
+        return list[randomIndex] ?? null
     },
 
-    RandomListFrom(listVal: Value<any[]>, itemCountVal: Value<number>): any[] {
-        const [list, itemCount] = valuesOf(listVal, itemCountVal)
+    RandomListFrom(listVal: Value<any[]> | null, itemCountVal: Value<number> | null): any[] {
+        const list = valueOf(listVal) ?? [], itemCount = valueOf(itemCountVal) ?? 0
         return shuffle(list).slice(0, itemCount)
     },
 
-    Shuffle(listVal: Value<any[]>): any[] {
-        const list = valueOf(listVal)
+    Shuffle(listVal: Value<any[]> | null): any[] {
+        const list = valueOf(listVal) ?? []
         return shuffle(list)
     },
 
@@ -458,7 +450,9 @@ export const globalFunctions = {
         }
     },
 
-    CsvToRecords(csvText: string, columnNames?: string[]) {
+    CsvToRecords(csvText: string | null, columnNames?: string[]) {
+        if (isNil(csvText)) return []
+
         const transform = (fieldRaw: string) => {
             const field = fieldRaw.trim()
             if (field === '') return undefined

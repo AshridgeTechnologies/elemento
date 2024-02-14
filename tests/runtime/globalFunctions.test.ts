@@ -548,6 +548,7 @@ describe('Select', () => {
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
+    test('Null list input gives empty list', ()=> expect(Select(null, (it: any) => it <= 0)).toStrictEqual([]))
 })
 
 describe('Count', () => {
@@ -568,6 +569,7 @@ describe('ForEach', () => {
     test('Gets value of object for the list', ()=> expect(ForEach(valueObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(ForEach(pendingValue, (it: any) => it + 10)).toStrictEqual([]))
+    test('Null value gives empty list', ()=> expect(ForEach(null, (it: any) => it + 10)).toStrictEqual([]))
 })
 
 describe('First', () => {
@@ -660,9 +662,9 @@ describe('Sort', () => {
         expect(Sort(valueObj(objects), (item: any) => item.a)).toStrictEqual([obj2, obj3, obj1])
     })
 
-    test('returns undefined or null list as is', () => {
-        expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toBe(undefined)
-        expect(Sort(null as unknown as any[], (item: any) => item.a)).toBe(null)
+    test('returns undefined or null list as an empty list', () => {
+        expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toStrictEqual([])
+        expect(Sort(null as unknown as any[], (item: any) => item.a)).toStrictEqual([])
 
     })
 })
@@ -672,7 +674,6 @@ describe('Reverse', () => {
     test('list with items results in an reversed list', () => expect(Reverse([60, 40, 30, 70])).toStrictEqual([70, 30, 40, 60]))
     test('null results in an empty list', () => expect(Reverse(null)).toStrictEqual([]))
     test('gets object values', () => expect(Reverse(valueObj([1, 2]))).toStrictEqual([2, 1]))
-
 })
 
 describe('CommonItems', () => {
@@ -990,20 +991,22 @@ describe('RandomFrom', () => {
         // @ts-ignore
         testRandomInRange(theList, () => RandomFrom(...theList))
     })
+    test('returns null if the list is empty', () => expect(RandomFrom([])).toBe(null))
+    test('returns null if the list is null', () => expect(RandomFrom(null)).toBe(null))
     test('gets values of arguments', () => {
         testRandomInRange([1,2], ()=> RandomFrom(valueObj(1), valueObj(2)))
         testRandomInRange([1,2], ()=> RandomFrom(valueObj([1,2])))
     })
 })
 
-describe('RandomFromList', () => {
+describe('RandomListFrom', () => {
 
     function testRandomsInRange(list: Value<any[]>, itemCount: Value<number>) {
         const listVal = valueOf(list), itemCountVal = valueOf(itemCount)
         const valuesGenerated = new Set()
         for (let i = 0; i < 1000; i++) {
             const randomVals = RandomListFrom(list, itemCount)
-            expect(randomVals.length).toBe(itemCountVal)
+            expect(randomVals.length).toBe(Math.min(itemCountVal, listVal.length))
             randomVals.forEach( (val: any) => {
                 valuesGenerated.add(val)
                 expect(listVal.indexOf(val)).toBeGreaterThanOrEqual(0)
@@ -1016,12 +1019,12 @@ describe('RandomFromList', () => {
     }
 
     const theList = [1, 2, 3, 4, 5]
-    test('picks a list of items from a list', () => {
-        testRandomsInRange(theList, 3)
-    })
-    test('gets values of arguments', () => {
-        testRandomsInRange(valueObj([1, 2, 3]), valueObj(2))
-    })
+    test('picks a list of items from a list', () => testRandomsInRange(theList, 3))
+    test('picks a list of items from a list shorter than needed', () => testRandomsInRange(theList, 7))
+    test('picks an empty list from an empty list', ()=> expect(RandomListFrom([], 3)).toStrictEqual([]))
+    test('picks an empty list from a null list', () => expect(RandomListFrom(null, 3)).toStrictEqual([]))
+    test('picks an empty list with a null item count', () => expect(RandomListFrom(theList, null)).toStrictEqual([]))
+    test('gets values of arguments', () => testRandomsInRange(valueObj([1, 2, 3]), valueObj(2)))
 })
 
 describe('Shuffle', () => {
@@ -1033,12 +1036,10 @@ describe('Shuffle', () => {
     }
 
     const theList = [1, 2, 3, 4, 5]
-    test('picks a list of items from a list', () => {
-        testShuffleIsValid(theList)
-    })
-    test('gets values of arguments', () => {
-        testShuffleIsValid(valueObj([1, 2, 3]))
-    })
+    test('picks a list of items from a list', () => testShuffleIsValid(theList))
+    test('gets values of arguments', () => testShuffleIsValid(valueObj([1, 2, 3])))
+    test('picks an empty list from an empty list', ()=> expect(Shuffle([])).toStrictEqual([]))
+    test('picks an empty list from a null list', () => expect(Shuffle(null)).toStrictEqual([]))
 })
 
 describe('Check', () => {
@@ -1125,6 +1126,10 @@ describe('CsvToRecords', () => {
             {id: 'id3', Description: 'Widget 3 no tab in this line'},
         ])
 
+    })
+
+    test('empty list for a null csv string', () => {
+        expect(CsvToRecords(null, ['Id', 'Description'])).toStrictEqual([])
     })
 
 })

@@ -11,7 +11,7 @@ Aims
 Requirements
 ------------
 
-- All built-in functions tolerate nulls
+- ✅ All built-in functions tolerate nulls
 - All built-in functions validate arguments and warn - but not for pending
 - State object runtime errors are trapped and warn, with detail and position in expression
 - React component runtime errors trapped and warn
