@@ -1,4 +1,4 @@
-import {fromPairs, identity, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -17,7 +17,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {isArray, range} from 'radash'
+import {isArray} from 'radash'
 import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
@@ -171,10 +171,16 @@ export const globalFunctions = {
         return s.split(sep ?? '')
     },
 
-    Contains(sVal: Value<string | null>, searchVal: Value<string>, ignoreCase?: boolean) {
+    Contains(sVal: Value<string | null>, searchVal: Value<string | null>, ignoreCase?: boolean) {
         const s = valueOf(sVal) ?? ''
         const search = valueOf(searchVal) ?? ''
         return ignoreCase ? s.toLowerCase().includes(search.toLowerCase()) : s.includes(search)
+    },
+
+    Substitute(sVal: Value<string | null>, toReplaceVal: Value<string | null>, replaceWithVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? '', toReplace = valueOf(toReplaceVal) ?? '', replaceWith = valueOf(replaceWithVal) ?? ''
+        if (toReplace === '') return s
+        return s.replace(new RegExp(toReplace, 'g'), replaceWith)
     },
 
     And(...args: Value<any>[]) {
@@ -189,41 +195,35 @@ export const globalFunctions = {
         return !valueOf(arg)
     },
 
-    Substitute(s: Value<string>, toReplace: Value<string>, replaceWith: Value<string>) {
-        const sVal = valueOf(s), toReplaceVal = valueOf(toReplace), replaceWithVal = valueOf(replaceWith)
-        if (toReplaceVal === '') return sVal
-        return sVal.replace(new RegExp(toReplaceVal, 'g'), replaceWithVal)
-    },
-
-    Max(...args: DecimalVal[]) {
+    Max: function (...args: DecimalValOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Max. Expected at least 1 argument.')
-        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-            const [accVal, valVal] = valuesOf(acc, val)
-            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.max(accVal, valVal)
-            return Decimal(acc).gte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+            const acc = valueOf(accVal), val = valueOf(valVal) ?? 0
+            if (typeof acc === 'number' && typeof val === 'number') return Math.max(acc, val)
+            return Decimal(acc).gte(Decimal(val)) ? Decimal(acc) : Decimal(val)
         }
-        return <BigNumber>args.reduce(reducer, Number.MIN_VALUE)
+        return <BigNumber>args.reduce(reducer, -Number.MAX_VALUE)
     },
 
-    Min(...args: DecimalVal[]) {
+    Min(...args: DecimalValOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
-        const reducer = (acc: DecimalVal, val: DecimalVal): DecimalOrNumber => {
-            const [accVal, valVal] = valuesOf(acc, val)
-            if (typeof accVal === 'number' && typeof valVal === 'number') return Math.min(accVal, valVal)
-            return Decimal(acc).lte(Decimal(val)) ? Decimal(acc)  : Decimal(val)
+        const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
+            const acc = valueOf(accVal) , val = valueOf(valVal) ?? 0
+            if (typeof acc === 'number' && typeof val === 'number') return Math.min(acc, val)
+            return Decimal(accVal).lte(Decimal(valVal)) ? Decimal(accVal)  : Decimal(valVal)
         }
         return <BigNumber>args.reduce(reducer, Number.MAX_VALUE)    },
 
-    Round(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return round(valueOf(n), valueOf(decimalDigits))
+    Round(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return round(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
-    Ceiling(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return ceil(valueOf(n), valueOf(decimalDigits))
+    Ceiling(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return ceil(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
-    Floor(n: Value<number> = 0, decimalDigits: Value<number> = 0): number {
-        return floor(valueOf(n), valueOf(decimalDigits))
+    Floor(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
+        return floor(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
     Record(...args: Value<any>[]) {
@@ -251,21 +251,23 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
-    Range(startVal: Value<number>, endVal: Value<number>, stepVal?: Value<number>): number[] {
+    Range(startVal: Value<number>, endVal: Value<number>, stepVal: Value<number | null> = 1): number[] {
         if (startVal === undefined || endVal === undefined) {
             throw Error('Range() needs start and end, and optional step')
         }
 
-        const [start, end, step = 1] = valuesOf(startVal, endVal, stepVal)
-        if (step === 0) {
+        const start = valueOf(startVal) ?? 0, end = valueOf(endVal) ?? 0, step = valueOf(stepVal) ?? 0
+        if (isNil(step) || step === 0 ) {
             throw Error('Range: step cannot be zero')
         }
-        if (step > 0) {
-            return Array.from(range(start, end, identity, Math.abs(step))) as number[]
-        } else {
-            return (Array.from(range(end, start, identity, Math.abs(step))) as number[]).reverse()
-
+        const ascending = start < end
+        const stepDirection = ascending ? 1 : -1
+        const result: number[] = []
+        const isFinished = (i: number) => ascending ? i > end : i < end
+        for (let i = start; !isFinished(i); i += Math.abs(step) * stepDirection) {
+            result.push(i)
         }
+        return result
     },
 
     Select(list: Value<any[]>, condition: (item: any) => boolean) {
