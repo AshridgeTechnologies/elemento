@@ -6,12 +6,13 @@ import React from 'react'
 import {act, fireEvent, render, screen} from '@testing-library/react/pure'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
-import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector} from './Selectors'
-import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
+import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector, treeWrapperSelector} from './Selectors'
+import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemClassNames, treeItemLabels} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
 import lodash from 'lodash'; const {startCase} = lodash;
 import {actWait} from '../testutil/rtlHelpers'
 import {AppElementAction, ConfirmAction} from '../../src/editor/Types'
+import {zipToObject} from 'radash'
 
 let container: any, unmount: any
 
@@ -23,9 +24,11 @@ const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(contai
 const itemLabels = () => treeItemLabels(container)
 
 const itemIcons = () => {
-    const treeNodesShown = container.querySelectorAll(treeNodeSelector)
+    const treeNodesShown = container.querySelectorAll(treeWrapperSelector)
     return [...treeNodesShown.values()].map( (it: any) => it.querySelector('.material-icons').textContent )
 }
+
+const itemClassNames = () => treeItemClassNames(container)
 
 const selectedItemLabel = () => {
     const treeNodesSelected = container.querySelectorAll('.rc-tree-list .rc-tree-treenode-selected .rc-tree-title')
@@ -43,11 +46,11 @@ const toolActionsAvailable = () => ['show', ...standardActionsAvailable()] as Ap
 
 const defaultFunctions = {onAction: noOp, insertMenuItemFn: noOp, onInsert: noOp, onMove: noOp, onShow: noOp, actionsAvailableFn: standardActionsAvailable}
 
-const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
-    new ModelTreeItem('app1', 'App One', 'App', [
-        new ModelTreeItem('page_1', 'Main Page', 'Page', [
+const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
+    new ModelTreeItem('app1', 'App One', 'App', false, [
+        new ModelTreeItem('page_1', 'Main Page', 'Page', false, [
             new ModelTreeItem('text1_1', 'First Text', 'Text'),
-            new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput'),
+            new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput', true),
             new ModelTreeItem('numberInput1_2', 'The Number Input', 'NumberInput'),
             new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput'),
             new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput'),
@@ -60,22 +63,37 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
             new ModelTreeItem('layout_1_1', 'A Layout', 'Layout'),
             new ModelTreeItem('function_1_1', 'A Function', 'Function'),
         ]),
-        new ModelTreeItem('page_2', 'Other Page', 'Page', [
+        new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
             new ModelTreeItem('text2_1', 'Some Text', 'Text'),
         ]),
         new ModelTreeItem('memoryDataStore_2', 'The Data Store', 'MemoryDataStore'),
         new ModelTreeItem('fileDataStore_2', 'The File Data Store', 'FileDataStore'),
         new ModelTreeItem('appBar1', 'The App Bar', 'AppBar')
     ]),
-    new ModelTreeItem('_FILES', 'Files', 'FileFolder',[
+    new ModelTreeItem('_FILES', 'Files', 'FileFolder', false, [
         new ModelTreeItem('file_1', 'Duck.jpg', 'File'),
         new ModelTreeItem('file_2', 'Rules.pdf', 'File'),
     ]),
-    new ModelTreeItem('_TOOLS', 'Tools', 'ToolFolder',[
+    new ModelTreeItem('_TOOLS', 'Tools', 'ToolFolder', false, [
         new ModelTreeItem('tool_1', 'Do Stuff', 'Tool'),
         new ModelTreeItem('tool2_2', 'Check Stuff', 'Tool'),
     ])
 ])
+
+const treeWithErrors = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
+    new ModelTreeItem('app1', 'App One', 'App', false, [
+        new ModelTreeItem('page1', 'Main Page', 'Page', false, [
+            new ModelTreeItem('text1', 'First Text', 'Text'),
+            new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', true, [
+                new ModelTreeItem('id1', 'An item', 'Text', true, [
+                    new ModelTreeItem('id2', 'A deeper item', 'Text')
+                ])
+            ]),
+        ]),
+        new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
+            new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+        ])
+    ])])
 
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
@@ -92,17 +110,17 @@ afterEach( async () => await act(() => {
 
 describe('ModelTreeItem', () => {
     let item_id2: ModelTreeItem, item_textInput1: ModelTreeItem
-    const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', [
-        new ModelTreeItem('app1', 'App One', 'App', [
-            new ModelTreeItem('page1','Main Page', 'Page', [
+    const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
+        new ModelTreeItem('app1', 'App One', 'App', false, [
+            new ModelTreeItem('page1', 'Main Page', 'Page', false, [
                 new ModelTreeItem('text1', 'First Text', 'Text'),
-                item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', [
-                    new ModelTreeItem('id1', 'An item', 'Text', [
+                item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', false, [
+                    new ModelTreeItem('id1', 'An item', 'Text', false, [
                         item_id2 = new ModelTreeItem('id2', 'A deeper item', 'Text')
                     ])
                 ]),
             ]),
-            new ModelTreeItem('page_2','Other Page', 'Page', [
+            new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
                 new ModelTreeItem('text2_1', 'Some Text', 'Text'),
             ])
         ])])
@@ -136,6 +154,22 @@ describe('ModelTreeItem', () => {
         expect(item_textInput1.containsKey('id2')).toBe(true)
     })
 
+    test('knows whether it or children have errors', () => {
+        const errorsForItem = (id: string) => {
+            const item = treeWithErrors.findItem(id) as ModelTreeItem
+            return [item.hasErrors, item.hasChildErrors(), item.className]
+        }
+        expect(errorsForItem('project_1')).toStrictEqual([false, true, 'rc-tree-child-error'])
+        expect(errorsForItem('app1')).toStrictEqual([false, true, 'rc-tree-child-error'])
+        expect(errorsForItem('page1')).toStrictEqual([false, true, 'rc-tree-child-error'])
+        expect(errorsForItem('text1')).toStrictEqual([false, false, ''])
+        expect(errorsForItem('textInput1')).toStrictEqual([true, true, 'rc-tree-error rc-tree-child-error'])
+        expect(errorsForItem('id1')).toStrictEqual([true, false, 'rc-tree-error'])
+        expect(errorsForItem('id2')).toStrictEqual([false, false, ''])
+        expect(errorsForItem('page_2')).toStrictEqual([false, false, ''])
+        expect(errorsForItem('text2_1')).toStrictEqual([false, false, ''])
+    })
+
     test('finds the item with a given key', () => {
         expect(deepTree.findItem('project_1')).toHaveProperty('title', 'Project One')
         expect(deepTree.findItem('app1')).toHaveProperty('title', 'App One')
@@ -154,6 +188,27 @@ test("renders tree with all types of model elements",  async () => {
     await clickExpandControl(2)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
     expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "check_box_outlined", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file", 'home_repair_service_outlined', 'build_outlined', 'build_outlined'])
+})
+
+test("renders tree with error classes",  async () => {
+    ({container, unmount} = render(<AppStructureTree treeData={treeWithErrors} {...defaultFunctions}/>))
+    await clickExpandControl(0, 1, 2, 4, 5)
+    const classNamesByLabel = zipToObject(itemLabels(), itemClassNames())
+    const hasChildError = (label: string) => classNamesByLabel[label].includes('rc-tree-child-error')
+    const hasOwnError = (label: string) => classNamesByLabel[label].includes('rc-tree-error')
+    const hasOwnErrorOnly = (label: string) => !hasChildError(label)  && hasOwnError(label)
+    const hasChildErrorOnly = (label: string) => hasChildError(label)  && !hasOwnError(label)
+    const hasOwnAndChildError = (label: string) => hasChildError(label)  && hasOwnError(label)
+    const hasNoError = (label: string) => !hasChildError(label)  && !hasOwnError(label)
+
+    expect(hasChildErrorOnly('Project One')).toBe(true)
+    expect(hasChildErrorOnly('App One')).toBe(true)
+    expect(hasChildErrorOnly('Main Page')).toBe(true)
+    expect(hasOwnAndChildError('The Text Input')).toBe(true)
+    expect(hasOwnErrorOnly('An item')).toBe(true)
+    expect(hasNoError('A deeper item')).toBe(true)
+    expect(hasNoError('Other Page')).toBe(true)
+
 })
 
 test("can expand and collapse branches and show",  async () => {

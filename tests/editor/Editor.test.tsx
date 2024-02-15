@@ -9,7 +9,7 @@ import lodash from 'lodash';
 import {
     ex,
     stopSuppressingRcTreeJSDomError,
-    suppressRcTreeJSDomError,
+    suppressRcTreeJSDomError, treeItemClassNames,
     treeItemLabels,
     wait
 } from '../testutil/testHelpers'
@@ -36,6 +36,7 @@ jest.mock('../../src/appsShared/gitHubAuthentication')
 let container: any = null, unmount: any
 
 const itemLabels = () => treeItemLabels(container)
+const itemClassNames = () => treeItemClassNames(container)
 const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(container)(...indexes)
 
 const project = projectFixture1()
@@ -155,6 +156,11 @@ test('shows errors for properties of main client app', async () => {
     await clickExpandControl(0, 1, 2)
 
     expect(itemLabels()).toStrictEqual(['Project Bad', 'App One', 'Main Page', 'First Text Input', 'Tools'])
+    const classNames = itemClassNames()
+    expect(classNames[0]).toContain('rc-tree-child-error')
+    expect(classNames[0]).not.toContain('rc-tree-error')
+    expect(classNames[3]).not.toContain('rc-tree-child-error')
+    expect(classNames[3]).toContain('rc-tree-error')
 
     fireEvent.click(screen.getByText('First Text Input'))
     const initialValueInput = screen.getByLabelText('Initial Value') as HTMLInputElement

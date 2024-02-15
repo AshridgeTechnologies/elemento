@@ -12,10 +12,11 @@ import './splitPane.css'
 import Project from '../model/Project'
 import {AllErrors} from '../generator/Types'
 
-const treeData = (project: Project): ModelTreeItem => {
+const treeData = (project: Project, errors: AllErrors): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
         const children = el.elements?.map(treeNodeFromElement)
-        return new ModelTreeItem(el.id, el.name, el.kind, children)
+        const hasErrors = !!errors[el.id]
+        return new ModelTreeItem(el.id, el.name, el.kind, hasErrors, children)
     }
     return treeNodeFromElement(project)
 }
@@ -62,7 +63,7 @@ export default function Editor({
     /* Note on position attributes: Scrollable elements have position = 'relative' so EditorController can calculate pointer position */
     return <Grid container columns={10} spacing={0} height='100%'>
                 <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll' position='relative'/* see comment above */>
-                    <AppStructureTree treeData={treeData(project)} onSelect={onSelectedItemsChange}
+                    <AppStructureTree treeData={treeData(project, errors)} onSelect={onSelectedItemsChange}
                                       selectedItemIds={selectedItemIds}
                                       onAction={onTreeAction} onInsert={onContextMenuInsert}
                                       insertMenuItemFn={insertMenuItems}

@@ -8189,7 +8189,7 @@ __metadata:
     querystring-es3: "npm:^0.2.1"
     radash: "npm:^11.0.0"
     ramda: "npm:^0.28.0"
-    rc-tree: "npm:^5.7.2"
+    rc-tree: "npm:^5.8.5"
     react: "npm:^18.2.0"
     react-async: "npm:^10.0.1"
     react-dom: "npm:^18.2.0"
@@ -15375,19 +15375,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-tree@npm:^5.7.2":
-  version: 5.7.2
-  resolution: "rc-tree@npm:5.7.2"
+"rc-tree@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "rc-tree@npm:5.8.5"
   dependencies:
     "@babel/runtime": "npm:^7.10.1"
     classnames: "npm:2.x"
     rc-motion: "npm:^2.0.1"
     rc-util: "npm:^5.16.1"
-    rc-virtual-list: "npm:^3.4.8"
+    rc-virtual-list: "npm:^3.5.1"
   peerDependencies:
     react: "*"
     react-dom: "*"
-  checksum: 1cce2ceb8420faf29202676567d0d55b6236db3059fc364cca6bf5b5a583b6cb2af264f32d619c3990328f329d738bc74b9ba569dae90aa7e50d9211f4bb5377
+  checksum: 335532c889edf5fe5c4a2c62b25a345f3442b667a4c0a278d6107d49b20cd17c39fdf18ea3db36c328ac8d765aa580c44ceb2b1efa54443d5ff154beec7780e6
   languageName: node
   linkType: hard
 
@@ -15405,20 +15405,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-util@npm:^5.15.0":
-  version: 5.24.5
-  resolution: "rc-util@npm:5.24.5"
-  dependencies:
-    "@babel/runtime": "npm:^7.18.3"
-    react-is: "npm:^16.12.0"
-    shallowequal: "npm:^1.1.0"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: de3c876c503f3f5c63133f93512e30d7b5b2731afda667e3f08c6d83447fca0446686d4c3df74e9b4001d4a990215410bbb1177116bd100ab42ada789f739f18
-  languageName: node
-  linkType: hard
-
 "rc-util@npm:^5.16.1":
   version: 5.17.0
   resolution: "rc-util@npm:5.17.0"
@@ -15433,18 +15419,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-virtual-list@npm:^3.4.8":
-  version: 3.4.11
-  resolution: "rc-virtual-list@npm:3.4.11"
+"rc-util@npm:^5.36.0":
+  version: 5.38.1
+  resolution: "rc-util@npm:5.38.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.18.3"
+    react-is: "npm:^18.2.0"
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 353f608aee4b4b0a4a89431e047d4ad0462c2da366629e110f328dda87d2cda6839a4cb211b14d58002e09f6b8c2c6bc01e902249ed3b0a3310077ea70f52d80
+  languageName: node
+  linkType: hard
+
+"rc-virtual-list@npm:^3.5.1":
+  version: 3.11.4
+  resolution: "rc-virtual-list@npm:3.11.4"
   dependencies:
     "@babel/runtime": "npm:^7.20.0"
     classnames: "npm:^2.2.6"
     rc-resize-observer: "npm:^1.0.0"
-    rc-util: "npm:^5.15.0"
+    rc-util: "npm:^5.36.0"
   peerDependencies:
-    react: "*"
-    react-dom: "*"
-  checksum: 7425880c24bfa9d2776f9cd6430bb4f9e02bdb67f31eb4d30dd43475fe5f36a3d8d5601c649581a31b8d9b2944e7913a63ac6aaa9cda5b71c68b905f310af883
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 60b4a578ca3ad6d8c10075e10107e9d04596f9cec48f54155c6fc56a0b51d75a176b1c8b3341951a8ead48226b23f83785435c7777d6fba60cedbe8377426161
   languageName: node
   linkType: hard
 

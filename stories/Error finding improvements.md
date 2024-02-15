@@ -12,10 +12,10 @@ Requirements
 ------------
 
 - ✅ All built-in functions tolerate nulls
+- ✅ Elements with errors are highlighted in nav tree
 - All built-in functions validate arguments and warn - but not for pending
 - State object runtime errors are trapped and warn, with detail and position in expression
 - React component runtime errors trapped and warn
-- Elements with errors are highlighted in nav tree
 - Built-in errors tool to show component and runtime errors
 - Table view with all parts of each error
 
@@ -37,4 +37,12 @@ Technical
 - Editor Controller can have subscription to new messages
 - Error Tool shows updating messages
 
+Nav tree highlights errors
+--------------------------
+
+- ✅ ModelTreeItem has a hasErrors property 
+- ✅ ModelTreeItem has a hasErrorsInChildren function
+- ✅ ModelTreeItem has a className property of rc-tree-error or rc-tree-child-error or both or empty, based on above
+- ✅ CSS rules defined in appStructureTree.css and imported
+- ✅ Pass errors into treeData fn in Editor, lookup for each element
 
