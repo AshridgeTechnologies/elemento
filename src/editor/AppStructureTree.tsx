@@ -1,7 +1,8 @@
-import Tree, {TreeNodeProps} from 'rc-tree'
+import Tree, {TreeNode, TreeNodeProps} from 'rc-tree'
 import React, {useState} from 'react'
 import {DataNode, EventDataNode, Key} from 'rc-tree/es/interface'
 import 'rc-tree/assets/index.less'
+import './appStructureTree.css'
 import {Icon, useTheme} from '@mui/material'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementOfType} from '../model/elements'
@@ -13,8 +14,10 @@ export class ModelTreeItem implements DataNode {
     constructor(public id: string,
                 public title: string,
                 public kind: ElementType,
+                public hasErrors: boolean = false,
                 public children?: ModelTreeItem[]) {}
     get key() { return this.id }
+    get className() { return `${this.hasErrors ? 'rc-tree-error' : ''} ${this.hasChildErrors() ? 'rc-tree-child-error' : ''}`.trim()}
 
     ancestorKeysOf = (id: Key | undefined): Key[] => {
         const hasChildWithId = this.children?.some( item => item.id === id)
@@ -37,14 +40,27 @@ export class ModelTreeItem implements DataNode {
         const childWithId = this.children?.map( child => child.findItem(id)).find( result => result !== null )
         return childWithId ?? null
     }
+
+    hasChildErrors(): boolean {
+        return (this.children ?? []).some( item => item.hasErrors || item.hasChildErrors())
+    }
 }
 
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
-    const kind = (props.data as ModelTreeItem)!.kind
+    // @ts-ignore
+    const kind = (props.data.data as ModelTreeItem).kind
     const sx = { fontSize: 16, color }
     const elementClass = elementOfType(kind)
     const {iconClass} = elementClass
     return <Icon sx={sx}>{iconClass}</Icon>
+}
+
+const asTreeNode = (modelItem: ModelTreeItem) => {
+    const {key, title, className, children} = modelItem
+    const hasChildren = children && children.length > 0
+    return <TreeNode key={key} title={title} isLeaf={!hasChildren} data={modelItem} className={className}>
+        {children?.map(asTreeNode)}
+    </TreeNode>
 }
 
 export default function AppStructureTree({treeData, onSelect, selectedItemIds = [], onAction, onInsert,
@@ -82,8 +98,9 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
 
     const onExpand = (newExpandedKeys: Key[], {expanded, node}: {expanded: boolean, node: DataNode}) => {
         setExpandedKeys(newExpandedKeys)
-        if (!expanded && (node as ModelTreeItem).containsKey(selectedItemIds[0])) {
-            onSelect?.([node.key.toString()])
+        const nodeData = (node as TreeNodeProps).data  // if supply child nodes Tree passes the node props
+        if (!expanded && (nodeData as ModelTreeItem).containsKey(selectedItemIds[0])) {
+            onSelect?.([nodeData!.key.toString()])
         }
     }
 
@@ -104,7 +121,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
     }
 
     return <>
-        <Tree treeData={[treeData] as DataNode[]}
+        <Tree //treeData={[treeData] as DataNode[]}
             draggable={canDrag}
             multiple
             icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
@@ -117,7 +134,9 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
             onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode<DataNode> }) => {
                 showContextMenu(event, node.key, node.title as string)
             }}
-            style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}/>
+            style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}>
+            {[asTreeNode(treeData)]}
+        </Tree>
         <EditMenu anchorEl={actionEl}
                   anchorOrigin={{vertical: 'top', horizontal: 'right',}}
                   transformOrigin={{vertical: 60, horizontal: 'left',}}

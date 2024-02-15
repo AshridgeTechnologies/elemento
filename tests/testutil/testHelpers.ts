@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer'
 import React, {ComponentState, createElement, FunctionComponent} from 'react'
-import {treeItemTitleSelector} from '../editor/Selectors'
+import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
 import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
@@ -66,6 +66,11 @@ export function trimText([s]: TemplateStringsArray) {
 export const treeItemLabels = (container: any) => {
     const treeNodesShown = container.querySelectorAll(treeItemTitleSelector)
     return [...treeNodesShown.values()].map((it: any) => it.textContent)
+}
+
+export const treeItemClassNames = (container: any) => {
+    const treeNodesShown = container.querySelectorAll(treeNodeSelector)
+    return [...treeNodesShown.values()].map( (it: any) => it.className )
 }
 
 export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5000): Promise<T> => {

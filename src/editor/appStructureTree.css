@@ -1,0 +1,10 @@
+.rc-tree-error .rc-tree-title {
+    text-decoration: red wavy underline;
+    text-decoration-skip-ink: none;
+
+}
+.rc-tree-child-error .rc-tree-title {
+    text-decoration: #c46ce7 wavy underline;
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: 1.2px;
+}
