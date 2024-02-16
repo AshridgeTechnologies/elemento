@@ -1,6 +1,11 @@
 General usability Part 3
 ========================
 
+- File open dialog clearly shows two lists of in browser or on disk
+- Recent files from disk
+- Prompt to keep or delete in browser copy when export
+- Property editor has option to show only props with values
+- Quick view of props with vvalues if hover over element in nav tree, or Ctrl-click, maybe
 - Ensure Types generated in order to allow references to each other - or highlight errors clearly
 - Highlight element in preview not working in form - link to data type?
 - ✅ Projects can be stored in OPFS file storage
@@ -36,6 +41,7 @@ General usability Part 3
 - Better required indication - https://www.accessibility-developer-guide.com/examples/forms/required/
 - Drag and drop elements inside another
 - Sliders for numeric props like font-size
+- Dual nav tree option to see two elements at once
 
 Help
 ----

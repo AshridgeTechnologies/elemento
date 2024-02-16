@@ -3,7 +3,7 @@ import {notEmpty, wait, waitUntil} from '../util/helpers'
 import {caller} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
-export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' | 'propertyTypeButton'
+export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' |  'propertiesPanel' | 'propertyTypeButton'
 
 export type Options = {
     showBeforeActions: boolean,
@@ -103,6 +103,9 @@ export const selectElements = (selector: SelectorType, container: HTMLElement = 
 
         case 'propertyField':
             return els(`.MuiFormControl-root>label`).filter( (el) => textMatch(el, text)).map( el => el.parentElement ) as HTMLElement[]
+
+        case 'propertiesPanel':
+            return els(`#propertiesPanel`)
 
         case 'propertyTypeButton':
             return els(`.MuiFormControl-root>label`)
@@ -238,10 +241,11 @@ export class ActionQueue {
     private queue = new PromiseQueue()
 
     queueAndWait(fn: ActionFn, delay: number) {
-        this.queue.add(fn)
+        let completionPromise = this.queue.add(fn)
         if (delay) {
-            this.queue.add(() => wait(delay))
+            completionPromise = this.queue.add(() => wait(delay))
         }
+        return completionPromise
     }
 }
 
