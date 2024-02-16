@@ -13,9 +13,11 @@ Requirements
 ------------
 
 From user test, changes to Elemento:
-- Tutorial page scrolls down every time you focus on another part of the page
+- ✅ Tutorial page scrolls down every time you focus on another part of the page
 - Not clear where had got to in the steps on each page
-- Show me for properties panel highlights the preview and all the different properties
+- ✅ Show me for properties panel  all the different properties
+- ✅ Avoid highlighting in preview when click in editor (different action queue) - maybe await steps?
+- Ensure all controller actions return promises and/or common action queue
 - Comic Sans doesn't work as Font Family
 - When changed the name of the Your Name element, things stopped working, no indication why
 - Unknown names error message not very intuitive

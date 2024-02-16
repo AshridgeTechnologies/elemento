@@ -71,7 +71,7 @@ export default function Editor({
                                       onMove={onMove}/>
                 </Grid>
                 <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}} position='relative'/* see comment above */>
-                    <Box id='propertyPanel' width='100%' paddingLeft={1}>
+                    <Box id='propertiesPanel' width='100%' paddingLeft={1}>
                         {propertyArea}
                     </Box>
                 </Grid>

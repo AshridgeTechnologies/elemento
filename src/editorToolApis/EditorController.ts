@@ -30,7 +30,7 @@ export default class EditorController {
 
     Show(selector?: SelectorType, text?: string) {
         console.log('Show', selector, text)
-        this.queueAction(null, null, async () => {
+        return this.queueAction(null, null, async () => {
             const elements = selector ? selectElements(selector, this.container, text) : []
             highlightElements(elements, this.container)
             if (elements.length === 1) {
@@ -46,7 +46,7 @@ export default class EditorController {
 
     Click(selector: SelectorType, text: string) {
         console.log('Click', selector, text)
-        this.queueAction(selector, text, () => {
+        return this.queueAction(selector, text, () => {
             const element = selectSingleElement(selector, this.editorElement, text)
             if (element) {
                 return userEvent.click(element)
@@ -125,6 +125,6 @@ export default class EditorController {
         if (showBeforeActions && selector && text) {
             this.Show(selector, text)
         }
-        this.actionQueue.queueAndWait(fn, delay)
+        return this.actionQueue.queueAndWait(fn, delay)
     }
 }
