@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Vertical layout with text and button shows only the top few pixels
 - Form can contain things that cannot be reset like Calculation, Button
 - Calculation: cannot refer directly to properties of value in expressions, so this doesn't work:
   - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))
@@ -67,8 +68,10 @@ Stories
 - Backup - and also use for reporting
 
 ### Priority for learning Elemento
+- Tutorial and general improvements
 - Server apps example
 - Data types guide
+- General showcase example - with all features
 - Other how-to guides
 - Look into using driver.js
 
@@ -96,10 +99,10 @@ Stories
 - Demo Experience Part 1
 
 ### Priority for usability
+- Debugger Part 1
 - Runtime error and notification handling
 - Function editing and validation
-- General usability Part 2
-- Debugger Part 1
+- General usability Part 3
 - Preview improvements - screen size, scrolling, etc
 - Search in project - consider Fuse.js
 
@@ -117,6 +120,7 @@ Stories
 - OPFS file store
 - SQLite WASM data store
 - SQL or IDB table creation and updating from Data Types
+- Import and export to/from data store - esp browser
 - Better queries
 - Database and data sync review - consider RxDB, CRDTs, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
@@ -146,6 +150,7 @@ Stories
 - Clean old files from generated code dir
 
 ### The Rest
+- Tools can be included or excluded from deployment
 - Server side HTML generation using same or similar elements as on client
 - Show element notes when hover in navigator
 - Table of Contents

@@ -17,6 +17,9 @@ From user test, changes to Elemento:
 - Not clear where had got to in the steps on each page
 - ✅ Show me for properties panel  all the different properties
 - ✅ Avoid highlighting in preview when click in editor (different action queue) - maybe await steps?
+- Vertical Progress bar with ticks starting near the top and continuing below the fold
+- Completeness tests
+- Tutorial step component?  Or general user component mechanism?
 - Ensure all controller actions return promises and/or common action queue
 - Comic Sans doesn't work as Font Family
 - When changed the name of the Your Name element, things stopped working, no indication why

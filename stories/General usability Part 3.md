@@ -1,6 +1,11 @@
 General usability Part 3
 ========================
 
+- Can show page from Navigator
+- Reset function acts on whole page or layout
+- Keep scroll position in preview when change something
+- Fixed top-level data types folder
+- Multiple elements with same name on a page are all highlighted when select one in navigator
 - File open dialog clearly shows two lists of in browser or on disk
 - Recent files from disk
 - Prompt to keep or delete in browser copy when export
