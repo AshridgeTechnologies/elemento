@@ -1,4 +1,5 @@
-import SendObservable from '../../src/runtime/SendObservable'
+import SendObservable from '../../src/util/SendObservable'
+import HotSendObservable from '../../src/util/HotSendObservable'
 
 test('can add and remove multiple subscribers', function () {
     const obs = new SendObservable()
@@ -26,8 +27,8 @@ test('can add and remove multiple subscribers', function () {
 
 })
 
-test('can map to another observable', function () {
-    const obs = new SendObservable<number>()
+test.each([SendObservable, HotSendObservable])('can map to another observable', function (observableClass) {
+    const obs = new observableClass<number>()
     const mappedObs = obs.map((x: number) => x * 2)
 
     const vals = [] as number[]
@@ -38,8 +39,8 @@ test('can map to another observable', function () {
     expect(vals).toStrictEqual([2, 4])
 })
 
-test('can filter to another observable', function () {
-    const obs = new SendObservable<number>()
+test.each([SendObservable, HotSendObservable])('can map to another observable', function (observableClass) {
+    const obs = new observableClass<number>()
     const mappedObs = obs.filter((x: number) => x > 5)
 
     const vals = [] as number[]
@@ -52,8 +53,8 @@ test('can filter to another observable', function () {
     expect(vals).toStrictEqual([7, 8])
 })
 
-test('can send error event', function () {
-    const obs = new SendObservable()
+test.each([SendObservable, HotSendObservable])('can map to another observable', function (observableClass) {
+    const obs = new observableClass<number>()
     let err = null
     obs.subscribe({
         next: () => {
@@ -68,8 +69,8 @@ test('can send error event', function () {
     expect(err).toBe(27)
 })
 
-test('can send error and complete events', function () {
-    const obs = new SendObservable()
+test.each([SendObservable, HotSendObservable])('can map to another observable', function (observableClass) {
+    const obs = new observableClass<number>()
     let completed = false
     obs.subscribe({
         next: () => {

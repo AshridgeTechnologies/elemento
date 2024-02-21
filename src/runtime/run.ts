@@ -32,7 +32,6 @@ const run = (urlPath: string,
     const resourceUrl = '/studio/preview/' + ASSET_DIR
     // @ts-ignore
     const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
-    console.log('Rendering', urlPath)
     root.render(appRunner)
 }
 

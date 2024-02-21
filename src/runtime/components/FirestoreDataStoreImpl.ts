@@ -28,7 +28,7 @@ import {
 import {onAuthChange, currentUser} from './authentication'
 
 import Observable from 'zen-observable'
-import SendObservable from '../SendObservable'
+import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'
 import {getAppAndSubscribeToChanges, FirebaseApp} from './firebaseApp'
 import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'

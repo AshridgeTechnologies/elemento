@@ -1,6 +1,6 @@
 import {notEmpty, wait, waitUntil} from '../util/helpers'
 //@ts-ignore
-import {caller} from './postmsgRpc/client'
+import {caller, observer} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
 export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' |  'propertiesPanel' | 'propertyTypeButton'
@@ -251,3 +251,4 @@ export class ActionQueue {
 
 
 export const callParent = (functionName: string) => caller(functionName, {postMessage: (msg: any, target: string) => window.parent.postMessage(msg, target)})
+export const observeParent = (functionName: string, transformFn?: (val: any) => any) => observer(functionName, {transformFn, postMessage: (msg: any, target: string) => window.parent.postMessage(msg, target)})

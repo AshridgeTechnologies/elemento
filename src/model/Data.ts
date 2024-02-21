@@ -23,4 +23,9 @@ export default class Data extends BaseElement<Properties> implements Element {
         ]
     }
 
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'value'
+        ])
+    }
 }

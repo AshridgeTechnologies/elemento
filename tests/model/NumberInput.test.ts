@@ -36,6 +36,10 @@ test('has correct property names', () => {
     expect(new NumberInput('t1', 'Number Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType'])
 })
 
+test('has correct state property names', () => {
+    expect(new NumberInput('t1', 'Number Input 1', {}).stateProperties).toStrictEqual(['value', 'originalValue', 'valid', 'errors', 'modified'])
+})
+
 test('creates an updated object with a property set to a new value', ()=> {
     const numberInput = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}})
     const updated = numberInput.set('t1', 'name', 'Number 1A')

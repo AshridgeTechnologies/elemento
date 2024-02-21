@@ -1,6 +1,9 @@
-import {callParent} from './controllerHelpers'
+import {callParent, observeParent} from './controllerHelpers'
+import {loadJSON} from '../model/loadJSON'
 
 export default class EditorControllerClient {
+    public SelectedItemId = observeParent('Editor.SelectedItemId')
+    public Project = observeParent('Editor.Project', loadJSON)
     public SetOptions = callParent('Editor.SetOptions')
     public Show = callParent('Editor.Show')
     public Click = callParent('Editor.Click')

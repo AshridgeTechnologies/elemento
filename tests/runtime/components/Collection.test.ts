@@ -11,7 +11,7 @@ import DataStore, {
     MultipleChanges,
     UpdateNotification, Update, Add, Remove, isPending, pending
 } from '../../../src/runtime/DataStore'
-import SendObservable from '../../../src/runtime/SendObservable'
+import SendObservable from '../../../src/util/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
 import {AppStateForObject} from '../../../src/runtime/appData'

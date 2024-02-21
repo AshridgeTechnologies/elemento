@@ -11,7 +11,7 @@ import DataStore, {
     UpdateType
 } from '../DataStore'
 import Observable from 'zen-observable'
-import SendObservable from '../SendObservable'
+import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'
 import Dexie, {Table} from 'dexie'
 import lodash from 'lodash'; const {matches} = lodash;

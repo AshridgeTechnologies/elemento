@@ -10,6 +10,7 @@ export default interface Element {
     type() : ComponentType
     get propertyDefs() : PropertyDef[]
     get actionDefs() : ActionDef[]
+    get stateProperties() : string[]
 
     getPropertyDef(propertyName: string): PropertyDef
     findElement(id: ElementId) : Element | null

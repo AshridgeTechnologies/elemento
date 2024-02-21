@@ -22,4 +22,10 @@ export default class SpeechInput extends BaseElement<Properties> implements Elem
             propDef('expectedPhrases', 'string list', {state: true}),
         ]
     }
+
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'value', 'recording', 'confidence'
+        ])
+    }
 }

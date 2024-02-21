@@ -8203,7 +8203,7 @@ __metadata:
     typescript: "npm:^4.9.3"
     validator: "npm:^13.9.0"
     ws: "npm:^8.12.1"
-    zen-observable: "npm:^0.9.0"
+    zen-observable: "npm:^0.10.0"
     zustand: "npm:^4.3.8"
   languageName: unknown
   linkType: soft
@@ -18326,10 +18326,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zen-observable@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "zen-observable@npm:0.9.0"
-  checksum: bced7c017bc2a6b44d2f4c8d33aedf8adfc3eb847bb3971a4918c98e70b216f59a0d92ef6fc98ed1841c02633d31ba756e82c53cba652705408e63d2d053632d
+"zen-observable@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "zen-observable@npm:0.10.0"
+  checksum: f97e97bfaa1dbe0033761d4860368120c1b69ee12dd1fa649c902f3f740c6cac3470a07e3dd00e2d41598dd9f17a97c80f69652b851ba1a73802f30748eb4260
   languageName: node
   linkType: hard
 

@@ -59,6 +59,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
@@ -70,6 +71,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[1].contents).toBe(`function Page2(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
@@ -113,6 +115,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     const Button1_action = React.useCallback(async () => {
         await Editor.Highlight('menuItem+File')
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
@@ -158,6 +161,7 @@ const {React} = Elemento
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
@@ -168,6 +172,7 @@ function Page1(props) {
 function Page2(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
@@ -245,6 +250,7 @@ const Types2 = (() => {
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Uses Data Types 2' + Types2.ItemAmount.max),
@@ -367,6 +373,7 @@ test('generates TextInput elements with initial value', ()=> {
     const t1 = Elemento.useObjectState(pathWith('t1'), new TextInput.State({value: 'Hi there!'}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new TextInput.State({value: 'Some' + ' things'}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new TextInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('t1'), label: 'Text Input One', readOnly: true, width: 150, multiline: true}),
@@ -389,6 +396,7 @@ test('generates Text elements with multiline content', ()=> {
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1'), fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}, \`Hi there!
@@ -411,6 +419,7 @@ test('generates Text elements with escaped quotes', ()=> {
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there \\'Doctor\\' How are you?'),
@@ -435,6 +444,7 @@ test('generates NumberInput elements with initial value', ()=> {
     const t1 = Elemento.useObjectState(pathWith('t1'), new NumberInput.State({value: 44}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new NumberInput.State({value: 22 + 33}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new NumberInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {path: pathWith('t1'), label: 'Number Input One'}),
@@ -462,6 +472,7 @@ test('generates DateInput elements with initial value', ()=> {
     const t1 = Elemento.useObjectState(pathWith('t1'), new DateInput.State({value: new Date('2022-04-05T00:00:00.000Z')}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new DateInput.State({value: DateVal('2022-02-03')}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new DateInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(DateInput, {path: pathWith('t1'), label: 'Date Input One'}),
@@ -484,6 +495,7 @@ test('generates SpeechInput elements with language and phrases', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, SpeechInput} = Elemento.components
     const t1 = Elemento.useObjectState(pathWith('t1'), new SpeechInput.State({language: 'fr', expectedPhrases: ['One', 'Two']}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(SpeechInput, {path: pathWith('t1')}),
@@ -508,6 +520,7 @@ test('generates SelectInput elements with initial value', ()=> {
     const Select1 = Elemento.useObjectState(pathWith('Select1'), new SelectInput.State({value: '44'}))
     const Select2 = Elemento.useObjectState(pathWith('Select2'), new SelectInput.State({value: 4+'4'}))
     const Select3 = Elemento.useObjectState(pathWith('Select3'), new SelectInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(SelectInput, {path: pathWith('Select1'), label: 'Select Input One', values: ['22', '33', '44']}),
@@ -534,6 +547,7 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     const t1 = Elemento.useObjectState(pathWith('t1'), new TrueFalseInput.State({value: true}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new TrueFalseInput.State({value: true || false}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new TrueFalseInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TrueFalseInput, {path: pathWith('t1'), label: 'True False Input One'}),
@@ -562,6 +576,7 @@ test('generates Button elements with properties including await in action', ()=>
         const message = 'You clicked me!'; await Log(message)
             Log('Didn\\'t you?')
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && 'filled', display: false, action: b1_action}),
@@ -581,6 +596,7 @@ test('generates User Logon elements with properties', ()=> {
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, UserLogon} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(UserLogon, {path: pathWith('b1')}),
@@ -607,6 +623,7 @@ test('generates Menu element with items', () => {
     const Item1_action = React.useCallback(() => {
         Log('I am Item One')
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Menu, {path: pathWith('Menu1'), label: 'Stuff to do', filled: true},
@@ -634,6 +651,7 @@ test('generates Data elements with initial value and no errors on object express
     const t1 = Elemento.useObjectState(pathWith('t1'), new Data.State({value: 44}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new Data.State({value: ({a:10, b: 'Bee'})}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Data.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('t1'), display: false}),
@@ -661,6 +679,7 @@ test('generates Calculation elements with initial value and no errors on object 
     const t1 = Elemento.useObjectState(pathWith('t1'), new Calculation.State({value: 44 + 7}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new Calculation.State({value: ({a:10, b: 'Bee'})}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Calculation.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Calculation, {path: pathWith('t1'), display: true}),
@@ -691,6 +710,7 @@ test('generates Collection elements with initial value and no errors on object e
     const t1 = Elemento.useObjectState(pathWith('t1'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const t2 = Elemento.useObjectState(pathWith('t2'), new Collection.State({value: ['red', 'yellow'], collectionName: 't2'}))
     const t3 = Elemento.useObjectState(pathWith('t3'), new Collection.State({collectionName: 't3'}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Collection, {path: pathWith('t1'), display: false}),
@@ -728,6 +748,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const DoItButton_action = React.useCallback(async () => {
         await Connector1.DoStuff('Number1')
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('DoItButton'), content: 'Go on, do it!', appearance: 'outline', action: DoItButton_action}),
@@ -958,6 +979,7 @@ function Page1(props) {
     const WidgetId = Elemento.useObjectState(pathWith('WidgetId'), new Data.State({value: WidgetList.selectedItem && WidgetList.selectedItem.id}))
     const TheWidget = Elemento.useObjectState(pathWith('TheWidget'), new Data.State({value: WidgetId.value && Get(Widgets, WidgetId.value)}))
     const Description = Elemento.useObjectState(pathWith('Description'), new TextInput.State({value: TheWidget.Description}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('Description'), label: 'Description'}),
@@ -993,6 +1015,7 @@ test('generates elements under App used in Page', ()=> {
     const {Get} = Elemento.appFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const WidgetValue = Elemento.useObjectState(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
@@ -1041,6 +1064,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     const {Get} = Elemento.appFunctions
     const Widgets = Elemento.useGetObjectState('app.Widgets')
     const WidgetValue = Elemento.useObjectState(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
@@ -1118,6 +1142,7 @@ function Page1(props) {
     const List1_selectAction = React.useCallback(($item) => {
         Log($item.id)
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
@@ -1158,6 +1183,7 @@ function Page2(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, ListElement} = Elemento.components
     const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item, selectable: false}),
@@ -1187,6 +1213,7 @@ test('generates Layout element with properties and children', ()=> {
     const WidgetCount = Elemento.useObjectState(pathWith('WidgetCount'), new NumberInput.State({value: 18}))
     const NameInput = Elemento.useObjectState(pathWith('NameInput'), new TextInput.State({}))
     const Colour = Elemento.useObjectState(pathWith('Colour'), new SelectInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
@@ -1245,6 +1272,7 @@ function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page} = Elemento.components
     const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27})}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'Details Form', horizontal: false, wrap: false}),
@@ -1317,6 +1345,7 @@ function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page} = Elemento.components
     const DetailsForm = Elemento.useObjectState(pathWith('DetailsForm'), new Page1_DetailsForm.State({value: ({TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}})}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Page1_DetailsForm, {path: pathWith('DetailsForm'), label: 'Details Form', horizontal: false, wrap: false}),
@@ -1389,6 +1418,7 @@ function Page1(props) {
         const \$key = \$event.key
         Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', async () => await DetailsForm.submit())
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
@@ -1428,6 +1458,7 @@ test('transforms expressions to functions where needed and does not fail where n
     const IfPlainValues = Elemento.useObjectState(pathWith('IfPlainValues'), new Data.State({value: If(true, 1, Date)}))
     const IfOneArg = Elemento.useObjectState(pathWith('IfOneArg'), new Data.State({value: If(false, () => Sum(10, 20))}))
     const IfTwoArgs = Elemento.useObjectState(pathWith('IfTwoArgs'), new Data.State({value: If(false, 2, () => Sum(10, 20))}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
@@ -1467,6 +1498,7 @@ test('generates local user defined functions in a page', () => {
         return Or(widget.height > heightAllowed, isShiny)
     }
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
@@ -1505,6 +1537,7 @@ return y
         return y
     }
     const DoNothing = () => {}
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
 
@@ -1546,6 +1579,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
         }
         return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
     }
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
 
@@ -1629,6 +1663,7 @@ function Page1(props) {
     }
     const TallWidgets = Elemento.useObjectState(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
     const WidgetList = Elemento.useObjectState(pathWith('WidgetList'), new ListElement.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
@@ -1666,6 +1701,7 @@ const Calcs = await import('../files/Functions.js').then(...importHandlers('*'))
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'This is ' + GetName('xyz') + DoStuff()),
@@ -1696,6 +1732,7 @@ test('generates error for syntax error in expression', ()=> {
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Unexpected character(s) (Line 1 Position 8)')),
@@ -1721,6 +1758,7 @@ test('generates error on correct line for syntax error in multiline content expr
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`23
@@ -1748,6 +1786,7 @@ test('global functions available in content expression', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Sum(2, 3, 4)),
@@ -1770,6 +1809,7 @@ test('built-in names available in content expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, undefined),
@@ -1801,6 +1841,7 @@ test('app state functions and Page names available in expression', ()=> {
     const b1_action = React.useCallback(async () => {
         await ShowPage(Page2)
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Change Page', appearance: 'outline', action: b1_action}),
@@ -1824,6 +1865,7 @@ test('page elements available in content expression', ()=> {
     const {Page, TextElement, TextInput} = Elemento.components
     const ForenameInput = Elemento.useObjectState(pathWith('ForenameInput'), new TextInput.State({}))
     const SurnameInput = Elemento.useObjectState(pathWith('SurnameInput'), new TextInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + ' ' + SurnameInput.value),
@@ -1846,6 +1888,7 @@ test('unknown global functions generate error', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')),
@@ -1872,6 +1915,7 @@ test('return statement in expression generates error', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`return 42\`, 'Error: Invalid expression')),
@@ -1899,6 +1943,7 @@ test('syntax error statement in initialValue generates error into state defaults
     const pathWith = name => props.path + '.' + name
     const {Page, TextInput} = Elemento.components
     const NameInput = Elemento.useObjectState(pathWith('NameInput'), new TextInput.State({value: Elemento.codeGenerationError(\`{a: 10,\`, 'Error: Unexpected character(s) (Line 1 Position 8)')}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
@@ -1968,6 +2013,7 @@ test('assignment at top level is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, Sum == 1),
@@ -1992,6 +2038,7 @@ test('assignment in function argument is treated as comparison', ()=> {
     const {Page, TextInput, TextElement} = Elemento.components
     const {If} = Elemento.globalFunctions
     const Input = Elemento.useObjectState(pathWith('Input'), new TextInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('Input'), label: 'Input'}),
@@ -2015,6 +2062,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, () => Sum(Log == 12, 3, 4))),
@@ -2044,6 +2092,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
             let b = If(Sum == 42, 10, 20)
             Sum == 1
     }, [])
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Do something', appearance: 'outline', action: b1_action}),
@@ -2065,6 +2114,7 @@ test('property shorthand to name of property reports error and generates an erro
     expect(content).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextElement, {path: pathWith('t1')}, ({a: 10, xxx: undefined})),

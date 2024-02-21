@@ -78,6 +78,10 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return []
     }
 
+    get stateProperties(): string[] {
+        return []
+    }
+
     getPropertyDef(propertyName: string): PropertyDef {
         const def = this.propertyDefs.find( pd => pd.name === propertyName)
         if (!def) {

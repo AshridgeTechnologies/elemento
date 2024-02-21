@@ -1,4 +1,5 @@
-import {callParent} from './controllerHelpers'
+import {callParent, observeParent} from './controllerHelpers'
+import {loadJSON} from '../model/loadJSON'
 
 export default class PreviewControllerClient {
     public SetOptions = callParent('Preview.SetOptions')
@@ -8,6 +9,7 @@ export default class PreviewControllerClient {
     public GetValue = callParent('Preview.GetValue')
     public GetState = callParent('Preview.GetState')
     public GetTextContent = callParent('Preview.GetTextContent')
+    public Debug = observeParent('Preview.Debug')
 }
 
 export const Preview = new PreviewControllerClient()

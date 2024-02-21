@@ -86,15 +86,6 @@ async function updateServerFile(serverAppName: string, path: string, contents: U
     }
 }
 
-const exposeEditorController = (gitHubUrl: string | null, projectHandler: ProjectHandler) => {
-    const container = editorElement()
-    if (container) {
-        const controller = new EditorController(container, gitHubUrl, projectHandler)
-        const closeFn = exposeFunctions('Editor', controller)
-        console.log('Editor controller initialised')
-        return closeFn
-    }
-}
 
 const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMessageData: (event: any) => object) => {
     const previewWindow = previewFrame?.contentWindow
@@ -108,6 +99,7 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
 }
 
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
+const inspectorImport = new ToolImport('inspectorTool', 'Inspector', {source: '/inspector'})
 const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
 function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "updating" | "complete" | Error, projectBuilder?: ProjectBuilder}) {
@@ -137,6 +129,7 @@ export default function EditorRunner() {
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const projectBuilderRef = useRef<ProjectBuilder>()
+    const editorControllerRef = useRef<EditorController>()
     const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
     const elementoUrl = () => window.location.origin
@@ -317,6 +310,17 @@ export default function EditorRunner() {
     }
     openInitialProjectIfSupplied()
 
+    const exposeEditorController = (gitHubUrl: string | null, projectHandler: ProjectHandler) => {
+        const container = editorElement()
+        if (container) {
+            const controller = new EditorController(container, gitHubUrl, projectHandler)
+            editorControllerRef.current = controller
+            const closeFn = exposeFunctions('Editor', controller)
+            console.log('Editor controller initialised')
+            return closeFn
+        }
+    }
+
     useEffect(() => {
         window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
@@ -438,6 +442,7 @@ export default function EditorRunner() {
 
     const onHelp = () => showTool(helpToolImport)
     const onFirebase = () => showTool(firebaseToolImport)
+    const onInspector = () => showTool(inspectorImport)
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
         editorManager={new EditorManager(openOrUpdateProjectFromStore)}
@@ -520,6 +525,7 @@ export default function EditorRunner() {
 
     const onSelectedItemsChange = (ids: string[]) => {
         setSelectedItemIds(ids)
+        editorControllerRef.current?.setSelectedItemId(ids[0])
         const pathIds = ids.map(id => getOpenProject().findElementPath(id)).filter(id => id !== null) as string[]
         selectItemsInPreview(pathIds)
     }
@@ -588,6 +594,7 @@ export default function EditorRunner() {
                 project.findElementsBy( el => el.kind === 'Tool' || el.kind === 'ToolImport')
                 .map( el => [el.name, ()=> showTool(el as Tool | ToolImport)]))
             const toolItems = {
+                'Inspector': onInspector,
                 'Firebase': onFirebase,
                 ...projectTools
             }

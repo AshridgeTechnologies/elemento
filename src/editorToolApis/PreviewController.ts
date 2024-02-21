@@ -11,6 +11,18 @@ import {
     setElementValue,
     showPointer
 } from './controllerHelpers'
+import BigNumber from 'bignumber.js'
+import {mapValues} from 'radash'
+import {Value} from '../runtime/runtimeFunctions'
+import {isObject, isPlainObject} from 'lodash'
+import eventObservable from '../util/eventObservable'
+
+export function valueOf<T>(x: Value<T>): T {
+    if (x instanceof Date) return x as T
+    if (x instanceof BigNumber) return x as T
+    if (isPlainObject(x)) return mapValues(x as object, valueOf) as T
+    return isObject(x) ? x.valueOf() : x
+}
 
 export default class PreviewController {
     private readonly actionQueue = new ActionQueue()
@@ -73,6 +85,17 @@ export default class PreviewController {
     GetTextContent(selector: string) { // @ts-ignore
         const element = selectSingleElementById(this.container, selector)
         return element?.textContent
+    }
+
+    Debug(debugExpr: string) {
+        console.log('Preview.Debug', debugExpr)
+        const windowAny = this.window as any
+        windowAny.elementoDebugExpr = debugExpr
+        this.window.dispatchEvent(new CustomEvent('debugExpr', {detail: debugExpr}))
+        return eventObservable(this.window, 'debugData', (evt: Event) => {
+            const {detail} = (evt as CustomEvent)
+            return valueOf(detail)
+        })
     }
 
     private queueAction(selector: string | null, fn: ActionFn) {

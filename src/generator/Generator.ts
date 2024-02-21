@@ -224,8 +224,6 @@ export default class Generator {
 
         const extraDeclarations = component instanceof ListItem ? '    const {$item} = props' : ''
 
-
-
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)
         const functionName = functionNamePrefix + (component instanceof ListItem ? component.list.codeName + 'Item' : component.codeName)
@@ -235,10 +233,11 @@ export default class Generator {
             backgroundFixedDeclarations, stateBlock, uiElementActionFunctions
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
+        const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))` : ''
         const notLoggedInPage = componentIsPage && component.notLoggedInPage ? `\n${functionName}.notLoggedInPage = '${component.notLoggedInPage.expr}'` : ''
 
         const componentFunction = `${exportClause}function ${functionName}(props) {
-${declarations}
+${declarations}${debugHook}
 
     return ${uiElementCode}
 }${notLoggedInPage}

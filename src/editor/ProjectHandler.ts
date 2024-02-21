@@ -1,62 +1,70 @@
 import Project, {editorEmptyProject} from '../model/Project'
 import Element from '../model/Element'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {AppElementActionName, ProjectSettings} from './Types'
+import {AppElementActionName} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {loadJSONFromString} from '../model/loadJSON'
 import {elementToJSON} from '../util/helpers'
-import {last, mergeDeepRight, mergeRight} from 'ramda'
+import {last, mergeDeepRight} from 'ramda'
 import UndoRedoStack from './UndoRedoStack'
 import SettingsHandler from './SettingsHandler'
+import HotSendObservable from '../util/HotSendObservable'
 
 export default class ProjectHandler {
-    private projectStack: UndoRedoStack<Project> | null
+    private changesObservable = new HotSendObservable<Project | null>()
+    private notifyChange = (project: Project | null) => this.changesObservable.send(project)
+    private projectStack = new UndoRedoStack<Project>(this.notifyChange)
     private _name: string | null = null
     private settingsHandler: SettingsHandler | null = null
 
+    constructor(initialProject: Project | null = null) {
+        if (initialProject) {
+            this.projectStack.set(initialProject)
+        }
+    }
+
     private getProject(): Project {
-        if (!this.projectStack) {
+        const project = this.projectStack.current()
+        if (!project) {
             throw new Error('Cannot do this action - no current project')
         }
-
-        return this.projectStack.current()
+        return project
     }
 
-    constructor(initialProject: Project | null = null) {
-        this.projectStack = initialProject && new UndoRedoStack<Project>(initialProject)
-    }
 
     get current() {
-        return this.projectStack?.current() ?? null
+        return this.projectStack.current() ?? null
     }
     get name() { return this._name }
 
+    get changes() { return this.changesObservable }
+
     setProject(project: Project, name: string, settingsHandler: SettingsHandler) {
-        this.projectStack = new UndoRedoStack<Project>(project)
+        this.projectStack.set(project)
         this._name = name
         this.settingsHandler = settingsHandler
     }
 
     setProperty(elementId: ElementId, propertyName: string, value: any) {
         const newProject = this.getProject().set(elementId, propertyName, value)
-        this.projectStack!.update(newProject)
+        this.projectStack.update(newProject)
     }
 
     insertNewElement(insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType, properties: object = {}): ElementId {
         const [newProject, newElement] = this.getProject().insertNew(insertPosition, targetElementId, elementType, properties)
-        this.projectStack!.update(newProject)
+        this.projectStack.update(newProject)
         return newElement.id
     }
 
     insertElement(insertPosition: InsertPosition, targetElementId: ElementId, element: Element | Element[]): ElementId {
         const [newProject, newElements] = this.getProject().insert(insertPosition, targetElementId, element)
-        this.projectStack!.update(newProject)
+        this.projectStack.update(newProject)
         return newElements[0]?.id
     }
 
     move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
         const newProject = this.getProject().move(insertPosition, targetElementId, movedElementIds)
-        this.projectStack!.update(newProject)
+        this.projectStack.update(newProject)
     }
 
     async elementAction(elementIds: ElementId[], action: AppElementActionName) {
@@ -118,7 +126,7 @@ export default class ProjectHandler {
         try {
             const newProject = await doAction()
             if (newProject) {
-                this.projectStack!.update(newProject)
+                this.projectStack.update(newProject)
             }
 
         } catch (e) {
@@ -128,15 +136,15 @@ export default class ProjectHandler {
     }
 
     newProject() {
-        this.projectStack = new UndoRedoStack(editorEmptyProject())
+        this.projectStack.set(editorEmptyProject())
     }
 
     undo() {
-        this.projectStack?.undo()
+        this.projectStack.undo()
     }
 
     redo() {
-        this.projectStack?.redo()
+        this.projectStack.redo()
     }
 
     getSettings(settingsName: string): object {

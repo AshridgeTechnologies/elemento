@@ -1,6 +1,7 @@
 General usability Part 3
 ========================
 
+- Prevent duplicate element names and using system object names
 - Can show page from Navigator
 - Reset function acts on whole page or layout
 - Keep scroll position in preview when change something
@@ -10,7 +11,7 @@ General usability Part 3
 - Recent files from disk
 - Prompt to keep or delete in browser copy when export
 - Property editor has option to show only props with values
-- Quick view of props with vvalues if hover over element in nav tree, or Ctrl-click, maybe
+- Quick view of props with values if hover over element in nav tree, or Ctrl-click, maybe
 - Ensure Types generated in order to allow references to each other - or highlight errors clearly
 - Highlight element in preview not working in form - link to data type?
 - ✅ Projects can be stored in OPFS file storage

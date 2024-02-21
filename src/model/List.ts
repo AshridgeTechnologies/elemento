@@ -34,6 +34,12 @@ export default class List extends BaseElement<Properties> implements Element {
         ]
     }
 
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'selectedItem'
+        ])
+    }
+
     canContain(elementType: ElementType) {
         return elementHasParentTypeOf(elementType, this)
     }

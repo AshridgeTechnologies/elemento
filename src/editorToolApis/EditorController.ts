@@ -13,16 +13,31 @@ import {
     showPointer
 } from './controllerHelpers'
 import ProjectHandler from '../editor/ProjectHandler'
-
+import {ElementId} from '../model/Types'
+import HotSendObservable from '../util/HotSendObservable'
 
 export default class EditorController {
     private actionQueue = new ActionQueue()
     private options: Options = {showBeforeActions: false, showWithPointer: false, delay: 1000}
+    private selectedItemIdObservable = new HotSendObservable()
 
     constructor(private readonly editorElement: HTMLElement, private readonly gitHubUrl: string | null, private readonly projectHandler: ProjectHandler) {
     }
 
     private get container(): HTMLElement { return this.editorElement }
+
+    setSelectedItemId(id: ElementId) {
+        console.log('setSelectedItemId', id)
+        this.selectedItemIdObservable.send(id)
+    }
+
+    SelectedItemId() {
+        return this.selectedItemIdObservable
+    }
+
+    Project() {
+        return this.projectHandler.changes
+    }
 
     SetOptions(options: Partial<Options>) {
         this.options = {...this.options, ...options}

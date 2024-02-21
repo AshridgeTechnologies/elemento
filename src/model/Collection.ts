@@ -29,5 +29,11 @@ export default class Collection extends BaseElement<Properties> implements Eleme
         ]
     }
 
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'value'
+        ])
+    }
+
 }
 

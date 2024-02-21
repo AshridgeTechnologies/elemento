@@ -2,7 +2,7 @@ import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
 import Button from '../../src/model/Button'
 import {AppElementActionName} from '../../src/editor/Types'
-import {resetSaveFileCallData} from '../testutil/testHelpers'
+import {resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
@@ -229,10 +229,29 @@ test('unknown action leaves the project unchanged', async () => {
     }
 })
 
-test('can start a new project', () => {
+test('can observe changes to project', async () => {
+    const nextCallback = jest.fn()
+    handler.changes.subscribe(nextCallback)
+    await wait()
+    expect(nextCallback).toHaveBeenCalledWith(handler.current)
+    handler.setProperty('text_3', 'content', 'New content')
+    expect(handler.current).not.toBe(project)
+    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    await wait()
+    expect(nextCallback).toHaveBeenLastCalledWith(handler.current)
+})
+
+test('can start a new project', async () => {
     const handler = new ProjectHandler(welcomeProject())
+    const nextCallback = jest.fn()
+    handler.changes.subscribe(nextCallback)
+    await wait()
+    expect(nextCallback).toHaveBeenLastCalledWith(handler.current)
+
     handler.newProject()
     expect(handler.current).toStrictEqual(editorEmptyProject())
+    await wait()
+    expect(nextCallback).toHaveBeenCalledWith(handler.current)
 })
 
 test('gets and updates settings', () => {

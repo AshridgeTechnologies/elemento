@@ -13,7 +13,7 @@ import DataStore, {
 } from '../DataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Observable from 'zen-observable'
-import SendObservable from '../SendObservable'
+import SendObservable from '../../util/SendObservable'
 import {isoDateReviver} from '../runtimeFunctions'
 
 declare global {

@@ -27,4 +27,10 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
             propDef('dataType', 'expr', {state: true}),
         ]
     }
+
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'value', 'originalValue', 'valid', 'errors', 'modified'
+        ])
+    }
 }

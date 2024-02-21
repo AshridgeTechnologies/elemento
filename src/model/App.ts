@@ -9,4 +9,11 @@ export default class App extends BaseApp {
     canContain(elementType: ElementType) {
         return this.appCanContain(elementType, parentTypeOf(elementType))
     }
+
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'currentPage'
+        ])
+    }
+
 }
