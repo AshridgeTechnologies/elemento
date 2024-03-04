@@ -85,7 +85,6 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Styling
 - Block element - or combine with Layout
 - Components
 - Horizontal list
@@ -334,6 +333,7 @@ Done
 - Improved runtime notifications
 - Tutorial and general improvements - Part 1
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
+- Styling
 
 Bugs fixed
 ----------

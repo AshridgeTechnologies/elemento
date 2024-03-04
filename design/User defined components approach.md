@@ -18,7 +18,8 @@ Needs
 - A way to organise components within the Project/App
 - Generate code for the component
 - Include the components in the generated code where they are used
-- Later: Components can have children added when used and insert them in the output
+- If possible: include the components in the normal Insert list 
+- Later: Components can have children as inputs and insert them in the output
 
 Issues
 ------
@@ -34,6 +35,7 @@ Forces
 - Could make the fixed ElementTypes unusable
 - Element types will have to be a flexible set determined at runtime
 - There will have to be model objects for the components themselves AND their instances - these are different things
+  - cf user defined Functions where the usage is in a formula
 - Component instances will have to behave like other model objects
 - Most things in BaseElement will just work for a component instance if can link to the Component definition
 - When loading from JSON, will have only the built-in classes available - unless do two passes
@@ -53,5 +55,13 @@ Possibilities
 - !!! Restrict to stateless UI components with no children to start with
 - Placeholder elements for children properties
 
+
+Spike 1
+-------
+
+- Model object for component definition
+- Model object for component instance
+- Generate component code
+- Generate instance code
 
 
