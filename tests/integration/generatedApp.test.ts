@@ -50,7 +50,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new Text('text1', 'Text 1', {content: ex`"Enter up to " + MyTypes.Text1.maxLength + " characters"`}),
-            new TextInput('textInput2', 'Text Input', {width: ex`MyTypes.Text1.maxLength`}),
+            new TextInput('textInput2', 'Text Input', {styles: {width: ex`MyTypes.Text1.maxLength`}}),
         ])])
 
     const textType1 = new TextType('tt1', 'Text 1', {description: 'The text', maxLength: 20}, )

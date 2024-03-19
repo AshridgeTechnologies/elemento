@@ -160,6 +160,6 @@ test('has correct property defs', () => {
     const {propertyDefs} = form
     expect(propertyDefs.map( ({name}) => name ))
         .toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'horizontal', 'wrap', 'keyAction', 'submitAction', 'styles'])
-    const initialValueDef = form.getPropertyDef('initialValue')
+    const initialValueDef = form.propertyDefs.find( pd => pd.name === 'initialValue')
     expect(initialValueDef?.type).toBe('expr')
 })

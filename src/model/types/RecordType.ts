@@ -8,8 +8,8 @@ type Properties = BaseTypeProperties & {
 
 export default class RecordType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'RecordType'
-    static get iconClass() { return 'wysiwyg_outlined' }
+    readonly kind = 'RecordType'
+    get iconClass() { return 'wysiwyg_outlined' }
 
 
     canContain(elementType: ElementType) {

@@ -8,8 +8,8 @@ type Properties = BaseTypeProperties & {
 
 export default class ListType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'ListType'
-    static get iconClass() { return 'list_outlined' }
+    readonly kind = 'ListType'
+    get iconClass() { return 'list_outlined' }
 
     get elementType() {
         const dataTypeElements = this.elementArray().filter( el => (el.constructor as any).isDataType?.())

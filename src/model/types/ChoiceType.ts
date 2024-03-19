@@ -9,8 +9,8 @@ type Properties = BaseTypeProperties & {
 
 export default class ChoiceType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'ChoiceType'
-    static get iconClass() { return 'menu_open_outlined' }
+    readonly kind = 'ChoiceType'
+    get iconClass() { return 'menu_open_outlined' }
 
     get values() {return this.properties.values || []}
     get valueNames() {return this.properties.valueNames || []}

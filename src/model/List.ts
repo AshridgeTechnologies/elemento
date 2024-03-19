@@ -1,5 +1,5 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, PropertyValueType, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
@@ -12,8 +12,8 @@ type Properties = Partial<Readonly<{
 
 export default class List extends BaseElement<Properties> implements Element {
 
-    static kind = 'List'
-    static get iconClass() { return 'view_list' }
+    readonly kind = 'List'
+    get iconClass() { return 'view_list' }
     type(): ComponentType { return 'statefulUI' }
 
     get items() { return this.properties.items }
@@ -29,8 +29,7 @@ export default class List extends BaseElement<Properties> implements Element {
             propDef('selectedItem', 'expr', {state: true}),
             propDef('selectable', 'boolean'),
             propDef('selectAction', eventAction('$item')),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles'),
+            ...visualPropertyDefs(),
         ]
     }
 

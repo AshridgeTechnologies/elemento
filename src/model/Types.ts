@@ -41,6 +41,8 @@ export type DataTypeElementType =
     'TrueFalseType' |
     'Rule'
 
+export type UserDefinedType = string
+
 export type ElementType =
     'Project' |
     'App' |
@@ -69,6 +71,7 @@ export type ElementType =
     'MemoryDataStore' |
     'Function' |
     'FunctionImport' |
+    'Component' |
     'Collection' |
     'Layout' |
     'FirestoreDataStore' |
@@ -77,8 +80,10 @@ export type ElementType =
     'File' |
     'FileFolder' |
     'ToolFolder' |
+    'ComponentFolder' |
     'ToolImport' |
-    DataTypeElementType
+    DataTypeElementType |
+    UserDefinedType
 
 export type ParentType = ElementType | ElementType[] | 'any' | null
 

@@ -7,8 +7,8 @@ type Properties = {
 
 export default class UserLogon extends BaseElement<Properties> implements Element {
 
-    static kind = 'UserLogon'
-    static get iconClass() { return 'account_circle' }
+    readonly kind = 'UserLogon'
+    get iconClass() { return 'account_circle' }
     type(): ComponentType { return 'statelessUI' }
 
     get propertyDefs(): PropertyDef[] {

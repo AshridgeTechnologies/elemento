@@ -18,6 +18,7 @@ export class ListItem {
 const runtimeNames = {
     Text: 'TextElement',
     List: 'ListElement',
+    Component: 'ComponentElement',
 }
 export const runtimeElementName = (element: Element) => runtimeElementTypeName(element.kind)
 export const runtimeElementTypeName = (elementType: ElementType) => runtimeNames[elementType as keyof typeof runtimeNames] ?? elementType

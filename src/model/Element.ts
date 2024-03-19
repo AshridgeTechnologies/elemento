@@ -1,7 +1,8 @@
-import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef} from './Types'
+import {CombinedPropertyValue, ComponentType, ElementId, ElementType, InsertPosition, PropertyDef} from './Types'
 
 export default interface Element {
     kind: ElementType
+    iconClass: string
     id: ElementId
     name: string
     notes: string | undefined
@@ -11,7 +12,7 @@ export default interface Element {
     get propertyDefs() : PropertyDef[]
     get stateProperties() : string[]
 
-    getPropertyDef(propertyName: string): PropertyDef
+    propertyValue(name: string): CombinedPropertyValue
     findElement(id: ElementId) : Element | null
     findParent(id: ElementId) : Element | null
     findElementPath(id: ElementId) : string | null

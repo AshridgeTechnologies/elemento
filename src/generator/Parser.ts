@@ -19,10 +19,10 @@ import Project from '../model/Project'
 import {allElements, valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
-import {elementTypes} from '../model/elements'
+import {elementTypeNames, elementTypes} from '../model/elements'
 import Form from '../model/Form'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
-import {isPlainObject} from 'lodash'
+import ComponentDef from '../model/ComponentDef'
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -30,17 +30,18 @@ export type PropertyError = string | ElementErrors | undefined
 
 const appFunctions = appFunctionsNames()
 const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
-const runtimeElementTypes = () => Object.keys(elementTypes()).filter(key => key !== 'Function' && key !== 'FunctionImport').map( key => runtimeElementTypeName(key as ElementType))
+const runtimeElementTypes = () => elementTypeNames().filter(key => key !== 'Function' && key !== 'FunctionImport').map( key => runtimeElementTypeName(key as ElementType))
 
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctions.includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponent = (name: string) => runtimeElementTypes().includes(name)
-const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form'].includes(el.kind)
+const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math'].includes(name)
 const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 const isFormVar = (name: string) => name === '$form'
+const isPropsVar = (name: string) => name === 'props'
 
 const addAllTo = (to: IdentifierCollector, from: Iterable<string>): void => {
     for( const item of from ) {
@@ -64,7 +65,7 @@ export default class Parser {
     allErrors() { return this.errors }
 
     componentIdentifiers(elementId: ElementId): string[] {
-        return this.identifiersForComponent[elementId]
+        return this.identifiersForComponent[elementId] || []
     }
 
     appStateFunctionIdentifiers(elementId: ElementId) {
@@ -128,6 +129,7 @@ export default class Parser {
     parseComponent(component: Element | ListItem, containingComponent?: Page) {
         const identifierSet = new Set<string>()
         const componentIsForm = component instanceof Form
+        const componentIsCompDef = component instanceof ComponentDef
         const topLevelFunctions = new Set<string>()
         const allComponentElements = allElements(component, true)
         const allContainerElements = containingComponent ? allElements(containingComponent, true) : []
@@ -144,6 +146,7 @@ export default class Parser {
             || isComponentElement(name)
             || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
             || (componentIsForm && isFormVar(name))
+            || (componentIsCompDef && isPropsVar(name))
             || isServerApp(name)
             || isAppElement(name)
             || isContainerElement(name)
@@ -185,7 +188,7 @@ export default class Parser {
             const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
             const isJavaScript = (element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).javascript) ?? false
 
-            const propertyValue = element[def.name as keyof Element] as PropertyValue | undefined
+            const propertyValue = element.propertyValue(def.name) as PropertyValue | undefined
             parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnownOrArgument, exprType, onError, isJavaScript)
             this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(propertyIdentifiers.values())
             return propertyIdentifiers
@@ -193,7 +196,7 @@ export default class Parser {
 
         const parseStylesProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
             const overallPropertyIdentifiers = new Set<ElementId>()
-            const stylesPropertyValue = element[def.name as keyof Element] as MultiplePropertyValue | undefined
+            const stylesPropertyValue = element.propertyValue(def.name) as MultiplePropertyValue | undefined
             if (stylesPropertyValue) {
                 const errors: ElementErrors = {}
                 Object.entries(stylesPropertyValue).forEach( ([name, propertyValue]) => {
@@ -225,7 +228,7 @@ export default class Parser {
                 }
 
                 default: {
-                    element.propertyDefs.filter(({state}) => state).forEach(def => {
+                    this.project.propertyDefsOf(element).filter(({state}) => state).forEach(def => {
                         const propertyIdentifiers = parseProperty(element, def)
                         addAllTo(elementIdentifiers, propertyIdentifiers)
                     })
@@ -237,7 +240,7 @@ export default class Parser {
         }
 
         const parseNonStateProperties = (element: Element) => {
-            element.propertyDefs.filter( ({state}) => !state).forEach(def => {
+            this.project.propertyDefsOf(element).filter( ({state}) => !state).forEach(def => {
                 const propertyIdentifiers = def.type === 'styles' ? parseStylesProperty(element, def) : parseProperty(element, def)
                 addAllTo(identifiers, propertyIdentifiers)
             })
@@ -258,6 +261,8 @@ export default class Parser {
         if (element.kind === 'Page') {
             this.parseComponent(element, element as Page)
         } else if (element.kind === 'Form') {
+            this.parseComponent(element)
+        } else if (element.kind === 'Component') {
             this.parseComponent(element)
         } else if (element.kind === 'List') {
             this.parseComponent(new ListItem(element as List), containingComponent)

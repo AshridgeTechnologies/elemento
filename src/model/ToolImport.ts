@@ -9,8 +9,8 @@ type Properties = Partial<Readonly<{
 }>>
 export default class ToolImport extends BaseElement<Properties> {
 
-    static kind = 'ToolImport'
-    static get iconClass() { return 'build_circle' }
+    readonly kind = 'ToolImport'
+    get iconClass() { return 'build_circle' }
     static get parentType(): ParentType { return 'ToolFolder' }
 
         type(): ComponentType { return 'utility' }

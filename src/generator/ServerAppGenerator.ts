@@ -46,7 +46,7 @@ export default class ServerAppGenerator {
     }
 
     private componentExpression(element: Element): string {
-        const propertyExprs = element.propertyDefs.filter( ({state}) => state ).map(def => {
+        const propertyExprs = this.project.propertyDefsOf(element).filter( ({state}) => state ).map(def => {
             const expr = this.getExpr(element, def.name)
             return [def.name, expr]
         }).filter(([, expr]) => !!expr)

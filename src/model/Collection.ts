@@ -11,8 +11,8 @@ type Properties = {
 
 export default class Collection extends BaseElement<Properties> implements Element {
 
-    static kind = 'Collection'
-    static get iconClass() { return 'auto_awesome_motion' }
+    readonly kind = 'Collection'
+    get iconClass() { return 'auto_awesome_motion' }
     type(): ComponentType { return 'statefulUI' }
 
     get initialValue() {return this.properties.initialValue}

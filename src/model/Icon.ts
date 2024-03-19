@@ -1,6 +1,6 @@
 import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType, Show, Styling} from './Types'
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 
 type Properties = Partial<Readonly<{
     iconName: PropertyValueType<string>,
@@ -10,8 +10,8 @@ type Properties = Partial<Readonly<{
 
 export default class Icon extends BaseElement<Properties> implements Element {
 
-    static kind = 'Icon'
-    static get iconClass() { return 'sentiment_satisfied' }
+    readonly kind = 'Icon'
+    get iconClass() { return 'sentiment_satisfied' }
     static get initialProperties() { return {iconName: 'sentiment_satisfied'} }
     type(): ComponentType { return 'statelessUI' }
 
@@ -26,8 +26,7 @@ export default class Icon extends BaseElement<Properties> implements Element {
             propDef('iconName', 'string'),
             propDef('label', 'string'),
             propDef('action', eventAction()),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles')
+            ...visualPropertyDefs()
         ]
     }
 }

@@ -1,5 +1,5 @@
 import Element from './Element'
-import {ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
+import {CombinedPropertyValue, ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
 import {uniq} from 'ramda'
 
@@ -22,12 +22,19 @@ export function propDef(name: string, type: PropertyType = 'string', options: Pr
     return {name, type, ...options}
 }
 
+export function visualPropertyDefs() {
+    return [
+        propDef('show', 'boolean'),
+        propDef('styles', 'styles')
+    ]
+}
 
 export default abstract class BaseElement<PropertiesType extends object> {
     readonly id: ElementId
     readonly name: string
     readonly notes: string | undefined
-    readonly kind: ElementType
+    abstract readonly kind: ElementType
+    abstract readonly iconClass: string
     readonly properties: PropertiesType
     readonly elements: ReadonlyArray<Element> | undefined
 
@@ -40,7 +47,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
         const thisClass = this.constructor as typeof BaseElement
         this.id = id
         this.name = name
-        this.kind = thisClass.kind as ElementType
         const {notes, ...ownProperties} = properties
         this.notes = notes
         this.properties = {...thisClass.initialProperties, ...ownProperties} as PropertiesType
@@ -48,8 +54,6 @@ export default abstract class BaseElement<PropertiesType extends object> {
     }
 
     abstract type(): ComponentType
-
-    static kind = 'unknown'
 
     static get initialProperties() {
         return {}
@@ -69,16 +73,12 @@ export default abstract class BaseElement<PropertiesType extends object> {
         return []
     }
 
-    getPropertyDef(propertyName: string): PropertyDef {
-        const def = this.propertyDefs.find( pd => pd.name === propertyName)
-        if (!def) {
-            throw new Error(`Element of kind ${this.kind} does not have a propertyDef ${propertyName}`)
-        }
-        return def
-    }
-
     elementArray(): ReadonlyArray<Element> {
         return this.elements || []
+    }
+
+    propertyValue(name: string): CombinedPropertyValue {
+        return this[name as keyof this] as CombinedPropertyValue
     }
 
     findElement(id: ElementId): Element | null {

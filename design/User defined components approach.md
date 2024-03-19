@@ -19,19 +19,21 @@ Needs
 - Generate code for the component
 - Include the components in the generated code where they are used
 - If possible: include the components in the normal Insert list 
-- Later: Components can have children as inputs and insert them in the output
+- Later: Components can have children as properties and insert them in the output
+- Prepare a way to import third-party React components and adapt them to Elemento
 
 Issues
 ------
 
 - How isolated and standalone are components - can they access an app for example?
+- How should user-defined components be represented in the in-memory model?
+- How should user-defined components be represented in the JSON project file?
 
 Forces
 ------
 
 - Using React, so aligning with React components will be easier
 - Pages already generate components - may be able to use the same approach
-- Could lead to a way to import third-party React components and adapt them to Elemento
 - Could make the fixed ElementTypes unusable
 - Element types will have to be a flexible set determined at runtime
 - There will have to be model objects for the components themselves AND their instances - these are different things
@@ -39,6 +41,8 @@ Forces
 - Component instances will have to behave like other model objects
 - Most things in BaseElement will just work for a component instance if can link to the Component definition
 - When loading from JSON, will have only the built-in classes available - unless do two passes
+- User-defined components can change while you are editing, built in do not, third party may change occasionally
+- Would be good to move towards separate definitions to make importing third-party components easier
 
 Possibilities
 -------------
@@ -54,6 +58,10 @@ Possibilities
 - Generate component class from ComponentType
 - !!! Restrict to stateless UI components with no children to start with
 - Placeholder elements for children properties
+- Have a single class for user-defined component instances that uses the definition
+- Generate classes that implement what necessary based on the component instances
+- Generate classes that just extend the user-defined component class and pass in its name/reference
+- Regard existing model classes as special cases, standard way is to have a definition and one element class
 
 
 Spike 1

@@ -7,8 +7,8 @@ import {parentTypeOf} from './elements'
 type ToolProperties = BaseAppProperties & {showWhenProjectOpened?: boolean}
 export default class Tool extends BaseApp<ToolProperties> {
 
-    static kind = 'Tool'
-    static get iconClass() { return 'build_outlined' }
+    readonly kind = 'Tool'
+    get iconClass() { return 'build_outlined' }
     static get parentType(): ParentType { return 'ToolFolder' }
 
     get showWhenProjectOpened() {

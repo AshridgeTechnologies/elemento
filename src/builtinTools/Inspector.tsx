@@ -54,8 +54,8 @@ export default function Inspector(props: any) {
         return null
     }
 
-
-    const {propertyDefs, stateProperties} = element
+    const propertyDefs = project!.propertyDefsOf(element)
+    const {stateProperties} = element
     const dynamicPropertyDefs = propertyDefs.filter( prop => !isEventAction(prop) && isExpr((element as any)[prop.name]))
     const propertyDefEntries = dynamicPropertyDefs.map( prop => {
         const propVal = (element as any)[prop.name]

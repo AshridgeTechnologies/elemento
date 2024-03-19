@@ -9,7 +9,7 @@ type Properties = {
 
 export default class FunctionImport extends BaseElement<Properties> implements Element{
 
-    static get iconClass() { return 'label_important' }
+    get iconClass() { return 'label_important' }
     kind: ElementType = 'FunctionImport'
     type(): ComponentType { return 'utility' }
 

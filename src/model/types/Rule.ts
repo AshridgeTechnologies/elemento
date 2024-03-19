@@ -15,8 +15,8 @@ type Properties = {
     readonly formula?: PropertyValueType<string>,
 }
 export default class Rule extends BaseElement<Properties> implements Element, RuleWithDescription {
-    static kind = 'Rule'
-    static get iconClass() { return 'rule_outlined' }
+    readonly kind = 'Rule'
+    get iconClass() { return 'rule_outlined' }
 
     static get parentType(): ParentType {
         return null

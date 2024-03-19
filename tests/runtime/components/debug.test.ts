@@ -16,7 +16,7 @@ function Page1(props: any) {
 
     // @ts-ignore
     return React.createElement(Page, {id: props.path as any},
-        React.createElement(TextElement, {path: pathWith('t1'), width: Sum(10, 20, 30) as number}),
+        React.createElement(TextElement, {path: pathWith('t1'), styles: {width: Sum(10, 20, 30) as number}}),
     )
 }
 

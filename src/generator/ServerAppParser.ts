@@ -11,8 +11,8 @@ import {valueLiteral} from './generatorHelpers'
 import {dummyAppContext} from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
-
-type IdentifierCollector = {add(s: string): void}
+import ComponentInstance from '../model/ComponentInstance'
+import assert from 'assert'
 type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -28,10 +28,9 @@ const isItemVar = (name: string) => name === '$item'
 export default class ServerAppParser {
     private readonly errors: AllErrors
     private readonly identifiers: ElementIdentifiers
-    private readonly stateEntryIdentifiers: ElementIdentifiers
+
     constructor(private app: ServerApp) {
         this.identifiers = {} as ElementIdentifiers
-        this.stateEntryIdentifiers = {} as ElementIdentifiers
         this.errors = {} as AllErrors
         this.init()
     }
@@ -49,10 +48,6 @@ export default class ServerAppParser {
 
     elementIdentifiers(elementId: ElementId): string[] {
         return this.identifiers[elementId]
-    }
-
-    globalFunctionIdentifiers(elementId: ElementId) {
-        return this.elementIdentifiers(elementId).filter(isGlobalFunction)
     }
 
     allGlobalFunctionIdentifiers() {
@@ -82,7 +77,7 @@ export default class ServerAppParser {
 
     getExpression(elementId: ElementId, propertyName: string): any {
         const element = this.app.findElement(elementId)!
-        const propertyValue: PropertyValue | undefined = element[propertyName as keyof Element] as PropertyValue | undefined
+        const propertyValue = element.propertyValue(propertyName) as PropertyValue | undefined
         if (propertyValue === undefined) {
             return undefined
         }
@@ -113,13 +108,14 @@ export default class ServerAppParser {
             || isParam(name)
             || isItemVar(name)
 
+            assert(!(element instanceof ComponentInstance))
             element.propertyDefs.forEach(def => {
                 const isActionCalculation = element instanceof FunctionDef && def.name === 'calculation' && element.action
                 const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
                 const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'multilineExpression'
                 const onError = (err: string) => this.addError(element.id, def.name, err)
                 const isJavaScript = (element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).javascript) ?? false
-                const propertyValue = element[def.name as keyof Element] as PropertyValue | undefined
+                const propertyValue = element.propertyValue(def.name) as PropertyValue | undefined
                 parseExprAndIdentifiers(propertyValue, identifierSet, isKnown, exprType, onError, isJavaScript)
             })
 

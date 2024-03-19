@@ -13,8 +13,8 @@ type Properties = BaseTypeProperties & {
 
 export default class DateType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'DateType'
-    static get iconClass() { return 'calendar_today_outlined' }
+    readonly kind = 'DateType'
+    get iconClass() { return 'calendar_today_outlined' }
 
     get min() {return this.properties.min}
     get max() {return this.properties.max}

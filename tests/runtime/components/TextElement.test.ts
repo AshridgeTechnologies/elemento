@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {createElement} from 'react'
+import {createElement, ReactNode} from 'react'
 import {TextElement} from '../../../src/runtime/components/index'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
@@ -58,7 +58,7 @@ test('TextElement element produces output containing ReactElement children', () 
 )
 
 test('TextElement element produces output containing valueOf object', () => {
-    snapshot(createElement(TextElement, {path: 'page1.para1'}, valueObj('where are you')))()
+    snapshot(createElement(TextElement, {path: 'page1.para1'}, valueObj('where are you') as unknown as ReactNode))()
     }
 )
 

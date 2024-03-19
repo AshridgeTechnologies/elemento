@@ -3,7 +3,7 @@ import Element from '../model/Element'
 import {Box, Button, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
 import {OnChangeFn} from './Types'
 import PropertyInput from './PropertyInput'
-import {ElementId, PropertyType, PropertyValue, StylingProps} from '../model/Types'
+import {ElementId, PropertyDef, PropertyType, PropertyValue, StylingProps} from '../model/Types'
 import lodash from 'lodash';
 import {FILES_ID, TOOLS_ID} from '../model/Project'
 import {commonStylingProps, StylingProp} from '../model/StylingTypes'
@@ -61,7 +61,7 @@ function NotesTextField(props: TextFieldProps) {
     />
 }
 
-export default function PropertyEditor({element, onChange, errors = {}}: {element: Element, onChange: OnChangeFn, errors?: object }) {
+export default function PropertyEditor({element, propertyDefs, onChange, errors = {}}: {element: Element, propertyDefs: PropertyDef[], onChange: OnChangeFn, errors?: object }) {
 
     function propertyField(name: string, type: PropertyType = 'string', fixedOnly: boolean, readOnly: boolean) {
         const valueFromElement = element[name as keyof object] as unknown as PropertyValue
@@ -76,7 +76,7 @@ export default function PropertyEditor({element, onChange, errors = {}}: {elemen
                               readOnly={readOnly} error={error}/>
     }
 
-    const children = element.propertyDefs.map(({name, type, fixedOnly, readOnly}) => propertyField(name, type, fixedOnly ?? false, readOnly ?? false))
+    const children = propertyDefs.map(({name, type, fixedOnly, readOnly}) => propertyField(name, type, fixedOnly ?? false, readOnly ?? false))
     const readOnly = element.id === FILES_ID || element.id === TOOLS_ID
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)
     const onNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'notes', (event.target as HTMLInputElement).value)

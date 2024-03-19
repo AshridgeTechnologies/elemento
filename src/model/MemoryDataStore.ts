@@ -9,8 +9,8 @@ type Properties = {
 
 export default class MemoryDataStore extends BaseElement<Properties> implements Element {
 
-    static kind = 'MemoryDataStore'
-    static get iconClass() { return 'memory' }
+    readonly kind = 'MemoryDataStore'
+    get iconClass() { return 'memory' }
     type(): ComponentType { return 'backgroundFixed' }
 
     get initialValue() {return this.properties.initialValue}

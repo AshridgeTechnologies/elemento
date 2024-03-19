@@ -2,7 +2,7 @@ import {
     Action,
     ActionsAvailableFn,
     AppElementAction,
-    ConfirmAction,
+    ConfirmAction, InsertMenuItemsFn,
     OnActionFn,
     OnInsertFnWithPositionFn
 } from './Types'
@@ -40,7 +40,7 @@ export default function EditMenu({
     onClose: () => void,
     actionsAvailableFn: ActionsAvailableFn,
     itemNameFn: (id: ElementId) => string,
-    insertMenuItemFn: ((insertPosition: InsertPosition, targetElementId: ElementId) => ElementType[]) | null
+    insertMenuItemFn: InsertMenuItemsFn | null
 }) {
 
     const [confirmingEl, setConfirmingEl] = useState<null | HTMLElement>(null)

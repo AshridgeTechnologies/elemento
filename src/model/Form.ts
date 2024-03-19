@@ -14,8 +14,8 @@ type Properties = BaseInputProperties<object> & Partial<Readonly<{
 
 export default class Form extends BaseInputElement<Properties> implements Element {
 
-    static kind = 'Form'
-    static get iconClass() { return 'dns' }
+    readonly kind = 'Form'
+    get iconClass() { return 'dns' }
     type(): ComponentType { return 'statefulUI' }
 
     get horizontal() { return this.properties.horizontal ?? false }

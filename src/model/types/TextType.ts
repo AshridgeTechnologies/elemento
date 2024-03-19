@@ -14,8 +14,8 @@ type Properties = BaseTypeProperties & {
 
 export default class TextType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'TextType'
-    static get iconClass() { return 'abc_outlined' }
+    readonly kind = 'TextType'
+    get iconClass() { return 'abc_outlined' }
 
     get minLength() {return this.properties.minLength}
     get maxLength() {return this.properties.maxLength}

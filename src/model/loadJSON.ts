@@ -1,16 +1,13 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
-import {elementOfType} from './elements'
 import {isoDateReviver} from '../util/helpers'
-
+import {createElement} from './createElement'
 
 type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
 
 function loadJSONElement({id, kind, name, properties, elements}: ElementJson): Element {
-
-    const loadElements = () => elements?.map(el => loadJSONElement(el))
-    const elementClass = elementOfType(kind)
-    return new elementClass(id, name, properties, loadElements())
+    const childElements = elements?.map(el => loadJSONElement(el))
+    return createElement(kind, id, name, properties, childElements)
 }
 
 export function loadJSON(json: ElementJson | ElementJson[]): Element | Element[] {

@@ -10,8 +10,8 @@ export type Properties = BaseInputProperties<string>
 
 export default class TextInput extends BaseInputElement<Properties> implements Element {
 
-    static kind = 'TextInput'
-    static get iconClass() { return 'crop_16_9' }
+    readonly kind = 'TextInput'
+    get iconClass() { return 'crop_16_9' }
     get valueType(): PropertyType { return 'string' }
 
     get multiline() { return this.properties.multiline }

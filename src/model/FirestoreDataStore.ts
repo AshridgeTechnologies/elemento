@@ -38,8 +38,8 @@ ${rules.join('\n')}
 
 export default class FirestoreDataStore extends BaseElement<Properties> implements Element {
 
-    static kind = 'FirestoreDataStore'
-    static get iconClass() { return 'fireplace' }
+    readonly kind = 'FirestoreDataStore'
+    get iconClass() { return 'fireplace' }
     static get parentType() { return 'App' as ParentType }
     type(): ComponentType { return 'statefulUI' }
 

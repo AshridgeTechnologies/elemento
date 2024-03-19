@@ -1,5 +1,5 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import {ComponentType, PropertyDef, PropertyValue, PropertyValueType, Show, Styling} from './Types'
 
 type Properties = Partial<Readonly<{
@@ -8,9 +8,9 @@ type Properties = Partial<Readonly<{
 
 export default class Text extends BaseElement<Properties> implements Element {
 
-    static kind = 'Text'
+    readonly kind = 'Text'
     static get initialProperties() { return {content: 'Your text here'} }
-    static get iconClass() { return 'subject' }
+    get iconClass() { return 'subject' }
 
     type(): ComponentType { return 'statelessUI' }
 
@@ -21,8 +21,7 @@ export default class Text extends BaseElement<Properties> implements Element {
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('content', 'string multiline'),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles')
+            ...visualPropertyDefs()
         ]
     }
 

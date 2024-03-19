@@ -1,5 +1,5 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
@@ -7,8 +7,8 @@ type Properties = { readonly title?: PropertyValueType<string> } & Styling & Sho
 
 export default class AppBar extends BaseElement<Properties> implements Element {
 
-    static kind = 'AppBar'
-    static get iconClass() { return 'web_asset' }
+    readonly kind = 'AppBar'
+    get iconClass() { return 'web_asset' }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }
 
@@ -23,8 +23,7 @@ export default class AppBar extends BaseElement<Properties> implements Element {
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('title'),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles')
+            ...visualPropertyDefs()
         ]
     }
 

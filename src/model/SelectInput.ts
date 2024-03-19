@@ -9,8 +9,8 @@ export type Properties = BaseInputProperties<string> & Partial<Readonly<{
 
 export default class SelectInput extends BaseInputElement<Properties> implements Element {
 
-    static kind = 'SelectInput'
-    static get iconClass() { return 'density_small' }
+    readonly kind = 'SelectInput'
+    get iconClass() { return 'density_small' }
     get valueType(): PropertyType { return 'string list'}
     get values() { return this.properties.values }
 

@@ -19,6 +19,7 @@ import FileDataStore from './FileDataStore'
 import BrowserDataStore from './BrowserDataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
+import Component from './ComponentDef' // Note: use ElementType name for Component
 import Collection from './Collection'
 import Layout from './Layout'
 import {DataTypeElementType, ElementType} from './Types'
@@ -45,6 +46,8 @@ import ToolFolder from './ToolFolder'
 import Tool from './Tool'
 import Calculation from './Calculation'
 import ToolImport from './ToolImport'
+import ComponentDef from './ComponentDef'
+import ComponentFolder from './ComponentFolder'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -91,17 +94,21 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         MemoryDataStore: MemoryDataStore,
         Function: Function,
         FunctionImport: FunctionImport,
+        Component: Component,
         Collection: Collection,
         Layout: Layout,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         File: File,
         FileFolder: FileFolder,
+        ComponentFolder: ComponentFolder,
         ToolFolder: ToolFolder,
         ToolImport: ToolImport,
         ...dataTypeElementTypes()
     }
 }
 
+export const elementTypeNames = ()=> Object.keys(elementTypes()) as ElementType[]
+export const isBuiltInType = (elementType: ElementType) => elementTypeNames().includes(elementType)
 export const elementOfType = (elementType: ElementType) => elementTypes()[elementType]
-export const parentTypeOf = (elementType: ElementType) => elementOfType(elementType).parentType
+export const parentTypeOf = (elementType: ElementType) => isBuiltInType(elementType) ? elementOfType(elementType).parentType : 'any'

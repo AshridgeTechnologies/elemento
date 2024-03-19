@@ -1,5 +1,5 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import {ComponentType, ElementType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
@@ -10,8 +10,8 @@ type Properties = Partial<Readonly<{
 
 export default class Layout extends BaseElement<Properties> implements Element {
 
-    static kind = 'Layout'
-    static get iconClass() { return 'view_module' }
+    readonly kind = 'Layout'
+    get iconClass() { return 'view_module' }
     type(): ComponentType { return 'statelessUI' }
     isLayoutOnly() { return true }
 
@@ -24,8 +24,7 @@ export default class Layout extends BaseElement<Properties> implements Element {
         return [
             propDef('horizontal', 'boolean'),
             propDef('wrap', 'boolean'),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles'),
+            ...visualPropertyDefs(),
         ]
     }
 

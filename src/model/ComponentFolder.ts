@@ -4,9 +4,9 @@ import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 
 type Properties = {}
 
-export default class ToolFolder extends BaseElement<Properties> implements Element {
-    readonly kind = 'ToolFolder'
-    get iconClass() { return 'home_repair_service_outlined' }
+export default class ComponentFolder extends BaseElement<Properties> implements Element {
+    readonly kind = 'ComponentFolder'
+    get iconClass() { return 'folder' }
 
     get propertyDefs(): PropertyDef[] {
         return []
@@ -17,7 +17,7 @@ export default class ToolFolder extends BaseElement<Properties> implements Eleme
     }
 
     canContain(elementType: ElementType): boolean {
-        return ['Tool', 'ToolImport'].includes(elementType)
+        return (['Component']).includes(elementType)
     }
 
     static get parentType(): ParentType { return 'Project' }

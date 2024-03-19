@@ -4,12 +4,11 @@ import App from '../model/App'
 import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
-import UnsupportedValueError from '../util/UnsupportedValueError'
 import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, omit} from 'ramda'
 import Parser, {PropertyError} from './Parser'
-import {ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
+import {ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeElementTypeName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
@@ -28,12 +27,13 @@ import {
 import Project from '../model/Project'
 import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
-import {CombinedPropertyValue, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
+import {ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport";
 import {ASSET_DIR} from "../shared/constants";
 import Form from '../model/Form'
-import Tool from '../model/Tool'
+import ComponentDef from '../model/ComponentDef'
+import {BaseApp} from '../model/BaseApp'
 
 type FunctionCollector = {add(s: string): void}
 
@@ -49,17 +49,18 @@ export const DEFAULT_IMPORTS = [
     `const {React} = Elemento`
 ]
 
-export function generate(app: App, project: Project, imports: string[] = DEFAULT_IMPORTS) {
+export function generate(app: BaseApp, project: Project, imports: string[] = DEFAULT_IMPORTS) {
     return new Generator(app, project, imports).output()
 }
 
 export default class Generator {
-    private parser
+    private parser: Parser
     private typesGenerator
 
-    constructor(public app: App | Tool, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
+    constructor(public app: BaseApp, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
         this.parser.parseComponent(project.dataTypesContainer)
+        project.componentsFolder && this.parser.parseComponent(project.componentsFolder)
         this.parser.parseComponent(app)
         this.typesGenerator = new TypesGenerator(project)
     }
@@ -70,6 +71,11 @@ export default class Generator {
 
     output() {
         const {files: typesFiles, typesClassNames} = this.typesGenerator.output()
+        const componentFiles = this.project.userDefinedComponents.map(comp => ({
+            name: `${(comp.codeName)}.js`,
+            contents: this.generateComponent(this.app, comp)
+        }))
+
         const pageFiles = this.app.pages.map(page => ({
             name: `${(page.codeName)}.js`,
             contents: this.generateComponent(this.app, page)
@@ -84,7 +90,7 @@ export default class Generator {
         const imports = [...this.imports, ...this.generateImports(this.app)].join('\n') + '\n\n'
         const typesConstants = typesFiles.length ? `const {types: {${typesClassNames.join(', ')}}} = Elemento\n\n` : ''
         return <GeneratorOutput>{
-            files: [...typesFiles, ...pageFiles, appFile],
+            files: [...typesFiles, ...componentFiles, ...pageFiles, appFile],
             errors: this.parser.allErrors(),
             get code() {
                 return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
@@ -93,7 +99,7 @@ export default class Generator {
         }
     }
 
-    private generateImports(app: App) {
+    private generateImports(app: BaseApp) {
         const generateImport = ({source, codeName, exportName}: FunctionImport) => {
             const isHttp = source?.match(/^https?:\/\//)
             if (isHttp) {
@@ -110,7 +116,7 @@ export default class Generator {
         return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 
-    private generateComponent(app: App, component: Page | App | Form | ListItem, containingComponent?: Page | Form) {
+    private generateComponent(app: BaseApp, component: Page | BaseApp | Form | ListItem | ComponentDef, containingComponent?: Page | Form) {
         const componentIsApp = isAppLike(component)
         const canUseContainerElements = component instanceof ListItem && containingComponent
         const componentIsForm = component instanceof Form
@@ -132,7 +138,7 @@ export default class Generator {
             : appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
-        const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.join(', ')}} = Elemento.components` : ''
+        const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.map(runtimeElementTypeName).join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(component.id)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
         const appFunctionIdentifiers = this.parser.appFunctionIdentifiers(component.id)
@@ -161,16 +167,16 @@ export default class Generator {
              return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
         }
 
-        const uiElementActionHandlers = (el: Element) => {
-            return el.propertyDefs
+        const uiElementActionHandlers = (element: Element) => {
+            return this.project.propertyDefsOf(element)
                 .filter( def => !def.state )
                 .filter(isActionProperty)
-                .map( (def) => actionHandler(el, def))
+                .map( (def) => actionHandler(element, def))
                 .filter( notEmpty )
         }
 
         const stateActionHandlers = (el: Element) => {
-            return el.propertyDefs
+            return this.project.propertyDefsOf(el)
                 .filter( def => def.state )
                 .filter(isActionProperty)
                 .map( (def) => actionHandler(el, def))
@@ -257,7 +263,7 @@ ${declarations}${debugHook}
     }
 
     private modelProperties = (element: Element) => {
-        const propertyDefs = element.propertyDefs.filter(def => !def.state)
+        const propertyDefs = this.project.propertyDefsOf(element).filter(def => !def.state)
         const propertyExprs = propertyDefs.map(def => {
             const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
             const expr = this.getExprWithoutParens(element, def.name, exprType)
@@ -267,7 +273,7 @@ ${declarations}${debugHook}
         return Object.fromEntries(propertyExprs.filter(([, expr]) => !!expr))
     }
 
-    private generateComponentCode(element: Element | ListItem, app: App, topLevelFunctions: FunctionCollector): string {
+    private generateComponentCode(element: Element | ListItem, app: BaseApp, topLevelFunctions: FunctionCollector): string {
 
         const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
@@ -303,6 +309,13 @@ ${generateChildren(page, indentLevel2, page)}
     )`
             }
 
+            case 'Component': {
+                const componentDef = element as ComponentDef
+                return `React.createElement(ComponentElement, props,
+${generateChildren(componentDef, indentLevel2)}
+    )`
+            }
+
             case 'Form': {
                 const form = element as Form
                 return `React.createElement(Form, props,
@@ -315,7 +328,7 @@ ${generateChildren(form, indentLevel2, form)}
         throw new Error('Cannot generate component code for ' + element.kind)
     }
 
-    private generateElement(element: Element, app: App, topLevelFunctions: FunctionCollector, containingComponent?: Page | Form): string {
+    private generateElement(element: Element, app: BaseApp, topLevelFunctions: FunctionCollector, containingComponent?: Page | Form): string {
 
         const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
@@ -330,7 +343,7 @@ ${generateChildren(form, indentLevel2, form)}
             return {path, ...(this.modelProperties(element))}
         }
 
-        switch (element.kind) {
+        switch (element.kind as ElementType) {
             case 'Project':
             case 'App':
             case 'Tool':
@@ -394,6 +407,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             case 'FirestoreDataStore':
             case 'Function':
             case 'FunctionImport':
+            case 'Component':
             case 'ServerApp':
             case 'ServerAppConnector':
             case 'File':
@@ -416,7 +430,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                 return ''
 
             default:
-                throw new UnsupportedValueError(element.kind)
+                return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())})`
         }
     }
 
@@ -430,7 +444,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             return def.name
         }
         const modelProperties = () => {
-            const propertyExprs = element.propertyDefs
+            const propertyExprs = this.project.propertyDefsOf(element)
                 .filter(({state}) => state)
                 .map(def => {
                     const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
@@ -548,11 +562,16 @@ ${generateChildren(element, indentLevel3, containingComponent)}
             }
         }
 
-        const propertyValue = element[propertyName as keyof Element] as CombinedPropertyValue | undefined
+        const propertyValue = element.propertyValue(propertyName)
         if (propertyValue === undefined) return undefined
         const error = this.parser.propertyError(element.id, propertyName)
 
-        const propType = element.getPropertyDef(propertyName).type
+        const propertyDef = this.project.propertyDefsOf(element).find( pd => pd.name === propertyName)
+        if (!propertyDef) {
+            throw new Error(`Element of kind ${element.kind} does not have a propertyDef ${propertyName}`)
+        }
+
+        const propType = propertyDef.type
         if (propType === 'styles') {
             const multiplePropValue = propertyValue as MultiplePropertyValue
 

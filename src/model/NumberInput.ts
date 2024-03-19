@@ -6,7 +6,7 @@ export type Properties = BaseInputProperties<number>
 
 export default class NumberInput extends BaseInputElement<Properties> implements Element {
 
-    static kind = 'NumberInput'
-    static get iconClass() { return 'money_outlined' }
+    readonly kind = 'NumberInput'
+    get iconClass() { return 'money_outlined' }
     get valueType(): PropertyType { return 'number' }
 }

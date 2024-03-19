@@ -7,8 +7,8 @@ type Properties = {  }
 
 export default class ServerApp extends BaseElement<Properties> implements Element {
 
-    static kind = 'ServerApp'
-    static get iconClass() { return 'webhook' }
+    readonly kind = 'ServerApp'
+    get iconClass() { return 'webhook' }
     type(): ComponentType { return 'app' }
 
     get functions() {

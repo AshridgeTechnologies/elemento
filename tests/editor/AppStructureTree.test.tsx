@@ -46,52 +46,52 @@ const toolActionsAvailable = () => ['show', ...standardActionsAvailable()] as Ap
 
 const defaultFunctions = {onAction: noOp, insertMenuItemFn: noOp, onInsert: noOp, onMove: noOp, onShow: noOp, actionsAvailableFn: standardActionsAvailable}
 
-const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
-    new ModelTreeItem('app1', 'App One', 'App', false, [
-        new ModelTreeItem('page_1', 'Main Page', 'Page', false, [
-            new ModelTreeItem('text1_1', 'First Text', 'Text'),
-            new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput', true),
-            new ModelTreeItem('numberInput1_2', 'The Number Input', 'NumberInput'),
-            new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput'),
-            new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput'),
-            new ModelTreeItem('button2_1', 'Some Button', 'Button'),
-            new ModelTreeItem('menu_1', 'Some Menu', 'Menu'),
-            new ModelTreeItem('menuItem_1', 'Some Menu Item', 'MenuItem'),
-            new ModelTreeItem('list1_1', 'The List', 'List'),
-            new ModelTreeItem('data_1_1', 'Some Data', 'Data'),
-            new ModelTreeItem('collection_1_1', 'A Collection', 'Collection'),
-            new ModelTreeItem('layout_1_1', 'A Layout', 'Layout'),
-            new ModelTreeItem('function_1_1', 'A Function', 'Function'),
+const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', "project_icon", false, [
+    new ModelTreeItem('app1', 'App One', 'App', "app_icon", false, [
+        new ModelTreeItem('page_1', 'Main Page', 'Page', "page_icon", false, [
+            new ModelTreeItem('text1_1', 'First Text', 'Text', "text_icon"),
+            new ModelTreeItem('textInput1_2', 'The Text Input', 'TextInput', "text_input_icon", true),
+            new ModelTreeItem('numberInput1_2', 'The Number Input', 'NumberInput', "number_input_icon"),
+            new ModelTreeItem('selectInput1_2', 'The Select Input', 'SelectInput', "select__icon"),
+            new ModelTreeItem('trueFalseInput2_1', 'Some True-false', 'TrueFalseInput', "true_false_icon"),
+            new ModelTreeItem('button2_1', 'Some Button', 'Button', "button_icon"),
+            new ModelTreeItem('menu_1', 'Some Menu', 'Menu', "menu_icon"),
+            new ModelTreeItem('menuItem_1', 'Some Menu Item', 'MenuItem', "menu_item_icon"),
+            new ModelTreeItem('list1_1', 'The List', 'List', "list_icon"),
+            new ModelTreeItem('data_1_1', 'Some Data', 'Data', "data_icon"),
+            new ModelTreeItem('collection_1_1', 'A Collection', 'Collection', "collection_icon"),
+            new ModelTreeItem('layout_1_1', 'A Layout', 'Layout', "layout_icon"),
+            new ModelTreeItem('function_1_1', 'A Function', 'Function', "function_icon"),
         ]),
-        new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
-            new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+        new ModelTreeItem('page_2', 'Other Page', 'Page', "page_icon", false, [
+            new ModelTreeItem('text2_1', 'Some Text', 'Text', "text_icon"),
         ]),
-        new ModelTreeItem('memoryDataStore_2', 'The Data Store', 'MemoryDataStore'),
-        new ModelTreeItem('fileDataStore_2', 'The File Data Store', 'FileDataStore'),
-        new ModelTreeItem('appBar1', 'The App Bar', 'AppBar')
+        new ModelTreeItem('memoryDataStore_2', 'The Data Store', 'MemoryDataStore', "mds_icon"),
+        new ModelTreeItem('fileDataStore_2', 'The File Data Store', 'FileDataStore', "fds_icon"),
+        new ModelTreeItem('appBar1', 'The App Bar', 'AppBar', "appbar_icon")
     ]),
-    new ModelTreeItem('_FILES', 'Files', 'FileFolder', false, [
-        new ModelTreeItem('file_1', 'Duck.jpg', 'File'),
-        new ModelTreeItem('file_2', 'Rules.pdf', 'File'),
+    new ModelTreeItem('_FILES', 'Files', 'FileFolder', "ff_icon", false, [
+        new ModelTreeItem('file_1', 'Duck.jpg', 'File', "file_icon"),
+        new ModelTreeItem('file_2', 'Rules.pdf', 'File', "file_icon"),
     ]),
-    new ModelTreeItem('_TOOLS', 'Tools', 'ToolFolder', false, [
-        new ModelTreeItem('tool_1', 'Do Stuff', 'Tool'),
-        new ModelTreeItem('tool2_2', 'Check Stuff', 'Tool'),
+    new ModelTreeItem('_TOOLS', 'Tools', 'ToolFolder', "tf_icon", false, [
+        new ModelTreeItem('tool_1', 'Do Stuff', 'Tool', "tool_icon"),
+        new ModelTreeItem('tool2_2', 'Check Stuff', 'Tool', "tool_icon"),
     ])
 ])
 
-const treeWithErrors = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
-    new ModelTreeItem('app1', 'App One', 'App', false, [
-        new ModelTreeItem('page1', 'Main Page', 'Page', false, [
-            new ModelTreeItem('text1', 'First Text', 'Text'),
-            new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', true, [
-                new ModelTreeItem('id1', 'An item', 'Text', true, [
-                    new ModelTreeItem('id2', 'A deeper item', 'Text')
+const treeWithErrors = new ModelTreeItem('project_1', 'Project One', 'Project', "an_icon", false, [
+    new ModelTreeItem('app1', 'App One', 'App', "an_icon", false, [
+        new ModelTreeItem('page1', 'Main Page', 'Page', "an_icon", false, [
+            new ModelTreeItem('text1', 'First Text', 'Text', "an_icon"),
+            new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', "an_icon", true, [
+                new ModelTreeItem('id1', 'An item', 'Text', "an_icon", true, [
+                    new ModelTreeItem('id2', 'A deeper item', 'Text', "an_icon")
                 ])
             ]),
         ]),
-        new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
-            new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+        new ModelTreeItem('page_2', 'Other Page', 'Page', "an_icon", false, [
+            new ModelTreeItem('text2_1', 'Some Text', 'Text', "an_icon"),
         ])
     ])])
 
@@ -110,18 +110,18 @@ afterEach( async () => await act(() => {
 
 describe('ModelTreeItem', () => {
     let item_id2: ModelTreeItem, item_textInput1: ModelTreeItem
-    const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', false, [
-        new ModelTreeItem('app1', 'App One', 'App', false, [
-            new ModelTreeItem('page1', 'Main Page', 'Page', false, [
-                new ModelTreeItem('text1', 'First Text', 'Text'),
-                item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', false, [
-                    new ModelTreeItem('id1', 'An item', 'Text', false, [
-                        item_id2 = new ModelTreeItem('id2', 'A deeper item', 'Text')
+    const deepTree = new ModelTreeItem('project_1', 'Project One', 'Project', "an_icon", false, [
+        new ModelTreeItem('app1', 'App One', 'App', "an_icon", false, [
+            new ModelTreeItem('page1', 'Main Page', 'Page', "an_icon", false, [
+                new ModelTreeItem('text1', 'First Text', 'Text', "an_icon"),
+                item_textInput1 = new ModelTreeItem('textInput1', 'The Text Input', 'TextInput', "an_icon", false, [
+                    new ModelTreeItem('id1', 'An item', 'Text', "an_icon", false, [
+                        item_id2 = new ModelTreeItem('id2', 'A deeper item', 'Text', "an_icon")
                     ])
                 ]),
             ]),
-            new ModelTreeItem('page_2', 'Other Page', 'Page', false, [
-                new ModelTreeItem('text2_1', 'Some Text', 'Text'),
+            new ModelTreeItem('page_2', 'Other Page', 'Page', "an_icon", false, [
+                new ModelTreeItem('text2_1', 'Some Text', 'Text', "an_icon"),
             ])
         ])])
 
@@ -183,11 +183,10 @@ test("renders tree with all types of model elements",  async () => {
     ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions}/>))
     await clickExpandControl(0, 1)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
-    expect(itemIcons()).toStrictEqual([ "web", "web", "web", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file", 'home_repair_service_outlined', 'build_outlined', 'build_outlined'])
-
+    expect(itemIcons()).toStrictEqual([  "project_icon", "app_icon", "page_icon", "page_icon", "mds_icon", "fds_icon", "appbar_icon", "ff_icon", "file_icon", "file_icon", "tf_icon", "tool_icon", "tool_icon"])
     await clickExpandControl(2)
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
-    expect(itemIcons()).toStrictEqual(["web", "web", "web", "subject", "crop_16_9", "money_outlined", "density_small", "check_box_outlined", "crop_3_2", "menu", "menu_open", "view_list", "note", "auto_awesome_motion", "view_module", "functions", "web", "memory", "insert_drive_file", "web_asset", "folder", "insert_drive_file", "insert_drive_file", 'home_repair_service_outlined', 'build_outlined', 'build_outlined'])
+    expect(itemIcons()).toStrictEqual(["project_icon", "app_icon", "page_icon", "text_icon", "text_input_icon", "number_input_icon", "select__icon", "true_false_icon", "button_icon", "menu_icon", "menu_item_icon", "list_icon", "data_icon", "collection_icon", "layout_icon", "function_icon", "page_icon", "mds_icon", "fds_icon", "appbar_icon", "ff_icon", "file_icon", "file_icon", "tf_icon", "tool_icon", "tool_icon"])
 })
 
 test("renders tree with error classes",  async () => {

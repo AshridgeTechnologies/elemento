@@ -81,12 +81,10 @@ Stories
 - Payments
 - API calls from browser
 - External API calls (eg for webhook)
-- Styling
 - Web file datastores
 
 ### Priority for education and games
 - Block element - or combine with Layout
-- Components
 - Horizontal list
 - Freeform list, generated from a list, with positions set by data
 - Event actions: double click, drop
@@ -334,6 +332,7 @@ Done
 - Tutorial and general improvements - Part 1
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Styling
+- User defined components
 
 Bugs fixed
 ----------

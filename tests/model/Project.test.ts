@@ -6,7 +6,7 @@ import AppBar from '../../src/model/AppBar'
 import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import Project from '../../src/model/Project'
+import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import Layout from '../../src/model/Layout'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
@@ -15,8 +15,20 @@ import ToolFolder from '../../src/model/ToolFolder'
 import Tool from '../../src/model/Tool'
 import ToolImport from '../../src/model/ToolImport'
 import ServerApp from '../../src/model/ServerApp'
+import ComponentFolder from '../../src/model/ComponentFolder'
+import ComponentDef from '../../src/model/ComponentDef'
+import ComponentInstance from '../../src/model/ComponentInstance'
+import {project} from 'ramda'
 
-const newToolFolder = new ToolFolder('_TOOLS', 'Tools', {})
+const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
+const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
+
+const standardActions = [
+    'insert',
+    new ConfirmAction('delete'),
+    'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
+    'undo', 'redo'
+]
 
 test('Project has correct properties', ()=> {
     const page1 = new Page('p1', 'Page 1', {}, [])
@@ -26,7 +38,7 @@ test('Project has correct properties', ()=> {
 
     expect(project.id).toBe('project_1')
     expect(project.name).toBe('New Project')
-    expect(project.elements!.map( c => c.id )).toStrictEqual(['t1', newToolFolder.id])
+    expect(project.elements!.map( c => c.id )).toStrictEqual(['t1', TOOLS_ID, COMPONENTS_ID])
 })
 
 test('can find project itself by id', ()=> {
@@ -64,15 +76,18 @@ let testProject = function () {
     const text3 = new Text('t3', 'Text 1', {content: ex``})
     const text4 = new Text('t4', 'Text 4', {content: ex``})
     const text5 = new Text('t5', 'Text 3', {content: ex`Same name as text2`})
+    const comp1 = new ComponentInstance('ci1', 'Comp 1', {componentType: 'CompType1'})
     const page2 = new Page('p2', 'Page 2', {}, [
-        text3, text4, text5
+        text3, text4, text5, comp1
     ])
 
     const button1 = new Button('b1', 'Button 1', {})
     const appBar = new AppBar('ab1', 'AppBar 1', {}, [button1])
     const app = new App('app1', 'App 1', {}, [page1, page2, appBar])
-    const project = Project.new([app])
-    return {text1, text2, page1, text3, text4, text5, layout1, page2, app, appBar, button1, project}
+    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {input1: 'source', input2: 'destination', input4: 'route'})
+    const compFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef1])
+    const project = Project.new([app, compFolder])
+    return {text1, text2, page1, text3, text4, text5, comp1, layout1, page2, app, appBar, button1, compDef1, project}
 }
 
 test('can find element by id', ()=> {
@@ -172,6 +187,12 @@ test('can find elements including page by selector function', () => {
     expect(page1.findElementsBy( el => el.name === 'Text 3' || el.kind === 'Page')).toStrictEqual([page1, text2])
 })
 
+test('can find property definitions of built-in and user-defined elements', () => {
+    const {project, text1, comp1} = testProject()
+    expect(project.propertyDefsOf(text1).map( def => def.name)).toStrictEqual(['content', 'show', 'styles'])
+    expect(project.propertyDefsOf(comp1).map( def => def.name)).toStrictEqual(['source', 'destination', 'route', 'show', 'styles'])
+})
+
 test('creates an updated object with a property set to a new value', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
@@ -190,9 +211,9 @@ test('creates an updated object with a property set to a new value', ()=> {
 
     const updatedProject2 = updatedProject.set('project_1', 'elements', [app, app2])
     expect(updatedProject2.name).toBe('Proj 1A')
-    expect(updatedProject2.elements!).toStrictEqual([app, app2, newToolFolder])
+    expect(updatedProject2.elements!).toStrictEqual([app, app2, newToolFolder, newComponentFolder])
     expect(updatedProject.name).toBe('Proj 1A')
-    expect(updatedProject.elements!).toStrictEqual([app, newToolFolder])
+    expect(updatedProject.elements!).toStrictEqual([app, newToolFolder, newComponentFolder])
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
@@ -217,11 +238,18 @@ test('creates an updated object if a property in a contained object is changed a
 
     const updatedProject = project.set('t4', 'content', '"Further text"')
     expect(updatedProject.name).toBe('New Project')
-    expect(updatedProject.elements?.length).toBe(3)
+    expect(updatedProject.elements?.length).toBe(4)
     expect(updatedProject.elements![0]).toBe(app)
     expect(updatedProject.elements![1]).not.toBe(app2)
     expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as Text).content).toBe('"Further text"')
     expect((updatedProject.elements![1] as App).pages[0].elementArray()[0]).toBe(text3)
+})
+
+test('insert menu items includes built-in and user-defined components', () => {
+    const {project, page1, compDef1} = testProject()
+    const insertItems = project.insertMenuItems('inside', page1.id)
+    expect(insertItems).toContain('TextInput')
+    expect(insertItems).toContain(compDef1.codeName)
 })
 
 describe('Insert new element', () => {
@@ -446,12 +474,6 @@ test('gets actions available for a single item', () => {
     const project = Project.new([app, app2, files, tools])
 
     const textActions = project.actionsAvailable(['t1'])
-    const standardActions = [
-        'insert',
-        new ConfirmAction('delete'),
-        'copy', 'cut', 'pasteAfter', 'pasteBefore', 'pasteInside', 'duplicate',
-        'undo', 'redo'
-    ]
     expect(textActions).toStrictEqual(standardActions)
 
     const pageActions = project.actionsAvailable(['p1'])
@@ -465,7 +487,24 @@ test('gets actions available for a single item', () => {
 
     expect( project.actionsAvailable(['_FILES'])).toStrictEqual(['upload', 'undo', 'redo'])
     expect( project.actionsAvailable(['_TOOLS'])).toStrictEqual(['insert', 'pasteInside', 'undo', 'redo'])
+    expect( project.actionsAvailable(['_COMPONENTS'])).toStrictEqual(['insert', 'pasteInside', 'undo', 'redo'])
     expect( project.actionsAvailable(['f1'])).toStrictEqual([new ConfirmAction('delete'), 'undo', 'redo'])
+})
+
+test('cannot delete a Component that is in use', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const comp1 = new ComponentInstance('ci1', 'Comp 1', {componentType: 'CompType1'})
+    const page1 = new Page('p1', 'Page 1', {}, [text1, comp1])
+
+    const app = new App('app1', 'App 1', {}, [page1])
+    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {input1: 'source', input2: 'destination', input4: 'route'})
+    const compDef2 = new ComponentDef('cd2', 'Comp Type 2', {input1: 'high', input2: 'low'})
+    const compFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef1, compDef2])
+    const project = Project.new([app, compFolder])
+
+    const componentInUseActions = standardActions.filter( a => !(a instanceof ConfirmAction))
+    expect(project.actionsAvailable(['cd1'])).toStrictEqual(componentInUseActions)
+    expect(project.actionsAvailable(['cd2'])).toStrictEqual(standardActions)
 })
 
 test('gets actions available for multiple items', () => {
@@ -502,7 +541,7 @@ test('adds Files element', () => {
     const bareProject = Project.new([app, app2])
 
     const project = bareProject.withFiles(['Image 1.jpg', 'Form 2.pdf'])
-    expect(project.elementArray()[2]).toStrictEqual(new FileFolder('_FILES', 'Files', {}, [
+    expect(project.elementArray()[4]).toStrictEqual(new FileFolder('_FILES', 'Files', {}, [
         new File('file_1', 'Image 1.jpg', {}),
         new File('file_2', 'Form 2.pdf', {}),
     ]))
@@ -525,7 +564,7 @@ test('converts to JSON, excludes Files', ()=> {
         id: 'project_1',
         name: 'New Project',
         properties: project.properties,
-        elements: [asJSON(app), asJSON(app2), asJSON(newToolFolder)]
+        elements: [asJSON(app), asJSON(app2), asJSON(newToolFolder), asJSON(newComponentFolder)]
     })
 
 })
@@ -544,12 +583,12 @@ test('converts from plain object', ()=> {
     expect(newProject).toStrictEqual<Project>(project)
 })
 
-test('new project has ToolFolder', () => {
+test('new project has ToolFolder and ComponentFolder', () => {
     const project = Project.new()
-    expect(project.elementArray()).toStrictEqual([newToolFolder])
+    expect(project.elementArray()).toStrictEqual([newToolFolder, newComponentFolder])
 })
 
-test('if no ToolsFolder in the elements of existing, adds one', () => {
+test('if no ToolFolder or ComponentFolder in the elements of existing, adds one', () => {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
@@ -557,6 +596,6 @@ test('if no ToolsFolder in the elements of existing, adds one', () => {
     const json = asJSON(project)
     json.elements = json.elements.filter( (el:any) => el.kind !== 'ToolFolder')
     const loadedProject = loadJSON(json) as Project
-    expect(loadedProject.elementArray()).toStrictEqual([app, newToolFolder])
+    expect(loadedProject.elementArray()).toStrictEqual([app, newComponentFolder, newToolFolder])
 })
 

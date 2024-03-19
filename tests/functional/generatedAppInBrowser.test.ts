@@ -15,7 +15,7 @@ test('can set app on page', async ({ page }) => {
     await page.goto(pageUrl+ '/editorPreview')
 
     await wait()
-    await page.evaluate( (appCode: string) => window.setAppCode(appCode), testAppCode)
+    await page.evaluate( (appCode: string) => (window as any).setAppCode(appCode), testAppCode)
 
     expect(await page.textContent('p[id="AppOne.MainPage.FirstText"]')).toBe('This is App One')
 })
@@ -25,7 +25,7 @@ test('shows TextInput elements', async ({ page }) => {
     await page.goto(pageUrl+ '/editorPreview')
 
     await wait()
-    await page.evaluate( (appCode: string) => window.setAppCode(appCode), testAppCode)
+    await page.evaluate( (appCode: string) => (window as any).setAppCode(appCode), testAppCode)
 
     expect(await page.inputValue('input[type="text"] >> nth=0')).toBe('A text value')
 })
@@ -34,7 +34,7 @@ test('can show pages', async ({ page }) => {
     await page.goto(pageUrl+ '/editorPreview')
 
     await wait()
-    await page.evaluate( (appCode: string) => window.setAppCode(appCode), testAppCode)
+    await page.evaluate( (appCode: string) => (window as any).setAppCode(appCode), testAppCode)
     expect(await page.textContent('p >> nth=0')).toBe('This is App One')
 
     await page.click('button')

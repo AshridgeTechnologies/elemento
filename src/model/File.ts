@@ -6,9 +6,9 @@ type Properties = {}
 
 export default class File extends BaseElement<Properties> implements Element {
 
-    static kind = 'File'
+    readonly kind = 'File'
 
-    static get iconClass() { return 'insert_drive_file' }
+    get iconClass() { return 'insert_drive_file' }
 
     get propertyDefs(): PropertyDef[] {
         return []

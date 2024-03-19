@@ -1,6 +1,6 @@
 import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType, Styling} from './Types'
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 
 type Properties = Partial<Readonly<{
     calculation: PropertyExpr,
@@ -10,8 +10,8 @@ type Properties = Partial<Readonly<{
 
 export default class Calculation extends BaseElement<Properties> implements Element {
 
-    static kind = 'Calculation'
-    static get iconClass() { return 'calculate_outlined' }
+    readonly kind = 'Calculation'
+    get iconClass() { return 'calculate_outlined' }
     type(): ComponentType { return 'statefulUI' }
 
     get calculation() {return this.properties.calculation}
@@ -23,8 +23,7 @@ export default class Calculation extends BaseElement<Properties> implements Elem
         return [
             propDef('calculation', 'expr', {state: true}),
             propDef('label', 'string'),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles')
+            ...visualPropertyDefs()
         ]
     }
 }

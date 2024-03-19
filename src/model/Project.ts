@@ -1,10 +1,10 @@
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
-import BaseElement, {newIdTransformer, propDef} from './BaseElement'
+import BaseElement, {newIdTransformer, propDef, visualPropertyDefs} from './BaseElement'
 import Element from './Element'
 import File from './File'
-import {createElement} from './createElement'
+import {createNewElement} from './createElement'
 import {toArray} from '../util/helpers'
-import {parentTypeOf} from './elements'
+import {elementTypeNames, parentTypeOf} from './elements'
 import FileFolder from './FileFolder'
 import {AppElementAction, ConfirmAction} from '../editor/Types'
 import Page from './Page'
@@ -15,13 +15,19 @@ import ToolFolder from './ToolFolder'
 import {fork} from 'radash'
 import {intersection} from 'ramda'
 import ServerApp from './ServerApp'
+import ComponentDef from './ComponentDef'
+import ComponentFolder from './ComponentFolder'
+import ComponentInstance from './ComponentInstance'
 
 type Properties = { author?: PropertyValue }
 
 export const FILES_ID = '_FILES'
 export const TOOLS_ID = '_TOOLS'
+export const COMPONENTS_ID = '_COMPONENTS'
 
 class DataTypesContainer extends BaseElement<{}> {
+    readonly kind = 'DataTypesContainer' as ElementType
+    readonly iconClass = 'an_icon'
     get propertyDefs() { return [] }
     type() { return 'DataTypesContainer' as ComponentType }
 }
@@ -33,11 +39,14 @@ export default class Project extends BaseElement<Properties> implements Element 
                 properties: Properties,
                 elements: ReadonlyArray<Element>  = [],
     ) {
-        const [toolFolders, otherElements] = fork(elements, el => el.kind === 'ToolFolder')
-        if (!toolFolders.length) toolFolders.push(Project.newToolFolder())
-        super(id, name, properties, [...otherElements, ...toolFolders])
+        const allElements = [...elements]
+        const hasTools = elements.some( el => el.kind === 'ToolFolder')
+        if (!hasTools) allElements.push(Project.newToolFolder())
+        const hasComponents = elements.some( el => el.kind === 'ComponentFolder')
+        if (!hasComponents) allElements.push(Project.newComponentFolder())
+        super(id, name, properties, allElements)
     }
-    static kind = 'Project'
+    readonly kind = 'Project'
     static new(elements: ReadonlyArray<Element> = [],
                name = 'New Project',
                id: ElementId = 'project_1',
@@ -49,11 +58,18 @@ export default class Project extends BaseElement<Properties> implements Element 
         return new ToolFolder(TOOLS_ID, 'Tools', {})
     }
 
-    static get iconClass() { return 'web' }
+    private static newComponentFolder() {
+        return new ComponentFolder(COMPONENTS_ID, 'Components', {})
+    }
+
+    get iconClass() { return 'web' }
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
 
     get dataTypes() {return this.findChildElements(DataTypes)}
+    get componentsFolder() { return this.findElement(COMPONENTS_ID) as ComponentFolder }
+    get userDefinedComponents() { return (this.componentsFolder?.findElementsBy( el => el.kind === 'Component') ?? []) as ComponentDef[] }
+    get userDefinedComponentCodeNames() { return this.userDefinedComponents.map( el => el.codeName ) as ElementType[] }
     get dataTypesContainer() {
         return new DataTypesContainer('_dt1', 'DataTypes Container', {}, this.dataTypes)
     }
@@ -69,6 +85,17 @@ export default class Project extends BaseElement<Properties> implements Element 
         return ''
     }
 
+    propertyDefsOf(element: Element): PropertyDef[] {
+        if (element instanceof ComponentInstance) {
+            const componentDef = this.userDefinedComponents.find( comp => comp.codeName === element.kind)
+            if (!componentDef) throw new Error('Component Def ' + element.kind + ' not found')
+            const propDefs = componentDef.inputs.map( name => propDef(name, 'string|number'))
+            return [...propDefs, ...visualPropertyDefs()]
+        }
+
+        return element.propertyDefs
+    }
+
     actionsAvailable(targetItemIds: ElementId[]): AppElementAction[] {
 
         const actionsForElement = (element: Element) => {
@@ -78,8 +105,15 @@ export default class Project extends BaseElement<Properties> implements Element 
                 'insert',
                 new ConfirmAction('delete'),
                 'copy', 'cut', ...pasteActions, 'duplicate'] as AppElementAction[]
+
+            const componentActions = () => {
+                const componentIsInUse = this.findElementsBy( el => el instanceof ComponentInstance && el.kind === element.codeName).length > 0
+                return componentIsInUse ? standardActionsAvailable.filter(action => !(action instanceof ConfirmAction)) : standardActionsAvailable
+            }
             const specialActionsAvailable = {
                 ToolFolder: ['insert', 'pasteInside'],
+                ComponentFolder: ['insert', 'pasteInside'],
+                Component: componentActions(),
                 FileFolder: ['upload'],
                 File: [new ConfirmAction('delete')],
                 Tool: ['show', ...standardActionsAvailable],
@@ -114,6 +148,11 @@ export default class Project extends BaseElement<Properties> implements Element 
         return [this.doInsert(insertPosition, targetItemId, insertedElements), insertedElements]
     }
 
+    insertMenuItems(insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] {
+        const allElementTypes = [...elementTypeNames(), ...this.userDefinedComponentCodeNames]
+        return allElementTypes.filter(type => this.canInsert(insertPosition, targetItemId, type))
+    }
+
     move(insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) {
         const movedElements = movedElementIds.map(id => this.findElement(id)).filter( el => !!el) as Element[]
         const thisWithoutElements = movedElementIds.reduce((prev: Project, id)=> prev.delete(id), this)
@@ -145,14 +184,14 @@ export default class Project extends BaseElement<Properties> implements Element 
 
     private newElement(elementType: ElementType, properties: object) {
         const newIdSeq = this.findMaxId(elementType) + 1
-        return createElement(elementType, newIdSeq, properties)
+        return createNewElement(elementType, newIdSeq, properties)
     }
 }
 
 export function editorEmptyProject(name = 'New Project') {
     return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new Text('text_1', 'Title', {content: `${name} App`, fontSize: 24})
+            new Text('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})
         ])
     ])], name)
 }

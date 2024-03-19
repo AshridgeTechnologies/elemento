@@ -16,12 +16,10 @@ const treeData = (project: Project, errors: AllErrors): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
         const children = el.elements?.map(treeNodeFromElement)
         const hasErrors = !!errors[el.id]
-        return new ModelTreeItem(el.id, el.name, el.kind, hasErrors, children)
+        return new ModelTreeItem(el.id, el.name, el.kind, el.iconClass, hasErrors, children)
     }
     return treeNodeFromElement(project)
 }
-
-const allElementTypes = Object.keys(elementTypes()) as ElementType[]
 
 export default function Editor({
     project,
@@ -41,12 +39,8 @@ export default function Editor({
 
     const element = project.findElement(firstSelectedItemId)
     const propertyArea = (firstSelectedItemId && element)
-        ? <PropertyEditor element={element} onChange={onChange} errors={errors[element.id]}/>
+        ? <PropertyEditor element={element} propertyDefs={project.propertyDefsOf(element)} onChange={onChange} errors={errors[element.id]}/>
         : null
-
-    const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {
-        return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
-    }
 
     const onContextMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
         const newElementId = onInsert(insertPosition, targetElementId, elementType)
@@ -66,7 +60,7 @@ export default function Editor({
                     <AppStructureTree treeData={treeData(project, errors)} onSelect={onSelectedItemsChange}
                                       selectedItemIds={selectedItemIds}
                                       onAction={onTreeAction} onInsert={onContextMenuInsert}
-                                      insertMenuItemFn={insertMenuItems}
+                                      insertMenuItemFn={project.insertMenuItems.bind(project)}
                                       actionsAvailableFn={actionsAvailableFn}
                                       onMove={onMove}/>
                 </Grid>

@@ -14,8 +14,8 @@ type Properties = Partial<Readonly<{
 
 export default class Button extends BaseElement<Properties> implements Element {
 
-    static kind = 'Button'
-    static get iconClass() { return 'crop_3_2' }
+    readonly kind = 'Button'
+    get iconClass() { return 'crop_3_2' }
     type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}

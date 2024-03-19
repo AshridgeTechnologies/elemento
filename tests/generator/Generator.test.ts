@@ -23,7 +23,7 @@ import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
-import Project, {TOOLS_ID} from '../../src/model/Project'
+import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
@@ -37,8 +37,11 @@ import ToolFolder from '../../src/model/ToolFolder'
 import Calculation from '../../src/model/Calculation'
 import ToolImport from '../../src/model/ToolImport'
 import Rule from '../../src/model/types/Rule';
+import ComponentDef from '../../src/model/ComponentDef'
+import ComponentInstance from '../../src/model/ComponentInstance'
+import ComponentFolder from '../../src/model/ComponentFolder'
 
-const project = (el: Element) => Project.new([el], 'Project 1', 'proj1', {})
+const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
@@ -1428,6 +1431,62 @@ function Page1(props) {
     )
 }
 `)
+})
+
+test('generates user defined component and instance', () => {
+
+    const compDef = new ComponentDef('c1', 'My Component', {input1: 'source', input2: 'destination'},[
+        new Text('id1', 'Text 1', {content: ex`"From " + props.source`}),
+        new Text('id2', 't2', {content: ex`"To " + props.destination`}),
+    ])
+
+    const componentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef])
+    const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id3', 'Text 3', {content: 'Over here!'}),
+                new ComponentInstance('id4', 'A Component', {componentType: compDef.codeName, source: 'Here', destination: 'There', styles: {color: 'blue'}, show: true}),
+            ]
+        )])
+
+    const gen = new Generator(app, project(app, componentFolder))
+
+    expect(gen.output().files[0].name).toBe('MyComponent.js')
+    expect(gen.output().files[0].contents).toBe(`function MyComponent(props) {
+    const pathWith = name => props.path + '.' + name
+    const {ComponentElement, TextElement} = Elemento.components
+
+    return React.createElement(ComponentElement, props,
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'From ' + props.source),
+        React.createElement(TextElement, {path: pathWith('t2')}, 'To ' + props.destination),
+    )
+}
+`)
+
+    expect(gen.output().files[1].name).toBe('Page1.js')
+    expect(gen.output().files[1].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text3')}, 'Over here!'),
+        React.createElement(MyComponent, {path: pathWith('AComponent'), source: 'Here', destination: 'There', show: true, styles: {color: 'blue'}}),
+    )
+}
+`)
+
+    expect(gen.output().files[2].name).toBe('appMain.js')
+    expect(gen.output().files[2].contents).toBe(`export default function App1(props) {
+    const pathWith = name => 'App1' + '.' + name
+    const {App} = Elemento.components
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+
+    return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
+}
+`)
+
 })
 
 test('transforms expressions to functions where needed and does not fail where no expression present', () => {

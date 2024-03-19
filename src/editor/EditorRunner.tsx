@@ -567,8 +567,6 @@ export default function EditorRunner() {
         }
     }
 
-    const allElementTypes = Object.keys(elementTypes()) as ElementType[]
-
     const onMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {
         const newElementId = onInsert(insertPosition, targetElementId, elementType)
         onSelectedItemsChange([newElementId])
@@ -586,9 +584,7 @@ export default function EditorRunner() {
             const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
-            const insertMenuItems = (insertPosition: InsertPosition, targetItemId: ElementId): ElementType[] => {
-                return allElementTypes.filter(type => project.canInsert(insertPosition, targetItemId, type))
-            }
+            const insertMenuItems = project.insertMenuItems.bind(project)
 
             const projectTools = Object.fromEntries(
                 project.findElementsBy( el => el.kind === 'Tool' || el.kind === 'ToolImport')

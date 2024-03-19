@@ -7,8 +7,8 @@ type Properties = { }
 
 export default class DataTypes extends BaseElement<Properties> implements Element {
 
-    static kind = 'DataTypes'
-    static get iconClass() { return 'view_module' }
+    readonly kind = 'DataTypes'
+    get iconClass() { return 'view_module' }
 
     static get parentType(): ParentType { return null }
 

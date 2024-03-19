@@ -16,7 +16,7 @@ type Properties = {
 
 export default class FunctionDef extends BaseElement<Properties> implements Element {
 
-    static get iconClass() { return 'functions' }
+    get iconClass() { return 'functions' }
     kind: ElementType = 'Function'
     type(): ComponentType { return 'background' }
 

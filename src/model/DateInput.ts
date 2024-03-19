@@ -7,7 +7,7 @@ export type Properties = BaseInputProperties<Date> & {
 
 export default class DateInput extends BaseInputElement<Properties> implements Element {
 
-    static kind = 'DateInput'
-    static get iconClass() { return 'insert_invitation_outlined' }
+    readonly kind = 'DateInput'
+    get iconClass() { return 'insert_invitation_outlined' }
     get valueType(): PropertyType { return 'date' }
 }

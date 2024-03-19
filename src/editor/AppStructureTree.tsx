@@ -5,8 +5,7 @@ import 'rc-tree/assets/index.less'
 import './appStructureTree.css'
 import {Icon, useTheme} from '@mui/material'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {elementOfType} from '../model/elements'
-import {ActionsAvailableFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
+import {ActionsAvailableFn, InsertMenuItemsFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
 import {flatten, union, without} from 'ramda'
 import EditMenu from './EditMenu'
 
@@ -14,8 +13,8 @@ export class ModelTreeItem implements DataNode {
     constructor(public id: string,
                 public title: string,
                 public kind: ElementType,
-                public hasErrors: boolean = false,
-                public children?: ModelTreeItem[]) {}
+                public iconClass: string,
+                public hasErrors: boolean = false, public children?: ModelTreeItem[]) {}
     get key() { return this.id }
     get className() { return `${this.hasErrors ? 'rc-tree-error' : ''} ${this.hasChildErrors() ? 'rc-tree-child-error' : ''}`.trim()}
 
@@ -48,10 +47,8 @@ export class ModelTreeItem implements DataNode {
 
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
     // @ts-ignore
-    const kind = (props.data.data as ModelTreeItem).kind
+    const iconClass = (props.data.data as ModelTreeItem).iconClass
     const sx = { fontSize: 16, color }
-    const elementClass = elementOfType(kind)
-    const {iconClass} = elementClass
     return <Icon sx={sx}>{iconClass}</Icon>
 }
 
@@ -67,7 +64,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
                                              insertMenuItemFn, actionsAvailableFn, onMove}: {
     treeData: ModelTreeItem, onSelect?: (ids: string[]) => void, selectedItemIds?: string[],
     onAction: OnActionFn,
-    insertMenuItemFn: (insertPosition: InsertPosition, targetElementId: ElementId) => ElementType[],
+    insertMenuItemFn: InsertMenuItemsFn,
     actionsAvailableFn: ActionsAvailableFn,
     onInsert: OnInsertFnWithPositionFn,
     onMove: (insertPosition: InsertPosition, targetElementId: ElementId, movedElementIds: ElementId[]) => void,

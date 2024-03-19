@@ -9,8 +9,8 @@ type Properties = {
 
 export default class BrowserDataStore extends BaseElement<Properties> implements Element {
 
-    static kind = 'BrowserDataStore'
-    static get iconClass() { return 'sd_storage' }
+    readonly kind = 'BrowserDataStore'
+    get iconClass() { return 'sd_storage' }
     type(): ComponentType { return 'statefulUI' }
 
     get databaseName() {return this.properties.databaseName}

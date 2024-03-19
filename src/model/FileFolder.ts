@@ -5,8 +5,8 @@ import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
 type Properties = {}
 
 export default class FileFolder extends BaseElement<Properties> implements Element {
-    static kind = 'FileFolder'
-    static get iconClass() { return 'folder' }
+    readonly kind = 'FileFolder'
+    get iconClass() { return 'folder' }
 
     get propertyDefs(): PropertyDef[] {
         return []

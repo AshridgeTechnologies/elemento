@@ -12,8 +12,8 @@ type Properties = BaseTypeProperties & {
 
 export default class DecimalType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'DecimalType'
-    static get iconClass() { return 'pin_outlined' }
+    readonly kind = 'DecimalType'
+    get iconClass() { return 'pin_outlined' }
 
     get min() {return this.properties.min}
     get max() {return this.properties.max}

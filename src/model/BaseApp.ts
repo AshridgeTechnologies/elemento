@@ -11,6 +11,7 @@ import {
 } from './Types'
 import {without} from 'ramda'
 import Page from './Page'
+import ComponentDef from './ComponentDef'
 
 export type Properties = Partial<Readonly<{
     author: PropertyValueType<string>,
@@ -18,7 +19,7 @@ export type Properties = Partial<Readonly<{
     startupAction: PropertyExpr
 }>>
 
-export class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
+export abstract class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
 
     type(): ComponentType {
         return 'app'
@@ -62,7 +63,7 @@ export class BaseApp<PropsType extends Properties = Properties> extends BaseElem
     protected appCanContain(elementType: ElementType, parentType: ParentType) {
         return parentType === 'App' ||
             parentType === this.kind || // to cover element types that extend App
-            ['Collection', 'Function', 'FunctionImport'].includes(elementType)
+            ['Collection', 'Function', 'FunctionImport', 'Component'].includes(elementType)
     }
 
     static get parentType(): ParentType {

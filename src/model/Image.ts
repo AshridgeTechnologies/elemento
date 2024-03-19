@@ -1,4 +1,4 @@
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import Element from './Element'
 import {ComponentType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 
@@ -9,9 +9,9 @@ type Properties = Partial<Readonly<{
 
 export default class Image extends BaseElement<Properties> implements Element {
 
-    static kind = 'Image'
+    readonly kind = 'Image'
 
-    static get iconClass() { return 'image' }
+    get iconClass() { return 'image' }
 
     get source() {return this.properties.source}
     get description() {return this.properties.description}
@@ -22,8 +22,7 @@ export default class Image extends BaseElement<Properties> implements Element {
         return [
             propDef('source', 'string'),
             propDef('description', 'string'),
-            propDef('show', 'boolean'),
-            propDef('styles', 'styles')
+            ...visualPropertyDefs()
         ]
     }
 

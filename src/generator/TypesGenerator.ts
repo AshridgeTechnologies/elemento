@@ -7,7 +7,7 @@ import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote} fro
 import Element from '../model/Element'
 import {without} from 'ramda'
 import Parser from './Parser'
-import {CombinedPropertyValue, EventActionPropertyDef} from '../model/Types'
+import {CombinedPropertyValue, EventActionPropertyDef, PropertyValue} from '../model/Types'
 import {dataTypeElementTypes} from '../model/elements'
 
 const indentLevel1 = '    '
@@ -26,7 +26,7 @@ export default class TypesGenerator {
     }
 
     private modelProperties(element: Element) {
-        const propertyDefs = element.propertyDefs.filter(def => !def.state )
+        const propertyDefs = this.project.propertyDefsOf(element).filter(def => !def.state )
         const propertyExprs = propertyDefs.map(def => {
             const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
             const exprType: ExprType = isEventAction ? 'action': 'singleExpression'
@@ -105,7 +105,7 @@ export default class TypesGenerator {
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
-        const propertyValue = element[propertyName as keyof Element] as CombinedPropertyValue | undefined
+        const propertyValue = element.propertyValue(propertyName) as PropertyValue | undefined
         const errorMessage = this.parser.propertyError(element.id, propertyName)
         if (errorMessage && (typeof errorMessage === 'string') && !errorMessage.startsWith('Incomplete item')) {
             return `Elemento.codeGenerationError(\`${this.parser.getExpression(propertyValue)}\`, '${errorMessage}')`

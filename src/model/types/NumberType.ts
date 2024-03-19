@@ -14,8 +14,8 @@ type Properties = BaseTypeProperties & {
 
 export default class NumberType extends BaseTypeElement<Properties> implements Element {
 
-    static kind = 'NumberType'
-    static get iconClass() { return 'pin_outlined' }
+    readonly kind = 'NumberType'
+    get iconClass() { return 'pin_outlined' }
 
     get min() {return this.properties.min}
     get max() {return this.properties.max}
