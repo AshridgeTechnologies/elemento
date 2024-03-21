@@ -84,14 +84,15 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Block element - or combine with Layout
+- Block element
 - Horizontal list
 - Freeform list, generated from a list, with positions set by data
 - Event actions: double click, drop
 - Speech synthesis
-- Shapes, drawing, 
-- Animation - see https://sparkbox.github.io/bouncy-ball/#vanilla-js
+- Shapes, drawing, - clip-path, svg?
+- Timers and Animation - see https://sparkbox.github.io/bouncy-ball/#vanilla-js
 - When condition actions
+- Multi-user shared data
 
 ### Priority for credibility
 - Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
