@@ -1,12 +1,15 @@
 import React from 'react'
 import {Typography} from '@mui/material'
-import lodash from 'lodash'; const {isArray, isFunction, isPlainObject, isObject, isString} = lodash;
-import {PropVal, StylesProps, valueLiteral, valueOfProps} from '../runtimeFunctions'
+import lodash from 'lodash';
+import {PropVal, StylesPropVals, valueLiteral, valueOfProps} from '../runtimeFunctions'
 import {flatten} from 'ramda'
+import {sxProps} from './ComponentHelpers'
+
+const {isArray, isFunction, isPlainObject, isObject, isString} = lodash;
 
 type Properties = Readonly<{path: string, children?: any,
     show?: PropVal<boolean>,
-    styles?: StylesProps
+    styles?: StylesPropVals
     }>
 
 function asText(content: any) {
@@ -27,14 +30,10 @@ function asText(content: any) {
     return contentValue
 }
 
+
 export default function TextElement({children, path, ...props}: Properties) {
     const childArray = isArray(children) ? children : [children]
-    const {show = true, styles = {}} = valueOfProps(props)
-    const showProps = show ? {} : {display: 'none'}
-    const sxProps = {
-        ...showProps,
-        ...styles
-    }
+    const {show, styles = {}} = valueOfProps(props)
 
-    return React.createElement(Typography, {id: path, sx: sxProps}, ...childArray.map(asText))
+    return React.createElement(Typography, {id: path, sx: sxProps(styles, show)}, ...childArray.map(asText))
 }

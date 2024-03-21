@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import PropertyEditor from '../../src/editor/PropertyEditor'
+import PropertyEditor from '../../src/editorStylesPropertyEditor/PropertyEditor'
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
@@ -30,6 +30,7 @@ import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
+import {clearPresetPositionStyles, presetPositionStyles} from '../../src/editorStylesPropertyEditor/StylesPropertyEditor'
 
 let container: any
 let changedValue: any
@@ -61,8 +62,6 @@ const kindButton = (index: number) => {
     const nodes = container.querySelectorAll('button').values()
     return Array.from(nodes)[index] as HTMLButtonElement
 }
-
-const project = Project1.new([], 'proj1', 'id1', {})
 
 test('shows type and id and notes', () => {
     const element = new Page('id1', 'Page 1', {notes: 'This is the first page'}, [])
@@ -493,3 +492,47 @@ test('shows errors for styles properties', () => {
     expect(inputValue('Border')).toBe('10+')
     expect(errorValue('Border')).toBe('Unexpected end of input')
 })
+
+describe('Preset position styles', () => {
+    const centerPreset = presetPositionStyles.center
+    const topLeftPreset = presetPositionStyles.topLeft
+    const centerPresetModified = {...centerPreset, top: '49%'}
+    const centerPresetWithRight = {...centerPreset, right: '0'}
+
+    test('shows empty preset if styles do not match a preset', () => {
+        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetModified})
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        expect(selectValue('Preset Position')).toBe('')
+    })
+
+    test('shows empty preset if styles match a preset but have extra positioning styles', () => {
+        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetWithRight})
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        expect(selectValue('Preset Position')).toBe('')
+    })
+
+    test('shows preset name if styles match a preset', () => {
+        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        expect(selectValue('Preset Position')).toBe('center')
+    })
+
+    test('updates styles to match a preset', () => {
+        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        expect(selectValue('Preset Position')).toBe('center')
+        fireEvent.input(select('Preset Position'), {target: {value: 'topLeft'}})
+        expect(changedValue).toStrictEqual(topLeftPreset)
+        expect(onChange).toHaveBeenCalledWith('id1', 'styles', topLeftPreset)
+    })
+
+    test('updates styles to clear a preset', () => {
+        const element = new Text('id1', 'Text 1', {content: 'x', styles: {...centerPreset, color: 'blue'}})
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        expect(selectValue('Preset Position')).toBe('center')
+        fireEvent.input(select('Preset Position'), {target: {value: ''}})
+        expect(changedValue).toStrictEqual({color: 'blue'})
+        expect(onChange).toHaveBeenCalledWith('id1', 'styles', {color: 'blue'})
+    })
+})
+

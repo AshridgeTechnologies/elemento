@@ -1,14 +1,14 @@
 import React from 'react'
-import {PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
-import {Stack} from '@mui/material'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
+import {Stack, SxProps} from '@mui/material'
+import {sxProps} from './ComponentHelpers'
 
-type Properties = { path: string, horizontal?: PropVal<boolean>, wrap?: PropVal<boolean>, show?: PropVal<boolean>, styles?: StylesProps, children?: any }
+type Properties = { path: string, horizontal?: PropVal<boolean>, wrap?: PropVal<boolean>, show?: PropVal<boolean>, styles?: StylesPropVals, children?: any }
 
 export default function Layout({children, path,  ...props}: Properties) {
-    const {horizontal = false, wrap = false, show = true, styles = {}} = valueOfProps(props)
+    const {horizontal = false, wrap = false, show, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
     const flexWrap = wrap ? 'wrap' : 'nowrap'
-    const showProps = show ? {} : {display: 'none'}
     const sx = {
         py: horizontal ? 0 : 1,
         overflow: horizontal ? 'visible' : 'scroll',
@@ -16,9 +16,8 @@ export default function Layout({children, path,  ...props}: Properties) {
         boxSizing: 'border-box',
         alignItems: horizontal ? 'baseline' : 'flex-start',
         padding: horizontal ? 0 : 1,
-        ...showProps,
-        ...styles
-    }
+        ...sxProps(styles, show),
+    } as SxProps<{}>
     return React.createElement(Stack, {
         id: path,
         direction,

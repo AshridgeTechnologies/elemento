@@ -1,6 +1,6 @@
 import React, {createElement, Fragment, KeyboardEventHandler} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import {Box, FormHelperText, Stack, Typography} from '@mui/material'
+import {Box, FormHelperText, Stack, SxProps, Typography} from '@mui/material'
 import {StateMap, useGetObjectState, useObjectStates} from '../appData'
 import BaseFormState, {DataTypeFormState} from './FormState'
 import {isArray} from 'lodash'
@@ -15,7 +15,7 @@ import DateInput, {DateInputState} from './DateInput'
 import {isNil, last, without} from 'ramda'
 import DecimalType from '../types/DecimalType'
 import BigNumber from 'bignumber.js'
-import {BaseInputComponentProperties, InfoButton} from './InputComponentHelpers'
+import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -89,10 +89,9 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>) => 
 }
 
 export default function Form({children, path, ...props}: Properties) {
-    const {horizontal = false, wrap = false, show = true, label, keyAction, styles = {}} = valueOfProps(props)
+    const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
     const flexWrap = wrap ? 'wrap' : 'nowrap'
-    const showProps = show ? {} : {display: 'none'}
     const sx = {
         py: horizontal ? 0 : 1,
         overflow: horizontal ? 'visible' : 'scroll',
@@ -101,9 +100,8 @@ export default function Form({children, path, ...props}: Properties) {
         boxSizing: 'border-box',
         alignItems: horizontal ? 'baseline' : 'flex-start',
         padding: horizontal ? 0 : 1,
-        ...showProps,
-        ...styles
-    }
+        ...sxProps(styles, show)
+    } as SxProps
 
     const state = useGetObjectState<BaseFormState>(path)
     const dataType = state.dataType

@@ -2,6 +2,7 @@ import {ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr, Property
 import lodash from 'lodash';
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
+import {pickBy} from 'ramda'
 
 const {isObject} = lodash;
 
@@ -13,6 +14,7 @@ export const isExpr = (propertyValue: PropertyValue): propertyValue is PropertyE
 export const isEventAction = (propertyDef: PropertyDef): boolean => isObject(propertyDef.type) && (propertyDef.type as EventActionPropertyDef).type === 'Action'
 
 export const isNumeric = (s: string) : boolean => s!== '' && s.match(/^\d*\.?\d*$/) !== null
+export const isNumericAnySign = (s: string) : boolean => s!== '' && s.match(/^-?\d*\.?\d*$/) !== null
 export const isBooleanString = (s: string) : boolean => s.match(/true|false/) !== null
 export const elementToJSON = (value: Element | Element[]) => JSON.stringify(value, null, 2)
 
@@ -103,4 +105,8 @@ export const isoDateReviver = (key: string, value: any) => {
     }
 
     return value
+}
+
+export const withoutUndefined = (obj: object) => {
+    return pickBy( val => val !== undefined, obj)
 }

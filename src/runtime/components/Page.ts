@@ -1,8 +1,9 @@
 import React from 'react'
-import {StylesProps, valueOfProps} from '../runtimeFunctions'
+import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Stack} from '@mui/material'
+import {sxProps} from './ComponentHelpers'
 
-type Properties = { path: string, children?: any, styles?: StylesProps }
+type Properties = { path: string, children?: any, styles?: StylesPropVals }
 
 export default function Page({children, path, ...props}: Properties) {
     const {styles = {}} = valueOfProps(props)
@@ -17,7 +18,7 @@ export default function Page({children, path, ...props}: Properties) {
             overflowY: 'scroll',
             padding: 1,
             position: 'relative',
-            ...styles
+            ...sxProps(styles)
         },
         children
     })

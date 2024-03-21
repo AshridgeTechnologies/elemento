@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Block element produces output containing multiple children 1`] = `
+<div
+  className="MuiBox-root css-b40tk8"
+  id="app.page1.things"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+    id="app.page1.things.text1"
+  >
+    First text
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
+    id="app.page1.things.text2"
+  >
+    Second text
+  </p>
+</div>
+`;
+
+exports[`Block element produces output containing single child 1`] = `
+<div
+  className="MuiBox-root css-b40tk8"
+  id="app.page1.things"
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+    id="app.page1.things.text1"
+  >
+    First text
+  </p>
+</div>
+`;

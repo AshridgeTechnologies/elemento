@@ -376,7 +376,8 @@ ${generateChildren(form, indentLevel2, form)}
 
             case 'Menu':
             case 'AppBar':
-            case 'Layout': {
+            case 'Layout':
+            case 'Block': {
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())},
 ${generateChildren(element, indentLevel3, containingComponent)}
     )`
@@ -435,7 +436,6 @@ ${generateChildren(element, indentLevel3, containingComponent)}
     }
 
     private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | DefinedFunction {
-
 
         const propName = (def: PropertyDef) => {
             if (def.name === 'initialValue') return 'value'

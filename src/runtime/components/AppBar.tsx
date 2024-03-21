@@ -1,23 +1,18 @@
 import React from 'react';
-import {PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {AppBar as MuiAppBar, Stack, Toolbar, Typography} from '@mui/material'
-import {typographyStyles} from './InputComponentHelpers'
+import {sxProps, typographyStyles} from './ComponentHelpers'
 import {pick} from 'ramda'
 
 type Properties = { path: string, title?: PropVal<string>, children?: any, show?: PropVal<boolean>,
-    styles?: StylesProps
+    styles?: StylesPropVals
 }
 
 export default function AppBar({children, path, ...props}: Properties) {
     const propVals = valueOfProps(props)
-    const {title, show = true, styles = {}} = propVals
-    const showProps = show ? {} : {display: 'none'}
-    const sxProps = {
-        ...showProps,
-        ...styles
-    }
-    const typographySxProps = pick(typographyStyles, styles)
-    return <MuiAppBar position="static" id={path} sx={sxProps}>
+    const {title, show, styles = {}} = propVals
+    const typographySxProps = sxProps(pick(typographyStyles, styles))
+    return <MuiAppBar position="static" id={path} sx={sxProps(styles, show)}>
             <Toolbar variant="dense">
                 <Stack
                     direction="row"

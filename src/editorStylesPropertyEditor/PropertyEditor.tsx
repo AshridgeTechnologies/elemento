@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 import Element from '../model/Element'
-import {Box, Button, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
-import {OnChangeFn} from './Types'
-import PropertyInput from './PropertyInput'
-import {ElementId, PropertyDef, PropertyType, PropertyValue, StylingProps} from '../model/Types'
+import {Box, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
+import {OnChangeFn} from '../editor/Types'
+import PropertyInput from '../editor/PropertyInput'
+import {PropertyDef, PropertyType, PropertyValue, StylingProps} from '../model/Types'
 import lodash from 'lodash';
 import {FILES_ID, TOOLS_ID} from '../model/Project'
-import {commonStylingProps, StylingProp} from '../model/StylingTypes'
+import {StylesPropertyEditor} from './StylesPropertyEditor'
 
 const {startCase} = lodash;
 
@@ -102,26 +102,3 @@ export default function PropertyEditor({element, propertyDefs, onChange, errors 
     </Box>
 }
 
-function StylesPropertyEditor({elementId, value = {}, onChange, errors = {}}: { elementId: ElementId, value: StylingProps, onChange: OnChangeFn, errors?: object }) {
-
-    const onChangeStyleProperty = (_: ElementId, stylePropName: string, stylePropValue: any) => {
-        const newStyles = {...value, [stylePropName]: stylePropValue}
-        onChange(elementId, 'styles', newStyles)
-    }
-
-    function propertyField(name: string, type: PropertyType = 'string') {
-        const propertyValue = value[name as keyof StylingProps] as unknown as PropertyValue
-        const error = errors[name as keyof object]
-        const key = `${elementId}.styles.${name}.kind`
-        return <PropertyInput key={key} elementId={elementId} name={name} type={type} value={propertyValue} onChange={onChangeStyleProperty} error={error}/>
-    }
-
-    const fields = commonStylingProps.map((name) => propertyField(name))
-    return <Box sx={{
-            '& > :not(style)': {m: 0.5, width: 'calc(100% - 10px)'},
-        }}
-    >
-        <Typography variant='h6'>Styles</Typography>
-        {fields}
-    </Box>
-}

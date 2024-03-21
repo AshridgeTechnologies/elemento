@@ -13,7 +13,7 @@ import {
     inputElementProps,
     propsForInputComponent,
     sxPropsForFormControl
-} from './InputComponentHelpers'
+} from './ComponentHelpers'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>}
 
@@ -28,8 +28,8 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
 }
 
 export default function TextInput({path, ...props}: Properties) {
-    const {label, multiline: multilineProp, readOnly, show = true, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: sxPropsForFormControl(styles, show)}
+    const {label, multiline: multilineProp, readOnly, show, styles = {}} = valueOfProps(props)
+    const sx = sxPropsForFormControl(styles, show)
 
     const state = useGetObjectState<TextInputState>(path)
     const {value, dataType} = state
@@ -60,9 +60,9 @@ export default function TextInput({path, ...props}: Properties) {
         helperText,
         onChange,
         onBlur,
+        sx,
         ...inputProps,
         ...inputComponentProps,
-        ...sxProps,
         ...optionalProps
     })
 }

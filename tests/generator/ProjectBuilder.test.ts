@@ -15,6 +15,7 @@ import ServerFirebaseGenerator from '../../src/generator/ServerFirebaseGenerator
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'
+import {BaseApp} from '../../src/model/BaseApp'
 
 
 const name = new TextType('tt1', 'Name', {required: true})
@@ -66,7 +67,7 @@ const projectClientOnly = Project.new([app3], 'Project Client Only', 'proj2', {}
 
 const expectedClientCode = (app: App | Tool, project: Project = project1) => generate(app, project).code
 const expectedServerFiles = (app: ServerApp, project: Project = project1) => generateServerApp(app, project).files
-const expectedIndexFile = (app: App, project: Project = project1) => generate(app, project).html
+const expectedIndexFile = (app: BaseApp, project: Project = project1) => generate(app, project).html
 const expectedProjectInfo = (project: Project = project1) => `{"apps":[${project.findChildElements('App').map( el => `"${el.codeName}"` ).join(',')}]}`
 
 const getProjectLoader = (project: Project):ProjectLoader & {project: Project} => ({

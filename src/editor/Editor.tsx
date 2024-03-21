@@ -2,7 +2,7 @@ import React from 'react'
 
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
-import PropertyEditor from './PropertyEditor'
+import PropertyEditor from '../editorStylesPropertyEditor/PropertyEditor'
 import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {elementTypes} from '../model/elements'

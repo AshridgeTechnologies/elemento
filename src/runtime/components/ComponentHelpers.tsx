@@ -1,11 +1,11 @@
 import {pick, without} from 'ramda'
-import {commonStylingProps} from '../../model/StylingTypes'
-import {camel} from 'radash'
+import {commonStylingPropNames, defaultUnits} from '../../util/StylingTypes'
+import {camel, mapValues} from 'radash'
 import BaseType from '../types/BaseType'
-import {Icon as MuiIcon, IconButton, InputAdornment, Tooltip} from '@mui/material'
+import {Icon as MuiIcon, IconButton, InputAdornment, SxProps, Tooltip} from '@mui/material'
 import React from 'react'
-import {definedPropertiesOf} from '../../util/helpers'
-import {PropVal, StylesProps} from '../runtimeFunctions'
+import {definedPropertiesOf, isNumericAnySign} from '../../util/helpers'
+import {PropVal, StylesProps, StylesPropVals} from '../runtimeFunctions'
 
 export type BaseInputComponentProperties =
     Readonly<{
@@ -13,7 +13,7 @@ export type BaseInputComponentProperties =
         label?: PropVal<string>,
         readOnly?: PropVal<boolean>,
         show?: PropVal<boolean>,
-        styles?: StylesProps
+        styles?: StylesPropVals
     }>
 
 export const typographyStyles = [
@@ -49,7 +49,7 @@ export const inputElementStyles = [
     'paddingTop',
     'textAlign',
 ]
-export const formControlStyles = without([...inputComponentStyles, ...fieldsetComponentStyles, ...inputElementStyles], commonStylingProps.map(camel))
+export const formControlStyles = without([...inputComponentStyles, ...fieldsetComponentStyles, ...inputElementStyles], commonStylingPropNames.map(camel))
 
 export function InfoButton(props: { description: string }) {
     return <Tooltip title={props.description} placement='top-end'>
@@ -59,17 +59,28 @@ export function InfoButton(props: { description: string }) {
     </Tooltip>
 }
 
-export const sxFieldSetProps = (styles: {}) => ({...pick(fieldsetComponentStyles, styles), zIndex: -1})
-export const sxPropsForFormControl = (styles: {}, show: boolean, additionalProps: {} = {}) => {
-    const showProps = show ? {} : {display: 'none'}
-    return {...pick(formControlStyles, styles), fieldset: sxFieldSetProps(styles), ...additionalProps, ...showProps}
+export const sxProps = (styles: StylesProps, show?: boolean): SxProps<{}> => {
+    const stylesWithDefaultUnits = mapValues(styles as object,
+        (value, name) => value !== undefined && isNumericAnySign(String(value)) && name in defaultUnits ? value + defaultUnits[name] : value)
+
+    const showProps = show !== undefined && !show ? {display: 'none'} : {}
+
+    return {
+        ...stylesWithDefaultUnits,
+        ...showProps
+    }
 }
+export const sxFieldSetProps = (styles: {}) => sxProps({...pick(fieldsetComponentStyles, styles), zIndex: -1})
+export const sxPropsForFormControl = (styles: {}, show: boolean, additionalProps: {} = {}) => ({
+    ...sxProps(pick(formControlStyles, styles), show),
+    fieldset: sxFieldSetProps(styles), ...additionalProps
+}) as SxProps<{}>
 
 export const propsForInputComponent = (dataType: BaseType<any, any> | undefined, styles: {}) => {
     const description = dataType?.description
     const endAdornment = description ? <InputAdornment position='end' sx={{marginLeft: 0}}>{InfoButton({description})}</InputAdornment> : null
-    const inputBaseSxProps = pick(inputComponentStyles, styles)
-    return Object.keys(inputBaseSxProps).length > 0 || endAdornment ? {InputProps: {sx: inputBaseSxProps, endAdornment}} : {}
+    const inputBaseSxProps = sxProps(pick(inputComponentStyles, styles))
+    return Object.keys(inputBaseSxProps!).length > 0 || endAdornment ? {InputProps: {sx: inputBaseSxProps, endAdornment}} : {}
 }
 export const getLabelWithRequired = (dataType: BaseType<any, any> | undefined, label: string | undefined) => dataType?.required ? <>
     <span>{label ?? ''}</span><span

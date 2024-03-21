@@ -1,4 +1,4 @@
-import {StylingProp} from './StylingTypes'
+import {StylingProp} from '../util/StylingTypes'
 
 export type ElementId = string
 export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
@@ -74,6 +74,7 @@ export type ElementType =
     'Component' |
     'Collection' |
     'Layout' |
+    'Block' |
     'FirestoreDataStore' |
     'ServerApp' |
     'ServerAppConnector' |

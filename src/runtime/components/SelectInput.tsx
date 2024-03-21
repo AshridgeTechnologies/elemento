@@ -10,13 +10,13 @@ import {
     inputElementProps,
     propsForInputComponent,
     sxPropsForFormControl
-} from './InputComponentHelpers'
+} from './ComponentHelpers'
 
 type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
 
 export default function SelectInput({path, ...props}: Properties) {
-    const {label, values: valuesFromProps = [], readOnly, show = true, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})}
+    const {label, values: valuesFromProps = [], readOnly, show, styles = {}} = valueOfProps(props)
+    const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
     const state = useGetObjectState<SelectInputState>(path)
     const {value, dataType} = state
@@ -42,7 +42,7 @@ export default function SelectInput({path, ...props}: Properties) {
     return el(FormControl, {
             variant: 'filled',
             size: 'small',
-            ...sxProps,
+            sx,
             error
         },
         el(InputLabel, {id: labelId}, labelWithRequired),

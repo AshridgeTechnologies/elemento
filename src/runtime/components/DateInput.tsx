@@ -5,22 +5,15 @@ import {useGetObjectState} from '../appData'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'
-import {
-    fieldsetComponentStyles,
-    formControlStyles,
-    getLabelWithRequired,
-    inputElementProps,
-    propsForInputComponent,
-    sxFieldSetProps
-} from './InputComponentHelpers'
+import {formControlStyles, getLabelWithRequired, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {definedPropertiesOf} from '../../util/helpers'
-import zIndex from '@mui/material/styles/zIndex'
+import {SxProps} from '@mui/material'
 
 type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean> }
 
 export default function DateInput({path, ...props}: Properties) {
-    const {label, readOnly, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: {...pick(formControlStyles, styles), fieldset: sxFieldSetProps(styles)}}
+    const {label, readOnly, show, styles = {}} = valueOfProps(props)
+    const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
     const state = useGetObjectState<DateInputState>(path)
     const {value, dataType} = state
@@ -47,19 +40,12 @@ export default function DateInput({path, ...props}: Properties) {
             ...inputComponentProps,
             ...inputProps,
         },
-        // field: {
-        //     ...inputProps.inputProps,
-        //     style: {'z-index': 1}
-        // },
-        // inputAdornment: {
-        //     sx: {zIndex: 1}
-        // }
     }
     return readOnly
         ? React.createElement(DateField, {
             slotProps,
             ...optionalProps,
-            ...sxProps,
+            sx,
             value,
             format: 'dd MMM yyyy',
             readOnly
@@ -67,7 +53,7 @@ export default function DateInput({path, ...props}: Properties) {
         : React.createElement(DatePicker, {
             slotProps,
             ...optionalProps,
-            ...sxProps,
+            sx,
             value,
             format: 'dd MMM yyyy',
             // @ts-ignore

@@ -3,7 +3,7 @@ import {map} from 'ramda'
 import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
-import {StylingProp} from '../model/StylingTypes'
+import {StylingProp} from '../util/StylingTypes'
 
 export {isoDateReviver} from '../util/helpers'
 
@@ -107,8 +107,11 @@ export const highlightElement = (id: string | undefined) => {
 
 export type Value<T>   = T | { valueOf: () => T }
 export type PropVal<T> = T | { valueOf: () => T }
-export type StylesProps = Partial<Readonly<{
+export type StylesPropVals = Partial<Readonly<{
     [k in StylingProp]: PropVal<string | number>
+}>>
+export type StylesProps = Partial<Readonly<{
+    [k in StylingProp]: string | number
 }>>
 
 export function valueOf<T>(x: Value<T>): T {

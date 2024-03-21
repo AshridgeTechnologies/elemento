@@ -63,7 +63,7 @@ Stories
 - Complex queries, criteria input via forms
   - Partial string match, multiple values in field, number ranges, date ranges
 - Generating documents - pdf, docx - jsPDF? HTML to PDF or direct PDF gen?  Print CSS?
-- Tables - including different row contents?
+- Tables - including different row contents?  - consider react-data-grid
 - Multi-level reports
 - Ability to print any of the above
 - Scheduled jobs - from uptime checker?

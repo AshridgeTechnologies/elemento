@@ -46,8 +46,8 @@ import ToolFolder from './ToolFolder'
 import Tool from './Tool'
 import Calculation from './Calculation'
 import ToolImport from './ToolImport'
-import ComponentDef from './ComponentDef'
 import ComponentFolder from './ComponentFolder'
+import Block from './Block'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -97,6 +97,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Component: Component,
         Collection: Collection,
         Layout: Layout,
+        Block: Block,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         File: File,

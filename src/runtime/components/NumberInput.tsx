@@ -15,7 +15,7 @@ import {
     inputElementProps,
     propsForInputComponent,
     sxPropsForFormControl
-} from './InputComponentHelpers'
+} from './ComponentHelpers'
 
 type Properties = BaseInputComponentProperties
 
@@ -28,8 +28,8 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
 }
 
 export default function NumberInput({path, ...props}: Properties) {
-    const {label, readOnly, show = true, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})}
+    const {label, readOnly, show, styles = {}} = valueOfProps(props)
+    const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
     const state = useGetObjectState<NumberInputState>(path)
     const {dataValue, dataType} = state
@@ -69,9 +69,9 @@ export default function NumberInput({path, ...props}: Properties) {
         helperText,
         onChange,
         onBlur,
+        sx,
         ...inputProps,
         ...inputComponentProps,
-        ...sxProps,
         ...optionalProps
     })
 }

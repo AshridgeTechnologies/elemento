@@ -1,11 +1,12 @@
 import React, {SyntheticEvent, useCallback, useEffect, useMemo, useRef} from 'react'
-import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
+import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'; const {debounce} = lodash;
 import {equals, isNil} from 'ramda'
+import {sxProps} from './ComponentHelpers'
 
 type Properties = Readonly<{
     path: string,
@@ -14,7 +15,7 @@ type Properties = Readonly<{
     selectable?: boolean,
     selectAction?: ($item: any) => void,
     show?: PropVal<boolean>,
-    styles?: StylesProps
+    styles?: StylesPropVals
 }>
 type StateProperties = {selectedItem?: any, scrollTop?: number}
 
@@ -35,9 +36,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM
 
     const {selectedItem = undefined} = state
-    const {items = [], show = true, styles = {}, selectable = true} = valueOfProps(props)
-    const showProps = show ? {} : {display: 'none'}
-
+    const {items = [], show, styles = {}, selectable = true} = valueOfProps(props)
     useEffect(() => {
         if (selectedItem && selectable && items) {
             const currentSelectedItem = items.find((it:any) => it.id === selectedItem.id)
@@ -73,7 +72,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         }
     )
 
-    const sx = {...fixedSx, ...showProps, ...styles}
+    const sx = {...fixedSx, ...sxProps(styles, show)}
     return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 

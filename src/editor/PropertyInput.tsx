@@ -54,7 +54,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
     }
 
     const initialInputValue = () => {
-        if (value === undefined) {
+        if (value === undefined || value === null) {
             return ''
         } else if (isExpr(value)) {
             return value.expr

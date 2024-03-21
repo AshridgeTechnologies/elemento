@@ -1,25 +1,21 @@
 import React from 'react'
 import {MenuItem as Mui_MenuItem} from '@mui/material'
-import {PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
+import {sxProps} from './ComponentHelpers'
 
 type Properties = Readonly<{
     path: string,
     label: PropVal<string>,
     action?: () => void,
     show?: PropVal<boolean>,
-    styles?: StylesProps
+    styles?: StylesPropVals
 }>
 
 export default function MenuItem({path, action, ...props}: Properties) {
-    const {label, show = true, styles = {}} = valueOfProps(props)
-    const showProps = show ? {} : {display: 'none'}
-    const sx = {
-        ...showProps,
-        ...styles
-    }
+    const {label, show, styles = {}} = valueOfProps(props)
 
     return <Mui_MenuItem
         id={path}
-        sx={sx}
+        sx={sxProps(styles, show)}
         onClick={action}>{label}</Mui_MenuItem>
 }

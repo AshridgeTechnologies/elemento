@@ -10,13 +10,13 @@ import {
     inputElementProps,
     propsForInputComponent,
     sxPropsForFormControl
-} from './InputComponentHelpers'
+} from './ComponentHelpers'
 
 type Properties = BaseInputComponentProperties
 
 export default function TrueFalseInput({path, ...props}: Properties) {
-    const {label = '', readOnly, show = true, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: sxPropsForFormControl(styles, show)}
+    const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
+    const sx = sxPropsForFormControl(styles, show)
 
     const state = useGetObjectState<TrueFalseInputState>(path)
     const {dataValue, dataType} = state
@@ -51,7 +51,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
                           labelPlacement='start'
                           htmlFor={path}
                           control={checkbox}
-                          sx={sxProps.sx}/>
+                          sx={sx}/>
         <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
 }

@@ -1,19 +1,15 @@
 import React from 'react'
-import {PropVal, StylesProps, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Box} from '@mui/material'
+import {sxProps} from './ComponentHelpers'
 
-type Properties = { path: string, show?: PropVal<boolean>, styles?: StylesProps, children?: any }
+type Properties = { path: string, show?: PropVal<boolean>, styles?: StylesPropVals, children?: any }
 
 export default function ComponentElement({children, path,  ...props}: Properties) {
-    const {show = true, styles = {}} = valueOfProps(props)
-    const showProps = show ? {} : {display: 'none'}
-    const sx = {
-        ...showProps,
-        ...styles
-    }
+    const {show, styles = {}} = valueOfProps(props)
     return React.createElement(Box, {
         id: path,
-        sx,
+        sx: sxProps(styles, show),
         children
     })
 }

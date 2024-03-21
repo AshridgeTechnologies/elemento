@@ -1,6 +1,7 @@
 import {valueObj} from '../testutil/testHelpers'
 import {asArray, indexedPath, lastItemIdOfPath, parentPath, valueOf} from '../../src/runtime/runtimeFunctions'
 import BigNumber from 'bignumber.js'
+import {sxProps} from '../../src/runtime/components/ComponentHelpers'
 
 test('gets correct valueOf for date, object, primitive, decimal', () => {
     expect(valueOf(valueObj(42))).toBe(42)
@@ -78,4 +79,17 @@ test('lastItemIdOfPath gets last item id for number and string', () => {
     expect(lastItemIdOfPath('app.thing.widget.#3.theText')).toBe('3')
     expect(lastItemIdOfPath('app.thing.widget.#id3.theText')).toBe('id3')
     expect(lastItemIdOfPath('app.thing.widget.#3.foolist.#id3.theText')).toBe('id3')
+})
+
+test('sxProps adds default units to appropriate numeric values', () => {
+    expect(sxProps({scale: 2, width: 2, height: '2em'})).toStrictEqual({scale: 2, width: '2px', height: '2em'})
+})
+
+test('sxProps sets display: none if show is false otherwise uses styles value or nothing', () => {
+    expect(sxProps({}, true)).toStrictEqual({})
+    expect(sxProps({})).toStrictEqual({})
+    expect(sxProps({}, false)).toStrictEqual({display: 'none'})
+    expect(sxProps({display: 'block'}, true)).toStrictEqual({display: 'block'})
+    expect(sxProps({display: 'block'}, )).toStrictEqual({display: 'block'})
+    expect(sxProps({display: 'block'}, false)).toStrictEqual({display: 'none'})
 })

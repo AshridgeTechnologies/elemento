@@ -1,16 +1,16 @@
 import React from 'react'
-import {TextField} from '@mui/material'
+import {SxProps, TextField} from '@mui/material'
 import yaml from 'js-yaml'
 import {definedPropertiesOf} from '../../util/helpers'
-import {PropVal, StylesProps, valueOf, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {isArray, isObject} from 'radash'
 import {pick} from 'ramda'
-import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps} from './InputComponentHelpers'
+import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 
 
-type Properties = {path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesProps}
+type Properties = {path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}
 type StateProperties = {value: any}
 
 const isObjOrArray = (value: any) => isObject(value) ?? isArray(value)
@@ -27,8 +27,8 @@ const formatDisplay = (value: any) => {
 }
 
 export default function Calculation({path, ...props}: Properties) {
-    const {label, show = true, styles = {}} = valueOfProps(props)
-    const sxProps = {sx: {...pick(formControlStyles, styles), fieldset: sxFieldSetProps(styles)}}
+    const {label, show, styles = {}} = valueOfProps(props)
+    const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
     const state = useGetObjectState<CalculationState>(path)
     const {value} = state
@@ -38,18 +38,18 @@ export default function Calculation({path, ...props}: Properties) {
     const inputComponentProps = propsForInputComponent(undefined, styles)
     const inputProps = inputElementProps(styles, false, {})
 
-    return show ? React.createElement(TextField, {
+    return React.createElement(TextField, {
         id: path,
         type: 'text',
         variant: 'outlined',
         size: 'small',
         value: formatDisplay(value),
         InputLabelProps: {shrink: true},
+        sx,
         ...inputProps,
         ...inputComponentProps,
-        ...sxProps,
         ...optionalProps
-    }) : null
+    })
 }
 
 export class CalculationState extends BaseComponentState<StateProperties>
