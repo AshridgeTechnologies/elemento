@@ -84,7 +84,6 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Block element
 - Horizontal list
 - Freeform list, generated from a list, with positions set by data
 - Event actions: double click, drop
@@ -93,6 +92,7 @@ Stories
 - Timers and Animation - see https://sparkbox.github.io/bouncy-ball/#vanilla-js
 - When condition actions
 - Multi-user shared data
+- Card game assets - eg https://www.revk.uk/2018/06/svg-vector-playing-cards.html
 
 ### Priority for credibility
 - Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
@@ -334,6 +334,7 @@ Done
 - Replace FirebasePublish with a Tool, remove actionDefs, project passed to PropertyEditor
 - Styling
 - User defined components
+- Block element
 
 Bugs fixed
 ----------
