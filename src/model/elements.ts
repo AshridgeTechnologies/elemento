@@ -48,6 +48,7 @@ import Calculation from './Calculation'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
 import Block from './Block'
+import Timer from './Timer'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -88,6 +89,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         List: List,
         Data: Data,
         Calculation: Calculation,
+        Timer: Timer,
         FileDataStore: FileDataStore,
         BrowserDataStore: BrowserDataStore,
         FirestoreDataStore: FirestoreDataStore,
