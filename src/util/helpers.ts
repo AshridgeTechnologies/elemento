@@ -13,7 +13,7 @@ export function definedPropertiesOf(obj: object) {
 export const isExpr = (propertyValue: PropertyValue): propertyValue is PropertyExpr => isObject(propertyValue) && 'expr' in propertyValue
 export const isEventAction = (propertyDef: PropertyDef): boolean => isObject(propertyDef.type) && (propertyDef.type as EventActionPropertyDef).type === 'Action'
 
-export const isNumeric = (s: string) : boolean => s!== '' && s.match(/^\d*\.?\d*$/) !== null
+export const isNumeric = (s: string | undefined) : boolean => s !== undefined && s!== '' && s.match(/^\d*\.?\d*$/) !== null
 export const isNumericAnySign = (s: string) : boolean => s!== '' && s.match(/^-?\d*\.?\d*$/) !== null
 export const isBooleanString = (s: string) : boolean => s.match(/true|false/) !== null
 export const elementToJSON = (value: Element | Element[]) => JSON.stringify(value, null, 2)

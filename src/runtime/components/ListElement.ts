@@ -7,6 +7,7 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'; const {debounce} = lodash;
 import {equals, isNil} from 'ramda'
 import {sxProps} from './ComponentHelpers'
+import {isNumeric} from '../../util/helpers'
 
 type Properties = Readonly<{
     path: string,
@@ -38,8 +39,11 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     const {selectedItem = undefined} = state
     const {items = [], show, styles = {}, selectable = true} = valueOfProps(props)
     useEffect(() => {
-        if (selectedItem && selectable && items) {
-            const currentSelectedItem = items.find((it:any) => it.id === selectedItem.id)
+        if (!isNil(selectedItem) && selectable && items) {
+            const currentSelectedItem = items.find((it:any, index: number) => it === selectedItem
+                || (it.id !== undefined && (it.id === selectedItem || it.id === (selectedItem as any)?.id))
+                || index === selectedItem
+            )
             if (!equals(selectedItem, currentSelectedItem)) {
                 state._setSelectedItem(currentSelectedItem)
             }
@@ -50,7 +54,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         const targetId = (event.target as HTMLElement).id
         const itemId = lastItemIdOfPath(targetId)
 
-        const selectedItem = items.find((it:any) => it.id === itemId)
+        const selectedItem = items.find((it:any) => it.id === itemId) ?? (isNumeric(itemId) && items[Number(itemId)])
         if (selectable) {
             state._setSelectedItem(selectedItem)
         }
@@ -59,9 +63,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     const onClick = selectable || props.selectAction ? onClickFn : null
     const isSelected = (item: any) => {
         return !isNil(selectedItem) && (
-            item === selectedItem
-            || item.id === selectedItem
-            || item.id === (selectedItem as any)?.id
+            item === selectedItem || (item.id !== undefined && (item.id === selectedItem || item.id === (selectedItem as any)?.id))
         )
     }
     const children = asArray(items).map((item, index) => {
