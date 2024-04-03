@@ -1781,6 +1781,47 @@ export default function Test1(props) {
 `)
 })
 
+test('generates function imports for a Tool', () => {
+    const tool = new Tool('tool1', 'Test1', {}, [
+        new FunctionImport('f1', 'Get Name', {source: 'Function1.js'}),
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz')`}),
+            ]
+        )])
+
+    const gen = new Generator(tool, project(new ToolFolder('tf1', 'Tools', {}, [tool])))
+    expect(gen.output().code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
+const Elemento = await import(runtimeUrl)
+const {React} = Elemento
+const {importModule, importHandlers} = Elemento
+const GetName = await import('../../files/Function1.js').then(...importHandlers())
+
+// Page1.js
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement} = Elemento.components
+    const {Editor, Preview} = Elemento
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'This is ' + GetName('xyz')),
+    )
+}
+
+// Test1.js
+export default function Test1(props) {
+    const pathWith = name => 'Test1' + '.' + name
+    const {App} = Elemento.components
+    const {Editor, Preview} = Elemento
+    const pages = {Page1}
+    const {appContext} = props
+    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+
+    return React.createElement(App, {path: 'Test1', },)
+}
+`)
+})
+
 test('generates error for syntax error in expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [

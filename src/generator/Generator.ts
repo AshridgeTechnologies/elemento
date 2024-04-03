@@ -107,7 +107,8 @@ export default class Generator {
                 return `const ${codeName} = await importModule('${source}'${exportNameArg})`
             } else {
                 const exportNameArg = exportName ? `'${exportName}'` : ''
-                const importPath = `../${ASSET_DIR}/${source ?? codeName + '.js'}`
+                const rootPath = app.kind === 'Tool' ? '../..' : '..'
+                const importPath = `${rootPath}/${ASSET_DIR}/${source ?? codeName + '.js'}`
                 return `const ${codeName} = await import('${importPath}').then(...importHandlers(${exportNameArg}))`
             }
         }
