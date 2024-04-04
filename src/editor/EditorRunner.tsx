@@ -21,7 +21,7 @@ import {ASSET_DIR} from '../shared/constants'
 import {wait, waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-import lodash from 'lodash';
+import lodash, {startCase} from 'lodash';
 import {NewProjectDialog} from './actions/NewProject'
 import ProjectBuilder from '../generator/ProjectBuilder'
 import BrowserProjectLoader from '../generator/BrowserProjectLoader'
@@ -35,7 +35,7 @@ import PreviewPanel from './PreviewPanel'
 import AppBar from '../appsShared/AppBar'
 import {elementTypes} from '../model/elements'
 import EditorMenuBar from './EditorMenuBar'
-import {without} from 'ramda'
+import {last, without} from 'ramda'
 import {UploadDialog} from './UploadDialog'
 import {CreateGitHubRepoDialog} from './CreateGitHubRepoDialog'
 import {CommitDialog} from './CommitDialog'
@@ -125,7 +125,7 @@ export default function EditorRunner() {
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [tools, setTools] = useState<(Tool | ToolImport)[]>([])
-    const [selectedTool, setSelectedTool] = useState<string | null>(null)
+    const [selectedToolId, setSelectedToolId] = useState<string | null>(null)
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const projectBuilderRef = useRef<ProjectBuilder>()
@@ -219,10 +219,13 @@ export default function EditorRunner() {
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
-        const initialOpenTools = project.findElementsBy((el: Element) => el.kind === 'Tool' && ((el as Tool).showWhenProjectOpened?? false)) as Tool[]
-        setTools(initialOpenTools)
-        setSelectedTool(initialOpenTools[0]?.codeName ?? null)
-        setShowTools(initialOpenTools.length > 0)
+        const toolsToKeep = tools.filter( tool => tool.kind === 'ToolImport')
+        setTools(toolsToKeep)
+        const selectedToolIsStillOpen = toolsToKeep.some( tool => tool.id === selectedToolId)
+        if (!selectedToolIsStillOpen) {
+            setSelectedToolId(toolsToKeep[0]?.id ?? null)
+        }
+
     }
 
     function refreshServerAppConnectors() {
@@ -321,6 +324,12 @@ export default function EditorRunner() {
         }
     }
 
+    const openInitialTools = () => {
+        const searchParams = new URLSearchParams(location.search)
+        const toolUrls = searchParams.getAll('tool')
+        toolUrls.forEach( url => showTool(toolImportFromUrl(url)))
+    }
+
     useEffect(() => {
         window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
@@ -331,9 +340,25 @@ export default function EditorRunner() {
     useEffect(initServiceWorker, [])
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorElement()])
     useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
+    useEffect(openInitialTools, [])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
     const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id
+    const toolImportFromUrl = (url: string) => {
+        const ownOrigin = window.location.origin
+        const getUrl = () => {
+            try {
+                return new URL(url, ownOrigin)
+            } catch (e: any) {
+                return new URL('/notFound', ownOrigin)
+            }
+        }
+        const theUrl = getUrl()
+        const id = url.replace(/\W/g, '')
+        const name = startCase(last(theUrl.pathname.split('/')))
+        const studioAccess = theUrl.origin === ownOrigin
+        return new ToolImport(id, name, {source: url, studioAccess})
+    }
     const actionsAvailableFn: ActionsAvailableFn = (ids: ElementId[]): AppElementAction[] => getOpenProject().actionsAvailable(ids)
     const actionsAvailableFnNoInsert: ActionsAvailableFn = (ids: ElementId[]): AppElementAction[] => without(['insert'], actionsAvailableFn(ids))
 
@@ -441,6 +466,7 @@ export default function EditorRunner() {
     }
 
     const onHelp = () => showTool(helpToolImport)
+    const onOpenTool = (url: string) => showTool(toolImportFromUrl(url))
     const onFirebase = () => showTool(firebaseToolImport)
     const onInspector = () => showTool(inspectorImport)
 
@@ -538,20 +564,20 @@ export default function EditorRunner() {
     const showTool = (tool: Tool | ToolImport) => {
         let alreadyOpen = tools.some(t => t.id === tool.id)
         if (!alreadyOpen) {
-            setTools(tools.concat(tool))
+            setTools(tools => tools.concat(tool))
         }
-        setSelectedTool(tool.codeName)
+        setSelectedToolId(tool.id)
         setShowTools(true)
     }
 
-    const onCloseTool = (toolName: string) => {
-        const oldToolIndex = tools.findIndex(t => t.codeName === toolName)
-        const newTools = tools.filter(t => t.codeName !== toolName)
+    const onCloseTool = (toolId: string) => {
+        const oldToolIndex = tools.findIndex(t => t.id === toolId)
+        const newTools = tools.filter(t => t.id !== toolId)
         setTools(newTools)
-        if (selectedTool === toolName) {
+        if (toolId === selectedToolId) {
             const nextToolIndex = Math.min(oldToolIndex, newTools.length - 1)
             if (nextToolIndex >= 0) {
-                setSelectedTool(newTools[nextToolIndex].codeName)
+                setSelectedToolId(newTools[nextToolIndex].id)
             }
         }
     }
@@ -575,6 +601,16 @@ export default function EditorRunner() {
     const signedIn = useGitHubSignInState()
 
     function mainContent() {
+
+        const toolsOpen = tools.length > 0
+        const editorHeight = toolsOpen ? (showTools ? '60%' : 'calc(100% - 50px)') : '100%'
+        const toolsHeight = toolsOpen ? (showTools ? '40%' : '50px') : '0px'
+
+        function toolTabsPanel() {
+            return <ToolTabsPanel tools={tools} selectedTool={selectedToolId!}
+                                  toolsShown={showTools}
+                                  onSelectTool={setSelectedToolId} onShowTools={setShowTools} onCloseTool={onCloseTool}/>
+        }
 
         if (projectHandler.current) {
             const project = getOpenProject()
@@ -608,15 +644,12 @@ export default function EditorRunner() {
                     onAction,
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
-                    selectedItemIds, onHelp,
+                    selectedItemIds, onHelp, onOpenTool,
                     toolItems,
                     status
                 }}/>
             </Box>
 
-            const toolsOpen = tools.length > 0
-            const editorHeight = toolsOpen ? (showTools ? '60%' : 'calc(100% - 50px)') : '100%'
-            const toolsHeight = toolsOpen ? (showTools ? '40%' : '50px') : '0px'
             return <Box height='100%' width='100%'>
                 <Box height={editorHeight}>
                     <Box display='flex' flexDirection='column' height='100%' width='100%' onKeyDown={keyHandler}
@@ -650,22 +683,28 @@ export default function EditorRunner() {
                                                         border: 'none',
                                                         backgroundColor: 'white'
                                                     }}/>
-                                        } />
+                                        }/>
                                 </Grid>
                             </Grid>
                         </Box>
                     </Box>
                 </Box>
                 <Box height={toolsHeight}>
-                    <ToolTabsPanel tools={tools} selectedTool={selectedTool!}
-                                   toolsShown={showTools}
-                                   onSelectTool={setSelectedTool} onShowTools={setShowTools} onCloseTool={onCloseTool}/>
+                    {toolTabsPanel()}
                 </Box>
             </Box>
         } else if (openFromGitHubUrl) {
             return <Typography variant='h6' sx={{m: 3}}>Opening project...</Typography>
         } else {
-            return <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} onOpenFromGitHub={onOpenFromGitHub}/>
+            return <Box height='100%' width='100%'>
+                <Box height={editorHeight}>
+                    <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} onOpenFromGitHub={onOpenFromGitHub}
+                                   onOpenTool={onOpenTool} onHelp={onHelp}/>
+                </Box>
+                <Box height={toolsHeight}>
+                    {toolTabsPanel()}
+                </Box>
+            </Box>
         }
     }
 

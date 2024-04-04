@@ -48,7 +48,7 @@ function ToolTabPanel({ children, shown, selectedToolId, toolId, ...other }: Tab
 }
 
 const ToolLabel = ({tool, onCloseTool}: TabProps) => {
-    const toolId = tool.codeName
+    const toolId = tool.id
     const onClick = (event: React.SyntheticEvent) => {
         event.stopPropagation()
         onCloseTool(toolId)
@@ -79,9 +79,9 @@ export default function ToolTabsPanel({tools, selectedTool, toolsShown, onSelect
         <Box sx={{ width: '100%', height: '100%' }} data-testid='tooltabspanel' display='flex' flexDirection='column'>
             <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }} display={someToolsAreOpen ? 'flex' : 'none'} flexDirection='row' flexGrow={0}>
                 <Tabs value={selectedTool} onChange={handleChange} aria-label="tool tabs" sx={{flex: 1}}>
-                    {tools.map( tool => <Tab component='div' value={tool.codeName}
+                    {tools.map( tool => <Tab component='div' value={tool.id}
                                              onClick={ensureToolsShown}
-                                             label={<ToolLabel tool={tool} onCloseTool={onCloseTool}/>} {...a11yProps(tool.codeName)} key={tool.codeName} /> )}
+                                             label={<ToolLabel tool={tool} onCloseTool={onCloseTool}/>} {...a11yProps(tool.id)} key={tool.id} /> )}
                 </Tabs>
                 <IconButton
                     size="large"
@@ -95,7 +95,7 @@ export default function ToolTabsPanel({tools, selectedTool, toolsShown, onSelect
             </Box>
             <Box  flexGrow={1} >
                 {tools.map( (tool) => (
-                    <ToolTabPanel shown={toolsShown} selectedToolId={selectedTool} toolId={tool.codeName} key={tool.codeName}>
+                    <ToolTabPanel shown={toolsShown} selectedToolId={selectedTool} toolId={tool.id} key={tool.id}>
                         <ToolWindow tool={tool}/>
                     </ToolTabPanel>
                     ))

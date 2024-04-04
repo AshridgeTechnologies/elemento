@@ -6,8 +6,8 @@ import {
     hidePointer,
     highlightElements,
     Options,
-    selectElementsById,
-    selectSingleElementById,
+    selectElements,
+    selectSingleElement,
     setElementValue,
     showPointer
 } from './controllerHelpers'
@@ -38,7 +38,7 @@ export default class PreviewController {
 
     Show(selector?: string) {
         console.log('Show', selector)
-        const elements = selector ? selectElementsById(this.container, selector) : []
+        const elements = selector ? selectElements('id', this.container, selector) : []
 
         this.queueAction(null, async () => {
             highlightElements(elements, this.container)
@@ -57,7 +57,7 @@ export default class PreviewController {
     Click(selector: string) {
         console.log('Click', selector)
         this.queueAction(selector, () => {
-            const element = selectSingleElementById(this.container, selector)
+            const element = selectSingleElement('id', this.container, selector)
             if (element) {
                 return userEvent.click(element)
             }
@@ -67,7 +67,7 @@ export default class PreviewController {
     SetValue(selector: string, value: string | boolean) {
         console.log('SetValue', selector, value)
         this.queueAction(selector, async () => {
-            const element = selectSingleElementById(this.container, selector)
+            const element = selectSingleElement('id', this.container, selector)
             if (element) {
                 await setElementValue(element, this.container, value)
             }
@@ -83,7 +83,7 @@ export default class PreviewController {
     }
 
     GetTextContent(selector: string) { // @ts-ignore
-        const element = selectSingleElementById(this.container, selector)
+        const element = selectSingleElement('id', this.container, selector)
         return element?.textContent
     }
 

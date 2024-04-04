@@ -3,7 +3,7 @@ import {notEmpty, wait, waitUntil} from '../util/helpers'
 import {caller, observer} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
 
-export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' |  'propertiesPanel' | 'propertyTypeButton'
+export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' |  'propertiesPanel' | 'propertyTypeButton' | 'id' | 'css'
 
 export type Options = {
     showBeforeActions: boolean,
@@ -71,7 +71,7 @@ export const isScrolledIntoView = (element: HTMLElement) => {
     return topIsInView && bottomIsInView
 }
 
-export const els = (cssSelector: string, container: HTMLElement = document.body) => Array.from(container.querySelectorAll(cssSelector)) as HTMLElement[]
+export const findByCss = (container: HTMLElement, cssSelector: string) => Array.from(container.querySelectorAll(cssSelector)) as HTMLElement[]
 export const textMatch = (elementOrText: Element | string, textToMatch: string) => {
     if (!textToMatch) return true
     const regex = new RegExp(textToMatch, 'i')
@@ -81,34 +81,40 @@ export const textMatch = (elementOrText: Element | string, textToMatch: string) 
 
 export const selectElements = (selector: SelectorType, container: HTMLElement = document.body, text: string = ''): HTMLElement[] => {
     switch(selector) {
+        case 'css':
+            return findByCss(container, text)
+
+        case 'id':
+            return findByCss(container, `[id\$="${selector}"]`)
+
         case 'treeItem':
-            return els(`.rc-tree-node-content-wrapper`).filter( (el) => textMatch((el as HTMLElement).title, text) )
+            return findByCss(container, `.rc-tree-node-content-wrapper`).filter( (el) => textMatch((el as HTMLElement).title, text) )
 
         case 'selectedTreeItem':
-            return els(`.rc-tree-node-content-wrapper.rc-tree-node-selected`).filter( (el) => textMatch((el as HTMLElement).title, text) )
+            return findByCss(container, `.rc-tree-node-content-wrapper.rc-tree-node-selected`).filter( (el) => textMatch((el as HTMLElement).title, text) )
 
         case 'treeExpand':
-            return els(`.rc-tree-node-content-wrapper`)
+            return findByCss(container, `.rc-tree-node-content-wrapper`)
                 .filter( el => textMatch(el.title, text) )
                 .map( el => el.parentElement?.querySelector('.rc-tree-switcher')).filter( notEmpty ) as HTMLElement[]
 
         case 'button':
-            return els(`button:not([data-eltype="propertyTypeButton"])`).filter( el => textMatch(el, text) )
+            return findByCss(container, `button:not([data-eltype="propertyTypeButton"])`).filter(el => textMatch(el, text) )
 
         case 'menuButton':
-            return els(`#editorMain .MuiToolbar-root button`).filter( el => textMatch(el, text) )
+            return findByCss(container, `#editorMain .MuiToolbar-root button`).filter(el => textMatch(el, text) )
 
         case 'menuItem':
-            return els(`[role=menuitem]`).filter( el => textMatch(el, text) )
+            return findByCss(container, `[role=menuitem]`).filter(el => textMatch(el, text) )
 
         case 'propertyField':
-            return els(`.MuiFormControl-root>label`).filter( (el) => textMatch(el, text)).map( el => el.parentElement ) as HTMLElement[]
+            return findByCss(container, `.MuiFormControl-root>label`).filter( (el) => textMatch(el, text)).map(el => el.parentElement ) as HTMLElement[]
 
         case 'propertiesPanel':
-            return els(`#propertiesPanel`)
+            return findByCss(container, `#propertiesPanel`)
 
         case 'propertyTypeButton':
-            return els(`.MuiFormControl-root>label`)
+            return findByCss(container, `.MuiFormControl-root>label`)
                 .filter( el => textMatch(el, text))
                 .map( el => el.parentElement?.parentElement?.querySelector(`[data-eltype="propertyTypeButton"]`) )
                 .filter( notEmpty )as HTMLElement[]
@@ -127,21 +133,6 @@ export const selectSingleElement = (selector: SelectorType, container: HTMLEleme
         console.warn('Element not found:', selector, text)
         return null
     }
-}
-
-export const selectElementsById = (container: HTMLElement, selector: string): HTMLElement[] => {
-    return els(`[id\$="${selector}"]`, container)
-}
-
-export const selectSingleElementById = (container: HTMLElement, selector: string): HTMLElement | null => {
-    const element = selectElementsById(container, selector)[0]
-    if (element) {
-        return element
-    } else {
-        console.warn('Element not found:', selector)
-        return null
-    }
-
 }
 
 export const addPointerElement = (container: HTMLElement): SVGElement => {

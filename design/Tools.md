@@ -59,12 +59,13 @@ Forces
 Decisions
 -------------
 
-- Can open a Tool or tutorial from a URL entered at the end of the Tools/Tutorials 
+- ✅ Can open a Tool or tutorial from a URL entered at the end of the Tools/Tutorials menu
 - Known Tools and Tutorials are under the menus as links
 - Tutorials menu accessed from Help has links to open them from a URL
-- Studio URL with tool=<url> will open those tools
+- ✅ Studio URL with tool=<url> will open those tools
 - Include link to open in Studio in tutorial - use wherever you open it
-- Keep Tools within a Project
+- ✅ Tools Menu available even if no Project open
+- Keep Tools defined within a Project
 - Keep Tool Imports within a Project for now
 
 

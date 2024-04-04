@@ -10,6 +10,7 @@ import {useGitHubSignInState} from '../appsShared/gitHubAuthentication'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import MainHelpPanel from '../docs/MainHelpPanel'
+import ToolsMenu from './ToolsMenu'
 
 
     function OpenOption({text, iconClass, onClick}: {text: string, iconClass: string, onClick: VoidFn}) {
@@ -29,11 +30,9 @@ import MainHelpPanel from '../docs/MainHelpPanel'
 
 
 
-export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onGetFromGitHub,}: { onOpen: OnOpenFn, onNew: OnNewFn,
-                        onGetFromGitHub: OnGetFromGitHubFn, onOpenFromGitHub: OnOpenFromGitHubFn}) {
-    const [helpVisible, setHelpVisible] = useState(false)
-    const onHelp = () => {setHelpVisible(!helpVisible)}
-
+export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onOpenTool, onHelp}: { onOpen: OnOpenFn, onNew: OnNewFn,
+                        onGetFromGitHub: OnGetFromGitHubFn, onOpenFromGitHub: OnOpenFromGitHubFn,
+                        onHelp: () => void, onOpenTool: (url: string) => void, }) {
     const signedIn = useGitHubSignInState()
     const appBarTitle = `Elemento Studio`
     const OverallAppBar = <Box flex='0'>
@@ -42,6 +41,7 @@ export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onGetFro
     const EditorHeader = <Box flex='0'>
         <MenuBar>
             <FileMenu onNew={onNew} onOpen={onOpen} onOpenFromGitHub={onOpenFromGitHub}  signedIn={signedIn}/>
+            <ToolsMenu toolItems={{}} openFromUrlFn={onOpenTool}/>
             <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
         </MenuBar>
     </Box>
@@ -69,14 +69,7 @@ export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onGetFro
                 <Grid item xs={20} height='100%'>
                     {EditorHeader}
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
-                        <Box flex='1' maxHeight={helpVisible ? '50%' : '100%'}>
-                            {WelcomeText}
-                        </Box>
-                        {helpVisible ?
-                            <Box flex='1' maxHeight='50%'>
-                                <MainHelpPanel/>
-                            </Box> : null
-                        }
+                        {WelcomeText}
                     </Box>
                 </Grid>
             </Grid>

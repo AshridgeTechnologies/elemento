@@ -25,6 +25,7 @@ type EditorMenuProps = {
     selectedItemIds: ElementId[],
     toolItems: {[name: string]: VoidFunction}
     onHelp: () => void,
+    onOpenTool: (url: string) => void,
     status: React.ReactNode
 }
 
@@ -34,6 +35,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
         onOpen,
         onSaveAs,
         onHelp,
+        onOpenTool,
         onOpenFromGitHub,
         onGetFromGitHub,
         onUpdateFromGitHub,
@@ -56,7 +58,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
                   onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>
         <EditMenuWithButton onAction={onAction} actionsAvailableFn={actionsAvailableFn} selectedItemIds={selectedItemIds} itemNameFn={itemNameFn}/>
         <InsertMenuWithButton onInsert={onInsert} insertMenuItems={insertMenuItems} targetItemId={selectedItemIds[0]}/>
-        <ToolsMenu toolItems={toolItems}/>
+        <ToolsMenu toolItems={toolItems} openFromUrlFn={onOpenTool}/>
         <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
         <Box id='_filler' flexGrow={1}/>
         {status}
