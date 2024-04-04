@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
 - Vertical layout with text and button shows only the top few pixels
 - Form can contain things that cannot be reset like Calculation, Button
@@ -89,7 +90,6 @@ Stories
 - Event actions: double click, drop
 - Speech synthesis
 - Shapes, drawing, - clip-path, svg?
-- Timers and Animation - see https://sparkbox.github.io/bouncy-ball/#vanilla-js
 - When condition actions
 - Multi-user shared data
 - Card game assets - eg https://www.revk.uk/2018/06/svg-vector-playing-cards.html
@@ -335,6 +335,7 @@ Done
 - Styling
 - User defined components
 - Block element
+- Timer element
 
 Bugs fixed
 ----------

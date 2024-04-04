@@ -37,3 +37,8 @@ Possibilities
 - Get system time with another function
 - Interval action
 - End action
+
+Notes
+-----
+
+- See https://sparkbox.github.io/bouncy-ball/#vanilla-js for animation techniques
