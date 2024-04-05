@@ -136,7 +136,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         </Tree>
         <EditMenu anchorEl={actionEl}
                   anchorOrigin={{vertical: 'top', horizontal: 'right',}}
-                  transformOrigin={{vertical: 60, horizontal: 'left',}}
+                  transformOrigin={{vertical: 'bottom', horizontal: 'left',}}
                   selectedItemIds={selectedItemIds} clickedItemId={actionNode?.id} onAction={onAction} onInsert={onInsert} onClose={closeContextMenu}
                   actionsAvailableFn={actionsAvailableFn} insertMenuItemFn={insertMenuItemFn} itemNameFn={itemNameFn}
         />

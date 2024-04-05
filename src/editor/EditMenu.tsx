@@ -126,7 +126,7 @@ export default function EditMenu({
             transformOrigin={transformOrigin}
             open={true}
             onClose={closeMenus}
-            MenuListProps={{dense: true, ...labelledByProps}}
+            MenuListProps={{dense: true, ...labelledByProps, sx: {paddingBottom: '1em'}}}
             container={editorElement()}
             slotProps={editorMenuPositionProps}
         >
