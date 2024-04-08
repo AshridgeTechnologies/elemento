@@ -1,49 +1,58 @@
 import EditorServiceWorker from '../../src/editor/EditorServiceWorker'
 import {FileSystemTree} from '../../src/editor/Types'
-import {wait} from '../testutil/testHelpers'
+import {MockFileSystemDirectoryHandle, wait} from '../testutil/testHelpers'
 // @ts-ignore
 import str2ab from 'string-to-arraybuffer'
 import Dexie from 'dexie'
+import {DiskProjectStoreInterface} from '../../src/editor/DiskProjectStore'
 
 const files: FileSystemTree = {
-    'index.html': {
-        file: {
-            contents: 'top index.html contents'
-        }
-    },
-    'dir1': {
+    dist: {
         directory: {
-            'stuff.js': {
-                file: {
-                    contents: 'stuff.js contents'
-                }
-            },
-            'another.file': {
-                file: {
-                    contents: 'another.file contents'
-                }
-            },
-            'index.html': {
-                file: {
-                    contents: 'dir1 index.html contents'
-                }
-            },
-        }
-    },
-    'tools': {
-        directory: {
-            'Tool1': {
+            client: {
                 directory: {
-                    'toolstuff.js': {
-                        file: {
-                            contents: 'toolstuff.js contents'
-                        }
-                    },
                     'index.html': {
                         file: {
-                            contents: 'Tool1 index.html contents'
+                            contents: 'top index.html contents'
                         }
                     },
+                    'dir1': {
+                        directory: {
+                            'stuff.js': {
+                                file: {
+                                    contents: 'stuff.js contents'
+                                }
+                            },
+                            'another.file': {
+                                file: {
+                                    contents: 'another.file contents'
+                                }
+                            },
+                            'index.html': {
+                                file: {
+                                    contents: 'dir1 index.html contents'
+                                }
+                            },
+                        }
+                    },
+                    'tools': {
+                        directory: {
+                            'Tool1': {
+                                directory: {
+                                    'toolstuff.js': {
+                                        file: {
+                                            contents: 'toolstuff.js contents'
+                                        }
+                                    },
+                                    'index.html': {
+                                        file: {
+                                            contents: 'Tool1 index.html contents'
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -63,6 +72,7 @@ const request = (url: string, options?: {method?: string, body?: any, headers: a
 
 let worker: EditorServiceWorker
 let swScope: any
+let filesystem: FileSystemDirectoryHandle
 
 const dummySWScope = () => {
     const aClient = () => ({postMessage: jest.fn()} as unknown as WindowClient)
@@ -79,7 +89,7 @@ const dummySWScope = () => {
 beforeEach(() => {
     worker = new EditorServiceWorker(dummySWScope())
     const filesCopy = JSON.parse(JSON.stringify(files))
-    worker.mount(filesCopy)
+    worker.message({data: {type: 'projectStore', dirHandle: new MockFileSystemDirectoryHandle('root', filesCopy)}} as ExtendableMessageEvent)
 })
 
 test('can NOT get response for mounted file at top level', async () => {
@@ -200,54 +210,6 @@ test('sends capi POST request to preview server', async () => {
     } finally {
         globalThis.fetch = originalFetch
     }
-})
-
-test('writes single new file in top-level directory from message', async () => {
-    const event = {data: {type: 'write', path: 'morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.getFileContents('morestuff.js')).toBe('morestuff.js contents')
-    await wait(10)
-    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'morestuff.js'})
-    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'morestuff.js'})
-    // @ts-ignore
-    expect(worker.fileSystem['']).toBeUndefined()
-})
-
-test('writes single new file in existing directory from message', async () => {
-    const event = {data: {type: 'write', path: 'dir1/morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.getFileContents('dir1/morestuff.js')).toBe('morestuff.js contents')
-    await wait(10)
-    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir1/morestuff.js'})
-    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir1/morestuff.js'})
-})
-
-test('writes single new file to new directory', async () => {
-    const event = {data: {type: 'write', path: 'dir2/morestuff.js', contents: 'morestuff.js contents'}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.getFileContents('dir2/morestuff.js')).toBe('morestuff.js contents')
-    await wait(10)
-    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir2/morestuff.js'})
-    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'refreshCode', path: 'dir2/morestuff.js'})
-})
-
-test('updates single file from message', () => {
-    const event = {data: {type: 'write', path: 'dir1/stuff.js', contents: 'stuff.js updated contents'}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.getFileContents('dir1/stuff.js')).toBe('stuff.js updated contents')
-})
-
-test('renames single file from message', () => {
-    const event = {data: {type: 'rename', oldPath: 'dir1/stuff.js', newPath: 'dir1/stuff2.js'}} as ExtendableMessageEvent
-    worker.message(event)
-    // @ts-ignore
-    expect(worker.getFileContents('dir1/stuff.js')).toBe(null)
-    // @ts-ignore
-    expect(worker.getFileContents('dir1/stuff2.js')).toBe('stuff.js contents')
 })
 
 test('sends highlight message from editor', async () => {

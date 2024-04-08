@@ -289,6 +289,7 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
     }
 
     get name() { return this.directoryHandle.name }
+    get dirHandle() { return this.directoryHandle }
 
     async getProject(): Promise<ProjectWorkingCopy> {
         const projectFileText = await this.readTextFile(projectFileName)

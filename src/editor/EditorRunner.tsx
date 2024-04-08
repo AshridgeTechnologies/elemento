@@ -187,12 +187,12 @@ export default function EditorRunner() {
             new DiskProjectStoreFileWriter(projectStore, 'dist')
         )
         const clientFileWriter = new MultiFileWriter(
-            new PostMessageFileWriter(navigator.serviceWorker.controller!),
-            new DiskProjectStoreFileWriter(projectStore, 'dist/client')
+            new DiskProjectStoreFileWriter(projectStore, 'dist/client'),
+            new PostMessageFileWriter(navigator.serviceWorker.controller!)
         )
         const toolFileWriter = new MultiFileWriter(
-            new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools'),
-            new DiskProjectStoreFileWriter(projectStore, 'dist/tools')
+            new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
+            new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools')
         )
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
@@ -218,14 +218,15 @@ export default function EditorRunner() {
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
+        await setProjectStoreInServiceWorker(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
+
         const toolsToKeep = tools.filter( tool => tool.kind === 'ToolImport')
         setTools(toolsToKeep)
         const selectedToolIsStillOpen = toolsToKeep.some( tool => tool.id === selectedToolId)
         if (!selectedToolIsStillOpen) {
             setSelectedToolId(toolsToKeep[0]?.id ?? null)
         }
-
     }
 
     function refreshServerAppConnectors() {
@@ -254,6 +255,12 @@ export default function EditorRunner() {
     function setPreviewServerUrl(url: string) {
         console.log('setPreviewServerUrl', url)
         navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
+    }
+
+    async function setProjectStoreInServiceWorker(projectStore: DiskProjectStore) {
+        console.log('setProjectStoreInServiceWorker', projectStore)
+        navigator.serviceWorker.controller!.postMessage({type: 'projectStore', dirHandle: projectStore.dirHandle})
+        await wait(100)
     }
 
     function getMessageDataAndAuthorize(event: any) {

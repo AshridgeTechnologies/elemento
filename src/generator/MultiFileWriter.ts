@@ -7,7 +7,9 @@ export default class MultiFileWriter implements FileWriter {
     }
 
     async writeFile(filepath: string, contents: FileContents): Promise<void> {
-        await Promise.all( this.writers.map( w => w.writeFile(filepath, contents)))
+        for( const writer of this.writers) {
+            await writer.writeFile(filepath, contents)
+        }
     }
 
 }

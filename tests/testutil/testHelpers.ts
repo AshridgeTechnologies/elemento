@@ -299,6 +299,9 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
                 return Promise.resolve(fileContents as string)
             },
             arrayBuffer() {
+                if (typeof fileContents === 'string') {
+                    return Promise.resolve(new TextEncoder().encode(fileContents))
+                }
                 return Promise.resolve(fileContents as Uint8Array)
             },
         } as File
