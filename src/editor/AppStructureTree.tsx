@@ -87,10 +87,15 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
 
     const itemNameFn = (id:ElementId) => treeData.findItem(id)?.title ?? id
     function itemSelected(selectedKeys: Key[], info: any) {
-        const selectedIds = selectedKeys.map(k => k.toString())
-        const addToSelect = info.nativeEvent.metaKey || info.nativeEvent.ctrlKey
-        const newSelectedIds = addToSelect ? selectedIds : without(selectedItemIds, selectedIds)
-        onSelect?.(newSelectedIds)
+        const clickedId = info.node.key
+        const addOrRemove = info.nativeEvent.metaKey || info.nativeEvent.ctrlKey
+        if (addOrRemove) {
+            const selectedIds = selectedKeys.map(k => k.toString())
+            const newSelectedIds = addOrRemove ? selectedIds : without(selectedItemIds, selectedIds)
+            onSelect?.(newSelectedIds)
+        } else {
+            onSelect?.([clickedId])
+        }
     }
 
     const onExpand = (newExpandedKeys: Key[], {expanded, node}: {expanded: boolean, node: DataNode}) => {

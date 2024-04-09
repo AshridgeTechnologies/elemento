@@ -232,13 +232,58 @@ test("always shows Project and App expanded",  async () => {
     expect(itemLabels()).toContain('Main Page')
 })
 
+test('notifies new selected item id in array', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={[]} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
+})
+
 test('notifies replacement selected item id in array', async () => {
     const storeSelectedIds = jest.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
-    expect(storeSelectedIds).toHaveBeenCalledWith(['textInput1_2'])
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
+})
+
+test('notifies replacement selected item id in array when already selected', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
+})
+
+test('notifies replacement selected item id when multiple already selected', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['app1', 'page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
+})
+
+test('notifies replacement selected item id when multiple already selected including one clicked', async () => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
+})
+
+test.each(['metaKey', 'ctrlKey'])('notifies new selected item id in array with %s', async (keyName) => {
+    const storeSelectedIds = jest.fn()
+
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={[]} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await clickExpandControl(0, 1, 2)
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {[keyName]: true}))
+    expect(storeSelectedIds).toHaveBeenLastCalledWith(['textInput1_2'])
 })
 
 test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array with %s', async (keyName) => {
@@ -250,16 +295,16 @@ test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array
     expect(storeSelectedIds).toHaveBeenLastCalledWith(['page_1', 'textInput1_2'])
 })
 
-test('unselects all items if click already selected item', async () => {
+test('unselects already selected item id in array with ctrl key', async () => {
     const storeSelectedIds = jest.fn()
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
-    await actWait(() => fireEvent.click(screen.getByText('The Text Input')))
+    await actWait(() => fireEvent.click(screen.getByText('The Text Input'), {ctrlKey: true}))
     expect(storeSelectedIds).toHaveBeenLastCalledWith([])
 })
 
-test('unselects already selected item id in array with ctrl key', async () => {
+test('unselects already selected item id when multiple selected', async () => {
     const storeSelectedIds = jest.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
