@@ -2,7 +2,7 @@ import {Menu as MenuIcon} from '@mui/icons-material'
 import IconButton from '@mui/material/IconButton'
 import * as React from 'react'
 import Menu from '@mui/material/Menu'
-import {editorElement} from '../editor/EditorElement'
+import {editorDialogContainer} from '../editor/EditorElement'
 import {editorMenuPositionProps} from '../editor/Editor'
 import MenuItem from '@mui/material/MenuItem'
 import {Link} from '@mui/material'
@@ -41,7 +41,7 @@ export default function AppBarMenu(props: object) {
             MenuListProps={{dense: true, 'aria-labelledby': 'fileButton', component: 'nav'}}
             anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
             transformOrigin={{vertical: 5, horizontal: -5,}}
-            container={editorElement()}
+            container={editorDialogContainer()}
             slotProps={editorMenuPositionProps}
         >
             {menuItem('Home', '/')}

@@ -1,16 +1,9 @@
-import {
-    Action,
-    ActionsAvailableFn,
-    AppElementAction,
-    ConfirmAction, InsertMenuItemsFn,
-    OnActionFn,
-    OnInsertFnWithPositionFn
-} from './Types'
+import {Action, ActionsAvailableFn, AppElementAction, ConfirmAction, InsertMenuItemsFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import React, {SetStateAction, useState} from 'react'
+import React, {useState} from 'react'
 import {ListItemText, Menu, MenuItem, PopoverOrigin} from '@mui/material'
 import {ArrowRight} from '@mui/icons-material'
-import {editorElement} from './EditorElement'
+import {editorDialogContainer} from './EditorElement'
 import {editorMenuPositionProps} from './Editor'
 import {InsertMenu} from './InsertMenu'
 import {startCase} from 'lodash'
@@ -127,7 +120,7 @@ export default function EditMenu({
             open={true}
             onClose={closeMenus}
             MenuListProps={{dense: true, ...labelledByProps, sx: {paddingBottom: '1em'}}}
-            container={editorElement()}
+            container={editorDialogContainer()}
             slotProps={editorMenuPositionProps}
         >
             {menuItems(actionsAvailableFn(clickedOrSelectedIds))}
@@ -143,7 +136,7 @@ export default function EditMenu({
             open={confirmMenuOpen}
             MenuListProps={{dense: true}}
             onClose={closeMenus}
-            container={editorElement()}
+            container={editorDialogContainer()}
             slotProps={editorMenuPositionProps}
         >
             <MenuItem onClick={actionConfirmed}>Yes

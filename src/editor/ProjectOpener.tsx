@@ -66,7 +66,7 @@ export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onOpenTo
         {OverallAppBar}
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
-                <Grid item xs={20} height='100%'>
+                <Grid item xs={20} height='100%' className='editorDialogContainer' position='relative'>
                     {EditorHeader}
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
                         {WelcomeText}

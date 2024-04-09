@@ -77,7 +77,7 @@ export default function ToolTabsPanel({tools, selectedTool, toolsShown, onSelect
     const someToolsAreOpen = tools.length > 0
     return (
         <Box sx={{ width: '100%', height: '100%' }} data-testid='tooltabspanel' display='flex' flexDirection='column'>
-            <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider' }} display={someToolsAreOpen ? 'flex' : 'none'} flexDirection='row' flexGrow={0}>
+            <Box sx={{ borderBottom: 1, borderTop: 1, borderColor: 'divider', backgroundColor: 'white', zIndex: 1 }} display={someToolsAreOpen ? 'flex' : 'none'} flexDirection='row' flexGrow={0}>
                 <Tabs value={selectedTool} onChange={handleChange} aria-label="tool tabs" sx={{flex: 1}}>
                     {tools.map( tool => <Tab component='div' value={tool.id}
                                              onClick={ensureToolsShown}

@@ -14,6 +14,9 @@ import {
 import {Close} from '@mui/icons-material'
 import React from 'react'
 import {chooseDirectory} from './actionHelpers'
+import {editorDialogContainer} from '../EditorElement'
+import {mergeDeepRight} from 'ramda'
+import {editorMenuPositionProps} from '../Editor'
 
 export function CloseButton(props: { onClose: () => void }) {
     return <IconButton
@@ -40,10 +43,12 @@ export function DialogTextField(props: TextFieldProps) {
     />
 }
 
+const dialogSlotProps = mergeDeepRight(editorMenuPositionProps, {backdrop: {invisible: true}})
+
 export function EditorActionDialog({title, content, fields, action, onCancel}:
                                  { title: string, content: React.ReactNode, fields: React.ReactNode, action: React.ReactNode, onCancel: VoidFunction }) {
     return (
-        <Dialog onClose={onCancel} open={true} sx={{minWidth: 400}}>
+        <Dialog onClose={onCancel} open={true} sx={{minWidth: 400}} container={editorDialogContainer()} slotProps={dialogSlotProps}>
             <DialogTitle>{title} <CloseButton onClose={onCancel}/></DialogTitle>
             <DialogContent>
                 <DialogContentText>

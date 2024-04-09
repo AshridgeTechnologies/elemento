@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import {MenuItemFn, OnNewFn} from './Types'
 import {editorMenuPositionProps} from './Editor'
 
-import {editorElement} from './EditorElement'
+import {editorDialogContainer} from './EditorElement'
 
 export default function FileMenu({onNew, onOpen, onSaveAs, onSaveToGitHub, onOpenFromGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
     {onNew?: OnNewFn, onOpen?: MenuItemFn, onSaveAs?: MenuItemFn,
@@ -43,7 +43,7 @@ export default function FileMenu({onNew, onOpen, onSaveAs, onSaveToGitHub, onOpe
                 MenuListProps={{dense: true, 'aria-labelledby': 'fileButton'}}
                 anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
                 transformOrigin={{vertical: 45, horizontal: 'left',}}
-                container={editorElement()}
+                container={editorDialogContainer()}
                 slotProps={editorMenuPositionProps}
             >
                 {menuItem('New', onNew)}

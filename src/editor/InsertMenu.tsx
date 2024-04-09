@@ -2,11 +2,11 @@ import MenuItem from '@mui/material/MenuItem'
 import lodash from 'lodash';
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
+import {useState} from 'react'
 import {PopoverOrigin, Typography} from '@mui/material'
 import {ElementId, ElementType, InsertPosition, InsertPositions} from '../model/Types'
 import {editorMenuPositionProps} from './Editor'
-import {editorElement} from './EditorElement'
-import {useState} from 'react'
+import {editorDialogContainer} from './EditorElement'
 import {InsertMenuItemsFn, OnInsertFnWithPositionFn} from './Types'
 
 const {startCase} = lodash;
@@ -41,7 +41,6 @@ export function InsertMenu({anchorEl, anchorOrigin, transformOrigin, open, onClo
     }
     const labelledByProps = labelledBy ? {'aria-labelledby': labelledBy} : {}
     const items = insertMenuItems(insertPosition, targetItemId)
-    const container = editorElement()
     const insertPositionsAvailable = InsertPositions.filter( position => insertMenuItems(position, targetItemId).length).map(positionMenuItem)
     return <Menu
         id="insertMenu"
@@ -52,7 +51,7 @@ export function InsertMenu({anchorEl, anchorOrigin, transformOrigin, open, onClo
         open={open}
         onClose={onClose}
         MenuListProps={{dense: true, ...labelledByProps}}
-        container={container}
+        container={editorDialogContainer()}
         slotProps={editorMenuPositionProps}
         sx={{
             "& .MuiList-root": {  // Target the <ul>

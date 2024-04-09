@@ -661,7 +661,7 @@ export default function EditorRunner() {
                             <Grid container columns={20} spacing={0} height='100%'>
                                 <Grid item xs={10} height='100%'>
                                     <Box display='flex' flexDirection='column' height='100%' width='100%'
-                                         id='editorMain' position='relative'>
+                                         id='editorMain' className='editorDialogContainer' position='relative'>
                                         {EditorHeader}
                                         <Box height='calc(100% - 49px)'>
                                             <Editor project={project}

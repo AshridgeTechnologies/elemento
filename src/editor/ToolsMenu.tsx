@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
 
 import {editorMenuPositionProps} from './Editor'
-import {editorElement} from './EditorElement'
+import {editorDialogContainer} from './EditorElement'
 import {Stack, TextField, Typography} from '@mui/material'
 
 export default function ToolsMenu({toolItems, openFromUrlFn}: {toolItems: {[name: string]: VoidFunction}, openFromUrlFn: (url: string) => void}) {
@@ -52,7 +52,7 @@ export default function ToolsMenu({toolItems, openFromUrlFn}: {toolItems: {[name
                 MenuListProps={{dense: true, 'aria-labelledby': 'fileButton'}}
                 anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
                 transformOrigin={{vertical: 45, horizontal: 'left',}}
-                container={editorElement()}
+                container={editorDialogContainer()}
                 slotProps={editorMenuPositionProps}
             >
                 {Object.entries(toolItems).map( ([name, openToolFn]) => menuItem(name, openToolFn))}
