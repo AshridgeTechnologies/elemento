@@ -180,11 +180,11 @@ export default function EditorRunner() {
         )
         const clientFileWriter = new MultiFileWriter(
             new DiskProjectStoreFileWriter(projectStore, 'dist/client'),
-            new PostMessageFileWriter(navigator.serviceWorker.controller!)
+            new PostMessageFileWriter(() => navigator.serviceWorker.controller!)
         )
         const toolFileWriter = new MultiFileWriter(
             new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
-            new PostMessageFileWriter(navigator.serviceWorker.controller!, 'tools')
+            new PostMessageFileWriter(() => navigator.serviceWorker.controller!, 'tools')
         )
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
@@ -225,14 +225,6 @@ export default function EditorRunner() {
         const serverAppConnectorIds = getOpenProject().findElementsBy(el => el.kind === 'ServerAppConnector').map( el => el.id)
         const paths = serverAppConnectorIds.map( id => getOpenProject().findElementPath(id))
         paths.map( id => callFunctionInPreview(id!, 'Refresh'))
-    }
-
-    function renameFile(oldPath: string, newPath: string) {
-        navigator.serviceWorker.controller!.postMessage({type: 'rename', oldPath, newPath})
-    }
-
-    function writeFile(path: string, contents: Uint8Array | string) {
-        navigator.serviceWorker.controller!.postMessage({type: 'write', path, contents})
     }
 
     function selectItemsInPreview(ids: string[]) {
@@ -368,7 +360,6 @@ export default function EditorRunner() {
         const oldName = element.name
         const newName = value
         await projectStore!.renameAsset(oldName, newName)
-        renameFile(ASSET_DIR + '/' + oldName, ASSET_DIR + '/' + newName)
         const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
         await gitProjectStore.rename(ASSET_DIR + '/' + oldName, ASSET_DIR + '/' + newName)
     }
@@ -397,7 +388,6 @@ export default function EditorRunner() {
         return new Promise(resolve => {
             const onFileUploaded = async (name: string, data: Uint8Array) => {
                 await projectStore!.writeAssetFile(name, data)
-                writeFile(ASSET_DIR + '/' + name, data)
                 const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
                 updateProjectAndSave()
                 removeDialog()
@@ -469,6 +459,7 @@ export default function EditorRunner() {
 
     const onHelp = () => showTool(helpToolImport)
     const onOpenTool = (url: string) => showTool(toolImportFromUrl(url))
+    const onReload = ()=> openOrUpdateProjectFromStore(projectHandler.name!, projectStore!)
     const onFirebase = () => showTool(firebaseToolImport)
     const onInspector = () => showTool(inspectorImport)
 
@@ -640,7 +631,7 @@ export default function EditorRunner() {
             const status = project.hasServerApps ? ServerUpdateStatus({status: serverUpdateStatus, projectBuilder: projectBuilderRef.current}) : null
             const EditorHeader = <Box flex='0'>
                 <EditorMenuBar {...{
-                    onNew, onOpen, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
+                    onNew, onOpen, onReload, onSaveAs, onOpenFromGitHub, onUpdateFromGitHub, onSaveToGitHub, signedIn,
                     onInsert: onMenuInsert,
                     insertMenuItems,
                     onAction,
