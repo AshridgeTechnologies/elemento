@@ -8,7 +8,9 @@ import {DiskProjectStore} from './DiskProjectStore'
 export default class EditorServiceWorker {
     private projectStore: DiskProjectStore | null = null
 
-    constructor(private swSelf: ServiceWorkerGlobalScope) {}
+    constructor(private swSelf: ServiceWorkerGlobalScope) {
+        console.log('EditorServiceWorker created')
+    }
     private fileSystem: FileSystemTree = {}
     private previewServerUrl: string | null = null
 
@@ -45,6 +47,10 @@ export default class EditorServiceWorker {
 
         if (data?.type === 'projectStore') {
             this.projectStore = new DiskProjectStore(data.dirHandle)
+        }
+
+        if (data?.type === 'ping') {
+            // stay awake!
         }
     }
 

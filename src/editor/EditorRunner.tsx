@@ -75,18 +75,6 @@ const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProje
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
-
-async function updateServerFile(serverAppName: string, path: string, contents: Uint8Array | string, afterUpdate: () => any) {
-    try {
-        await fetch(`${devServerUrl}/file/${path}`, {method: "PUT", body: contents,})
-        console.log('Updated server file', serverAppName, path)
-        afterUpdate()
-    } catch (error) {
-        console.error('Error updating server file', error);
-    }
-}
-
-
 const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMessageData: (event: any) => object) => {
     const previewWindow = previewFrame?.contentWindow
 
@@ -96,6 +84,10 @@ const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMess
         console.log('Preview controller initialised')
         return closeFn
     }
+}
+
+const pingServiceWorker = () => {
+    navigator.serviceWorker.controller!.postMessage({type: 'ping'})
 }
 
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
@@ -299,6 +291,7 @@ export default function EditorRunner() {
                     onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
                 }
             }
+            setInterval(pingServiceWorker, 10000)
         }
 
         waitUntil(() => navigator.serviceWorker.controller, 500, 5000).then(doInit)
@@ -307,6 +300,8 @@ export default function EditorRunner() {
                 // console.log('Reloading')
                 // window.location.reload()
             })
+
+
     }
 
     const openInitialProjectIfSupplied = () => {
