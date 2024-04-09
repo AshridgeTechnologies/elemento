@@ -5,12 +5,12 @@ import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
 import PropertyEditor from '../editorStylesPropertyEditor/PropertyEditor'
 import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
-import {elementTypes} from '../model/elements'
 
-import {Box, Grid} from '@mui/material'
+import {Box, Grid, Typography} from '@mui/material'
 import './splitPane.css'
 import Project from '../model/Project'
 import {AllErrors} from '../generator/Types'
+import {PanelTitle} from './PanelTitle'
 
 const treeData = (project: Project, errors: AllErrors): ModelTreeItem => {
     const treeNodeFromElement = (el: Element): ModelTreeItem => {
@@ -56,20 +56,24 @@ export default function Editor({
 
     /* Note on position attributes: Scrollable elements have position = 'relative' so EditorController can calculate pointer position */
     return <Grid container columns={10} spacing={0} height='100%'>
-                <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll' position='relative'/* see comment above */>
-                    <AppStructureTree treeData={treeData(project, errors)} onSelect={onSelectedItemsChange}
-                                      selectedItemIds={selectedItemIds}
-                                      onAction={onTreeAction} onInsert={onContextMenuInsert}
-                                      insertMenuItemFn={project.insertMenuItems.bind(project)}
-                                      actionsAvailableFn={actionsAvailableFn}
-                                      onMove={onMove}/>
-                </Grid>
-                <Grid item xs={6} height='100%' overflow='scroll' sx={{borderLeft: '1px solid lightgray'}} position='relative'/* see comment above */>
-                    <Box id='propertiesPanel' width='100%' paddingLeft={1}>
-                        {propertyArea}
-                    </Box>
-                </Grid>
-            </Grid>
+        <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll' position='relative'/* see comment above */>
+            <PanelTitle name='Navigator'/>
+            <Box id='navigator' width='100%' height='calc(100% - 32px)' paddingLeft={1} paddingTop={1} overflow='scroll' position='relative'>
+                <AppStructureTree treeData={treeData(project, errors)} onSelect={onSelectedItemsChange}
+                                  selectedItemIds={selectedItemIds}
+                                  onAction={onTreeAction} onInsert={onContextMenuInsert}
+                                  insertMenuItemFn={project.insertMenuItems.bind(project)}
+                                  actionsAvailableFn={actionsAvailableFn}
+                                  onMove={onMove}/>
+            </Box>
+        </Grid>
+        <Grid item xs={6} height='100%' sx={{borderLeft: '1px solid lightgray'}} flexDirection='column' /* see comment above */>
+            <PanelTitle name='Properties'/>
+            <Box id='propertiesPanel' width='100%' height='calc(100% - 32px)' paddingLeft={1} paddingTop={1} overflow='scroll' position='relative'>
+                {propertyArea}
+            </Box>
+        </Grid>
+    </Grid>
 }
 
 export const editorMenuPositionProps = {

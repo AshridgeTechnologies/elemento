@@ -51,6 +51,7 @@ import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {Status} from './ThrottledCombinedFileWriter'
 import ServerMultiFileWriter from './ServerMultiFileWriter'
+import {PanelTitle} from './PanelTitle'
 
 const {debounce} = lodash;
 
@@ -667,7 +668,8 @@ export default function EditorRunner() {
                                     </Box>
                                 </Grid>
                                 <Grid item xs={10} height='100%' overflow='scroll'>
-                                    <PreviewPanel
+                                    <PanelTitle name='Preview'/>
+                                    <PreviewPanel height='calc(100% - 32px)'
                                         preview={
                                             <iframe name='appFrame' src={previewUrl} ref={previewFrameRef}
                                                     style={{
