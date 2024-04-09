@@ -85,7 +85,7 @@ export const selectElements = (selector: SelectorType, container: HTMLElement = 
             return findByCss(container, text)
 
         case 'id':
-            return findByCss(container, `[id\$="${selector}"]`)
+            return findByCss(container, `[id\$="${text}"]`)
 
         case 'treeItem':
             return findByCss(container, `.rc-tree-node-content-wrapper`).filter( (el) => textMatch((el as HTMLElement).title, text) )

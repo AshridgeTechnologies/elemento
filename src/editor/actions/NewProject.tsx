@@ -14,7 +14,7 @@ import EditorManager from './EditorManager'
 
 export class NewProjectState {
     static initialState = () => ({
-        name: null,
+        name: '',
         nameError: null
     })
 

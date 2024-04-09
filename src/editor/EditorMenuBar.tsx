@@ -11,6 +11,7 @@ import ToolsMenu from './ToolsMenu'
 type EditorMenuProps = {
     onNew: () => void,
     onOpen: () => Promise<void>,
+    onReload: () => Promise<void>,
     onSaveAs: () => void,
     onOpenFromGitHub: () => void,
     onGetFromGitHub?: () => void,
@@ -33,6 +34,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
     const {
         onNew,
         onOpen,
+        onReload,
         onSaveAs,
         onHelp,
         onOpenTool,
@@ -52,7 +54,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
     } = props
 
     return <MenuBar>
-        <FileMenu onNew={onNew} onOpen={onOpen} onSaveAs={onSaveAs}
+        <FileMenu onNew={onNew} onOpen={onOpen} onReload={onReload} onSaveAs={onSaveAs}
                   onOpenFromGitHub={onOpenFromGitHub}
                   onGetFromGitHub={onGetFromGitHub} onUpdateFromGitHub={onUpdateFromGitHub}
                   onSaveToGitHub={onSaveToGitHub} signedIn={signedIn}/>

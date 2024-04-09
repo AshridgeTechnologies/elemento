@@ -7,8 +7,8 @@ import {editorMenuPositionProps} from './Editor'
 
 import {editorDialogContainer} from './EditorElement'
 
-export default function FileMenu({onNew, onOpen, onSaveAs, onSaveToGitHub, onOpenFromGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
-    {onNew?: OnNewFn, onOpen?: MenuItemFn, onSaveAs?: MenuItemFn,
+export default function FileMenu({onNew, onOpen, onReload, onSaveAs, onSaveToGitHub, onOpenFromGitHub, onGetFromGitHub, onUpdateFromGitHub, signedIn}:
+    {onNew?: OnNewFn, onOpen?: MenuItemFn, onReload?: MenuItemFn, onSaveAs?: MenuItemFn,
         onSaveToGitHub?: MenuItemFn, onOpenFromGitHub?: MenuItemFn, onGetFromGitHub?: MenuItemFn, onUpdateFromGitHub?: MenuItemFn, signedIn: boolean}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const open = Boolean(anchorEl)
@@ -48,6 +48,7 @@ export default function FileMenu({onNew, onOpen, onSaveAs, onSaveToGitHub, onOpe
             >
                 {menuItem('New', onNew)}
                 {menuItem('Open', onOpen)}
+                {menuItem('Reload', onReload)}
                 {menuItem('Save As', onSaveAs)}
                 {menuItem('Get from GitHub', onOpenFromGitHub)}
                 {menuItem('Update from GitHub', onUpdateFromGitHub)}
