@@ -70,6 +70,29 @@ describe('GitHub', () => {
     })
 })
 
+describe('GitHub tool', () => {
+
+    test.each([
+        '/runner/gh/mongo/peewit/tools/ToolOne',
+        '/runner/gh/mongo/peewit/tools/ToolOne/',
+        '/runner/gh/mongo/peewit/tools/ToolOne/Page1/stuff',
+        '/runner/gh/mongo/peewit/tools/ToolOne/Page1/stuff/',
+        ])
+    ('runs tool from GitHub', async (url) => {
+        renderThe(appMain(url))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo/peewit@abc123/dist/client/tools/ToolOne/ToolOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
+
+    test('runs app from GitHub with non-standard chars', async () => {
+        renderThe(appMain('/runner/gh/mongo-pongo/-beetle-juice-/tools/ToolOne'))
+        await actWait(10)
+        expect(loadModuleHttp).toHaveBeenCalledWith('https://cdn.jsdelivr.net/gh/mongo-pongo/-beetle-juice-@abc123/dist/client/tools/ToolOne/ToolOne.js')
+        expect(el`FirstText`).toHaveTextContent('Test App')
+    })
+})
+
 describe('Local', () => {
     test.each([
         '/run/local/opfs/ProjectOne/AppOne',

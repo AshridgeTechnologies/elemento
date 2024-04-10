@@ -1,7 +1,7 @@
 Running apps via service workers
 ================================
 
-29 Jan 2023
+29 Jan 2024
 
 Aims
 ----

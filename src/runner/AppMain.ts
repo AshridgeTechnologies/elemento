@@ -13,6 +13,13 @@ const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContex
 export default function AppMain({pathname, origin}: Properties) {
     const path = decodeURIComponent(pathname)
 
+    const githubToolsMatch = path.match(/^(.*)\/gh\/([-\w]+)\/([-\w]+)\/tools\/([-\w]+)/)
+    if (githubToolsMatch) {
+        const [, firstPart, username, repo, appName] = githubToolsMatch
+        const pathPrefix = `${firstPart}/gh/${username}/${repo}/tools/${appName}`
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, subPath: 'tools', appContext: getAppContext(pathPrefix)})
+    }
+
     const githubMatch = path.match(/^(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-\w]+)/)
     if (githubMatch) {
         const [, firstPart, username, repo, appName] = githubMatch
