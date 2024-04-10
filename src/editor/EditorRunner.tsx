@@ -42,7 +42,7 @@ import {CommitDialog} from './CommitDialog'
 import ToolImport from '../model/ToolImport'
 import ToolTabsPanel from './ToolTabsPanel'
 import EditorController from '../editorToolApis/EditorController'
-import {editorElement} from './EditorElement'
+import {editorDialogContainer, editorElement} from './EditorElement'
 import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
@@ -152,9 +152,10 @@ export default function EditorRunner() {
         const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
         projectHandler.setProject(proj, name, settingsHandler)
         updatePreviewUrlFromSettings()
-        setProject(proj)
         await projectBuilderRef.current?.build()
+        console.log('Project build complete')
 
+        setProject(proj)
         setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
@@ -207,12 +208,12 @@ export default function EditorRunner() {
     }
 
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
-        setProjectStore(projectStore)
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
-        await setProjectStoreInServiceWorker(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
+        await setProjectStoreInServiceWorker(projectStore)
+        setProjectStore(projectStore)
 
         const toolsToKeep = tools.filter( tool => tool.kind === 'ToolImport')
         setTools(toolsToKeep)
@@ -309,7 +310,7 @@ export default function EditorRunner() {
     openInitialProjectIfSupplied()
 
     const exposeEditorController = (gitHubUrl: string | null, projectHandler: ProjectHandler) => {
-        const container = editorElement()
+        const container = editorDialogContainer()
         if (container) {
             const controller = new EditorController(container, gitHubUrl, projectHandler)
             editorControllerRef.current = controller

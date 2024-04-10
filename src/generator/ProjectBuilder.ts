@@ -112,7 +112,7 @@ export default class ProjectBuilder {
         const writeFiles = (fileHolder: FileHolder, fileWriter: FileWriter) => {
             const files = fileHolder.getUpdatedFiles()
             return Object.entries(files).map(([name, contents]) => {
-                fileWriter.writeFile(name, contents).then( ()=> fileHolder.writeComplete(name))
+                return fileWriter.writeFile(name, contents).then( ()=> fileHolder.writeComplete(name))
             })
         }
 

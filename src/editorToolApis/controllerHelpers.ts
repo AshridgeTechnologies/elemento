@@ -2,6 +2,7 @@ import {notEmpty, wait, waitUntil} from '../util/helpers'
 //@ts-ignore
 import {caller, observer} from './postmsgRpc/client'
 import userEvent from '@testing-library/user-event'
+import {editorDialogClassName} from '../editor/EditorElement'
 
 export type SelectorType = 'treeItem' | 'selectedTreeItem' | 'treeExpand' | 'button' | 'menuButton' | 'menuItem' | 'propertyField' |  'propertiesPanel' | 'propertyTypeButton' | 'id' | 'css'
 
@@ -102,7 +103,7 @@ export const selectElements = (selector: SelectorType, container: HTMLElement = 
             return findByCss(container, `button:not([data-eltype="propertyTypeButton"])`).filter(el => textMatch(el, text) )
 
         case 'menuButton':
-            return findByCss(container, `#editorMain .MuiToolbar-root button`).filter(el => textMatch(el, text) )
+            return findByCss(container, `${editorDialogClassName} .MuiToolbar-root button`).filter(el => textMatch(el, text) )
 
         case 'menuItem':
             return findByCss(container, `[role=menuitem]`).filter(el => textMatch(el, text) )
