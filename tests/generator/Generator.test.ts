@@ -1098,7 +1098,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     })
 })
 
-test('generates List element with separate child component and global functions and select action', ()=> {
+test('generates List element with separate child component and global functions and select action that depends on $item', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
@@ -1106,7 +1106,7 @@ test('generates List element with separate child component and global functions 
                 new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], styles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
-                    new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', '123', {done: true})`}),
+                    new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
                 ])
             ])
             ]
@@ -1125,8 +1125,8 @@ test('generates List element with separate child component and global functions 
     const TextInput1 = Elemento.useGetObjectState(parentPathWith('TextInput1'))
     const TextInput2 = Elemento.useObjectState(pathWith('TextInput2'), new TextInput.State({value: 'from ' + Left($item, 3)}))
     const ButtonUpdate_action = React.useCallback(async () => {
-        await Update('Things', '123', {done: true})
-    }, [])
+        await Update('Things', \$item.id, {done: true})
+    }, [\$item])
 
     return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),

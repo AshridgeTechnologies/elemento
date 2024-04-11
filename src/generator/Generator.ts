@@ -119,9 +119,10 @@ export default class Generator {
 
     private generateComponent(app: BaseApp, component: Page | BaseApp | Form | ListItem | ComponentDef, containingComponent?: Page | Form) {
         const componentIsApp = isAppLike(component)
-        const canUseContainerElements = component instanceof ListItem && containingComponent
+        const componentIsListItem = component instanceof ListItem
         const componentIsForm = component instanceof Form
         const componentIsPage = component instanceof Page
+        const canUseContainerElements = componentIsListItem && containingComponent
         const topLevelFunctions = new Set<string>()
         const allPages = app.pages
         const allComponentElements = allElements(component, true)
@@ -164,26 +165,22 @@ export default class Generator {
             const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
             const functionName = `${el.codeName}_${def.name}`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
-            const dependencies = identifiers.filter(id => id !== el.codeName && (isStatefulComponentName(id) || (componentIsForm && id === '$form')))
-             return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
+            const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
+                (isStatefulComponentName(ident) || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
+            const dependencies = identifiers.filter(functionDependsOnIdentifier)
+            return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
         }
 
-        const uiElementActionHandlers = (element: Element) => {
-            return this.project.propertyDefsOf(element)
-                .filter( def => !def.state )
-                .filter(isActionProperty)
-                .map( (def) => actionHandler(element, def))
-                .filter( notEmpty )
-        }
-
-        const stateActionHandlers = (el: Element) => {
+        const actionHandlers = (el: Element, state: boolean) => {
             return this.project.propertyDefsOf(el)
-                .filter( def => def.state )
+                .filter( def => Boolean(def.state) === state )
                 .filter(isActionProperty)
                 .map( (def) => actionHandler(el, def))
                 .filter( notEmpty )
         }
 
+        const uiElementActionHandlers = (el: Element) => actionHandlers(el, false)
+        const stateActionHandlers = (el: Element) => actionHandlers(el, true)
         const generateActionHandlers = (elements: ReadonlyArray<Element>, actionHandlerFn: any) => {
             const actions = flatten(elements.map(  actionHandlerFn) as string[][])
             return actions.join('\n')
@@ -192,7 +189,7 @@ export default class Generator {
         const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
         const stateEntries = statefulComponents.map((el): StateEntry => {
-            const entry = this.initialStateEntry(el, topLevelFunctions, component instanceof ListItem ? component.list : component)
+            const entry = this.initialStateEntry(el, topLevelFunctions, componentIsListItem ? component.list : component)
             const identifiers = this.parser.stateIdentifiers(el.id)
             const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
             return [el, entry, stateComponentIdentifiersUsed]
@@ -221,7 +218,7 @@ export default class Generator {
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
-            const entry = this.initialStateEntry(comp, topLevelFunctions, component instanceof ListItem ? component.list : component)
+            const entry = this.initialStateEntry(comp, topLevelFunctions, componentIsListItem ? component.list : component)
             return `    const [${comp.codeName}] = React.useState(${entry})`
         }).join('\n')
 
@@ -229,11 +226,11 @@ export default class Generator {
             : `    const pathWith = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
-        const extraDeclarations = component instanceof ListItem ? '    const {$item} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item} = props' : ''
 
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)
-        const functionName = functionNamePrefix + (component instanceof ListItem ? component.list.codeName + 'Item' : component.codeName)
+        const functionName = functionNamePrefix + (componentIsListItem ? component.list.codeName + 'Item' : component.codeName)
 
         const declarations = [
             pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
