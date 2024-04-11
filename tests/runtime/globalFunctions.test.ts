@@ -9,7 +9,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, Reverse, CommonItems, HasSameItems,
+    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
@@ -594,6 +594,36 @@ describe('Last', () => {
     test('Pending value gives null', ()=> expect(Last(pendingValue, (it: any) => it <= 0)).toBe(null))
     test('Null list with condition gives null', ()=> expect(Last(null, (it: any) => it <= 0)).toBe(null))
     test('Null list without condition gives null', ()=> expect(Last(null)).toBe(null))
+})
+
+describe('ItemAfter', () => {
+    const list = ['abc', 'def', 'ghj']
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ItemAfter()).toThrow('Wrong number of arguments to ItemAfter. Expected list, item.'))
+    // @ts-ignore
+    test('errors for one argument', () => expect(() => ItemAfter(list)).toThrow('Wrong number of arguments to ItemAfter. Expected list, item.'))
+    test('returns the item following an item', () => expect(ItemAfter(list, 'abc')).toBe('def'))
+    test('returns null for the item following the last item', () => expect(ItemAfter(list, 'ghj')).toBe(null))
+    test('returns null for an item not in the list', () => expect(ItemAfter(list, 'xyz')).toBe(null))
+    test('Gets value of object for the list', ()=> expect(ItemAfter(valueObj(list), 'abc')).toBe('def'))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(ItemAfter(pendingValue, 'abc')).toBe(null))
+    test('Null list gives null', ()=> expect(ItemAfter(null, 'abc')).toBe(null))
+})
+
+describe('ItemBefore', () => {
+    const list = ['abc', 'def', 'ghj']
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ItemBefore()).toThrow('Wrong number of arguments to ItemBefore. Expected list, item.'))
+    // @ts-ignore
+    test('errors for one argument', () => expect(() => ItemBefore(list)).toThrow('Wrong number of arguments to ItemBefore. Expected list, item.'))
+    test('returns the item before an item', () => expect(ItemBefore(list, 'def')).toBe('abc'))
+    test('returns null for the item before the first item', () => expect(ItemBefore(list, 'abc')).toBe(null))
+    test('returns null for an item not in the list', () => expect(ItemBefore(list, 'xyz')).toBe(null))
+    test('Gets value of object for the list', ()=> expect(ItemBefore(valueObj(list), 'ghj')).toBe('def'))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(ItemBefore(pendingValue, 'ghj')).toBe(null))
+    test('Null list gives null', ()=> expect(ItemBefore(null, 'ghj')).toBe(null))
 })
 
 describe('Sort', () => {

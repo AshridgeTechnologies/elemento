@@ -84,6 +84,13 @@ function comparisonOp(op: ComparisonOpType, arg1: DecimalValOrNull | Date, arg2:
     return Decimal(arg1)[op](Decimal(arg2))
 }
 
+function offsetItem(listVal: Value<any[]> | null, item: any, offset: number) {
+    const list = valueOf(listVal) ?? []
+    const itemIndex = list.indexOf(item)
+    if (itemIndex === -1) return null
+    return list[itemIndex + offset] ?? null
+}
+
 export const globalFunctions = {
     valueOf,
 
@@ -299,6 +306,16 @@ export const globalFunctions = {
         if (listVal === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
         const list = valueOf(listVal) ?? []
         return last(list.filter(condition)) ?? null
+    },
+
+    ItemAfter(listVal: Value<any[]> | null, item: any) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments to ItemAfter. Expected list, item.')
+        return offsetItem(listVal, item, 1)
+    },
+
+    ItemBefore(listVal: Value<any[]> | null, item: any) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments to ItemBefore. Expected list, item.')
+        return offsetItem(listVal, item, -1)
     },
 
     Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[]): any[] {
