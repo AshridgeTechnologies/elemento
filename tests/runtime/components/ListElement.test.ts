@@ -144,3 +144,13 @@ test('State class has correct properties', () => {
     state._setScrollTop(333)
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({selectedItem: item2, scrollTop: 333}))
 })
+
+test('State class has new selected item after Set', () => {
+    const item1 = {a: 1}, item2 = {a: 2}
+    const state = new ListElementState({selectedItem: item1})
+    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+    expect(state.selectedItem).toBe(item1)
+
+    state.Set(item2)
+    expect(state.latest().selectedItem).toBe(item2)
+})

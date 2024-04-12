@@ -1,4 +1,4 @@
-import {fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {equals, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -86,7 +86,8 @@ function comparisonOp(op: ComparisonOpType, arg1: DecimalValOrNull | Date, arg2:
 
 function offsetItem(listVal: Value<any[]> | null, item: any, offset: number) {
     const list = valueOf(listVal) ?? []
-    const itemIndex = list.indexOf(item)
+    // const itemIndex = list.indexOf(item)
+    const itemIndex = list.findIndex( it => equals(item, it))
     if (itemIndex === -1) return null
     return list[itemIndex + offset] ?? null
 }

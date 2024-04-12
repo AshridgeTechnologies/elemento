@@ -598,11 +598,13 @@ describe('Last', () => {
 
 describe('ItemAfter', () => {
     const list = ['abc', 'def', 'ghj']
+    const [item1, item2] = [{a: 1}, {a: 2}]
     // @ts-ignore
     test('errors for no arguments', () => expect(() => ItemAfter()).toThrow('Wrong number of arguments to ItemAfter. Expected list, item.'))
     // @ts-ignore
     test('errors for one argument', () => expect(() => ItemAfter(list)).toThrow('Wrong number of arguments to ItemAfter. Expected list, item.'))
     test('returns the item following an item', () => expect(ItemAfter(list, 'abc')).toBe('def'))
+    test('returns the item following an item by deep compare', () => expect(ItemAfter([item1, item2], {a:1})).toBe(item2))
     test('returns null for the item following the last item', () => expect(ItemAfter(list, 'ghj')).toBe(null))
     test('returns null for an item not in the list', () => expect(ItemAfter(list, 'xyz')).toBe(null))
     test('Gets value of object for the list', ()=> expect(ItemAfter(valueObj(list), 'abc')).toBe('def'))
@@ -613,11 +615,13 @@ describe('ItemAfter', () => {
 
 describe('ItemBefore', () => {
     const list = ['abc', 'def', 'ghj']
+    const [item1, item2] = [{a: 1}, {a: 2}]
     // @ts-ignore
     test('errors for no arguments', () => expect(() => ItemBefore()).toThrow('Wrong number of arguments to ItemBefore. Expected list, item.'))
     // @ts-ignore
     test('errors for one argument', () => expect(() => ItemBefore(list)).toThrow('Wrong number of arguments to ItemBefore. Expected list, item.'))
     test('returns the item before an item', () => expect(ItemBefore(list, 'def')).toBe('abc'))
+    test('returns the item before an item by deep compare', () => expect(ItemBefore([item1, item2], {a:2})).toBe(item1))
     test('returns null for the item before the first item', () => expect(ItemBefore(list, 'abc')).toBe(null))
     test('returns null for an item not in the list', () => expect(ItemBefore(list, 'xyz')).toBe(null))
     test('Gets value of object for the list', ()=> expect(ItemBefore(valueObj(list), 'ghj')).toBe('def'))
