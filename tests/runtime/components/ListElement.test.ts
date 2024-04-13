@@ -100,7 +100,7 @@ test('ListElement updates its scrollTop in the app state', async () => {
 
 test('selectAction is called with selected item', async () => {
     const selectAction = jest.fn()
-    const {el, user} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectAction}), 'container3')
+    const {el, user} = testContainer(listElement('app.page1.list1', {selectAction}, {itemContentComponent: ListItem1, items: listData, }), 'container3')
     const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
     await user.click(listItem0El)
     expect(selectAction).toHaveBeenCalledWith(listData[0])
@@ -108,8 +108,8 @@ test('selectAction is called with selected item', async () => {
 
 test('selectAction is called with selected item even if not selectable', async () => {
     const selectAction = jest.fn()
-    const {el, user} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData,
-        selectable: false, selectAction}), 'container4')
+    const {el, user} = testContainer(listElement('app.page1.list1', {selectAction}, {itemContentComponent: ListItem1, items: listData,
+        selectable: false}), 'container4')
     const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
     await user.click(listItem0El)
     expect(selectAction).toHaveBeenCalledWith(listData[0])
@@ -128,9 +128,11 @@ test('Can highlight all matching elements in a list', async () => {
 
 test('State class has correct properties', () => {
     const item1 = {a: 1}, item2 = {a: 2}
-    const state = new ListElementState({selectedItem: item1})
+    const selectAction = () => {}
+    const state = new ListElementState({selectedItem: item1, selectAction})
     const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
     expect(state.selectedItem).toBe(item1)
+    expect(state.selectAction).toBe(selectAction)
     const updatedState = state._withStateForTest({selectedItem: item2, scrollTop: 222})
     expect(updatedState.selectedItem).toBe(item2)
     expect(updatedState.scrollTop).toBe(222)
@@ -153,4 +155,14 @@ test('State class has new selected item after Set', () => {
 
     state.Set(item2)
     expect(state.latest().selectedItem).toBe(item2)
+})
+
+test('State class does select action with new selected item', () => {
+    const item1 = {a: 1}, item2 = {a: 2}
+    const selectAction = jest.fn()
+    const state = new ListElementState({selectedItem: item1, selectAction})
+    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+
+    state.Set(item2)
+    expect(selectAction).toHaveBeenCalledWith(item2)
 })

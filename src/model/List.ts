@@ -28,7 +28,7 @@ export default class List extends BaseElement<Properties> implements Element {
             propDef('items', 'expr'),
             propDef('selectedItem', 'expr', {state: true}),
             propDef('selectable', 'boolean'),
-            propDef('selectAction', eventAction('$item')),
+            propDef('selectAction', eventAction('$item'), {state: true}),
             ...visualPropertyDefs(),
         ]
     }

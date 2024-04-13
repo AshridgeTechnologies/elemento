@@ -14,17 +14,17 @@ type Properties = Readonly<{
     items?: any[],
     itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
     selectable?: boolean,
-    selectAction?: ($item: any) => void,
     show?: PropVal<boolean>,
     styles?: StylesPropVals
 }>
-type StateProperties = {selectedItem?: any, scrollTop?: number}
+
+type StateProperties = {selectedItem?: any, scrollTop?: number, selectAction?: ($item: any) => void}
 
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0}
 
 const ListElement = React.memo( function ListElement({path, itemContentComponent, ...props}: Properties) {
     const state = useGetObjectState<ListElementState>(path)
-    const {scrollTop} = state
+    const {scrollTop, selectAction} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)
         state._setScrollTop(scrollTop)
@@ -58,9 +58,9 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
         if (selectable) {
             state._setSelectedItem(selectedItem)
         }
-        props.selectAction?.(selectedItem)
+        selectAction?.(selectedItem)
     }, [items])
-    const onClick = selectable || props.selectAction ? onClickFn : null
+    const onClick = selectable || selectAction ? onClickFn : null
     const isSelected = (item: any) => {
         return !isNil(selectedItem) && (
             item === selectedItem || (item.id !== undefined && (item.id === selectedItem || item.id === (selectedItem as any)?.id))
@@ -87,6 +87,10 @@ export class ListElementState extends BaseComponentState<StateProperties>
         return this.state.scrollTop ?? 0
     }
 
+    get selectAction() {
+        return this.props.selectAction
+    }
+
     _setScrollTop(scrollTop: number) {
         this.latest().updateState({scrollTop})
     }
@@ -105,6 +109,7 @@ export class ListElementState extends BaseComponentState<StateProperties>
 
     Set(selectedItem: any) {
         this._setSelectedItem(selectedItem)
+        this.selectAction?.(selectedItem)
     }
 }
 
