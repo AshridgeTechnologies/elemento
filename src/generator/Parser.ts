@@ -37,7 +37,7 @@ const isAppFunction = (name: string) => appFunctions.includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
-const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math'].includes(name)
+const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'window', 'document'].includes(name)
 const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 const isFormVar = (name: string) => name === '$form'

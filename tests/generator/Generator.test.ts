@@ -1933,6 +1933,7 @@ test('built-in names available in content expression', ()=> {
                 new Text('id2', 't2', {content: ex`null`}),
                 new Text('id3', 't3', {content: ex`new Date(2020, 3, 4)`}),
                 new Text('id4', 't4', {content: ex`Math.sqrt(2)`}),
+                new Text('id5', 't5', {content: ex`document.getElementById('test1.Page1.t1').scrollTop`}),
             ]
         )])
 
@@ -1947,6 +1948,7 @@ test('built-in names available in content expression', ()=> {
         React.createElement(TextElement, {path: pathWith('t2')}, null),
         React.createElement(TextElement, {path: pathWith('t3')}, new Date(2020, 3, 4)),
         React.createElement(TextElement, {path: pathWith('t4')}, Math.sqrt(2)),
+        React.createElement(TextElement, {path: pathWith('t5')}, document.getElementById('test1.Page1.t1').scrollTop),
     )
 }
 `)

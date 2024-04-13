@@ -4,6 +4,8 @@ Elemento Backlog
 
 Bugs
 ----
+- Service worker no longer serves files after being woken up (dirHandle lost)
+- Writes and preview updates get out of order - latest change sometimes does not show in Preview
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
 - Vertical layout with text and button shows only the top few pixels
@@ -116,6 +118,7 @@ Stories
 ### Priority 1
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked
+- Consider way of getting domElement of any ui Element (including stateless) for special stuff - but encourages bad practices?
 - Check out FedCM change
 - Resizable panels in Editor - https://react-resizable-panels.vercel.app/
 - New datepicker and range picker: https://reactdatepicker.com/
