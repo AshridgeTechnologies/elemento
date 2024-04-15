@@ -79,6 +79,7 @@ Stories
 - General showcase example - with all features
 - Other how-to guides
 - Look into using driver.js
+- Gamification
 
 ### Priority for customer-facing apps
 - Payments

@@ -18,6 +18,7 @@ Requirements
 - Pages shown in list at left
 - Can go back or forward
 - Trim start of text lines in data
+- Available in Help Menu 
 
 Further requirements
 --------------------
