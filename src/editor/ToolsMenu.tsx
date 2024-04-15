@@ -8,7 +8,7 @@ import {editorMenuPositionProps} from './Editor'
 import {editorDialogContainer} from './EditorElement'
 import {Stack, TextField, Typography} from '@mui/material'
 
-export default function ToolsMenu({toolItems, openFromUrlFn}: {toolItems: {[name: string]: VoidFunction}, openFromUrlFn: (url: string) => void}) {
+export default function ToolsMenu({toolItems, openFromUrlFn}: {toolItems: {[_: string]: VoidFunction}, openFromUrlFn: (url: string) => void}) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
     const [urlToOpen, setUrlToOpen] = React.useState<string>('')
     const open = Boolean(anchorEl)
@@ -49,7 +49,7 @@ export default function ToolsMenu({toolItems, openFromUrlFn}: {toolItems: {[name
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{dense: true, 'aria-labelledby': 'fileButton'}}
+                MenuListProps={{dense: true, 'aria-labelledby': 'toolsButton'}}
                 anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
                 transformOrigin={{vertical: 45, horizontal: 'left',}}
                 container={editorDialogContainer()}

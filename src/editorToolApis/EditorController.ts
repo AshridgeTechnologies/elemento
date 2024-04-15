@@ -59,17 +59,17 @@ export default class EditorController {
         })
     }
 
-    Click(selector: SelectorType, text: string) {
+    Click(selector: SelectorType, text: string, index?: number) {
         console.log('Click', selector, text)
         return this.queueAction(selector, text, () => {
-            const element = selectSingleElement(selector, this.editorElement, text)
+            const element = selectSingleElement(selector, this.editorElement, text, index)
             if (element) {
                 return userEvent.click(element)
             }
         })
     }
 
-    ContextClick(selector: SelectorType, text: string) {
+    ContextClick(selector: SelectorType, text: string, index?: number) {
         console.log('ContextClick', selector, text)
         this.queueAction(selector, text, async () => {
             const element = selectSingleElement(selector, this.editorElement, text)

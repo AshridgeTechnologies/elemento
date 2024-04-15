@@ -2,11 +2,12 @@ import {ElementId} from '../model/Types'
 import MenuBar from './MenuBar'
 import FileMenu from './FileMenu'
 import InsertMenuWithButton from './InsertMenuWithButton'
-import {Box, Button} from '@mui/material'
+import {Box} from '@mui/material'
 import React from 'react'
 import {ActionsAvailableFn, InsertMenuItemsFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
 import EditMenuWithButton from './EditMenuWithButton'
 import ToolsMenu from './ToolsMenu'
+import HelpMenu from './HelpMenu'
 
 type EditorMenuProps = {
     onNew: () => void,
@@ -25,7 +26,8 @@ type EditorMenuProps = {
     itemNameFn: (id: ElementId) => string,
     selectedItemIds: ElementId[],
     toolItems: {[name: string]: VoidFunction}
-    onHelp: () => void,
+    onHelp: VoidFunction,
+    onTutorials: VoidFunction,
     onOpenTool: (url: string) => void,
     status: React.ReactNode
 }
@@ -37,6 +39,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
         onReload,
         onSaveAs,
         onHelp,
+        onTutorials,
         onOpenTool,
         onOpenFromGitHub,
         onGetFromGitHub,
@@ -61,7 +64,7 @@ export default function EditorMenuBar(props: EditorMenuProps) {
         <EditMenuWithButton onAction={onAction} actionsAvailableFn={actionsAvailableFn} selectedItemIds={selectedItemIds} itemNameFn={itemNameFn}/>
         <InsertMenuWithButton onInsert={onInsert} insertMenuItems={insertMenuItems} targetItemId={selectedItemIds[0]}/>
         <ToolsMenu toolItems={toolItems} openFromUrlFn={onOpenTool}/>
-        <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
+        <HelpMenu onReference={onHelp} onTutorials={onTutorials}/>
         <Box id='_filler' flexGrow={1}/>
         {status}
     </MenuBar>

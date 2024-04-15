@@ -76,22 +76,12 @@ const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProje
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
-const exposePreviewController = (previewFrame: HTMLIFrameElement | null, getMessageData: (event: any) => object) => {
-    const previewWindow = previewFrame?.contentWindow
-
-    if (previewWindow) {
-        const controller = new PreviewController(previewWindow)
-        const closeFn = exposeFunctions('Preview', controller)
-        console.log('Preview controller initialised')
-        return closeFn
-    }
-}
-
 const pingServiceWorker = () => {
     navigator.serviceWorker.controller!.postMessage({type: 'ping'})
 }
 
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
+const tutorialsToolImport = new ToolImport('tutorialsTool', 'Tutorials', {source: '/help/tutorials/?header=0'})
 const inspectorImport = new ToolImport('inspectorTool', 'Inspector', {source: '/inspector'})
 const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
@@ -320,6 +310,17 @@ export default function EditorRunner() {
         }
     }
 
+    const exposePreviewController = (previewFrame: HTMLIFrameElement | null) => {
+        const previewWindow = previewFrame?.contentWindow
+
+        if (previewWindow) {
+            const controller = new PreviewController(previewWindow)
+            const closeFn = exposeFunctions('Preview', controller)
+            console.log('Preview controller initialised')
+            return closeFn
+        }
+    }
+
     const openInitialTools = () => {
         const searchParams = new URLSearchParams(location.search)
         const toolUrls = searchParams.getAll('tool')
@@ -334,8 +335,8 @@ export default function EditorRunner() {
         window.getProject = () => projectHandler.current
     })
     useEffect(initServiceWorker, [])
-    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorElement()])
-    useEffect(() => exposePreviewController(previewFrameRef.current, getMessageDataAndAuthorize), [previewFrameRef.current])
+    useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
+    useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current])
     useEffect(openInitialTools, [])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
@@ -460,6 +461,7 @@ export default function EditorRunner() {
     }
 
     const onHelp = () => showTool(helpToolImport)
+    const onTutorials = () => showTool(tutorialsToolImport)
     const onOpenTool = (url: string) => showTool(toolImportFromUrl(url))
     const onReload = ()=> openOrUpdateProjectFromStore(projectHandler.name!, projectStore!)
     const onFirebase = () => showTool(firebaseToolImport)
@@ -639,7 +641,7 @@ export default function EditorRunner() {
                     onAction,
                     actionsAvailableFn: actionsAvailableFnNoInsert,
                     itemNameFn,
-                    selectedItemIds, onHelp, onOpenTool,
+                    selectedItemIds, onHelp, onTutorials, onOpenTool,
                     toolItems,
                     status
                 }}/>
@@ -695,7 +697,7 @@ export default function EditorRunner() {
             return <Box height='100%' width='100%'>
                 <Box height={editorHeight}>
                     <ProjectOpener onNew={onNew} onOpen={onOpen} onGetFromGitHub={onGetFromGitHub} onOpenFromGitHub={onOpenFromGitHub}
-                                   onOpenTool={onOpenTool} onHelp={onHelp}/>
+                                   onOpenTool={onOpenTool} onHelp={onHelp} onTutorials={onTutorials}/>
                 </Box>
                 <Box height={toolsHeight}>
                     {toolTabsPanel()}

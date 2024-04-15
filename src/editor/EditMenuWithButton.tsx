@@ -12,14 +12,10 @@ export default function EditMenuWithButton({onAction, actionsAvailableFn, select
     itemNameFn: (id: ElementId) => string
 }) {
     const buttonId = 'editButton'
-    const targetElementId = selectedItemIds[0]
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
     const open = Boolean(anchorEl)
     const handleClose = () => setAnchorEl(null)
     const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(event.currentTarget as HTMLElement)}
-
-    const actionDetails = (action: AppElementAction) => ({action, ids: selectedItemIds, itemNames: selectedItemIds.map(itemNameFn)})
-
     return (
         <div>
             <Button

@@ -126,8 +126,8 @@ export const selectElements = (selector: SelectorType, container: HTMLElement = 
     }
 }
 
-export const selectSingleElement = (selector: SelectorType, container: HTMLElement = document.body, text: string) => {
-    const element = selectElements(selector, container, text)[0]
+export const selectSingleElement = (selector: SelectorType, container: HTMLElement = document.body, text: string, elementIndex = 0) => {
+    const element = selectElements(selector, container, text)[elementIndex]
     if (element) {
         return element
     } else {

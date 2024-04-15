@@ -12,6 +12,7 @@ export const commonStylingPropTypes: {[p: string]: PropertyType} = {
     borderRadius: 'string',
     borderRight: 'string',
     borderSpacing: 'string',
+    borderStyle: ['none', 'solid', 'dotted', 'dashed', 'double', 'groove', 'ridge', 'inset', 'outset', 'hidden'],
     borderTop: 'string',
     borderWidth: 'string',
     bottom: 'string',

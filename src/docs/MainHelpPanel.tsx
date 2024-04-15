@@ -12,15 +12,19 @@ import Projects from './overview/Projects'
 import WorkingWithProjects from './howTo/Working with Projects'
 import Apps from './overview/Apps'
 import DataStorage from './overview/DataStorage'
-import {Para} from './HelpComponents'
+import {BulletList, Para} from './HelpComponents'
 import {Link} from '@mui/material'
 
 const MainIntro = () =>
     <div id='help-intro' style={{paddingTop: '2rem', maxWidth: '50em'}}>
         <Para>
             This page is a concise reference for Elemento.
-            There are also several longer guides in the <Link href='/help/guides' target='elemento_guides'>Guides page</Link>.
+            There are also:
         </Para>
+        <BulletList>
+            <li>a growing list tutorials in the <Link href='/help/tutorials'>Tutorials page</Link></li>
+            <li>several longer guides in the <Link href='/help/guides' target='elemento_guides'>Guides page</Link></li>
+        </BulletList>
     </div>
 
 const MainHelpPanel = (props: { showTitleBar?: boolean }) =>

@@ -11,6 +11,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import MainHelpPanel from '../docs/MainHelpPanel'
 import ToolsMenu from './ToolsMenu'
+import HelpMenu from './HelpMenu'
 
 
     function OpenOption({text, iconClass, onClick}: {text: string, iconClass: string, onClick: VoidFn}) {
@@ -30,9 +31,11 @@ import ToolsMenu from './ToolsMenu'
 
 
 
-export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onOpenTool, onHelp}: { onOpen: OnOpenFn, onNew: OnNewFn,
+export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onOpenTool, onHelp, onTutorials}: { onOpen: OnOpenFn, onNew: OnNewFn,
                         onGetFromGitHub: OnGetFromGitHubFn, onOpenFromGitHub: OnOpenFromGitHubFn,
-                        onHelp: () => void, onOpenTool: (url: string) => void, }) {
+                        onHelp: () => void,
+                        onTutorials: () => void,
+                        onOpenTool: (url: string) => void, }) {
     const signedIn = useGitHubSignInState()
     const appBarTitle = `Elemento Studio`
     const OverallAppBar = <Box flex='0'>
@@ -42,7 +45,7 @@ export default function ProjectOpener({onNew, onOpen, onOpenFromGitHub, onOpenTo
         <MenuBar>
             <FileMenu onNew={onNew} onOpen={onOpen} onOpenFromGitHub={onOpenFromGitHub}  signedIn={signedIn}/>
             <ToolsMenu toolItems={{}} openFromUrlFn={onOpenTool}/>
-            <Button id='help' color={'secondary'} onClick={onHelp}>Help</Button>
+            <HelpMenu onReference={onHelp} onTutorials={onTutorials}/>
         </MenuBar>
     </Box>
 
