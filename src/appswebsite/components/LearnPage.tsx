@@ -26,7 +26,7 @@ export default function LearnPage() {
 
                 <SubHeading>Tutorials</SubHeading>
                 <Para>These take you step-by-step through creating a simple app, or learning a particular skill.</Para>
-                <Para><Link href='/studio/?openFromGitHub=https://github.com/ElementoResources/your-first-app-tutorial'>Your first Elemento App</Link></Para>
+                <Para><Link href='/help/tutorials'>Tutorials list</Link></Para>
 
                 <SubHeading>Example apps</SubHeading>
                 <Para>These show you different types of app, with a built-in tour to show you the interesting points.
