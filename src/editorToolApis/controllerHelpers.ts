@@ -16,6 +16,12 @@ export type ActionFn = () => void | Promise<void>
 
 export const highlightClassName = 'editor-highlight'
 
+let storedOptions: Options = {showBeforeActions: false, showWithPointer: false, delay: 500}
+export const getStoredOptions = ()=> ({...storedOptions})
+export const updateStoredOptions = (updates: Partial<Options>)=> {
+    storedOptions = {...storedOptions, ...updates}
+}
+
 export const getOffsetWithin = (el: HTMLElement, outerEl: HTMLElement) => {
     let offsetX = el.offsetLeft, offsetY = el.offsetTop
     let currentEl: HTMLElement | null = el.parentNode as HTMLElement

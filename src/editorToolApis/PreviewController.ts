@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import {
     ActionFn,
     ActionQueue,
-    ensureVisible,
+    ensureVisible, getStoredOptions,
     hidePointer,
     highlightElements,
     Options,
@@ -26,15 +26,11 @@ export function valueOf<T>(x: Value<T>): T {
 
 export default class PreviewController {
     private readonly actionQueue = new ActionQueue()
-    private options: Options = {showBeforeActions: false, showWithPointer: false, delay: 1000}
 
     constructor(private readonly window: Window) {}
 
     private get container(): HTMLElement { return this.window.document.body }
-
-    SetOptions(options: Partial<Options>) {
-        this.options = {...this.options, ...options}
-    }
+    private get options() { return getStoredOptions() }
 
     Show(selector?: string) {
         console.log('Show', selector)
