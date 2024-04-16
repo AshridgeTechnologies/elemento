@@ -1141,16 +1141,16 @@ function Page1(props) {
     const {Page, TextInput, Layout, ListElement} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const TextInput1 = Elemento.useObjectState(pathWith('TextInput1'), new TextInput.State({}))
-    const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({}))
     const List1_selectAction = React.useCallback(($item) => {
         Log($item.id)
     }, [])
+    const List1 = Elemento.useObjectState(pathWith('List1'), new ListElement.State({selectAction: List1_selectAction}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], selectAction: List1_selectAction, styles: {color: 'red', width: 200}}),
+            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], styles: {color: 'red', width: 200}}),
     ),
     )
 }
