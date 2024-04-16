@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useRef} from 'react'
-import {createStore, type StoreApi, useStore} from 'zustand'
+import {createStore, type StoreApi} from 'zustand'
+import {useStoreWithEqualityFn as useStore} from 'zustand/traditional'
 import AppState from './AppState'
 import {ComponentState} from './components/ComponentState'
 import {mapKeys, mapValues} from 'lodash'

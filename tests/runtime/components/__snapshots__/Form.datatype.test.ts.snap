@@ -470,7 +470,7 @@ exports[`Form element produces output with all types of children and description
     className="css-1q4ho6v-MuiStack-root"
   >
     <div
-      className="MuiFormControl-root MuiTextField-root css-1ohrv53-MuiFormControl-root-MuiTextField-root"
+      className="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"
       onClick={[Function]}
       onMouseUp={[Function]}
     >
@@ -615,7 +615,7 @@ exports[`Form element produces output with all types of children and description
         Region
       </label>
       <div
-        className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-llrb4p-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+        className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-67qocj-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
         onClick={[Function]}
       >
         <div

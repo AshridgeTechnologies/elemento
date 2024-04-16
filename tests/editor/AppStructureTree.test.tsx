@@ -501,7 +501,7 @@ test('abandons insert if do not select an item', async () => {
     await actWait(() => fireEvent.click(screen.getByText('Insert')))
     expect(onInsert).not.toHaveBeenCalled()
 
-    await actWait(() => fireEvent.click(document.body.querySelector('#insertMenu .MuiModal-backdrop')!))
+    await actWait(() => fireEvent.click(document.body.querySelector('#insertMenu .MuiBackdrop-root')!))
     expect(onInsert).not.toHaveBeenCalled()
 
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
