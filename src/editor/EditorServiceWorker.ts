@@ -1,17 +1,15 @@
 import mime from 'mime-types'
-import {FileSystemTree} from './Types'
 
-import {previewPathComponents} from '../util/helpers'
+import {previewPathComponents, waitUntil} from '../util/helpers'
 import {DiskProjectStore} from './DiskProjectStore'
 
 
 export default class EditorServiceWorker {
-    private projectStore: DiskProjectStore | null = null
+    private projectStores = new Map<string, DiskProjectStore>()
 
-    constructor(private swSelf: ServiceWorkerGlobalScope) {
+    constructor(private swSelf: ServiceWorkerGlobalScope, private dirHandleTimeout = 1000) {
         console.log('EditorServiceWorker created')
     }
-    private fileSystem: FileSystemTree = {}
     private previewServerUrl: string | null = null
 
     fetch = (event: FetchEvent) => {
@@ -21,12 +19,12 @@ export default class EditorServiceWorker {
     message = (event: ExtendableMessageEvent) => {
         const {data} = event
 
-        if (data?.type === 'write') {
-            this.sendUpdate(data.path)
+        if (data?.type === 'projectUpdated') {
+            this.sendUpdate(data.projectId)
         }
 
         if (data?.type === 'rename') {
-            this.sendUpdate(data.path)
+            this.sendUpdate(data.projectId)
         }
 
         if (data?.type === 'editorHighlight') {
@@ -46,7 +44,7 @@ export default class EditorServiceWorker {
         }
 
         if (data?.type === 'projectStore') {
-            this.projectStore = new DiskProjectStore(data.dirHandle)
+            this.projectStores.set(data.projectId, new DiskProjectStore(data.dirHandle))
         }
 
         if (data?.type === 'ping') {
@@ -80,9 +78,9 @@ export default class EditorServiceWorker {
         if (pathname.startsWith('/studio/preview/')) {
             const pathComponents = previewPathComponents(pathname)
             if (pathComponents) {
-                const {prefix = '', appName, filepath = 'index.html'} = pathComponents
+                const {projectId, prefix = '', appName, filepath = 'index.html'} = pathComponents
                 let requestFilepath = prefix + appName + '/' + filepath
-                let file = await this.getFileContents(requestFilepath)
+                let file = await this.getFileContents(projectId, requestFilepath)
                 if (file) {
                     const extension = requestFilepath.match(/\.\w+$/)?.[0] ?? '.txt'
                     const contentType = mime.contentType(extension) || 'text/plain'
@@ -108,14 +106,20 @@ export default class EditorServiceWorker {
         return fetch(request)
     }
 
-    private async getFileContents(path: string): Promise<Uint8Array | null> {
+    private async getFileContents(projectId: string, path: string): Promise<Uint8Array | null> {
         const fullPath = `dist/client/${path}`
+        let projectStore = this.projectStores.get(projectId)
         try {
-            if (!this.projectStore) {
+            if (!projectStore) {
+                await this.sendToClients('dirHandleRequest', {projectId})
+                projectStore = await waitUntil(() => this.projectStores.get(projectId), 50, this.dirHandleTimeout)
+            }
+            if (!projectStore) {
                 console.warn('Failed reading', path, 'projectStore not set')
                 return null
             }
-            return await this.projectStore.readFile(fullPath)
+
+            return await projectStore.readFile(fullPath)
         } catch (e: any) {
             console.error('Failed reading', path, e.message)
             return null
@@ -130,8 +134,8 @@ export default class EditorServiceWorker {
         clients.forEach(client => client.postMessage({type, ...data}))
     }
 
-    async sendUpdate(filepath: string) {
-        await this.sendToClients('refreshCode', {path: filepath})
+    async sendUpdate(projectId: string) {
+        await this.sendToClients('refreshCode', {projectId})
     }
 
     async sendEditorHighlight(ids: string[]) {

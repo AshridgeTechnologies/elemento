@@ -19,6 +19,7 @@ From user test, changes to Elemento:
 - ✅ Avoid highlighting in preview when click in editor (different action queue) - maybe await steps?
 - Vertical Progress bar with ticks starting near the top and continuing below the fold
 - Completeness tests
+- Practice task at end of tutorial
 - Tutorial step component?  Or general user component mechanism?
 - Ensure all controller actions return promises and/or common action queue
 - ~~Comic Sans doesn't work as Font Family~~

@@ -29,18 +29,23 @@ export function RunFromDiskDialog({openProjectFn, uiManager}: { openProjectFn: R
 
     if (!dirHandle) {
         openProjectFromDisk()
+        return null
     }
 
-    if (dirHandle && !namesLoaded) {
+    if (!namesLoaded) {
         loadAppNames(dirHandle).then((names) => {
-            const projectApps = names.map( appName => [dirHandle.name, appName] as ProjectApp)
-            setNames(projectApps)
-            setNamesLoaded(true)
+            if (names.length === 1) {
+                openProjectFn('disk', dirHandle.name, names[0], dirHandle)
+            } else {
+                const projectApps = names.map( appName => [dirHandle.name, appName] as ProjectApp)
+                setNames(projectApps)
+                setNamesLoaded(true)
+            }
         } )
     }
 
     const title = 'Run app on your computer'
-    if (!dirHandle) {
+    if (!(dirHandle && namesLoaded)) {
         return null
     }
     return <EditorActionDialog

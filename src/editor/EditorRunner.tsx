@@ -1,13 +1,12 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useRef, useState} from 'react'
 //@ts-ignore
-import {expose} from '../editorToolApis/postmsgRpc'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
 import {AlertColor, Box, Button, Grid, Stack, Typography,} from '@mui/material'
-import Element, {default as ModelElement} from '../model/Element'
+import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
 import {theme} from '../appsShared/styling'
@@ -33,7 +32,6 @@ import App from '../model/App'
 import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../appsShared/AppBar'
-import {elementTypes} from '../model/elements'
 import EditorMenuBar from './EditorMenuBar'
 import {last, without} from 'ramda'
 import {UploadDialog} from './UploadDialog'
@@ -42,7 +40,7 @@ import {CommitDialog} from './CommitDialog'
 import ToolImport from '../model/ToolImport'
 import ToolTabsPanel from './ToolTabsPanel'
 import EditorController from '../editorToolApis/EditorController'
-import {editorDialogContainer, editorElement} from './EditorElement'
+import {editorDialogContainer} from './EditorElement'
 import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
@@ -76,10 +74,9 @@ const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProje
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
-const pingServiceWorker = () => {
-    navigator.serviceWorker.controller!.postMessage({type: 'ping'})
-}
-
+const debouncedBuild = debounce( (projectBuilder: ProjectBuilder, projectId: string) => {
+    projectBuilder.updateProject().then( () => navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId}))
+}, 100)
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
 const tutorialsToolImport = new ToolImport('tutorialsTool', 'Tutorials', {source: '/help/tutorials/?header=0'})
 const inspectorImport = new ToolImport('inspectorTool', 'Inspector', {source: '/inspector'})
@@ -98,8 +95,6 @@ function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "upda
 
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
-    const [projectStore, setProjectStore] = useState<DiskProjectStore>()
-    const [updateTime, setUpdateTime] = useState<number | null>(null)
     const [serverUpdateStatus, setServerUpdateStatus] = useState<Status>('complete')
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
@@ -111,9 +106,13 @@ export default function EditorRunner() {
     const [selectedToolId, setSelectedToolId] = useState<string | null>(null)
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const projectStoreRef = useRef<DiskProjectStore>()
+    const projectIdRef = useRef<string>()
     const projectBuilderRef = useRef<ProjectBuilder>()
     const editorControllerRef = useRef<EditorController>()
     const previewFrameRef = useRef<HTMLIFrameElement>(null)
+
+    const projectStore = ()=> projectStoreRef.current!
 
     const elementoUrl = () => window.location.origin
 
@@ -130,8 +129,8 @@ export default function EditorRunner() {
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
-        debouncedSave(updatedProject, projectStore!)
-        projectBuilderRef.current?.updateProject()
+        debouncedSave(updatedProject, projectStore())
+        debouncedBuild(projectBuilderRef.current!, projectIdRef.current!)
     }
 
     const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
@@ -146,7 +145,6 @@ export default function EditorRunner() {
         console.log('Project build complete')
 
         setProject(proj)
-        setUpdateTime(Date.now())
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
@@ -202,8 +200,8 @@ export default function EditorRunner() {
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
         await updateProjectHandlerFromStore(project, name, projectStore)
-        await setProjectStoreInServiceWorker(projectStore)
-        setProjectStore(projectStore)
+        projectStoreRef.current = projectStore
+        projectIdRef.current = name.replace(/ /g, '-') + '-' + Date.now()
 
         const toolsToKeep = tools.filter( tool => tool.kind === 'ToolImport')
         setTools(toolsToKeep)
@@ -233,10 +231,9 @@ export default function EditorRunner() {
         navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
     }
 
-    async function setProjectStoreInServiceWorker(projectStore: DiskProjectStore) {
-        console.log('setProjectStoreInServiceWorker', projectStore)
-        navigator.serviceWorker.controller!.postMessage({type: 'projectStore', dirHandle: projectStore.dirHandle})
-        await wait(100)
+    function setDirHandleInServiceWorker(projectId: string, dirHandle: FileSystemDirectoryHandle) {
+        console.log('setDirHandleInServiceWorker', dirHandle)
+        navigator.serviceWorker.controller!.postMessage({type: 'projectStore', projectId, dirHandle})
     }
 
     function getMessageDataAndAuthorize(event: any) {
@@ -265,7 +262,7 @@ export default function EditorRunner() {
             return
         }
 
-        const doInit = async () => {
+        const doInit = () => {
             console.log('Initializing service worker')
             navigator.serviceWorker.onmessage = (event) => {
                 const message = event.data
@@ -274,18 +271,20 @@ export default function EditorRunner() {
                     const selectedItem = getOpenProject().findElementByPath(id)
                     onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
                 }
+                if (message.type === 'dirHandleRequest') {
+                    if (projectIdRef.current && message.projectId === projectIdRef.current && projectStoreRef.current) {
+                        setDirHandleInServiceWorker(projectIdRef.current, projectStoreRef.current?.dirHandle)
+                    }
+                }
             }
-            setInterval(pingServiceWorker, 10000)
         }
 
-        waitUntil(() => navigator.serviceWorker.controller, 500, 5000).then(doInit)
+        waitUntil(() => navigator.serviceWorker.controller, 500, 5000).then(() => doInit())
             .catch(() => {
                 console.error('Timed out waiting for service worker')
                 // console.log('Reloading')
                 // window.location.reload()
             })
-
-
     }
 
     const openInitialProjectIfSupplied = () => {
@@ -330,7 +329,7 @@ export default function EditorRunner() {
     useEffect(() => {
         window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
-            updateProjectHandlerFromStore(proj, 'Test project', projectStore!)
+            updateProjectHandlerFromStore(proj, 'Test project', projectStore())
         }
         window.getProject = () => projectHandler.current
     })
@@ -362,8 +361,8 @@ export default function EditorRunner() {
     async function renameAsset(element: ModelElement, value: any) {
         const oldName = element.name
         const newName = value
-        await projectStore!.renameAsset(oldName, newName)
-        const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
+        await projectStore().renameAsset(oldName, newName)
+        const gitProjectStore = new GitProjectStore(projectStore().fileSystem, http, null, null)
         await gitProjectStore.rename(ASSET_DIR + '/' + oldName, ASSET_DIR + '/' + newName)
     }
 
@@ -390,7 +389,7 @@ export default function EditorRunner() {
     const onUpload = async (targetElementId: ElementId): Promise<ElementId | null> => {
         return new Promise(resolve => {
             const onFileUploaded = async (name: string, data: Uint8Array) => {
-                await projectStore!.writeAssetFile(name, data)
+                await projectStore().writeAssetFile(name, data)
                 const newId = projectHandler.insertNewElement('inside', targetElementId, 'File', {name})
                 updateProjectAndSave()
                 removeDialog()
@@ -408,12 +407,12 @@ export default function EditorRunner() {
 
     const deleteFilesWhereNecessary = (ids: ElementId[]) => {
         const fileIds = ids.filter(isFileElement)
-        const gitProjectStore = new GitProjectStore(projectStore!.fileSystem, http, null, null)
+        const gitProjectStore = new GitProjectStore(projectStore().fileSystem, http, null, null)
 
         return Promise.all(fileIds.map(async id => {
             const filename = getOpenProject().findElement(id)?.name
             if (filename) {
-                await projectStore!.deleteAssetFile(filename)
+                await projectStore().deleteAssetFile(filename)
                 await gitProjectStore.deleteFile(ASSET_DIR + '/' + filename)
             }
         }))
@@ -453,7 +452,7 @@ export default function EditorRunner() {
 
     const onSaveAs = () => setDialog(<SaveAsDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
                                                     uiManager={new UIManager({onClose: removeDialog, showAlert})}
-                                                    currentProjectStore={projectStore!}/>)
+                                                    currentProjectStore={projectStore()}/>)
 
     const onOpen = async () => {
         setDialog(<OpenDialog editorManager={new EditorManager(openOrUpdateProjectFromStore)}
@@ -463,7 +462,7 @@ export default function EditorRunner() {
     const onHelp = () => showTool(helpToolImport)
     const onTutorials = () => showTool(tutorialsToolImport)
     const onOpenTool = (url: string) => showTool(toolImportFromUrl(url))
-    const onReload = ()=> openOrUpdateProjectFromStore(projectHandler.name!, projectStore!)
+    const onReload = ()=> openOrUpdateProjectFromStore(projectHandler.name!, projectStore())
     const onFirebase = () => showTool(firebaseToolImport)
     const onInspector = () => showTool(inspectorImport)
 
@@ -477,7 +476,7 @@ export default function EditorRunner() {
 
     const onUpdateFromGitHub = async () => {
         console.log('Update from GitHub')
-        const fs = projectStore!.fileSystem
+        const fs = projectStore().fileSystem
         const store = new GitProjectStore(fs, http)
         const projectName = projectHandler.name!
         try {
@@ -488,8 +487,8 @@ export default function EditorRunner() {
             console.error('Error in pull', e)
             showAlert('Problem updating from GitHub', `Message: ${e.message}`, null, 'error')
         }
-        const projectWorkingCopy = await projectStore!.getProject()
-        await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore!)
+        const projectWorkingCopy = await projectStore().getProject()
+        await updateProjectHandlerFromStore(projectWorkingCopy.projectWithFiles, projectName, projectStore())
     }
 
     function pushToGitHub(gitProjectStore: GitProjectStore) {
@@ -517,7 +516,7 @@ export default function EditorRunner() {
             removeDialog()
             return
         }
-        const fs = projectStore!.fileSystem
+        const fs = projectStore().fileSystem
         const gitProjectStore = new GitProjectStore(fs, http, gitHubUsername(), gitHubAccessToken())
         if (await gitProjectStore.isConnectedToGitHubRepo()) {
             pushToGitHub(gitProjectStore)
@@ -606,7 +605,7 @@ export default function EditorRunner() {
         function toolTabsPanel() {
             return <ToolTabsPanel tools={tools} selectedTool={selectedToolId!}
                                   toolsShown={showTools}
-                                  onSelectTool={setSelectedToolId} onShowTools={setShowTools} onCloseTool={onCloseTool}/>
+                                  onSelectTool={setSelectedToolId} onShowTools={setShowTools} onCloseTool={onCloseTool} projectId={projectIdRef.current!}/>
         }
 
         if (projectHandler.current) {
@@ -614,7 +613,7 @@ export default function EditorRunner() {
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
             const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-            const previewUrl = updateTime ? `/studio/preview/${appName()}/?v=${updateTime}` : `/studio/preview/${appName()}/`
+            const previewUrl = `/studio/preview/${projectIdRef.current}/${appName()}/`
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
             const insertMenuItems = project.insertMenuItems.bind(project)

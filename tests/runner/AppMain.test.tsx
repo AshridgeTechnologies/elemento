@@ -108,9 +108,9 @@ describe('Local', () => {
     })
 
     test('runs app from local with disk path', async () => {
-        renderThe(appMain('/run/local/disk/ProjectOne/AppOne/PageOne/stuff'))
+        renderThe(appMain('/run/local/disk/Project Two/AppOne/PageOne/stuff'))
         await actWait(10)
-        expect(loadModuleHttp).toHaveBeenCalledWith('/run/local/disk/ProjectOne/AppOne/AppOne.js')
+        expect(loadModuleHttp).toHaveBeenCalledWith('/run/local/disk/Project Two/AppOne/AppOne.js')
         expect(el`FirstText`).toHaveTextContent('Test App')
     })
 })

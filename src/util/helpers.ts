@@ -80,19 +80,19 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
 }
 export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 export const pathSegments = (path: string) => path.split('/')
-export const previewPathComponents = (pathname: string): {appName: string, prefix?: string, pageName?: string, filepath?: string} | null => {
-    const [, prefix, appName, remainder] = pathname.match(new RegExp(`^\/studio\/preview\/(tools/)?([^/]+)\/?(.*)$`)) ?? []
-    if (!appName) {
+export const previewPathComponents = (pathname: string): {projectId: string, appName: string, prefix?: string, pageName?: string, filepath?: string} | null => {
+    const [, projectId, prefix, appName, remainder] = pathname.match(new RegExp(`^\/studio\/preview\/([^/]+)\/(tools/)?([^/]+)\/?(.*)$`)) ?? []
+    if (!appName || !projectId) {
         return null
     }
-    const appNameAndPrefix = prefix ? {appName, prefix} : {appName}
+    const baseComponents = {projectId, appName, ...definedPropertiesOf({prefix})}
     if (remainder.match(/^[^./]+$/)) {
-        return {...appNameAndPrefix, pageName: remainder}
+        return {...baseComponents, pageName: remainder}
     }
     if (remainder) {
-        return {...appNameAndPrefix, filepath: remainder}
+        return {...baseComponents, filepath: remainder}
     }
-    return appNameAndPrefix
+    return baseComponents
 }
 
 const isoDateRegex = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/

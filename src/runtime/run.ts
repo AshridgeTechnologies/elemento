@@ -12,11 +12,11 @@ let root: Root
 type ComponentSelectedFn = (id: string) => void
 
 const run = (urlPath: string,
+             projectId: string,
              elementType: React.FunctionComponent,
              selectedComponentId?: string,
              onComponentSelected?: ComponentSelectedFn,
-             appStoreHook?: AppStoreHook,
-             containerElementId = 'main') => {
+             appStoreHook?: AppStoreHook, containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
         container.id = containerElementId
@@ -29,7 +29,7 @@ const run = (urlPath: string,
         root = createRoot(container)
     }
     const appContext = getDefaultAppContext(urlPath)
-    const resourceUrl = '/studio/preview/' + ASSET_DIR
+    const resourceUrl = `/studio/preview/${projectId}/${ASSET_DIR}`
     // @ts-ignore
     const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
     root.render(appRunner)
@@ -43,9 +43,9 @@ export const runPreview = (urlPath: string) => {
     const pathComponents = previewPathComponents(urlPath)
 
     if (!pathComponents) return
-    const {prefix = '', appName, filepath} = pathComponents
+    const {projectId, prefix = '', appName, filepath} = pathComponents
     const appPath = prefix + appName
-    const codeUrl = `/studio/preview/${appPath}/${appName}.js`
+    const codeUrl = `/studio/preview/${projectId}/${appPath}/${appName}.js`
     let appStore: StoreApi<AppStore>
     const appStoreHook: AppStoreHook = {
         setAppStore(sa: StoreApi<AppStore>){
@@ -58,7 +58,7 @@ export const runPreview = (urlPath: string) => {
     let hasSelections = false
 
     function runModule() {
-        run(`/studio/preview/${appName}`, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook)
+        run(`/studio/preview/${projectId}/${appName}`, projectId, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook, 'main')
     }
 
     async function refreshCode() {
@@ -76,7 +76,7 @@ export const runPreview = (urlPath: string) => {
     navigator.serviceWorker.onmessage = (event) => {
         const message = event.data
         if (message.type === 'refreshCode') {
-            if (message.path.startsWith(appPath + '/')) {
+            if (message.projectId === projectId) {
                 refreshCode()
             }
         }

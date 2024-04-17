@@ -27,7 +27,7 @@ export default function AppMain({pathname, origin}: Properties) {
         return createElement(AppRunnerFromGitHub, {username, repo, appName, appContext: getAppContext(pathPrefix)})
     }
 
-    const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w]+)\/([-\w]+)/)
+    const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w ]+)\/([-\w]+)/)
     if (localMatch) {
         const [, area, projectName, appName] = localMatch
         const pathPrefix = `run/local/${area}/${projectName}/${appName}`

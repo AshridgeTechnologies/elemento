@@ -291,32 +291,6 @@ test('updates files generated from project only where changed', async () => {
     ])
 })
 
-test('updates from project are throttled to one update every 100ms', async () => {
-    const project = projectClientOnly
-    const projectLoader = getProjectLoader(project)
-    const builder = newProjectBuilder({projectLoader})
-    await builder.build()
-
-    clearMocks()
-
-    let updateCount = 0
-    let updatedProject = project
-    for (; updateCount < 5; ++updateCount) {
-        updatedProject = updatedProject.set('text3', 'content', `Text 3 Updated ${updateCount}`)
-        projectLoader.project = updatedProject
-        builder.updateProject()
-        await wait(10)
-    }
-    expect(clientFileWriter.writeFile).not.toHaveBeenCalled()
-
-    await wait(110)
-    const updatedApp3 = projectLoader.project!.findElement('app3') as App
-    expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
-        ['App3/App3.js', expectedClientCode(updatedApp3, updatedProject)],
-    ])
-    expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
-})
-
 test('updates an asset file', async () => {
     const dirContents = {
         'File1.txt': 'File 1',

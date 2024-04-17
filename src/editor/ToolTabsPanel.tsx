@@ -61,9 +61,11 @@ const ToolLabel = ({tool, onCloseTool}: TabProps) => {
         </span>
 }
 
-export default function ToolTabsPanel({tools, selectedTool, toolsShown, onSelectTool, onCloseTool, onShowTools}:
+export default function ToolTabsPanel({tools, selectedTool, projectId, toolsShown, onSelectTool, onCloseTool, onShowTools}:
                                             {tools: (Tool | ToolImport)[],
-                                            selectedTool: string, toolsShown: boolean,
+                                                projectId: string,
+                                            selectedTool: string,
+                                                toolsShown: boolean,
                                             onSelectTool: (toolId: string) => void,
                                             onCloseTool: (toolId: string) => void,
                                             onShowTools: (show: boolean) => void}) {
@@ -96,7 +98,7 @@ export default function ToolTabsPanel({tools, selectedTool, toolsShown, onSelect
             <Box  flexGrow={1} >
                 {tools.map( (tool) => (
                     <ToolTabPanel shown={toolsShown} selectedToolId={selectedTool} toolId={tool.id} key={tool.id}>
-                        <ToolWindow tool={tool}/>
+                        <ToolWindow tool={tool} projectId={projectId}/>
                     </ToolTabPanel>
                     ))
                 }

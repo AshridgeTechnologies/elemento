@@ -17,17 +17,17 @@ test('isNumeric gives correct result for all strings', () => {
 test('previewPathComponents extracts parts of pathname of studio preview url', () => {
     expect(previewPathComponents('/version')).toBe(null)
     expect(previewPathComponents('/version/xyz/123')).toBe(null)
-    expect(previewPathComponents('/studio/preview/MainApp')).toStrictEqual({appName: 'MainApp'})
-    expect(previewPathComponents('/studio/preview/MainApp/')).toStrictEqual({appName: 'MainApp'})
-    expect(previewPathComponents('/studio/preview/MainApp/MainPage')).toStrictEqual({appName: 'MainApp', pageName: 'MainPage'})
-    expect(previewPathComponents('/studio/preview/MainApp/MainApp.js')).toStrictEqual({appName: 'MainApp', filepath: 'MainApp.js'})
+    expect(previewPathComponents('/studio/preview/project-123/MainApp')).toStrictEqual({projectId: 'project-123', appName: 'MainApp'})
+    expect(previewPathComponents('/studio/preview/project-123/MainApp/')).toStrictEqual({projectId: 'project-123', appName: 'MainApp'})
+    expect(previewPathComponents('/studio/preview/project-123/MainApp/MainPage')).toStrictEqual({projectId: 'project-123', appName: 'MainApp', pageName: 'MainPage'})
+    expect(previewPathComponents('/studio/preview/project-123/MainApp/MainApp.js')).toStrictEqual({projectId: 'project-123', appName: 'MainApp', filepath: 'MainApp.js'})
 })
 
 test('previewPathComponents extracts parts of pathname of studio preview tools url', () => {
-    expect(previewPathComponents('/studio/preview/tools/Tool1')).toStrictEqual({appName: 'Tool1', prefix: 'tools/'})
-    expect(previewPathComponents('/studio/preview/tools/Tool1/')).toStrictEqual({appName: 'Tool1', prefix: 'tools/'})
-    expect(previewPathComponents('/studio/preview/tools/Tool1/MainPage')).toStrictEqual({appName: 'Tool1', prefix: 'tools/', pageName: 'MainPage'})
-    expect(previewPathComponents('/studio/preview/tools/Tool1/MainApp.js')).toStrictEqual({appName: 'Tool1', prefix: 'tools/', filepath: 'MainApp.js'})
+    expect(previewPathComponents('/studio/preview/project-123/tools/Tool1')).toStrictEqual({projectId: 'project-123', appName: 'Tool1', prefix: 'tools/'})
+    expect(previewPathComponents('/studio/preview/project-123/tools/Tool1/')).toStrictEqual({projectId: 'project-123', appName: 'Tool1', prefix: 'tools/'})
+    expect(previewPathComponents('/studio/preview/project-123/tools/Tool1/MainPage')).toStrictEqual({projectId: 'project-123', appName: 'Tool1', prefix: 'tools/', pageName: 'MainPage'})
+    expect(previewPathComponents('/studio/preview/project-123/tools/Tool1/MainApp.js')).toStrictEqual({projectId: 'project-123', appName: 'Tool1', prefix: 'tools/', filepath: 'MainApp.js'})
 })
 
 test('isoDateReviver parses only valid ISO dates', () => {

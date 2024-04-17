@@ -3,8 +3,6 @@ import {FileSystemTree} from '../../src/editor/Types'
 import {MockFileSystemDirectoryHandle, wait} from '../testutil/testHelpers'
 // @ts-ignore
 import str2ab from 'string-to-arraybuffer'
-import Dexie from 'dexie'
-import {DiskProjectStoreInterface} from '../../src/editor/DiskProjectStore'
 
 const files: FileSystemTree = {
     dist: {
@@ -72,7 +70,6 @@ const request = (url: string, options?: {method?: string, body?: any, headers: a
 
 let worker: EditorServiceWorker
 let swScope: any
-let filesystem: FileSystemDirectoryHandle
 
 const dummySWScope = () => {
     const aClient = () => ({postMessage: jest.fn()} as unknown as WindowClient)
@@ -87,42 +84,62 @@ const dummySWScope = () => {
     return swScope
 }
 beforeEach(() => {
-    worker = new EditorServiceWorker(dummySWScope())
+    worker = new EditorServiceWorker(dummySWScope(), 100)
     const filesCopy = JSON.parse(JSON.stringify(files))
-    worker.message({data: {type: 'projectStore', dirHandle: new MockFileSystemDirectoryHandle('root', filesCopy)}} as ExtendableMessageEvent)
+    worker.message({data: {type: 'projectStore', projectId: 'project-123', dirHandle: new MockFileSystemDirectoryHandle('root', filesCopy)}} as ExtendableMessageEvent)
 })
 
 test('can NOT get response for mounted file at top level', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/index.html'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/index.html'))
     expect(result.status).toBe(404)
 })
 
 test('can get response for mounted file in sub-directory', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir1/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir1/stuff.js'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.text()).toBe('stuff.js contents')
 })
 
+test('can get response for mounted file in sub-directory after waiting for project dir handle', async () => {
+
+    const filesCopy345 = JSON.parse(JSON.stringify(files).replace(/dir1/g, 'dir2').replace(/stuff.js contents/, 'stuff.js 345 contents'))
+    const resultPromise = worker.handleRequest(request('http://example.com/studio/preview/project-345/dir2/stuff.js'))
+
+    await wait(10)
+    expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'dirHandleRequest', projectId: 'project-345'})
+    expect(swScope.theClients[1].postMessage).toHaveBeenCalledWith({type: 'dirHandleRequest', projectId: 'project-345'})
+
+    worker.message({data: {type: 'projectStore', projectId: 'project-345', dirHandle: new MockFileSystemDirectoryHandle('root', filesCopy345)}} as ExtendableMessageEvent)
+    await wait(10)
+    const result = await resultPromise
+    expect(await result.text()).toBe('stuff.js 345 contents')
+})
+
+test('can get not found response for file in sub-directory after timeout waiting for project dir handle', async () => {
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-345/dir2/stuff.js'))
+    expect(result.status).toBe(404)
+})
+
 test('can get response for mounted file in tools sub-directory', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/tools/Tool1/toolstuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/tools/Tool1/toolstuff.js'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.text()).toBe('toolstuff.js contents')
 })
 
 test('can get not found response for non-existent top-level file', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/xxx.html'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/xxx.html'))
     expect(result.status).toBe(404)
 })
 
 test('can get not found response for non-existent file in sub dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir1/xxx.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir1/xxx.js'))
     expect(result.status).toBe(404)
 })
 
 test('can get not found response for non-existent dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/dir2/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir2/stuff.js'))
     expect(result.status).toBe(404)
 })
 
@@ -140,17 +157,17 @@ test('passes through non-preview request', async () => {
 })
 
 test('does NOT serve index.html if top-level path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/studio/preview/'))
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/'))
     expect(result.status).toBe(404)
 })
 
 test('serves index.html if sub-dir path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/studio/preview/dir1/'))
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/dir1/'))
     expect(await result.text()).toBe('dir1 index.html contents')
 })
 
 test('serves index.html if tools sub-dir path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/studio/preview/tools/Tool1/'))
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/tools/Tool1/'))
     expect(await result.text()).toBe('Tool1 index.html contents')
 })
 

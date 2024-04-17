@@ -58,8 +58,8 @@ Possibilities
 - Refactor project updating code out of Editor runner
 
 
-Spike 1 - Ask the client
-------------------------
+Decision after spike - Ask the client
+-------------------------------------
 
 - Each client using a file system directory creates a unique directory id from the name and timestamp opened
 - The directory id is part of the path sent to the service worker

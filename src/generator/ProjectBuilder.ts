@@ -71,7 +71,6 @@ class FileHolder {
 }
 
 export default class ProjectBuilder {
-    private readonly debouncedWriteFiles: () => Promise<void> | undefined
     private generatedProjectInfo = new FileHolder()
     private generatedClientCode = new FileHolder()
     private generatedToolCode = new FileHolder()
@@ -79,7 +78,6 @@ export default class ProjectBuilder {
     private generatedErrors: AllErrors = {}
 
     constructor(private readonly props: Properties) {
-        this.debouncedWriteFiles = debounce( () => this.writeProjectFiles(), 100 )
     }
 
     async build() {
@@ -96,7 +94,7 @@ export default class ProjectBuilder {
 
     updateProject() {
         this.buildProjectFiles()
-        this.debouncedWriteFiles()
+        return this.writeProjectFiles()
     }
 
     async updateAssetFile(path: string) {
@@ -128,9 +126,9 @@ export default class ProjectBuilder {
         const project = this.project
         const apps = project.findChildElements(App)
         this.buildProjectInfoFiles()
-        apps.forEach(async (app) => this.buildClientAppFiles(app))
+        apps.forEach(app => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
-        tools.forEach(async tool => this.buildToolAppFiles(tool))
+        tools.forEach(tool => this.buildToolAppFiles(tool))
         if (this.project.hasServerApps) {
             this.buildServerAppFiles()
         }
