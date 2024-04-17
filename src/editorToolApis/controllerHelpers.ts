@@ -148,7 +148,7 @@ export const addPointerElement = (container: HTMLElement): SVGElement => {
     const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg')
     const path = doc.createElementNS('http://www.w3.org/2000/svg', 'path')
 
-    svg.setAttribute('style', 'width: 25px; top: 0; left: 0; position: absolute; zIndex: 2000; opacity: 0')
+    svg.setAttribute('style', 'width: 25px; top: 0; left: 0; position: absolute; z-index: 2000; opacity: 0')
     svg.setAttribute('viewBox', '11.8 9 16 22')
     svg.classList.add('pointer')
 

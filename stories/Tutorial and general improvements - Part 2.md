@@ -21,18 +21,18 @@ From user test, changes to Elemento:
 - Completeness tests
 - Tutorial step component?  Or general user component mechanism?
 - Ensure all controller actions return promises and/or common action queue
-- Comic Sans doesn't work as Font Family
+- ~~Comic Sans doesn't work as Font Family~~
 - When changed the name of the Your Name element, things stopped working, no indication why
 - Unknown names error message not very intuitive
 
 From user test, changes to tutorial:
-- Concepts of Properties and Properties Panel not obvious - or element
-- Suggest working through before doing Show Me
-- Typed own name instead of "Your Name"
-- Did not like having the formula typed automatically before had chance to enter it
+- ✅ Concepts of Properties and Properties Panel not obvious - or element
+- ✅ Suggest working through before doing Show Me
+- ✅ Typed own name instead of "Your Name"
+- ✅ Did not like having the formula typed automatically before had chance to enter it
     - would have preferred being shown the right box and entering the formula as separate steps
-- Suggest playing with properties after completing the tutorial
-- Would have liked more explanation, so long as could choose to ignore
+- ✅ Suggest playing with properties after completing the tutorial
+- ✅ Would have liked more explanation, so long as could choose to ignore
 
 Other points:
 - List manipulation - **Join**, Unique, Without, Contains, Append, Count✅ 
@@ -47,6 +47,7 @@ Other points:
 
 Tutorial improvements
 ---------------------
+- Tutorial format to include task statement
 - Page index for app
 - Fixed app components top, bottom, left, right - for nav or whatever
 - ShowPage(following|before|first)

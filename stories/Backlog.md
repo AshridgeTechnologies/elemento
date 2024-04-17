@@ -6,6 +6,9 @@ Bugs
 ----
 - Service worker no longer serves files after being woken up (dirHandle lost)
 - Writes and preview updates get out of order - latest change sometimes does not show in Preview
+- Preview cannot reload named pages - service worker gives 404
+- Previews are mixed up if open two projects in different tabs
+- Does not show preview on new project - sw gives 404 - until reload frame
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
 - Vertical layout with text and button shows only the top few pixels
@@ -14,10 +17,7 @@ Bugs
   - `const Booking = Elemento.useObjectState(pathWith('Booking'), new Calculation.State({value: MainServerApp.GetOwnBooking(BookingId)}))
     const StartDate = Elemento.useObjectState(pathWith('StartDate'), new DateInput.State({value: Booking.StartDate}))`
 - ListElement errors if items is null (as it is with a pending result)
-- Preview cannot reload named pages - service worker gives 404
-- Does not show preview on new project - sw gives 404 - until reload frame
 - Memory leak in Studio - probably the number of versions of code (try changing export to return a pseudo module and using Function)
-- Previews are mixed up if open two projects in different tabs
 - Fails to check out private project from GitHub - unauthorized
 - Errors in server app calls (and elsewhere?) not caught and show React error message instead of app
 - Update or download from GitHub is very slow on -Beetle1- (maybe open in two places - or old runtime files)
@@ -73,6 +73,8 @@ Stories
 - Backup - and also use for reporting
 
 ### Priority for learning Elemento
+- Formulas tutorial
+- Help up to date
 - Tutorial and general improvements
 - Server apps example
 - Data types guide
@@ -196,6 +198,7 @@ Epics
 Tech debt
 ---------
 
+- Cannot upgrade MUI as slotProps.backdrop not available
 - PropertyEditor test really slow on some tests
 - Improve jsdom test performance = try happy-dom
 - Improve PW testing - eg https://www.checklyhq.com/blog/track-frontend-javascript-exceptions-with-playwright/
