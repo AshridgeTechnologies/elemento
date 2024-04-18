@@ -230,7 +230,7 @@ test('updates errors and code generated from Project immediately', async () => {
     clearMocks()
     const project1WithErrors = project1.set('text1', 'content', ex`Badname + 'x'`)
     projectLoader.project = project1WithErrors
-    builder.updateProject()  // no wait for debounced update
+    builder.buildProjectFiles()  // no wait for debounced update
 
     expect(builder.errors).toStrictEqual({
         text1: {
@@ -276,8 +276,8 @@ test('updates files generated from project only where changed', async () => {
 
     const project1Updated = project1.set('text1', 'name', 'Text 1 Updated').set('fn2', 'input1', 'ccc')
     projectLoader.project = project1Updated
-    builder.updateProject()
-    await wait(110)  // writes are throttled
+    builder.buildProjectFiles()
+    await builder.writeProjectFiles()
     const updatedApp1 = project1Updated.findElement('app1') as App
     expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
         ['App1/App1.js', expectedClientCode(updatedApp1)],

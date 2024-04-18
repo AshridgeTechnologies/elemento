@@ -73,8 +73,8 @@ const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProje
     projectStore.writeProjectFile(updatedProject.withoutFiles())
 }, 1000)
 
-const debouncedBuild = debounce( (projectBuilder: ProjectBuilder, projectId: string) => {
-    projectBuilder.updateProject().then( () => navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId}))
+const debouncedWrite = debounce( (projectBuilder: ProjectBuilder, projectId: string) => {
+    projectBuilder.writeProjectFiles().then( () => navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId}))
 }, 100)
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
 const tutorialsToolImport = new ToolImport('tutorialsTool', 'Tutorials', {source: '/help/tutorials/?header=0'})
@@ -129,7 +129,8 @@ export default function EditorRunner() {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
         debouncedSave(updatedProject, projectStore())
-        debouncedBuild(projectBuilderRef.current!, projectIdRef.current!)
+        projectBuilderRef.current!.buildProjectFiles()
+        debouncedWrite(projectBuilderRef.current!, projectIdRef.current!)
     }
 
     const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId

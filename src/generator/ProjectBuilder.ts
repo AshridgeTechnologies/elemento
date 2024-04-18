@@ -92,11 +92,6 @@ export default class ProjectBuilder {
         }
     }
 
-    updateProject() {
-        this.buildProjectFiles()
-        return this.writeProjectFiles()
-    }
-
     async updateAssetFile(path: string) {
         await this.copyAssetFile(path)
     }
@@ -106,7 +101,7 @@ export default class ProjectBuilder {
 
     private get project() { return this.props.projectLoader.getProject() }
 
-    private async writeProjectFiles() {
+    async writeProjectFiles() {
         const writeFiles = (fileHolder: FileHolder, fileWriter: FileWriter) => {
             const files = fileHolder.getUpdatedFiles()
             return Object.entries(files).map(([name, contents]) => {
@@ -121,7 +116,7 @@ export default class ProjectBuilder {
         await Promise.all([...projectInfoFileWritePromises, ...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
     }
 
-    private buildProjectFiles() {
+    buildProjectFiles() {
         this.generatedErrors = {}
         const project = this.project
         const apps = project.findChildElements(App)
