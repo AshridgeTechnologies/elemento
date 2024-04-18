@@ -4,11 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
-- Service worker no longer serves files after being woken up (dirHandle lost)
-- Writes and preview updates get out of order - latest change sometimes does not show in Preview
 - Preview cannot reload named pages - service worker gives 404
-- Previews are mixed up if open two projects in different tabs
-- Does not show preview on new project - sw gives 404 - until reload frame
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
 - Vertical layout with text and button shows only the top few pixels
@@ -370,4 +366,8 @@ Bugs fixed
 - Async Startup action causes error (as useEffect tries to call the Promise)
 - Multiple EditorControllers listening, causing effects such as Show me clicking and typing not working correctly (being called twice)
 - Menu button Show me shows all buttons
+- Service worker no longer serves files after being woken up (dirHandle lost)
+- Writes and preview updates get out of order - latest change sometimes does not show in Preview
+- Previews are mixed up if open two projects in different tabs
+- Does not show preview on new project - sw gives 404 - until reload frame
 

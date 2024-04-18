@@ -25,7 +25,6 @@ import {NewProjectDialog} from './actions/NewProject'
 import ProjectBuilder from '../generator/ProjectBuilder'
 import BrowserProjectLoader from '../generator/BrowserProjectLoader'
 import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
-import PostMessageFileWriter from './PostMessageFileWriter'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
 import App from '../model/App'
@@ -170,11 +169,9 @@ export default function EditorRunner() {
         )
         const clientFileWriter = new MultiFileWriter(
             new DiskProjectStoreFileWriter(projectStore, 'dist/client'),
-            new PostMessageFileWriter(() => navigator.serviceWorker.controller!)
         )
         const toolFileWriter = new MultiFileWriter(
             new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
-            new PostMessageFileWriter(() => navigator.serviceWorker.controller!, 'tools')
         )
 
         const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
