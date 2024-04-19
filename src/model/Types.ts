@@ -78,6 +78,7 @@ export type ElementType =
     'FirestoreDataStore' |
     'ServerApp' |
     'ServerAppConnector' |
+    'Adapter' |
     'File' |
     'FileFolder' |
     'ToolFolder' |

@@ -127,6 +127,10 @@ export default class EditorController {
         return this.gitHubUrl
     }
 
+    GetProject() {
+        return this.projectHandler.current
+    }
+
     GetSettings(settingsName: string) {
         return this.projectHandler.getSettings(settingsName)
     }

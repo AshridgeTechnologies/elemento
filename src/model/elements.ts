@@ -26,6 +26,7 @@ import {DataTypeElementType, ElementType} from './Types'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
+import Adapter from './Adapter'
 import File from './File'
 import FileFolder from './FileFolder'
 import TrueFalseType from './types/TrueFalseType'
@@ -102,6 +103,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Block: Block,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
+        Adapter: Adapter,
         File: File,
         FileFolder: FileFolder,
         ComponentFolder: ComponentFolder,
