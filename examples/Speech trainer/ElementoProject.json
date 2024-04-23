@@ -1,34 +1,30 @@
 {
   "id": "project_1",
   "name": "Speech Trainer Project",
-  "kind": "Project",
   "properties": {},
   "elements": [
     {
       "id": "app1",
       "name": "Speech Trainer",
-      "kind": "App",
       "properties": {},
       "elements": [
         {
           "id": "appbar_1",
           "name": "App Bar",
-          "kind": "AppBar",
           "properties": {},
           "elements": [
             {
               "id": "text_6",
               "name": "App Title",
-              "kind": "Text",
               "properties": {
                 "content": "Speech Trainer",
                 "fontSize": 20
-              }
+              },
+              "kind": "Text"
             },
             {
               "id": "button_8",
               "name": "Home Button",
-              "kind": "Button",
               "properties": {
                 "content": "Home",
                 "appearance": "filled",
@@ -36,12 +32,12 @@
                 "action": {
                   "expr": "ShowPage(HomePage)"
                 }
-              }
+              },
+              "kind": "Button"
             },
             {
               "id": "button_14",
               "name": "Play Button",
-              "kind": "Button",
               "properties": {
                 "content": "Play",
                 "appearance": "filled",
@@ -49,12 +45,12 @@
                 "action": {
                   "expr": "ShowPage(PlayPage)"
                 }
-              }
+              },
+              "kind": "Button"
             },
             {
               "id": "button_7",
               "name": "Words Button",
-              "kind": "Button",
               "properties": {
                 "content": "Words",
                 "appearance": "filled",
@@ -62,12 +58,12 @@
                 "action": {
                   "expr": "ShowPage(WordDetailsPage)"
                 }
-              }
+              },
+              "kind": "Button"
             },
             {
               "id": "button_13",
               "name": "Questions Button",
-              "kind": "Button",
               "properties": {
                 "content": "Questions",
                 "appearance": "filled",
@@ -75,121 +71,121 @@
                 "action": {
                   "expr": "ShowPage(QuestionDetailsPage)"
                 }
-              }
+              },
+              "kind": "Button"
             }
-          ]
+          ],
+          "kind": "AppBar"
         },
         {
           "id": "page_1",
           "name": "Home Page",
-          "kind": "Page",
           "properties": {},
           "elements": [
             {
               "id": "text_1",
               "name": "Title",
-              "kind": "Text",
               "properties": {
                 "content": "Speech Trainer",
                 "fontSize": 24
-              }
+              },
+              "kind": "Text"
             }
-          ]
+          ],
+          "kind": "Page"
         },
         {
           "id": "page_4",
           "name": "Play Page",
-          "kind": "Page",
           "properties": {},
           "elements": [
             {
               "id": "collection_3",
               "name": "All Words",
-              "kind": "Collection",
               "properties": {
                 "initialValue": {
                   "expr": "Words.Query({})"
                 },
                 "display": false
               },
-              "elements": []
+              "elements": [],
+              "kind": "Collection"
             },
             {
               "id": "collection_4",
               "name": "All Questions",
-              "kind": "Collection",
               "properties": {
                 "initialValue": {
                   "expr": "Questions.Query({})"
                 },
                 "display": false
               },
-              "elements": []
+              "elements": [],
+              "kind": "Collection"
             },
             {
               "id": "data_5",
               "name": "Current Question",
-              "kind": "Data",
               "properties": {
                 "display": false
               },
-              "elements": []
+              "elements": [],
+              "kind": "Data"
             },
             {
               "id": "text_13",
               "name": "Title",
-              "kind": "Text",
               "properties": {
                 "content": "Play",
                 "fontSize": 20
               },
-              "elements": []
+              "elements": [],
+              "kind": "Text"
             },
             {
               "id": "text_15",
               "name": "Instructions",
-              "kind": "Text",
               "properties": {
                 "content": "Say in French:"
               },
-              "elements": []
+              "elements": [],
+              "kind": "Text"
             },
             {
               "id": "text_14",
               "name": "Question",
-              "kind": "Text",
               "properties": {
                 "content": {
                   "expr": "CurrentQuestion.Question"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Text"
             },
             {
               "id": "textinput_24",
               "name": "Answer",
-              "kind": "TextInput",
               "properties": {
                 "width": "100%",
                 "initialValue": {
                   "expr": "AnswerSpeechInput"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "TextInput"
             },
             {
               "id": "speechinput_1",
               "name": "Answer Speech Input",
-              "kind": "SpeechInput",
               "properties": {
                 "language": "fr-FR"
               },
-              "elements": []
+              "elements": [],
+              "kind": "SpeechInput"
             },
             {
               "id": "text_16",
               "name": "Expected Answer",
-              "kind": "Text",
               "properties": {
                 "content": {
                   "expr": "\"Expected answer:   \" + CurrentQuestion.Answer"
@@ -198,12 +194,12 @@
                   "expr": "AnswerChecked"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Text"
             },
             {
               "id": "text_17",
               "name": "Correct",
-              "kind": "Text",
               "properties": {
                 "content": {
                   "expr": "If(And(AnswerChecked, CheckAnswer(Answer.value, CurrentQuestion.Answer)), 'CORRECT', 'WRONG!!')"
@@ -212,24 +208,24 @@
                   "expr": "AnswerChecked"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Text"
             },
             {
               "id": "data_6",
               "name": "Answer Checked",
-              "kind": "Data",
               "properties": {
                 "initialValue": {
                   "expr": "false"
                 },
                 "display": false
               },
-              "elements": []
+              "elements": [],
+              "kind": "Data"
             },
             {
               "id": "layout_14",
               "name": "Button Layout",
-              "kind": "Layout",
               "properties": {
                 "horizontal": true
               },
@@ -237,7 +233,6 @@
                 {
                   "id": "button_15",
                   "name": "Next Question",
-                  "kind": "Button",
                   "properties": {
                     "content": "Next Question",
                     "appearance": "outline",
@@ -245,12 +240,12 @@
                       "expr": "Reset(AnswerSpeechInput)\nReset(Answer)\nSet(CurrentQuestion,  GenerateQuestion())\nSet(AnswerChecked, false)\nAnswerSpeechInput.Start()"
                     }
                   },
-                  "elements": []
+                  "elements": [],
+                  "kind": "Button"
                 },
                 {
                   "id": "button_16",
                   "name": "Check Answer",
-                  "kind": "Button",
                   "properties": {
                     "content": "Check Answer",
                     "appearance": "outline",
@@ -258,14 +253,15 @@
                       "expr": "Set(AnswerChecked, true)"
                     }
                   },
-                  "elements": []
+                  "elements": [],
+                  "kind": "Button"
                 }
-              ]
+              ],
+              "kind": "Layout"
             },
             {
               "id": "function_9",
               "name": "Language Factory En",
-              "kind": "Function",
               "properties": {
                 "javascript": true,
                 "calculation": {
@@ -273,12 +269,12 @@
                 },
                 "input1": "args"
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_10",
               "name": "Language Factory Fr",
-              "kind": "Function",
               "properties": {
                 "javascript": true,
                 "calculation": {
@@ -286,12 +282,12 @@
                 },
                 "input1": "args"
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_8",
               "name": "Has Tags",
-              "kind": "Function",
               "properties": {
                 "input1": "word",
                 "input2": "tags",
@@ -299,36 +295,36 @@
                   "expr": "let tagList = tags.split(/ +/)\nIf(tagList.length, Select(tagList, word.Tags.includes($item)).length === tagList.length)"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_5",
               "name": "Get Random Word",
-              "kind": "Function",
               "properties": {
                 "input1": "tags",
                 "calculation": {
                   "expr": "let possibleWords = Select(GetAll(AllWords), HasTags($item, tags))\nlet random = Math.floor(Math.random() * possibleWords.length)\npossibleWords[random]"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_4",
               "name": "Get Words",
-              "kind": "Function",
               "properties": {
                 "input1": "question",
                 "calculation": {
                   "expr": "let word1 = GetRandomWord(question.Tags1)\nlet word2 = GetRandomWord(question.Tags2)\nlet word3 = GetRandomWord(question.Tags3)\nRecord(question.WordName1, word1, question.WordName2, word2, question.WordName3, word3)"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_7",
               "name": "Fill Template",
-              "kind": "Function",
               "properties": {
                 "input1": "factory",
                 "input2": "formula",
@@ -338,35 +334,35 @@
                 "input3": "words",
                 "javascript": true
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_6",
               "name": "Make Question",
-              "kind": "Function",
               "properties": {
                 "input1": "question",
                 "calculation": {
                   "expr": "let words =  GetWords(question)\nlet questionText = FillTemplate(LanguageFactoryEn, question.FormulaEn, words)\nlet answerText = FillTemplate(LanguageFactoryFr, question.FormulaFr, words)\nRecord('Question', questionText, 'Answer', answerText)"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_3",
               "name": "Generate Question",
-              "kind": "Function",
               "properties": {
                 "calculation": {
                   "expr": "let random = Math.floor(Math.random() * GetAll(AllQuestions).length)\nlet template = GetAll(AllQuestions)[random]\nlet question = MakeQuestion(template)\nquestion"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             },
             {
               "id": "function_11",
               "name": "CheckAnswer",
-              "kind": "Function",
               "properties": {
                 "input1": "answer",
                 "input2": "expected",
@@ -374,20 +370,20 @@
                   "expr": "let cleanAnswer = answer && answer.trim().toLowerCase().replaceAll(/[!?]/g, '')\nlet cleanExpected = expected && expected.trim().toLowerCase().replaceAll(/[!?]/g, '')\ncleanAnswer === cleanExpected"
                 }
               },
-              "elements": []
+              "elements": [],
+              "kind": "Function"
             }
-          ]
+          ],
+          "kind": "Page"
         },
         {
           "id": "page_2",
           "name": "Word Details Page",
-          "kind": "Page",
           "properties": {},
           "elements": [
             {
               "id": "layout_5",
               "name": "Page Layout ",
-              "kind": "Layout",
               "properties": {
                 "horizontal": true
               },
@@ -395,23 +391,21 @@
                 {
                   "id": "layout_1",
                   "name": "List Layout",
-                  "kind": "Layout",
                   "properties": {},
                   "elements": [
                     {
                       "id": "textinput_1",
                       "name": "WordFilter",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "16em",
                         "label": "Filter words"
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "list_1",
                       "name": "WordList",
-                      "kind": "List",
                       "properties": {
                         "items": {
                           "expr": "Sort(FilteredWords(), $item.LangEn.toString().toLowerCase())"
@@ -428,32 +422,33 @@
                         {
                           "id": "text_2",
                           "name": "ListWord",
-                          "kind": "Text",
                           "properties": {
                             "content": {
                               "expr": "$item.LangEn"
                             }
-                          }
+                          },
+                          "kind": "Text"
                         }
-                      ]
+                      ],
+                      "kind": "List"
                     },
                     {
                       "id": "function_1",
                       "name": "FilteredWords",
-                      "kind": "Function",
                       "properties": {
                         "calculation": {
                           "expr": "Select(Words.Query({}), Or($item.LangEn && $item.LangEn.toString().toLowerCase().includes(WordFilter.value.toLowerCase()), $item.LangFr && $item.LangFr.toString().toLowerCase().includes(WordFilter.value.toLowerCase())))"
                         }
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "Function"
                     }
-                  ]
+                  ],
+                  "kind": "Layout"
                 },
                 {
                   "id": "layout_4",
                   "name": "Word Form",
-                  "kind": "Layout",
                   "properties": {
                     "horizontal": false
                   },
@@ -461,29 +456,28 @@
                     {
                       "id": "data_1",
                       "name": "WordId",
-                      "kind": "Data",
                       "properties": {
                         "display": false,
                         "initialValue": {
                           "expr": "CurrentUrl().pathSections[0]"
                         }
-                      }
+                      },
+                      "kind": "Data"
                     },
                     {
                       "id": "data_2",
                       "name": "TheWord",
-                      "kind": "Data",
                       "properties": {
                         "initialValue": {
                           "expr": "WordId.value && Get(Words, WordId.value)"
                         },
                         "display": false
-                      }
+                      },
+                      "kind": "Data"
                     },
                     {
                       "id": "layout_2",
                       "name": "Title Layout",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true
                       },
@@ -491,16 +485,15 @@
                         {
                           "id": "text_3",
                           "name": "Page name",
-                          "kind": "Text",
                           "properties": {
                             "content": "Word details",
                             "fontSize": 21
-                          }
+                          },
+                          "kind": "Text"
                         },
                         {
                           "id": "text_4",
                           "name": "IdDisplay",
-                          "kind": "Text",
                           "properties": {
                             "content": {
                               "expr": "WordId"
@@ -509,26 +502,27 @@
                             "color": "gray",
                             "width": 160,
                             "fontSize": 12
-                          }
+                          },
+                          "kind": "Text"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "textinput_2",
                       "name": "Lang En",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "100%",
                         "initialValue": {
                           "expr": "TheWord.LangEn"
                         },
                         "label": "English"
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_3",
                       "name": "Lang Fr",
-                      "kind": "TextInput",
                       "properties": {
                         "multiline": true,
                         "width": "100%",
@@ -536,24 +530,24 @@
                           "expr": "TheWord.LangFr"
                         },
                         "label": "French"
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_10",
                       "name": "Tags",
-                      "kind": "TextInput",
                       "properties": {
                         "label": "Tags",
                         "initialValue": {
                           "expr": "TheWord.Tags"
                         }
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "layout_3",
                       "name": "Page Buttons",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true,
                         "wrap": true,
@@ -563,7 +557,6 @@
                         {
                           "id": "button_1",
                           "name": "Update Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Save",
                             "appearance": "outline",
@@ -573,12 +566,12 @@
                             "action": {
                               "expr": "Update(Words, WordId, Record('LangEn', LangEn, 'LangFr', LangFr, 'Tags', Tags))\nReset(LangEn, LangFr, Tags)"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         },
                         {
                           "id": "button_2",
                           "name": "Cancel Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Cancel",
                             "appearance": "outline",
@@ -588,12 +581,12 @@
                             "display": {
                               "expr": "!!WordId.value"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         },
                         {
                           "id": "button_3",
                           "name": "Delete Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Delete",
                             "appearance": "outline",
@@ -603,76 +596,80 @@
                             "display": {
                               "expr": "!!WordId.value"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "text_5",
                       "name": "New word title",
-                      "kind": "Text",
                       "properties": {
                         "content": "New word",
                         "fontSize": 19
-                      }
+                      },
+                      "kind": "Text"
                     },
                     {
                       "id": "textinput_7",
                       "name": "New Lang En",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "100%",
                         "label": "English"
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_8",
                       "name": "New Lang Fr",
-                      "kind": "TextInput",
                       "properties": {
                         "multiline": true,
                         "width": "100%",
                         "label": "French"
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_9",
                       "name": "New Tags",
-                      "kind": "TextInput",
                       "properties": {
                         "label": "Tags"
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "button_4",
                       "name": "Add Word Button",
-                      "kind": "Button",
                       "properties": {
                         "content": "Add",
                         "appearance": "outline",
                         "display": true,
                         "action": {
                           "expr": "let newId = 'w' + Timestamp()\nlet newWord = Record('id', newId, 'LangEn', NewLangEn, 'LangFr', NewLangFr, 'Tags', NewTags);\nAdd(Words, newWord);\nShowPage(WordDetailsPage, newId)\nReset(NewLangEn, NewLangFr, NewTags);\n"
-                        }
-                      }
+                        },
+                        "styles": {}
+                      },
+                      "kind": "Button"
                     }
-                  ]
+                  ],
+                  "kind": "Layout"
                 }
-              ]
+              ],
+              "kind": "Layout"
             }
-          ]
+          ],
+          "kind": "Page"
         },
         {
           "id": "page_3",
           "name": "Question Details Page",
-          "kind": "Page",
           "properties": {},
           "elements": [
             {
               "id": "layout_10",
               "name": "Page Layout ",
-              "kind": "Layout",
               "properties": {
                 "horizontal": true
               },
@@ -680,23 +677,21 @@
                 {
                   "id": "layout_6",
                   "name": "List Layout",
-                  "kind": "Layout",
                   "properties": {},
                   "elements": [
                     {
                       "id": "textinput_11",
                       "name": "QuestionFilter",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "16em",
                         "label": "Filter questions"
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "list_2",
                       "name": "QuestionList",
-                      "kind": "List",
                       "properties": {
                         "items": {
                           "expr": "Sort(FilteredQuestions(), $item.Name.toString().toLowerCase())"
@@ -713,32 +708,33 @@
                         {
                           "id": "text_7",
                           "name": "ListWord",
-                          "kind": "Text",
                           "properties": {
                             "content": {
                               "expr": "$item.Name"
                             }
-                          }
+                          },
+                          "kind": "Text"
                         }
-                      ]
+                      ],
+                      "kind": "List"
                     },
                     {
                       "id": "function_2",
                       "name": "FilteredQuestions",
-                      "kind": "Function",
                       "properties": {
                         "calculation": {
                           "expr": "Select(Questions.Query({}), Or($item.Name && $item.Name.toString().toLowerCase().includes(QuestionFilter.value.toLowerCase()), $item.Description && $item.Description.toString().toLowerCase().includes(QuestionFilter.value.toLowerCase())))"
                         }
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "Function"
                     }
-                  ]
+                  ],
+                  "kind": "Layout"
                 },
                 {
                   "id": "layout_9",
                   "name": "Question Form",
-                  "kind": "Layout",
                   "properties": {
                     "horizontal": false
                   },
@@ -746,29 +742,28 @@
                     {
                       "id": "data_3",
                       "name": "QuestionId",
-                      "kind": "Data",
                       "properties": {
                         "display": false,
                         "initialValue": {
                           "expr": "CurrentUrl().pathSections[0]"
                         }
-                      }
+                      },
+                      "kind": "Data"
                     },
                     {
                       "id": "data_4",
                       "name": "TheQuestion",
-                      "kind": "Data",
                       "properties": {
                         "initialValue": {
                           "expr": "QuestionId.value && Get(Questions, QuestionId.value)"
                         },
                         "display": false
-                      }
+                      },
+                      "kind": "Data"
                     },
                     {
                       "id": "layout_7",
                       "name": "Title Layout",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true
                       },
@@ -776,16 +771,15 @@
                         {
                           "id": "text_8",
                           "name": "Page name",
-                          "kind": "Text",
                           "properties": {
                             "content": "Question details",
                             "fontSize": 21
-                          }
+                          },
+                          "kind": "Text"
                         },
                         {
                           "id": "text_9",
                           "name": "IdDisplay",
-                          "kind": "Text",
                           "properties": {
                             "content": {
                               "expr": "QuestionId"
@@ -794,47 +788,48 @@
                             "color": "gray",
                             "width": 160,
                             "fontSize": 12
-                          }
+                          },
+                          "kind": "Text"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "textinput_12",
                       "name": "Name",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "100%",
                         "initialValue": {
                           "expr": "TheQuestion.Name"
                         }
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_13",
                       "name": "Description",
-                      "kind": "TextInput",
                       "properties": {
                         "multiline": true,
                         "width": "100%",
                         "initialValue": {
                           "expr": "TheQuestion.Description"
                         }
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "text_11",
                       "name": "Text 11",
-                      "kind": "Text",
                       "properties": {
                         "content": "Word selections",
                         "fontSize": 18
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "Text"
                     },
                     {
                       "id": "layout_11",
                       "name": "Word Layout 1",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true,
                         "width": "100%",
@@ -844,7 +839,6 @@
                         {
                           "id": "textinput_16",
                           "name": "Word Name 1",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.WordName1"
@@ -853,26 +847,27 @@
                             "width": "25%",
                             "label": "Word 1"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         },
                         {
                           "id": "textinput_17",
                           "name": "Tags 1",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.Tags1"
                             },
                             "width": "71%"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "layout_12",
                       "name": "Word Layout 2",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true,
                         "width": "100%",
@@ -882,7 +877,6 @@
                         {
                           "id": "textinput_18",
                           "name": "Word Name 2",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.WordName2"
@@ -891,26 +885,27 @@
                             "width": "25%",
                             "label": "Word 2"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         },
                         {
                           "id": "textinput_19",
                           "name": "Tags 2",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.Tags2"
                             },
                             "width": "71%"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "layout_13",
                       "name": "Word Layout 3",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true,
                         "width": "100%",
@@ -920,7 +915,6 @@
                         {
                           "id": "textinput_20",
                           "name": "Word Name 3",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.WordName3"
@@ -929,36 +923,37 @@
                             "width": "25%",
                             "label": "Word 3"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         },
                         {
                           "id": "textinput_21",
                           "name": "Tags 3",
-                          "kind": "TextInput",
                           "properties": {
                             "initialValue": {
                               "expr": "TheQuestion.Tags3"
                             },
                             "width": "71%"
                           },
-                          "elements": []
+                          "elements": [],
+                          "kind": "TextInput"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "text_12",
                       "name": "Text 12",
-                      "kind": "Text",
                       "properties": {
                         "content": "Question Formulas",
                         "fontSize": 18
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "Text"
                     },
                     {
                       "id": "textinput_22",
                       "name": "Formula En",
-                      "kind": "TextInput",
                       "properties": {
                         "initialValue": {
                           "expr": "TheQuestion.FormulaEn"
@@ -967,12 +962,12 @@
                         "label": "Formula - English",
                         "multiline": true
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "textinput_23",
                       "name": "Formula Fr",
-                      "kind": "TextInput",
                       "properties": {
                         "initialValue": {
                           "expr": "TheQuestion.FormulaFr"
@@ -981,12 +976,12 @@
                         "label": "Formula - French",
                         "multiline": true
                       },
-                      "elements": []
+                      "elements": [],
+                      "kind": "TextInput"
                     },
                     {
                       "id": "layout_8",
                       "name": "Page Buttons",
-                      "kind": "Layout",
                       "properties": {
                         "horizontal": true,
                         "wrap": true,
@@ -996,7 +991,6 @@
                         {
                           "id": "button_9",
                           "name": "Update Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Save",
                             "appearance": "outline",
@@ -1006,12 +1000,12 @@
                             "action": {
                               "expr": "Update(Questions, QuestionId, Record('Name', Name, 'Description', Description, 'WordName1', WordName1, 'Tags1', Tags1, 'WordName2', WordName2, 'Tags2', Tags2, 'WordName3', WordName3, 'Tags3', Tags3, 'FormulaEn',FormulaEn, 'FormulaFr', FormulaFr))\nReset(Name, Description, WordName1, Tags1, WordName2, Tags2, WordName3, Tags3, FormulaEn, FormulaFr)"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         },
                         {
                           "id": "button_10",
                           "name": "Cancel Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Cancel",
                             "appearance": "outline",
@@ -1021,12 +1015,12 @@
                             "display": {
                               "expr": "!!QuestionId.value"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         },
                         {
                           "id": "button_11",
                           "name": "Delete Button",
-                          "kind": "Button",
                           "properties": {
                             "content": "Delete",
                             "appearance": "outline",
@@ -1036,32 +1030,33 @@
                             "display": {
                               "expr": "!!QuestionId.value"
                             }
-                          }
+                          },
+                          "kind": "Button"
                         }
-                      ]
+                      ],
+                      "kind": "Layout"
                     },
                     {
                       "id": "text_10",
                       "name": "New question title",
-                      "kind": "Text",
                       "properties": {
                         "content": "New question",
                         "fontSize": 19
-                      }
+                      },
+                      "kind": "Text"
                     },
                     {
                       "id": "textinput_15",
                       "name": "New Name",
-                      "kind": "TextInput",
                       "properties": {
                         "width": "100%",
                         "label": "Name"
-                      }
+                      },
+                      "kind": "TextInput"
                     },
                     {
                       "id": "button_12",
                       "name": "Add Button",
-                      "kind": "Button",
                       "properties": {
                         "content": "Add",
                         "appearance": "outline",
@@ -1069,51 +1064,54 @@
                         "action": {
                           "expr": "let newId = 'w' + Timestamp()\nlet newQuestion = Record('id', newId, 'Name', NewName);\nAdd(Questions, newQuestion);\nShowPage(QuestionDetailsPage, newId)\nReset(NewName);\n"
                         }
-                      }
+                      },
+                      "kind": "Button"
                     }
-                  ]
+                  ],
+                  "kind": "Layout"
                 }
-              ]
+              ],
+              "kind": "Layout"
             }
-          ]
+          ],
+          "kind": "Page"
         },
         {
           "id": "collection_1",
           "name": "Words",
-          "kind": "Collection",
           "properties": {
             "collectionName": "Words",
             "dataStore": {
               "expr": "BrowserDataStore1"
             },
             "display": false
-          }
+          },
+          "kind": "Collection"
         },
         {
           "id": "collection_2",
           "name": "Questions",
-          "kind": "Collection",
           "properties": {
             "collectionName": "Questions",
             "dataStore": {
               "expr": "BrowserDataStore1"
             },
             "display": false
-          }
+          },
+          "kind": "Collection"
         },
         {
           "id": "memorydatastore_1",
           "name": "Memory Data Store 1",
-          "kind": "MemoryDataStore",
           "properties": {
             "display": false
           },
-          "elements": []
+          "elements": [],
+          "kind": "MemoryDataStore"
         },
         {
           "id": "browserdatastore_1",
           "name": "Browser Data Store 1",
-          "kind": "BrowserDataStore",
           "properties": {
             "collectionNames": [
               "Words",
@@ -1121,9 +1119,24 @@
             ],
             "databaseName": "SpeechTrainer"
           },
-          "elements": []
+          "elements": [],
+          "kind": "BrowserDataStore"
         }
-      ]
+      ],
+      "kind": "App"
+    },
+    {
+      "id": "_TOOLS",
+      "name": "Tools",
+      "properties": {},
+      "kind": "ToolFolder"
+    },
+    {
+      "id": "_COMPONENTS",
+      "name": "Components",
+      "properties": {},
+      "kind": "ComponentFolder"
     }
-  ]
+  ],
+  "kind": "Project"
 }

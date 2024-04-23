@@ -339,6 +339,7 @@ Done
 - User defined components
 - Block element
 - Timer element
+- General object adapter
 
 Bugs fixed
 ----------
