@@ -564,9 +564,13 @@ test('generates TrueFalseInput elements with initial value', ()=> {
 test('generates Button elements with properties including await in action', ()=> {
     const actionExpr = ex`const message = "You clicked me!"; await Log(message)
     Log("Didn't you?")`
+    const actionExprWithForEach = ex`let newWords = JSON.parse('some json');
+    ForEach(newWords, Add(Words, $item));`
     const app = new App('app1', 'test1', {}, [
+        new Collection('id3', 'Words', {}),
         new Page('p1', 'Page 1', {}, [
             new Button('id1', 'b1', {content: 'Click here!', action: actionExpr, appearance: ex`22 && "filled"`, show: false}),
+            new Button('id2', 'b2', {content: 'Do it all!', action: actionExprWithForEach}),
     ]
         )])
 
@@ -574,15 +578,22 @@ test('generates Button elements with properties including await in action', ()=>
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
-    const {Log} = Elemento.globalFunctions
+    const {Log, ForEach} = Elemento.globalFunctions
+    const {Add} = Elemento.appFunctions
+    const Words = Elemento.useGetObjectState('app.Words')
     const b1_action = React.useCallback(async () => {
         const message = 'You clicked me!'; await Log(message)
             Log('Didn\\'t you?')
+    }, [])
+    const b2_action = React.useCallback(async () => {
+        let newWords = await JSON.parse('some json');
+            ForEach(newWords, async \$item => await Add(Words, $item))
     }, [])
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Button, {path: pathWith('b1'), content: 'Click here!', appearance: 22 && 'filled', show: false, action: b1_action}),
+        React.createElement(Button, {path: pathWith('b2'), content: 'Do it all!', appearance: 'outline', action: b2_action}),
     )
 }
 `)

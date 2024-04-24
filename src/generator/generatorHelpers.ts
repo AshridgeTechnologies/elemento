@@ -153,18 +153,11 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
             const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
             const isPlainValue = (expr: {type: string}) => expr.type === 'Identifier' || expr.type === 'Literal'
             Object.entries(argsCalledAsFunctions).forEach(([index, argNames]) => {
-                if (argNames === 'lazy') {
-                    const argExpr = callExpr.arguments[index]
-                    if (argExpr && !isPlainValue(argExpr)) {
-                        const isAsync = containsAwait(argExpr)
-                        callExpr.arguments[index] = b.arrowFunctionExpression.from({params: [], body: argExpr, async: isAsync})
-                    }
-                } else {
-                    const argIdentifiers = argNames.map((name: string) => b.identifier(name))
-                    const argExpr = callExpr.arguments[index]
-                    if (argExpr && !isPlainValue(argExpr)) {
-                        callExpr.arguments[index] = b.arrowFunctionExpression.from({params: argIdentifiers, body: argExpr, async: false})
-                    }
+                const argIdentifiers = argNames === 'lazy' ? [] : argNames.map((name: string) => b.identifier(name))
+                const argExpr = callExpr.arguments[index]
+                if (argExpr && !isPlainValue(argExpr)) {
+                    const isAsync = containsAwait(argExpr)
+                    callExpr.arguments[index] = b.arrowFunctionExpression.from({params: argIdentifiers, body: argExpr, async: isAsync})
                 }
             })
             this.traverse(path)
