@@ -7,6 +7,7 @@ import {mapKeys, mapValues} from 'lodash'
 import {shallow} from 'zustand/shallow'
 import {zipObj} from 'ramda'
 import {notBlank} from '../util/helpers'
+import {VoidFn} from '../editor/Types'
 
 type StoredState = ComponentState<any>
 export type StateMap = {[key: string]: StoredState}
@@ -16,7 +17,8 @@ export type AppStore = {
     store: AppState,
     select: (...paths: string[]) => StateMap,
     setStoredStates: SetStoredStates,
-    getStoredStates: GetStoredStates
+    getStoredStates: GetStoredStates,
+    setPreventUpdates: (callback: VoidFn | null) => void
 }
 
 export interface AppStateForObject {
@@ -41,6 +43,7 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
     const deferredUpdates = new Map<string, StoredState>()
     let timeout: any = null
     let deferringUpdates = false
+    let preventUpdates: VoidFn | null = null
 
     const stateAt = (path: string) => get().select(path)[path]
 
@@ -72,21 +75,26 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         deferredUpdates.set(path, newObject)
     }
 
-    const update = (path: string, newObject: StoredState) => {
-        const appStateInterface = {
-            updateVersion(newVersion: StoredState) {
-                update(path, newVersion)
-            },
-            latest() {
-                return stateAt(path)
-            },
-            getChildState(subPath: string): StoredState {
-                const fullPath = path + '.' + subPath
-                return deferredUpdates.get(fullPath) ?? stateAt(fullPath)
-            }
-        } as AppStateForObject
+    const appStateInterface = (path: string) => ({
+        updateVersion(newVersion: StoredState) {
+            update(path, newVersion)
+        },
+        latest() {
+            return stateAt(path)
+        },
+        getChildState(subPath: string): StoredState {
+            const fullPath = path + '.' + subPath
+            return deferredUpdates.get(fullPath) ?? stateAt(fullPath)
+        }
+    }) as AppStateForObject
 
-        (newObject as any).init(appStateInterface)
+    const update = (path: string, newObject: StoredState) => {
+        if (preventUpdates) {
+            preventUpdates()
+            return
+        }
+
+        (newObject as any).init(appStateInterface(path))
         if (deferringUpdates) {
             storeDeferredUpdate(path, newObject)
         } else {
@@ -131,6 +139,9 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
     const setStoredStates = (initialStates: StateMap): StateMap => {
         return mapValues(initialStates, (state, path) => setStoredState(path, state as StoredState))
     }
+    const setPreventUpdates: (callback: VoidFn | null) => void = (callback: VoidFn | null) => {
+        preventUpdates = callback
+    }
 
     return {
         store: new AppState({}),
@@ -140,46 +151,72 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         },
         setStoredStates,
         getStoredStates,
+        setPreventUpdates
     }
 }
 
 const StoreContext = createContext<StoreApi<AppStore>>(null as unknown as StoreApi<AppStore>)
 
-const setOrCreateStoredStates = <T extends StoredState>(store: StoreApi<AppStore>, initialStates: StateMap, pathPrefix: string | undefined): StateMap => {
-    const initialStatesFixedPaths = mapKeys(initialStates, (_, path) => fixPath(path, pathPrefix))
-    const fixedPaths = Object.keys(initialStatesFixedPaths)
-    const selectStates = (state: AppStore): [StateMap, SetStoredStates] => [state.select(...fixedPaths), state.setStoredStates]
-    const compareOnlyStates = (a: any[], b: any[]) => shallow(a[0], b[0])
-    const [_storedState, setStoredStatesInStore] = useStore(store, selectStates, compareOnlyStates)
-    const states = setStoredStatesInStore(initialStatesFixedPaths)
-    return zipObj(Object.keys(initialStates), Object.values(states))
+export type UpdateBlockable = {
+    setPreventUpdates: (callback: VoidFn | null) => void
 }
 
-const getStoredStates = <T>(store: StoreApi<AppStore>, elementPaths: string[], pathPrefix: string | undefined): StateMap => {
-    const fixedPaths = elementPaths.map(path => fixPath(path, pathPrefix))
-    const selectStates = (state: AppStore): [StateMap, GetStoredStates] => [state.select(...fixedPaths), state.getStoredStates]
-    const compareOnlyStates = (a: any[], b: any[]) => shallow(a[0], b[0])
-    const [_storedState, getStoredStatesFromStore] = useStore(store, selectStates, compareOnlyStates)
-    const states = getStoredStatesFromStore(fixedPaths)
-    return zipObj(elementPaths, Object.values(states))
-}
+class StateStore {
+    constructor(private readonly storeApi: StoreApi<AppStore>) {}
 
-const useObjectState = <T extends StoredState>(elementPath: string, initialState: T): T => {
-    return useObjectStates({[elementPath]: initialState})[elementPath] as T
+    setOrCreateStoredStates(initialStates: StateMap, pathPrefix: string | undefined): StateMap {
+        const initialStatesFixedPaths = mapKeys(initialStates, (_, path) => fixPath(path, pathPrefix))
+        const fixedPaths = Object.keys(initialStatesFixedPaths)
+        const selectStates = (state: AppStore): [StateMap, SetStoredStates] => [state.select(...fixedPaths), state.setStoredStates]
+        const compareOnlyStates = (a: any[], b: any[]) => shallow(a[0], b[0])
+        const [_storedState, setStoredStatesInStore] = useStore(this.storeApi, selectStates, compareOnlyStates)
+        const states = setStoredStatesInStore(initialStatesFixedPaths)
+        return zipObj(Object.keys(initialStates), Object.values(states))
+    }
+
+    getStoredStates(elementPaths: string[], pathPrefix: string | undefined): StateMap {
+        const fixedPaths = elementPaths.map(path => fixPath(path, pathPrefix))
+        const selectStates = (state: AppStore): [StateMap, GetStoredStates] => [state.select(...fixedPaths), state.getStoredStates]
+        const compareOnlyStates = (a: any[], b: any[]) => shallow(a[0], b[0])
+        const [_storedState, getStoredStatesFromStore] = useStore(this.storeApi, selectStates, compareOnlyStates)
+        const states = getStoredStatesFromStore(fixedPaths)
+        return zipObj(elementPaths, Object.values(states))
+    }
+
+    setObjects(initialStates: StateMap, pathPrefix?: string) {
+        return this.setOrCreateStoredStates(initialStates, pathPrefix)
+    }
+
+    useObjects(elementPaths: string[], pathPrefix?: string) {
+        return this.getStoredStates(elementPaths, pathPrefix)
+    }
+
+    setObject <T extends StoredState>(elementPath: string, initialState: T): T {
+        return this.setObjects({[elementPath]: initialState})[elementPath] as T
+    }
+
+    useObject <T extends StoredState>(elementPath: string): T {
+        return this.useObjects([elementPath])[elementPath] as T
+    }
+
+    // used in debugger statements eval'ed in app in Preview
+    getObject <T extends StoredState>(elementPath: string): T {
+        const path = fixPath(elementPath, undefined)
+        return this.storeApi.getState().store.select(path) as T
+    }
+
+    setPreventUpdates(callback: VoidFn) {
+        this.storeApi.getState().setPreventUpdates(callback)
+    }
 }
 
 const useGetObjectState = <T extends StoredState>(elementPath: string): T => {
-    return useGetObjectStates([elementPath])[elementPath] as T
+    return useGetStore().useObject(elementPath)
 }
 
-const useObjectStates = (initialStates: StateMap, pathPrefix?: string) => {
+const useGetStore = () => {
     const store = useContext(StoreContext)
-    return setOrCreateStoredStates(store, initialStates, pathPrefix)
-}
-
-const useGetObjectStates = (elementPaths: string[], pathPrefix?: string) => {
-    const store = useContext(StoreContext)
-    return getStoredStates(store, elementPaths, pathPrefix)
+    return new StateStore(store)
 }
 
 const StoreProvider = ({children, appStoreHook}: {children: React.ReactNode, appStoreHook?: AppStoreHook} ) => {
@@ -187,5 +224,5 @@ const StoreProvider = ({children, appStoreHook}: {children: React.ReactNode, app
     appStoreHook?.setAppStore(store.current)
     return React.createElement(StoreContext.Provider, {value: store.current, children})
 }
-export {StoreProvider, useObjectState, useGetObjectState, useObjectStates, useGetObjectStates, fixPath}
+export {StoreProvider, useGetObjectState, useGetStore, fixPath}
 

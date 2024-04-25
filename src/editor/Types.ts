@@ -19,6 +19,7 @@ export type OnOpenFn = VoidFn
 export type OnNewFn = VoidFn
 export type OnOpenFromGitHubFn = VoidFn
 export type OnGetFromGitHubFn = VoidFn
+export type OnNameSelectedFn = (name: string) => void
 export type OnChangeFn = (id: ElementId, propertyName: string, value: any) => void
 export type OnInsertFnWithPositionFn = (insertPosition: InsertPosition, targetItemId: ElementId, elementType: ElementType) => void
 export type OnInsertWithSelectedFn = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => ElementId

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import PropertyEditor from '../../src/editorStylesPropertyEditor/PropertyEditor'
+import PropertyEditor from '../../src/editor/PropertyEditor'
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
@@ -18,8 +18,7 @@ import List from '../../src/model/List'
 import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
-import Project1, {TOOLS_ID} from '../../src/model/Project'
-import Project2, {FILES_ID} from '../../src/model/Project'
+import Project2, {FILES_ID, TOOLS_ID} from '../../src/model/Project'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
@@ -30,7 +29,7 @@ import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
-import {clearPresetPositionStyles, presetPositionStyles} from '../../src/editorStylesPropertyEditor/StylesPropertyEditor'
+import {presetPositionStyles} from '../../src/editor/StylesPropertyEditor'
 
 let container: any
 let changedValue: any
@@ -41,6 +40,7 @@ const render = (element: React.ReactElement) => ({container} = tlRender(element)
 const onChange = jest.fn().mockImplementation( (id: string, propName: string, value: any) => {
     changedValue = value
 })
+const onNameSelected = jest.fn()
 
 const idField = () => (screen.getByTestId('elementId') as HTMLElement)
 const typeField = () => (screen.getByTestId('elementType') as HTMLElement)
@@ -65,7 +65,7 @@ const kindButton = (index: number) => {
 
 test('shows type and id and notes', () => {
     const element = new Page('id1', 'Page 1', {notes: 'This is the first page'}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(typeField().textContent).toBe('Page')
     expect(nameInputValue()).toBe('Page 1')
@@ -74,7 +74,7 @@ test('shows type and id and notes', () => {
 
 test('updates name on blur', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
     expect(nameInputValue()).toBe('Page One')
@@ -85,7 +85,7 @@ test('updates name on blur', () => {
 
 test('updates notes on blur', () => {
     const element = new Page('id1', 'Page 1', {notes: 'This is page 1'}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(notesInputValue()).toBe('This is page 1')
     fireEvent.input(notesInput(), {target: {value: 'This is page One'}})
     expect(notesInputValue()).toBe('This is page One')
@@ -96,7 +96,7 @@ test('updates notes on blur', () => {
 
 test('updates name on enter', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page One'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe('Page One')
@@ -104,7 +104,7 @@ test('updates name on enter', () => {
 
 test('does not update name if enter without typing', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Page 1')
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe(undefined)
@@ -112,7 +112,7 @@ test('does not update name if enter without typing', () => {
 
 test('does not update name if new name is the same', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     fireEvent.input(nameInput(), {target: {value: 'Page 1'}})
     fireEvent.keyDown(nameInput(), {key: 'Enter', code: 'Enter', charCode: 13})
     expect(changedValue).toBe(undefined)
@@ -120,7 +120,7 @@ test('does not update name if new name is the same', () => {
 
 test('cannot change name of Files element', async () => {
     const element = new FileFolder(FILES_ID, 'Files', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     const user = userEvent.setup()
     await user.type(nameInput(), 'Files 2')
     expect(nameInputValue()).toBe('Files')
@@ -130,7 +130,7 @@ test('cannot change name of Files element', async () => {
 
 test('cannot change name of Tools element', async () => {
     const element = new ToolFolder(TOOLS_ID, 'Tools', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     const user = userEvent.setup()
     await user.type(nameInput(), 'Tools 2')
     expect(nameInputValue()).toBe('Tools')
@@ -140,7 +140,7 @@ test('cannot change name of Tools element', async () => {
 
 test('updates other properties', () => {
     const element = new Text('id1', 'Text 1', {content: 'x', show: ex`funky`})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(inputValue('Show')).toBe('funky')
     fireEvent.input(input('Show'), {target: {value: 'cool'}})
     expect(changedValue).toStrictEqual({expr: 'cool'})
@@ -148,16 +148,34 @@ test('updates other properties', () => {
 
 test('updates style properties', () => {
     const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: 'red'}})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(inputValue('Color')).toBe('red')
     fireEvent.input(input('Color'), {target: {value: 'blue'}})
     expect(changedValue).toStrictEqual({color: 'blue'})
     expect(onChange).toHaveBeenCalledWith('id1', 'styles', {color: 'blue'})
 })
 
+test('selects name with Cmd/Ctrl-Click', () => {
+    const onNameSelected = jest.fn()
+    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', initialValue: ex`AnotherElement.size`})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
+    expect(inputValue('Initial Value')).toBe('AnotherElement.size')
+    fireEvent.click(input('Initial Value'), {ctrlKey: true, offsetX: 60, offsetY: 12})
+    expect(onNameSelected).toHaveBeenCalledWith('AnotherElement')
+})
+
+test('selects name in styles with Cmd/Ctrl-Click', () => {
+    const onNameSelected = jest.fn()
+    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: ex`ColorOf(AnotherElement)`}})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
+    expect(inputValue('Color')).toBe('ColorOf(AnotherElement)')
+    fireEvent.click(input('Color'), {ctrlKey: true, offsetX: 0, offsetY: 12})
+    expect(onNameSelected).toHaveBeenCalledWith('ColorOf')
+})
+
 test('has fields for Project', () => {
     const element = Project2.new([], 'Project 1', 'id1', {author: 'Me!'})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Project 1')
     expect(inputValue('Formula Name')).toBe('Project1')
@@ -167,7 +185,7 @@ test('has fields for Project', () => {
 
 test('has fields for App', () => {
     const element = new App('id1', 'App 1', {author: ex`Me + You`, maxWidth: '50%', notes: 'My new App'}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('App 1')
     expect(notesInputValue()).toBe('My new App')
@@ -179,7 +197,7 @@ test('has fields for App', () => {
 
 test('has fields for Page', () => {
     const element = new Page('id1', 'Page 1', {}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('Page 1')
     expect(inputValue('Formula Name')).toBe('Page1')
@@ -187,14 +205,14 @@ test('has fields for Page', () => {
 
 test('has fields for Text with literal value', () => {
     const element = new Text('id1', 'Text 1', {content: 'Some content'})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Text 1')
     expect(inputValue('Content')).toBe('Some content')
 })
 
 test('shows controlled component for optional fields for Text', () => {
     const element = new Text('id1', 'Text 1', {content: ''})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(inputValue('Color')).toBe('')
     const colorInput = screen.getByLabelText('Color') as HTMLInputElement
     expect(componentProps(colorInput).value).toBe('')
@@ -216,7 +234,7 @@ test('has fields for Text', () => {
             marginBottom: 33
         }
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Text 1')
     expect(textareaValue('Content')).toBe('Hi!\nGood morning')
     expect(selectValue('Show')).toBe('true')
@@ -240,7 +258,7 @@ test('has fields for Layout', () => {
             backgroundColor: 'pink'
         }
     }, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Layout 1')
     expect(selectValue('Horizontal')).toBe('true')
     expect(selectValue('Wrap')).toBe('false')
@@ -254,7 +272,7 @@ test('has fields for AppBar', () => {
         title: 'My App',
     }, [])
     // console.log('before render', Date.now())
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     // console.log('before render', Date.now())
     expect(nameInputValue()).toBe('AppBar 1')
     // console.log('after first expect', Date.now())
@@ -269,7 +287,7 @@ test('has fields for TextInput', () => {
         label: ex`"Text One"`,
         dataType: ex`theType`
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(typeField().textContent).toBe('Text Input')
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('"Text One"')
@@ -280,7 +298,7 @@ test('has fields for TextInput', () => {
 
 test('has fields for TextInput with default values', () => {
     const element = new TextInput('id1', 'Text Input 1', {})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('')
     expect(inputValue('Initial Value')).toBe('')
@@ -292,7 +310,7 @@ test('has fields for TextInput with default values', () => {
 
 test('has fields for NumberInput', () => {
     const element = new NumberInput('id1', 'Number Input 1', {initialValue: ex`40`, label: ex`"Number Input One"`})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Number Input 1')
     expect(inputValue('Label')).toBe('"Number Input One"')
     expect(inputValue('Initial Value')).toBe('40')
@@ -303,7 +321,7 @@ test('has fields for TrueFalseInput', () => {
         initialValue: ex`true`,
         label: ex`"True False Input One"`
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('True False Input 1')
     expect(inputValue('Label')).toBe('"True False Input One"')
     expect(inputValue('Initial Value')).toBe('true')
@@ -315,7 +333,7 @@ test('has fields for SelectInput', () => {
         initialValue: ex`"Green"`,
         label: ex`"Select Input One"`
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('"Select Input One"')
     expect(inputValue('Values')).toBe('["Green", "Blue", "Pink"]')
@@ -328,7 +346,7 @@ test('has fields for SelectInput with fixed value', () => {
         initialValue: 'Green',
         label: 'Select Input One'
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Select Input 1')
     expect(inputValue('Label')).toBe('Select Input One')
     expect(inputValue('Values')).toBe('Green, Blue, Pink')
@@ -337,7 +355,7 @@ test('has fields for SelectInput with fixed value', () => {
 
 test('has fields for Button', () => {
     const element = new Button('id1', 'Button 1', {content: ex`"Hi!"`, appearance: 'link', action: ex`doIt()`, show: false})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Button 1')
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
@@ -349,7 +367,7 @@ test('has fields for Button', () => {
 
 test('has fields for Menu', () => {
     const element = new Menu('id1', 'Menu 1', {label: ex`"Hi!"`, filled: true}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Menu 1')
     expect(inputValue('Label')).toBe('"Hi!"')
     expect(selectValue('Filled')).toBe('true')
@@ -357,7 +375,7 @@ test('has fields for Menu', () => {
 
 test('has fields for MenuItem', () => {
     const element = new MenuItem('id1', 'Menu Item 1', {label: ex`"Hi!"`, action: ex`doIt()`, show: false})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Menu Item 1')
     expect(inputValue('Label')).toBe('"Hi!"')
     expect(selectValue('Show')).toBe('false')
@@ -369,7 +387,7 @@ test('has fields for MenuItem', () => {
 test('has fields for List', () => {
     const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, styles: {color: ex`funky`, width: '100%'},
         selectable: true, selectAction: ex`Log(\$item.id)`}, [])
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('List 1')
     expect(inputValue('Formula Name')).toBe('List1')
@@ -386,7 +404,7 @@ test('has fields for List', () => {
 
 test('has fields for Data', () => {
     const element = new Data('id1', 'Data 1', {initialValue: ex`"Hi!"`})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Data 1')
     expect(inputValue('Initial Value')).toBe('"Hi!"')
     expect(selectValue('Display')).toBe('')
@@ -394,7 +412,7 @@ test('has fields for Data', () => {
 
 test('has fields for Collection', () => {
     const element = new Collection('id1', 'Collection 1', {initialValue: ex`["green", "blue"]`, dataStore: ex`dataStore_1`, collectionName: 'Things'})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Collection 1')
     expect(inputValue('Initial Value')).toBe('["green", "blue"]')
     expect(kindButton(0).textContent).toBe('fx=')
@@ -408,7 +426,7 @@ test('has fields for Collection', () => {
 
 test('has fields for MemoryDataStore', () => {
     const element = new MemoryDataStore('id1', 'Memory Data Store 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Memory Data Store 1')
     expect(inputValue('Initial Value')).toBe('{ Widgets: { w1: {a: 10}} }')
     expect(kindButton(0).textContent).toBe('fx=')
@@ -418,7 +436,7 @@ test('has fields for MemoryDataStore', () => {
 
 test('has fields for FunctionDef', () => {
     const element = new FunctionDef('id1', 'Function 1', {input1: 'foo', input5: 'bar', calculation: ex`42`, private: true})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Function 1')
     expect(inputValue('Input 1')).toBe('foo')
     expect(inputValue('Input 2')).toBe('')
@@ -437,7 +455,7 @@ test('has fields for FunctionDef', () => {
 
 test('has fields for FileDataStore', () => {
     const element = new FileDataStore('id1', 'File Data Store 1', {})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('File Data Store 1')
 })
 
@@ -453,7 +471,7 @@ service cloud.firestore {
   }       
 }`
     const element = new FirestoreDataStore('id1', 'Firestore Data Store 1', {collections: 'Things: user-private'})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Firestore Data Store 1')
     expect(inputValue('Collections')).toBe('Things: user-private')
     expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
@@ -464,7 +482,7 @@ test('shows errors for a normal property', () => {
     const element = new Text('id1', 'Text 1', {
         content: ex`Splurge`,
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} errors={{
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} errors={{
         content: 'Unknown name "Splurge"',
     }}/>)
     expect(nameInputValue()).toBe('Text 1')
@@ -473,6 +491,7 @@ test('shows errors for a normal property', () => {
 })
 
 test('shows errors for styles properties', () => {
+    // const start = Date.now()
     const element = new TextInput('id1', 'Text Input 1', {
         styles: {
             fontSize: 44,
@@ -480,17 +499,24 @@ test('shows errors for styles properties', () => {
             border: ex`10+`,
         }
     })
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} errors={{
+    // console.log(1, Date.now() - start)
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} errors={{
         styles: {
             backgroundColor: 'Unknown name "Splurge"',
             border: 'Unexpected end of input'
         }
     }}/>)
+    // console.log(2, Date.now() - start)
     expect(nameInputValue()).toBe('Text Input 1')
+    // console.log('2a', Date.now() - start)
     expect(inputValue('Background Color')).toBe('Splurge')
+    // console.log('2b', Date.now() - start)
     expect(errorValue('Background Color')).toBe('Unknown name "Splurge"')
+    // console.log('2c', Date.now() - start)
     expect(inputValue('Border')).toBe('10+')
+    // console.log('2d', Date.now() - start)
     expect(errorValue('Border')).toBe('Unexpected end of input')
+    // console.log(3, Date.now() - start)
 })
 
 describe('Preset position styles', () => {
@@ -501,25 +527,25 @@ describe('Preset position styles', () => {
 
     test('shows empty preset if styles do not match a preset', () => {
         const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetModified})
-        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
         expect(selectValue('Preset Position')).toBe('')
     })
 
     test('shows empty preset if styles match a preset but have extra positioning styles', () => {
         const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetWithRight})
-        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
         expect(selectValue('Preset Position')).toBe('')
     })
 
     test('shows preset name if styles match a preset', () => {
         const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
-        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
         expect(selectValue('Preset Position')).toBe('center')
     })
 
     test('updates styles to match a preset', () => {
         const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
-        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
         expect(selectValue('Preset Position')).toBe('center')
         fireEvent.input(select('Preset Position'), {target: {value: 'topLeft'}})
         expect(changedValue).toStrictEqual(topLeftPreset)
@@ -528,7 +554,7 @@ describe('Preset position styles', () => {
 
     test('updates styles to clear a preset', () => {
         const element = new Text('id1', 'Text 1', {content: 'x', styles: {...centerPreset, color: 'blue'}})
-        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange}/>)
+        render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
         expect(selectValue('Preset Position')).toBe('center')
         fireEvent.input(select('Preset Position'), {target: {value: ''}})
         expect(changedValue).toStrictEqual({color: 'blue'})

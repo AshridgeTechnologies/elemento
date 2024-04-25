@@ -72,6 +72,7 @@
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
     "react-firebaseui": "^6.0.0",
+    "react18-json-view": "^0.2.8",
     "recast": "^0.23.4",
     "validator": "^13.9.0",
     "ws": "^8.12.1",

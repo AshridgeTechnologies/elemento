@@ -19,10 +19,12 @@ import Project from '../model/Project'
 import {allElements, valueLiteral} from './generatorHelpers'
 import type AppContext from '../runtime/AppContext'
 import {AppData} from '../runtime/components/AppData'
-import {elementTypeNames, elementTypes} from '../model/elements'
+import {elementTypeNames} from '../model/elements'
 import Form from '../model/Form'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
+import {mapValues} from 'radash'
+import App from '../model/App'
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -124,6 +126,32 @@ export default class Parser {
         }
 
         this.errors[elementId][propertyName] = error
+    }
+
+    parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Page | App) {
+        const identifierSet = new Set<string>()
+        this.errors[exprId] = {}
+        const onError = (name: string) => (err: string) => this.addError(exprId, name, err)
+        const allContainerElements = containingComponent ? allElements(containingComponent, true) : []
+        const isDataTypes = (name: string) => this.project.dataTypes.some( el => el.codeName === name )
+        const isServerApp = (name: string) => this.project.elementArray().some(el => el.kind === 'ServerApp' && el.codeName === name)
+        const isAppElement = (name: string) => (this.globalScopeElement.elements ?? []).some(el => el.codeName === name)
+        const isContainerElement = (name: string) => allContainerElements.some(el => el.codeName === name )
+        const isInTool = this.globalScopeElement.kind === 'Tool'
+        const isKnown = (name: string) => isGlobalFunction(name)
+            || isDataTypes(name)
+            || isAppFunction(name)
+            || isAppStateFunction(name)
+            || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
+            || isServerApp(name)
+            || isAppElement(name)
+            || isContainerElement(name)
+            || isBuiltIn(name)
+            || (isInTool && isToolWindowGlobal(name))
+            || name === '_selectedElement'
+            || name === '_state'
+        mapValues(exprs, (expr, name: string) => parseExprAndIdentifiers({expr}, identifierSet, isKnown, 'singleExpression', onError(name), false))
+        this.identifiersForComponent[exprId] = Array.from(identifierSet.values())
     }
 
     parseComponent(component: Element | ListItem, containingComponent?: Page) {

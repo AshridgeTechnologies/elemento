@@ -35,6 +35,8 @@ import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
 
+export type DebugErrors = {[name: string]: string}
+
 type FunctionCollector = {add(s: string): void}
 
 const indentLevel2 = '        '
@@ -135,9 +137,10 @@ export default class Generator {
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
         const appContext = componentIsApp ? `    const {appContext} = props` : ''
+        const getStateDeclaration = `    const _state = Elemento.useGetStore()`
         const appStateDeclaration = componentIsApp
-            ? `    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))`
-            : appStateFunctionIdentifiers.length ? `    const app = Elemento.useGetObjectState('app')` : ''
+            ? `    const app = _state.setObject('app', new App.State({pages, appContext}))`
+            : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.map(runtimeElementTypeName).join(', ')}} = Elemento.components` : ''
@@ -150,15 +153,15 @@ export default class Generator {
         let appLevelDeclarations
         if (!componentIsApp) {
             const appLevelIdentifiers = identifiers.filter(isAppElement)
-            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState('app.${ident}')`).join('\n')
+            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = _state.useObject('app.${ident}')`).join('\n')
         }
         let containerDeclarations
         if (canUseContainerElements) {
             const containerIdentifiers = identifiers.filter(isContainerElement)
-            containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = Elemento.useGetObjectState(parentPathWith('${ident}'))`).join('\n')
+            containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = _state.useObject(parentPathWith('${ident}'))`).join('\n')
         }
-        const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext,
-            appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
+        const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext, appFunctionDeclarations, getStateDeclaration,
+            appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
         const actionHandler = (el: Element, def: PropertyDef) => {
             const actionDef = def.type as EventActionPropertyDef
@@ -202,13 +205,13 @@ export default class Generator {
                 return `    const ${name} = ${entry.functionDef}`
             } else {
                 const actionFunctions = stateActionHandlers(el).filter( notBlank ).join('\n')
-                const stateObjectDeclaration = `    const ${name} = Elemento.useObjectState(${pathExpr}, ${entry})`
+                const stateObjectDeclaration = `    const ${name} = _state.setObject(${pathExpr}, ${entry})`
                 return [actionFunctions, stateObjectDeclaration].filter( notBlank ).join('\n')
             }
         }).join('\n')
 
         const formState = () => {
-            return `    const \$form = Elemento.useGetObjectState(props.path)` + '\n'
+            return `    const \$form = _state.useObject(props.path)` + '\n'
                  + inlineStateBlock() + '\n'
                  + `    \$form._updateValue()`
 
@@ -254,6 +257,49 @@ ${declarations}${debugHook}
 `.trimStart() : ''
 
         return [...topLevelFunctions, componentFunction, stateClass].filter(identity).join('\n\n')
+    }
+
+    generateStandaloneBlock(selectedElement: Element | null, exprs: {[name: string] : string}, containingComponent: Page | App, updatesAllowed: string[]): [string, DebugErrors] {
+        const exprId = '_standalone'
+        this.parser.parseStandaloneExpr(exprId, exprs, containingComponent)
+        const standaloneErrors = (this.parser.allErrors()[exprId] ?? {}) as DebugErrors
+        const allContainerElements = allElements(containingComponent, true)
+        const isAppElement = (name: string) => !!this.app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
+        const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
+        const identifiers = this.parser.componentIdentifiers(exprId)
+
+        const selectedElementDeclaration = selectedElement ? `const _selectedElement = _state.getObject('${this.project.findElementPath(selectedElement.id)}')` :''
+        const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(exprId)
+        const appStateDeclaration = appStateFunctionIdentifiers.length ? `const app = _state.getObject('app')` : ''
+        const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
+        const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(exprId)
+        const globalDeclarations = globalFunctionIdentifiers.length ? `const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
+        const appFunctionIdentifiers = this.parser.appFunctionIdentifiers(exprId)
+        const appFunctionDeclarations = appFunctionIdentifiers.length ? `const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions` : ''
+
+        let appLevelDeclarations
+        const appLevelIdentifiers = identifiers.filter(isAppElement)
+        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('app.${ident}')`).join('\n')
+        let containerDeclarations
+        const containerIdentifiers = identifiers.filter(isContainerElement)
+        containerDeclarations = containerIdentifiers.map(ident => `const ${ident} = _state.getObject(pathWith('${ident}'))`).join('\n')
+        const elementoDeclarations = [globalDeclarations, selectedElementDeclaration,
+            appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
+
+        const pathWith = `const pathWith = name => props.path + '.' + name`
+        const declarations = [pathWith, elementoDeclarations,].filter(d => d !== '').join('\n')
+        const exprOrError = (name: string, expr: string) => {
+            if (standaloneErrors[name]) {
+                return `() => ({_error: '${standaloneErrors[name]}'})`
+            } else if (updatesAllowed.includes(name)) {
+                return `{updateAllowed: true, fn: () => (${expr})}`
+            } else {
+                return `() => (${expr})`
+            }
+        }
+
+        const exprBlock = `({\n${Object.entries(exprs).map( ([name, expr]) => `  '${name}': ${exprOrError(name, expr)}`).join(',\n')}\n})`
+        return [`${declarations};\n${exprBlock}`.trimStart(), standaloneErrors]
     }
 
     private functionNamePrefix(containingComponent: Element | undefined) {

@@ -5,9 +5,7 @@ Elemento Backlog
 Bugs
 ----
 
-- P1: Inspector kills app by trying to evaluate CurrentUrl().page in the page when have an element using that in a formula in the app bar selected
-- P1: Inspector kills app by trying to evaluate JavaScript function calculation
-- P1: Inspector eval (usually) fails if not displaying the page whose element is selected, as the required functions and elements are not in scope
+- Preview hangs on to old versions of imported functions even after reload of project and reload frame
 - P1: Runtime errors give no clue that they have even occurred, let alone where or what
 - P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
 - Uploading file does not copy to client files
@@ -115,15 +113,16 @@ Stories
 - Demo Experience Part 1
 
 ### Priority for usability
+- Inspector Part 3
 - Runtime error and notification handling
 - Function editing and validation
 - Complex formula editing - auto format on separate lines where it helps eg for nested function calls
-- Inspector Part 2
 - General usability Part 3
 - Preview improvements - screen size, scrolling, etc
 - Search in project - consider Fuse.js
 
 ### Priority 1
+Consider other deploy options like https://render.com/
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked
 - Consider way of getting domElement of any ui Element (including stateless) for special stuff - but encourages bad practices?
@@ -203,6 +202,7 @@ Epics
 Tech debt
 ---------
 
+- Fix flaky Timer tests - mock requestAnimationFrame and call a certain number of times?
 - Cannot upgrade MUI as slotProps.backdrop not available
 - PropertyEditor test really slow on some tests
 - Improve jsdom test performance = try happy-dom
@@ -349,6 +349,7 @@ Done
 - Block element
 - Timer element
 - General object adapter
+- Inspector improvements
 
 Bugs fixed
 ----------
@@ -381,4 +382,7 @@ Bugs fixed
 - Previews are mixed up if open two projects in different tabs
 - Does not show preview on new project - sw gives 404 - until reload frame
 - $item functions have await inserted but not async before eg ForEach(newWords, Add(Words, $item));
+- Inspector kills app by trying to evaluate CurrentUrl().page in the page when have an element using that in a formula in the app bar selected
+- Inspector kills app by trying to evaluate JavaScript function calculation
+- Inspector eval (usually) fails if not displaying the page whose element is selected, as the required functions and elements are not in scope
 

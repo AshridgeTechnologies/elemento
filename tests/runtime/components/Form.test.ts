@@ -6,7 +6,7 @@ import React, {KeyboardEventHandler} from 'react'
 import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
-import {useGetObjectState, useObjectState, useObjectStates} from '../../../src/runtime/appData'
+import {useGetObjectState, useGetStore} from '../../../src/runtime/appData'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
 import MockedFunction = jest.MockedFunction
@@ -31,7 +31,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     const pathWith = (name: string) => props.path + '.' + name
 
     const $form = useGetObjectState<BaseFormState>(props.path)
-    const {Description, BoxSize} = useObjectStates( {
+    const {Description, BoxSize} = useGetStore().setObjects( {
         // @ts-ignore
         Description: new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}),
         // @ts-ignore
@@ -54,9 +54,10 @@ class TestOneElementFormState extends BaseFormState {
 function TestOneElementForm(props: {path: string}) {
     const pathWith = (name: string) => props.path + '.' + name
 
+    const _store = useGetStore()
     const $form = useGetObjectState<BaseFormState>(props.path)
     // @ts-ignore
-    const Description = useObjectState(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
+    const Description = _store.setObject(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
     $form._updateValue()
 
     return React.createElement(Form, {path: props.path},
@@ -71,13 +72,14 @@ class TestNestedFormState extends BaseFormState {
 function TestNestedForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     const pathWith = (name: string) => props.path + '.' + name
 
+    const _store = useGetStore()
     const $form = useGetObjectState<BaseFormState>(props.path)
     // @ts-ignore
-    const Description = useObjectState(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
+    const Description = _store.setObject(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
     // @ts-ignore
-    const BoxSize = useObjectState(pathWith('BoxSize'), new NumberInput.State({value: $form.originalValue?.BoxSize, dataType: sizeType}))
+    const BoxSize = _store.setObject(pathWith('BoxSize'), new NumberInput.State({value: $form.originalValue?.BoxSize, dataType: sizeType}))
     // @ts-ignore
-    const Extra = useObjectState(pathWith('Extra'), new TestOneElementFormState({value: $form.originalValue?.Extra}))
+    const Extra = _store.setObject(pathWith('Extra'), new TestOneElementFormState({value: $form.originalValue?.Extra}))
     $form._updateValue()
 
     return React.createElement(Form, props,

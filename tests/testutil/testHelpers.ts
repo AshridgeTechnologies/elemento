@@ -1,7 +1,7 @@
 import renderer from 'react-test-renderer'
 import React, {ComponentState, createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
-import {AppStateForObject, AppStore, StoreProvider, useObjectState} from '../../src/runtime/appData'
+import {AppStateForObject, AppStore, StoreProvider, useGetStore} from '../../src/runtime/appData'
 import {StoreApi} from 'zustand'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
@@ -188,7 +188,7 @@ const TestWrapper = <State extends object>({
                                                       state,
                                                       children
                                                   }: { path: string, state: any, children?: any }) => {
-    useObjectState(path, state)
+    useGetStore().setObject(path, state)
     return children
 }
 type Class<T> = new (...args: any[]) => T

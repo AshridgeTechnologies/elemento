@@ -1,7 +1,7 @@
 import {ElementId, PropertyType, PropertyValue, StylingProps} from '../model/Types'
-import {OnChangeFn} from '../editor/Types'
+import {OnChangeFn, OnNameSelectedFn} from './Types'
 import {withoutUndefined} from '../util/helpers'
-import PropertyInput from '../editor/PropertyInput'
+import PropertyInput from './PropertyInput'
 import {commonStylingPropTypes} from '../util/StylingTypes'
 import {Box, Typography} from '@mui/material'
 import React from 'react'
@@ -90,7 +90,7 @@ const hasPreset = (properties: object, presetType: presetStyleName) => {
 
 const presetPosition = (stylesValue: StylingProps) => presetPositionNames.find((presetName) => hasPreset(stylesValue, presetName))
 
-export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChange, errors = {}}: { elementId: ElementId, value: StylingProps, onChange: OnChangeFn, errors?: object }) {
+export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChange, onNameSelected, errors = {}}: { elementId: ElementId, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
 
     const onChangeStyleProperty = (_: ElementId, stylePropName: string, stylePropValue: any) => {
         const styleUpdates = () => {
@@ -110,7 +110,7 @@ export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChan
         const error = errors[name as keyof object]
         const key = `${elementId}.styles.${name}.kind`
         return <PropertyInput key={key} elementId={elementId} name={name} type={type} value={propertyValue} onChange={onChangeStyleProperty}
-                              error={error}/>
+                              onNameSelected={onNameSelected} error={error}/>
     }
 
     const presetPositionField = propertyField('presetPosition', presetPositionNames)

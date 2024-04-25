@@ -122,7 +122,8 @@ export default function AppOne(props) {
     const pages = {MainPage}
     const {App} = Elemento.components
     const {appContext} = props
-    const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+    const _store = Elemento.useGetStore()
+    const app = _store.setObject('app', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'AppOne'})
 }

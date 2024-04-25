@@ -2,8 +2,8 @@ import React from 'react'
 
 import Element from '../model/Element'
 import AppStructureTree, {ModelTreeItem} from './AppStructureTree'
-import PropertyEditor from '../editorStylesPropertyEditor/PropertyEditor'
-import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn} from './Types'
+import PropertyEditor from './PropertyEditor'
+import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn, OnNameSelectedFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 
 import {Box, Grid, Typography} from '@mui/material'
@@ -38,8 +38,15 @@ export default function Editor({
     const firstSelectedItemId = selectedItemIds[0]
 
     const element = project.findElement(firstSelectedItemId)
+    const onNameSelected: OnNameSelectedFn = (name: string) => {
+        console.log('onNameSelected', name)
+        const elementToSelect = project.findClosestElementByCodeName(firstSelectedItemId, name)
+        if (elementToSelect) {
+            onSelectedItemsChange([elementToSelect.id])
+        }
+    }
     const propertyArea = (firstSelectedItemId && element)
-        ? <PropertyEditor element={element} propertyDefs={project.propertyDefsOf(element)} onChange={onChange} errors={errors[element.id]}/>
+        ? <PropertyEditor element={element} propertyDefs={project.propertyDefsOf(element)} onChange={onChange} onNameSelected={onNameSelected} errors={errors[element.id]}/>
         : null
 
     const onContextMenuInsert = (insertPosition: InsertPosition, targetElementId: ElementId, elementType: ElementType) => {

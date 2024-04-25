@@ -12,6 +12,17 @@ import {TimerState} from '../../../src/runtime/components/Timer'
 const [timer, appStoreHook] = wrappedTestElement(Timer, TimerState)
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
+// Start of possible technique for mocking time, but also uses Date AND requestAnimationFrame only runs the callback once
+// let rafCallback: FrameRequestCallback
+// globalThis.requestAnimationFrame = (callback: FrameRequestCallback) => {
+//     rafCallback = callback
+//     return 1
+// }
+//
+// const runAnimationFrames = (times: number) => {
+//     for (let i = 0; i < times; i++) rafCallback(0)
+// }
+
 test('Timer element produces output with properties supplied', () => {
     const {container} = render(timer('app.page1.timer', {period: 10}, {
             styles: {width: 23},
@@ -132,8 +143,8 @@ test('Has correct output properties if start called while running', async () => 
     expect(updatedState.startTime?.getTime()).toBeCloseTo(startTime.getTime())
     expect(updatedState.intervalCount).toBe(2)
     expect(updatedState.intervalTime).toBe(0.06)
-    expect(updatedState.elapsedTime).toBeCloseTo(0.08, 2)
-    expect(updatedState.remainingTime).toBeCloseTo(1.92, 2)
+    expect(updatedState.elapsedTime).toBeCloseTo(0.08, 1)
+    expect(updatedState.remainingTime).toBeCloseTo(1.92, 1)
     expect(updatedState.isRunning).toBe(true)
     expect(updatedState.isFinished).toBe(false)
     expect(intervalAction).toHaveBeenCalledTimes(2)

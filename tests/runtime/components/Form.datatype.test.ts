@@ -9,8 +9,7 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {ChoiceType, DateType, NumberType, RecordType, Rule, TextType, TrueFalseType} from '../../../src/runtime/types'
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
 import React, {KeyboardEventHandler} from 'react'
-import {useGetObjectState} from '../../../src/runtime'
-import {useObjectStates} from '../../../src/runtime/appData'
+import {useGetObjectState, useGetStore} from '../../../src/runtime'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
 import MockedFunction = jest.MockedFunction
@@ -57,7 +56,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     const pathWith = (name: string) => props.path + '.' + name
 
     const $form = useGetObjectState<BaseFormState>(props.path)
-    const {Description, BoxSize, Count} = useObjectStates( {
+    const {Description, BoxSize, Count} = useGetStore().setObjects( {
         // @ts-ignore
         Count: new NumberInput.State({value: $form.originalValue?.Count, dataType: sizeType}),
     }, props.path)

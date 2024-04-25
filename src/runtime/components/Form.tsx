@@ -1,7 +1,7 @@
 import React, {createElement, Fragment, KeyboardEventHandler} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import {Box, FormHelperText, Stack, SxProps, Typography} from '@mui/material'
-import {StateMap, useGetObjectState, useObjectStates} from '../appData'
+import {StateMap, useGetObjectState, useGetStore} from '../appData'
 import BaseFormState, {DataTypeFormState} from './FormState'
 import {isArray} from 'lodash'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
@@ -114,7 +114,7 @@ export default function Form({children, path, ...props}: Properties) {
         const {codeName} = type
         return [codeName, formState(type, state.originalValue?.[codeName as keyof object])]
     })) as StateMap
-    useObjectStates(childStates, path)
+    useGetStore().setObjects(childStates, path)
     state._updateValue()
 
     const childrenList:React.CElement<any, any>[] = isNil(children) ? [] : typeof children[Symbol.iterator] === 'function' ? Array.from(children) : [children]

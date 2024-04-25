@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import {ElementId, EventActionPropertyDef, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
 import lodash from 'lodash'; const {isArray, startCase} = lodash;
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
-import {isExpr, isNumeric} from '../util/helpers'
-import {OnChangeFn} from './Types'
+import {isExpr, isNumeric, wordAtPosition} from '../util/helpers'
+import {OnChangeFn, OnNameSelectedFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
 import {format, isDate} from 'date-fns'
 import {editorMenuPositionProps} from './Editor'
@@ -12,9 +12,9 @@ import {editorElement} from './EditorElement'
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
-    onChange: OnChangeFn, fixedOnly?: boolean, readOnly?: boolean, error?: string
+    onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, fixedOnly?: boolean, readOnly?: boolean, error?: string
 }
-export default function PropertyInput({ elementId, name, type, value, onChange, fixedOnly = false, readOnly = false,  error}: PropertyInputProps) {
+export default function PropertyInput({ elementId, name, type, value, onChange, onNameSelected, fixedOnly = false, readOnly = false,  error}: PropertyInputProps) {
     const isEventAction = (type as EventActionPropertyDef).type === 'Action'
     const exprOnlyProperty = isEventAction || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
@@ -126,6 +126,17 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
     const fixedBoolean = type === 'boolean' && !expr
     const fixedChoiceList = isArray(type) && !expr
+
+    const onClick = (event: React.MouseEvent) => {
+        if (expr && (event.ctrlKey || event.metaKey)) {
+            const target = event.target as HTMLTextAreaElement
+            const wordClicked = wordAtPosition(target.value, target.selectionStart)
+            if (wordClicked) {
+                onNameSelected(wordClicked)
+            }
+        }
+    }
+
     return <div style={{display: 'inline-flex'}} className='property-input'>
         {button()}
         {fixedBoolean ?
@@ -163,7 +174,9 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 {...numericProps}
                 {...dateProps}
                 {...errorProps}
-                onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}/>
+                onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
+                onClick={onClick}
+                />
         }
     </div>
 }

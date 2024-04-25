@@ -11,6 +11,7 @@ import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFun
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {AppData} from '../../src/runtime/components/AppData'
+import {useGetStore} from '../../src/runtime/index'
 
 jest.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
 
@@ -36,7 +37,8 @@ const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput, Image} = Elemento.components
-        const input1 = Elemento.useObjectState(pathWith('input1'), new TextInput.State({value: undefined}),)
+        const _store = useGetStore()
+        const input1 = _store.setObject(pathWith('input1'), new TextInput.State({value: undefined}),)
         const app = Elemento.useGetObjectState('app') as AppData
 
         // @ts-ignore
@@ -56,7 +58,8 @@ const testApp = (version: string) => {
         const {App} = Elemento.components
         // @ts-ignore
         const {appContext} = props
-        const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+        const _store = Elemento.useGetStore()
+        const app = _store.setObject('app', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -80,9 +83,11 @@ const badApp = () => {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
+        const _store = Elemento.useGetStore()
+
         // @ts-ignore
         const {appContext} = props
-        const app = Elemento.useObjectState('app', new App.State({pages, appContext}))
+        const app = _store.setObject('app', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 

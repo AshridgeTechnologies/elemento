@@ -12,7 +12,6 @@ import DataTypes from './types/DataTypes'
 import App from './App'
 import Text from './Text'
 import ToolFolder from './ToolFolder'
-import {fork} from 'radash'
 import {intersection} from 'ramda'
 import ServerApp from './ServerApp'
 import ComponentDef from './ComponentDef'
@@ -185,6 +184,20 @@ export default class Project extends BaseElement<Properties> implements Element 
     private newElement(elementType: ElementType, properties: object) {
         const newIdSeq = this.findMaxId(elementType) + 1
         return createNewElement(elementType, newIdSeq, properties)
+    }
+
+    findAncestorOfType(id: ElementId, kind: ElementType) {
+        return this.findElementsBy(el => el.kind === kind && el.findElement(id) !== null)[0]
+    }
+
+    findClosestElementByCodeName(id: ElementId, name: string) {
+        const containingPage = this.findAncestorOfType(id, 'Page')
+        const elementInPage = containingPage?.findElementsBy(el => el.codeName === name)?.[0]
+        if (elementInPage) {
+            return elementInPage
+        }
+        const containingApp = this.findAncestorOfType(id, 'App') as App
+        return containingApp.findElementsBy(el => el.codeName === name && !this.findAncestorOfType(el.id, 'Page'))[0]
     }
 }
 

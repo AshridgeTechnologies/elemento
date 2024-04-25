@@ -26,6 +26,8 @@ Part 2 requirements
 - Record the questions and words in each game and the results
 - Display statistics on grammar points and words
 - Adjust frequency of choosing questions and words to practise those with lower scores
+- Set of possible words in a particular position, including missed out - for both generating and checking
+- 
 
 
 

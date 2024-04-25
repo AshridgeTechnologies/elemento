@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import Element from '../model/Element'
 import {Box, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
-import {OnChangeFn} from '../editor/Types'
-import PropertyInput from '../editor/PropertyInput'
+import {OnChangeFn, OnNameSelectedFn} from './Types'
+import PropertyInput from './PropertyInput'
 import {PropertyDef, PropertyType, PropertyValue, StylingProps} from '../model/Types'
 import lodash from 'lodash';
 import {FILES_ID, TOOLS_ID} from '../model/Project'
@@ -61,7 +61,7 @@ function NotesTextField(props: TextFieldProps) {
     />
 }
 
-export default function PropertyEditor({element, propertyDefs, onChange, errors = {}}: {element: Element, propertyDefs: PropertyDef[], onChange: OnChangeFn, errors?: object }) {
+export default function PropertyEditor({element, propertyDefs, onChange, onNameSelected, errors = {}}: {element: Element, propertyDefs: PropertyDef[], onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
 
     function propertyField(name: string, type: PropertyType = 'string', fixedOnly: boolean, readOnly: boolean) {
         const valueFromElement = element[name as keyof object] as unknown as PropertyValue
@@ -70,9 +70,9 @@ export default function PropertyEditor({element, propertyDefs, onChange, errors 
         const error = errors[name as keyof object]
         const key = `${element.id}.${name}.kind`
         if (type === 'styles') {
-            return <StylesPropertyEditor key={key} elementId={element.id} value={propertyValue as StylingProps} onChange={onChange} errors={error}/>
+            return <StylesPropertyEditor key={key} elementId={element.id} value={propertyValue as StylingProps} onChange={onChange} onNameSelected={onNameSelected} errors={error}/>
         }
-        return <PropertyInput key={key} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} fixedOnly={fixedOnly}
+        return <PropertyInput key={key} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} onNameSelected={onNameSelected} fixedOnly={fixedOnly}
                               readOnly={readOnly} error={error}/>
     }
 

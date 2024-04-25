@@ -18,7 +18,6 @@ import ServerApp from '../../src/model/ServerApp'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
-import {project} from 'ramda'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -599,3 +598,25 @@ test('if no ToolFolder or ComponentFolder in the elements of existing, adds one'
     expect(loadedProject.elementArray()).toStrictEqual([app, newComponentFolder, newToolFolder])
 })
 
+test('findClosestElementByCodeName finds in Page or App', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const page1 = new Page('p1', 'Page 1', {}, [text1, text2])
+    const text1a = new Text('t11', 'Text 1', {content: ex`"Some stuff"`})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"More stuff"`})
+    const page2 = new Page('p2', 'Page 2', {}, [text1a, text3])
+
+    const text2a = new Text('t2a', 'Text 2', {content: ex`"Top stuff"`})
+    const text3a = new Text('t3a', 'Text 3', {content: ex`"Other stuff"`})
+    const appBar = new AppBar('ab1', 'The App Bar', {}, [text2a, text3a]  )
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2, appBar])
+    const project = Project.new([app])
+
+    expect(project.findClosestElementByCodeName('t1', 'xxx')).toBe(undefined)
+    expect(project.findClosestElementByCodeName('t2', 'Text1')).toBe(text1)
+    expect(project.findClosestElementByCodeName('t3', 'Text1')).toBe(text1a)
+    expect(project.findClosestElementByCodeName('t1', 'Text2')).toBe(text2)
+    expect(project.findClosestElementByCodeName('t11', 'Text2')).toBe(text2a)
+    expect(project.findClosestElementByCodeName('t2a', 'TheAppBar')).toBe(appBar)
+    expect(project.findClosestElementByCodeName('t3a', 'Text2')).toBe(text2a)
+})

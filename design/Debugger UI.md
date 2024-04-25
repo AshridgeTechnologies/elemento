@@ -99,6 +99,7 @@ Decisions - further refinement
 - Debugger UI decides what expressions it wants evaluated, and translates to JS as necessary
 - Preview Controller is responsible for evaluating those expressions safely
 - Each expression should be evaluated individually and errors trapped
+- The debug expressions is sent and held as a map of strings, not a single string
 
 
 

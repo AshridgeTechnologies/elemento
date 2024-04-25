@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import renderer, {act, ReactTestRenderer} from 'react-test-renderer'
-import {StoreProvider, useGetObjectState, useObjectState, useGetObjectStates, useObjectStates} from '../../src/runtime/appData'
+import {StoreProvider, useGetObjectState, useGetStore} from '../../src/runtime/appData'
 import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
 import {wait} from '../testutil/testHelpers'
 import {range} from 'ramda'
@@ -67,14 +67,14 @@ const stateObj = (props: object) => new StateObject(props)
 test('get initial state using initialiser supplied', async () => {
     const state = stateObj({widgets: {color: 'red', length: 23}})
     await runInProvider(() => {
-        expect(useObjectState('TheApp.foo', state)).toBe(state)
+        expect(useGetStore().setObject('TheApp.foo', state)).toBe(state)
     })
 })
 
 test('get initial state immediately without initialiser', async () => {
     const state = stateObj({widgets: {color: 'red', length: 23}})
     await runInProvider(() => {
-        useObjectState('TheApp.foo', state)
+        useGetStore().setObject('TheApp.foo', state)
         expect(useGetObjectState('TheApp.foo')).toBe(state)
     })
 })
@@ -85,7 +85,7 @@ test('updates initial state object from initialiser supplied so it is available 
     const state = () => stateObj({color: 'red', length: length === 1 ? length++ : length})
     const parentTestFn = () => {
         ++renderCount
-        const fooState = useObjectState<StateObject>('TheApp.foo', state())
+        const fooState = useGetStore().setObject<StateObject>('TheApp.foo', state())
         if (renderCount === 1) {
             expect(fooState.props).toStrictEqual({color: 'red', length: 1})
         } else {
@@ -114,7 +114,7 @@ test('can get different number of state objects on each call', async () => {
     const parentTestFn = () => {
         ++renderCount
         const initialStates = Object.fromEntries( range(0, renderCount).map(i => [fooPath(i), state(i)]) )
-        const fooStates = useObjectStates(initialStates, 'TheApp.foo')
+        const fooStates = useGetStore().setObjects(initialStates, 'TheApp.foo')
 
         for (let i = 0; i < renderCount; i++) {
             expect((fooStates[fooPath(i)] as StateObject).props).toStrictEqual({color: 'red', length: i})
@@ -123,7 +123,8 @@ test('can get different number of state objects on each call', async () => {
 
     const childTestFn = () => {
         const elementPaths = range(0, renderCount).map(fooPath)
-        const fooStates = useGetObjectStates(elementPaths, 'TheApp.foo')
+        const store = useGetStore()
+        const fooStates = store.useObjects(elementPaths, 'TheApp.foo')
 
         expect((useGetObjectState('TheApp.foo.rc0') as StateObject).props).toStrictEqual({color: 'red', length: 0})
         for (let i = 0; i < renderCount; i++) {
@@ -142,19 +143,19 @@ test('keeps same state object if initialiser supplied has same properties', asyn
     const state = stateObj({color: 'red', length: 23, thing: anObj})
     const state2 = stateObj({color: 'red', length: 23, thing: anObj})
     await runInProvider(() => {
-        expect(useObjectState('TheApp.foo', state)).toBe(state)
-        expect(useObjectState('TheApp.foo', state2)).toBe(state)
+        expect(useGetStore().setObject('TheApp.foo', state)).toBe(state)
+        expect(useGetStore().setObject('TheApp.foo', state2)).toBe(state)
     })
 })
 
 test('initial state is empty object if no initial values supplied', async () => await runInProvider(() => {
-    expect(useObjectState<StateObject>('TheApp.page1.description', stateObj({})).props).toStrictEqual({})
+    expect(useGetStore().setObject<StateObject>('TheApp.page1.description', stateObj({})).props).toStrictEqual({})
 }))
 
 test('can get state with an element path and normalise first part to "app"', async () => {
     const state = stateObj({color: 'red', length: 23})
     await runInProvider(() => {
-        useObjectState('TheApp.page1.description', state)
+        useGetStore().setObject('TheApp.page1.description', state)
         expect(useGetObjectState('BigApp.page1.description')).toBe(state)
     })
 })
@@ -165,7 +166,7 @@ test('state object can update its own state immediately', async () => {
     let fooState: any
     await runInProvider(() => {
         renderCount++
-        fooState = useObjectState<StateObject>('TheApp.foo', state)
+        fooState = useGetStore().setObject<StateObject>('TheApp.foo', state)
         fooState.setColor('blue')
     })
     await wait(0)
@@ -179,7 +180,7 @@ test('state object can update its own state asynchronously', async () => {
     let fooState: any
     await runInProvider(() => {
         renderCount++
-        fooState = useObjectState('TheApp.foo', state)
+        fooState = useGetStore().setObject('TheApp.foo', state)
     })
     await wait(0)
 
@@ -210,7 +211,7 @@ test('state object can get latest to update its own state', async () => {
     let fooState: StateObject
     await runInProvider(() => {
         renderCount++
-        fooState = useObjectState('TheApp.foo', state)
+        fooState = useGetStore().setObject('TheApp.foo', state)
     })
     await wait(0)
 

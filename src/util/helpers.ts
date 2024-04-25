@@ -110,3 +110,11 @@ export const isoDateReviver = (key: string, value: any) => {
 export const withoutUndefined = (obj: object) => {
     return pickBy( val => val !== undefined, obj)
 }
+
+export const wordAtPosition = (text: string, position: number) => {
+    const previousWordPosition = text.slice(0, position + 1).search(/\w+\W*$/)
+    if (previousWordPosition < 0) return ''
+    const previousWord = text.slice(previousWordPosition).match(/\w+/)?.[0]
+    if (!previousWord || position > previousWordPosition + previousWord.length) return ''
+    return previousWord
+}

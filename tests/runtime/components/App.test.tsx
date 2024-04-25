@@ -5,7 +5,7 @@
 import React, {createElement} from 'react'
 import {componentJSON, mockReturn, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
-import {StoreProvider, useObjectState} from '../../../src/runtime/appData'
+import {StoreProvider, useGetStore} from '../../../src/runtime/appData'
 import * as Elemento from '../../../src/runtime/index'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import '@testing-library/jest-dom'
@@ -62,9 +62,10 @@ test('App element produces output containing page and additional components with
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        useObjectState('app1', new App.State({pages: {mainPage}, appContext}))
-        useObjectState('app1.coll1', new Collection.State({}))
-        useObjectState('app1.coll2', new Collection.State({}))
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {mainPage}, appContext}))
+        _store.setObject('app1.coll1', new Collection.State({}))
+        _store.setObject('app1.coll2', new Collection.State({}))
         return createElement(App, {path: 'app1', topChildren: appBar1}, collection1, collection2)
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
@@ -73,7 +74,8 @@ test('App element produces output containing page and additional components with
 
 test('App element shows notifications', async () => {
     const app = () => {
-        useObjectState('app1', new App.State({pages: {mainPage}, appContext}))
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {mainPage}, appContext}))
         return createElement(App, {path: 'app1'})
     }
     const {el} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
@@ -87,7 +89,8 @@ test('App element produces output containing not logged in page if it exists and
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        useObjectState('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
         return createElement(App, {path: 'app1', topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
@@ -100,7 +103,8 @@ test('App element produces output containing normal page if logged in', () => {
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        useObjectState('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, appContext}))
         return createElement(App, {path: 'app1', topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
@@ -127,7 +131,8 @@ test('App shows first page initially and other page when state changes and only 
 
     const OtherPage = () => createElement(Page, {path: 'app1.page2'}, text('Other'), 'Page 2')
     const app = () => {
-        useObjectState('app1', new App.State({pages: {MainPage, OtherPage}, appContext}))
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {MainPage, OtherPage}, appContext}))
         return createElement(App, {path: 'app1', startupAction: () => {
                 startupCount++
                 return () => {

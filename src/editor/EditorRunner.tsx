@@ -324,6 +324,11 @@ export default function EditorRunner() {
         toolUrls.forEach( url => showTool(toolImportFromUrl(url)))
     }
 
+    const sendSelectionToTools = ()=> document.addEventListener('selectionchange', ()=> {
+        const selectedText = document.getSelection()?.toString() ?? ''
+        return editorControllerRef.current?.setSelectedText(selectedText)
+    })
+
     useEffect(() => {
         window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
@@ -335,6 +340,7 @@ export default function EditorRunner() {
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
     useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current])
     useEffect(openInitialTools, [])
+    useEffect(sendSelectionToTools, [])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
     const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id

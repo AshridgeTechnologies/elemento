@@ -17,8 +17,9 @@ import {ElementId} from '../model/Types'
 import HotSendObservable from '../util/HotSendObservable'
 
 export default class EditorController {
-    private actionQueue = new ActionQueue()
-    private selectedItemIdObservable = new HotSendObservable()
+    private readonly actionQueue = new ActionQueue()
+    private readonly selectedItemIdObservable = new HotSendObservable()
+    private readonly selectedTextObservable = new HotSendObservable()
 
     constructor(private readonly editorElement: HTMLElement, private readonly gitHubUrl: string | null, private readonly projectHandler: ProjectHandler) {
     }
@@ -31,8 +32,17 @@ export default class EditorController {
         this.selectedItemIdObservable.send(id)
     }
 
+    setSelectedText(text: string) {
+        console.log('setSelectedText', text)
+        this.selectedTextObservable.send(text)
+    }
+
     SelectedItemId() {
         return this.selectedItemIdObservable
+    }
+
+    SelectedText() {
+        return this.selectedTextObservable
     }
 
     Project() {

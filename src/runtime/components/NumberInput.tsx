@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FocusEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
-import {PropVal, valueOfProps} from '../runtimeFunctions'
+import {valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
 import {useGetObjectState} from '../appData'
 import {NumberType} from '../types'

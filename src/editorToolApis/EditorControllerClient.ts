@@ -3,6 +3,7 @@ import {loadJSON} from '../model/loadJSON'
 
 export default class EditorControllerClient {
     public SelectedItemId = observeParent('Editor.SelectedItemId')
+    public SelectedText = observeParent('Editor.SelectedText')
     public Project = observeParent('Editor.Project', loadJSON)
     public SetOptions = callParent('Editor.SetOptions')
     public Show = callParent('Editor.Show')

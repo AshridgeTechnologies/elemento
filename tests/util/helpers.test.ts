@@ -1,4 +1,4 @@
-import {isNumeric, isoDateReviver, previewPathComponents} from '../../src/util/helpers'
+import {isNumeric, isoDateReviver, previewPathComponents, wordAtPosition} from '../../src/util/helpers'
 
 test('isNumeric gives correct result for all strings', () => {
      expect(isNumeric('a')).toBe(false)
@@ -36,4 +36,30 @@ test('isoDateReviver parses only valid ISO dates', () => {
     expect(isoDateReviver('x1', '32')).toBe('32')  // date-fns parseIso treats this as a date
     expect(isoDateReviver('x1', '2020-04-03T11:12:13')).toStrictEqual(new Date('2020-04-03T11:12:13'))
     expect(isoDateReviver('x1', '2020-13-03T11:12:13')).toStrictEqual('2020-13-03T11:12:13')
+})
+
+test('wordAtPosition finds word at given position or empty string', () => {
+    expect(wordAtPosition('xyz', 0)).toBe('xyz')
+    expect(wordAtPosition('xyz', 1)).toBe('xyz')
+    expect(wordAtPosition('xyz abc', 0)).toBe('xyz')
+    expect(wordAtPosition('xyz abc', 1)).toBe('xyz')
+    expect(wordAtPosition('xyz abc', 4)).toBe('abc')
+    expect(wordAtPosition('xyz abc', 5)).toBe('abc')
+    expect(wordAtPosition('xyz abc', 7)).toBe('abc')
+
+    expect(wordAtPosition('  xyz.abc', 0)).toBe('')
+    expect(wordAtPosition('  xyz.abc', 1)).toBe('')
+    expect(wordAtPosition('  xyz.abc', 2)).toBe('xyz')
+
+    expect(wordAtPosition('  xyz.abc  ', 0)).toBe('')
+    expect(wordAtPosition('  xyz.abc  ', 1)).toBe('')
+    expect(wordAtPosition('  xyz.abc  ', 2)).toBe('xyz')
+    expect(wordAtPosition('  xyz.abc  ', 4)).toBe('xyz')
+    expect(wordAtPosition('  xyz.abc  ', 5)).toBe('xyz')
+    expect(wordAtPosition('  xyz.abc  ', 6)).toBe('abc')
+    expect(wordAtPosition('  xyz.abc  ', 8)).toBe('abc')
+    expect(wordAtPosition('  xyz.abc  ', 9)).toBe('abc')
+    expect(wordAtPosition('  xyz.abc  ', 10)).toBe('')
+    expect(wordAtPosition('  xyz.abc  ', 11)).toBe('')
+    expect(wordAtPosition('  xyz.abc  ', 12)).toBe('')
 })

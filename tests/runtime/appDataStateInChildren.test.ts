@@ -4,9 +4,8 @@
 
 import {createElement} from 'react'
 import {testContainer} from '../testutil/rtlHelpers'
-import {useGetObjectState, useObjectState} from '../../src/runtime/index'
+import {useGetObjectState, useGetStore} from '../../src/runtime/index'
 import {StoreProvider} from '../../src/runtime/appData'
-import {equals} from 'ramda'
 import {BaseComponentState} from '../../src/runtime/components/ComponentState'
 
 let stateInParent: any = null
@@ -23,7 +22,7 @@ function Child(props: object) {
 }
 
 function Parent(props: object) {
-    stateInParent = useObjectState('app.parent', new Thing({a: 10, b: 'Bee'}))
+    stateInParent = useGetStore().setObject('app.parent', new Thing({a: 10, b: 'Bee'}))
     return createElement(Child, props)
 }
 
