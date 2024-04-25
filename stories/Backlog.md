@@ -4,6 +4,15 @@ Elemento Backlog
 
 Bugs
 ----
+
+- P1: Inspector kills app by trying to evaluate CurrentUrl().page in the page when have an element using that in a formula in the app bar selected
+- P1: Inspector kills app by trying to evaluate JavaScript function calculation
+- P1: Inspector eval (usually) fails if not displaying the page whose element is selected, as the required functions and elements are not in scope
+- P1: Runtime errors give no clue that they have even occurred, let alone where or what
+- P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
+- Uploading file does not copy to client files
+- Formula error in app bar kills the preview
+- Still occasional failures to build the latest version - one missing char
 - Preview cannot reload named pages - service worker gives 404
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
@@ -371,4 +380,5 @@ Bugs fixed
 - Writes and preview updates get out of order - latest change sometimes does not show in Preview
 - Previews are mixed up if open two projects in different tabs
 - Does not show preview on new project - sw gives 404 - until reload frame
+- $item functions have await inserted but not async before eg ForEach(newWords, Add(Words, $item));
 

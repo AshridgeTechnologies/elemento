@@ -91,5 +91,14 @@ Decision - initial approach
 - runPreview callback posts message back to the Debugger
 - Debugger updates the values displayed
 
+Decisions - further refinement
+------------------------------
+
+25 Apr 2024
+
+- Debugger UI decides what expressions it wants evaluated, and translates to JS as necessary
+- Preview Controller is responsible for evaluating those expressions safely
+- Each expression should be evaluated individually and errors trapped
+
 
 
