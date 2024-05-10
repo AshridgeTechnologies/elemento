@@ -16,7 +16,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
         className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
       >
         <div
-          className="css-y5np4p-MuiStack-root"
+          className="MuiStack-root css-jp2etx-MuiStack-root"
         >
           <div
             className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -34,7 +34,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
       className="MuiContainer-root css-169v6mb-MuiContainer-root"
     >
       <div
-        className="css-1b8j02i-MuiStack-root"
+        className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -68,7 +68,7 @@ exports[`App element produces output containing not logged in page if it exists 
         className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
       >
         <div
-          className="css-y5np4p-MuiStack-root"
+          className="MuiStack-root css-jp2etx-MuiStack-root"
         >
           <div
             className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -86,7 +86,7 @@ exports[`App element produces output containing not logged in page if it exists 
       className="MuiContainer-root css-169v6mb-MuiContainer-root"
     >
       <div
-        className="css-1b8j02i-MuiStack-root"
+        className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -119,7 +119,7 @@ exports[`App element produces output containing page 1`] = `
       className="MuiContainer-root css-169v6mb-MuiContainer-root"
     >
       <div
-        className="css-1b8j02i-MuiStack-root"
+        className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -154,7 +154,7 @@ exports[`App element produces output containing page and additional components w
         className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
       >
         <div
-          className="css-y5np4p-MuiStack-root"
+          className="MuiStack-root css-jp2etx-MuiStack-root"
         >
           <div
             className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -172,7 +172,7 @@ exports[`App element produces output containing page and additional components w
       className="MuiContainer-root css-169v6mb-MuiContainer-root"
     >
       <div
-        className="css-1b8j02i-MuiStack-root"
+        className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
         <p
@@ -227,7 +227,7 @@ exports[`App element produces output with max width 1`] = `
       className="MuiContainer-root css-8z7glm-MuiContainer-root"
     >
       <div
-        className="css-1b8j02i-MuiStack-root"
+        className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
         <p

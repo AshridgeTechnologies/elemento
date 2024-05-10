@@ -7,6 +7,7 @@ import {Box, Typography} from '@mui/material'
 import React from 'react'
 import {pick} from 'radash'
 import {equals} from 'ramda'
+import {startCase} from 'lodash'
 
 type PresetPositionStyles = {
     position: string | undefined,
@@ -90,7 +91,7 @@ const hasPreset = (properties: object, presetType: presetStyleName) => {
 
 const presetPosition = (stylesValue: StylingProps) => presetPositionNames.find((presetName) => hasPreset(stylesValue, presetName))
 
-export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChange, onNameSelected, errors = {}}: { elementId: ElementId, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
+export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, onChange, onNameSelected, errors = {}}: { elementId: ElementId, name: string, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
 
     const onChangeStyleProperty = (_: ElementId, stylePropName: string, stylePropValue: any) => {
         const styleUpdates = () => {
@@ -102,7 +103,7 @@ export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChan
         }
 
         const newStyles = withoutUndefined({...stylesValue, ...styleUpdates()})
-        onChange(elementId, 'styles', newStyles)
+        onChange(elementId, name, newStyles)
     }
 
     function propertyField(name: string, type: PropertyType = 'string') {
@@ -119,7 +120,7 @@ export function StylesPropertyEditor({elementId, value: stylesValue = {}, onChan
         '& > :not(style)': {m: 0.5, width: 'calc(100% - 10px)'},
     }}
     >
-        <Typography variant='h6'>Styles</Typography>
+        <Typography variant='h6'>{startCase(name)}</Typography>
         {fields}
     </Box>
 }

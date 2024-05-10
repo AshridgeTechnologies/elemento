@@ -13,7 +13,6 @@ import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
     convertAstToValidJavaScript,
-    DefinedFunction,
     indent,
     isAppLike,
     objectLiteral,
@@ -34,6 +33,7 @@ import {ASSET_DIR} from "../shared/constants";
 import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
+import ItemSet from '../model/ItemSet'
 
 export type DebugErrors = {[name: string]: string}
 
@@ -143,6 +143,10 @@ export default class Generator {
             : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
+        const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
+        const statefulContainerComponents = allContainerElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
+        const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
+        const isStatefulContainerComponentName = (name: string) => statefulContainerComponents.some(comp => comp.codeName === name)
         const componentDeclarations = componentIdentifiers.length ? `    const {${componentIdentifiers.map(runtimeElementTypeName).join(', ')}} = Elemento.components` : ''
         const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(component.id)
         const globalDeclarations = globalFunctionIdentifiers.length ? `    const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
@@ -169,7 +173,19 @@ export default class Generator {
             const functionName = `${el.codeName}_${def.name}`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
             const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
-                (isStatefulComponentName(ident) || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
+                (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
+                    || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
+            const dependencies = identifiers.filter(functionDependsOnIdentifier)
+            return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
+        }
+
+        const functionDeclaration = (el: FunctionDef) => {
+            const functionName = el.codeName
+            const functionCode = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs)
+            const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')
+            const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
+                (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
+                    || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
             const dependencies = identifiers.filter(functionDependsOnIdentifier)
             return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
         }
@@ -189,8 +205,6 @@ export default class Generator {
             return actions.join('\n')
         }
 
-        const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
-        const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
         const stateEntries = statefulComponents.map((el): StateEntry => {
             const entry = this.initialStateEntry(el, topLevelFunctions, componentIsListItem ? component.list : component)
             const identifiers = this.parser.stateIdentifiers(el.id)
@@ -201,8 +215,8 @@ export default class Generator {
         const inlineStateBlock = () => topoSort(stateEntries).map(([el, entry]) => {
             const name = el.codeName
             const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
-            if (entry instanceof DefinedFunction) {
-                return `    const ${name} = ${entry.functionDef}`
+            if (entry instanceof FunctionDef) {
+                return functionDeclaration(entry)
             } else {
                 const actionFunctions = stateActionHandlers(el).filter( notBlank ).join('\n')
                 const stateObjectDeclaration = `    const ${name} = _state.setObject(${pathExpr}, ${entry})`
@@ -229,7 +243,7 @@ export default class Generator {
             : `    const pathWith = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
-        const extraDeclarations = componentIsListItem ? '    const {$item} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item, $selected} = props' : ''
 
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)
@@ -421,17 +435,18 @@ ${generateChildren(form, indentLevel2, form)}
             case 'Menu':
             case 'AppBar':
             case 'Layout':
-            case 'Block': {
+            case 'Block':
+            case 'List': {
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())},
 ${generateChildren(element, indentLevel3, containingComponent)}
     )`
             }
 
-            case 'List': {
-                const list = element as List
-                const listItemCode = this.generateComponent(app, new ListItem(list), containingComponent)
-                topLevelFunctions.add(listItemCode)
-                const itemContentComponent = containingComponent!.codeName + '_' + list.codeName + 'Item'
+            case 'ItemSet': {
+                const itemSet = element as ItemSet
+                const itemCode = this.generateComponent(app, new ListItem(itemSet), containingComponent)
+                topLevelFunctions.add(itemCode)
+                const itemContentComponent = containingComponent!.codeName + '_' + itemSet.codeName + 'Item'
 
                 const reactProperties = {path, itemContentComponent, ...this.modelProperties(element)}
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(reactProperties)})`
@@ -479,7 +494,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
         }
     }
 
-    private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | DefinedFunction {
+    private initialStateEntry(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | FunctionDef {
 
         const propName = (def: PropertyDef) => {
             if (def.name === 'initialValue') return 'value'
@@ -509,8 +524,7 @@ ${generateChildren(element, indentLevel3, containingComponent)}
 
         if (element.kind === 'Function') {
             const functionDef = element as FunctionDef
-            const calculation = this.getExprWithoutParens(functionDef, 'calculation', 'multilineExpression')
-            return new DefinedFunction(`(${functionDef.inputs.join(', ')}) => ${calculation}`)
+            return functionDef
         }
 
         if (element.kind === 'ServerAppConnector') {
@@ -598,7 +612,10 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                     return `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }`
                 }
                 case 'multilineExpression': {
-                    return exprCode.trim() ? `{\n${indent(exprCode, '        ')}\n    }` : '{}'
+                    const argList = (argumentNames ?? []).join(', ')
+                    const body = exprCode
+                    const asyncPrefix = body.match(/\bawait\b/) ? 'async ' : ''
+                    return exprCode.trim() ? `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }` : '() => {}'
                 }
                 case 'reference': {
                     return `${element.codeName}_${propertyName}`

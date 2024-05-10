@@ -385,21 +385,14 @@ test('has fields for MenuItem', () => {
 })
 
 test('has fields for List', () => {
-    const element = new List('id1', 'List 1', {items: ex`[{a: 10}, {a: 20}]`, styles: {color: ex`funky`, width: '100%'},
+    const element = new List('id1', 'List 1', {styles: {color: ex`funky`, width: '100%'},
         selectable: true, selectAction: ex`Log(\$item.id)`}, [])
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(idField().textContent).toBe('id1')
     expect(nameInputValue()).toBe('List 1')
     expect(inputValue('Formula Name')).toBe('List1')
-    expect(inputValue('Items')).toBe('[{a: 10}, {a: 20}]')
-    expect(kindButton(0).textContent).toBe('fx=')
-    expect(kindButton(0).disabled).toBe(true)
     expect(inputValue('Color')).toBe('funky')
     expect(inputValue('Width')).toBe('100%')
-    expect(selectValue('Selectable')).toBe('true')
-    expect(inputValue('Select Action')).toBe('Log($item.id)')
-    expect(kindButton(3).textContent).toBe('fx=')
-    expect(kindButton(3).disabled).toBe(true)
 })
 
 test('has fields for Data', () => {

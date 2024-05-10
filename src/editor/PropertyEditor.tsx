@@ -70,7 +70,7 @@ export default function PropertyEditor({element, propertyDefs, onChange, onNameS
         const error = errors[name as keyof object]
         const key = `${element.id}.${name}.kind`
         if (type === 'styles') {
-            return <StylesPropertyEditor key={key} elementId={element.id} value={propertyValue as StylingProps} onChange={onChange} onNameSelected={onNameSelected} errors={error}/>
+            return <StylesPropertyEditor key={key} elementId={element.id} name={name} value={propertyValue as StylingProps} onChange={onChange} onNameSelected={onNameSelected} errors={error}/>
         }
         return <PropertyInput key={key} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} onNameSelected={onNameSelected} fixedOnly={fixedOnly}
                               readOnly={readOnly} error={error}/>

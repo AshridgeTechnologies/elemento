@@ -6,10 +6,10 @@ import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains,
+    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems,
+    Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems, ListContains, FlatList,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
@@ -365,6 +365,20 @@ describe('Contains', () => {
     test('gets values of objects', () => expect(Contains(valueObj('abcde'), valueObj('bcd'))).toBe(true))
 })
 
+describe('ListContains', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ListContains()).toThrow('Wrong number of arguments to ListContains. Expected list, item'))
+    test('finds a plain value', ()=> expect(ListContains([1, 2, 3], 2)).toBe(true))
+    test('finds a value compared with equals', ()=> expect(ListContains([{a: 10}, {b: 20}], {a: 10})).toBe(true))
+    test('does not find a plain value not in the list', ()=> expect(ListContains([1, 2, 3], 4)).toBe(false))
+    test('does not find a value in an empty list', ()=> expect(ListContains([1, 2, 3], 4)).toBe(false))
+    test('does not find a value in an null list', ()=> expect(ListContains([], 4)).toBe(false))
+    // @ts-ignore
+    test('does not find a value in an null list', ()=> expect(ListContains(null, 4)).toBe(false))
+    test('gets values of objects', () => expect(ListContains(valueObj([1, 2, 3]), valueObj(1))).toBe(true))
+})
+
+
 describe('Substitute', () => {
     test('returns empty string if original string is null', () => expect(Substitute(null, 'yy', 'xx')).toBe(''))
     test('returns same string if string to replace is empty', () => expect(Substitute('abcde', '', 'xx')).toBe('abcde'))
@@ -514,6 +528,14 @@ describe('List', () => {
     test('gets value of objects', ()=> expect(List(valueObj('c'), valueObj(2))).toStrictEqual(['c', 2]))
 })
 
+describe('FlatList', () => {
+    test('returns an empty list for no arguments', ()=> expect(FlatList()).toStrictEqual([]))
+    test('returns a list from plain arguments', ()=> expect(FlatList('a', 10, true, 'Bee', null)).toStrictEqual(['a', 10, true, 'Bee', null]))
+    test('returns a list from nested arguments', ()=> expect(FlatList(['a', 10], true, ['Bee', null])).toStrictEqual(['a', 10, true, 'Bee', null]))
+    test('returns a list from deep nested arguments', ()=> expect(FlatList(['a', 10], true, ['Bee', [20, [30, 40]]])).toStrictEqual(['a', 10, true, 'Bee', 20, 30, 40]))
+    test('gets value of objects', ()=> expect(FlatList(valueObj('c'), valueObj([2, 3]))).toStrictEqual(['c', 2, 3]))
+})
+
 describe('Range', () => {
     test('throws if less than two arguments', () => {
         // @ts-ignore
@@ -556,11 +578,21 @@ describe('Count', () => {
     test('errors for no arguments', () => expect(() => Count()).toThrow('Wrong number of arguments to Count. Expected list, optional expression.'))
     test('returns the count of selected items', () => expect(Count([3, -1, 4, 0], (it: any) => it > 0)).toBe(2))
     test('returns the count of all items if no condition', () => expect(Count([3, -1, 4, 0])).toBe(4))
-    test('Gets value of object for the list', ()=> expect(Count(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual(2))
-    test('Null list gives 0', ()=> expect(Count(null, (it: any) => it <= 0)).toStrictEqual(0))
+    test('Gets value of object for the list', ()=> expect(Count(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toBe(2))
+    test('Null list gives 0', ()=> expect(Count(null, (it: any) => it <= 0)).toBe(0))
     // @ts-ignore
-    test('Pending value gives 0', ()=> expect(Count(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))
+    test('Pending value gives 0', ()=> expect(Count(pendingValue, (it: any) => it <= 0)).toBe(0))
 })
+
+describe('Len', () => {
+    // @ts-ignore
+    test('errors for nor arguments', () => expect(() => Len()).toThrow('Wrong number of arguments to Len. Expected text.'))
+    test('returns the length of a string', () => expect(Len('abcd')).toBe(4))
+    test('Gets value of object for the list', ()=> expect(Len(valueObj('a'))).toBe(1))
+    // @ts-ignore
+    test('Null text gives 0', ()=> expect(Len(null)).toBe(0))
+    // @ts-ignore
+    test('Pending value gives 0', ()=> expect(Len(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))})
 
 describe('ForEach', () => {
     // @ts-ignore
@@ -594,6 +626,20 @@ describe('Last', () => {
     test('Pending value gives null', ()=> expect(Last(pendingValue, (it: any) => it <= 0)).toBe(null))
     test('Null list with condition gives null', ()=> expect(Last(null, (it: any) => it <= 0)).toBe(null))
     test('Null list without condition gives null', ()=> expect(Last(null)).toBe(null))
+})
+
+describe('ItemAt', () => {
+    const list = ['abc', 'def', 'ghj']
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ItemAt()).toThrow('Wrong number of arguments to ItemAt. Expected list, index.'))
+    // @ts-ignore
+    test('errors for one argument', () => expect(() => ItemAt(list)).toThrow('Wrong number of arguments to ItemAt. Expected list, index.'))
+    test('returns the item at the zero-based index', () => expect(ItemAt(list, 1)).toBe('def'))
+    test('returns null for a non-existent index', () => expect(ItemAt(list, 5)).toBe(null))
+    test('Gets value of object for the list', ()=> expect(ItemAt(valueObj(list), valueObj(2))).toBe('ghj'))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(ItemAt(pendingValue, 1)).toBe(null))
+    test('Null list gives null', ()=> expect(ItemAt(null, 0)).toBe(null))
 })
 
 describe('ItemAfter', () => {

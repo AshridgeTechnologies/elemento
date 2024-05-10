@@ -40,6 +40,7 @@ import Rule from '../../src/model/types/Rule';
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
+import ItemSet from '../../src/model/ItemSet'
 
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
@@ -993,9 +994,9 @@ test('sorts state entries into dependency order', () => {
         new Page('p1', 'Page 1', {}, [
             new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
             new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
-            new Data('id2', 'Widget Id', {initialValue: ex`WidgetList.selectedItem && WidgetList.selectedItem.id`}),
+            new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
-            new List('id4', 'Widget List', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})]),
+            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})]),
             ]
         ),
         new FileDataStore('fds1', 'Store1', {})
@@ -1003,10 +1004,10 @@ test('sorts state entries into dependency order', () => {
 
     const output = new Generator(app, project(app)).output()
 
-    expect(output.files[0].contents).toBe(`function Page1_WidgetListItem(props) {
+    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item} = props
+    const {$item, $selected} = props
     const {TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
 
@@ -1018,13 +1019,13 @@ test('sorts state entries into dependency order', () => {
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextInput, Data, Collection, ListElement} = Elemento.components
+    const {Page, TextInput, Data, Collection, ItemSet} = Elemento.components
     const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
     const Store1 = _state.useObject('app.Store1')
     const Widgets = _state.setObject(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
-    const WidgetList = _state.setObject(pathWith('WidgetList'), new ListElement.State({}))
-    const WidgetId = _state.setObject(pathWith('WidgetId'), new Data.State({value: WidgetList.selectedItem && WidgetList.selectedItem.id}))
+    const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
+    const WidgetId = _state.setObject(pathWith('WidgetId'), new Data.State({value: WidgetSet.selectedItem && WidgetSet.selectedItem.id}))
     const TheWidget = _state.setObject(pathWith('TheWidget'), new Data.State({value: WidgetId.value && Get(Widgets, WidgetId.value)}))
     const Description = _state.setObject(pathWith('Description'), new TextInput.State({value: TheWidget.Description}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
@@ -1034,7 +1035,65 @@ function Page1(props) {
         React.createElement(Data, {path: pathWith('TheWidget'), display: false}),
         React.createElement(Data, {path: pathWith('WidgetId'), display: false}),
         React.createElement(Collection, {path: pathWith('Widgets'), display: false}),
-        React.createElement(ListElement, {path: pathWith('WidgetList'), itemContentComponent: Page1_WidgetListItem, items: Widgets.Query({})}),
+        React.createElement(ItemSet, {path: pathWith('WidgetSet'), itemContentComponent: Page1_WidgetSetItem}),
+    )
+}
+`)
+    expect(output.errors).toStrictEqual({})
+
+})
+
+test('sorts state entries into dependency order when nested inside a layout element', () => {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
+            new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
+            new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
+            new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
+            new List('ls1', 'List 1', {}, [
+                new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})])
+            ])
+        ]),
+        new FileDataStore('fds1', 'Store1', {})
+    ])
+
+    const output = new Generator(app, project(app)).output()
+
+    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
+    const pathWith = name => props.path + '.' + name
+    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
+    const {$item, $selected} = props
+    const {TextElement} = Elemento.components
+    const _state = Elemento.useGetStore()
+
+    return React.createElement(React.Fragment, null,
+        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+    )
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextInput, Data, Collection, ListElement, ItemSet} = Elemento.components
+    const {Get} = Elemento.appFunctions
+    const _state = Elemento.useGetStore()
+    const Store1 = _state.useObject('app.Store1')
+    const Widgets = _state.setObject(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
+    const List1 = _state.setObject(pathWith('List1'), new ListElement.State({}))
+    const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
+    const WidgetId = _state.setObject(pathWith('WidgetId'), new Data.State({value: WidgetSet.selectedItem && WidgetSet.selectedItem.id}))
+    const TheWidget = _state.setObject(pathWith('TheWidget'), new Data.State({value: WidgetId.value && Get(Widgets, WidgetId.value)}))
+    const Description = _state.setObject(pathWith('Description'), new TextInput.State({value: TheWidget.Description}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description'}),
+        React.createElement(Data, {path: pathWith('TheWidget'), display: false}),
+        React.createElement(Data, {path: pathWith('WidgetId'), display: false}),
+        React.createElement(Collection, {path: pathWith('Widgets'), display: false}),
+        React.createElement(ListElement, {path: pathWith('List1')},
+            React.createElement(ItemSet, {path: pathWith('WidgetSet'), itemContentComponent: Page1_WidgetSetItem}),
+    ),
     )
 }
 `)
@@ -1147,12 +1206,12 @@ test('generates codeGenerationError for unknown names in elements under App used
     })
 })
 
-test('generates List element with separate child component and global functions and select action that depends on $item', ()=> {
+test('generates ItemSet element with separate child component and global functions and select action', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
             new Layout('la1', 'Layout 1', {}, [
-                new List('l1', 'List 1', {items: [{a: 10}, {a: 20}], styles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
@@ -1164,10 +1223,10 @@ test('generates List element with separate child component and global functions 
 
     const gen = new Generator(app, project(app))
 
-    expect(gen.output().files[0].contents).toBe(`function Page1_List1Item(props) {
+    expect(gen.output().files[0].contents).toBe(`function Page1_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item} = props
+    const {$item, $selected} = props
     const {TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
@@ -1188,31 +1247,93 @@ test('generates List element with separate child component and global functions 
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextInput, Layout, ListElement} = Elemento.components
+    const {Page, TextInput, Layout, ItemSet} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const TextInput1 = _state.setObject(pathWith('TextInput1'), new TextInput.State({}))
-    const List1_selectAction = React.useCallback(($item) => {
+    const ItemSet1_selectAction = React.useCallback(($item, $itemId) => {
         Log($item.id)
     }, [])
-    const List1 = _state.setObject(pathWith('List1'), new ListElement.State({selectAction: List1_selectAction}))
+    const ItemSet1 = _state.setObject(pathWith('ItemSet1'), new ItemSet.State({items: [{a: 10}, {a: 20}], selectAction: ItemSet1_selectAction}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page1_List1Item, items: [{a: 10}, {a: 20}], styles: {color: 'red', width: 200}}),
+            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item, itemStyles: {color: 'red', width: 200}}),
     ),
     )
 }
 `)
 })
 
-test('generates List element with no items expression if undefined', ()=> {
+test('generates ItemSet element inside List', ()=> {
+    const app = new App('app1', 'App 1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TextInput('id4', 'Text Input 1', {}),
+            new List('l1', 'List 1', {}, [
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
+                    new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
+                    new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
+                ])
+            ])
+            ]
+        ),
+    ])
+
+    const gen = new Generator(app, project(app))
+
+    expect(gen.output().files[0].contents).toBe(`function Page1_ItemSet1Item(props) {
+    const pathWith = name => props.path + '.' + name
+    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
+    const {$item, $selected} = props
+    const {TextElement, TextInput, Button} = Elemento.components
+    const {Left} = Elemento.globalFunctions
+    const {Update} = Elemento.appFunctions
+    const _state = Elemento.useGetStore()
+    const TextInput1 = _state.useObject(parentPathWith('TextInput1'))
+    const TextInput2 = _state.setObject(pathWith('TextInput2'), new TextInput.State({value: 'from ' + Left($item, 3)}))
+    const ButtonUpdate_action = React.useCallback(async () => {
+        await Update('Things', \$item.id, {done: true})
+    }, [\$item])
+
+    return React.createElement(React.Fragment, null,
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
+        React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
+        React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
+    )
+}
+
+
+function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextInput, ListElement, ItemSet} = Elemento.components
+    const {Log} = Elemento.globalFunctions
+    const _state = Elemento.useGetStore()
+    const TextInput1 = _state.setObject(pathWith('TextInput1'), new TextInput.State({}))
+    const List1 = _state.setObject(pathWith('List1'), new ListElement.State({}))
+    const ItemSet1_selectAction = React.useCallback(($item, $itemId) => {
+        Log($item.id)
+    }, [])
+    const ItemSet1 = _state.setObject(pathWith('ItemSet1'), new ItemSet.State({items: [{a: 10}, {a: 20}], selectAction: ItemSet1_selectAction}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {id: props.path},
+        React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
+        React.createElement(ListElement, {path: pathWith('List1')},
+            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item, itemStyles: {color: 'red', width: 200}}),
+    ),
+    )
+}
+`)
+})
+
+test('generates ItemSet element with no items expression if undefined', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
-            new List('l1', 'List 1', {items: undefined, selectable: false}, [
+            new ItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
@@ -1221,10 +1342,10 @@ test('generates List element with no items expression if undefined', ()=> {
 
     const gen = new Generator(app, project(app))
 
-    expect(gen.output().files[0].contents).toBe(`function Page2_List1Item(props) {
+    expect(gen.output().files[0].contents).toBe(`function Page2_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item} = props
+    const {$item, $selected} = props
     const {TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
 
@@ -1236,13 +1357,13 @@ test('generates List element with no items expression if undefined', ()=> {
 
 function Page2(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, ListElement} = Elemento.components
+    const {Page, ItemSet} = Elemento.components
     const _state = Elemento.useGetStore()
-    const List1 = _state.setObject(pathWith('List1'), new ListElement.State({}))
+    const ItemSet1 = _state.setObject(pathWith('ItemSet1'), new ItemSet.State({selectable: false}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
-        React.createElement(ListElement, {path: pathWith('List1'), itemContentComponent: Page2_List1Item, selectable: false}),
+        React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page2_ItemSet1Item}),
     )
 }
 `)
@@ -1618,11 +1739,11 @@ test('generates local user defined functions in a page', () => {
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('app.Widgets')
     const MinHeight = _state.setObject(pathWith('MinHeight'), new NumberInput.State({}))
-    const IsTallWidget = (widget) => {
+    const IsTallWidget = React.useCallback((widget) => {
         let heightAllowed = MinHeight
         let isShiny = widget.shiny
         return Or(widget.height > heightAllowed, isShiny)
-    }
+    }, [MinHeight])
     const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
@@ -1656,14 +1777,14 @@ return y
     const {Page} = Elemento.components
     const {Sum} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const WidgetHeight = (widget) => {
+    const WidgetHeight = React.useCallback((widget) => {
         let y = 10
         for (let i = 1; i < 10; i++) {
             y += Sum(widget, 10)
         }
         return y
-    }
-    const DoNothing = () => {}
+    }, [])
+    const DoNothing = React.useCallback(() => {}, [])
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
@@ -1698,7 +1819,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
     const pathWith = name => props.path + '.' + name
     const {Page} = Elemento.components
     const _state = Elemento.useGetStore()
-    const WidgetHeight = (words, factory, formula) => {
+    const WidgetHeight = React.useCallback((words, factory, formula) => {
         function generateClause(placeholder) {
             const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)
             
@@ -1706,7 +1827,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
             return factory.call(null, args)
         }
         return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
-    }
+    }, [])
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
@@ -1735,9 +1856,9 @@ test('generates local user defined functions in the app', () => {
     const {appContext} = props
     const _state = Elemento.useGetStore()
     const app = _state.setObject('app', new App.State({pages, appContext}))
-    const AppBarText = (greeting) => {
+    const AppBarText = React.useCallback((greeting) => {
         return greeting + 'our new app'
-    }
+    }, [])
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
             React.createElement(TextElement, {path: pathWith('Text0')}, AppBarText('Welcome to ')),
@@ -1753,28 +1874,26 @@ test('generates local user defined functions in a list item that use a page item
             new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
-            new List('id4', 'Widget List', {items: ex`Widgets.Query({})`}, [
+            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [
                 new Text('lt1', 'Desc', {content: 'Hi!'}),
                 new FunctionDef('f2', 'ExtraHeight', {calculation: ex`\$item.height - MinHeight`}),
             ]),
-
-            ]
-        ),
+        ]),
         new Collection('coll1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
     ])
 
     const output = new Generator(app, project(app)).output()
-    expect(output.files[0].contents).toBe(`function Page1_WidgetListItem(props) {
+    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item} = props
+    const {$item, $selected} = props
     const {TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const MinHeight = _state.useObject(parentPathWith('MinHeight'))
-    const ExtraHeight = () => {
+    const ExtraHeight = React.useCallback(() => {
         return \$item.height - MinHeight
-    }
+    }, [$item, MinHeight])
 
     return React.createElement(React.Fragment, null,
         React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
@@ -1784,22 +1903,22 @@ test('generates local user defined functions in a list item that use a page item
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, Data, NumberInput, ListElement} = Elemento.components
+    const {Page, Data, NumberInput, ItemSet} = Elemento.components
     const {Or, Select} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('app.Widgets')
     const MinHeight = _state.setObject(pathWith('MinHeight'), new NumberInput.State({}))
-    const IsTallWidget = (widget) => {
+    const IsTallWidget = React.useCallback((widget) => {
         return Or(widget.height > MinHeight, widget.shiny)
-    }
+    }, [MinHeight])
     const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
-    const WidgetList = _state.setObject(pathWith('WidgetList'), new ListElement.State({}))
+    const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {id: props.path},
         React.createElement(Data, {path: pathWith('TallWidgets'), display: false}),
         React.createElement(NumberInput, {path: pathWith('MinHeight'), label: 'Min Height'}),
-        React.createElement(ListElement, {path: pathWith('WidgetList'), itemContentComponent: Page1_WidgetListItem, items: Widgets.Query({})}),
+        React.createElement(ItemSet, {path: pathWith('WidgetSet'), itemContentComponent: Page1_WidgetSetItem}),
     )
 }
 `)
@@ -2187,6 +2306,21 @@ test('statement not expression generates error', ()=> {
     expect(output.errors).toStrictEqual({
         id1: {
             content: 'Error: Invalid expression'
+        }
+    })
+})
+
+test('let as identifier generates error with quotes removed', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`let + 10`}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({
+        id1: {
+            content: 'Error: The keyword let is reserved (Line 1 Position 0)'
         }
     })
 })

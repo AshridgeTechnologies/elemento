@@ -1,4 +1,4 @@
-import {equals, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {equals, flatten, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -234,6 +234,12 @@ export const globalFunctions = {
         return floor(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
+    Len(textVal: Value<string | null>) {
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to Len. Expected text.')
+        const text = valueOf(textVal) ?? ''
+        return text.length
+    },
+
     Record(...args: Value<any>[]) {
         const argVals = args.map(valueOf)
         const objectArgs = takeWhile(isObject, argVals)
@@ -259,6 +265,10 @@ export const globalFunctions = {
         return args.map( valueOf )
     },
 
+    FlatList(...args: Value<any>[]) {
+        return flatten(args.map( valueOf ))
+    },
+
     Range(startVal: Value<number | null>, endVal: Value<number | null>, stepVal: Value<number | null> = 1): number[] {
         if (startVal === undefined || endVal === undefined) {
             throw Error('Range() needs start and end, and optional step')
@@ -276,6 +286,13 @@ export const globalFunctions = {
             result.push(i)
         }
         return result
+    },
+
+    ListContains(listVal: Value<any[]>, searchVal: Value<any>) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments to ListContains. Expected list, item.')
+        const list = valueOf(listVal) ?? []
+        const search = valueOf(searchVal)
+        return list.some( it => equals(it, search))
     },
 
     Select(list: Value<any[]> | null, condition: (item: any) => boolean) {
@@ -307,6 +324,11 @@ export const globalFunctions = {
         if (listVal === undefined) throw new Error('Wrong number of arguments to Last. Expected list, optional expression.')
         const list = valueOf(listVal) ?? []
         return last(list.filter(condition)) ?? null
+    },
+
+    ItemAt(listVal: Value<any[]> | null, index: Value<number>) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments to ItemAt. Expected list, index.')
+        return valueOf(listVal)?.[valueOf(index)] ?? null
     },
 
     ItemAfter(listVal: Value<any[]> | null, item: any) {

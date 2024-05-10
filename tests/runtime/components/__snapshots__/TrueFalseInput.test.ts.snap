@@ -9,7 +9,7 @@ exports[`TrueFalseInput element produces output with default values where proper
     htmlFor="app.page1.height"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-colorPrimary css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
       onBlur={[Function]}
       onContextMenu={[Function]}
       onDragLeave={[Function]}
@@ -32,6 +32,7 @@ exports[`TrueFalseInput element produces output with default values where proper
         id="app.page1.height"
         onChange={[Function]}
         readOnly={false}
+        required={false}
         type="checkbox"
       />
       <svg
@@ -68,7 +69,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
     htmlFor="app.page1.width"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary css-6nizlf-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-6nizlf-MuiButtonBase-root-MuiCheckbox-root"
       endAdornment={null}
       onBlur={[Function]}
       onContextMenu={[Function]}
@@ -92,6 +93,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
         id="app.page1.width"
         onChange={[Function]}
         readOnly={false}
+        required={false}
         type="checkbox"
       />
       <svg

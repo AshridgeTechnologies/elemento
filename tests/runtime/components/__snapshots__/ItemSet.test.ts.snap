@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ItemSet produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `null`;
+
+exports[`ItemSet produces output containing ReactElement children 1`] = `
+[
+  <div
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      where are you?
+      selected
+      false
+    </p>
+  </div>,
+  <div
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id2"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id2.Text99"
+    >
+      over here!
+      selected
+      false
+    </p>
+  </div>,
+]
+`;
+
+exports[`ItemSet produces output with indexes if items have no ids 1`] = `
+[
+  <div
+    className="MuiBox-root css-xi1y7x"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      selected
+      false
+    </p>
+  </div>,
+  <div
+    className="MuiBox-root css-xi1y7x"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      selected
+      false
+    </p>
+  </div>,
+]
+`;
+
+exports[`ItemSet shows only first selectedItem as selected if no ids when given zero as index 1`] = `
+[
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      selected
+      true
+    </p>
+  </div>,
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      selected
+      false
+    </p>
+  </div>,
+]
+`;
+
+exports[`ItemSet shows single selectedItem as selected 1`] = `
+[
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      where are you?
+      selected
+      false
+    </p>
+  </div>,
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#id2"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id2.Text99"
+    >
+      over here!
+      selected
+      true
+    </p>
+  </div>,
+]
+`;
+
+exports[`ItemSet shows single selectedItem as selected if no ids 1`] = `
+[
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      selected
+      false
+    </p>
+  </div>,
+  <div
+    className="MuiBox-root css-0"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+  >
+    <p
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      selected
+      true
+    </p>
+  </div>,
+]
+`;

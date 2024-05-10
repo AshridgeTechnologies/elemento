@@ -9,6 +9,8 @@ import {BaseApp} from '../model/BaseApp'
 import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
+import FunctionDef from '../model/FunctionDef'
+import ItemSet from '../model/ItemSet'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -27,12 +29,7 @@ export function objectLiteral(obj: object) {
     return `{${objectLiteralEntries(obj)}}`
 }
 
-export type StateEntry = [el: Element, code: string | DefinedFunction, dependencies: string[]]
-
-export class DefinedFunction {
-    constructor(public functionDef: string) {
-    }
-}
+export type StateEntry = [el: Element, code: string | FunctionDef, dependencies: string[]]
 
 export const topoSort = (entries: StateEntry[]): StateEntry[] => {
     const sorter = new Topo.Sorter<StateEntry>()
@@ -68,7 +65,7 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
         const childElements = component.list.elements || []
         return flatten(childElements.map(el => [el, allElements(el)]))
     }
-    if (component instanceof List) {
+    if (component instanceof ItemSet) {
         return []
     }
 
@@ -96,8 +93,9 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
     function addReturnStatement(ast: any) {
         const bodyStatements = ast.program.body as any[]
         const lastStatement = last(bodyStatements)
+        const lastExpression = lastStatement.expression ?? null
         const b = types.builders
-        ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastStatement.expression)
+        ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastExpression)
     }
 
     function containsAwait(ast: any): boolean {

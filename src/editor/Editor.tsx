@@ -84,6 +84,14 @@ export default function Editor({
 }
 
 export const editorMenuPositionProps = {
-    root: {sx: {position: 'absolute'}},
-    backdrop: {sx: {position: 'absolute'}},
+    root: {
+        sx: {position: 'absolute'},
+        slotProps: {
+            backdrop: {
+                sx: {
+                    position: 'absolute',
+                    backgroundColor: 'transparent'
+                }}
+        }
+    }
 }

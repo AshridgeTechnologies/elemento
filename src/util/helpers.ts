@@ -23,6 +23,7 @@ export function elementId(elementType: ElementType, idSeq: number) {
 }
 
 export const toArray = (value: any) => Array.isArray(value) ? value : [value]
+export const unique = (array: any[]) => [...new Set(array)]
 
 export const noSpaces = (s: string) => s.replace(/ /g, '')
 export const withDots = (...strings: string[]) => strings.join('.')

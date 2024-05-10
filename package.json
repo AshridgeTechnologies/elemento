@@ -35,7 +35,7 @@
     "@hapi/topo": "^6.0.0",
     "@isomorphic-git/lightning-fs": "^4.6.0",
     "@mui/icons-material": "^5.14.9",
-    "@mui/material": "5.11.0",
+    "@mui/material": "5.15.16",
     "@mui/x-date-pickers": "^6.10.0",
     "@mui/x-tree-view": "^6.0.0-alpha.3",
     "@testing-library/react": "^14.0.0",

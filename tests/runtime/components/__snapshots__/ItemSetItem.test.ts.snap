@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ItemSetItem produces output containing ReactElement children 1`] = `
+<div
+  className="MuiBox-root css-1mgrusk"
+  id="page1.para1"
+  onClick={[Function]}
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  >
+    where are you?
+  </p>
+</div>
+`;

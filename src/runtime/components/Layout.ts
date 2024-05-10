@@ -14,7 +14,7 @@ export default function Layout({children, path,  ...props}: Properties) {
         overflow: horizontal ? 'visible' : 'scroll',
         maxHeight: '100%',
         boxSizing: 'border-box',
-        alignItems: horizontal ? 'baseline' : 'flex-start',
+        alignItems: 'flex-start',
         padding: horizontal ? 0 : 1,
         ...sxProps(styles, show),
     } as SxProps<{}>
@@ -22,6 +22,7 @@ export default function Layout({children, path,  ...props}: Properties) {
         id: path,
         direction,
         flexWrap,
+        useFlexGap: true,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         spacing: 2,

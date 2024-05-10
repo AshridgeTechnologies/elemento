@@ -1,30 +1,27 @@
-import React, {SyntheticEvent, useCallback, useEffect, useMemo, useRef} from 'react'
-import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
+import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import ListItem from './ListItem'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import lodash from 'lodash'; const {debounce} = lodash;
-import {equals, isNil} from 'ramda'
+import lodash from 'lodash';
 import {sxProps} from './ComponentHelpers'
-import {isNumeric} from '../../util/helpers'
+
+const {debounce} = lodash;
 
 type Properties = Readonly<{
     path: string,
-    items?: any[],
-    itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
-    selectable?: boolean,
     show?: PropVal<boolean>,
-    styles?: StylesPropVals
+    styles?: StylesPropVals,
+    children: ReactNode
 }>
 
-type StateProperties = {selectedItem?: any, scrollTop?: number, selectAction?: ($item: any) => void}
+type StateProperties = {scrollTop?: number}
 
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0}
 
-const ListElement = React.memo( function ListElement({path, itemContentComponent, ...props}: Properties) {
+const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
     const state = useGetObjectState<ListElementState>(path)
-    const {scrollTop, selectAction} = state
+    const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)
         state._setScrollTop(scrollTop)
@@ -36,44 +33,7 @@ const ListElement = React.memo( function ListElement({path, itemContentComponent
     const listRef = useRef<HTMLUListElement>(null)
     useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM
 
-    const {selectedItem = undefined} = state
-    const {items = [], show, styles = {}, selectable = true} = valueOfProps(props)
-    useEffect(() => {
-        if (!isNil(selectedItem) && selectable && items) {
-            const currentSelectedItem = items.find((it:any, index: number) => it === selectedItem
-                || (it.id !== undefined && (it.id === selectedItem || it.id === (selectedItem as any)?.id))
-                || index === selectedItem
-            )
-            if (!equals(selectedItem, currentSelectedItem)) {
-                state._setSelectedItem(currentSelectedItem)
-            }
-        }
-    }, [items])
-
-    const onClickFn = useCallback((event:SyntheticEvent) => {
-        const targetId = (event.target as HTMLElement).id
-        const itemId = lastItemIdOfPath(targetId)
-
-        const selectedItem = items.find((it:any) => it.id === itemId) ?? (isNumeric(itemId) && items[Number(itemId)])
-        if (selectable) {
-            state._setSelectedItem(selectedItem)
-        }
-        selectAction?.(selectedItem)
-    }, [items])
-    const onClick = selectable || selectAction ? onClickFn : null
-    const isSelected = (item: any) => {
-        return !isNil(selectedItem) && (
-            item === selectedItem || (item.id !== undefined && (item.id === selectedItem || item.id === (selectedItem as any)?.id))
-        )
-    }
-    const children = asArray(items).map((item, index) => {
-            const itemId = item.id ?? index
-            const itemPath = indexedPath(path, itemId)
-            const selected = isSelected(item)
-            return React.createElement(ListItem, {path: itemPath, selected, onClick, item, itemContentComponent, key: itemId})
-        }
-    )
-
+    const {show, styles = {}} = valueOfProps(props)
     const sx = {...fixedSx, ...sxProps(styles, show)}
     return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
@@ -87,29 +47,8 @@ export class ListElementState extends BaseComponentState<StateProperties>
         return this.state.scrollTop ?? 0
     }
 
-    get selectAction() {
-        return this.props.selectAction
-    }
-
     _setScrollTop(scrollTop: number) {
         this.latest().updateState({scrollTop})
-    }
-
-    get selectedItem() {
-        return (this.state.selectedItem !== undefined ? this.state.selectedItem : this.props.selectedItem) ?? null
-    }
-
-    _setSelectedItem(selectedItem: any) {
-        this.latest().updateState({selectedItem})
-    }
-
-    Reset() {
-        this._setSelectedItem(undefined)
-    }
-
-    Set(selectedItem: any) {
-        this._setSelectedItem(selectedItem)
-        this.selectAction?.(selectedItem)
     }
 }
 

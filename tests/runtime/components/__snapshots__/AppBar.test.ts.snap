@@ -9,7 +9,7 @@ exports[`AppBar element produces output with children 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="css-y5np4p-MuiStack-root"
+      className="MuiStack-root css-jp2etx-MuiStack-root"
     >
       <p
         className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
@@ -37,7 +37,7 @@ exports[`AppBar element produces output with children and title 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="css-y5np4p-MuiStack-root"
+      className="MuiStack-root css-jp2etx-MuiStack-root"
     >
       <div
         className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -70,7 +70,7 @@ exports[`AppBar element produces output with title 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="css-y5np4p-MuiStack-root"
+      className="MuiStack-root css-jp2etx-MuiStack-root"
     >
       <div
         className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"

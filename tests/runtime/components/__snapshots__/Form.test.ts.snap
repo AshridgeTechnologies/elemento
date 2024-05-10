@@ -11,13 +11,13 @@ exports[`Form element produces output containing children 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-1q4ho6v-MuiStack-root"
+    className="MuiStack-root css-121a6wt-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
         htmlFor="app.page1.form1.Description"
         id="app.page1.form1.Description-label"
@@ -62,7 +62,7 @@ exports[`Form element produces output containing children 1`] = `
       className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
         htmlFor="app.page1.form1.BoxSize"
         id="app.page1.form1.BoxSize-label"
@@ -124,13 +124,13 @@ exports[`Form element produces output containing nested form 1`] = `
     Test Form 1
   </h6>
   <div
-    className="css-1q4ho6v-MuiStack-root"
+    className="MuiStack-root css-121a6wt-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
         htmlFor="app.page1.formNested.Description"
         id="app.page1.formNested.Description-label"
@@ -175,7 +175,7 @@ exports[`Form element produces output containing nested form 1`] = `
       className="MuiFormControl-root MuiTextField-root css-mtecwf-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink={true}
         htmlFor="app.page1.formNested.BoxSize"
         id="app.page1.formNested.BoxSize-label"
@@ -224,13 +224,13 @@ exports[`Form element produces output containing nested form 1`] = `
         className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
       />
       <div
-        className="css-1q4ho6v-MuiStack-root"
+        className="MuiStack-root css-121a6wt-MuiStack-root"
       >
         <div
           className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink={true}
             htmlFor="app.page1.formNested.Extra.Description"
             id="app.page1.formNested.Extra.Description-label"
@@ -292,7 +292,7 @@ exports[`Form element produces output with no children 1`] = `
     className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
   />
   <div
-    className="css-1q4ho6v-MuiStack-root"
+    className="MuiStack-root css-121a6wt-MuiStack-root"
   />
 </div>
 `;
@@ -306,7 +306,7 @@ exports[`Form element produces output with one child 1`] = `
     className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
   />
   <div
-    className="css-1q4ho6v-MuiStack-root"
+    className="MuiStack-root css-121a6wt-MuiStack-root"
   >
     <div
       className="MuiFormControl-root MuiTextField-root css-18k7hhq-MuiFormControl-root-MuiTextField-root"

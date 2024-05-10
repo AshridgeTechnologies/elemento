@@ -121,24 +121,26 @@ export function valueOf<T>(x: Value<T>): T {
     return isObject(x) ? x.valueOf() : x
 }
 
+export function valueOfOneLevel<T>(x: Value<T>): T {
+    if (x instanceof Date) return x as T
+    if (x instanceof BigNumber) return x as T
+    if (isPlainObject(x)) return x as T
+    return isObject(x) ? x.valueOf() : x
+}
+
 export const valuesOf = (...values: Value<any>[]): any[] => values.map(valueOf)
 export const valueOfProps = (props: object): any => map(valueOf, props)
 
 export function asArray(value: any[] | object | any) {
-    const val = valueOf(value)
-    if (isPlainObject(val)) {
-        return Object.values(val)
+    if (isArray(value)) {
+        return value
     }
 
-    if (isArray(val)) {
-        return val
-    }
-
-    if (val === null || val === undefined) {
+    if (value === null || value === undefined) {
         return []
     }
 
-    return [val]
+    return [value]
 }
 
 export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''

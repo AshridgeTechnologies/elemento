@@ -51,7 +51,7 @@ test('SelectInput element produces output with properties supplied as state obje
     }))
     container = localContainer
     expect(container.querySelector('label').innerHTML).toBe('Item Number')
-    fireEvent.mouseDown(getByRole('button'))
+    fireEvent.mouseDown(getByRole('combobox'))
     const options = within(getByRole('listbox')).queryAllByRole('option').map( el => el.textContent)
     expect(options.slice(1)).toStrictEqual(['Green', 'Red'])
 })
@@ -80,7 +80,7 @@ test('SelectInput stores updated values in the app store section for its path', 
     let getByRole: any
     await actWait( () =>
         ({getByRole, container} = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))))
-    await actWait( () => fireEvent.mouseDown(getByRole('button')))
+    await actWait( () => fireEvent.mouseDown(getByRole('combobox')))
     await actWait( () => fireEvent.click(within(getByRole('listbox')).getByText('Blue')))
 
     expect(stateAt('app.page1.sprocket').value).toBe('Blue')
@@ -90,7 +90,7 @@ test('SelectInput stores null value in the app store when cleared', async () => 
     let getByRole: any
     await actWait( () =>
         ({getByRole, container} = render(selectInput('app.page1.sprocket', {value: 'Pink'}, {values: ['Green', 'Blue', 'Pink']}))))
-    await actWait( () => fireEvent.mouseDown(getByRole('button')))
+    await actWait( () => fireEvent.mouseDown(getByRole('combobox')))
     await actWait( () => fireEvent.click(within(getByRole('listbox')).getByText('None')))
 
     expect(stateAt('app.page1.sprocket').dataValue).toBe(null)

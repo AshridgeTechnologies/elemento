@@ -1,9 +1,10 @@
 import List from '../model/List'
 import Element from '../model/Element'
 import {ElementId, ElementType} from '../model/Types'
+import ItemSet from '../model/ItemSet'
 
 export class ListItem {
-    constructor(public list: List) {
+    constructor(public list: List | ItemSet) {
     }
 
     kind = 'ListItem'

@@ -14,6 +14,7 @@ import UserLogon from './UserLogon'
 import Menu from './Menu'
 import MenuItem from './MenuItem'
 import List from './List'
+import ItemSet from './ItemSet'
 import Data from './Data'
 import FileDataStore from './FileDataStore'
 import BrowserDataStore from './BrowserDataStore'
@@ -88,6 +89,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Menu: Menu,
         MenuItem: MenuItem,
         List: List,
+        ItemSet: ItemSet,
         Data: Data,
         Calculation: Calculation,
         Timer: Timer,

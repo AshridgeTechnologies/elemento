@@ -64,6 +64,7 @@ export type ElementType =
     'Menu' |
     'MenuItem' |
     'List' |
+    'ItemSet' |
     'Data' |
     'Calculation' |
     'FileDataStore' |

@@ -3,90 +3,37 @@
  */
 
 import {createElement, Fragment} from 'react'
-import {ListElement, TextElement} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
-import {actWait, testContainer} from '../../testutil/rtlHelpers'
-import userEvent from '@testing-library/user-event'
+import {ItemSet, ListElement, TextElement} from '../../../src/runtime/components/index'
+import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import '@testing-library/jest-dom'
 import {ListElementState} from '../../../src/runtime/components/ListElement'
-import {highlightClassName, highlightElement} from '../../../src/runtime/runtimeFunctions'
-import renderer from 'react-test-renderer'
+import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 
-function ListItem1(props: {path: string, $item: {text: string}}) {
-    return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text) )
+function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean}) {
+    return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text, 'selected', props.$selected.toString()) )
 }
 
-const listData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
-const listDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
+const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
 
 const [listElement, appStoreHook] = wrappedTestElement(ListElement, ListElementState)
+const [itemSet, appStoreHookItemSet] = wrappedTestElement(ItemSet, ItemSetState)
 
-const stateAt = (path: string) => appStoreHook.stateAt(path)
-
-test('ListElement produces output containing ReactElement children', () => {
-    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, styles: {color: 'red'}, width: 200}))()
+test('ListElement produces output containing fixed ReactElement children ', () => {
+    const item1 = createElement(TextElement, {path: `app.page1.list1.Text99`}, 'Text 99')
+    const item2 = createElement(TextElement, {path: `app.page1.list1.Text100`}, 'Text 100')
+    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, [item1, item2]))()
 })
 
-test('ListElement produces output with indexes if items have no ids', () => {
-    snapshot(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listDataNoIds, styles: {color: 'red'}, width: 200}))()
+test('ListElement produces output containing an item set', () => {
+    const itemSet1 = itemSet('app.page1.itemSet1', {}, {itemContentComponent: ItemSetItem1, items: itemSetData, itemStyles: {color: 'blue', width: 150}})
+    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, itemSet1))()
 })
 
-test('ListElement shows selectedItem as selected', async () => {
-    snapshot(listElement('app.page1.list1', {selectedItem: listData[1]}, {itemContentComponent: ListItem1, items: listData}))()
-})
-
-test('ListElement shows only selectedItem as selected if no ids', () => {
-    snapshot(listElement('app.page1.list1', {selectedItem: listDataNoIds[1]}, {itemContentComponent: ListItem1, items: listDataNoIds}))()
-})
-
-test('ListElement shows only first selectedItem as selected if no ids when given zero as index', async () => {
-    let el: any
-    await actWait(async () => {
-        el = renderer.create(listElement('app.page1.list1', {selectedItem: 0}, {
-            itemContentComponent: ListItem1,
-            items: listDataNoIds
-        }))
-    })
-
-    expect(el.toJSON()).toMatchSnapshot()
-})
-
-test('ListElement produces empty output if items is null but there is a selected item, as may happen when refreshing data', () => {
-    snapshot(listElement('app.page1.list1', {selectedItem: listData[1]}, {itemContentComponent: ListItem1, items: null}))()
-})
-
-test('ListElement updates its selectedItem in the app state', async () => {
-    const {el, user}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
-    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    await user.click(listItem0El)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
-})
-
-test('ListElement updates its selectedItem using index when items have no id', async () => {
-    const {el, user}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listDataNoIds}))
-    const listItem1El = el`[id="app.page1.list1.#1.Text99"]`
-    await user.click(listItem1El)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(listDataNoIds[1])
-})
-
-test('ListElement updates the selectedItem when it changes', async () => {
-    const {el, user, renderThe}  = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
-    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    await user.click(listItem0El)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(listData[0])
-
-    const updatedListData = [{id: 'id1', text: 'new text'}, listData[1]]
-    renderThe(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: updatedListData}))
-    await wait(20)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(updatedListData[0])
-})
-
-test('ListElement does not update its selectedItem if not selectable', async () => {
-    let container = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData, selectable: false}), 'container2')
-    const listItem0El = container.querySelector('[id="app.page1.list1.#id1.Text99"]')
-    const user = userEvent.setup()
-    await user.click(listItem0El)
-    expect(stateAt('app.page1.list1').selectedItem).toBe(null)
+test('ListElement produces output containing an item set and fixed children', () => {
+    const itemSet1 = itemSet('app.page1.itemSet1', {}, {itemContentComponent: ItemSetItem1, items: itemSetData, itemStyles: {color: 'blue', width: 150}})
+    const item1 = createElement(TextElement, {path: `app.page1.list1.Text99`}, 'Text 99')
+    const item2 = createElement(TextElement, {path: `app.page1.list1.Text100`}, 'Text 100')
+    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, [item1, itemSet1, item2]))()
 })
 
 test('ListElement updates its scrollTop in the app state', async () => {
@@ -98,71 +45,13 @@ test('ListElement updates its scrollTop in the app state', async () => {
     // expect(stateAt('app.page1.list1').scrollTop).toBe(99)
 })
 
-test('selectAction is called with selected item', async () => {
-    const selectAction = jest.fn()
-    const {el, user} = testContainer(listElement('app.page1.list1', {selectAction}, {itemContentComponent: ListItem1, items: listData, }), 'container3')
-    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    await user.click(listItem0El)
-    expect(selectAction).toHaveBeenCalledWith(listData[0])
-})
-
-test('selectAction is called with selected item even if not selectable', async () => {
-    const selectAction = jest.fn()
-    const {el, user} = testContainer(listElement('app.page1.list1', {selectAction}, {itemContentComponent: ListItem1, items: listData,
-        selectable: false}), 'container4')
-    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    await user.click(listItem0El)
-    expect(selectAction).toHaveBeenCalledWith(listData[0])
-    expect(stateAt('app.page1.list1').selectedItem).toBe(null)
-})
-
-test('Can highlight all matching elements in a list', async () => {
-    const {el} = testContainer(listElement('app.page1.list1', {}, {itemContentComponent: ListItem1, items: listData}))
-    highlightElement('app.page1.list1.Text99')
-
-    const listItem0El = el`[id="app.page1.list1.#id1.Text99"]`
-    const listItem1El = el`[id="app.page1.list1.#id2.Text99"]`
-    expect(listItem0El).toHaveClass(highlightClassName)
-    expect(listItem1El).toHaveClass(highlightClassName)
-})
-
 test('State class has correct properties', () => {
-    const item1 = {a: 1}, item2 = {a: 2}
-    const selectAction = () => {}
-    const state = new ListElementState({selectedItem: item1, selectAction})
+    const item2 = {a: 2}
+    const state = new ListElementState({})
     const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
-    expect(state.selectedItem).toBe(item1)
-    expect(state.selectAction).toBe(selectAction)
-    const updatedState = state._withStateForTest({selectedItem: item2, scrollTop: 222})
-    expect(updatedState.selectedItem).toBe(item2)
+    const updatedState = state._withStateForTest({scrollTop: 222})
     expect(updatedState.scrollTop).toBe(222)
 
-    state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({selectedItem: undefined}))
-
-    state.Set(item2)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({selectedItem: item2}))
-
     state._setScrollTop(333)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({selectedItem: item2, scrollTop: 333}))
-})
-
-test('State class has new selected item after Set', () => {
-    const item1 = {a: 1}, item2 = {a: 2}
-    const state = new ListElementState({selectedItem: item1})
-    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
-    expect(state.selectedItem).toBe(item1)
-
-    state.Set(item2)
-    expect(state.latest().selectedItem).toBe(item2)
-})
-
-test('State class does select action with new selected item', () => {
-    const item1 = {a: 1}, item2 = {a: 2}
-    const selectAction = jest.fn()
-    const state = new ListElementState({selectedItem: item1, selectAction})
-    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
-
-    state.Set(item2)
-    expect(selectAction).toHaveBeenCalledWith(item2)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({scrollTop: 333}))
 })

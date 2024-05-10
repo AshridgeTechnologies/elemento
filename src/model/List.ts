@@ -13,30 +13,17 @@ type Properties = Partial<Readonly<{
 export default class List extends BaseElement<Properties> implements Element {
 
     readonly kind = 'List'
-    get iconClass() { return 'view_list' }
+    get iconClass() { return 'list' }
     type(): ComponentType { return 'statefulUI' }
+    isLayoutOnly() { return true }
 
-    get items() { return this.properties.items }
-    get selectedItem() { return this.properties.selectedItem }
-    get selectable() { return this.properties.selectable }
-    get selectAction() { return this.properties.selectAction }
-    get styles() { return this.properties.styles }
     get show() { return this.properties.show }
+    get styles() { return this.properties.styles }
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('items', 'expr'),
-            propDef('selectedItem', 'expr', {state: true}),
-            propDef('selectable', 'boolean'),
-            propDef('selectAction', eventAction('$item'), {state: true}),
             ...visualPropertyDefs(),
         ]
-    }
-
-    get stateProperties(): string[] {
-        return super.stateProperties.concat([
-            'selectedItem'
-        ])
     }
 
     canContain(elementType: ElementType) {

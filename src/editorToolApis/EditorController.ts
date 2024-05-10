@@ -33,7 +33,6 @@ export default class EditorController {
     }
 
     setSelectedText(text: string) {
-        console.log('setSelectedText', text)
         this.selectedTextObservable.send(text)
     }
 

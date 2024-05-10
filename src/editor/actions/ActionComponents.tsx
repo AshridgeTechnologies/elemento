@@ -43,7 +43,17 @@ export function DialogTextField(props: TextFieldProps) {
     />
 }
 
-const dialogSlotProps = mergeDeepRight(editorMenuPositionProps, {backdrop: {invisible: true}})
+const dialogSlotProps = {
+    root: {
+        sx: {position: 'absolute'},
+    },
+    backdrop: {
+        sx: {
+            position: 'absolute',
+            backgroundColor: 'rgba(0, 0, 0, 0.25)'
+        }}
+
+}
 
 export function EditorActionDialog({title, content, fields, action, onCancel}:
                                  { title: string, content: React.ReactNode, fields: React.ReactNode, action: React.ReactNode, onCancel: VoidFunction }) {

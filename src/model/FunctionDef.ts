@@ -39,7 +39,7 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
             propDef('input4', 'string', {fixedOnly: true}),
             propDef('input5', 'string', {fixedOnly: true}),
             propDef('action', 'boolean', {fixedOnly: true}),
-            propDef('calculation', 'expr', {state: true, multilineExpr: true}),
+            propDef('calculation', 'expr', {multilineExpr: true}),
             propDef('private', 'boolean', {fixedOnly: true}),
             propDef('javascript', 'boolean', {fixedOnly: true}),
         ]

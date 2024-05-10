@@ -3,16 +3,8 @@ import Element from '../model/Element'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
-import {
-    CombinedPropertyValue,
-    ElementId,
-    ElementType,
-    EventActionPropertyDef,
-    MultiplePropertyValue,
-    PropertyDef,
-    PropertyValue
-} from '../model/Types'
-import List from '../model/List'
+import {ElementId, ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
+import ItemSet from '../model/ItemSet'
 import FunctionDef from '../model/FunctionDef'
 import {AllErrors, ElementErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
@@ -41,7 +33,7 @@ const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'JSON', 'window', 'document'].includes(name)
 const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name)
-const isItemVar = (name: string) => name === '$item'
+const isItemVar = (name: string) => name === '$item' || name === '$selected'
 const isFormVar = (name: string) => name === '$form'
 const isPropsVar = (name: string) => name === 'props'
 
@@ -125,7 +117,8 @@ export default class Parser {
             this.errors[elementId] = {}
         }
 
-        this.errors[elementId][propertyName] = error
+        const err = typeof error === 'string' ? error.replace(/'/g, '') : error
+        this.errors[elementId][propertyName] = err
     }
 
     parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Page | App) {
@@ -209,12 +202,14 @@ export default class Parser {
             const propertyIdentifiers = new Set<ElementId>()
             const eventActionDef = def.type as EventActionPropertyDef
             const isAction = eventActionDef.type === 'Action'
-            const exprType: ExprType = isAction ? 'action': 'singleExpression'
+            const exprType: ExprType = isAction ? 'action': def.multilineExpr ? 'multilineExpression' : 'singleExpression'
             const onError = (err: string) => this.addError(element.id, def.name, err)
             const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
-            const isArgument = (id: string) => isAction && eventActionDef.argumentNames.includes(id)
+            const isFunctionCalculation = element.kind === 'Function' && def.name === 'calculation'
+            const isArgument = (id: string) => (isAction && eventActionDef.argumentNames.includes(id))
+                || (isFunctionCalculation && (element as FunctionDef).inputs.includes(id))
             const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
-            const isJavaScript = (element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).javascript) ?? false
+            const isJavaScript = (isFunctionCalculation && (element as FunctionDef).javascript) ?? false
 
             const propertyValue = element.propertyValue(def.name) as PropertyValue | undefined
             parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnownOrArgument, exprType, onError, isJavaScript)
@@ -292,8 +287,8 @@ export default class Parser {
             this.parseComponent(element)
         } else if (element.kind === 'Component') {
             this.parseComponent(element)
-        } else if (element.kind === 'List') {
-            this.parseComponent(new ListItem(element as List), containingComponent)
+        } else if (element.kind === 'ItemSet') {
+            this.parseComponent(new ListItem(element as ItemSet), containingComponent)
         } else if (element.kind === 'DataTypes') {
             this.parseComponent(element)
         } else if (includeChildren) {

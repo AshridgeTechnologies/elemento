@@ -8,24 +8,18 @@ import Page from '../../src/model/Page'
 test('List has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const list = new List('l1', 'List the First', {items: [{a:10}, {b: 20}], show: false, styles: {color: ex`blue`}, selectable: true,
-        selectAction: ex`Log(\$item.id)`, selectedItem: 10}, [text1, text2])
+    const list = new List('l1', 'List the First', {show: false, styles: {color: ex`blue`}}, [text1, text2])
 
     expect(list.id).toBe('l1')
     expect(list.name).toBe('List the First')
     expect(list.codeName).toBe('ListtheFirst')
-    expect(list.items).toStrictEqual([{a:10}, {b: 20}])
-    expect(list.selectedItem).toBe(10)
-    expect(list.selectable).toBe(true)
     expect(list.show).toBe(false)
     expect(list.styles).toStrictEqual({color: ex`blue`})
-    expect(list.selectAction).toStrictEqual(ex`Log(\$item.id)`)
     expect(list.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('has correct property names', () => {
-    expect(new List('l1', 'List 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual([
-        'items', 'selectedItem', 'selectable', 'selectAction', 'show', 'styles'])
+    expect(new List('l1', 'List 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['show', 'styles'])
 })
 
 
