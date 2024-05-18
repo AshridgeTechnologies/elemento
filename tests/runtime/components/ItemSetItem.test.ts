@@ -7,9 +7,10 @@ import {ItemSetItem, TextElement} from '../../../src/runtime/components'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 
 test('ItemSetItem produces output containing ReactElement children', () => {
-    const itemContentComponent = (props: { path: string, $item: any }) => createElement(TextElement, null, 'where are you?')
+    const childEl = createElement(TextElement, null, 'where are you?')
+    const itemContentComponent = (props: { path: string, $item: any }) => childEl
     const styles = {color: 'red', borderWidth: 20, backgroundColor: valueObj('blue')}
     const itemElement: React.ReactElement = createElement(ItemSetItem, {
-        path: 'page1.para1', selected: false, onClick: () => console.log('Click'), item: {a: 10}, styles, itemContentComponent})
+        path: 'page1.para1', onClick: () => console.log('Click'), styles, children: childEl})
     snapshot(itemElement!)()
 })

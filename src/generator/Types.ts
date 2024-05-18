@@ -1,19 +1,18 @@
-import List from '../model/List'
 import Element from '../model/Element'
 import {ElementId, ElementType} from '../model/Types'
 import ItemSet from '../model/ItemSet'
 
 export class ListItem {
-    constructor(public list: List | ItemSet) {
+    constructor(public itemSet: ItemSet) {
     }
 
     kind = 'ListItem'
 
     get id() {
-        return this.list.id
+        return this.itemSet.id
     }
 
-    elementArray() { return this.list.elementArray() }
+    elementArray() { return this.itemSet.elementArray() }
 }
 
 const runtimeNames = {

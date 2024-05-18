@@ -142,7 +142,9 @@ export default class Generator {
             ? `    const app = _state.setObject('app', new App.State({pages, appContext}))`
             : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('app')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
-        const componentIdentifiers = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
+        const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
+        const itemSetItemIdentifier = componentIsListItem ? ['ItemSetItem'] : []
+        const componentIdentifiers = [...itemSetItemIdentifier, ...componentIdentifiersFound]
         const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
         const statefulContainerComponents = allContainerElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
         const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
@@ -206,7 +208,7 @@ export default class Generator {
         }
 
         const stateEntries = statefulComponents.map((el): StateEntry => {
-            const entry = this.initialStateEntry(el, topLevelFunctions, componentIsListItem ? component.list : component)
+            const entry = this.initialStateEntry(el, topLevelFunctions, componentIsListItem ? component.itemSet : component)
             const identifiers = this.parser.stateIdentifiers(el.id)
             const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
             return [el, entry, stateComponentIdentifiersUsed]
@@ -235,7 +237,7 @@ export default class Generator {
 
         const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
-            const entry = this.initialStateEntry(comp, topLevelFunctions, componentIsListItem ? component.list : component)
+            const entry = this.initialStateEntry(comp, topLevelFunctions, componentIsListItem ? component.itemSet : component)
             return `    const [${comp.codeName}] = React.useState(${entry})`
         }).join('\n')
 
@@ -243,25 +245,30 @@ export default class Generator {
             : `    const pathWith = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
-        const extraDeclarations = componentIsListItem ? '    const {$item, $selected} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item, $selected, onClick} = props' : ''
 
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)
-        const functionName = functionNamePrefix + (componentIsListItem ? component.list.codeName + 'Item' : component.codeName)
+        const functionName = functionNamePrefix + (componentIsListItem ? component.itemSet.codeName + 'Item' : component.codeName)
+
+        const stylesDeclaration = componentIsListItem ? `    const styles = ${this.getExpr(component.itemSet, 'itemStyles')}` : ''
 
         const declarations = [
             pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
-            backgroundFixedDeclarations, stateBlock, uiElementActionFunctions
+            backgroundFixedDeclarations, stateBlock, uiElementActionFunctions,
+            stylesDeclaration
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
         const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))` : ''
         const notLoggedInPage = componentIsPage && component.notLoggedInPage ? `\n${functionName}.notLoggedInPage = '${component.notLoggedInPage.expr}'` : ''
 
-        const componentFunction = `${exportClause}function ${functionName}(props) {
+        const functionCode = `function ${functionName}(props) {
 ${declarations}${debugHook}
 
     return ${uiElementCode}
-}${notLoggedInPage}
+}`
+        const wrappedFunction = componentIsListItem ? `const ${functionName} = React.memo(${functionCode})` : functionCode
+        const componentFunction = `${exportClause}${wrappedFunction}${notLoggedInPage}
 `.trimStart()
 
         const stateNames = statefulComponents.filter( el => el.kind !== 'Calculation').map( el => el.codeName )
@@ -341,8 +348,8 @@ ${declarations}${debugHook}
         }
 
         if (element instanceof ListItem) {
-            return `React.createElement(React.Fragment, null,
-${generateChildren(element.list)}
+            return `React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+${generateChildren(element.itemSet)}
     )`
         }
 
@@ -448,7 +455,8 @@ ${generateChildren(element, indentLevel3, containingComponent)}
                 topLevelFunctions.add(itemCode)
                 const itemContentComponent = containingComponent!.codeName + '_' + itemSet.codeName + 'Item'
 
-                const reactProperties = {path, itemContentComponent, ...this.modelProperties(element)}
+                const modelProperties = omit(['itemStyles'], this.modelProperties(element))  // used in the item content component
+                const reactProperties = {path, itemContentComponent, ...modelProperties}
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(reactProperties)})`
             }
 

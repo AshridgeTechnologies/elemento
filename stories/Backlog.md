@@ -350,6 +350,7 @@ Done
 - Timer element
 - General object adapter
 - Inspector improvements
+- Item Set
 
 Bugs fixed
 ----------

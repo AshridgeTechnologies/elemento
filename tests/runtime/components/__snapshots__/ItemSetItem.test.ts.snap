@@ -2,7 +2,7 @@
 
 exports[`ItemSetItem produces output containing ReactElement children 1`] = `
 <div
-  className="MuiBox-root css-1mgrusk"
+  className="MuiBox-root css-1frel66"
   id="page1.para1"
   onClick={[Function]}
 >

@@ -62,7 +62,7 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
         return [component, ...flatten(component.otherComponents.map(el => [el, allElements(el)]))]
     }
     if (component instanceof ListItem) {
-        const childElements = component.list.elements || []
+        const childElements = component.itemSet.elements || []
         return flatten(childElements.map(el => [el, allElements(el)]))
     }
     if (component instanceof ItemSet) {

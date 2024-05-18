@@ -2,18 +2,22 @@
  * @jest-environment jsdom
  */
 
-import {createElement, Fragment} from 'react'
+import {createElement, Fragment, MouseEventHandler} from 'react'
 import {ItemSet, TextElement} from '../../../src/runtime/components/index'
 import {snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
-import {highlightClassName, highlightElement} from '../../../src/runtime/runtimeFunctions'
+import {highlightClassName, highlightElement, StylesProps} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
+import {ItemSetItem} from '../../../src/runtime/components'
 
-function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean}) {
-    return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text, 'selected', props.$selected.toString()) )
+function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
+    const styles = {color: 'red', width: 300}
+    return createElement(ItemSetItem, {path: props.path, onClick: props.onClick, styles, children:
+        createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text, 'selected', props.$selected.toString()) }
+    )
 }
 
 const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]

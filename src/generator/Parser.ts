@@ -178,10 +178,17 @@ export default class Parser {
             identifierSet.add(runtimeElementName(component))
         }
 
+        if (component instanceof ListItem) {
+            const {itemSet} = component
+            const stylesPropertyDef = itemSet.propertyDefs.find(def => def.name === 'itemStyles')!
+            const stylesIdentifiers = this.parseStylesProperty(itemSet, stylesPropertyDef, isKnown)
+            addAllTo(identifierSet, stylesIdentifiers)
+        }
+
         if (component.kind === 'App') {
             this.parseElement(component, identifierSet, topLevelFunctions, isKnown, containingComponent, false)
         }
-        const elementArray = (component instanceof ListItem ? component.list.elements : component.elements) ?? []
+        const elementArray = (component instanceof ListItem ? component.itemSet.elements : component.elements) ?? []
         elementArray.forEach(childEl => {
             this.parseElement(childEl, identifierSet, topLevelFunctions, isKnown, containingComponent)
         })
@@ -189,93 +196,97 @@ export default class Parser {
         this.identifiersForComponent[component.id] = Array.from(identifierSet.values())
     }
 
+    private parseProperty(element: Element, def: PropertyDef, isKnown: (name: string) => boolean): Set<ElementId> {
+        const propertyIdentifiers = new Set<ElementId>()
+        const eventActionDef = def.type as EventActionPropertyDef
+        const isAction = eventActionDef.type === 'Action'
+        const exprType: ExprType = isAction ? 'action': def.multilineExpr ? 'multilineExpression' : 'singleExpression'
+        const onError = (err: string) => this.addError(element.id, def.name, err)
+        const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
+        const isFunctionCalculation = element.kind === 'Function' && def.name === 'calculation'
+        const isArgument = (id: string) => (isAction && eventActionDef.argumentNames.includes(id))
+            || (isFunctionCalculation && (element as FunctionDef).inputs.includes(id))
+        const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
+        const isJavaScript = (isFunctionCalculation && (element as FunctionDef).javascript) ?? false
+
+        const propertyValue = element.propertyValue(def.name) as PropertyValue | undefined
+        parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnownOrArgument, exprType, onError, isJavaScript)
+        this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(propertyIdentifiers.values())
+        return propertyIdentifiers
+    }
+
+    private parseStylesProperty (element: Element, def: PropertyDef, isKnown: (name: string) => boolean): Set<ElementId> {
+        const overallPropertyIdentifiers = new Set<ElementId>()
+        const stylesPropertyValue = element.propertyValue(def.name) as MultiplePropertyValue | undefined
+        if (stylesPropertyValue) {
+            const errors: ElementErrors = {}
+            Object.entries(stylesPropertyValue).forEach( ([name, propertyValue]) => {
+                const propertyIdentifiers = new Set<ElementId>()
+                const onError: (err: string) => void = (err: string) => errors[name] = err
+                parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnown, 'singleExpression', onError, false)
+                addAllTo(overallPropertyIdentifiers, propertyIdentifiers)
+            })
+            if (Object.keys(errors).length > 0) {
+                this.addError(element.id, def.name, errors)
+            }
+        }
+
+        this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(overallPropertyIdentifiers.values())
+        return overallPropertyIdentifiers
+    }
+
+    private parseStateProperties(element: Element, isKnown: (name: string) => boolean) {
+        const elementIdentifiers = new Set<string>()
+
+        switch (element.kind) {
+            case 'Function': {
+                const functionDef = element as FunctionDef
+                const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
+                const onError = (err: string) => this.addError(element.id, 'calculation', err)
+                parseExprAndIdentifiers(functionDef.calculation, elementIdentifiers, isKnownOrParam, 'multilineExpression', onError, true)
+                break
+            }
+
+            default: {
+                this.project.propertyDefsOf(element).filter(({state}) => state).forEach(def => {
+                    const propertyIdentifiers = this.parseProperty(element, def, isKnown)
+                    addAllTo(elementIdentifiers, propertyIdentifiers)
+                })
+            }
+        }
+
+        this.stateEntryIdentifiers[element.id] = Array.from(elementIdentifiers.values())
+        return elementIdentifiers
+    }
+
+
+
+    private parseNonStateProperties(element: Element, isKnown: (name: string) => boolean) {
+        const elementIdentifiers = new Set<string>
+        this.project.propertyDefsOf(element).filter( ({state}) => !state).forEach(def => {
+            const propertyIdentifiers = def.type === 'styles' ? this.parseStylesProperty(element, def, isKnown) : this.parseProperty(element, def, isKnown)
+            addAllTo(elementIdentifiers, propertyIdentifiers)
+        })
+
+        return elementIdentifiers
+    }
+
     private parseElement(element: Element | ListItem, identifiers: IdentifierCollector, topLevelFunctions: FunctionCollector, isKnown: (name: string) => boolean, containingComponent?: Page, includeChildren = true) {
 
         const parseChildren = (element: Element | ListItem, containingComponent?: Page) => {
-            const elementArray = (element instanceof ListItem ? element.list.elements : element.elements) ?? []
+            const elementArray = (element instanceof ListItem ? element.itemSet.elements : element.elements) ?? []
             elementArray.forEach(childEl => {
                 this.parseElement(childEl, identifiers, topLevelFunctions, isKnown, containingComponent)
             })
         }
 
-        const parseProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
-            const propertyIdentifiers = new Set<ElementId>()
-            const eventActionDef = def.type as EventActionPropertyDef
-            const isAction = eventActionDef.type === 'Action'
-            const exprType: ExprType = isAction ? 'action': def.multilineExpr ? 'multilineExpression' : 'singleExpression'
-            const onError = (err: string) => this.addError(element.id, def.name, err)
-            const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
-            const isFunctionCalculation = element.kind === 'Function' && def.name === 'calculation'
-            const isArgument = (id: string) => (isAction && eventActionDef.argumentNames.includes(id))
-                || (isFunctionCalculation && (element as FunctionDef).inputs.includes(id))
-            const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
-            const isJavaScript = (isFunctionCalculation && (element as FunctionDef).javascript) ?? false
-
-            const propertyValue = element.propertyValue(def.name) as PropertyValue | undefined
-            parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnownOrArgument, exprType, onError, isJavaScript)
-            this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(propertyIdentifiers.values())
-            return propertyIdentifiers
-        }
-
-        const parseStylesProperty = (element: Element, def: PropertyDef): Set<ElementId> => {
-            const overallPropertyIdentifiers = new Set<ElementId>()
-            const stylesPropertyValue = element.propertyValue(def.name) as MultiplePropertyValue | undefined
-            if (stylesPropertyValue) {
-                const errors: ElementErrors = {}
-                Object.entries(stylesPropertyValue).forEach( ([name, propertyValue]) => {
-                    const propertyIdentifiers = new Set<ElementId>()
-                    const onError: (err: string) => void = (err: string) => errors[name] = err
-                    parseExprAndIdentifiers(propertyValue, propertyIdentifiers, isKnown, 'singleExpression', onError, false)
-                    addAllTo(overallPropertyIdentifiers, propertyIdentifiers)
-                })
-                if (Object.keys(errors).length > 0) {
-                    this.addError(element.id, def.name, errors)
-                }
-            }
-
-
-            this.elementPropertyIdentifiers[element.id + '_' + def.name] = Array.from(overallPropertyIdentifiers.values())
-            return overallPropertyIdentifiers
-        }
-
-        const parseStateProperties = (element: Element) => {
-            const elementIdentifiers = new Set<string>()
-
-            switch (element.kind) {
-                case 'Function': {
-                    const functionDef = element as FunctionDef
-                    const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
-                    const onError = (err: string) => this.addError(element.id, 'calculation', err)
-                    parseExprAndIdentifiers(functionDef.calculation, elementIdentifiers, isKnownOrParam, 'multilineExpression', onError, true)
-                    break
-                }
-
-                default: {
-                    this.project.propertyDefsOf(element).filter(({state}) => state).forEach(def => {
-                        const propertyIdentifiers = parseProperty(element, def)
-                        addAllTo(elementIdentifiers, propertyIdentifiers)
-                    })
-                }
-            }
-
-            this.stateEntryIdentifiers[element.id] = Array.from(elementIdentifiers.values())
-            addAllTo(identifiers, elementIdentifiers)
-        }
-
-        const parseNonStateProperties = (element: Element) => {
-            this.project.propertyDefsOf(element).filter( ({state}) => !state).forEach(def => {
-                const propertyIdentifiers = def.type === 'styles' ? parseStylesProperty(element, def) : parseProperty(element, def)
-                addAllTo(identifiers, propertyIdentifiers)
-            })
-        }
-
         if (element instanceof ListItem) {
-            parseChildren(element.list)
+            parseChildren(element.itemSet)
             return
-         }
+        }
 
-        parseStateProperties(element)
-        parseNonStateProperties(element)
+        addAllTo(identifiers, this.parseStateProperties(element, isKnown))
+        addAllTo(identifiers, this.parseNonStateProperties(element, isKnown))
 
         if (!isSeparateComponent(element)) {
             identifiers.add(runtimeElementName(element))

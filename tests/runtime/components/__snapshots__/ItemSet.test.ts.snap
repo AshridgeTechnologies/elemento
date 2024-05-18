@@ -38,7 +38,7 @@ exports[`ItemSet produces output containing ReactElement children 1`] = `
 exports[`ItemSet produces output with indexes if items have no ids 1`] = `
 [
   <div
-    className="MuiBox-root css-xi1y7x"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#0"
     onClick={[Function]}
   >
@@ -52,7 +52,7 @@ exports[`ItemSet produces output with indexes if items have no ids 1`] = `
     </p>
   </div>,
   <div
-    className="MuiBox-root css-xi1y7x"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#1"
     onClick={[Function]}
   >
@@ -71,7 +71,7 @@ exports[`ItemSet produces output with indexes if items have no ids 1`] = `
 exports[`ItemSet shows only first selectedItem as selected if no ids when given zero as index 1`] = `
 [
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#0"
     onClick={[Function]}
   >
@@ -85,7 +85,7 @@ exports[`ItemSet shows only first selectedItem as selected if no ids when given 
     </p>
   </div>,
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#1"
     onClick={[Function]}
   >
@@ -104,7 +104,7 @@ exports[`ItemSet shows only first selectedItem as selected if no ids when given 
 exports[`ItemSet shows single selectedItem as selected 1`] = `
 [
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#id1"
     onClick={[Function]}
   >
@@ -118,7 +118,7 @@ exports[`ItemSet shows single selectedItem as selected 1`] = `
     </p>
   </div>,
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#id2"
     onClick={[Function]}
   >
@@ -137,7 +137,7 @@ exports[`ItemSet shows single selectedItem as selected 1`] = `
 exports[`ItemSet shows single selectedItem as selected if no ids 1`] = `
 [
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#0"
     onClick={[Function]}
   >
@@ -151,7 +151,7 @@ exports[`ItemSet shows single selectedItem as selected if no ids 1`] = `
     </p>
   </div>,
   <div
-    className="MuiBox-root css-0"
+    className="MuiBox-root css-1r6lq6j"
     id="app.page1.itemSet1.#1"
     onClick={[Function]}
   >

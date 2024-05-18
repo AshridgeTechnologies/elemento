@@ -1004,17 +1004,18 @@ test('sorts state entries into dependency order', () => {
 
     const output = new Generator(app, project(app)).output()
 
-    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
+    expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const styles = undefined
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
     )
-}
+})
 
 
 function Page1(props) {
@@ -1059,17 +1060,18 @@ test('sorts state entries into dependency order when nested inside a layout elem
 
     const output = new Generator(app, project(app)).output()
 
-    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
+    expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const styles = undefined
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
     )
-}
+})
 
 
 function Page1(props) {
@@ -1210,8 +1212,9 @@ test('generates ItemSet element with separate child component and global functio
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
+            new SelectInput('id5', 'Item Color', {}),
             new Layout('la1', 'Layout 1', {}, [
-                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
@@ -1223,34 +1226,37 @@ test('generates ItemSet element with separate child component and global functio
 
     const gen = new Generator(app, project(app))
 
-    expect(gen.output().files[0].contents).toBe(`function Page1_ItemSet1Item(props) {
+    expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement, TextInput, Button} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
+    const ItemColor = _state.useObject(parentPathWith('ItemColor'))
     const TextInput1 = _state.useObject(parentPathWith('TextInput1'))
     const TextInput2 = _state.setObject(pathWith('TextInput2'), new TextInput.State({value: 'from ' + Left($item, 3)}))
     const ButtonUpdate_action = React.useCallback(async () => {
         await Update('Things', \$item.id, {done: true})
-    }, [\$item])
+    }, [$item])
+    const styles = {color: $selected ? 'red' : ItemColor, width: 200}
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
-}
+})
 
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextInput, Layout, ItemSet} = Elemento.components
+    const {Page, TextInput, SelectInput, Layout, ItemSet} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const TextInput1 = _state.setObject(pathWith('TextInput1'), new TextInput.State({}))
+    const ItemColor = _state.setObject(pathWith('ItemColor'), new SelectInput.State({}))
     const ItemSet1_selectAction = React.useCallback(($item, $itemId) => {
         Log($item.id)
     }, [])
@@ -1259,8 +1265,9 @@ function Page1(props) {
 
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
+        React.createElement(SelectInput, {path: pathWith('ItemColor'), label: 'Item Color'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
-            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item, itemStyles: {color: 'red', width: 200}}),
+            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item}),
     ),
     )
 }
@@ -1284,11 +1291,11 @@ test('generates ItemSet element inside List', ()=> {
 
     const gen = new Generator(app, project(app))
 
-    expect(gen.output().files[0].contents).toBe(`function Page1_ItemSet1Item(props) {
+    expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement, TextInput, Button} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
@@ -1297,13 +1304,14 @@ test('generates ItemSet element inside List', ()=> {
     const ButtonUpdate_action = React.useCallback(async () => {
         await Update('Things', \$item.id, {done: true})
     }, [\$item])
+    const styles = {color: 'red', width: 200}
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
-}
+})
 
 
 function Page1(props) {
@@ -1322,7 +1330,7 @@ function Page1(props) {
     return React.createElement(Page, {id: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(ListElement, {path: pathWith('List1')},
-            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item, itemStyles: {color: 'red', width: 200}}),
+            React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item}),
     ),
     )
 }
@@ -1342,17 +1350,18 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
 
     const gen = new Generator(app, project(app))
 
-    expect(gen.output().files[0].contents).toBe(`function Page2_ItemSet1Item(props) {
+    expect(gen.output().files[0].contents).toBe(`const Page2_ItemSet1Item = React.memo(function Page2_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const styles = undefined
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
     )
-}
+})
 
 
 function Page2(props) {
@@ -1884,21 +1893,22 @@ test('generates local user defined functions in a list item that use a page item
     ])
 
     const output = new Generator(app, project(app)).output()
-    expect(output.files[0].contents).toBe(`function Page1_WidgetSetItem(props) {
+    expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected} = props
-    const {TextElement} = Elemento.components
+    const {$item, $selected, onClick} = props
+    const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const MinHeight = _state.useObject(parentPathWith('MinHeight'))
     const ExtraHeight = React.useCallback(() => {
         return \$item.height - MinHeight
     }, [$item, MinHeight])
+    const styles = undefined
 
-    return React.createElement(React.Fragment, null,
+    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
         React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
     )
-}
+})
 
 
 function Page1(props) {

@@ -11,9 +11,11 @@ type Selectable = typeof selectableChoices[number]
 
 type SelectionType = 'replace' | 'addRemove' | 'fromLast'
 
+type OnClickFn = MouseEventHandler<HTMLDivElement>
+
 type Properties = Readonly<{
     path: string,
-    itemContentComponent: (props: { path: string, $item: any }) => React.ReactElement | null,
+    itemContentComponent: (props: { path: string, $item: any, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
 }>
 
@@ -33,7 +35,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
     const state = useGetObjectState<ItemSetState>(path)
     const {itemStyles} = valueOfProps(props)
 
-    const onClick: MouseEventHandler<HTMLDivElement> = (event:SyntheticEvent) => {
+    const onClick: OnClickFn = (event:SyntheticEvent) => {
         const {shiftKey, ctrlKey, metaKey} = (event.nativeEvent as MouseEvent)
         if (shiftKey) {
             document.getSelection()?.empty()
@@ -50,7 +52,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
             const itemId = item.id ?? String(index)
             const itemPath = indexedPath(path, itemId)
             const selected = state.isSelected(index)
-            return React.createElement(ItemSetItem, {path: itemPath, selected, onClick, styles: itemStyles, item, itemContentComponent, key: itemId})
+            return React.createElement(itemContentComponent, {path: itemPath, $item: item, $selected: selected, onClick, key: itemId})
         }
     )
 

@@ -8,7 +8,7 @@ import Page from '../../src/model/Page'
 test('ItemSet has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const itemSet = new ItemSet('l1', 'ItemSet the First', {items: [{a:10}, {b: 20}], itemStyles: {color: ex`blue`}, selectable: true,
+    const itemSet = new ItemSet('l1', 'ItemSet the First', {items: [{a:10}, {b: 20}], itemStyles: {color: ex`blue`}, selectable: 'none',
         selectAction: ex`Log(\$item.id)`, selectedItems: 10}, [text1, text2])
 
     expect(itemSet.id).toBe('l1')
@@ -16,7 +16,7 @@ test('ItemSet has correct properties', ()=> {
     expect(itemSet.codeName).toBe('ItemSettheFirst')
     expect(itemSet.items).toStrictEqual([{a:10}, {b: 20}])
     expect(itemSet.selectedItems).toBe(10)
-    expect(itemSet.selectable).toBe(true)
+    expect(itemSet.selectable).toBe('none')
     expect(itemSet.itemStyles).toStrictEqual({color: ex`blue`})
     expect(itemSet.selectAction).toStrictEqual(ex`Log(\$item.id)`)
     expect(itemSet.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
