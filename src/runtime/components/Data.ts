@@ -57,6 +57,10 @@ export class DataState extends BaseComponentState<StateProperties>
         this.updateState({value})
     }
 
+    Reset() {
+        this.updateState({value: undefined})
+    }
+
     Update(changes: object) {
         const newValue = mergeRight(this.value, changes )
         this.updateState({value: newValue})

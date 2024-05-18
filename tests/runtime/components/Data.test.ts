@@ -35,6 +35,22 @@ test('Set returns correct update', () => {
     expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
 })
 
+test('Reset returns correct update', () => {
+    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
+    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
+
+    state.Set({a:20, b:'Cee'})
+    const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
+    expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+
+    state.Reset()
+    const expectedState2 = state._withStateForTest({value: undefined})
+    expect(expectedState2.value).toStrictEqual({a: 10, b: 'Bee1', c: true}) //initial value
+    expect(appInterface.updateVersion).toHaveBeenLastCalledWith(expectedState2)
+})
+
 test('Set returns correct update for array', () => {
     const state = new Data.State({value: []})
     const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
