@@ -96,24 +96,11 @@ Item Set Spike
 - ✅ $selected is sent through to the item component
 - ✅ Try on its own in page
 - List becomes a layout only component
-- No list state class, scrolling can be React state? No - because want to keep if switch page
+- ✅ No list state class, scrolling can be React state? No - because want to keep if switch page
 - ✅ Need to upgrade MUI to get wrapped Stack working
 - ✅ BUT this stops tutorials working because of the slotprops backdrop issue
-
-Other to do
------------
-
-- ✅ Len function
-- ✅ How to show empty letter
-- Copy styles 
-- Contains handles array
-- Join
-- Reset on Data
-- When actions
-- Choice or First of function - not all evaluated
-- Choice component - any better than using show property?
-
 
 Decision
 --------
 
+- Item Set Spike successful

@@ -6,7 +6,7 @@ import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Contains, Len,
+    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
     Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems, ListContains, FlatList,
@@ -350,6 +350,13 @@ describe('Split', () => {
     test('Returns original string in a list if separator does not occur', () => expect(Split('abcd', ',')).toStrictEqual(['abcd']))
     test('empty list if Text is null', () => expect(Split(null, ',')).toStrictEqual([]))
     test('Gets value of objects', () => expect(Split(valueObj('ab,cd'), valueObj(','))).toStrictEqual(['ab','cd']))
+})
+
+describe('Join', () => {
+    test('joins with default separator', ()=> expect(Join(['a', 'b', 'c'])).toBe('abc'))
+    test('joins with given separator', ()=> expect(Join(['a', 'b', 'c'], '-')).toBe('a-b-c'))
+    test('empty string for null list', ()=> expect(Join(null, '-')).toBe(''))
+    test('Gets values of objects', ()=> expect(Join(valueObj([1,2,3]), valueObj(','))).toBe('1,2,3'))
 })
 
 describe('Contains', () => {

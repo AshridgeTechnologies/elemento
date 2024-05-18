@@ -122,7 +122,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
-Consider other deploy options like https://render.com/
+- Consider other deploy options like https://render.com/
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked
 - Consider way of getting domElement of any ui Element (including stateless) for special stuff - but encourages bad practices?
@@ -172,6 +172,9 @@ Consider other deploy options like https://render.com/
 - Clean old files from generated code dir
 
 ### The Rest
+- Choice or First of function - not all evaluated, could use If inside
+- Copy styles
+- Contains handles array
 - Choice component to generate one of children based on condition OR a condition prop on every component?
 - Tools can be included or excluded from deployment
 - Server side HTML generation using same or similar elements as on client

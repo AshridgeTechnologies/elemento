@@ -1,6 +1,6 @@
 import React, {MouseEventHandler} from 'react'
 import {Box} from '@mui/material'
-import {StylesProps, StylesPropVals, valueOf} from '../runtimeFunctions'
+import {StylesPropVals, valueOf} from '../runtimeFunctions'
 import {sxProps} from './ComponentHelpers'
 
 type Properties = {

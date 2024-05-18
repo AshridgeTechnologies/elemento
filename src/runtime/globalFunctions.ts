@@ -179,6 +179,12 @@ export const globalFunctions = {
         return s.split(sep ?? '')
     },
 
+    Join(listVal: Value<any[]> | null, sepVal?: Value<string> | null) {
+        const [list, sep] = valuesOf(listVal, sepVal)
+        if (isNil(list)) return ''
+        return list.join(sep ?? '')
+    },
+
     Contains(sVal: Value<string | null>, searchVal: Value<string | null>, ignoreCase?: boolean) {
         const s = valueOf(sVal) ?? ''
         const search = valueOf(searchVal) ?? ''

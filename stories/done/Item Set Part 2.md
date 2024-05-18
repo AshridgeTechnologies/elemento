@@ -9,8 +9,8 @@ Aims
 Requirements
 ------------
 
-- Item styles can use the $item and $selected
-- Item styles can refer to names in the containing page
+- ✅ Item styles can use the $item and $selected
+- ✅ Item styles can refer to names in the containing page
 
 
 Technical
@@ -22,4 +22,4 @@ Technical
 - ✅ Generated component includes the styles expressions
 - ✅ Take valueOf the styles inside ItemSetItem, as state objects compared by instance
 - ✅ Memo-ise the generated component
-- Parser for generated component needs to pick up names used in itemStyles of the ItemSet
+- ✅ Parser for generated component needs to pick up names used in itemStyles of the ItemSet
