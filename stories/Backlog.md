@@ -28,7 +28,6 @@ Bugs
 - Files not showing up in Files Folder on -Beetle1-
 - Loads 3 new versions of app when you select an item in navigator (only when deployed?)
 - Duplicate names create errors on action function names
-- Changes really slow on large list
 - Initial value not showing on Number input
 - Errors can kill Editor
 - Select element on preview not highlighting
@@ -122,6 +121,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Good performance on large list
 - Consider other deploy options like https://render.com/
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked

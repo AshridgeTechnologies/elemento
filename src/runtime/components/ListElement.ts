@@ -17,7 +17,7 @@ type Properties = Readonly<{
 
 type StateProperties = {scrollTop?: number}
 
-const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0}
+const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0, flexShrink: 0}
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
     const state = useGetObjectState<ListElementState>(path)

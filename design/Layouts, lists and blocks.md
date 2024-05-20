@@ -100,7 +100,9 @@ Item Set Spike
 - ✅ Need to upgrade MUI to get wrapped Stack working
 - ✅ BUT this stops tutorials working because of the slotprops backdrop issue
 
-Decision
---------
+Decisions
+---------
 
-- Item Set Spike successful
+- Item Set Spike successful - keep
+- Merge Layout model object into Block, just use Block with horizontal
+- Keep separate rendering in Block runtime component

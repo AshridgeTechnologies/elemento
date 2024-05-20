@@ -2,7 +2,7 @@
 
 exports[`ListElement produces output containing an item set 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
+  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 />
@@ -10,7 +10,7 @@ exports[`ListElement produces output containing an item set 1`] = `
 
 exports[`ListElement produces output containing an item set and fixed children 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
+  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 >
@@ -31,7 +31,7 @@ exports[`ListElement produces output containing an item set and fixed children 1
 
 exports[`ListElement produces output containing fixed ReactElement children  1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-1s78mk4-MuiList-root"
+  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 >

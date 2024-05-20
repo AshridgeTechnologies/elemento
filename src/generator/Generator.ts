@@ -369,7 +369,7 @@ ${generateChildren(element.itemSet)}
                 const page = element as Page
                 const propsEntries = objectLiteralEntries(omit(['notLoggedInPage'], this.modelProperties(page)))
                 const propsEntriesStr = propsEntries.length ? ', ' + propsEntries : ''
-                return `React.createElement(Page, {id: props.path${propsEntriesStr}},
+                return `React.createElement(Page, {path: props.path${propsEntriesStr}},
 ${generateChildren(page, indentLevel2, page)}
     )`
             }
