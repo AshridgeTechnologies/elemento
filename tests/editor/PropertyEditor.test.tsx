@@ -155,6 +155,38 @@ test('updates style properties', () => {
     expect(onChange).toHaveBeenCalledWith('id1', 'styles', {color: 'blue'})
 })
 
+test('shows common style properties when search', () => {
+    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
+    expect(screen.queryByLabelText('Color')).toBe(null)
+    fireEvent.input(input('Search'), {target: {value: 'col'}})
+    expect(inputValue('Color')).toBe('')
+    fireEvent.input(input('Color'), {target: {value: 'blue'}})
+    expect(changedValue).toStrictEqual({color: 'blue'})
+    expect(onChange).toHaveBeenCalledWith('id1', 'styles', {color: 'blue'})
+})
+
+test('icon clears search box', () => {
+    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
+    fireEvent.input(input('Search'), {target: {value: 'col'}})
+    expect(inputValue('Color')).toBe('')
+    fireEvent.click(screen.getByTitle('clear search'))
+    expect(screen.queryByLabelText('Color')).toBe(null)
+})
+
+test('shows advanced style properties if check box', () => {
+    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
+    expect(screen.queryByLabelText('Accent Color')).toBe(null)
+    fireEvent.click(screen.getByLabelText('Show advanced properties'))
+    fireEvent.input(input('Search'), {target: {value: 'col'}})
+    expect(inputValue('Accent Color')).toBe('')
+    fireEvent.input(input('Accent Color'), {target: {value: 'cyan'}})
+    expect(changedValue).toStrictEqual({accentColor: 'cyan'})
+    expect(onChange).toHaveBeenCalledWith('id1', 'styles', {accentColor: 'cyan'})
+})
+
 test('selects name with Cmd/Ctrl-Click', () => {
     const onNameSelected = jest.fn()
     const element = new TextInput('id1', 'Text 1', {label: 'Some Text', initialValue: ex`AnotherElement.size`})
@@ -210,12 +242,12 @@ test('has fields for Text with literal value', () => {
     expect(inputValue('Content')).toBe('Some content')
 })
 
-test('shows controlled component for optional fields for Text', () => {
-    const element = new Text('id1', 'Text 1', {content: ''})
+test('shows controlled component for optional fields', () => {
+    const element = new Button('id1', 'Button 1', {content: ''})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
-    expect(inputValue('Color')).toBe('')
-    const colorInput = screen.getByLabelText('Color') as HTMLInputElement
-    expect(componentProps(colorInput).value).toBe('')
+    expect(inputValue('Action')).toBe('')
+    const actionInput = screen.getByLabelText('Action') as HTMLInputElement
+    expect(componentProps(actionInput).value).toBe('')
 })
 
 test('has fields for Text', () => {
@@ -302,7 +334,6 @@ test('has fields for TextInput with default values', () => {
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('')
     expect(inputValue('Initial Value')).toBe('')
-    expect(inputValue('Width')).toBe('')
     expect(inputValue('Multiline')).toBe(undefined)
     expect(inputValue('Read Only')).toBe(undefined)
     expect(inputValue('Data Type')).toBe('')

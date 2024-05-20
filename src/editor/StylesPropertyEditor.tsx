@@ -2,12 +2,24 @@ import {ElementId, PropertyType, PropertyValue, StylingProps} from '../model/Typ
 import {OnChangeFn, OnNameSelectedFn} from './Types'
 import {withoutUndefined} from '../util/helpers'
 import PropertyInput from './PropertyInput'
-import {commonStylingPropTypes} from '../util/StylingTypes'
-import {Box, Typography} from '@mui/material'
-import React from 'react'
+import {allStylingProps, commonStylingPropTypes} from '../util/StylingTypes'
+import {
+    Box,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput, Stack,
+    TextField,
+    Typography
+} from '@mui/material'
+import React, {ChangeEvent, FormEvent, FormEventHandler, useCallback, useState} from 'react'
 import {pick} from 'radash'
 import {equals} from 'ramda'
 import {startCase} from 'lodash'
+import {CancelOutlined} from '@mui/icons-material'
 
 type PresetPositionStyles = {
     position: string | undefined,
@@ -91,7 +103,38 @@ const hasPreset = (properties: object, presetType: presetStyleName) => {
 
 const presetPosition = (stylesValue: StylingProps) => presetPositionNames.find((presetName) => hasPreset(stylesValue, presetName))
 
+function SearchBox({value, onChange}: {value: string, onChange: (searchText: string) => void}) {
+    const handleChange: FormEventHandler = useCallback( (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value), [])
+    return <TextField sx={{m: 1, maxWidth: '30ch'}}
+                      fullWidth={false}
+                      variant="outlined"
+                      label='Search'
+                      placeholder='Start typing a styling property name to search'
+                      value={value}
+                      onChange={handleChange}
+                      size='small'
+                      InputProps={{
+                          endAdornment:
+                              <InputAdornment position="end">
+                                  <IconButton
+                                      aria-label="clear search"
+                                      title="clear search"
+                                      onClick={() => onChange('')}
+                                      edge="end"
+                                  >
+                                      <CancelOutlined/>
+                                  </IconButton>
+                              </InputAdornment>
+                      }}
+    />
+
+}
+
 export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, onChange, onNameSelected, errors = {}}: { elementId: ElementId, name: string, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
+
+    const [searchText, setSearchText] = useState('')
+    const [showAdvanced, setShowAdvanced] = useState(false)
+    const onChangeShowAdvanced = (event: React.ChangeEvent<HTMLInputElement>) => setShowAdvanced(event.target.checked);
 
     const onChangeStyleProperty = (_: ElementId, stylePropName: string, stylePropValue: any) => {
         const styleUpdates = () => {
@@ -106,7 +149,8 @@ export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, 
         onChange(elementId, name, newStyles)
     }
 
-    function propertyField(name: string, type: PropertyType = 'string') {
+    function propertyField(name: string, fieldType?: PropertyType) {
+        const type = fieldType ?? commonStylingPropTypes[name] ?? 'string'
         const propertyValue = name === 'presetPosition' ? presetPosition(stylesValue) : stylesValue[name as keyof StylingProps] as unknown as PropertyValue
         const error = errors[name as keyof object]
         const key = `${elementId}.styles.${name}.kind`
@@ -115,12 +159,29 @@ export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, 
     }
 
     const presetPositionField = propertyField('presetPosition', presetPositionNames)
-    const fields = [presetPositionField, ...Object.entries(commonStylingPropTypes).map(([name, type]) => propertyField(name, type))]
+    const search = searchText.replace(/ /g, '')
+    const selectedProps = allStylingProps.filter( (p: string) => {
+        const isInUse =  p in stylesValue
+        const isInPropertiesToShow = showAdvanced || p in commonStylingPropTypes
+        return isInUse || isInPropertiesToShow && search && p.match(new RegExp(search, 'i'))
+    })
+    const fields = [presetPositionField, ...selectedProps.map((name) => propertyField(name))]
+    const showAdvancedBox = <FormControlLabel control={<Checkbox
+        size='small'
+        checked={showAdvanced}
+        onChange={onChangeShowAdvanced}
+        inputProps={{ 'aria-label': 'show advanced properties' }}
+    />} label="Show advanced properties" slotProps={{typography: {sx: {fontSize: '0.9rem'}}}}/>
     return <Box sx={{
         '& > :not(style)': {m: 0.5, width: 'calc(100% - 10px)'},
     }}
     >
         <Typography variant='h6'>{startCase(name)}</Typography>
+        <Stack direction='row' gap={2}>
+            <SearchBox value={searchText} onChange={setSearchText}/>
+            {showAdvancedBox}
+        </Stack>
+
         {fields}
     </Box>
 }
