@@ -141,6 +141,12 @@ export const globalFunctions = {
         console.log(...args)
     },
 
+    IsNull(argVal: any) {
+        if (arguments.length === 0) throw new Error('Wrong number of arguments to IsNull. Expected 1 argument.')
+        const arg = valueOf(argVal)
+        return arg === null || arg == undefined
+    },
+
     If(condition: any, trueValue: any, falseValue?: any) {
         const getVal = (fnOrVal: any) => isFunction(fnOrVal) ? fnOrVal() : fnOrVal
         return valueOf(condition) ? getVal(trueValue) : getVal(falseValue)

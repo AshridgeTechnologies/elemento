@@ -6,7 +6,7 @@ import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, If, Left, Mid, Right, Lowercase, Uppercase, Split, Join, Contains, Len,
+    Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
     Record, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems, ListContains, FlatList,
@@ -238,6 +238,35 @@ describe('Sum', () => {
         expect(Sum("20", 10, D`30`)).toStrictEqual(D`60`)
     })
 
+})
+
+describe('IsNull', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => IsNull()).toThrow('Wrong number of arguments to IsNull. Expected 1 argument'))
+
+    test('is true for null or undefined', () => {
+        expect(IsNull(null)).toBe(true)
+        expect(IsNull(undefined)).toBe(true)
+    })
+
+    test('is false for other falsy values', () => {
+        expect(IsNull(0)).toBe(false)
+        expect(IsNull(false)).toBe(false)
+        expect(IsNull('')).toBe(false)
+        expect(IsNull(valueObj(0))).toBe(false)
+    })
+
+    test('is false for other values', () => {
+        expect(IsNull(42)).toBe(false)
+        expect(IsNull({a: 10})).toBe(false)
+        expect(IsNull('')).toBe(false)
+        expect(IsNull(valueObj(99))).toBe(false)
+    })
+
+    test('is true for Value object that returns null or undefined', () => {
+        expect(IsNull(valueObj(null))).toBe(true)
+        expect(IsNull(valueObj(undefined))).toBe(true)
+    })
 })
 
 describe('Log', () => {

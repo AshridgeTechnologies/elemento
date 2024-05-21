@@ -62,7 +62,7 @@ export function parseExprAndIdentifiers(propertyValue: PropertyValue | undefined
 
         if (exprType === 'multilineExpression') {
             const lastStatement = last(bodyStatements)
-            if (lastStatement.type !== 'ExpressionStatement') {
+            if (lastStatement?.type !== 'ExpressionStatement') {
                 throw new Error('Invalid expression')
             }
         }
@@ -78,6 +78,9 @@ export function parseExprAndIdentifiers(propertyValue: PropertyValue | undefined
 
     if (isExpr(propertyValue)) {
         const {expr} = propertyValue
+        if (!expr) {
+            return undefined
+        }
         try {
             const ast = parseExpr(expr)
 

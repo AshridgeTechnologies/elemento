@@ -2,7 +2,6 @@ import Topo from '@hapi/topo'
 import lodash from 'lodash';
 import Element from '../model/Element'
 import {flatten, last} from 'ramda'
-import List from '../model/List'
 import {ExprType, ListItem} from './Types'
 import Form from '../model/Form'
 import {BaseApp} from '../model/BaseApp'
@@ -11,6 +10,7 @@ import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
 import FunctionDef from '../model/FunctionDef'
 import ItemSet from '../model/ItemSet'
+import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -83,7 +83,7 @@ export function printAst(ast: any) {
 
 export const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map(line => indent + line).join('\n')
 export const isGlobalFunction = (name: string) => name in globalFunctions
-export const knownSync = (functionName: string) => isGlobalFunction(functionName)
+export const knownSync = (functionName: string) => isGlobalFunction(functionName) || knownSyncAppFunctionsNames().includes(functionName)
 
 export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[]) {
     function isShorthandProperty(node: any) {
@@ -92,10 +92,13 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
 
     function addReturnStatement(ast: any) {
         const bodyStatements = ast.program.body as any[]
-        const lastStatement = last(bodyStatements)
-        const lastExpression = lastStatement.expression ?? null
-        const b = types.builders
-        ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastExpression)
+        if (bodyStatements.length !== 0) {
+            const lastStatement = last(bodyStatements)
+            const lastExpression = lastStatement.expression ?? null
+            const b = types.builders
+            ast.program.body[bodyStatements.length - 1] = b.returnStatement(lastExpression)
+        }
+
     }
 
     function containsAwait(ast: any): boolean {

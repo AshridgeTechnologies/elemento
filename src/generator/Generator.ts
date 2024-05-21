@@ -4,7 +4,6 @@ import App from '../model/App'
 import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
-import List from '../model/List'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, omit} from 'ramda'
 import Parser, {PropertyError} from './Parser'
@@ -183,13 +182,13 @@ export default class Generator {
 
         const functionDeclaration = (el: FunctionDef) => {
             const functionName = el.codeName
-            const functionCode = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs)
+            const functionCode = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs) ?? '() => {}'
             const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')
             const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
                 (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
                     || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
             const dependencies = identifiers.filter(functionDependsOnIdentifier)
-            return functionCode && `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
+            return `    const ${functionName} = React.useCallback(${functionCode}, [${dependencies.join(', ')}])`
         }
 
         const actionHandlers = (el: Element, state: boolean) => {

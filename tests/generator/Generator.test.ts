@@ -41,6 +41,7 @@ import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ItemSet from '../../src/model/ItemSet'
+import {knownSync} from '../../src/generator/generatorHelpers'
 
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
@@ -1728,10 +1729,12 @@ test('transforms expressions to functions where needed and does not fail where n
 `)
 })
 
-test('generates local user defined functions in a page', () => {
+test('generates local user defined functions even if empty in a page', () => {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
             new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`let heightAllowed = MinHeight\nlet isShiny = widget.shiny\nOr(widget.height > heightAllowed, isShiny)`}),
+            new FunctionDef('f2', 'Empty Function', {calculation: ex``}),
+            new FunctionDef('f3', 'Very Empty Function', {calculation: undefined}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
             ]
@@ -1747,6 +1750,8 @@ test('generates local user defined functions in a page', () => {
     const {Or, Select} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('app.Widgets')
+    const EmptyFunction = React.useCallback(() => {}, [])
+    const VeryEmptyFunction = React.useCallback(() => {}, [])
     const MinHeight = _state.setObject(pathWith('MinHeight'), new NumberInput.State({}))
     const IsTallWidget = React.useCallback((widget) => {
         let heightAllowed = MinHeight
@@ -2620,3 +2625,10 @@ const pathWith = name => props.path + '.' + name;
     expect(newErrors).toStrictEqual({})
 })
 
+test.each(['Reset', 'Set', 'NotifyError', 'Notify', 'CurrentUser', 'GetRandomId'])('%s is included in knownSync', (fnName) => {
+    expect(knownSync(fnName)).toBe(true)
+})
+
+test.each(['Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query'])('%s is not included in knownSync', (fnName) => {
+    expect(knownSync(fnName)).toBe(false)
+})

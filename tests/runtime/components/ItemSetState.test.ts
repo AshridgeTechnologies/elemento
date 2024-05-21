@@ -189,20 +189,12 @@ test('has single selected text item given as index', () => {
     expect(state.selectedItem).toStrictEqual(textItem2)
 })
 
-test('has single selected number item given as number', () => {
-    const state = new ItemSetState({items: [numberItem1, numberItem2, numberItem3], selectedItems: numberItem2})
-    expect(state.selectedItems).toStrictEqual([numberItem2])
-    expect(state.selectedItemIds).toStrictEqual([1])
-    expect(state.selectedItem).toStrictEqual(numberItem2)
-})
-
-test('has single selected number item given as index if not in numbers - dangerous!', () => {
+test('has single selected number item given as index', () => {
     const state = new ItemSetState({items: [numberItem1, numberItem2, numberItem3], selectedItems: 1})
     expect(state.selectedItems).toStrictEqual([numberItem2])
     expect(state.selectedItemIds).toStrictEqual([1])
     expect(state.selectedItem).toStrictEqual(numberItem2)
 })
-
 
 // multiple selected items
 test('has multiple selected items given as object with most recent selection as selected item', () => {
@@ -260,22 +252,15 @@ test('has multiple selected text items given as index', () => {
     expect(state.selectedItem).toStrictEqual(textItem3)
 })
 
-test('has multiple selected number items given as number', () => {
-    const state = new ItemSetState({items: [numberItem1, numberItem2, numberItem3, numberItem4], selectedItems: [numberItem4, numberItem1]})
+test('has multiple selected number items given as index', () => {
+    const state = new ItemSetState({items: [numberItem1, numberItem2, numberItem3, numberItem4], selectedItems: [3, 0]})
     expect(state.selectedItems).toStrictEqual([numberItem4, numberItem1])
     expect(state.selectedItemIds).toStrictEqual([3, 0])
     expect(state.selectedItem).toStrictEqual(numberItem1)
 })
 
-test('has multiple selected number items given as index if not in numbers - dangerous!', () => {
-    const state = new ItemSetState({items: [numberItem1, numberItem2, numberItem3, numberItem4], selectedItems: [0,1]})
-    expect(state.selectedItems).toStrictEqual([numberItem1, numberItem2])
-    expect(state.selectedItemIds).toStrictEqual([0, 1])
-    expect(state.selectedItem).toStrictEqual(numberItem2)
-})
-
 test('has multiple selected items of different sorts given in different ways', () => {
-    const state = new ItemSetState({items: [item1, item2, idItem1, idItem2, textItem1, textItem2, numberItem1, numberItem2], selectedItems: [numberItem2, 0, idItem1.id, textItem2]})
+    const state = new ItemSetState({items: [item1, item2, idItem1, idItem2, textItem1, textItem2, numberItem1, numberItem2], selectedItems: [7, 0, idItem1.id, textItem2]})
     expect(state.selectedItems).toStrictEqual([numberItem2, item1, idItem1, textItem2])
     expect(state.selectedItemIds).toStrictEqual([7, 0, idItem1.id, 5])
     expect(state.selectedItem).toStrictEqual(textItem2)

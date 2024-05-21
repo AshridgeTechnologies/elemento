@@ -62,7 +62,7 @@ test('Set returns correct update for array', () => {
     expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
 })
 
-test('Update returns correct update', () => {
+test('Update returns correct update for object', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
     const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
@@ -70,6 +70,17 @@ test('Update returns correct update', () => {
     state.Update({a:20, b:'Cee'})
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee', c: true}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee', c: true})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+})
+
+test('Update returns correct update for array', () => {
+    const state = new Data.State({value: [10, 20, 30]})
+    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    expect(state.value).toStrictEqual([10, 20, 30])
+
+    state.Update({0:99, '2':'Cee'})
+    const expectedState = state._withStateForTest({value: [99, 20, 'Cee']})
+    expect(expectedState.value).toStrictEqual([99, 20, 'Cee'])
     expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
 })
 

@@ -1,9 +1,11 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {mergeRight} from 'ramda'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import lodash from 'lodash'; const {isPlainObject} = lodash;
+import {clone} from 'radash'
+import lodash from 'lodash';
+
+const {isPlainObject} = lodash;
 
 type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}
@@ -62,7 +64,10 @@ export class DataState extends BaseComponentState<StateProperties>
     }
 
     Update(changes: object) {
-        const newValue = mergeRight(this.value, changes )
+        const newValue = clone(this.value)
+        for (const p in changes) {
+            newValue[p] = changes[p as keyof object]
+        }
         this.updateState({value: newValue})
     }
 }

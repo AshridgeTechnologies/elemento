@@ -33,4 +33,6 @@ export const appFunctionsNames = () => {
     return Object.keys(appFunctions)
 }
 
+export const knownSyncAppFunctionsNames = () => ['Reset', 'Set', 'NotifyError', 'Notify', 'CurrentUser', 'GetRandomId']
+
 export default appFunctions

@@ -5,6 +5,7 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import ItemSetItem from './ItemSetItem'
+import {isNumeric} from 'validator'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
 type Selectable = typeof selectableChoices[number]
@@ -171,7 +172,10 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     }
 
     private findItem(item: any) {
-        return this.items.find( it => !isNil(it) && (it === item || it.id === item) ) ?? this.items[item]
+        if (typeof item === 'number' || typeof(item) === 'string' && isNumeric(item)) {
+            return this.items[Number(item)]
+        }
+        return this.items.find( it => !isNil(it) && (it === item || it.id === item) ) ?? undefined
     }
 
     private findId(item: any) {
