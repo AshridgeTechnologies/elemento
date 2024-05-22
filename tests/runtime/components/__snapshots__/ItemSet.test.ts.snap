@@ -14,6 +14,7 @@ exports[`ItemSet produces output containing ReactElement children 1`] = `
       id="app.page1.itemSet1.#id1.Text99"
     >
       where are you?
+      item id id1
       selected
       false
     </p>
@@ -28,6 +29,7 @@ exports[`ItemSet produces output containing ReactElement children 1`] = `
       id="app.page1.itemSet1.#id2.Text99"
     >
       over here!
+      item id id2
       selected
       false
     </p>
@@ -47,6 +49,7 @@ exports[`ItemSet produces output with indexes if items have no ids 1`] = `
       id="app.page1.itemSet1.#0.Text99"
     >
       where are you?
+      item id 0
       selected
       false
     </p>
@@ -61,6 +64,7 @@ exports[`ItemSet produces output with indexes if items have no ids 1`] = `
       id="app.page1.itemSet1.#1.Text99"
     >
       over here!
+      item id 1
       selected
       false
     </p>
@@ -80,6 +84,7 @@ exports[`ItemSet shows only first selectedItem as selected if no ids when given 
       id="app.page1.itemSet1.#0.Text99"
     >
       where are you?
+      item id 0
       selected
       true
     </p>
@@ -94,6 +99,7 @@ exports[`ItemSet shows only first selectedItem as selected if no ids when given 
       id="app.page1.itemSet1.#1.Text99"
     >
       over here!
+      item id 1
       selected
       false
     </p>
@@ -113,6 +119,7 @@ exports[`ItemSet shows single selectedItem as selected 1`] = `
       id="app.page1.itemSet1.#id1.Text99"
     >
       where are you?
+      item id id1
       selected
       false
     </p>
@@ -127,6 +134,7 @@ exports[`ItemSet shows single selectedItem as selected 1`] = `
       id="app.page1.itemSet1.#id2.Text99"
     >
       over here!
+      item id id2
       selected
       true
     </p>
@@ -146,6 +154,7 @@ exports[`ItemSet shows single selectedItem as selected if no ids 1`] = `
       id="app.page1.itemSet1.#0.Text99"
     >
       where are you?
+      item id 0
       selected
       false
     </p>
@@ -160,6 +169,7 @@ exports[`ItemSet shows single selectedItem as selected if no ids 1`] = `
       id="app.page1.itemSet1.#1.Text99"
     >
       over here!
+      item id 1
       selected
       true
     </p>

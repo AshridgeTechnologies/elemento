@@ -282,13 +282,16 @@ export const globalFunctions = {
     },
 
     Range(startVal: Value<number | null>, endVal: Value<number | null>, stepVal: Value<number | null> = 1): number[] {
-        if (startVal === undefined || endVal === undefined) {
+        if (arguments.length < 2) {
             throw Error('Range() needs start and end, and optional step')
         }
 
-        const start = valueOf(startVal) ?? 0, end = valueOf(endVal) ?? 0, step = valueOf(stepVal) ?? 0
-        if (isNil(step) || step === 0 ) {
-            throw Error('Range: step cannot be zero')
+        const start = valueOf(startVal) ?? 0, end = valueOf(endVal) ?? 0, step = valueOf(stepVal)
+        const checkNumber = (n: number, name: string) => {if (n === Infinity || isNaN(n)) throw Error(`Range: ${name} cannot be ${n}`)}
+        checkNumber(start, 'start')
+        checkNumber(end, 'end')
+        if (isNil(step) || step === 0 || step === Infinity || isNaN(step)) {
+            throw Error('Range: step cannot be ' + step)
         }
         const ascending = start < end
         const stepDirection = ascending ? 1 : -1
@@ -313,7 +316,7 @@ export const globalFunctions = {
         return listVal.filter(condition)
     },
 
-    Count(listVal: Value<any[]> | null, condition?: (item: any) => boolean) {
+    Count(listVal: Value<any[]> | null, condition?: (item: any, index: number) => boolean) {
         const list = valueOf(listVal)
         if (arguments.length < 1) throw new Error('Wrong number of arguments to Count. Expected list, optional expression.')
         if (isNil(list)) return 0
@@ -540,9 +543,9 @@ export const globalFunctions = {
 
 // for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when neeeded
 export const functionArgs = {
-    Select: {1: ['$item']},
-    Count: {1: ['$item']},
-    ForEach: {1: ['$item']},
+    Select: {1: ['$item', '$index']},
+    Count: {1: ['$item', '$index']},
+    ForEach: {1: ['$item', '$index']},
     First: {1: ['$item']},
     Last: {1: ['$item']},
     Sort: {1: ['$item']},

@@ -580,8 +580,9 @@ describe('Range', () => {
         expect( ()=> Range(1)).toThrow('Range() needs start and end, and optional step')
     })
 
-    test('error if step is zero', () => expect(() => Range(1,3,0)).toThrow('Range: step cannot be zero'))
-    test('error if step is null', () => expect(() => Range(1,3,null)).toThrow('Range: step cannot be zero'))
+    test.each([Infinity, NaN])('error if start is not a valid number', (arg) => expect(() => Range(arg,3)).toThrow(`Range: start cannot be ` + arg))
+    test.each([Infinity, NaN])('error if end is not a valid number', (arg) => expect(() => Range(1,arg)).toThrow(`Range: end cannot be ` + arg))
+    test.each([0, null, Infinity, NaN])('error if step is not a valid number', (arg) => expect(() => Range(1,3,arg)).toThrow(`Range: step cannot be ` + arg))
     test('returns a list of numbers from start to end', () => expect(Range(1, 3)).toStrictEqual([1, 2, 3]))
     test('returns a list of numbers from null as zero to end', () => expect(Range(null, 3)).toStrictEqual([0, 1, 2, 3]))
     test('returns a list of numbers from start to null as zero', () => expect(Range(-2, null)).toStrictEqual([-2, -1, 0]))
@@ -613,6 +614,7 @@ describe('Count', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => Count()).toThrow('Wrong number of arguments to Count. Expected list, optional expression.'))
     test('returns the count of selected items', () => expect(Count([3, -1, 4, 0], (it: any) => it > 0)).toBe(2))
+    test('passes index to the condition', () => expect(Count([0, 2, 1, 3], (it: any, index: number) => it === index)).toBe(2))
     test('returns the count of all items if no condition', () => expect(Count([3, -1, 4, 0])).toBe(4))
     test('Gets value of object for the list', ()=> expect(Count(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toBe(2))
     test('Null list gives 0', ()=> expect(Count(null, (it: any) => it <= 0)).toBe(0))

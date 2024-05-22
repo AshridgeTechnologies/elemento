@@ -18,7 +18,7 @@ export default class Data extends BaseElement<Properties> implements Element {
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('initialValue', 'string', {state: true}),
+            propDef('initialValue', 'expr', {state: true}),
             propDef('display', 'boolean'),
         ]
     }

@@ -13,16 +13,16 @@ test('Data has correct properties with default values', ()=> {
 })
 
 test('Data has correct properties with specified values', ()=> {
-    const data1 = new Data('id1', 'Data 1', {initialValue: 'Some data', display: true})
+    const data1 = new Data('id1', 'Data 1', {initialValue: ex`Some data`, display: true})
 
     expect(data1.id).toBe('id1')
     expect(data1.name).toBe('Data 1')
-    expect(data1.initialValue).toStrictEqual('Some data')
+    expect(data1.initialValue).toStrictEqual(ex`Some data`)
     expect(data1.display).toBe(true)
 })
 
 test('tests if an object is this type', ()=> {
-    const data = new Data('id1', 'Data 1', {initialValue: 'Some data'})
+    const data = new Data('id1', 'Data 1', {initialValue: ex`Some data`})
     const page = new Page('p1', 'Page 1', {}, [])
 
     expect(Data.is(data)).toBe(true)
@@ -30,18 +30,18 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const data = new Data('id1', 'Data 1', {initialValue: 'Some data', display: true})
+    const data = new Data('id1', 'Data 1', {initialValue: ex`10`, display: true})
     const updatedData1 = data.set('id1', 'name', 'Data 1A')
     expect(updatedData1.name).toBe('Data 1A')
-    expect(updatedData1.initialValue).toBe('Some data')
+    expect(updatedData1.initialValue).toStrictEqual(ex`10`)
     expect(data.name).toBe('Data 1')
-    expect(data.initialValue).toBe('Some data')
+    expect(data.initialValue).toStrictEqual(ex`10`)
 
     const updatedData2 = updatedData1.set('id1', 'initialValue', ex`shazam`)
     expect(updatedData2.name).toBe('Data 1A')
     expect(updatedData2.initialValue).toStrictEqual(ex`shazam`)
     expect(updatedData1.name).toBe('Data 1A')
-    expect(updatedData1.initialValue).toBe('Some data')
+    expect(updatedData1.initialValue).toStrictEqual(ex`10`)
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {

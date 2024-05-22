@@ -33,7 +33,7 @@ const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'JSON', 'window', 'document'].includes(name)
 const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name)
-const isItemVar = (name: string) => name === '$item' || name === '$selected'
+const isItemVar = (name: string) => name === '$item' || name === '$itemId' || name === '$index' || name === '$selected'
 const isFormVar = (name: string) => name === '$form'
 const isPropsVar = (name: string) => name === 'props'
 

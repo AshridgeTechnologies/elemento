@@ -244,7 +244,7 @@ export default class Generator {
             : `    const pathWith = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
-        const extraDeclarations = componentIsListItem ? '    const {$item, $selected, onClick} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $selected, onClick} = props' : ''
 
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)

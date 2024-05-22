@@ -610,7 +610,7 @@ test('generates Button elements with properties including await in action', ()=>
     }, [])
     const b2_action = React.useCallback(async () => {
         let newWords = await JSON.parse('some json');
-            ForEach(newWords, async \$item => await Add(Words, $item))
+            ForEach(newWords, async ($item, $index) => await Add(Words, $item))
     }, [])
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
@@ -1008,7 +1008,7 @@ test('sorts state entries into dependency order', () => {
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const styles = undefined
@@ -1064,7 +1064,7 @@ test('sorts state entries into dependency order when nested inside a layout elem
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const styles = undefined
@@ -1216,7 +1216,7 @@ test('generates ItemSet element with separate child component and global functio
             new SelectInput('id5', 'Item Color', {}),
             new Layout('la1', 'Layout 1', {}, [
                 new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
-                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
+                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
                 ])
@@ -1230,7 +1230,7 @@ test('generates ItemSet element with separate child component and global functio
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
@@ -1244,7 +1244,7 @@ test('generates ItemSet element with separate child component and global functio
     const styles = {color: $selected ? 'red' : ItemColor, width: 200}
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
+        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1 + $itemId),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
@@ -1295,7 +1295,7 @@ test('generates ItemSet element inside List', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement, TextInput, Button} = Elemento.components
     const {Left} = Elemento.globalFunctions
     const {Update} = Elemento.appFunctions
@@ -1354,7 +1354,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page2_ItemSet1Item = React.memo(function Page2_ItemSet1Item(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const styles = undefined
@@ -1687,8 +1687,8 @@ test('generates user defined component and instance', () => {
 test('transforms expressions to functions where needed and does not fail where no expression present', () => {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
-                new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), \$item.height > 10)`}),
-                new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), \$item.height + 10)`}),
+                new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), $item.height > $index)`}),
+                new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), $item.height + 10)`}),
                 new Data('d3', 'NoWidgets', {initialValue: ex`Select(Widgets.getAllData())`}),
                 new Data('d4', 'CountNoCondition', {initialValue: ex`Count(Widgets.getAllData())`}),
                 new Data('d5', 'IfPlainValues', {initialValue: ex`If(true, 1, Date)`}),
@@ -1707,8 +1707,8 @@ test('transforms expressions to functions where needed and does not fail where n
     const {Select, ForEach, Count, If, Sum} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('app.Widgets')
-    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => \$item.height > 10)}))
-    const TallerWidgets = _state.setObject(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), \$item => \$item.height + 10)}))
+    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), ($item, $index) => $item.height > $index)}))
+    const TallerWidgets = _state.setObject(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), ($item, $index) => $item.height + 10)}))
     const NoWidgets = _state.setObject(pathWith('NoWidgets'), new Data.State({value: Select(Widgets.getAllData())}))
     const CountNoCondition = _state.setObject(pathWith('CountNoCondition'), new Data.State({value: Count(Widgets.getAllData())}))
     const IfPlainValues = _state.setObject(pathWith('IfPlainValues'), new Data.State({value: If(true, 1, Date)}))
@@ -1758,7 +1758,7 @@ test('generates local user defined functions even if empty in a page', () => {
         let isShiny = widget.shiny
         return Or(widget.height > heightAllowed, isShiny)
     }, [MinHeight])
-    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
+    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
@@ -1901,12 +1901,12 @@ test('generates local user defined functions in a list item that use a page item
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItem(props) {
     const pathWith = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $selected, onClick} = props
+    const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const MinHeight = _state.useObject(parentPathWith('MinHeight'))
     const ExtraHeight = React.useCallback(() => {
-        return \$item.height - MinHeight
+        return $item.height - MinHeight
     }, [$item, MinHeight])
     const styles = undefined
 
@@ -1926,7 +1926,7 @@ function Page1(props) {
     const IsTallWidget = React.useCallback((widget) => {
         return Or(widget.height > MinHeight, widget.shiny)
     }, [MinHeight])
-    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), \$item => IsTallWidget(\$item))}))
+    const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))}))
     const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 

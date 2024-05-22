@@ -16,7 +16,7 @@ type OnClickFn = MouseEventHandler<HTMLDivElement>
 
 type Properties = Readonly<{
     path: string,
-    itemContentComponent: (props: { path: string, $item: any, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
+    itemContentComponent: (props: { path: string, $item: any, $itemId: (string | number), $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
 }>
 
@@ -53,7 +53,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
             const itemId = item.id ?? String(index)
             const itemPath = indexedPath(path, itemId)
             const selected = state.isSelected(index)
-            return React.createElement(itemContentComponent, {path: itemPath, $item: item, $selected: selected, onClick, key: itemId})
+            return React.createElement(itemContentComponent, {path: itemPath, $item: item, $itemId: itemId, $selected: selected, onClick, key: itemId})
         }
     )
 
