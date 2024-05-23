@@ -84,7 +84,6 @@ export default class PreviewController {
     }
 
     Debug(debugExpr: string) {
-        console.log('Preview.Debug', debugExpr)
         const windowAny = this.window as any
         windowAny.elementoDebugExpr = debugExpr
         this.window.dispatchEvent(new CustomEvent('debugExpr', {detail: debugExpr}))

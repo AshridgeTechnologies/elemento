@@ -10,7 +10,9 @@ import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSet
 
 type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
 type StateInputProperties = Partial<Readonly<{period: PropVal<number>, interval: PropVal<number>, intervalAction: (t: TimerState) => void, endAction: (t: TimerState) => void}>>
-type StateInternalProperties = Partial<Readonly<{startTime: Date, intervalCount: number, stoppedTime: Date, previousElapsedMillis: number}>>
+type StateInternalProperties = Partial<Readonly<{startTime: Date, intervalCount: number, stoppedTime: Date, finishedTime: Date, previousElapsedMillis: number}>>
+
+const stateReset = {startTime: undefined, intervalCount: undefined, stoppedTime: undefined, finishedTime: undefined, previousElapsedMillis: undefined}
 
 export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
@@ -41,6 +43,8 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     get interval() { return valueOf(this.props.interval) ?? null }
     get intervalAction() { return this.props.intervalAction ?? null }
     get endAction() { return this.props.endAction ?? null }
+    get isRunning() { return this.startTime !== null && !this.state.stoppedTime && !this.isFinished }
+    get isFinished() {return Boolean(this.period && this.startTime && this.elapsedTime! >= this.period)}
     get value() { return this.elapsedTime }
     get startTime() { return this.state.startTime ?? null }
 
@@ -63,8 +67,7 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
         return Math.max(this.period - this.elapsedTime, 0)
     }
     get intervalCount() { return this.state.intervalCount ?? 0 }
-    get isRunning() { return this.startTime !== null && !this.state.stoppedTime && !this.isFinished }
-    get isFinished() {return Boolean(this.period && this.startTime && this.elapsedTime! >= this.period)}
+    get finishedTime() { return this.state.finishedTime ?? null }
     private get totalElapsedMillis() {
         const previousElapsedMillis = this.state.previousElapsedMillis ?? 0
         const currentElapsedMillis = (this.state.stoppedTime?.getTime() ?? Date.now()) - (this.startTime?.getTime() ?? 0)
@@ -72,10 +75,11 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
 
     Start() {
         if (this.isRunning) return
+
         if (this.state.stoppedTime) {
             this.updateState({startTime: new Date(), stoppedTime: undefined, previousElapsedMillis: this.totalElapsedMillis})
         } else {
-            this.updateState({startTime: new Date()})
+            this.updateState({...stateReset, startTime: new Date()})
         }
         requestAnimationFrame(() => this.latest().checkIntervals())
     }
@@ -86,7 +90,8 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     }
 
     Reset() {
-        this.updateState({startTime: undefined, stoppedTime: undefined, intervalCount: undefined, previousElapsedMillis: undefined})
+        this.updateState(stateReset)
+
     }
 
     valueOf() {
@@ -113,7 +118,8 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
             requestAnimationFrame(() => this.latest().checkIntervals())
         }
 
-        if (this.latest().isFinished) {
+        if (this.isFinished) {
+            this.updateState({finishedTime: new Date()})
             this.endAction?.(this.latest())
         }
     }

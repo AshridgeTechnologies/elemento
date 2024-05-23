@@ -241,7 +241,7 @@ async function ReturnIt() {
 }
 
 async function SelectStuff(min) {
-    return Select(await Widgets.getAllData(), \$item => \$item.height > min)
+    return Select(await Widgets.getAllData(), ($item, $index) => $item.height > min)
 }
 
 async function IfSomething(min) {

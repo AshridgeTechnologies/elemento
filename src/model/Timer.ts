@@ -35,4 +35,11 @@ export default class Timer extends BaseElement<Properties> implements Element {
             ...visualPropertyDefs()
         ]
     }
+
+    get stateProperties(): string[] {
+        return super.stateProperties.concat([
+            'isRunning', 'isFinished', 'value', 'startTime', 'intervalTime', 'elapsedTime', 'remainingTime', 'intervalCount', 'finishedTime'
+        ])
+    }
+
 }
