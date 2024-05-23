@@ -4,7 +4,6 @@ import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
-import ItemSetItem from './ItemSetItem'
 import {isNumeric} from 'validator'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const

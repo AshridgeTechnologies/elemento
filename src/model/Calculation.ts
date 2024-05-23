@@ -1,10 +1,11 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType, Styling} from './Types'
+import {ComponentType, eventAction, PropertyDef, PropertyExpr, PropertyValueType, Styling} from './Types'
 import Element from './Element'
 import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 
 type Properties = Partial<Readonly<{
     calculation: PropertyExpr,
     label: PropertyValueType<string>,
+    whenTrueAction: PropertyExpr,
     show: PropertyValueType<boolean>,
 }>> & Styling
 
@@ -16,6 +17,7 @@ export default class Calculation extends BaseElement<Properties> implements Elem
 
     get calculation() {return this.properties.calculation}
     get label() {return this.properties.label}
+    get whenTrueAction() {return this.properties.whenTrueAction}
     get show() {return this.properties.show ?? true}
     get styles() {return this.properties.styles}
 
@@ -23,6 +25,7 @@ export default class Calculation extends BaseElement<Properties> implements Elem
         return [
             propDef('calculation', 'expr', {state: true}),
             propDef('label', 'string'),
+            propDef('whenTrueAction', eventAction(), {state: true}),
             ...visualPropertyDefs()
         ]
     }

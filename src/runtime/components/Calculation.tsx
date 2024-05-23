@@ -10,8 +10,9 @@ import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 
 
-type Properties = {path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}
-type StateProperties = {value: any}
+type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
+type ExternalStateProperties = Partial<Readonly<{value: any, whenTrueAction: () => void}>>
+type InternalStateProperties = Partial<Readonly<{previousValueTruthy: any}>>
 
 const isObjOrArray = (value: any) => isObject(value) ?? isArray(value)
 const formatDisplay = (value: any) => {
@@ -32,6 +33,7 @@ export default function Calculation({path, ...props}: Properties) {
 
     const state = useGetObjectState<CalculationState>(path)
     const {value} = state
+    state.checkTriggered()
     const multiline = true
     const multilineProps = multiline ? {minRows: 1, maxRows: 10} : {}
     const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})
@@ -52,13 +54,33 @@ export default function Calculation({path, ...props}: Properties) {
     })
 }
 
-export class CalculationState extends BaseComponentState<StateProperties>
+export class CalculationState extends BaseComponentState<ExternalStateProperties, InternalStateProperties>
     implements ComponentState<CalculationState> {
 
     // 'calculation' is called value in the state object to be consistent with input elements
     // AND so it will work with Form
     get value() {
         return valueOf(this.props.value)
+    }
+
+    private get previousValueTruthy(): boolean {
+        return this.state.previousValueTruthy
+    }
+
+    private get whenTrueAction() {
+        return this.props.whenTrueAction
+    }
+
+    checkTriggered() {
+        if (!this.whenTrueAction) return
+        const currentValueTruthy = !!this.value
+        const triggered = currentValueTruthy && !this.previousValueTruthy
+        if (triggered) {
+            this.whenTrueAction()
+        }
+        if (this.previousValueTruthy !== currentValueTruthy) {
+            this.updateState({previousValueTruthy: currentValueTruthy})
+        }
     }
 
     valueOf() {
