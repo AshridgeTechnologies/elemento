@@ -92,12 +92,9 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Horizontal list
-- Freeform list, generated from a list, with positions set by data
 - Event actions: double click, drop
 - Speech synthesis
 - Shapes, drawing, - clip-path, svg?
-- When condition actions
 - Multi-user shared data
 - Card game assets - eg https://www.revk.uk/2018/06/svg-vector-playing-cards.html
 
@@ -354,6 +351,9 @@ Done
 - General object adapter
 - Inspector improvements
 - Item Set
+- Calculation condition actions
+- Horizontal list
+- Freeform list, generated from a list, with positions set by data
 
 Bugs fixed
 ----------

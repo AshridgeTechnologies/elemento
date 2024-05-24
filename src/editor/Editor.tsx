@@ -6,7 +6,7 @@ import PropertyEditor from './PropertyEditor'
 import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn, OnNameSelectedFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 
-import {Box, Grid, Typography} from '@mui/material'
+import {Box, Grid} from '@mui/material'
 import './splitPane.css'
 import Project from '../model/Project'
 import {AllErrors} from '../generator/Types'
