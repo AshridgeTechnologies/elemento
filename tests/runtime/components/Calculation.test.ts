@@ -3,11 +3,12 @@
  */
 
 import {Calculation} from '../../../src/runtime/components/index'
-import {testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
+import {testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {testContainer} from '../../testutil/rtlHelpers'
 import {CalculationState} from '../../../src/runtime/components/Calculation'
+import {act} from '@testing-library/react/pure'
 
 const [calculation] = wrappedTestElement(Calculation, CalculationState)
 
@@ -41,9 +42,11 @@ test('Calculation shows empty value when state value is absent', () => {
     expect(el`app.page1.widget1`.textContent).toBe('')
 })
 
-test('Calculation triggers when action from UI element when value true', () => {
+test('Calculation asynchronously checks and triggers when action from UI element when value true', async () => {
     const action = jest.fn()
     testContainer(calculation('app.page1.widget1', {value: true, whenTrueAction: action}))
+    expect(action).not.toHaveBeenCalled()
+    await act( () => wait(10))
     expect(action).toHaveBeenCalled()
 })
 

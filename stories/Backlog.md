@@ -202,6 +202,7 @@ Epics
 Tech debt
 ---------
 
+- Allow multiple state updates to same object in same deferred updates set, refactor Collection value update
 - Fix flaky Timer tests - mock requestAnimationFrame and call a certain number of times?
 - Cannot upgrade MUI as slotProps.backdrop not available
 - PropertyEditor test really slow on some tests

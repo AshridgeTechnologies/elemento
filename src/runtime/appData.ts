@@ -72,6 +72,9 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
 
     const storeDeferredUpdate = (path: string, newObject: StoredState) => {
         log('storeDeferredUpdate', path)
+        if (deferredUpdates.has(path)) {
+            console.warn('Multiple updates to object in same action:', newObject.constructor.name, path)
+        }
         deferredUpdates.set(path, newObject)
     }
 

@@ -33,7 +33,7 @@ export default function Calculation({path, ...props}: Properties) {
 
     const state = useGetObjectState<CalculationState>(path)
     const {value} = state
-    state.checkTriggered()
+    setTimeout( () => state.latest().checkTriggered(), 0)
     const multiline = true
     const multilineProps = multiline ? {minRows: 1, maxRows: 10} : {}
     const optionalProps = definedPropertiesOf({label, multiline, ...multilineProps})

@@ -190,6 +190,43 @@ test('state object can update its own state asynchronously', async () => {
     expect(renderCount).toBe(3)
 })
 
+test.skip('TO DO: state object can update its own state in multiple separate calls immediately', async () => {
+    const state = stateObj({color: 'red', length: 23})
+    let renderCount = 0
+    let fooState: any
+    await runInProvider(() => {
+        renderCount++
+        fooState = useGetStore().setObject<StateObject>('TheApp.foo', state)
+        fooState.setColor('blue')
+        fooState.increaseLength(2)
+    })
+    await wait(0)
+    expect(fooState.length).toBe(25)
+    expect(fooState.color).toBe('blue')
+})
+
+test.skip('TO DO: state object can update its own state in multiple separate calls asynchronously', async () => {
+    const state = stateObj({color: 'red', length: 23})
+    let renderCount = 0
+    let fooState: any
+    await runInProvider(() => {
+        renderCount++
+        fooState = useGetStore().setObject('TheApp.foo', state)
+    })
+    await wait(0)
+
+    expect(fooState.color).toBe('red')
+    act(() => {
+        fooState.setColor('blue')
+        fooState.increaseLength(2)
+    })
+    expect(fooState.color).toBe('blue')
+    expect(fooState.length).toBe(25)
+    expect(renderCount).toBe(3)
+})
+
+
+
 test('BaseComponentState keeps same state if properties change', async () => {
     const state = stateObj({color: 'red', length: 23})._withStateForTest({color: 'blue'})
     const stateWithNewProps = state.updateFrom(stateObj({color: 'red', length: 55}))
