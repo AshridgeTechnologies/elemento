@@ -122,3 +122,17 @@ test('string conversion uses the value toString', () => {
     expect('x' + state).toBe('x1,2,3')
 })
 
+test('State class is equal if value structurally equal and when true action the same instance', () => {
+    const value = {a: 10, b: 'foo'}
+    const when1 = () => {}
+    const when2 = () => {}
+    const state1 = new CalculationState({value})
+    expect(state1.updateFrom(new CalculationState({value}))).toBe(state1)
+    expect(state1.updateFrom(new CalculationState({value: {...value}}))).toBe(state1)
+    expect(state1.updateFrom(new CalculationState({value: {...value, c: true}}))).not.toBe(state1)
+
+    const state2 = new CalculationState({value, whenTrueAction: when1})
+    expect(state2.updateFrom(new CalculationState({value, whenTrueAction: when1}))).toBe(state2)
+    expect(state2.updateFrom(new CalculationState({value: {...value}, whenTrueAction: when1}))).toBe(state2)
+    expect(state2.updateFrom(new CalculationState({value, whenTrueAction: when2}))).not.toBe(state2)
+})

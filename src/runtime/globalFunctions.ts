@@ -17,7 +17,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {isArray} from 'radash'
+import {clone, isArray} from 'radash'
 import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
@@ -52,7 +52,8 @@ function decimalOp(op: OpType, initialValue: number | undefined, ...args: Decima
     return initialValue !== undefined ? <BigNumber>args.reduce(reducer, initialValue) : <BigNumber>args.reduce(reducer)
 }
 
-function comparisonOp(op: ComparisonOpType, arg1: DecimalValOrNull | Date, arg2: DecimalValOrNull | Date): boolean {
+function comparisonOp(op: ComparisonOpType, arg1Val: DecimalValOrNull | Date, arg2Val: DecimalValOrNull | Date): boolean {
+    const [arg1, arg2] = valuesOf(arg1Val, arg2Val)
     if (isNil(arg1) && isNil(arg2)) {
         switch(op) {
             case 'gt':
@@ -265,6 +266,14 @@ export const globalFunctions = {
         const pairsResult = fromPairs(pairs)
 
         return assign(mergedBaseResult, pairsResult)
+    },
+
+    WithUpdates(original: any[] | {[k: string]: any}, ...nameValueArgs: any[]) {
+        if (nameValueArgs.length === 0 || nameValueArgs.length % 2 !== 0) throw new Error('Wrong number of arguments - must have original then pairs of name, value')
+        const pairs = splitEvery(2, valuesOf(...nameValueArgs)) as [string | number, any][]
+        const newValue = clone(valueOf(original)) as any
+        pairs.forEach( ([prop, value]) => newValue[prop] = value)
+        return newValue
     },
 
     Pick(record: {[k: string]: any}, ...propertyNames: string[]) {

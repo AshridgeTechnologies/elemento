@@ -6,7 +6,7 @@ import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunction
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {isArray, isObject} from 'radash'
-import {pick} from 'ramda'
+import {equals, pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 
 
@@ -69,6 +69,10 @@ export class CalculationState extends BaseComponentState<ExternalStateProperties
 
     private get whenTrueAction() {
         return this.props.whenTrueAction
+    }
+
+    protected isEqualTo(newObj: this): boolean {
+        return equals(this.props.value, newObj.props.value) && this.props.whenTrueAction === newObj.props.whenTrueAction
     }
 
     checkTriggered() {
