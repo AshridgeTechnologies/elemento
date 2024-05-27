@@ -147,8 +147,7 @@ test('Form element produces output containing nested form', () => {
 test('State class has correct properties and functions', () => {
     const submitAction = jest.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface(null, {})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state)
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 
@@ -176,8 +175,7 @@ test('State class compares data types as objects', () => {
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterface(null, {Description: 'Extra Large'})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
     state._updateValue()
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: {Description: 'Extra Large', BoxSize: 17}}))
 })
@@ -192,9 +190,9 @@ test('State has expected values', async () => {
     }, {label: 'Test Form 1'})
     renderer.create(component)
     await actWait()
-    expect(stateAt('app').value).toStrictEqual({Description: 'Big', BoxSize: 17})
-    expect(stateAt('app.Description').value).toBe('Big')
-    expect(stateAt('app.BoxSize').value).toBe(17)
+    expect(stateAt('form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
+    expect(stateAt('form1.Description').value).toBe('Big')
+    expect(stateAt('form1.BoxSize').value).toBe(17)
 })
 
 test('State has expected values after update', async () => {
@@ -354,8 +352,7 @@ test('State calls ShowErrors on all its component states', async () => {
 test('State Submit calls submit action if present', async () => {
     const submitAction = jest.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface(state, {})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {})
 
     const data = {a: 10}
     await state.Submit(data)

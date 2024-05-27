@@ -13,11 +13,13 @@ export interface ComponentState<T> {
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
     protected state: StateProps = {} as StateProps
     protected _appStateInterface?: AppStateForObject
+    protected _path?: string
 
     constructor(public props: ExternalProps) {}
 
     init(asi: AppStateForObject, path: string): void {
         this._appStateInterface = asi
+        this._path = path
     }
 
     updateFrom(newObj: this): this {
@@ -45,6 +47,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         const newVersion = new this.thisConstructor(this.props)
         newVersion.state = state
         newVersion._appStateInterface = this._appStateInterface
+        newVersion._path = this._path
         return newVersion
     }
 

@@ -71,7 +71,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(false)
 
     const state = new TrueFalseInput.State({value: true})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe(true)
 
     state.Reset()

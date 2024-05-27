@@ -6,11 +6,11 @@ test('get initial app state', ()=> {
 })
 
 test('can set app state and get it again', ()=> {
-    const store = new AppState({app: {}})
+    const store = new AppState({app1: {}})
     const obj = {foo: 27}
-    const newStore = store.update('app', obj)
-    expect(newStore.select('app')).toBe(obj)
-    expect(store.select('app')).toStrictEqual({})
+    const newStore = store.update('app1', obj)
+    expect(newStore.select('app1')).toBe(obj)
+    expect(store.select('app1')).toStrictEqual({})
     expect(newStore).not.toBe(store)
 })
 

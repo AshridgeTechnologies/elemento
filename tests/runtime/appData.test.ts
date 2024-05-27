@@ -152,11 +152,11 @@ test('initial state is empty object if no initial values supplied', async () => 
     expect(useGetStore().setObject<StateObject>('TheApp.page1.description', stateObj({})).props).toStrictEqual({})
 }))
 
-test('can get state with an element path and normalise first part to "app"', async () => {
+test('can get state with an element path using the app codename', async () => {
     const state = stateObj({color: 'red', length: 23})
     await runInProvider(() => {
         useGetStore().setObject('TheApp.page1.description', state)
-        expect(useGetObjectState('BigApp.page1.description')).toBe(state)
+        expect(useGetObjectState('TheApp.page1.description')).toBe(state)
     })
 })
 

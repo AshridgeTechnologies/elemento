@@ -184,7 +184,7 @@ test('TextInput overrides properties from dataType', async () => {
 
 test('State class has correct properties and functions', () => {
     const state = new TextInput.State({value: 'car'})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe('car')
     expect(state.defaultValue).toBe('')
 

@@ -29,12 +29,7 @@ export interface AppStateForObject {
 
 export type AppStoreHook = {setAppStore(sa: StoreApi<AppStore>): void}
 
-const fixPath = (path: string, pathPrefix: string | undefined) => {
-    const fullPath = [pathPrefix, path].filter(notBlank).join('.')
-    if (fullPath === '') return fullPath
-    const [, ...remainingSegments] = fullPath.split('.')
-    return ['app', ...remainingSegments].join('.')
-}
+const fixPath = (path: string, pathPrefix: string | undefined) => [pathPrefix, path].filter(notBlank).join('.')
 
 let loggingOn = false
 const log = (...args: any[]) => loggingOn && console.log(...args)
@@ -97,7 +92,7 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
             return
         }
 
-        (newObject as any).init(appStateInterface(path))
+        (newObject as any).init(appStateInterface(path), path)
         if (deferringUpdates) {
             storeDeferredUpdate(path, newObject)
         } else {

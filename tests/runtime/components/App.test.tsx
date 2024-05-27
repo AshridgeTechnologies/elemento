@@ -118,7 +118,7 @@ test('App shows first page initially and other page when state changes and only 
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1'}, 'this is page ' + pageName)
 
     function MainPage(props: any) {
-        const state = Elemento.useGetObjectState<AppData>('app')
+        const state = Elemento.useGetObjectState<AppData>('app1')
         return React.createElement(Page, {path: props.path},
             text('Main'),
             React.createElement('button', {
@@ -142,11 +142,11 @@ test('App shows first page initially and other page when state changes and only 
     }
 
     const {el, click, unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
-    expect(el`p[id="app1.page1.para1"`?.textContent).toBe('this is page Main')
+    expect(el`p[id="app1.page1.para1"]`?.textContent).toBe('this is page Main')
     expect(startupCount).toBe(1)
 
     await actWait( () => click('button'))
-    expect(el`p[id="app1.page1.para1`?.textContent).toBe('this is page Other')
+    expect(el`p[id="app1.page1.para1"]`?.textContent).toBe('this is page Other')
     expect(startupCount).toBe(1)
     unmount() // to check nothing returned from the startup action is called
 })
@@ -165,7 +165,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const updatedState2 = state._withStateForTest({currentUrl: appContext.getUrl()})
     expect(updatedState2.currentPage).toBe(Page2)
 
-    const appInterface = testAppInterface(state); state.init(appInterface, 'test')
+    const appInterface = testAppInterface('testPath', state)
     const {ShowPage} = state
 
     ShowPage('Page2')
@@ -191,7 +191,7 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const updatedState = state._withStateForTest({currentUrl: appContext.getUrl()})
     expect(updatedState.currentPage).toBe(Page2)
 
-    const appInterface = testAppInterface(state); state.init(appInterface, 'test')
+    const appInterface = testAppInterface('testPath', state)
     const {ShowPage} = state
     const theDateStr = '2023-10-22T12:34:56.123Z'
     const theDate = new Date(theDateStr)
@@ -264,17 +264,17 @@ test('App.State can get current url object', () => {
 test('App.State responds to app context url changes', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
     const pages = {Page1, Page2, Page3}
-    const state0 = new App.State({pages, appContext})
-    expect(state0.currentPage).toBe(Page1)
-    const appInterface = testAppInterface(state0); state0.init(appInterface, 'testPath')
+    const state = new App.State({pages, appContext})
+    expect(state.currentPage).toBe(Page1)
+    const appInterface = testAppInterface('testPath', state)
 
     appContext.updateUrl('/Page2', null, null)
-    const state1 = state0.latest()
-    expect(state1).not.toBe(state0)
+    const state1 = state.latest()
+    expect(state1).not.toBe(state)
     expect(state1.currentPage).toBe(Page2)
 
     appContext.updateUrl('/Page2', {a:10}, 'anchor1')
-    const state2 = state0.latest()
+    const state2 = state.latest()
     expect(state2).not.toBe(state1)
     expect(state2.currentPage).toBe(Page2)
     expect(state2.CurrentUrl().query).toStrictEqual({a:10})
@@ -285,19 +285,19 @@ test('App.State responds to browser history changes', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
     const pages = {Page1, Page2, Page3}
     const [appContext, history] = getRealAppContext('/Page1/abc')
-    const state0 = new App.State({pages, appContext})
-    const appInterface = testAppInterface(state0); state0.init(appInterface, 'testPath')
-    expect(state0.CurrentUrl().page).toBe('Page1')
-    expect(state0.CurrentUrl().pathSections[0]).toBe('abc')
+    const state = new App.State({pages, appContext})
+    const appInterface = testAppInterface('testPath', state)
+    expect(state.CurrentUrl().page).toBe('Page1')
+    expect(state.CurrentUrl().pathSections[0]).toBe('abc')
 
     appContext.updateUrl('/Page1/xyz', null, null)
-    const state1 = state0.latest()
-    expect(state1).not.toBe(state0)
+    const state1 = state.latest()
+    expect(state1).not.toBe(state)
     expect(state1.CurrentUrl().page).toBe('Page1')
     expect(state1.CurrentUrl().pathSections[0]).toBe('xyz')
 
     history.back()
-    const state2 = state0.latest()
+    const state2 = state.latest()
     expect(state2).not.toBe(state1)
     expect(state2.CurrentUrl().page).toBe('Page1')
     expect(state2.CurrentUrl().pathSections[0]).toBe('abc')

@@ -125,7 +125,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(0)
 
     const state = new NumberInput.State({value: 77})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe(77)
     expect(state.defaultValue).toBe(0)
 

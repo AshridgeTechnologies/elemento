@@ -138,8 +138,8 @@ export default class Generator {
         const appContext = componentIsApp ? `    const {appContext} = props` : ''
         const getStateDeclaration = `    const _state = Elemento.useGetStore()`
         const appStateDeclaration = componentIsApp
-            ? `    const app = _state.setObject('app', new App.State({pages, appContext}))`
-            : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('app')` : ''
+            ? `    const app = _state.setObject('${app.codeName}', new App.State({pages, appContext}))`
+            : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('${app.codeName}')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
         const itemSetItemIdentifier = componentIsListItem ? ['ItemSetItem'] : []
@@ -158,7 +158,7 @@ export default class Generator {
         let appLevelDeclarations
         if (!componentIsApp) {
             const appLevelIdentifiers = identifiers.filter(isAppElement)
-            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = _state.useObject('app.${ident}')`).join('\n')
+            appLevelDeclarations = appLevelIdentifiers.map(ident => `    const ${ident} = _state.useObject('${app.codeName}.${ident}')`).join('\n')
         }
         let containerDeclarations
         if (canUseContainerElements) {
@@ -215,7 +215,7 @@ export default class Generator {
 
         const inlineStateBlock = () => topoSort(stateEntries).map(([el, entry]) => {
             const name = el.codeName
-            const pathExpr = componentIsApp ? `'app.${name}'` : `pathWith('${name}')`
+            const pathExpr = componentIsApp ? `'${app.codeName}.${name}'` : `pathWith('${name}')`
             if (entry instanceof FunctionDef) {
                 return functionDeclaration(entry)
             } else {
@@ -289,8 +289,9 @@ ${declarations}${debugHook}
         const identifiers = this.parser.componentIdentifiers(exprId)
 
         const selectedElementDeclaration = selectedElement ? `const _selectedElement = _state.getObject('${this.project.findElementPath(selectedElement.id)}')` :''
+        const appCodeName = this.app.codeName
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(exprId)
-        const appStateDeclaration = appStateFunctionIdentifiers.length ? `const app = _state.getObject('app')` : ''
+        const appStateDeclaration = appStateFunctionIdentifiers.length ? `const app = _state.getObject('${appCodeName}')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(exprId)
         const globalDeclarations = globalFunctionIdentifiers.length ? `const {${globalFunctionIdentifiers.join(', ')}} = Elemento.globalFunctions` : ''
@@ -299,7 +300,7 @@ ${declarations}${debugHook}
 
         let appLevelDeclarations
         const appLevelIdentifiers = identifiers.filter(isAppElement)
-        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('app.${ident}')`).join('\n')
+        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('appCodeName.${ident}')`).join('\n')
         let containerDeclarations
         const containerIdentifiers = identifiers.filter(isContainerElement)
         containerDeclarations = containerIdentifiers.map(ident => `const ${ident} = _state.getObject(pathWith('${ident}'))`).join('\n')

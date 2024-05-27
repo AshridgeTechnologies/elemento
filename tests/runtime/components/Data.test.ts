@@ -26,7 +26,7 @@ test('Data element produces empty output with default value for display', () => 
 
 test('Set returns correct update', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Set({a:20, b:'Cee'})
@@ -37,7 +37,7 @@ test('Set returns correct update', () => {
 
 test('Reset returns correct update', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Set({a:20, b:'Cee'})
@@ -53,7 +53,7 @@ test('Reset returns correct update', () => {
 
 test('Set returns correct update for array', () => {
     const state = new Data.State({value: []})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual([])
 
     state.Set(['a', 20])
@@ -64,7 +64,7 @@ test('Set returns correct update for array', () => {
 
 test('Update returns correct update for object', () => {
     const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Update({a:20, b:'Cee'})
@@ -75,7 +75,7 @@ test('Update returns correct update for object', () => {
 
 test('Update returns correct update for array', () => {
     const state = new Data.State({value: [10, 20, 30]})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual([10, 20, 30])
 
     state.Update({0:99, '2':'Cee'})

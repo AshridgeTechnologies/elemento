@@ -90,7 +90,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(null)
 
     const state = new DateInput.State({value: new Date('2021-11-12')})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual(new Date('2021-11-12'))
     expect(state.defaultValue).toBe(null)
 

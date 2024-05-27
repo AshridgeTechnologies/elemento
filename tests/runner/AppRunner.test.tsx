@@ -39,7 +39,7 @@ const testApp = (version: string) => {
         const {Page, TextElement, TextInput, Image} = Elemento.components
         const _store = useGetStore()
         const input1 = _store.setObject(pathWith('input1'), new TextInput.State({value: undefined}),)
-        const app = Elemento.useGetObjectState('app') as AppData
+        const app = Elemento.useGetObjectState('AppOne') as AppData
 
         // @ts-ignore
         return React.createElement(Page, {id: props.path},
@@ -59,7 +59,7 @@ const testApp = (version: string) => {
         // @ts-ignore
         const {appContext} = props
         const _store = Elemento.useGetStore()
-        const app = _store.setObject('app', new App.State({pages, appContext}))
+        const app = _store.setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -70,7 +70,7 @@ const badApp = () => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput} = Elemento.components
-        const app = Elemento.useGetObjectState('app') as AppData
+        const app = Elemento.useGetObjectState('AppOne') as AppData
 
         // @ts-ignore
         const goWrong = () => {throw new Error('Aaaargh!')}
@@ -87,7 +87,7 @@ const badApp = () => {
 
         // @ts-ignore
         const {appContext} = props
-        const app = _store.setObject('app', new App.State({pages, appContext}))
+        const app = _store.setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 

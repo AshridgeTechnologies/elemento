@@ -30,7 +30,7 @@ const notify = (notification: Notification) => {
 }
 
 export default function App({path, maxWidth, startupAction = noop, children, topChildren}: Properties) {
-    const state = useGetObjectState<AppData>('app')
+    const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 

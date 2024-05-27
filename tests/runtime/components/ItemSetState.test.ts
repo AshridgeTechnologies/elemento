@@ -13,8 +13,7 @@ test('Has correct properties', () => {
     const selectAction = () => {
     }
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1, selectAction})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1])
     expect(state.selectedItem).toStrictEqual(item1)
     expect(state.selectAction).toBe(selectAction)
@@ -39,8 +38,7 @@ test('Has empty item array if not defined', () => {
 
 test('knows if item is selected', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
 
     expect(state.isSelected(0)).toBe(true)
     expect(state.isSelected(1)).toBe(false)
@@ -52,8 +50,7 @@ test('knows if item is selected', () => {
 
 test('knows if item with id is selected', () => {
     const state = new ItemSetState({items: [idItem1, idItem2], selectedItems: idItem1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
 
     expect(state.isSelected(0)).toBe(true)
     expect(state.isSelected(1)).toBe(false)
@@ -65,8 +62,7 @@ test('knows if item with id is selected', () => {
 
 test('Can Set and Reset selected items, selectAction not called', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1, selectAction})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1])
 
     state.Set(item2)
@@ -80,8 +76,7 @@ test('Can Set and Reset selected items, selectAction not called', () => {
 
 test('Can Select to add to selected items and Reset', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: item1, selectAction})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1])
 
     state.Select(item4)
@@ -98,8 +93,7 @@ test('Can Select to add to selected items and Reset', () => {
 
 test('Duplicates ignored in original selected items and Select items', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: [item1, item1]})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1])
 
     state.Select(item4)
@@ -283,8 +277,7 @@ test('ignores undefined items', () => {
 
 test('Has new selected item after Set with item', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.Set(item2)
@@ -294,8 +287,7 @@ test('Has new selected item after Set with item', () => {
 
 test('Has new selected item after Set with item index', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.Set(1)
@@ -305,8 +297,7 @@ test('Has new selected item after Set with item index', () => {
 
 test('Has new selected item after Set with item index as string', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.Set('1')
@@ -316,8 +307,7 @@ test('Has new selected item after Set with item index as string', () => {
 
 test('Has new selected item after Set with item id', () => {
     const state = new ItemSetState({items: [idItem3, idItem1, idItem2], selectedItems: idItem1})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(idItem1)
 
     state.Set(idItem2.id)
@@ -327,8 +317,7 @@ test('Has new selected item after Set with item id', () => {
 
 test('Has new selected item after onSelect with item index, replace and selectable single', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1, selectAction})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.onSelect(1, 'replace')
@@ -339,8 +328,7 @@ test('Has new selected item after onSelect with item index, replace and selectab
 
 test('Has new single selected item after onSelect with item id, addRemove or fromLast and selectable single', () => {
     const state = new ItemSetState({items: [idItem1, idItem2], selectedItems: idItem1, selectAction, selectable: 'single'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(idItem1)
 
     state.onSelect(idItem2.id, 'addRemove')
@@ -356,8 +344,7 @@ test('Has new single selected item after onSelect with item id, addRemove or fro
 
 test('State class adds new single selected item after onSelect and addRemove if selectable is multiple', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: item1, selectAction, selectable: 'multiple'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.onSelect(1, 'addRemove')
@@ -375,8 +362,7 @@ test('State class adds new single selected item after onSelect and addRemove if 
 
 test('State class removes new single selected item in onSelect and addRemove if select is multiple and already selected in properties', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: [item1, item3], selectAction, selectable: 'multiple'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1, item3])
     expect(state.selectedItemIds).toStrictEqual([0, 2])
 
@@ -395,8 +381,7 @@ test('State class removes new single selected item in onSelect and addRemove if 
 
 test('State class always adds new single selected item after onSelect if selectable is multipleAuto', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: item1, selectAction, selectable: 'multipleAuto'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.onSelect(1, 'addRemove')
@@ -414,8 +399,7 @@ test('State class always adds new single selected item after onSelect if selecta
 
 test('State class always removes new single selected item in onSelect if selectable is multipleAuto and already selected in properties', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: [item1, item3], selectAction, selectable: 'multipleAuto'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1, item3])
     expect(state.selectedItemIds).toStrictEqual([0, 2])
 
@@ -434,8 +418,7 @@ test('State class always removes new single selected item in onSelect if selecta
 
 test('State class sets new block of selected items in onSelect with fromLast if select is multiple', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectedItems: [item1, item2], selectAction, selectable: 'multiple'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1, item2])
 
     state.onSelect(3, 'fromLast')
@@ -447,8 +430,7 @@ test('State class sets new block of selected items in onSelect with fromLast if 
 
 test('State class sets new block of selected items in onSelect with fromLast and item before last selected', () => {
     const state = new ItemSetState({items: [idItem1, idItem2, idItem3, idItem4], selectedItems: [idItem3, idItem4], selectAction, selectable: 'multiple'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([idItem3, idItem4])
 
     state.onSelect(idItem2.id, 'fromLast')
@@ -460,8 +442,7 @@ test('State class sets new block of selected items in onSelect with fromLast and
 
 test('State class sets new block of selected items from first item in onSelect with fromLast if select is multiple and none selected', () => {
     const state = new ItemSetState({items: [item1, item2, item3, item4], selectAction, selectable: 'multiple'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([])
 
     state.onSelect(2, 'fromLast')
@@ -473,8 +454,7 @@ test('State class sets new block of selected items from first item in onSelect w
 
 test('Has no new selected item after onSelect if selectable is none, but selectAction is called', () => {
     const state = new ItemSetState({items: [item1, item2], selectedItems: item1, selectAction, selectable: 'none'})
-    const appInterface = testAppInterface(state);
-    state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
     state.onSelect(1, 'replace')

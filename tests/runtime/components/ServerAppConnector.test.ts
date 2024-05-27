@@ -41,7 +41,7 @@ const mock_getIdToken = authentication.getIdToken as jest.MockedFunction<any>
 let mockFetch: jest.MockedFunction<any>
 const initConnector = ():[any, AppStateForObject] => {
     const state = new ServerAppConnectorState({configuration, fetch: mockFetch})
-    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
 
     return [state, appInterface]
 }
@@ -561,7 +561,7 @@ describe('subscribe to auth changes', () => {
     test('uses same onAuthChange subscription when already in the state', () => {
         const authSubscription = noop
         const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}, versionId: '1', versionFetch: Promise.resolve('')})
-        const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+        const appInterface = testAppInterface('testPath', state)
 
         expect(authentication.onAuthChange).not.toHaveBeenCalled()
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
@@ -573,8 +573,7 @@ describe('subscribe to auth changes', () => {
         const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({resultCache: {
                 'GetWidget#["id1",true]': 'xyz',
             }, versionId: '1', versionFetch: Promise.resolve('')})
-        const appInterface = testAppInterface(state);
-        state.init(appInterface, 'testPath')
+        const appInterface = testAppInterface('testPath', state)
 
         authCallback!()
         expect(appInterface.latest().state.resultCache).toStrictEqual({})

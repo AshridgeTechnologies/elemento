@@ -148,8 +148,7 @@ test('Form element produces output containing nested form', () => {
 test('State class has correct properties and functions', () => {
     const submitAction = jest.fn()
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface(null, {})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {})
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 
@@ -159,8 +158,7 @@ test('State class has correct properties and functions', () => {
 
 test('State class has empty object original value if props value is null', () => {
     const state = new TestFormState({value: null })
-    const appInterface = testAppInterface(null, {})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {})
     expect(state.originalValue).toStrictEqual({})
     expect(state.value).toStrictEqual({})
     expect(state.defaultValue).toStrictEqual({})
@@ -186,8 +184,7 @@ test('State class compares data types as objects', () => {
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterface(null, {Description: 'Extra Large'})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
     state._updateValue()
     expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: {Description: 'Extra Large', BoxSize: 17}}))
 })
@@ -201,9 +198,9 @@ test('State has expected values', async () => {
     }, {label: 'Test Form 1'})
     renderer.create(component)
     await actWait()
-    expect(stateAt('app').value).toStrictEqual({Description: 'Big', BoxSize: 17})
-    expect(stateAt('app.Description').value).toBe('Big')
-    expect(stateAt('app.BoxSize').value).toBe(17)
+    expect(stateAt('form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
+    expect(stateAt('form1.Description').value).toBe('Big')
+    expect(stateAt('form1.BoxSize').value).toBe(17)
 })
 
 test('State has null values where fields are empty or missing', async () => {
@@ -215,11 +212,11 @@ test('State has null values where fields are empty or missing', async () => {
     }, {label: 'Test Form 1'})
     renderer.create(component)
     await actWait()
-    expect(stateAt('app').value).toStrictEqual({Description: null, BoxSize: null})
-    expect(stateAt('app.Description').dataValue).toBe(null)
-    expect(stateAt('app.BoxSize').dataValue).toBe(null)
-    expect(stateAt('app.Description').value).toBe('')
-    expect(stateAt('app.BoxSize').value).toBe(0)
+    expect(stateAt('form1').value).toStrictEqual({Description: null, BoxSize: null})
+    expect(stateAt('form1.Description').dataValue).toBe(null)
+    expect(stateAt('form1.BoxSize').dataValue).toBe(null)
+    expect(stateAt('form1.Description').value).toBe('')
+    expect(stateAt('form1.BoxSize').value).toBe(0)
 })
 
 test('State has expected values after update', async () => {
@@ -405,8 +402,7 @@ test('State Submit calls submit action if present and calls Reset after if succe
     const stateNoAction = new TestFormState({value: {Description: 'Big', BoxSize: 17} })
     state.Reset = jest.fn()
     stateNoAction.Reset = jest.fn()
-    const appInterface = testAppInterface(null, {})
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state, {})
 
     const data = {a: 10}
     await stateNoAction.Submit(data)
@@ -424,8 +420,7 @@ test('State Submit calls submit action and adds Error Result to errors and does 
     const submitAction = jest.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
     state.Reset = jest.fn()
-    const appInterface = testAppInterface(state)
-    state.init(appInterface, 'formPath')
+    const appInterface = testAppInterface('formPath', state)
 
     await state.Submit(null)
     expect(state.Reset).not.toHaveBeenCalled()

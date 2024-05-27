@@ -48,7 +48,7 @@ test('ListElement updates its scrollTop in the app state', async () => {
 test('State class has correct properties', () => {
     const item2 = {a: 2}
     const state = new ListElementState({})
-    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     const updatedState = state._withStateForTest({scrollTop: 222})
     expect(updatedState.scrollTop).toBe(222)
 

@@ -94,7 +94,7 @@ Page2.notLoggedInPage = 'Page1'
     const pages = {Page1, Page2}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
 }
@@ -141,7 +141,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Tool1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Tool1', maxWidth: '60%',},)
 }
@@ -198,7 +198,7 @@ export default function App1(props) {
     const pages = {Page1, Page2}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -278,7 +278,7 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -339,7 +339,7 @@ test('generates App Bar elements with contents', ()=> {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
             React.createElement(TextElement, {path: pathWith('Text0'), styles: {width: 200}}, 'Welcome!'),
@@ -364,7 +364,7 @@ test('generates startup action for App', ()=> {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Test1', new App.State({pages, appContext}))
     const Test1_startupAction = React.useCallback(() => {
         Log('Off we go!')
     }, [])
@@ -603,7 +603,7 @@ test('generates Button elements with properties including await in action', ()=>
     const {Log, ForEach} = Elemento.globalFunctions
     const {Add} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
-    const Words = _state.useObject('app.Words')
+    const Words = _state.useObject('test1.Words')
     const b1_action = React.useCallback(async () => {
         const message = 'You clicked me!'; await Log(message)
             Log('Didn\\'t you?')
@@ -748,7 +748,7 @@ test('generates Collection elements with initial value and no errors on object e
     const pathWith = name => props.path + '.' + name
     const {Page, Collection} = Elemento.components
     const _state = Elemento.useGetStore()
-    const Store1 = _state.useObject('app.Store1')
+    const Store1 = _state.useObject('test1.Store1')
     const t1 = _state.setObject(pathWith('t1'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const t2 = _state.setObject(pathWith('t2'), new Collection.State({value: ['red', 'yellow'], collectionName: 't2'}))
     const t3 = _state.setObject(pathWith('t3'), new Collection.State({collectionName: 't3'}))
@@ -787,7 +787,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const _state = Elemento.useGetStore()
-    const Connector1 = _state.useObject('app.Connector1')
+    const Connector1 = _state.useObject('App1.Connector1')
     const DoItButton_action = React.useCallback(async () => {
         await Connector1.DoStuff('Number1')
     }, [])
@@ -828,8 +828,8 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
-    const Connector1 = _state.setObject('app.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -872,8 +872,8 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
-    const ServerApp1 = _state.setObject('app.ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const ServerApp1 = _state.setObject('App1.ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -914,8 +914,8 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
-    const Connector1 = _state.setObject('app.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -948,8 +948,8 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
-    const Connector1 = _state.setObject('app.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -981,8 +981,8 @@ export default function App1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
-    const Connector1 = _state.setObject('app.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
 
     return React.createElement(App, {path: 'App1', },)
 }
@@ -1024,7 +1024,7 @@ function Page1(props) {
     const {Page, TextInput, Data, Collection, ItemSet} = Elemento.components
     const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
-    const Store1 = _state.useObject('app.Store1')
+    const Store1 = _state.useObject('test1.Store1')
     const Widgets = _state.setObject(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
     const WidgetId = _state.setObject(pathWith('WidgetId'), new Data.State({value: WidgetSet.selectedItem && WidgetSet.selectedItem.id}))
@@ -1080,7 +1080,7 @@ function Page1(props) {
     const {Page, TextInput, Data, Collection, ListElement, ItemSet} = Elemento.components
     const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
-    const Store1 = _state.useObject('app.Store1')
+    const Store1 = _state.useObject('test1.Store1')
     const Widgets = _state.setObject(pathWith('Widgets'), new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
     const List1 = _state.setObject(pathWith('List1'), new ListElement.State({}))
     const WidgetSet = _state.setObject(pathWith('WidgetSet'), new ItemSet.State({items: Widgets.Query({})}))
@@ -1124,7 +1124,7 @@ test('generates elements under App used in Page', ()=> {
     const {Page, TextElement, NumberInput} = Elemento.components
     const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
-    const Widgets = _state.useObject('app.Widgets')
+    const Widgets = _state.useObject('App1.Widgets')
     const WidgetValue = _state.setObject(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
@@ -1141,12 +1141,12 @@ test('generates elements under App used in Page', ()=> {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
-    const Widgets = _state.setObject('app.Widgets', new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
-    const Store2 = _state.setObject('app.Store2', new FileDataStore.State({}))
-    const Store3 = _state.setObject('app.Store3', new BrowserDataStore.State({databaseName: 'Accounts', collectionNames: ['Cheques', 'Postings']}))
-    const Store4 = _state.setObject('app.Store4', new FirestoreDataStore.State({collections: \`Cheques: userPrivate
+    const Widgets = _state.setObject('App1.Widgets', new Collection.State({dataStore: Store1, collectionName: 'Widgets'}))
+    const Store2 = _state.setObject('App1.Store2', new FileDataStore.State({}))
+    const Store3 = _state.setObject('App1.Store3', new BrowserDataStore.State({databaseName: 'Accounts', collectionNames: ['Cheques', 'Postings']}))
+    const Store4 = _state.setObject('App1.Store4', new FirestoreDataStore.State({collections: \`Cheques: userPrivate
 Postings: creator, techs\`}))
 
     return React.createElement(App, {path: 'App1', },
@@ -1175,7 +1175,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     const {Page, TextElement, NumberInput} = Elemento.components
     const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
-    const Widgets = _state.useObject('app.Widgets')
+    const Widgets = _state.useObject('App1.Widgets')
     const WidgetValue = _state.setObject(pathWith('WidgetValue'), new NumberInput.State({value: Get(Widgets, 'x1').a}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
@@ -1192,9 +1192,9 @@ test('generates codeGenerationError for unknown names in elements under App used
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
-    const Widgets = _state.setObject('app.Widgets', new Collection.State({dataStore: Elemento.codeGenerationError(\`StoreX\`, 'Unknown names: StoreX'), collectionName: 'Widgets'}))
+    const Widgets = _state.setObject('App1.Widgets', new Collection.State({dataStore: Elemento.codeGenerationError(\`StoreX\`, 'Unknown names: StoreX'), collectionName: 'Widgets'}))
 
     return React.createElement(App, {path: 'App1', },
         React.createElement(Collection, {path: pathWith('Widgets'), display: false})
@@ -1676,7 +1676,7 @@ test('generates user defined component and instance', () => {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'App1', maxWidth: '60%',},)
 }
@@ -1706,7 +1706,7 @@ test('transforms expressions to functions where needed and does not fail where n
     const {Page, Data} = Elemento.components
     const {Select, ForEach, Count, If, Sum} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const Widgets = _state.useObject('app.Widgets')
+    const Widgets = _state.useObject('App1.Widgets')
     const TallWidgets = _state.setObject(pathWith('TallWidgets'), new Data.State({value: Select(Widgets.getAllData(), ($item, $index) => $item.height > $index)}))
     const TallerWidgets = _state.setObject(pathWith('TallerWidgets'), new Data.State({value: ForEach(Widgets.getAllData(), ($item, $index) => $item.height + 10)}))
     const NoWidgets = _state.setObject(pathWith('NoWidgets'), new Data.State({value: Select(Widgets.getAllData())}))
@@ -1749,7 +1749,7 @@ test('generates local user defined functions even if empty in a page', () => {
     const {Page, Data, NumberInput} = Elemento.components
     const {Or, Select} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const Widgets = _state.useObject('app.Widgets')
+    const Widgets = _state.useObject('App1.Widgets')
     const EmptyFunction = React.useCallback(() => {}, [])
     const VeryEmptyFunction = React.useCallback(() => {}, [])
     const MinHeight = _state.setObject(pathWith('MinHeight'), new NumberInput.State({}))
@@ -1869,7 +1869,7 @@ test('generates local user defined functions in the app', () => {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Test1', new App.State({pages, appContext}))
     const AppBarText = React.useCallback((greeting) => {
         return greeting + 'our new app'
     }, [])
@@ -1921,7 +1921,7 @@ function Page1(props) {
     const {Page, Data, NumberInput, ItemSet} = Elemento.components
     const {Or, Select} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const Widgets = _state.useObject('app.Widgets')
+    const Widgets = _state.useObject('App1.Widgets')
     const MinHeight = _state.setObject(pathWith('MinHeight'), new NumberInput.State({}))
     const IsTallWidget = React.useCallback((widget) => {
         return Or(widget.height > MinHeight, widget.shiny)
@@ -1981,7 +1981,7 @@ export default function Test1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', },)
 }
@@ -2024,7 +2024,7 @@ export default function Test1(props) {
     const pages = {Page1}
     const {appContext} = props
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('app', new App.State({pages, appContext}))
+    const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', },)
 }
@@ -2184,7 +2184,7 @@ test('app state functions and Page names available in expression', ()=> {
     const pathWith = name => props.path + '.' + name
     const {Page, Button} = Elemento.components
     const _state = Elemento.useGetStore()
-    const app = _state.useObject('app')
+    const app = _state.useObject('test1')
     const {ShowPage} = app
     const b1_action = React.useCallback(async () => {
         await ShowPage(Page2)
@@ -2590,7 +2590,7 @@ const t1 = _state.getObject(pathWith('t1'));
 })
 
 test('generates standalone expressions block and errors and clears errors', ()=> {
-    const app = new App('app1', 'Test1', {}, [
+    const app = new App('app1', 'Test 1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
             new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),

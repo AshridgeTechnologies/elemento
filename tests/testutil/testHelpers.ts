@@ -149,7 +149,7 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
 
-export const testAppInterface = (initialVersion: any = null, childStateValues: object = {}): AppStateForObject => {
+export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
     let _latest: any = initialVersion
 
     const appInterface = {
@@ -158,7 +158,7 @@ export const testAppInterface = (initialVersion: any = null, childStateValues: o
         },
         updateVersion: jest.fn().mockImplementation((newVersion: any) => {
             _latest = newVersion
-            _latest.init(appInterface)
+            _latest.init(appInterface, path)
         }),
         getChildState: (subPath: string) => {
             const childStateValue = childStateValues[subPath as keyof object]
@@ -166,6 +166,8 @@ export const testAppInterface = (initialVersion: any = null, childStateValues: o
         }
 
     }
+
+    initialVersion.init(appInterface, path)
     return appInterface
 }
 

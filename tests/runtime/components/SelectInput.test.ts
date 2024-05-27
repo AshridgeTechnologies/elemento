@@ -98,7 +98,7 @@ test('SelectInput stores null value in the app store when cleared', async () => 
 
 test('State class has correct properties', () => {
     const state = new SelectInput.State({value: 'green'})
-    const appInterface = testAppInterface(); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe('green')
     expect(state.defaultValue).toBe('')
 

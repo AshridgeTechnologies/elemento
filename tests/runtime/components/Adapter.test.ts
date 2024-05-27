@@ -42,7 +42,7 @@ class Target {
 const initAdapter = ():[any, AppStateForObject, any] => {
     const target = new Target(99)
     const state = new AdapterState({target: target})
-    const appInterface = testAppInterface(state); state.init(appInterface, 'testPath')
+    const appInterface = testAppInterface('testPath', state)
 
     return [state, appInterface, target]
 }

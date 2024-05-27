@@ -86,6 +86,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         const newVersion = new CollectionState(this.props)
         newVersion.state = Object.assign({}, this.state, changes) as StateProperties
         newVersion._appStateInterface = this._appStateInterface
+        newVersion._path = this._path
         return newVersion
     }
 
