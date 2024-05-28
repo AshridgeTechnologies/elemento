@@ -182,6 +182,16 @@ test('TextInput overrides properties from dataType', async () => {
     expect(el`textarea`.textContent).toBe('Hi')
 })
 
+test('TextInput can be focused', async () => {
+    const elementId = 'app.page1.sprocket2'
+    const {el} = testContainer(textInput(elementId, {value: 'Hi'}, {label: 'The Input'}))
+    await actWait(10)
+    expect(document.activeElement).not.toBe(el`app.page1.sprocket2`)
+    await actWait( () => stateAt(elementId).Focus() )
+    expect(document.activeElement).toBe(el`app.page1.sprocket2`)
+    expect(stateAt(elementId).domElement).toBe(el`app.page1.sprocket2`)
+})
+
 test('State class has correct properties and functions', () => {
     const state = new TextInput.State({value: 'car'})
     const appInterface = testAppInterface('testPath', state)

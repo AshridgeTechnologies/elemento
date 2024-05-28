@@ -31,6 +31,14 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return this._appStateInterface!.latest()
     }
 
+    get domElement(): HTMLElement | null {
+        return this._path ? document.getElementById(this._path) : null
+    }
+
+    Focus() {
+        this.domElement?.focus()
+    }
+
     private get thisConstructor(): any { return this.constructor as any }
 
     protected isEqualTo(newObj: this) {
