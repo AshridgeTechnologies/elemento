@@ -153,7 +153,7 @@ test('State class has correct properties and functions', () => {
     expect(state.defaultValue).toStrictEqual({})
 
     state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined, errorsShown: false}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
 })
 
 test('State class has empty object original value if props value is null', () => {
@@ -186,7 +186,7 @@ test.skip('State class uses states of child objects where present', () => {
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
     const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
     state._updateValue()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: {Description: 'Extra Large', BoxSize: 17}}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
 })
 
 test('State has expected values', async () => {

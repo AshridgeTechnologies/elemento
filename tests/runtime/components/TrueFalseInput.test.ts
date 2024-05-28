@@ -25,22 +25,22 @@ test('TrueFalseInput shows false if that value is in the state', () => {
 })
 
 test('TrueFalseInput shows true if that value is in the state', () => {
-    const {el} = testContainer(trueFalseInput('app.page1.widget1', {value: true}))
+    const {el} = testContainer(trueFalseInput('app.page1.widget1', {value: true}), 'container2')
     expect(el`app.page1.widget1`.checked).toBe(true)
 })
 
 test('TrueFalseInput shows false if no value is in the state', () => {
-    const {el} = testContainer(trueFalseInput('app.page1.widget1', {}))
-    expect(el`app.page1.widget1`.checked).toBe(false)
+    const {el} = testContainer(trueFalseInput('app.page1.widget1x', {}))
+    expect(el`app.page1.widget1x`.checked).toBe(false)
 })
 
 test('TrueFalseInput shows false if an undefined value is in the state', () => {
-    const {el} = testContainer(trueFalseInput('app.page1.widget1', {value: undefined}))
-    expect(el`app.page1.widget1`.checked).toBe(false)
+    const {el} = testContainer(trueFalseInput('app.page1.widget11', {value: undefined}), 'container4')
+    expect(el`app.page1.widget11`.checked).toBe(false)
 })
 
 test('TrueFalseInput shows initial value when state value is set to undefined and initial value exists', () => {
-    const {el} = testContainer(trueFalseInput('app.page1.widget1', new TrueFalseInputState({value: true})._withStateForTest({value: undefined})))
+    const {el} = testContainer(trueFalseInput('app.page1.widget1', new TrueFalseInputState({value: true})._withStateForTest({value: undefined})), 'container3')
     expect(el`app.page1.widget1`.checked).toBe(true)
 })
 
@@ -53,7 +53,7 @@ test('TrueFalseInput element produces output with other properties supplied as s
     const {el} = testContainer(trueFalseInput('app.page1.widget1', {value: true},
         {
             label: valueObj('Is it OK')
-        }))
+        }), 'container5')
     expect(el`label`.textContent).toBe('Is it OK')
 })
 
@@ -76,7 +76,7 @@ test('State class has correct properties', () => {
 
     state.Reset()
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
     expect(resetState.value).toBe(true)
     expect(resetState.dataValue).toBe(true)
 })

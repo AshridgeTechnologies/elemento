@@ -23,7 +23,7 @@ export type AppStore = {
 
 export interface AppStateForObject {
     latest: () => any
-    updateVersion: (newVersion: any) => void,
+    updateVersion: (changes: object) => void,
     getChildState: (subPath: string) => StoredState
 }
 
@@ -36,24 +36,28 @@ const log = (...args: any[]) => loggingOn && console.log(...args)
 
 const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=> AppStore): AppStore => {
     const deferredUpdates = new Map<string, StoredState>()
-    let timeout: any = null
     let deferringUpdates = false
     let preventUpdates: VoidFn | null = null
 
     const stateAt = (path: string) => get().select(path)[path]
 
+    const updateStore = (updates: Map<string, StoredState>) => {
+        set((state: AppStore) => {
+            let updatedStore = state.store
+            updates.forEach((newObject: StoredState, path: string) => {
+                return updatedStore = updatedStore.update(path, newObject)
+            })
+            return {store: updatedStore}
+        })
+    }
+
     const commitDeferredUpdates = () => {
         log('commitDeferredUpdates')
         if (deferredUpdates.size) {
-            set((state: AppStore) => {
-                let updatedStore = state.store
-                deferredUpdates.forEach((newObject: StoredState, path: string ) => updatedStore = updatedStore.update(path, newObject))
-                return {store: updatedStore}
-            })
+            updateStore(deferredUpdates)
             deferredUpdates.clear()
         }
 
-        timeout = null
         deferringUpdates = false
     }
 
@@ -61,21 +65,25 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         if (!deferringUpdates) {
             log('deferUpdates')
             deferringUpdates = true
-            timeout = setTimeout(commitDeferredUpdates, 0)
+            setTimeout(commitDeferredUpdates, 0)
         }
     }
 
-    const storeDeferredUpdate = (path: string, newObject: StoredState) => {
+    const storeDeferredInitialState = (path: string, initialState: StoredState) => {
+        log('storeDeferredInitialState', path);
+        deferredUpdates.set(path, initialise(initialState, path))
+    }
+
+    const storeDeferredUpdate = (path: string, changes: object) => {
         log('storeDeferredUpdate', path)
-        if (deferredUpdates.has(path)) {
-            console.warn('Multiple updates to object in same action:', newObject.constructor.name, path)
-        }
-        deferredUpdates.set(path, newObject)
+        const existingState = deferredUpdates.get(path) ?? stateAt(path)
+        const newObject = existingState.withMergedState(changes);
+        deferredUpdates.set(path, initialise(newObject, path))
     }
 
     const appStateInterface = (path: string) => ({
-        updateVersion(newVersion: StoredState) {
-            update(path, newVersion)
+        updateVersion(changes: object) {
+            update(path, changes)
         },
         latest() {
             return stateAt(path)
@@ -86,22 +94,24 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
         }
     }) as AppStateForObject
 
-    const update = (path: string, newObject: StoredState) => {
+    const initialise = (stateObj: StoredState, path: string) => {
+        stateObj.init(appStateInterface(path), path)
+        return stateObj
+    }
+
+    const update = (path: string, changes: object) => {
         if (preventUpdates) {
             preventUpdates()
             return
         }
 
-        (newObject as any).init(appStateInterface(path), path)
         if (deferringUpdates) {
-            storeDeferredUpdate(path, newObject)
+            storeDeferredUpdate(path, changes)
         } else {
-            log('immediate update', path)
-            set((state: AppStore) => {
-                const store = state.store
-                const updatedStore = store.update(path, newObject)
-                return {store: updatedStore}
-            })
+            log('immediate update', path);
+            const existingState = stateAt(path)
+            const newObject = existingState.withMergedState(changes);
+            updateStore(new Map([[path, initialise(newObject, path)]]))
         }
     }
 
@@ -121,10 +131,11 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
             const updatedState = storedState.updateFrom(initialState)
             if (updatedState !== storedState) {
                 update(path, updatedState)
+                storeDeferredInitialState(path, updatedState)
             }
             return updatedState
         } else {
-            update(path, initialState)
+            storeDeferredInitialState(path, initialState)
             return initialState
         }
     }

@@ -7,6 +7,8 @@ export interface ComponentState<T> {
 
     updateFrom(newObj: T): T
 
+    withMergedState(changes: object): T
+
     latest(): T
 }
 
@@ -51,6 +53,15 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return newVersion as this
     }
 
+    withMergedState(changes: Partial<StateProps>): this {
+        const newState = Object.assign({}, this.state, changes) as StateProps
+        for (const p in newState) {
+            if (newState[p] === undefined) delete newState[p]
+        }
+
+        return this.withState(newState)
+    }
+
     _withStateForTest(state: StateProps): this {
         const newVersion = new this.thisConstructor(this.props)
         newVersion.state = state
@@ -60,11 +71,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     protected updateState(changes: Partial<StateProps>) {
-        const newState = Object.assign({}, this.state, changes) as StateProps
-        for (const p in newState) {
-            if (newState[p] === undefined) delete newState[p]
-        }
-        this._appStateInterface!.updateVersion(this.withState(newState))
+        this._appStateInterface!.updateVersion(changes)
     }
 
     protected propsMatchValueEqual(thisProps: { value: any }, newProps: { value: any }) {

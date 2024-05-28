@@ -150,12 +150,12 @@ describe('Update', () => {
         const appInterface = testAppInterface('testPath', state)
 
         state.Update('x1', {a:20, b:'Cee'})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
                 x2: {id: 'x2', a: 20},
             }
-        }))
+        })
     })
 
     test('cannot update id', () => {
@@ -163,12 +163,12 @@ describe('Update', () => {
         const appInterface = testAppInterface('testPath', state)
 
         state.Update('x1', {id: 'xxx333', a: 50, b: 'Bee'})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 50, b: 'Bee'},
                 x2: {id: 'x2', a: 20},
             }
-        }))
+        })
     })
 })
 
@@ -182,13 +182,13 @@ describe('Add', () => {
         const appInterface = testAppInterface('testPath', state)
         const result = state.Add({id: 'x3', a: 30})
         expect(result).toStrictEqual({id: 'x3', a: 30})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 10},
                 x2: {id: 'x2', a: 20},
                 x3: {id: 'x3', a: 30},
             }
-        }))
+        })
     })
 
     test('inserts a new item without id into a collection and adds the id', () => {
@@ -208,13 +208,13 @@ describe('Add', () => {
         const state = new Collection.State({value: initialCollection})
         const appInterface = testAppInterface('testPath', state)
         const result = state.Add('green')
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 10},
                 x2: {id: 'x2', a: 20},
                 green: 'green',
             }
-        }))
+        })
         expect(result).toBe('green')
     })
 
@@ -223,14 +223,14 @@ describe('Add', () => {
         const appInterface = testAppInterface('testPath', state)
         const result = state.Add([{id: 'x3', a: 30}, {id: 'x4', a: 40}])
         expect(result).toBeUndefined()
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 10},
                 x2: {id: 'x2', a: 20},
                 x3: {id: 'x3', a: 30},
                 x4: {id: 'x4', a: 40},
             }
-        }))
+        })
     })
 
     test('inserts multiple objects without ids into a collection', () => {
@@ -253,14 +253,14 @@ describe('Add', () => {
         const state = new Collection.State({value: initialCollection})
         const appInterface = testAppInterface('testPath', state)
         state.Add(['green', 'blue'])
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 10},
                 x2: {id: 'x2', a: 20},
                 green: 'green',
                 blue: 'blue',
             }
-        }))
+        })
     })
 
 
@@ -277,11 +277,11 @@ describe('Remove', () => {
         const appInterface = testAppInterface('testPath', state)
         state.Remove('x1')
         const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState).toStrictEqual(state._withStateChanges({
+        expect(newState).toStrictEqual({
             value: {
                 x2: {id: 'x2', a: 20},
             }
-        }))
+        })
     })
 })
 
@@ -323,11 +323,11 @@ describe('Add with external datastore', () => {
 
         const item = {id: 'x1', a:20, b:'Cee'}
         const result = state.Add(item)
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
             }
-        }))
+        })
 
         expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'x1', {id: 'x1', a:20, b:'Cee'})
         expect(result).resolves.toStrictEqual(item)
@@ -344,11 +344,11 @@ describe('Add with external datastore', () => {
         const newItem = mock.calls[0][2]
         expect(newItem.id).toBe(newId)
         expect(Number(newId)).toBeGreaterThan(0)
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 [newId]: {id: newId, a: 20, b: 'Cee'},
             }
-        }))
+        })
         expect(result).resolves.toStrictEqual({id: newId, a:20, b:'Cee'})
     })
 
@@ -357,11 +357,11 @@ describe('Add with external datastore', () => {
 
         const result = state.Add('green')
         expect(dataStore.add).toHaveBeenCalledWith('Widgets','green', 'green')
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 green: 'green',
             }
-        }))
+        })
         expect(result).resolves.toBe('green')
     })
 
@@ -369,12 +369,12 @@ describe('Add with external datastore', () => {
         const [state, appInterface] = initState({});
 
         const result = state.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
                 x2: {id: 'x2', a: 30, b: 'Dee'},
             }
-        }))
+        })
 
         expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {
                 x1: {id: 'x1', a:20, b:'Cee'},
@@ -404,11 +404,11 @@ describe('Update with external datastore', () => {
 
         const result = state.Update('x1', {a:20, b:'Cee'})
         expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'x1', {a:20, b:'Cee'})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
             }
-        }))
+        })
         expect(result).resolves.toBeUndefined()
     })
 
@@ -417,11 +417,11 @@ describe('Update with external datastore', () => {
 
         state.Update('x1', {id: 'xxx333', a:20, b:'Cee'})
         expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'x1', {a:20, b:'Cee'})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {id: 'x1', a: 20, b: 'Cee'},
             }
-        }))
+        })
     })
 })
 
@@ -441,11 +441,11 @@ describe('Remove with external datastore', () => {
 
         const result = state.Remove('x1')
         expect(dataStore.remove).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x2: {id: 'x2', a: 20},
             }
-        }))
+        })
         expect(result).resolves.toBeUndefined()
     })
 })
@@ -463,11 +463,11 @@ describe('Get with external datastore', () => {
         expect(isPending(newState.value.x1)).toBe(true)
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             value: {
                 x1: {a: 10, b: 'Bee'}
             }
-        }))
+        })
 
     })
 
@@ -482,11 +482,11 @@ describe('Get with external datastore', () => {
         expect(isPending(newState.value.x1)).toBe(true)
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             value: {
                 x1: new ErrorResult('Some', 'problem')
             }
-        }))
+        })
     })
 
     test('get object by id when in cache', async () => {
@@ -525,12 +525,12 @@ describe('Get with external datastore', () => {
         expect(isPending(state.Get('x1'))).toBe(true)
         expect(isPending(state.Get('x2'))).toBe(true)
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             value: {
                 x1: {a: 10, b: 'Bee'},
                 x2: {a: 20, b: 'Cee'},
             }
-        }))
+        })
     })
 })
 
@@ -549,11 +549,11 @@ describe('Query with external datastore', () => {
         expect(isPending(newState.queries['{"a":10,"c":false}'])).toBe(true)
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             queries: {
                 '{"a":10,"c":false}': [{id: 'a1', a: 10, b: 'Bee'}]
             }
-        }))
+        })
     })
 
     test('query when in cache', async () => {
@@ -574,10 +574,10 @@ describe('Query with external datastore', () => {
         expect(result).resolves.toStrictEqual(new ErrorResult('Some', 'problem'))
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             queries: {
                 '{"a":10}': new ErrorResult("Some", "problem")            }
-        }))
+        })
 
     })
 
@@ -607,12 +607,12 @@ describe('Query with external datastore', () => {
         expect(isPending(state.Query({a: 20}))).toBe(true)
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
             queries: {
                 '{"a":10,"c":false}': [{id: 'a1', a: 10, b: 'Bee'}],
                 '{"a":20}': [{id: 'a2', a: 20, b: 'Cee'}],
             }
-        }))
+        })
     })
 
     test('query does not lose overlapping get', async () => {
@@ -627,21 +627,24 @@ describe('Query with external datastore', () => {
         state.Query({a: 20})
         expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 20})
-        expect(isPending(state.Get('x1'))).toBe(true)
-        expect(isPending(state.Query({a: 20}))).toBe(true)
+        expect(isPending(state.latest().Get('x1'))).toBe(true)
+        expect(isPending(state.latest().Query({a: 20}))).toBe(true)
 
         await actWait()
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
+        expect(state.latest().Get('x1')).toStrictEqual({a: 10, b: 'Bee'})
+        expect(state.latest().Query({a: 20})).toStrictEqual([{id: 'a1', a: 10, b: 'Bee'}])
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             value: {
                 x1: {a: 10, b: 'Bee'},
-            },
+            }
+        })
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             queries: {
                 '{"a":20}': [{id: 'a1', a: 10, b: 'Bee'}],
             }
-        }))
+        })
     })
 })
-
 
 describe('subscribe with external data store', () => {
 
@@ -668,7 +671,7 @@ describe('subscribe with external data store', () => {
         const appInterface = testAppInterface('testPath', state)
 
         testObservable.send({collection: 'Widgets', type: InvalidateAll})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {}, queries: {}}))
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {}, queries: {}})
     })
 
     test('clears queries when subscription receives Multiple Changes', () => {
@@ -679,7 +682,7 @@ describe('subscribe with external data store', () => {
         const appInterface = testAppInterface('testPath', state);
 
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {id1: {a:10}}, queries: {}}))
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({queries: {}})
     })
 
     test('clears queries without losing later Get when subscription receives Multiple Changes', async () => {
@@ -694,10 +697,14 @@ describe('subscribe with external data store', () => {
         state.Get('x1')
         await actWait()
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
-        expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state._withStateChanges({
-            value: {x1: {a: 10, b: 'Bee'}},
+        await actWait()
+        expect(state.latest().Get('x1')).toStrictEqual({a: 10, b: 'Bee'})
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
             queries: {}
-        }))
+        })
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({
+            value: {x1: {a: 10, b: 'Bee'}}
+        })
     })
 
     test('updates queries and item cache when update item that is in the item cache', () => {
@@ -714,9 +721,9 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState.state.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Beep'}})
-        expect(newState.state.queries).toStrictEqual({'{"a":10}': [
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Beep'}})
+        expect(changes.queries).toStrictEqual({'{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Beep'}
                 ],
@@ -738,9 +745,9 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState.state.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
-        expect(newState.state.queries).toStrictEqual({'{"a":10}': [
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
+        expect(changes.queries).toStrictEqual({'{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Beep'}
                 ]})
@@ -761,9 +768,9 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Remove, id: 'w2'})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState.state.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
-        expect(newState.state.queries).toStrictEqual({'{"a":10}': [
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
+        expect(changes.queries).toStrictEqual({'{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                 ],
                 '{"b":true}': [{id: 'w1', a: 10, b: true, c: 'Foo'}],
@@ -786,9 +793,9 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {b: true}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState.state.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: true, c: 'Bar'}})
-        expect(newState.state.queries).toStrictEqual({'{"a":10}': [
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: true, c: 'Bar'}})
+        expect(changes.queries).toStrictEqual({'{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: true, c: 'Bar'}
                 ],
@@ -812,9 +819,8 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Add, id: 'w3', changes: {id: 'w3', a: 10, b: true, c: 'Three'}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState.state.value).toStrictEqual({ w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Bar'}})
-        expect(newState.state.queries).toStrictEqual({'{"a":10}': [
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes.queries).toStrictEqual({'{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Bar'},
                     {id: 'w3', a: 10, b: true, c: 'Three'}
@@ -856,7 +862,7 @@ describe('subscribe to auth changes', () => {
         const appInterface = testAppInterface('testPath', state)
 
         authCallback!()
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateChanges({value: {}, queries: {}}))
+        expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {}, queries: {}})
     })
 })
 
@@ -885,12 +891,12 @@ describe('Reset', () => {
         const state = new Collection.State({value: initialCollection})
         const appInterface = testAppInterface('testPath', state)
         state.Remove('x1')
-        const newState = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
-        expect(newState).toStrictEqual(state._withStateChanges({
+        const changes = (appInterface.updateVersion as jest.MockedFunction<any>).mock.calls[0][0]
+        expect(changes).toStrictEqual({
             value: {
                 x2: {id: 'x2', a: 20},
             }
-        }))
+        })
     })
 
     test('clears all objects and restores initial value', () => {

@@ -156,8 +156,8 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
         latest() {
             return _latest
         },
-        updateVersion: jest.fn().mockImplementation((newVersion: any) => {
-            _latest = newVersion
+        updateVersion: jest.fn().mockImplementation((changes: object) => {
+            _latest = _latest.withMergedState(changes)
             _latest.init(appInterface, path)
         }),
         getChildState: (subPath: string) => {

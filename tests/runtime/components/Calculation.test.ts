@@ -75,7 +75,7 @@ test('State class does nothing on trigger if false and previous value missing bu
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({previousValueTruthy: false}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({previousValueTruthy: false})
 })
 
 test('State class does nothing on trigger if false and does not update previous value if false', () => {
@@ -93,7 +93,7 @@ test('State class runs action on trigger if truthy and previous value false and 
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).toHaveBeenCalled()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({previousValueTruthy: true}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({previousValueTruthy: true})
 })
 
 test('State class does not run action on trigger if truthy and previous value truthy and does not update previous value', () => {
@@ -111,7 +111,7 @@ test('State class does not run action on trigger if falsy and previous value tru
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({previousValueTruthy: false}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({previousValueTruthy: false})
 })
 
 test('State class gives correct value when its value is a value object', () => {

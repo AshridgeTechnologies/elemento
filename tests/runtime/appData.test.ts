@@ -173,7 +173,6 @@ test('state object can update its own state immediately', async () => {
     expect(fooState.color).toBe('blue')
 })
 
-
 test('state object can update its own state asynchronously', async () => {
     const state = stateObj({color: 'red', length: 23})
     let renderCount = 0
@@ -190,7 +189,7 @@ test('state object can update its own state asynchronously', async () => {
     expect(renderCount).toBe(3)
 })
 
-test.skip('TO DO: state object can update its own state in multiple separate calls immediately', async () => {
+test('state object can update its own state in multiple separate calls immediately', async () => {
     const state = stateObj({color: 'red', length: 23})
     let renderCount = 0
     let fooState: any
@@ -205,7 +204,7 @@ test.skip('TO DO: state object can update its own state in multiple separate cal
     expect(fooState.color).toBe('blue')
 })
 
-test.skip('TO DO: state object can update its own state in multiple separate calls asynchronously', async () => {
+test('state object can update its own state in multiple separate calls asynchronously', async () => {
     const state = stateObj({color: 'red', length: 23})
     let renderCount = 0
     let fooState: any

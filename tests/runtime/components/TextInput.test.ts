@@ -199,7 +199,7 @@ test('State class has correct properties and functions', () => {
     expect(state.defaultValue).toBe('')
 
     state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({value: undefined, errorsShown: false}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
 })
 
 test('State class gives correct value when its value is a value object', () => {

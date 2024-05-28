@@ -131,7 +131,7 @@ test('State class has correct properties', () => {
 
     state.Reset()
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
     expect(resetState.value).toBe(77)
     expect(resetState.dataValue).toBe(77)
 

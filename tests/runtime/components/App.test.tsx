@@ -169,16 +169,13 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     const {ShowPage} = state
 
     ShowPage('Page2')
-    const newVersion1 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
-    expect(newVersion1.currentPage).toBe(Page2)
+    expect(state.latest().currentPage).toBe(Page2)
 
     ShowPage(Page3)
-    const newVersion2 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[1][0]
-    expect(newVersion2.currentPage).toBe(Page3)
+    expect(state.latest().currentPage).toBe(Page3)
 
     ShowPage('previous')
-    const newVersion3 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[2][0]
-    expect(newVersion3.currentPage).toBe(Page2)
+    expect(state.latest().currentPage).toBe(Page2)
 })
 
 test('App.State page, path, query and hash can be updated by ShowPage', () => {
@@ -197,12 +194,10 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const theDate = new Date(theDateStr)
 
     ShowPage('Page2', 'tab1', 'sorted', {a: 123, date: theDate}, 'id123')
-    const newVersion1 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[0][0]
-    expect(newVersion1.currentPage).toBe(Page2)
+    expect(state.latest().currentPage).toBe(Page2)
 
     ShowPage(Page1, valueObj('tab2'), valueObj(null), valueObj('id123'))
-    const newVersion2 = (appInterface.updateVersion as MockedFunction<any>).mock.calls[1][0]
-    expect(newVersion2.currentPage).toBe(Page1)
+    expect(state.latest().currentPage).toBe(Page1)
     expect(updateUrlSpy).toHaveBeenCalledTimes(3)
     expect(updateUrlSpy).toHaveBeenNthCalledWith(2, '/Page2/tab1/sorted', {a: '123', date: theDateStr}, 'id123')
     expect(updateUrlSpy).toHaveBeenNthCalledWith(3, '/Page1/tab2', null, 'id123')

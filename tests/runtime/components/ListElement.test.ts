@@ -53,5 +53,5 @@ test('State class has correct properties', () => {
     expect(updatedState.scrollTop).toBe(222)
 
     state._setScrollTop(333)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state._withStateForTest({scrollTop: 333}))
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({scrollTop: 333})
 })

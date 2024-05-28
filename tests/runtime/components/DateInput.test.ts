@@ -96,7 +96,7 @@ test('State class has correct properties', () => {
 
     state.Reset()
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(resetState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
     expect(resetState.value).toStrictEqual(new Date('2021-11-12'))
     expect(resetState.dataValue).toStrictEqual(new Date('2021-11-12'))
 

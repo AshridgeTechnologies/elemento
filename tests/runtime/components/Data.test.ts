@@ -32,7 +32,7 @@ test('Set returns correct update', () => {
     state.Set({a:20, b:'Cee'})
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
 })
 
 test('Reset returns correct update', () => {
@@ -43,12 +43,12 @@ test('Reset returns correct update', () => {
     state.Set({a:20, b:'Cee'})
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
 
     state.Reset()
     const expectedState2 = state._withStateForTest({value: undefined})
     expect(expectedState2.value).toStrictEqual({a: 10, b: 'Bee1', c: true}) //initial value
-    expect(appInterface.updateVersion).toHaveBeenLastCalledWith(expectedState2)
+    expect(appInterface.updateVersion).toHaveBeenLastCalledWith({value: undefined})
 })
 
 test('Set returns correct update for array', () => {
@@ -59,7 +59,7 @@ test('Set returns correct update for array', () => {
     state.Set(['a', 20])
     const expectedState = state._withStateForTest({value: ['a', 20]})
     expect(expectedState.value).toStrictEqual(['a', 20])
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: ['a', 20]})
 })
 
 test('Update returns correct update for object', () => {
@@ -70,7 +70,7 @@ test('Update returns correct update for object', () => {
     state.Update({a:20, b:'Cee'})
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee', c: true}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee', c: true})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee', c: true}})
 })
 
 test('Update returns correct update for array', () => {
@@ -81,7 +81,7 @@ test('Update returns correct update for array', () => {
     state.Update({0:99, '2':'Cee'})
     const expectedState = state._withStateForTest({value: [99, 20, 'Cee']})
     expect(expectedState.value).toStrictEqual([99, 20, 'Cee'])
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(expectedState)
+    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: [99, 20, 'Cee']})
 })
 
 test('valueOf returns the value', () => {
