@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Frame element not visible with display false 1`] = `
+<iframe
+  id="app.page1.photo"
+  src="http://example.com/anApp/somewhere/sidebar.pdf"
+  style={
+    {
+      "border": "none",
+      "display": "none",
+    }
+  }
+/>
+`;
+
+exports[`Frame element produces frame output with default properties 1`] = `
+<iframe
+  id="app.page1.photo"
+  src="/sidebar.pdf"
+  style={
+    {
+      "border": "none",
+    }
+  }
+/>
+`;
+
+exports[`Frame element produces output with properties supplied as state values 1`] = `
+<iframe
+  id="app.page1.photo"
+  src="http://example.com/anApp/somewhere/sidebar.pdf"
+  style={
+    {
+      "border": "none",
+      "height": "100px",
+      "marginBottom": "1em",
+      "width": "200px",
+    }
+  }
+/>
+`;

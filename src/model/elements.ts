@@ -51,6 +51,7 @@ import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
 import Block from './Block'
 import Timer from './Timer'
+import Frame from './Frame'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -84,6 +85,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Button: Button,
         Form: Form,
         Image: Image,
+        Frame: Frame,
         Icon: Icon,
         UserLogon: UserLogon,
         Menu: Menu,

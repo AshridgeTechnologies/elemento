@@ -355,6 +355,7 @@ Done
 - Calculation condition actions
 - Horizontal list
 - Freeform list, generated from a list, with positions set by data
+- Iframe element
 
 Bugs fixed
 ----------
@@ -390,4 +391,4 @@ Bugs fixed
 - Inspector kills app by trying to evaluate CurrentUrl().page in the page when have an element using that in a formula in the app bar selected
 - Inspector kills app by trying to evaluate JavaScript function calculation
 - Inspector eval (usually) fails if not displaying the page whose element is selected, as the required functions and elements are not in scope
-
+- Merge multiple deferred updates
