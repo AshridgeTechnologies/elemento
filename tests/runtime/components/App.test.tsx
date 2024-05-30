@@ -13,13 +13,12 @@ import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppCo
 import Url from '../../../src/runtime/Url'
 import {createMemoryHistory, MemoryHistory} from 'history'
 import {AppData} from '../../../src/runtime/components/AppData'
-import MockedFunction = jest.MockedFunction
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 
 jest.mock('../../../src/runtime/components/authentication')
 
-const [appComponent, appStoreHook] = wrappedTestElement(App, AppData)
+const [appComponent] = wrappedTestElement(App, AppData)
 
 const text = (...content: string[]) => createElement(TextElement, {path: 'app1.page1.para1'}, ...content)
 const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello', 'where are you'))
@@ -37,7 +36,7 @@ let appContext: AppContext
 
 function getRealAppContext(initialPath = '/'): [AppContext, MemoryHistory] {
     const history = createMemoryHistory({initialEntries: [initialPath],})
-    const appContext = new DefaultAppContext(null, history, 'http://foo.com')
+    const appContext = new DefaultAppContext(null, undefined, history, 'http://foo.com')
     return [appContext, history]
 }
 
@@ -243,17 +242,42 @@ test('App.State can get current url object', () => {
     const query = {a: '10', b: 'foo'}
     const hash = '#id123'
     const pathPrefix = 'someapp/somewhere'
-    const appContext = {
+    const appContext: AppContext = {
         getUrl(): any {
             return { location: {origin, pathname, query, hash}, pathPrefix }
         },
-        updateUrl(path: string, query: object, anchor: string): void {},
+        updateUrl(_path: string, _query: object, _anchor: string): void {},
         onUrlChange: jest.fn(),
-        goBack: jest.fn()
+        goBack: jest.fn(),
+        getFullUrl: jest.fn(),
+        getResourceUrl(name: string) {
+            return 'resource/url/to/' + name
+        }
     }
-    const state = new App.State({pages, appContext})._withStateForTest({currentUrl: urlForPage('Page2')
-})
+    const state = new App.State({pages, appContext})._withStateForTest({currentUrl: urlForPage('Page2')})
     expect(state.CurrentUrl()).toStrictEqual(new Url(origin, pathname, pathPrefix, query, hash))
+})
+
+test('App.State can get a File Url', () => {
+    const Page1 = (props: any) => null
+    const pages = {Page1}
+    const origin = 'http.example.com'
+    const pathname = '/someapp/somewhere/Page1/tabA/12345'
+    const query = {a: '10', b: 'foo'}
+    const hash = '#id123'
+    const pathPrefix = 'someapp/somewhere'
+    const appContext: AppContext = {
+        getUrl: jest.fn(),
+        updateUrl: jest.fn(),
+        onUrlChange: jest.fn(),
+        goBack: jest.fn(),
+        getFullUrl: jest.fn(),
+        getResourceUrl(name: string) {
+            return 'resource/url/to/' + name
+        }
+    }
+    const state = new App.State({pages, appContext})._withStateForTest({currentUrl: urlForPage('Page2')})
+    expect(state.FileUrl('image1.jpg')).toBe('resource/url/to/image1.jpg')
 })
 
 test('App.State responds to app context url changes', () => {

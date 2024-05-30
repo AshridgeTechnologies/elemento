@@ -7,9 +7,7 @@ import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
 import AppContext, {DefaultAppContext} from '../runtime/AppContext'
-import AppUtils from '../runtime/AppUtils'
 
-export const AppUtilsContext = React.createContext<AppUtils | null>(null)
 export const AppContextContext = React.createContext<AppContext | null>(null)
 
 export const useGetAppContext = () => useContext(AppContextContext)
@@ -40,15 +38,13 @@ type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string
 export default function AppRunner({appFunction, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook}: Properties) {
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider appStoreHook={appStoreHook}>
-            <AppUtilsContext.Provider value={new AppUtils(resourceUrl)}>
-            <AppContextContext.Provider value={new DefaultAppContext(pathPrefix)}>
+            <AppContextContext.Provider value={new DefaultAppContext(pathPrefix, resourceUrl)}>
                 <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         {React.createElement(appFunction, {})}
                     </LocalizationProvider>
                 </SelectionProvider>
             </AppContextContext.Provider>
-            </AppUtilsContext.Provider>
         </StoreProvider>
     </ErrorBoundary>
 }

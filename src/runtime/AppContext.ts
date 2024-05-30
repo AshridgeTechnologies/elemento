@@ -22,11 +22,12 @@ let _standardHistory: BrowserHistory
 const getHistory = () => _standardHistory ?? (_standardHistory = createBrowserHistory())
 
 export default interface AppContext{
-
     getUrl(): UrlType
     updateUrl(path: string, query: object | null, anchor: string | null): void
     goBack(): void
     onUrlChange(callback: CallbackFn): UnsubscribeFn
+    getFullUrl(url: string | undefined): any
+    getResourceUrl(resourceName: string): any
 }
 
 const convertSearch = (search: string) => {
@@ -40,9 +41,12 @@ const removePrefix = (pathname: string, prefix: string | null) => {
 }
 
 export class DefaultAppContext implements AppContext {
-    constructor(pathPrefix: string | null = null, private _history: BrowserHistory | null = null, private origin: string = globalThis.location?.origin) {
+    constructor(pathPrefix: string | null = null, resourceUrl: string | undefined, private _history: BrowserHistory | null = null, private origin: string = globalThis.location?.origin) {
         this.pathPrefix = pathPrefix ? pathPrefix.replace(/\/$/, '') : null
+        this.resourceUrl = resourceUrl ? resourceUrl.replace(/\/$/, '') : ''
+
     }
+    private resourceUrl: string | null
     private pathPrefix: string | null
     private url: UrlType | null = null
     private listeners: CallbackFn[] = []
@@ -90,6 +94,16 @@ export class DefaultAppContext implements AppContext {
         this.history.back()
     }
 
+    getFullUrl(url: string | undefined) {
+        if (!url) return url
+        if (url.match(/^https?:\/\//)) return url
+        return this.getResourceUrl(url)
+    }
+
+    getResourceUrl(resourceName: string) {
+        return this.resourceUrl + ensureSlash(resourceName)
+    }
+
     private urlChanged() {
         this.url = null
         const newUrl = this.getUrl()
@@ -97,20 +111,13 @@ export class DefaultAppContext implements AppContext {
     }
 }
 
-const defaultAppContexts = new Map<string, AppContext>()
-
-export const getDefaultAppContext = (pathPrefix: string): AppContext => {
-    if (!defaultAppContexts.has(pathPrefix)) {
-        defaultAppContexts.set(pathPrefix, new DefaultAppContext(pathPrefix))
-    }
-    return defaultAppContexts.get(pathPrefix)!
-}
-
 export const dummyAppContext: AppContext = {
     getUrl(): UrlType {
         return {location: { origin: '', pathname: '', query: {}, hash: ''}, pathPrefix: null}
     },
     goBack(): void {},
-    onUrlChange(callback: CallbackFn): UnsubscribeFn { return () => {} },
-    updateUrl(path: string, query: object | null, anchor: string | null): void {},
+    onUrlChange(_callback: CallbackFn): UnsubscribeFn { return () => {} },
+    updateUrl(_path: string, _query: object | null, _anchor: string | null): void {},
+    getFullUrl(_url: string | undefined): any {},
+    getResourceUrl(_resourceName: string): any {},
 }

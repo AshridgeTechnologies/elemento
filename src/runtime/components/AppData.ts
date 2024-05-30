@@ -57,7 +57,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         return new Url(origin, pathname, pathPrefix, query, hash)
     }
 
-    ShowPage = (page: string | React.FunctionComponent, ...args: (string | object | null)[]) => {
+    ShowPage = (page: string | FunctionComponent, ...args: (string | object | null)[]) => {
         const argValues = valuesOf(...args)
         const {appContext} = this.props
         if (page === Url.previous) {
@@ -71,5 +71,10 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
             const [query, anchor] = [...remainingArgs, null, null]
             appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
         }
+    }
+
+    FileUrl = (filename: string) => {
+        const {appContext} = this.props
+        return appContext.getResourceUrl(filename)
     }
 }

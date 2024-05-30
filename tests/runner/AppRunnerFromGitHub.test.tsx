@@ -7,7 +7,6 @@ import AppRunnerFromGitHub from '../../src/runner/AppRunnerFromGitHub'
 import {act} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import AppContext, {UrlType} from '../../src/runtime/AppContext'
 import {wait} from '../testutil/testHelpers'
 import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
 
@@ -39,14 +38,9 @@ afterEach(() => {
     global.fetch = undefined
 })
 
-const appContext: AppContext = {
-    getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
-    updateUrl(path: string, query: object, anchor: string): void {},
-    onUrlChange: jest.fn(),
-    goBack(): void {}
-}
+const pathPrefix = 'pp'
 
-const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, appContext})
+const appRunnerFromGitHub = (username = 'mickey', repo = 'mouse', appName = 'AppOne') => createElement(AppRunnerFromGitHub, {username, repo, appName, pathPrefix})
 
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(() => {

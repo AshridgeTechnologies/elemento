@@ -92,7 +92,7 @@ Page2.notLoggedInPage = 'Page1'
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
 
@@ -139,7 +139,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     const {App} = Elemento.components
     const {Editor, Preview} = Elemento
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Tool1', new App.State({pages, appContext}))
 
@@ -196,7 +196,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1, Page2}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
 
@@ -276,7 +276,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
 
@@ -337,7 +337,7 @@ test('generates App Bar elements with contents', ()=> {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
@@ -362,7 +362,7 @@ test('generates startup action for App', ()=> {
     const {App} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
     const Test1_startupAction = React.useCallback(() => {
@@ -826,7 +826,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
@@ -870,7 +870,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const ServerApp1 = _state.setObject('App1.ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
@@ -912,7 +912,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
@@ -946,7 +946,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
@@ -979,7 +979,7 @@ export default function App1(props) {
     const pathWith = name => 'App1' + '.' + name
     const {App, ServerAppConnector} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const Connector1 = _state.setObject('App1.Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
@@ -1139,7 +1139,7 @@ test('generates elements under App used in Page', ()=> {
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore, FileDataStore, BrowserDataStore, FirestoreDataStore} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
@@ -1190,7 +1190,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     const pathWith = name => 'App1' + '.' + name
     const {App, Collection, MemoryDataStore} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
     const [Store1] = React.useState(new MemoryDataStore({value: ({ Widgets: { x1: {a: 10}}})}))
@@ -1674,7 +1674,7 @@ test('generates user defined component and instance', () => {
     const pathWith = name => 'App1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
 
@@ -1867,7 +1867,7 @@ test('generates local user defined functions in the app', () => {
     const pathWith = name => 'Test1' + '.' + name
     const {App, AppBar, TextElement} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
     const AppBarText = React.useCallback((greeting) => {
@@ -1979,7 +1979,7 @@ export default function Test1(props) {
     const pathWith = name => 'Test1' + '.' + name
     const {App} = Elemento.components
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
@@ -2022,7 +2022,7 @@ export default function Test1(props) {
     const {App} = Elemento.components
     const {Editor, Preview} = Elemento
     const pages = {Page1}
-    const {appContext} = props
+    const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
 

@@ -1,8 +1,8 @@
 import React, {useContext} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {AppUtilsContext} from '../../runner/AppRunner'
-import AppUtils from '../AppUtils'
+import {AppContextContext} from '../../runner/AppRunner'
 import {sxProps} from './ComponentHelpers'
+import AppContext from '../AppContext'
 
 type Properties = Readonly<{
     path: string,
@@ -12,10 +12,10 @@ type Properties = Readonly<{
 }>
 
 export default function Frame({path, ...props}: Properties) {
-    const appUtils = useContext(AppUtilsContext) as AppUtils
+    const appContext = useContext(AppContextContext) as AppContext
     const {source, show, styles = {}} = valueOfProps(props)
     const frameStylesProps = {border: 'none', ...sxProps(styles, show)}
-    const src = appUtils.getFullUrl(source)
+    const src = appContext.getFullUrl(source)
 
     return React.createElement('iframe', {id: path, src, style: frameStylesProps,})
 }

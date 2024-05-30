@@ -15,19 +15,14 @@ import {useGetStore} from '../../src/runtime/index'
 
 jest.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
 
-const appContext: AppContext = {
-    getUrl(): UrlType { return {location: {origin: 'http://foo.com', pathname: '/MainPage/xyz', query: {a: '10'}, hash: 'mark1'}, pathPrefix: 'pp'}},
-    updateUrl(path: string, query: object, anchor: string): void {},
-    onUrlChange(callback: any) { return () => {} },
-    goBack(): void {},
-}
+const pathPrefix = 'pp'
 const resourceUrl = 'https://example.com:8080/app/somewhere'
 let onComponentSelected: (id: string) => void
 
 const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
                    selectedComponentId?: string) => createElement(AppRunner, {
     appFunction,
-    appContext,
+    pathPrefix,
     onComponentSelected,
     selectedComponentId,
     resourceUrl
@@ -56,8 +51,7 @@ const testApp = (version: string) => {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
-        // @ts-ignore
-        const {appContext} = props
+        const appContext = Elemento.useGetAppContext() as AppContext
         const _store = Elemento.useGetStore()
         const app = _store.setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
@@ -106,7 +100,7 @@ test('shows app on page', () => {
 })
 
 test('passes app context', () => {
-    expectEl('TheUrl').toHaveTextContent('http://foo.com/pp/MainPage/xyz?a=10#mark1')
+    expectEl('TheUrl').toHaveTextContent('http://localhost/pp')
 })
 
 test('makes app utils available to images', () => {

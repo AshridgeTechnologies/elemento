@@ -48,3 +48,4 @@ Spike 1
 
 - Change AppContext to be created in AppRunner and passed down in React context
 - Then combine with Resource Url
+- Then give AppData a FileUrl() function and test

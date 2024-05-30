@@ -1,6 +1,5 @@
 import {createRoot, Root} from 'react-dom/client'
 import React from 'react'
-import {getDefaultAppContext} from './AppContext'
 import AppRunner from '../runner/AppRunner'
 import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
