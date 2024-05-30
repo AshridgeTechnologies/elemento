@@ -28,10 +28,9 @@ const run = (urlPath: string,
     if (!root) {
         root = createRoot(container)
     }
-    const appContext = getDefaultAppContext(urlPath)
     const resourceUrl = `/studio/preview/${projectId}/${ASSET_DIR}`
     // @ts-ignore
-    const appRunner = React.createElement(AppRunner, {appFunction: elementType, appContext, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
+    const appRunner = React.createElement(AppRunner, {appFunction: elementType, pathPrefix: urlPath, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
     root.render(appRunner)
 }
 

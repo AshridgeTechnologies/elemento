@@ -135,7 +135,8 @@ export default class Generator {
 
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
-        const appContext = componentIsApp ? `    const {appContext} = props` : ''
+        const appContext = componentIsApp ? `    const appContext = Elemento.useGetAppContext()
+` : ''
         const getStateDeclaration = `    const _state = Elemento.useGetStore()`
         const appStateDeclaration = componentIsApp
             ? `    const app = _state.setObject('${app.codeName}', new App.State({pages, appContext}))`

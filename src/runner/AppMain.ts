@@ -8,8 +8,6 @@ import {ASSET_DIR} from '../shared/constants'
 
 type Properties = {pathname: string, origin: string}
 
-const getAppContext = (pathPrefix: string | null = null) => new DefaultAppContext(pathPrefix)
-
 export default function AppMain({pathname, origin}: Properties) {
     const path = decodeURIComponent(pathname)
 
@@ -17,14 +15,14 @@ export default function AppMain({pathname, origin}: Properties) {
     if (githubToolsMatch) {
         const [, firstPart, username, repo, appName] = githubToolsMatch
         const pathPrefix = `${firstPart}/gh/${username}/${repo}/tools/${appName}`
-        return createElement(AppRunnerFromGitHub, {username, repo, appName, subPath: 'tools', appContext: getAppContext(pathPrefix)})
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, subPath: 'tools', pathPrefix})
     }
 
     const githubMatch = path.match(/^(.*)\/gh\/([-\w]+)\/([-\w]+)\/([-\w]+)/)
     if (githubMatch) {
         const [, firstPart, username, repo, appName] = githubMatch
         const pathPrefix = `${firstPart}/gh/${username}/${repo}/${appName}`
-        return createElement(AppRunnerFromGitHub, {username, repo, appName, appContext: getAppContext(pathPrefix)})
+        return createElement(AppRunnerFromGitHub, {username, repo, appName, pathPrefix})
     }
 
     const localMatch = path.match(/^\/run\/local\/(opfs|disk)\/([-\w ]+)\/([-\w]+)/)
@@ -35,7 +33,7 @@ export default function AppMain({pathname, origin}: Properties) {
         const resourceUrl = `/run/local/${area}/${projectName}/${ASSET_DIR}`
 
         console.log('Loading local app from', appCodeUrl, 'resource url', resourceUrl)
-        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(pathPrefix)})
+        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, pathPrefix})
     }
 
     const hostServerMatch = path.match(/^\/([-\w]+)(\/)?/)
@@ -46,7 +44,7 @@ export default function AppMain({pathname, origin}: Properties) {
         const resourceUrl = `${origin}/${ASSET_DIR}`
 
         console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)
-        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, appContext: getAppContext(pathPrefix)})
+        return createElement(AppRunnerFromCodeUrl, {url: appCodeUrl, resourceUrl, pathPrefix})
     }
 
     return createElement('h4', null, 'Sorry - we could not find the Elemento app you are trying to run from ', pathname)

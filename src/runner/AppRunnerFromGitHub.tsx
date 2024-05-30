@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {ASSET_DIR} from '../shared/constants'
 
-type Properties = {username: string, repo: string, appName: string, subPath?: string, appContext: AppContext}
+type Properties = {username: string, repo: string, appName: string, subPath?: string, pathPrefix: string}
 
 const CDN_HOST = 'https://cdn.jsdelivr.net'
 const GITHUB_API_HOST = 'https://api.github.com'
@@ -13,7 +13,7 @@ const getLatestCommitId = (username: string, repo: string): Promise<string> => {
         .then(resp => resp.json())
         .then(commits => commits[0].sha)
 }
-export default function AppRunnerFromGitHub({username, repo, appName, subPath, appContext}: Properties) {
+export default function AppRunnerFromGitHub({username, repo, appName, subPath, pathPrefix}: Properties) {
     const [usernameRepoFetched, setUsernameRepoFetched] = useState<string | null>(null)
     const [appUrl, setAppUrl] = useState<string | null>(null)
 
@@ -33,5 +33,5 @@ export default function AppRunnerFromGitHub({username, repo, appName, subPath, a
 
     const codeUrl = `${appUrl}/${appName}/${appName}.js`
     const resourceUrl = `${appUrl}/${ASSET_DIR}`
-    return <AppRunnerFromCodeUrl url={codeUrl} resourceUrl={resourceUrl} appContext={appContext}/>
+    return <AppRunnerFromCodeUrl url={codeUrl} resourceUrl={resourceUrl} pathPrefix={pathPrefix}/>
 }
