@@ -36,13 +36,12 @@ const testApp = (version: string) => {
         const input1 = _store.setObject(pathWith('input1'), new TextInput.State({value: undefined}),)
         const app = Elemento.useGetObjectState('AppOne') as AppData
 
-        // @ts-ignore
-        return React.createElement(Page, {id: props.path},
-            React.createElement(TextElement, {path: pathWith('FirstText')}, 'This is App ' + version),
+        return React.createElement(Page, {path: props.path},
+            React.createElement(TextElement, {path: pathWith('FirstText'), content:'This is App ' + version } ),
             React.createElement(TextInput, {path: pathWith('input1'), label: 'input1'}),
             // @ts-ignore
-            React.createElement(TextElement, {path: pathWith('SecondText'), onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, "Input is " + input1),
-            React.createElement(TextElement, {path: pathWith('TheUrl'), }, app.CurrentUrl().text),
+            React.createElement(TextElement, {path: pathWith('SecondText'), content: "Input is " + input1, onClick: (event) => {if (event.altKey) throw new Error('Should not be called')} }, ),
+            React.createElement(TextElement, {path: pathWith('TheUrl'), content: app.CurrentUrl().text} ),
             React.createElement(Image, {path: pathWith('TheImage'), source: 'Duck.jpg'}),
         )
     }
@@ -69,7 +68,7 @@ const badApp = () => {
         // @ts-ignore
         const goWrong = () => {throw new Error('Aaaargh!')}
         return React.createElement(Page, {path: 'MainPage'},
-            React.createElement(TextElement, {path: pathWith('FirstText')}, 'This is App ' + goWrong()),
+            React.createElement(TextElement, {path: pathWith('FirstText'), content: 'This is App ' + goWrong()} ),
         )
     }
 

@@ -37,7 +37,6 @@ export default function AppBarMenu(props: object) {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            // @ts-ignore
             MenuListProps={{dense: true, 'aria-labelledby': 'fileButton', component: 'nav'}}
             anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
             transformOrigin={{vertical: 5, horizontal: -5,}}

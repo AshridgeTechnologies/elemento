@@ -10,6 +10,7 @@ import TextInput from '../../src/model/TextInput'
 import Text from '../../src/model/Text'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
+import Page from '../../src/model/Page'
 
 const project = projectFixture1()
 
@@ -194,7 +195,7 @@ test('illegal action leaves the project unchanged and throws error', async () =>
     const originalErrorFn = console.error
     try {
         console.error = jest.fn()
-        const elementToPaste = new TextInput('pqr', 'Big Text Input', {})
+        const elementToPaste = new Page('pqr', 'A Page', {})
         clipboardData = elementToJSON(elementToPaste)
         let error: any
         try {
@@ -203,8 +204,8 @@ test('illegal action leaves the project unchanged and throws error', async () =>
             error = e
         }
         expect(handler.current).toBe(project)
-        expect(error.message).toBe('Cannot insert elements of types TextInput inside Text')
-        expect(console.error).toHaveBeenCalledWith("Could not do pasteInside on element(s) text_3", new Error('Cannot insert elements of types TextInput inside Text'))
+        expect(error.message).toBe('Cannot insert elements of types Page inside Text')
+        expect(console.error).toHaveBeenCalledWith("Could not do pasteInside on element(s) text_3", new Error('Cannot insert elements of types Page inside Text'))
     } finally {
         console.error = originalErrorFn
     }

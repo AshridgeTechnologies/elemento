@@ -20,10 +20,11 @@ exports[`ListItem produces output containing ReactElement children 1`] = `
   role="button"
   tabIndex={0}
 >
-  <p
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    id="path1"
   >
     where are you?
-  </p>
+  </div>
 </div>
 `;

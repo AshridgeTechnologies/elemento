@@ -27,7 +27,6 @@ export default class AppBar extends BaseElement<Properties> implements Element {
         ]
     }
 
-    static get parentType():
-        ParentType { return 'App' }
+    static get parentType(): ParentType { return 'App' }
 
 }

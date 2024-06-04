@@ -16,9 +16,7 @@ export default abstract class BaseTypeElement<PropertiesType extends BaseTypePro
 
     static isDataType() { return true }
 
-    static get parentType(): ParentType {
-        return null
-    }
+    static get parentType(): ParentType { return null }
 
     type(): ComponentType { return 'dataType' }
 

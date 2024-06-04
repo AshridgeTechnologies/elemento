@@ -10,7 +10,7 @@ type Properties = {
 export default class ServerAppConnector extends BaseElement<Properties> implements Element {
 
     readonly kind = 'ServerAppConnector'
-    static get parentType() { return 'App' as ParentType }
+    static get parentType() { return 'App' }
     get iconClass() { return 'swap_vert_rounded' }
     type(): ComponentType { return 'background' }
 

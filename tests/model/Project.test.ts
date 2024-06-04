@@ -18,6 +18,7 @@ import ServerApp from '../../src/model/ServerApp'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
+import Collection from '../../src/model/Collection'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -188,7 +189,7 @@ test('can find elements including page by selector function', () => {
 
 test('can find property definitions of built-in and user-defined elements', () => {
     const {project, text1, comp1} = testProject()
-    expect(project.propertyDefsOf(text1).map( def => def.name)).toStrictEqual(['content', 'show', 'styles'])
+    expect(project.propertyDefsOf(text1).map( def => def.name)).toStrictEqual(['content', 'allowHtml', 'show', 'styles'])
     expect(project.propertyDefsOf(comp1).map( def => def.name)).toStrictEqual(['source', 'destination', 'route', 'show', 'styles'])
 })
 
@@ -379,7 +380,7 @@ describe('Move element', () => {
     })
 
     test('ignores an illegal move', () => {
-        expect(project.move('inside', 'text_3', ['text_2'])).toBe(project)
+        expect(project.move('inside', 'text_3', ['page_1'])).toBe(project)
         expect(project.move('after', 'app', ['page_2'])).toBe(project)
         expect(project.move('inside', 'page_2', ['text_2', 'page_1'])).toBe(project)
     })
@@ -442,7 +443,7 @@ test('finds element types that can insert for a position and target element', ()
 
     expect(project.canInsert('inside', 'page_2', 'Text')).toBe(true)
     expect(project.canInsert('inside', 'page_2', 'Page')).toBe(false)
-    expect(project.canInsert('inside', 'text_2', 'Text')).toBe(false)
+    expect(project.canInsert('inside', 'text_2', 'Text')).toBe(true)
 
     expect(project.canInsert('before', 'page_2', 'Text')).toBe(false)
     expect(project.canInsert('before', 'page_2', 'Page')).toBe(true)

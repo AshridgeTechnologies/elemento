@@ -1,6 +1,9 @@
 Rich text
 =========
 
+!! Jun 2024 - See new opinions at end
+
+
 Aims
 ----
 
@@ -51,3 +54,32 @@ Decisions
 - Rich text elements can have children
 - Placeholders in the rich text can refer to any expression or a child element
 - Generator treats rich text HTML as JSX and converts to nested createElement calls
+
+New assessment after trying Markdown
+====================================
+
+Forces
+------
+
+- Markdown allows full flexibility in text even if less dev-friendly
+- The target market is low-code, not no-code, so markdown probably acceptable
+- Markdown can include or even be all HTML
+- And if you're going to use HTML, Markdown is just a complication
+- Rich text editing could be layered on top of HTML/Markdown processing
+- Can embed values or formulas in text by using a template string - and they get parsed automatically
+- Less confusing to have a single text element
+- OK to process all text as markdown or HTML - if no markup, comes out the same
+- markdown-as-jsx is flexible and lightweight enough to process at runtime
+- But dangerouslySetInnerHtml is much simpler
+- Leads to a rich text input for users as can use a text input's value in a text element
+- Will need to sanitise HTML whether using Markdown or HTML
+- If going to use Text Element for outputting user data, easier to process at runtime rather than generating the nested create element calls
+- May want to switch on rich text processing deliberately - could do later
+
+Decisions
+---------
+
+- Text element will process HTML, not Markdown
+- Text element will have an option to sanitise HTML - on by default
+- Value embedding will be done by using a formula with a template string
+- Embedding components done by having placeholders for children of the Text element

@@ -398,8 +398,8 @@ ${generateChildren(form, indentLevel2, form)}
         const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
             const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, containingComponent))
-            const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
-            return generatedUiElementLines.join('\n')
+            const lines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
+            return lines.length ?  `,\n${lines.join('\n')}\n    ` : ''
         }
 
         const path = `pathWith('${(element.codeName)}')`
@@ -414,13 +414,6 @@ ${generateChildren(form, indentLevel2, form)}
             case 'Tool':
             case 'Page': {
                 throw new Error('Cannot generate element code for ' + element.kind)
-            }
-
-            case 'Text': {
-                const text = element as Text
-                const content = this.getExpr(text, 'content')
-                const reactProperties = omit(['content'], getReactProperties())
-                return `React.createElement(TextElement, ${objectLiteral(reactProperties)}, ${content})`
             }
 
             case 'TextInput':
@@ -439,14 +432,20 @@ ${generateChildren(form, indentLevel2, form)}
             case 'Collection':
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())})`
 
+            case 'Text': {
+                const text = element as Text
+                const content = this.getExpr(text, 'content')
+                // generate content at end as it may be long
+                const reactProperties = {...omit(['content'], getReactProperties()), content}
+                return `React.createElement(TextElement, ${objectLiteral(reactProperties)}${generateChildren(element, indentLevel3, containingComponent)})`
+            }
+
             case 'Menu':
             case 'AppBar':
             case 'Layout':
             case 'Block':
             case 'List': {
-                return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())},
-${generateChildren(element, indentLevel3, containingComponent)}
-    )`
+                return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())}${generateChildren(element, indentLevel3, containingComponent)})`
             }
 
             case 'ItemSet': {

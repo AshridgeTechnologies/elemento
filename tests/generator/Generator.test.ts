@@ -68,8 +68,8 @@ test('generates app and all page output files', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
-        React.createElement(TextElement, {path: pathWith('t2')}, 23 + 45),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there!'}),
+        React.createElement(TextElement, {path: pathWith('t2'), content: 23 + 45}),
     )
 }
 `)
@@ -81,8 +81,8 @@ test('generates app and all page output files', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
-        React.createElement(TextElement, {path: pathWith('t3')}, 'Red!'),
+        React.createElement(TextElement, {path: pathWith('Text2'), content: 'Green!'}),
+        React.createElement(TextElement, {path: pathWith('t3'), content: 'Red!'}),
     )
 }
 Page2.notLoggedInPage = 'Page1'
@@ -127,7 +127,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there!'}),
         React.createElement(Button, {path: pathWith('Button1'), content: 'Do It', appearance: 'outline', action: Button1_action}),
     )
 }
@@ -175,7 +175,7 @@ function Page1(props) {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there!'}),
     )
 }
 
@@ -187,7 +187,7 @@ function Page2(props) {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text2')}, 'Green!'),
+        React.createElement(TextElement, {path: pathWith('Text2'), content: 'Green!'}),
     )
 }
 
@@ -267,7 +267,7 @@ function Page1(props) {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Uses Data Types 2' + Types2.ItemAmount.max),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Uses Data Types 2' + Types2.ItemAmount.max}),
     )
 }
 
@@ -342,7 +342,7 @@ test('generates App Bar elements with contents', ()=> {
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
-            React.createElement(TextElement, {path: pathWith('Text0'), styles: {width: 200}}, 'Welcome!'),
+            React.createElement(TextElement, {path: pathWith('Text0'), styles: {width: 200}, content: 'Welcome!'}),
     ))
     },)
 }
@@ -418,9 +418,39 @@ test('generates Text elements with multiline content', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1'), styles: {fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}}, \`Hi there!
+        React.createElement(TextElement, {path: pathWith('Text1'), styles: {fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}, content: \`Hi there!
 How are you?
-Today\`),
+Today\`}),
+    )
+}
+`)
+})
+
+test('generates Text elements with placeholders', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 'Text 1', {content: 'Hi there @Comp1@ and @Comp2@!'},
+                    [
+                        new TextInput('ti1', 'Comp 1', {}),
+                        new Button('b1', 'Comp 2', {content: 'Click here'})
+                    ]
+                )
+            ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathWith = name => props.path + '.' + name
+    const {Page, TextElement, TextInput, Button} = Elemento.components
+    const _state = Elemento.useGetStore()
+    const Comp1 = _state.setObject(pathWith('Comp1'), new TextInput.State({}))
+    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, {path: props.path},
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there @Comp1@ and @Comp2@!'},
+            React.createElement(TextInput, {path: pathWith('Comp1'), label: 'Comp 1'}),
+            React.createElement(Button, {path: pathWith('Comp2'), content: 'Click here', appearance: 'outline'}),
+    ),
     )
 }
 `)
@@ -442,7 +472,7 @@ test('generates Text elements with escaped quotes', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there \\'Doctor\\' How are you?'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there \\'Doctor\\' How are you?'}),
     )
 }
 `)
@@ -1014,7 +1044,7 @@ test('sorts state entries into dependency order', () => {
     const styles = undefined
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+        React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })
 
@@ -1070,7 +1100,7 @@ test('sorts state entries into dependency order when nested inside a layout elem
     const styles = undefined
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+        React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })
 
@@ -1129,7 +1159,7 @@ test('generates elements under App used in Page', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Update the widget'}),
         React.createElement(NumberInput, {path: pathWith('WidgetValue'), label: 'New widget value'}),
     )
 }
@@ -1180,7 +1210,7 @@ test('generates codeGenerationError for unknown names in elements under App used
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Update the widget'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Update the widget'}),
         React.createElement(NumberInput, {path: pathWith('WidgetValue'), label: 'New widget value'}),
     )
 }
@@ -1244,7 +1274,7 @@ test('generates ItemSet element with separate child component and global functio
     const styles = {color: $selected ? 'red' : ItemColor, width: 200}
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1 + $itemId),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there ' + TextInput2 + ' in ' + TextInput1 + $itemId}),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
@@ -1308,7 +1338,7 @@ test('generates ItemSet element inside List', ()=> {
     const styles = {color: 'red', width: 200}
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + TextInput2 + ' in ' + TextInput1),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there ' + TextInput2 + ' in ' + TextInput1}),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
@@ -1360,7 +1390,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     const styles = undefined
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there!'),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there!'}),
     )
 })
 
@@ -1406,7 +1436,7 @@ test('generates Layout element with properties and children', ()=> {
     return React.createElement(Page, {path: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
         React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, wrap: 100 < 200, styles: {width: 500, backgroundColor: 'pink'}},
-            React.createElement(TextElement, {path: pathWith('T1')}, 23 + 45),
+            React.createElement(TextElement, {path: pathWith('T1'), content: 23 + 45}),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),
             React.createElement(Button, {path: pathWith('B1'), content: 'Click here!', appearance: 'outline'}),
@@ -1585,9 +1615,9 @@ test('generates Form element with separate child component', ()=> {
 
     return React.createElement(Form, props,
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'Hi there ' + Left(TextInput2, 2)),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there ' + Left(TextInput2, 2)}),
         React.createElement(NumberInput, {path: pathWith('NumberInput1'), label: 'Number Input 1'}),
-        React.createElement(TextElement, {path: pathWith('Text2')}, 'Number is ' + \$form.value.NumberInput1),
+        React.createElement(TextElement, {path: pathWith('Text2'), content: 'Number is ' + \$form.value.NumberInput1}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
     )
 }
@@ -1649,8 +1679,8 @@ test('generates user defined component and instance', () => {
     const _state = Elemento.useGetStore()
 
     return React.createElement(ComponentElement, props,
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'From ' + props.source),
-        React.createElement(TextElement, {path: pathWith('t2')}, 'To ' + props.destination),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'From ' + props.source}),
+        React.createElement(TextElement, {path: pathWith('t2'), content: 'To ' + props.destination}),
     )
 }
 `)
@@ -1663,7 +1693,7 @@ test('generates user defined component and instance', () => {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text3')}, 'Over here!'),
+        React.createElement(TextElement, {path: pathWith('Text3'), content: 'Over here!'}),
         React.createElement(MyComponent, {path: pathWith('AComponent'), source: 'Here', destination: 'There', show: true, styles: {color: 'blue'}}),
     )
 }
@@ -1875,7 +1905,7 @@ test('generates local user defined functions in the app', () => {
     }, [])
 
     return React.createElement(App, {path: 'Test1', topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, {path: pathWith('AppBar1'), title: 'My App'},
-            React.createElement(TextElement, {path: pathWith('Text0')}, AppBarText('Welcome to ')),
+            React.createElement(TextElement, {path: pathWith('Text0'), content: AppBarText('Welcome to ')}),
     ))
     },)
 }
@@ -1911,7 +1941,7 @@ test('generates local user defined functions in a list item that use a page item
     const styles = undefined
 
     return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
-        React.createElement(TextElement, {path: pathWith('Desc')}, 'Hi!'),
+        React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })
 
@@ -1970,7 +2000,7 @@ function Page1(props) {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'This is ' + GetName('xyz') + DoStuff()),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'This is ' + GetName('xyz') + DoStuff()}),
     )
 }
 
@@ -2012,7 +2042,7 @@ function Page1(props) {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('Text1')}, 'This is ' + GetName('xyz')),
+        React.createElement(TextElement, {path: pathWith('Text1'), content: 'This is ' + GetName('xyz')}),
     )
 }
 
@@ -2046,7 +2076,7 @@ test('generates error for syntax error in expression', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Unexpected character(s) (Line 1 Position 8)')),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Elemento.codeGenerationError(\`'Hello 'Doctor' how are you?'\`, 'Error: Unexpected character(s) (Line 1 Position 8)')}),
     )
 }
 `)
@@ -2104,8 +2134,8 @@ test('generates error on correct line for syntax error in multiline content expr
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`23
- +\`, 'Error: Unexpected character(s) (Line 2 Position 2)')),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Elemento.codeGenerationError(\`23
+ +\`, 'Error: Unexpected character(s) (Line 2 Position 2)')}),
     )
 }
 `)
@@ -2133,7 +2163,7 @@ test('global functions available in content expression', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Sum(2, 3, 4)),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Sum(2, 3, 4)}),
     )
 }
 `)
@@ -2158,11 +2188,11 @@ test('built-in names available in content expression', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, undefined),
-        React.createElement(TextElement, {path: pathWith('t2')}, null),
-        React.createElement(TextElement, {path: pathWith('t3')}, new Date(2020, 3, 4)),
-        React.createElement(TextElement, {path: pathWith('t4')}, Math.sqrt(2)),
-        React.createElement(TextElement, {path: pathWith('t5')}, document.getElementById('test1.Page1.t1').scrollTop),
+        React.createElement(TextElement, {path: pathWith('t1'), content: undefined}),
+        React.createElement(TextElement, {path: pathWith('t2'), content: null}),
+        React.createElement(TextElement, {path: pathWith('t3'), content: new Date(2020, 3, 4)}),
+        React.createElement(TextElement, {path: pathWith('t4'), content: Math.sqrt(2)}),
+        React.createElement(TextElement, {path: pathWith('t5'), content: document.getElementById('test1.Page1.t1').scrollTop}),
     )
 }
 `)
@@ -2217,7 +2247,7 @@ test('page elements available in content expression', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, ForenameInput.value + ' ' + SurnameInput.value),
+        React.createElement(TextElement, {path: pathWith('t1'), content: ForenameInput.value + ' ' + SurnameInput.value}),
         React.createElement(TextInput, {path: pathWith('ForenameInput'), label: 'Forename Input'}),
         React.createElement(TextInput, {path: pathWith('SurnameInput'), label: 'Surname Input'}),
     )
@@ -2241,7 +2271,7 @@ test('unknown global functions generate error', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Elemento.codeGenerationError(\`sumxx(2, 3, 4)\`, 'Unknown names: sumxx')}),
     )
 }
 `)
@@ -2269,7 +2299,7 @@ test('return statement in expression generates error', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Elemento.codeGenerationError(\`return 42\`, 'Error: Invalid expression')),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Elemento.codeGenerationError(\`return 42\`, 'Error: Invalid expression')}),
     )
 }
 `)
@@ -2384,7 +2414,7 @@ test('assignment at top level is treated as comparison', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, Sum == 1),
+        React.createElement(TextElement, {path: pathWith('t1'), content: Sum == 1}),
     )
 }
 `)
@@ -2411,7 +2441,7 @@ test('assignment in function argument is treated as comparison', ()=> {
 
     return React.createElement(Page, {path: props.path},
         React.createElement(TextInput, {path: pathWith('Input'), label: 'Input'}),
-        React.createElement(TextElement, {path: pathWith('Answer')}, If(Input.value == 42, 10, 20)),
+        React.createElement(TextElement, {path: pathWith('Answer'), content: If(Input.value == 42, 10, 20)}),
     )
 }
 `)
@@ -2435,7 +2465,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, If(true, 10, () => Sum(Log == 12, 3, 4))),
+        React.createElement(TextElement, {path: pathWith('t1'), content: If(true, 10, () => Sum(Log == 12, 3, 4))}),
     )
 }
 `)
@@ -2489,7 +2519,7 @@ test('property shorthand to name of property reports error and generates an erro
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, {path: props.path},
-        React.createElement(TextElement, {path: pathWith('t1')}, ({a: 10, xxx: undefined})),
+        React.createElement(TextElement, {path: pathWith('t1'), content: ({a: 10, xxx: undefined})}),
     )
 }
 `)

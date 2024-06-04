@@ -1,122 +1,278 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TextElement adds line break before line ends 1`] = `
-<p
+exports[`Can show HTML text  1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <h1>
+    Hello
+  </h1>
+  <br />
+  <b>
+    where
+  </b>
+   are you?
+</div>
+`;
+
+exports[`Can show HTML text with values in a template string 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <h2>
+    Hello
+  </h2>
+  <em>
+    Number 42
+  </em>
+</div>
+`;
+
+exports[`Can show html text with child elements and placeholders 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <article>
+    Hi this is 
+    <span>
+      <div
+        className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        id="page1.para1.Comp1"
+      >
+        This is Comp 1
+      </div>
+    </span>
+     without Comp2@ and @Comp3
+  </article>
+  <span
+    aria-hidden={true}
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    id="page1.para1.Comp2"
+  >
+    some_icon
+  </span>
+  <button
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+    disabled={false}
+    id="page1.para1.Comp3"
+    onBlur={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    Button Comp 3
+    <span
+      className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </button>
+</div>
+`;
+
+exports[`Can show plain text with child elements and placeholders 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  Hi this is 
+  <div
+    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    id="page1.para1.Comp1"
+  >
+    This is Comp 1
+  </div>
+   with 
+  <span
+    aria-hidden={true}
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    id="page1.para1.Comp2"
+  >
+    some_icon
+  </span>
+   but not Comp3
+  <button
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+    disabled={false}
+    id="page1.para1.Comp3"
+    onBlur={[Function]}
+    onContextMenu={[Function]}
+    onDragLeave={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    Button Comp 3
+  </button>
+</div>
+`;
+
+exports[`Does not show HTML text if allowHtml is false 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  &lt;h1&gt;Hello&lt;/h1&gt;
+  <br />
+  <br />
+  &lt;b&gt;where&lt;/b&gt; are you?
+</div>
+`;
+
+exports[`Sanitises bad tags in HTML text 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <h1>
+    Hello
+  </h1>
+  <br />
+</div>
+`;
+
+exports[`Sanitises incorrect HTML text 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <h1>
+    Hello
+  </h1>
+  <br />
+</div>
+`;
+
+exports[`TextElement adds line break for newlines even if allowHtml is none 1`] = `
+<div
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   Hello
   <br />
-  where are you
+  where 
+  <br />
+  <br />
+  <br />
+  are you
+  <br />
   <br />
   today?
-  <br />
-</p>
+</div>
 `;
 
-exports[`TextElement element produces display: none output with show false 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-1yb50b0-MuiTypography-root"
-  id="page1.para1"
->
-  Hello
-  where are you
-</p>
-`;
-
-exports[`TextElement element produces normal output with show true 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  Hello
-  where are you
-</p>
-`;
-
-exports[`TextElement element produces output containing ReactElement children 1`] = `
-<p
+exports[`TextElement element DOES NOT produce output containing ReactElement children 1`] = `
+<div
   className="MuiTypography-root MuiTypography-body1 css-1is0exk-MuiTypography-root"
   id="page1.para1"
 >
-  Hello
-  <p>
-    where are you
-  </p>
-</p>
+  [object Object]
+</div>
 `;
 
-exports[`TextElement element produces output containing string children 1`] = `
-<p
+exports[`TextElement element produces display: none output with show false 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-1yb50b0-MuiTypography-root"
+  id="page1.para1"
+>
+  Hello where are you
+</div>
+`;
+
+exports[`TextElement element produces normal output with show true 1`] = `
+<div
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
-  Hello
-  where are you
-</p>
+  Hello where are you
+</div>
 `;
 
-exports[`TextElement element produces output containing string version of function children 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  function Sum
-</p>
-`;
-
-exports[`TextElement element produces output containing string version of object children 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  {a: 10}
-  {c: 'Hi'}
-</p>
-`;
-
-exports[`TextElement element produces output containing toString of ErrorResult 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  Error: Bad function - It went wrong
-</p>
-`;
-
-exports[`TextElement element produces output containing toString of class object 1`] = `
-<p
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-  id="page1.para1"
->
-  This is a MyClass
-</p>
-`;
-
-exports[`TextElement element produces output containing undefined children 1`] = `
-<p
+exports[`TextElement element produces output containing empty children 1`] = `
+<div
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 />
 `;
 
+exports[`TextElement element produces output containing string children 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  Hello where are you
+</div>
+`;
+
+exports[`TextElement element produces output containing string version of function children 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  function Sum
+</div>
+`;
+
+exports[`TextElement element produces output containing string version of object children 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  {a: 10, c: 'Hi'}
+</div>
+`;
+
+exports[`TextElement element produces output containing toString of ErrorResult 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  Error: Bad function - It went wrong
+</div>
+`;
+
+exports[`TextElement element produces output containing toString of class object 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  This is a MyClass
+</div>
+`;
+
 exports[`TextElement element produces output containing valueOf object 1`] = `
-<p
+<div
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
   id="page1.para1"
 >
   where are you
-</p>
+</div>
 `;
 
 exports[`TextElement gets property values supplied as state objects 1`] = `
-<p
+<div
   className="MuiTypography-root MuiTypography-body1 css-341k9t-MuiTypography-root"
   id="page1.para1"
 >
   Hello
-  <p>
-    where are you
-  </p>
-</p>
+</div>
 `;

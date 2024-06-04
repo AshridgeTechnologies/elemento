@@ -18,9 +18,7 @@ export default class Rule extends BaseElement<Properties> implements Element, Ru
     readonly kind = 'Rule'
     get iconClass() { return 'rule_outlined' }
 
-    static get parentType(): ParentType {
-        return null
-    }
+    static get parentType(): ParentType { return null }
 
     type(): ComponentType { return 'dataType' }
 

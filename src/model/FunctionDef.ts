@@ -1,4 +1,4 @@
-import {ComponentType, ElementType, PropertyDef, PropertyExpr} from './Types'
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyExpr} from './Types'
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
 
@@ -19,6 +19,7 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
     get iconClass() { return 'functions' }
     kind: ElementType = 'Function'
     type(): ComponentType { return 'background' }
+    static get parentType(): ParentType { return ['App', 'Page', 'ItemSet'] }
 
     get input1() { return this.properties.input1}
     get input2() { return this.properties.input2}

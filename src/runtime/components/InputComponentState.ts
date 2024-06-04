@@ -62,6 +62,8 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
         return this.value
     }
 
+    toString() { return String(this.value) }
+
     Reset() {
         this.updateState({value: undefined, errorsShown: false})
     }

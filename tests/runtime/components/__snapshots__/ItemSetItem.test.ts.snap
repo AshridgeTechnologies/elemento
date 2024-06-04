@@ -6,10 +6,11 @@ exports[`ItemSetItem produces output containing ReactElement children 1`] = `
   id="page1.para1"
   onClick={[Function]}
 >
-  <p
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    id="item1"
   >
     where are you?
-  </p>
+  </div>
 </div>
 `;

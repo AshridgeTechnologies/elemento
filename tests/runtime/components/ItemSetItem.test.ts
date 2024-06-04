@@ -7,7 +7,7 @@ import {ItemSetItem, TextElement} from '../../../src/runtime/components'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 
 test('ItemSetItem produces output containing ReactElement children', () => {
-    const childEl = createElement(TextElement, null, 'where are you?')
+    const childEl = createElement(TextElement, {path: 'item1', content: 'where are you?'})
     const itemContentComponent = (props: { path: string, $item: any }) => childEl
     const styles = {color: 'red', borderWidth: 20, backgroundColor: valueObj('blue')}
     const itemElement: React.ReactElement = createElement(ItemSetItem, {

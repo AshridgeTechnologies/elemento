@@ -103,12 +103,12 @@ exports[`Form element produces output containing children 1`] = `
         </fieldset>
       </div>
     </div>
-    <p
+    <div
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
       id="app.page1.form1.Feedback"
     >
       Size is 17
-    </p>
+    </div>
   </div>
 </div>
 `;
@@ -273,12 +273,12 @@ exports[`Form element produces output containing nested form 1`] = `
         </div>
       </div>
     </div>
-    <p
+    <div
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
       id="app.page1.formNested.Feedback"
     >
       Size is 17
-    </p>
+    </div>
   </div>
 </div>
 `;

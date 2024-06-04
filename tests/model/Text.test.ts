@@ -2,6 +2,7 @@ import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
+import Layout from '../../src/model/Layout'
 
 test('Text has correct properties with default values', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -11,19 +12,22 @@ test('Text has correct properties with default values', ()=> {
     expect(text1.kind).toBe('Text')
     expect(text1.notes).toBe(undefined)
     expect(text1.content).toStrictEqual(ex`"Some text"`)
+    expect(text1.allowHtml).toBe(undefined)
     expect(text1.styles).toBe(undefined)
     expect(text1.show).toBe(undefined)
+    expect(text1.isLayoutOnly()).toBe(true)
 })
 
 test('Text has correct properties with specified values', ()=> {
     const styles = {fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 20}
-    const text1 = new Text('t1', 'Text 1', {notes:'This is some text', content: ex`"Some text"`, show: false,
+    const text1 = new Text('t1', 'Text 1', {notes:'This is some text', content: ex`"Some text"`, allowHtml: true, show: false,
         styles: styles})
 
     expect(text1.id).toBe('t1')
     expect(text1.name).toBe('Text 1')
     expect(text1.notes).toBe('This is some text')
     expect(text1.content).toStrictEqual(ex`"Some text"`)
+    expect(text1.allowHtml).toBe(true)
     expect(text1.show).toBe(false)
     expect(text1.styles).toStrictEqual(styles)
 })
@@ -34,6 +38,20 @@ test('tests if an object is this type', ()=> {
 
     expect(Text.is(text)).toBe(true)
     expect(Text.is(page)).toBe(false)
+})
+
+test('can contain expected types', () => {
+    const text = new Text('t1', 'Text 1', {}, [])
+    expect(text.canContain('Project')).toBe(false)
+    expect(text.canContain('App')).toBe(false)
+    expect(text.canContain('Page')).toBe(false)
+    expect(text.canContain('Layout')).toBe(true)
+    expect(text.canContain('MemoryDataStore')).toBe(false)
+    expect(text.canContain('FileDataStore')).toBe(false)
+    expect(text.canContain('Text')).toBe(true)
+    expect(text.canContain('Button')).toBe(true)
+    expect(text.canContain('DataTypes')).toBe(false)
+    expect(text.canContain('TrueFalseType')).toBe(false)
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

@@ -413,12 +413,12 @@ exports[`Form element produces output from data type with extra and override chi
         </fieldset>
       </div>
     </div>
-    <p
+    <div
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
       id="app.page1.form1.Feedback"
     >
       BoxSize is 17
-    </p>
+    </div>
   </div>
 </div>
 `;

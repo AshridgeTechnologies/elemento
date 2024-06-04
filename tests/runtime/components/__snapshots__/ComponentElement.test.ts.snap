@@ -5,17 +5,17 @@ exports[`Component element produces output containing children and wrapped with 
   className="MuiBox-root css-1embv37"
   id="app.page1.things"
 >
-  <p
+  <div
     className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
     id="app.page1.things.text1"
   >
     First text
-  </p>
-  <p
+  </div>
+  <div
     className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
     id="app.page1.things.text2"
   >
     Second text
-  </p>
+  </div>
 </div>
 `;

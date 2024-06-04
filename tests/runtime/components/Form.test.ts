@@ -43,7 +43,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
         React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}}),
         React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), }, 'Size is ' + $form.value.BoxSize)
+        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'Size is ' + $form.value.BoxSize} )
     )
 }
 
@@ -87,7 +87,7 @@ function TestNestedForm(props: {path: string, keyAction: KeyboardEventHandler}) 
         React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
         React.createElement(TestOneElementForm, {path: pathWith('Extra')}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), }, 'Size is ' + $form.value.BoxSize)
+        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'Size is ' + $form.value.BoxSize} )
     )
 }
 

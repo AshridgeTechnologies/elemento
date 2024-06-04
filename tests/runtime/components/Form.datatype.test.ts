@@ -66,7 +66,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
         React.createElement(TextInput, {path: pathWith('Description'), label: 'Description of the thing', styles: {width: '50%'}}),
         React.createElement(NumberInput, {path: pathWith('Count'), label: 'Count'}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), }, 'BoxSize is ' + $form.value.BoxSize)
+        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'BoxSize is ' + $form.value.BoxSize } )
     )
 }
 

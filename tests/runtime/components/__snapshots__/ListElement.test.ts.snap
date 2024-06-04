@@ -14,18 +14,18 @@ exports[`ListElement produces output containing an item set and fixed children 1
   id="app.page1.list1"
   onScroll={[Function]}
 >
-  <p
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
     id="app.page1.list1.Text99"
   >
     Text 99
-  </p>
-  <p
+  </div>
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
     id="app.page1.list1.Text100"
   >
     Text 100
-  </p>
+  </div>
 </ul>
 `;
 
@@ -35,17 +35,17 @@ exports[`ListElement produces output containing fixed ReactElement children  1`]
   id="app.page1.list1"
   onScroll={[Function]}
 >
-  <p
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
     id="app.page1.list1.Text99"
   >
     Text 99
-  </p>
-  <p
+  </div>
+  <div
     className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
     id="app.page1.list1.Text100"
   >
     Text 100
-  </p>
+  </div>
 </ul>
 `;

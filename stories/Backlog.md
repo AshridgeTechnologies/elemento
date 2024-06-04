@@ -53,6 +53,10 @@ Bugs
 Stories
 -------
 
+### Next up
+- Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
+- Good performance on large list
+
 ### Run and deploy
 - Server app containers
 - Shared preview and admin service
@@ -99,7 +103,6 @@ Stories
 - Card game assets - eg https://www.revk.uk/2018/06/svg-vector-playing-cards.html
 
 ### Priority for credibility
-- Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
 - Dependency vulnerability review
 - Supply-chain review - https://github.com/readme/guides/dependency-risk
 - Security review
@@ -118,7 +121,6 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
-- Good performance on large list
 - Consider other deploy options like https://render.com/
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked
@@ -146,7 +148,6 @@ Stories
 - Tools can use data read from Editor and Preview
 - runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/, https://advancedweb.hu/modern-javascript-library-starter/
 - Scheduled jobs
-- Rich text
 - Readonly elements - for all types and styled clearly
 - Form improvements - buttons enabled, validation, mods shown, form rules shown in position
 - Import components from web (GitHub repos or npm) - esm.sh bundling? esbuild in browser?
@@ -169,8 +170,10 @@ Stories
 - Clean old files from generated code dir
 
 ### The Rest
+- Change favicon: https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
 - Choice or First of function - not all evaluated, could use If inside
 - Copy styles
+- Create classes and apply to elements
 - Contains handles array
 - Choice component to generate one of children based on condition OR a condition prop on every component?
 - Tools can be included or excluded from deployment
@@ -356,6 +359,7 @@ Done
 - Horizontal list
 - Freeform list, generated from a list, with positions set by data
 - Iframe element
+- Rich text
 
 Bugs fixed
 ----------

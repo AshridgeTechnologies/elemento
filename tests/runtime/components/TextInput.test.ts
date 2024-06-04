@@ -192,10 +192,19 @@ test('TextInput can be focused', async () => {
     expect(stateAt(elementId).domElement).toBe(el`app.page1.sprocket2`)
 })
 
+test('State class has correct properties and functions with defaults', () => {
+    const state = new TextInput.State({})
+    const appInterface = testAppInterface('testPath', state)
+    expect(state.value).toBe('')
+    expect(state.toString()).toBe('')
+    expect(state.defaultValue).toBe('')
+})
+
 test('State class has correct properties and functions', () => {
     const state = new TextInput.State({value: 'car'})
     const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe('car')
+    expect(state.toString()).toBe('car')
     expect(state.defaultValue).toBe('')
 
     state.Reset()

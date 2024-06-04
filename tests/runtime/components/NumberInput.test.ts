@@ -121,12 +121,14 @@ test('NumberInput uses properties from dataType', async () => {
 test('State class has correct properties', () => {
     const emptyState = new NumberInput.State({})
     expect(emptyState.value).toBe(0)
+    expect(emptyState.toString()).toBe('0')
     expect(emptyState.dataValue).toBe(null)
     expect(emptyState.defaultValue).toBe(0)
 
     const state = new NumberInput.State({value: 77})
     const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe(77)
+    expect(state.toString()).toBe('77')
     expect(state.defaultValue).toBe(0)
 
     state.Reset()

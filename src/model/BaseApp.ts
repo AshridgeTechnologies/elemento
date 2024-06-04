@@ -66,8 +66,6 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
             ['Collection', 'Function', 'FunctionImport', 'Component'].includes(elementType)
     }
 
-    static get parentType(): ParentType {
-        return 'Project'
-    }
+    static get parentType(): ParentType { return 'Project' }
 
 }

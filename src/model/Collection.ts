@@ -1,4 +1,4 @@
-import {ComponentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
+import {ComponentType, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
@@ -14,6 +14,7 @@ export default class Collection extends BaseElement<Properties> implements Eleme
     readonly kind = 'Collection'
     get iconClass() { return 'auto_awesome_motion' }
     type(): ComponentType { return 'statefulUI' }
+    static get parentType(): ParentType { return ['App', 'Page'] }
 
     get initialValue() {return this.properties.initialValue}
     get display() {return this.properties.display ?? false}

@@ -20,8 +20,8 @@ jest.mock('../../../src/runtime/components/authentication')
 
 const [appComponent] = wrappedTestElement(App, AppData)
 
-const text = (...content: string[]) => createElement(TextElement, {path: 'app1.page1.para1'}, ...content)
-const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello', 'where are you'))
+const text = (content: string) => createElement(TextElement, {path: 'app1.page1.para1', content})
+const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello\nwhere are you'))
 const notLoggedInPage = () => createElement(Page, {path: 'app1.page1'}, text('Please log in'))
 const loggedInOnlyPage = ()=> createElement(Page, {path: 'app1.page1'}, text('You are logged in'))
 loggedInOnlyPage.notLoggedInPage = 'notLoggedInPage'
@@ -114,7 +114,7 @@ test('App element produces output containing normal page if logged in', () => {
 test('App shows first page initially and other page when state changes and only runs startup action once and does not return anything from the startup action', async () => {
     let startupCount = 0
     const [appContext] = getRealAppContext()
-    const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1'}, 'this is page ' + pageName)
+    const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1', content: 'this is page ' + pageName} )
 
     function MainPage(props: any) {
         const state = Elemento.useGetObjectState<AppData>('app1')
@@ -141,11 +141,11 @@ test('App shows first page initially and other page when state changes and only 
     }
 
     const {el, click, unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
-    expect(el`p[id="app1.page1.para1"]`?.textContent).toBe('this is page Main')
+    expect(el`div[id="app1.page1.para1"]`?.textContent).toBe('this is page Main')
     expect(startupCount).toBe(1)
 
     await actWait( () => click('button'))
-    expect(el`p[id="app1.page1.para1"]`?.textContent).toBe('this is page Other')
+    expect(el`div[id="app1.page1.para1"]`?.textContent).toBe('this is page Other')
     expect(startupCount).toBe(1)
     unmount() // to check nothing returned from the startup action is called
 })

@@ -6,8 +6,8 @@ import {createElement} from 'react'
 import {snapshot} from '../../testutil/testHelpers'
 import {Layout, TextElement} from '../../../src/runtime/components/index'
 
-const text1 = createElement(TextElement, {path: 'app.page1.things.text1', styles: {width: 200}}, 'First text')
-const text2 = createElement(TextElement, {path: 'app.page1.things.text2', styles: {width: 300}}, 'Second text')
+const text1 = createElement(TextElement, {path: 'app.page1.things.text1', styles: {width: 200}, content: 'First text'} )
+const text2 = createElement(TextElement, {path: 'app.page1.things.text2', styles: {width: 300}, content: 'Second text'} )
 
 test('Layout element produces output containing children vertical',
     snapshot(createElement(Layout, {path: 'app.page1.things', styles: {width: 200}}, text1, text2))

@@ -16,7 +16,7 @@ import {ItemSetItem} from '../../../src/runtime/components'
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
     const styles = {color: 'red', width: 300}
     return createElement(ItemSetItem, {path: props.path, onClick: props.onClick, styles, children:
-        createElement(TextElement, {path: `${props.path}.Text99`}, props.$item.text, 'item id ' + props.$itemId, 'selected', props.$selected.toString()) }
+        createElement(TextElement, {path: `${props.path}.Text99`, content: [props.$item.text, 'item id ' + props.$itemId, 'selected', props.$selected.toString()].join('\n') }) }
     )
 }
 

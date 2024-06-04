@@ -39,7 +39,7 @@ test('can contain types apart from Project, App, Page, DataStore', () => {
     expect(list.canContain('MemoryDataStore')).toBe(false)
     expect(list.canContain('Text')).toBe(true)
     expect(list.canContain('Button')).toBe(true)
-    expect(list.canContain('Function')).toBe(true)
+    expect(list.canContain('Function')).toBe(false)
     expect(list.canContain('DataTypes')).toBe(false)
     expect(list.canContain('TextType')).toBe(false)
 })

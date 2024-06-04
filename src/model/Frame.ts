@@ -1,6 +1,6 @@
 import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import Element from './Element'
-import {ComponentType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
+import {ComponentType, ParentType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
 
 type Properties = Partial<Readonly<{
     source: PropertyValueType<string>,
@@ -9,6 +9,8 @@ type Properties = Partial<Readonly<{
 export default class Frame extends BaseElement<Properties> implements Element {
 
     readonly kind = 'Frame'
+
+    static get parentType(): ParentType { return ['Page', 'Form', 'Layout'] }
 
     get iconClass() { return 'picture_in_picture' }
 

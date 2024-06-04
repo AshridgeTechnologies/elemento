@@ -37,12 +37,12 @@ exports[`App element produces output containing normal page if logged in 1`] = `
         className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
-        <p
+        <div
           className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           You are logged in
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -89,12 +89,12 @@ exports[`App element produces output containing not logged in page if it exists 
         className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
-        <p
+        <div
           className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Please log in
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -122,13 +122,14 @@ exports[`App element produces output containing page 1`] = `
         className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
-        <p
+        <div
           className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello
+          <br />
           where are you
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -175,13 +176,14 @@ exports[`App element produces output containing page and additional components w
         className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
-        <p
+        <div
           className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello
+          <br />
           where are you
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -230,13 +232,14 @@ exports[`App element produces output with max width 1`] = `
         className="MuiStack-root css-1hi109z-MuiStack-root"
         id="app1.page1"
       >
-        <p
+        <div
           className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           id="app1.page1.para1"
         >
           Hello
+          <br />
           where are you
-        </p>
+        </div>
       </div>
     </div>
   </div>
