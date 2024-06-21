@@ -33,8 +33,6 @@ type StateUpdatableProperties = Partial<Readonly<{
 
 const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...props}: Properties) {
     const state = useGetObjectState<ItemSetState>(path)
-    const {itemStyles} = valueOfProps(props)
-
     const onClick: OnClickFn = (event:SyntheticEvent) => {
         const {shiftKey, ctrlKey, metaKey} = (event.nativeEvent as MouseEvent)
         if (shiftKey) {
@@ -49,7 +47,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
     }
 
     const children = state.items.map((item, index) => {
-            const itemId = item.id ?? String(index)
+            const itemId = item?.id ?? String(index)
             const itemPath = indexedPath(path, itemId)
             const selected = state.isSelected(index)
             return React.createElement(itemContentComponent, {path: itemPath, $item: item, $itemId: itemId, $selected: selected, onClick, key: itemId})
@@ -110,7 +108,7 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     isSelected(itemIndex: number) {
         const {selectedItemIds} = this
         const item = this.items[itemIndex]
-        return selectedItemIds.includes(item.id) || selectedItemIds.includes(itemIndex)
+        return selectedItemIds.includes(item?.id) || selectedItemIds.includes(itemIndex)
     }
 
     onSelect(selectedItemId: (string|number), type: SelectionType) {
