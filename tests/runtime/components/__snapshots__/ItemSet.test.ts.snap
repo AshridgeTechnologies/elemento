@@ -47,15 +47,16 @@ exports[`produces output when an item is null 1`] = `
 [
   <div
     className="MuiBox-root css-1r6lq6j"
-    id="app.page1.itemSet1.#0"
+    id="app.page1.itemSet1.#id1"
     onClick={[Function]}
   >
     <div
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.itemSet1.#0.Text99"
+      id="app.page1.itemSet1.#id1.Text99"
     >
+      One
       <br />
-      item id 0
+      item id id1
       <br />
       selected
       <br />
@@ -81,15 +82,16 @@ exports[`produces output when an item is null 1`] = `
   </div>,
   <div
     className="MuiBox-root css-1r6lq6j"
-    id="app.page1.itemSet1.#2"
+    id="app.page1.itemSet1.#id3"
     onClick={[Function]}
   >
     <div
       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.itemSet1.#2.Text99"
+      id="app.page1.itemSet1.#id3.Text99"
     >
+      Three
       <br />
-      item id 2
+      item id id3
       <br />
       selected
       <br />
@@ -254,47 +256,6 @@ exports[`shows single selectedItem as selected 1`] = `
       over here!
       <br />
       item id id2
-      <br />
-      selected
-      <br />
-      true
-    </div>
-  </div>,
-]
-`;
-
-exports[`shows single selectedItem as selected if no ids 1`] = `
-[
-  <div
-    className="MuiBox-root css-1r6lq6j"
-    id="app.page1.itemSet1.#0"
-    onClick={[Function]}
-  >
-    <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.itemSet1.#0.Text99"
-    >
-      where are you?
-      <br />
-      item id 0
-      <br />
-      selected
-      <br />
-      false
-    </div>
-  </div>,
-  <div
-    className="MuiBox-root css-1r6lq6j"
-    id="app.page1.itemSet1.#1"
-    onClick={[Function]}
-  >
-    <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-      id="app.page1.itemSet1.#1.Text99"
-    >
-      over here!
-      <br />
-      item id 1
       <br />
       selected
       <br />

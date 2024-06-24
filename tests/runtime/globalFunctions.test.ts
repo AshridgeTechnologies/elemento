@@ -528,9 +528,10 @@ describe('Floor', () => {
 })
 
 describe('Record', () => {
-    test('errors for uneven number of arguments', ()=> expect( () => Record('x')).toThrow('Odd number of arguments - must have pairs of name, value'))
+    test('errors for uneven number of arguments', ()=> expect( () => Record('x')).toThrow('Wrong number of arguments - must have pairs of name, value'))
     test('returns an empty object for no arguments', ()=> expect(Record()).toStrictEqual({}))
     test('returns an object for pairs of arguments', ()=> expect(Record('a', 10, 'b', 'Bee', 'c', null)).toStrictEqual({a: 10, b: 'Bee', c: null}))
+    test('returns an object for pairs of number-keyed arguments', ()=> expect(Record(2, 10, 3, 'Bee')).toStrictEqual({'2': 10, '3': 'Bee'}))
     test('gets value of objects', ()=> expect(Record(valueObj('c'), valueObj(2))).toStrictEqual({c: 2}))
     test('converts an initial JavaScript object', ()=> expect(Record({a: 10, b: 'Bee'})).toStrictEqual({a: 10, b: 'Bee'}))
     test('gets values of objects in a single level initial JavaScript object', ()=> expect(Record({a: valueObj(10), b: valueObj('Bee')})).toStrictEqual({a: 10, b: 'Bee'}))
@@ -547,20 +548,29 @@ describe('Record', () => {
         const record = Record({a: 10, b: 'Bee'}, {p: 99}, 'a', 20, 'c', valueObj(true))
         expect(record).toStrictEqual({a: 20, b: 'Bee', c: true, p: 99})
     })
-    test('errors where the first of an argument pair is not a string', () => {
+    test('errors where the first of an argument pair is not a string or a number', () => {
         expect( () => Record(new Date(), 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
-        expect( () => Record({a: 10}, 20, 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
+        expect( () => Record({a: 10}, true, 'x')).toThrow('Incorrect argument types - must have pairs of name, value')
     })
 })
 
 describe('WithUpdates', () => {
     // @ts-ignore
-    test('errors for no arguments', ()=> expect( () => WithUpdates()).toThrow('Wrong number of arguments - must have original then pairs of name, value'))
-    test('errors for only the object argument', ()=> expect( () => WithUpdates({x: 10})).toThrow('Wrong number of arguments - must have original then pairs of name, value'))
-    test('errors for uneven number of name value arguments', ()=> expect( () => WithUpdates({x: 10}, 'x')).toThrow('Wrong number of arguments - must have original then pairs of name, value'))
+    test('errors for no arguments', ()=> expect( () => WithUpdates()).toThrow('Wrong number of arguments - must have pairs of name, value'))
+    test('errors for only the object argument', ()=> expect( () => WithUpdates({x: 10})).toThrow('Wrong number of arguments - must have pairs of name, value'))
+    test('errors for uneven number of name value arguments', ()=> expect( () => WithUpdates({x: 10}, 'x')).toThrow('Wrong number of arguments - must have pairs of name, value'))
+    test('errors for uneven number of name value arguments after object arguments', ()=> expect( () => WithUpdates({x: 10}, {a: 1}, {b: 2}, {c: 3}, 'x')).toThrow('Wrong number of arguments - must have pairs of name, value'))
     test('returns an updated object for pairs of arguments', ()=> expect(WithUpdates({x: 10, c: true}, 'x', 20, 'b', 'Bee', 'c', undefined)).toStrictEqual({x: 20, b: 'Bee', c: undefined}))
-    test('returns an array for pairs of arguments', ()=> expect(WithUpdates([20, 30, 40], 0, 10, 2, 42, 3, 99)).toStrictEqual([10, 30, 42, 99]))
-    test('gets values of objects', ()=> expect(WithUpdates(valueObj({x: 10}), valueObj('x'), valueObj(20))).toStrictEqual({x: 20}))
+    test('returns an updated object for multiple record arguments', ()=> expect(WithUpdates({x: 10, c: true}, {x: 20}, {b: 'Bee', c: undefined})).toStrictEqual({x: 20, b: 'Bee', c: undefined}))
+    test('returns an updated object for multiple record arguments and pairs of arguments', ()=> expect(WithUpdates({x: 10, c: true}, {x: 20}, {b: 'Bee', c: undefined}, 'x', 30, 'd', 'Dee')).toStrictEqual({x: 30, b: 'Bee', c: undefined, d: 'Dee'}))
+    test('returns an updated array for pairs of arguments', ()=> expect(WithUpdates([20, 30, 40], 0, 10, 2, 42, 3, 99)).toStrictEqual([10, 30, 42, 99]))
+    test('returns an updated array for multiple record arguments', ()=> expect(WithUpdates([20, 30, 40], {0: 10}, {2: 42, 3: 99})).toStrictEqual([10, 30, 42, 99]))
+    test('returns an updated array for multiple record arguments and pairs of arguments', ()=> {
+        const updatedArray = WithUpdates([20, 30, 40], {0: 10}, {2: 42, 3: 99}, 0, 30, 5, 90)
+        const expected = [30, 30, 42, 99, undefined, 90]
+        expected.forEach( (val, index) => expect(updatedArray[index]).toBe(val))
+    })
+    test('gets values of objects', ()=> expect(WithUpdates(valueObj({x: 10}), valueObj({y: 30}), valueObj('x'), valueObj(20))).toStrictEqual({x: 20, y: 30}))
 })
 
 describe('Pick', () => {

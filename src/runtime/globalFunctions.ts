@@ -93,6 +93,19 @@ function offsetItem(listVal: Value<any[]> | null, item: any, offset: number) {
     return list[itemIndex + offset] ?? null
 }
 
+const parseUpdateArgs = (args: Value<any>[]) => {
+    const argVals = args.map(valueOf)
+    const objectArgs = takeWhile(isObject, argVals)
+    const objectArgVals = objectArgs.map(x => mapValues(x, valueOf))
+    const baseObject = objectArgVals.reduce(assign, {})
+
+    const nameValuePairArgs = argVals.slice(objectArgs.length)
+    if (nameValuePairArgs.length % 2 !== 0) throw new Error('Wrong number of arguments - must have pairs of name, value')
+    const pairs = splitEvery(2, nameValuePairArgs) as [string | number, any][]
+    if (!pairs.every(([name]) => typeof name === 'string' || typeof name === 'number')) throw new Error('Incorrect argument types - must have pairs of name, value')
+    return {baseObject, pairs}
+}
+
 export const globalFunctions = {
     valueOf,
 
@@ -254,24 +267,18 @@ export const globalFunctions = {
     },
 
     Record(...args: Value<any>[]) {
-        const argVals = args.map(valueOf)
-        const objectArgs = takeWhile(isObject, argVals)
-        const objectArgVals = objectArgs.map( x => mapValues(x, valueOf))
-        const mergedBaseResult = objectArgVals.reduce(assign, {})
+        const {baseObject, pairs} = parseUpdateArgs(args)
+        const pairsWithStringKeys: [string, any][] = pairs.map(([name, value]) => [name.toString(), value])
+        const pairsResult = fromPairs(pairsWithStringKeys)
 
-        const nameValuePairArgs = argVals.slice(objectArgs.length)
-        if (nameValuePairArgs.length % 2 !== 0) throw new Error('Odd number of arguments - must have pairs of name, value')
-        const pairs = splitEvery(2, nameValuePairArgs) as [string, any][]
-        if (!pairs.every( ([name]) => typeof name === 'string')) throw new Error('Incorrect argument types - must have pairs of name, value')
-        const pairsResult = fromPairs(pairs)
-
-        return assign(mergedBaseResult, pairsResult)
+        return assign(baseObject, pairsResult)
     },
 
-    WithUpdates(original: any[] | {[k: string]: any}, ...nameValueArgs: any[]) {
-        if (nameValueArgs.length === 0 || nameValueArgs.length % 2 !== 0) throw new Error('Wrong number of arguments - must have original then pairs of name, value')
-        const pairs = splitEvery(2, valuesOf(...nameValueArgs)) as [string | number, any][]
+    WithUpdates(original: any[] | {[k: string]: any}, ...updateArgs: any[]) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments - must have pairs of name, value')
+        const {baseObject, pairs} = parseUpdateArgs(updateArgs)
         const newValue = clone(valueOf(original)) as any
+        Object.entries(baseObject).forEach(([prop, value]) => newValue[prop] = value)
         pairs.forEach( ([prop, value]) => newValue[prop] = value)
         return newValue
     },

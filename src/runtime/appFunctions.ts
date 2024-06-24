@@ -2,6 +2,7 @@ import {Value, valueOf} from './runtimeFunctions'
 import {currentUser} from './components/authentication'
 import dataFunctions from './dataFunctions'
 import {addNotification, type NotificationLevel} from './components/notifications'
+import {globalFunctions} from './globalFunctions'
 
 const appFunctions = {
 
@@ -11,6 +12,11 @@ const appFunctions = {
 
     Set(component: { Set: (value: any) => void }, value: any) {
         component.Set(valueOf(value))
+    },
+
+    SetWithUpdates(component: { Set: (value: any) => void, value: object }, ...updateArgs: any[]) {
+        const newValue = globalFunctions.WithUpdates(component.value, ...updateArgs)
+        component.Set(newValue)
     },
 
     NotifyError(description: string, error: Error) {

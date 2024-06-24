@@ -8,12 +8,12 @@ jest.mock('../../src/runtime/components/authentication')
 jest.mock('../../src/runtime/components/notifications')
 
 const mockFn = jest.fn()
-const {Reset, Set, CurrentUser, Notify, NotifyError} = appFunctions
+const {Reset, Set, SetWithUpdates, CurrentUser, Notify, NotifyError} = appFunctions
 
 beforeEach( ()=> jest.resetAllMocks() )
 
 test('can get app functions names', () => {
-    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'NotifyError', 'Notify', 'CurrentUser', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query', 'GetRandomId'])
+    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'SetWithUpdates', 'NotifyError', 'Notify', 'CurrentUser', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query', 'GetRandomId'])
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {
@@ -50,6 +50,20 @@ describe('Set', () => {
         const elementState = {value: 42, Set: mockFn}
         Set(elementState, valueObj(42))
         expect(elementState.Set).toBeCalledWith(42)
+    })
+})
+
+describe('SetWithUpdates', () => {
+    test('updates object value with name value pairs', () => {
+        const elementState = {value: {foo: 42}, Set: mockFn}
+        SetWithUpdates(elementState, 'a', 10, 'b', 'Bee')
+        expect(elementState.Set).toBeCalledWith({foo: 42, a: 10, b: 'Bee'})
+    })
+
+    test('updates object value with objects and name value pairs', () => {
+        const elementState = {value: {foo: 42}, Set: mockFn}
+        SetWithUpdates(elementState, valueObj({x: 20}), {y: true}, 'a', 10, 'b', 'Bee')
+        expect(elementState.Set).toBeCalledWith({foo: 42, x: 20, y: true, a: 10, b: 'Bee'})
     })
 })
 
