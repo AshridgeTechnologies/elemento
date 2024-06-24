@@ -99,6 +99,7 @@ Stories
 
 ### Priority for education and games
 - Event actions: double click, drop
+- Drag and drop
 - Speech synthesis
 - Shapes, drawing, - clip-path, svg?
 - Multi-user shared data
@@ -123,6 +124,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Functions have auto await insertion
 - Consider other deploy options like https://render.com/
 - More styling options work on SelectInput
 - True False input can be made to be not valid unless checked
@@ -172,6 +174,7 @@ Stories
 - Clean old files from generated code dir
 
 ### The Rest
+- Animation
 - Change favicon: https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
 - Choice or First of function - not all evaluated, could use If inside
 - Copy styles
@@ -298,7 +301,7 @@ Done
 - App frame and Nav bar-menu
 - Simple Database example app
 - App state refactor 2 
-- Drag and drop
+- Drag and drop in navigator
 - List component - updates and actions
 - Date functions and storage
 - List filter and map

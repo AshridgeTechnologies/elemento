@@ -1,4 +1,4 @@
-import {equals, flatten, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile} from 'ramda'
+import {equals, flatten, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile, without} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -8,7 +8,8 @@ import {
     differenceInMonths,
     differenceInSeconds,
     differenceInYears,
-    format, isValid,
+    format,
+    isValid,
     parse,
     parseISO
 } from 'date-fns'
@@ -17,8 +18,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {clone, isArray} from 'radash'
-import {assign, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
+import {assign, clone, isArray, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -326,7 +326,7 @@ export const globalFunctions = {
         return list.some( it => equals(it, search))
     },
 
-    Select(list: Value<any[]> | null, condition: (item: any) => boolean) {
+    Select(list: Value<any[]> | null, condition: (item: any, index: number) => boolean) {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
@@ -370,6 +370,13 @@ export const globalFunctions = {
     ItemBefore(listVal: Value<any[]> | null, item: any) {
         if (arguments.length < 2) throw new Error('Wrong number of arguments to ItemBefore. Expected list, item.')
         return offsetItem(listVal, item, -1)
+    },
+
+    FindIndex(listVal: Value<any[]> | null, itemVal: any) {
+        if (arguments.length < 2) throw new Error('Wrong number of arguments to FindIndex. Expected list, item to find.')
+        const [list, item] = valuesOf(listVal, itemVal)
+        const index = list?.findIndex((it: any) => equals(it, item))
+        return index >= 0 ? index : null
     },
 
     Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[]): any[] {
@@ -420,6 +427,13 @@ export const globalFunctions = {
         const [list1, list2] = valuesOf(list1Val, list2Val)
         if (isNil(list1) || isNil(list2) ) return false
         return list1.length === list2.length && list1.every( (x:any) => list2.includes(x))
+    },
+
+    WithoutItems(listVal: Value<any[]> | null, ...itemVals: Value<any>[]) {
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to WithoutItems. Expected list, items to exclude.')
+        const list = valueOf(listVal) ?? [], items = valuesOf(...itemVals)
+        const flatItems = flatten(items)
+        return without(flatItems, list)
     },
 
     Timestamp() {

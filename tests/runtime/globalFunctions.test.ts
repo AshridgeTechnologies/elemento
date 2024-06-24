@@ -9,7 +9,8 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, WithUpdates, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, Reverse, CommonItems, HasSameItems, ListContains, FlatList,
+    Record, WithUpdates, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
+    CommonItems, HasSameItems, WithoutItems, ListContains, FlatList,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
     CsvToRecords} = globalFunctions
@@ -629,6 +630,7 @@ describe('Select', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => Select()).toThrow('Wrong number of arguments to Select. Expected list, expression.'))
     test('returns the selected items', () => expect(Select([3, -1, 4, 0], (it: any) => it > 0)).toStrictEqual([3, 4]))
+    test('can use index', () => expect(Select([3, -1, 4, 0, -2], (it: any, index: number) => it > 0 || index > 1)).toStrictEqual([3, 4, 0, -2]))
     test('Gets value of object for the list', ()=> expect(Select(valueObj([3, -1, 4, 0]), (it: any) => it <= 0)).toStrictEqual([-1, 0]))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
@@ -733,10 +735,26 @@ describe('ItemBefore', () => {
     test('returns the item before an item by deep compare', () => expect(ItemBefore([item1, item2], {a:2})).toBe(item1))
     test('returns null for the item before the first item', () => expect(ItemBefore(list, 'abc')).toBe(null))
     test('returns null for an item not in the list', () => expect(ItemBefore(list, 'xyz')).toBe(null))
-    test('Gets value of object for the list', ()=> expect(ItemBefore(valueObj(list), 'ghj')).toBe('def'))
+    test('Gets value of objects', ()=> expect(ItemBefore(valueObj(list), 'ghj')).toBe('def'))
     // @ts-ignore
     test('Pending value gives null', ()=> expect(ItemBefore(pendingValue, 'ghj')).toBe(null))
     test('Null list gives null', ()=> expect(ItemBefore(null, 'ghj')).toBe(null))
+})
+
+describe('FindIndex', () => {
+    const list = ['abc', 'def', 'ghj', {a: 10}]
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => FindIndex()).toThrow('Wrong number of arguments to FindIndex. Expected list, item to find.'))
+    // @ts-ignore
+    test('errors for one argument', () => expect(() => FindIndex(list)).toThrow('Wrong number of arguments to FindIndex. Expected list, item to find.'))
+    test('returns the item index', () => expect(FindIndex(list, 'def')).toBe(1))
+    test('returns the item index if equals', () => expect(FindIndex(list, {a: 10})).toBe(3))
+    test('returns null for a non-existent item', () => expect(FindIndex(list, 'xyz')).toBe(null))
+    test('Gets value of objects', ()=> expect(FindIndex(valueObj(list), valueObj('ghj'))).toBe(2))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(FindIndex(pendingValue, 'xx')).toBe(null))
+    test('Null list gives null', ()=> expect(FindIndex(null, 'xyz')).toBe(null))
+    test('Null item gives null', ()=> expect(FindIndex(list, null)).toBe(null))
 })
 
 describe('Sort', () => {
@@ -839,6 +857,21 @@ describe('HasSameItems', () => {
     test('false if both lists are null', () => expect(HasSameItems(null, null)).toBe(false))
     test('true if has same items in different order', () => expect(HasSameItems([1, 2, 3, 4], [4, 3, 2, 1])).toBe(true))
     test('gets values of objects', () => expect(HasSameItems(valueObj([1, 2]), valueObj([1, 2]))).toBe(true))
+})
+
+describe('WithoutItems', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => WithoutItems()).toThrow('Wrong number of arguments to WithoutItems. Expected list, items to exclude.'))
+    test('removes single argument that occurs multiple times in list', () => expect(WithoutItems([1, 'xyz', true, 'xyz'], 'xyz')).toStrictEqual([1, true]))
+    test('removes single repeated argument without error', () => expect(WithoutItems([1, 'xyz', true, 'xyz'], true, true)).toStrictEqual([1, 'xyz', 'xyz']))
+    test('ignores remove arguments that are not in the list', () => expect(WithoutItems([1, 'xyz'], 49)).toStrictEqual([1, 'xyz']))
+    test('removes array of arguments', () => expect(WithoutItems([1, 'xyz', true, 'xyz'], [1, true])).toStrictEqual(['xyz', 'xyz']))
+    test('removes items that compare with equals', () => expect(WithoutItems([{a: 10}, {a: 20}], {a: 10})).toStrictEqual([{a: 20}]))
+    test('removes multiple arrays and individual items', () => expect(WithoutItems([1, 2, 3, 4, 5, 6, 7, 8], 5, [8], 2, [3, 4])).toStrictEqual([1, 6, 7]))
+    test('returns empty array for null input list', () => expect(WithoutItems(null, 5, [8])).toStrictEqual([]))
+    // @ts-ignore
+    test('returns empty array for pending input list', () => expect(WithoutItems(pendingValue, 5, [8])).toStrictEqual([]))
+    test('gets values of objects', () => expect(WithoutItems(valueObj([1, 2, 3]), valueObj(1), valueObj([3]))).toStrictEqual([2]))
 })
 
 describe('Timestamp', function () {

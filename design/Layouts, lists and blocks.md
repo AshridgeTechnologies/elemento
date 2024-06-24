@@ -3,6 +3,8 @@ Layouts, lists and blocks
 
 20 Mar 2024
 
+_See also Grid Layouts below_
+
 Aims
 ----
 
@@ -106,3 +108,56 @@ Decisions
 - Item Set Spike successful - keep
 - Merge Layout model object into Block, just use Block with horizontal
 - Keep separate rendering in Block runtime component
+
+Grid Layouts
+============
+
+24 Jun 2024
+
+Aims
+----
+
+- Make it easy to have a responsive grid layout with fixed rows and columns
+
+Needs
+-----
+
+- Grid layout for an item set can easily be set to have a fixed number of columns
+- Layout can be made responsive so element width shrinks with layout size to maintain number of columns
+- If desired, the height of the layout shrinks with the width to maintain the aspect ratio
+- Show grid lines on the layout
+
+Forces
+------
+
+- CSS calc is useful but quite advanced
+- Calculating absolute positions is possible but quite advanced
+- Borders mess up sizing
+- Border box sizing has the unhelpful default
+- Mui Stack works well without a gap and no borders and percentage width
+
+Possibilities
+-------------
+
+- Find Css settings that do the job
+- Set border box sizing to content in global stylesheet
+- Separate layout with absolute positioning
+- CSS Grid
+
+Decision
+--------
+
+- Use the following steps:
+    - Layout with horizontal and wrap
+    - Layout has styles:
+      - Aspect ratio = columns / rows
+      - Border = whatever the items have
+      - Background color same as border (to avoid tiny gaps between items)
+      - Gap = 0
+      - Width as desired
+      - Height not set
+    - Item styles:
+      - Aspect ratio as desired eg 1 for squares
+      - Width = 100 / Columns + '%'
+      - Border as desired eg 1px solid blue
+      - Box sizing is border-box (unless set globally)
