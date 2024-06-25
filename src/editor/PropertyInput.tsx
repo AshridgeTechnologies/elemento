@@ -170,7 +170,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             : <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                 value={initialInputValue()}
                 multiline={type === 'string multiline' || expr}
-                inputProps={{readOnly}}
+                inputProps={{readOnly, sx:{fontFamily: 'monospace', fontSize: '13px'}}}
                 {...numericProps}
                 {...dateProps}
                 {...errorProps}
