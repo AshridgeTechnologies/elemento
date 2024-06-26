@@ -23,7 +23,7 @@ import MemoryDataStore from '../../src/model/MemoryDataStore'
 import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import FileDataStore from '../../src/model/FileDataStore'
-import Layout from '../../src/model/Layout'
+import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
@@ -281,10 +281,9 @@ test('has fields for Text', () => {
     expect(inputValue('Margin Bottom')).toBe('33')
 })
 
-test('has fields for Layout', () => {
-    const element = new Layout('id1', 'Layout 1', {
-        horizontal: true,
-        wrap: false,
+test('has fields for Block', () => {
+    const element = new Block('id1', 'Layout 1', {
+        layout: 'horizontal',
         styles: {
             width: 100,
             backgroundColor: 'pink'
@@ -292,8 +291,7 @@ test('has fields for Layout', () => {
     }, [])
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected}/>)
     expect(nameInputValue()).toBe('Layout 1')
-    expect(selectValue('Horizontal')).toBe('true')
-    expect(selectValue('Wrap')).toBe('false')
+    expect(selectValue('Layout')).toBe('horizontal')
     expect(inputValue('Width')).toBe('100')
     expect(inputValue('Background Color')).toBe('pink')
 })

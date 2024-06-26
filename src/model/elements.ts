@@ -22,7 +22,6 @@ import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import Collection from './Collection'
-import Layout from './Layout'
 import {DataTypeElementType, ElementType} from './Types'
 import FirestoreDataStore from './FirestoreDataStore'
 import ServerApp from './ServerApp'
@@ -103,7 +102,6 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         FunctionImport: FunctionImport,
         Component: Component,
         Collection: Collection,
-        Layout: Layout,
         Block: Block,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,

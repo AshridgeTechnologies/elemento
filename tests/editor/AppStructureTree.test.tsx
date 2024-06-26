@@ -60,7 +60,7 @@ const modelTree = new ModelTreeItem('project_1', 'Project One', 'Project', "proj
             new ModelTreeItem('list1_1', 'The List', 'List', "list_icon"),
             new ModelTreeItem('data_1_1', 'Some Data', 'Data', "data_icon"),
             new ModelTreeItem('collection_1_1', 'A Collection', 'Collection', "collection_icon"),
-            new ModelTreeItem('layout_1_1', 'A Layout', 'Layout', "layout_icon"),
+            new ModelTreeItem('block_1_1', 'A Block', 'Block', "block_icon"),
             new ModelTreeItem('function_1_1', 'A Function', 'Function', "function_icon"),
         ]),
         new ModelTreeItem('page_2', 'Other Page', 'Page', "page_icon", false, [
@@ -185,8 +185,8 @@ test("renders tree with all types of model elements",  async () => {
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
     expect(itemIcons()).toStrictEqual([  "project_icon", "app_icon", "page_icon", "page_icon", "mds_icon", "fds_icon", "appbar_icon", "ff_icon", "file_icon", "file_icon", "tf_icon", "tool_icon", "tool_icon"])
     await clickExpandControl(2)
-    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Layout', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
-    expect(itemIcons()).toStrictEqual(["project_icon", "app_icon", "page_icon", "text_icon", "text_input_icon", "number_input_icon", "select__icon", "true_false_icon", "button_icon", "menu_icon", "menu_item_icon", "list_icon", "data_icon", "collection_icon", "layout_icon", "function_icon", "page_icon", "mds_icon", "fds_icon", "appbar_icon", "ff_icon", "file_icon", "file_icon", "tf_icon", "tool_icon", "tool_icon"])
+    expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'First Text', 'The Text Input', 'The Number Input', 'The Select Input', 'Some True-false', 'Some Button', 'Some Menu', 'Some Menu Item', 'The List', 'Some Data', 'A Collection', 'A Block', 'A Function', 'Other Page', 'The Data Store', 'The File Data Store', 'The App Bar', 'Files', 'Duck.jpg', 'Rules.pdf', 'Tools', 'Do Stuff', 'Check Stuff'])
+    expect(itemIcons()).toStrictEqual(["project_icon", "app_icon", "page_icon", "text_icon", "text_input_icon", "number_input_icon", "select__icon", "true_false_icon", "button_icon", "menu_icon", "menu_item_icon", "list_icon", "data_icon", "collection_icon", "block_icon", "function_icon", "page_icon", "mds_icon", "fds_icon", "appbar_icon", "ff_icon", "file_icon", "file_icon", "tf_icon", "tool_icon", "tool_icon"])
 })
 
 test("renders tree with error classes",  async () => {

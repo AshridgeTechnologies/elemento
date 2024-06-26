@@ -2,7 +2,6 @@ import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import Layout from '../../src/model/Layout'
 
 test('Text has correct properties with default values', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -45,7 +44,7 @@ test('can contain expected types', () => {
     expect(text.canContain('Project')).toBe(false)
     expect(text.canContain('App')).toBe(false)
     expect(text.canContain('Page')).toBe(false)
-    expect(text.canContain('Layout')).toBe(true)
+    expect(text.canContain('Block')).toBe(true)
     expect(text.canContain('MemoryDataStore')).toBe(false)
     expect(text.canContain('FileDataStore')).toBe(false)
     expect(text.canContain('Text')).toBe(true)
@@ -75,7 +74,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
     expect(updatedText).toStrictEqual(text)
 })
 
-test('converts to JSON without optional proerties', ()=> {
+test('converts to JSON without optional properties', ()=> {
     const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',

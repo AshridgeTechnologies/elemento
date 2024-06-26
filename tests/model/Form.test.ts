@@ -5,8 +5,7 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import Layout from '../../src/model/Layout'
-import AppBar from '../../src/model/AppBar'
+import Block from '../../src/model/Block'
 
 test('Form has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -84,7 +83,7 @@ test('can contain types apart from Project, App, Page', () => {
     expect(form.canContain('App')).toBe(false)
     expect(form.canContain('Page')).toBe(false)
     expect(form.canContain('Form')).toBe(true)
-    expect(form.canContain('Layout')).toBe(true)
+    expect(form.canContain('Block')).toBe(true)
     expect(form.canContain('MemoryDataStore')).toBe(false)
     expect(form.canContain('FileDataStore')).toBe(false)
     expect(form.canContain('Text')).toBe(true)
@@ -93,16 +92,16 @@ test('can contain types apart from Project, App, Page', () => {
     expect(form.canContain('TrueFalseType')).toBe(false)
 })
 
-test('can be contained by Form, Layout and Page', () => {
+test('can be contained by Form, Block and Page', () => {
     const form = new Form('form1', 'Form 1', {}, [])
     const app = new App('app1', 'App1', {}, [])
     const page = new Page('page1', 'Page 1', {}, [])
-    const layout = new Layout('lay1', 'Layout 1', {}, [])
+    const block = new Block('lay1', 'Layout 1', {}, [])
     const text = new Text('text1', 'Text 1', {}, [])
     expect(form.canContain('Form')).toBe(true)
     expect(app.canContain('Form')).toBe(false)
     expect(page.canContain('Form')).toBe(true)
-    expect(layout.canContain('Form')).toBe(true)
+    expect(block.canContain('Form')).toBe(true)
     expect(text.canContain('Form')).toBe(false)
 })
 

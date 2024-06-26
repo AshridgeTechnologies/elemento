@@ -10,7 +10,7 @@ export default class Frame extends BaseElement<Properties> implements Element {
 
     readonly kind = 'Frame'
 
-    static get parentType(): ParentType { return ['Page', 'Form', 'Layout'] }
+    static get parentType(): ParentType { return ['Page', 'Form', 'Block'] }
 
     get iconClass() { return 'picture_in_picture' }
 

@@ -1,13 +1,4 @@
-import App from '../../src/model/App'
-import Page from '../../src/model/Page'
-import TextInput from '../../src/model/TextInput'
-import Button from '../../src/model/Button'
-import Project from '../../src/model/Project'
 import {ex} from './playwrightHelpers.js'
-import List from '../../src/model/List'
-import Layout from '../../src/model/Layout'
-import NumberInput from '../../src/model/NumberInput'
-import Text from '../../src/model/Text'
 
 type ElementType = {kind: string, id: string, name: string, properties?: object, elements?: ElementType[]}
 export const el = (kind: string, id: string, name: string, properties: object = {}, elements: ElementType[] = []): ElementType => {
@@ -20,7 +11,7 @@ export function projectFixture1() {
     const page1 = el('Page', 'page_1', 'Main Page', {}, [
         el('Text', 'text_1', 'First Text', {content: ex`"The first bit of text"`}),
         el('Text', 'text_2', 'Second Text', {content: ex`"The second bit of text"`}),
-        el('Layout', 'layout_1', 'A Layout', {}, [
+        el('Block', 'layout_1', 'A Layout', {}, [
             el('NumberInput', 'numberInput_15', 'Nested Text', {}),
         ])
     ])

@@ -17,7 +17,7 @@ import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
-import Layout from '../../src/model/Layout'
+import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
@@ -1244,7 +1244,7 @@ test('generates ItemSet element with separate child component and global functio
         new Page('p1', 'Page 1', {}, [
             new TextInput('id4', 'Text Input 1', {}),
             new SelectInput('id5', 'Item Color', {}),
-            new Layout('la1', 'Layout 1', {}, [
+            new Block('la1', 'Layout 1', {}, [
                 new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
@@ -1283,7 +1283,7 @@ test('generates ItemSet element with separate child component and global functio
 
 function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, TextInput, SelectInput, Layout, ItemSet} = Elemento.components
+    const {Page, TextInput, SelectInput, Block, ItemSet} = Elemento.components
     const {Log} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const TextInput1 = _state.setObject(pathWith('TextInput1'), new TextInput.State({}))
@@ -1297,7 +1297,7 @@ function Page1(props) {
     return React.createElement(Page, {path: props.path},
         React.createElement(TextInput, {path: pathWith('TextInput1'), label: 'Text Input 1'}),
         React.createElement(SelectInput, {path: pathWith('ItemColor'), label: 'Item Color'}),
-        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: false, wrap: false},
+        React.createElement(Block, {path: pathWith('Layout1'), layout: 'vertical'},
             React.createElement(ItemSet, {path: pathWith('ItemSet1'), itemContentComponent: Page1_ItemSet1Item}),
     ),
     )
@@ -1410,11 +1410,11 @@ function Page2(props) {
 
 })
 
-test('generates Layout element with properties and children', ()=> {
+test('generates Block element with properties and children', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            new Layout('lay1', 'Layout 1', {horizontal: true, wrap: ex`100 < 200`, styles: {width: 500, backgroundColor: 'pink'}}, [
+            new Block('lay1', 'Layout 1', {layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}}, [
                 new Text('text1', 'T1', {content: ex`23 + 45`}),
                 new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
@@ -1426,7 +1426,7 @@ test('generates Layout element with properties and children', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
-    const {Page, NumberInput, Layout, TextElement, TextInput, SelectInput, Button} = Elemento.components
+    const {Page, NumberInput, Block, TextElement, TextInput, SelectInput, Button} = Elemento.components
     const _state = Elemento.useGetStore()
     const WidgetCount = _state.setObject(pathWith('WidgetCount'), new NumberInput.State({value: 18}))
     const NameInput = _state.setObject(pathWith('NameInput'), new TextInput.State({}))
@@ -1435,7 +1435,7 @@ test('generates Layout element with properties and children', ()=> {
 
     return React.createElement(Page, {path: props.path},
         React.createElement(NumberInput, {path: pathWith('WidgetCount'), label: 'New widget value'}),
-        React.createElement(Layout, {path: pathWith('Layout1'), horizontal: true, wrap: 100 < 200, styles: {width: 500, backgroundColor: 'pink'}},
+        React.createElement(Block, {path: pathWith('Layout1'), layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}},
             React.createElement(TextElement, {path: pathWith('T1'), content: 23 + 45}),
             React.createElement(TextInput, {path: pathWith('NameInput'), label: 'Name Input'}),
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),

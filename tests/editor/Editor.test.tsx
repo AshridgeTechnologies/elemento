@@ -292,7 +292,7 @@ test('shows allowed items in context insert menu of a page item', async () => {
     await actWait(() => fireEvent.contextMenu(screen.getByText('Second Text')))
     await actWait(() => fireEvent.click(screen.getByText('Insert')))
 
-    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Form', 'Image', 'Frame', 'Icon', 'User Logon', 'Menu', 'List', 'Item Set', 'Data', 'Calculation', 'Timer', 'Function', 'Function Import', 'Collection', 'Layout', 'Block'])
+    expect(optionsShown()).toStrictEqual(['Text', 'Text Input', 'Number Input','Select Input', 'True False Input', 'Date Input', 'Speech Input', 'Button', 'Form', 'Image', 'Frame', 'Icon', 'User Logon', 'Menu', 'List', 'Item Set', 'Data', 'Calculation', 'Timer', 'Function', 'Function Import', 'Collection', 'Block'])
 })
 
 test('notifies upload action from context menu of the files item', async () => {

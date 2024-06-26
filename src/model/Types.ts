@@ -74,7 +74,6 @@ export type ElementType =
     'FunctionImport' |
     'Component' |
     'Collection' |
-    'Layout' |
     'Block' |
     'FirestoreDataStore' |
     'ServerApp' |

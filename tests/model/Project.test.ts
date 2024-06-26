@@ -7,7 +7,7 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
-import Layout from '../../src/model/Layout'
+import Block from '../../src/model/Block'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
 import {ConfirmAction} from '../../src/editor/Types'
@@ -69,7 +69,7 @@ test('can find page by id', ()=> {
 let testProject = function () {
     const text1 = new Text('t1', 'Text 1', {content: ex``})
     const text2 = new Text('t2', 'Text 3', {content: ex``})
-    const layout1 = new Layout('lay1', 'Layout 1', {}, [text2])
+    const layout1 = new Block('lay1', 'Layout 1', {}, [text2])
     const page1 = new Page('p1', 'Page 1', {}, [
         text1, layout1,
     ])
@@ -128,9 +128,9 @@ test('can find path of element on a page by id', ()=> {
 test('can find path of element in a layout by id', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const innerLayout = new Layout('lay2', 'Layout 2', {}, [text2])
-    const layout = new Layout('lay1', 'Layout 1', {}, [text1, innerLayout])
-    const page = new Page('p1', 'Page 1', {}, [layout])
+    const innerBlock = new Block('lay2', 'Layout 2', {}, [text2])
+    const block = new Block('lay1', 'Layout 1', {}, [text1, innerBlock])
+    const page = new Page('p1', 'Page 1', {}, [block])
     const app = new App('app1', 'App 1', {}, [page])
     const project = Project.new([app])
 

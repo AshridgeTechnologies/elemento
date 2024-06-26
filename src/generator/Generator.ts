@@ -442,7 +442,6 @@ ${generateChildren(form, indentLevel2, form)}
 
             case 'Menu':
             case 'AppBar':
-            case 'Layout':
             case 'Block':
             case 'List': {
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(getReactProperties())}${generateChildren(element, indentLevel3, containingComponent)})`

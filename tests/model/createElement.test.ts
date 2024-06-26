@@ -15,13 +15,13 @@ import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
-import Layout from '../../src/model/Layout'
+import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 
 test('creates elements of correct type', () => {
     expect(createNewElement('App', 2)).toBeInstanceOf(App)
     expect(createNewElement('Page', 2)).toBeInstanceOf(Page)
-    expect(createNewElement('Layout', 2)).toBeInstanceOf(Layout)
+    expect(createNewElement('Block', 2)).toBeInstanceOf(Block)
     expect(createNewElement('AppBar', 2)).toBeInstanceOf(AppBar)
     expect(createNewElement('Text', 2)).toBeInstanceOf(Text)
     expect(createNewElement('TextInput', 2)).toBeInstanceOf(TextInput)

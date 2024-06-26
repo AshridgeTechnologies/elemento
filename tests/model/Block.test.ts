@@ -13,6 +13,7 @@ test('Block has correct defaults', ()=> {
     expect(block.id).toBe('blk1')
     expect(block.name).toBe('Block the First')
     expect(block.codeName).toBe('BlocktheFirst')
+    expect(block.layout).toBe('vertical')
     expect(block.show).toBe(undefined)
     expect(block.styles).toBe(undefined)
     expect(block.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
@@ -21,11 +22,12 @@ test('Block has correct defaults', ()=> {
 test('Block has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const block = new Block('blk1', 'Block the First', {show: true, styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
+    const block = new Block('blk1', 'Block the First', {show: true, layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
 
     expect(block.id).toBe('blk1')
     expect(block.name).toBe('Block the First')
     expect(block.codeName).toBe('BlocktheFirst')
+    expect(block.layout).toBe('horizontal wrapped')
     expect(block.show).toBe(true)
     expect(block.styles).toStrictEqual({width: 500, backgroundColor: 'blue'})
     expect(block.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
@@ -92,7 +94,7 @@ test('finds itself and children in a page', () => {
 test('converts to JSON', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const block = new Block('blk1', 'Block 1', {styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
+    const block = new Block('blk1', 'Block 1', {layout: 'positioned', styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
 
     expect(asJSON(block)).toStrictEqual({
         kind: 'Block',

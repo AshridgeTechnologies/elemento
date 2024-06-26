@@ -2,9 +2,10 @@ import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
-import {loadJSONFromString} from '../../src/model/loadJSON'
-import {ex} from '../testutil/testHelpers'
+import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
+import {asJSON, ex} from '../testutil/testHelpers'
 import DateType from '../../src/model/types/DateType'
+import Block from '../../src/model/Block'
 
 // tests for loadJSON are in the test for each model class
 
@@ -40,4 +41,42 @@ test('does not convert numeric string to Date', () => {
     const textInput = new TextInput('t1', 'Text 1', {label: "32"})
     const newTextInput = loadJSONFromString(JSON.stringify(textInput))
     expect(newTextInput).toStrictEqual<TextInput>(textInput)
+})
+
+test('converts Layout to Block', () => {
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const layout1 = {
+        kind: 'Layout',
+        id: 'lay1',
+        name: 'Layout 1',
+        properties: {horizontal: true, styles: {width: '50%', backgroundColor: 'green'}},
+        elements: [asJSON(text1), asJSON(text2)]
+    }
+    const layout2 = {
+        kind: 'Layout',
+        id: 'lay2',
+        name: 'Layout 2',
+        properties: {horizontal: true, wrap: true},
+    }
+    const layout3 = {
+        kind: 'Layout',
+        id: 'lay3',
+        name: 'Layout 3',
+        properties: {},
+    }
+
+    const layout4 = {
+        kind: 'Layout',
+        id: 'lay4',
+        name: 'Layout 4',
+        properties: {horizontal: ex`1 == 2`},
+    }
+
+    expect(loadJSON(layout1)).toBeInstanceOf(Block)
+    expect((loadJSON(layout1) as Block).layout).toBe('horizontal')
+    expect((loadJSON(layout2) as Block).layout).toBe('horizontal wrapped')
+    expect((loadJSON(layout3) as Block).layout).toBe('vertical')
+    expect((loadJSON(layout4) as Block).layout).toBe('horizontal')
+    expect((loadJSON(layout1) as Block).elementArray()[0]).toBeInstanceOf(Text)
 })

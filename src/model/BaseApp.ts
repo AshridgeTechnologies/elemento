@@ -11,7 +11,6 @@ import {
 } from './Types'
 import {without} from 'ramda'
 import Page from './Page'
-import ComponentDef from './ComponentDef'
 
 export type Properties = Partial<Readonly<{
     author: PropertyValueType<string>,

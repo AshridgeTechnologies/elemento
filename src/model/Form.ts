@@ -28,7 +28,7 @@ export default class Form extends BaseInputElement<Properties> implements Elemen
         return elementHasParentTypeOf(elementType, this)
     }
 
-    static get parentType(): ParentType { return ['Page', 'Form', 'Layout'] }
+    static get parentType(): ParentType { return ['Page', 'Form', 'Block'] }
 
     get propertyDefs(): PropertyDef[] { return [
         propDef('initialValue', 'expr', {state: true}),
