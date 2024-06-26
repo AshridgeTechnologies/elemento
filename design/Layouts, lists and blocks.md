@@ -147,7 +147,7 @@ Possibilities
 Decision
 --------
 
-- Use the following steps:
+- Use the following steps to maker a Layout work as a grid:
     - Layout with horizontal and wrap
     - Layout has styles:
       - Aspect ratio = columns / rows
