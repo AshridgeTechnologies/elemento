@@ -1,250 +1,430 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`App element produces output containing normal page if logged in 1`] = `
-<div
-  className="ElApp MuiBox-root css-3j596c"
-  id="app1"
->
+[
   <div
-    className="MuiBox-root css-72fd9l"
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
   >
-    <header
-      className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
-      id="app1.appBar1"
+    <div
+      className="MuiBox-root css-72fd9l"
     >
-      <div
-        className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+      <header
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        id="app1.appBar1"
       >
         <div
-          className="MuiStack-root css-jp2etx-MuiStack-root"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
           <div
-            className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            className="MuiStack-root css-jp2etx-MuiStack-root"
           >
-            The App bar
+            <div
+              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            >
+              The App bar
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div
+      className="MuiBox-root css-zi2l0h"
+    >
+      <div
+        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+      >
+        <div
+          className="MuiStack-root css-1hi109z-MuiStack-root"
+          id="app1.page1"
+        >
+          <div
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
+          >
+            You are logged in
           </div>
         </div>
       </div>
-    </header>
-  </div>
-  <div
-    className="MuiBox-root css-zi2l0h"
-  >
-    <div
-      className="MuiContainer-root css-169v6mb-MuiContainer-root"
-    >
-      <div
-        className="MuiStack-root css-1hi109z-MuiStack-root"
-        id="app1.page1"
-      >
-        <div
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-          id="app1.page1.para1"
-        >
-          You are logged in
-        </div>
-      </div>
     </div>
-  </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+  </div>,
   <div
-    className="MuiBox-root css-72fd9l"
-  />
-</div>
+    id="DndDescribedBy-7"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-7"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;
 
 exports[`App element produces output containing not logged in page if it exists and not logged in 1`] = `
-<div
-  className="ElApp MuiBox-root css-3j596c"
-  id="app1"
->
+[
   <div
-    className="MuiBox-root css-72fd9l"
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
   >
-    <header
-      className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
-      id="app1.appBar1"
+    <div
+      className="MuiBox-root css-72fd9l"
     >
-      <div
-        className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+      <header
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        id="app1.appBar1"
       >
         <div
-          className="MuiStack-root css-jp2etx-MuiStack-root"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
           <div
-            className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            className="MuiStack-root css-jp2etx-MuiStack-root"
           >
-            The App bar
+            <div
+              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            >
+              The App bar
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div
+      className="MuiBox-root css-zi2l0h"
+    >
+      <div
+        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+      >
+        <div
+          className="MuiStack-root css-1hi109z-MuiStack-root"
+          id="app1.page1"
+        >
+          <div
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
+          >
+            Please log in
           </div>
         </div>
       </div>
-    </header>
-  </div>
-  <div
-    className="MuiBox-root css-zi2l0h"
-  >
-    <div
-      className="MuiContainer-root css-169v6mb-MuiContainer-root"
-    >
-      <div
-        className="MuiStack-root css-1hi109z-MuiStack-root"
-        id="app1.page1"
-      >
-        <div
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-          id="app1.page1.para1"
-        >
-          Please log in
-        </div>
-      </div>
     </div>
-  </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+  </div>,
   <div
-    className="MuiBox-root css-72fd9l"
-  />
-</div>
+    id="DndDescribedBy-5"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-5"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;
 
 exports[`App element produces output containing page 1`] = `
-<div
-  className="ElApp MuiBox-root css-3j596c"
-  id="app1"
->
+[
   <div
-    className="MuiBox-root css-72fd9l"
-  />
-  <div
-    className="MuiBox-root css-zi2l0h"
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
   >
     <div
-      className="MuiContainer-root css-169v6mb-MuiContainer-root"
+      className="MuiBox-root css-72fd9l"
+    />
+    <div
+      className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiStack-root css-1hi109z-MuiStack-root"
-        id="app1.page1"
+        className="MuiContainer-root css-169v6mb-MuiContainer-root"
       >
         <div
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-          id="app1.page1.para1"
-        >
-          Hello
-          <br />
-          where are you
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className="MuiBox-root css-72fd9l"
-  />
-</div>
-`;
-
-exports[`App element produces output containing page and additional components with app bar at the top 1`] = `
-<div
-  className="ElApp MuiBox-root css-3j596c"
-  id="app1"
->
-  <div
-    className="MuiBox-root css-72fd9l"
-  >
-    <header
-      className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
-      id="app1.appBar1"
-    >
-      <div
-        className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
-      >
-        <div
-          className="MuiStack-root css-jp2etx-MuiStack-root"
+          className="MuiStack-root css-1hi109z-MuiStack-root"
+          id="app1.page1"
         >
           <div
-            className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
           >
-            The App bar
+            Hello
+            <br />
+            where are you
           </div>
         </div>
       </div>
-    </header>
-  </div>
+    </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+  </div>,
   <div
-    className="MuiBox-root css-zi2l0h"
+    id="DndDescribedBy-0"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-0"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`App element produces output containing page and additional components with app bar at the top 1`] = `
+[
+  <div
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
   >
     <div
-      className="MuiContainer-root css-169v6mb-MuiContainer-root"
+      className="MuiBox-root css-72fd9l"
     >
-      <div
-        className="MuiStack-root css-1hi109z-MuiStack-root"
-        id="app1.page1"
+      <header
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        id="app1.appBar1"
       >
         <div
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-          id="app1.page1.para1"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
-          Hello
-          <br />
-          where are you
+          <div
+            className="MuiStack-root css-jp2etx-MuiStack-root"
+          >
+            <div
+              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            >
+              The App bar
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div
+      className="MuiBox-root css-zi2l0h"
+    >
+      <div
+        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+      >
+        <div
+          className="MuiStack-root css-1hi109z-MuiStack-root"
+          id="app1.page1"
+        >
+          <div
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
+          >
+            Hello
+            <br />
+            where are you
+          </div>
         </div>
       </div>
     </div>
-  </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    >
+      <div
+        id="app1.coll1"
+      >
+        <div>
+          app1.coll1
+        </div>
+        <code>
+          {}
+        </code>
+      </div>
+      <div
+        id="app1.coll2"
+      >
+        <div>
+          app1.coll2
+        </div>
+        <code>
+          {}
+        </code>
+      </div>
+    </div>
+  </div>,
   <div
-    className="MuiBox-root css-72fd9l"
+    id="DndDescribedBy-2"
+    style={
+      {
+        "display": "none",
+      }
+    }
   >
-    <div
-      id="app1.coll1"
-    >
-      <div>
-        app1.coll1
-      </div>
-      <code>
-        {}
-      </code>
-    </div>
-    <div
-      id="app1.coll2"
-    >
-      <div>
-        app1.coll2
-      </div>
-      <code>
-        {}
-      </code>
-    </div>
-  </div>
-</div>
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-2"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;
 
 exports[`App element produces output with max width 1`] = `
-<div
-  className="ElApp MuiBox-root css-3j596c"
-  id="app1"
->
+[
   <div
-    className="MuiBox-root css-72fd9l"
-  />
-  <div
-    className="MuiBox-root css-zi2l0h"
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
   >
     <div
-      className="MuiContainer-root css-8z7glm-MuiContainer-root"
+      className="MuiBox-root css-72fd9l"
+    />
+    <div
+      className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiStack-root css-1hi109z-MuiStack-root"
-        id="app1.page1"
+        className="MuiContainer-root css-8z7glm-MuiContainer-root"
       >
         <div
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-          id="app1.page1.para1"
+          className="MuiStack-root css-1hi109z-MuiStack-root"
+          id="app1.page1"
         >
-          Hello
-          <br />
-          where are you
+          <div
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
+          >
+            Hello
+            <br />
+            where are you
+          </div>
         </div>
       </div>
     </div>
-  </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+  </div>,
   <div
-    className="MuiBox-root css-72fd9l"
-  />
-</div>
+    id="DndDescribedBy-1"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-1"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;

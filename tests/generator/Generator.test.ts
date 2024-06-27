@@ -1041,9 +1041,10 @@ test('sorts state entries into dependency order', () => {
     const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const canDragItem = undefined
     const styles = undefined
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })
@@ -1097,9 +1098,10 @@ test('sorts state entries into dependency order when nested inside a layout elem
     const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const canDragItem = undefined
     const styles = undefined
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })
@@ -1245,7 +1247,8 @@ test('generates ItemSet element with separate child component and global functio
             new TextInput('id4', 'Text Input 1', {}),
             new SelectInput('id5', 'Item Color', {}),
             new Block('la1', 'Layout 1', {}, [
-                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id !== 99`,
+                    itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
                     new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
@@ -1271,9 +1274,10 @@ test('generates ItemSet element with separate child component and global functio
     const ButtonUpdate_action = React.useCallback(async () => {
         await Update('Things', \$item.id, {done: true})
     }, [$item])
+    const canDragItem = $item.id !== 99
     const styles = {color: $selected ? 'red' : ItemColor, width: 200}
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there ' + TextInput2 + ' in ' + TextInput1 + $itemId}),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
@@ -1288,6 +1292,7 @@ function Page1(props) {
     const _state = Elemento.useGetStore()
     const TextInput1 = _state.setObject(pathWith('TextInput1'), new TextInput.State({}))
     const ItemColor = _state.setObject(pathWith('ItemColor'), new SelectInput.State({}))
+    const Layout1 = _state.setObject(pathWith('Layout1'), new Block.State({}))
     const ItemSet1_selectAction = React.useCallback(($item, $itemId) => {
         Log($item.id)
     }, [])
@@ -1335,9 +1340,10 @@ test('generates ItemSet element inside List', ()=> {
     const ButtonUpdate_action = React.useCallback(async () => {
         await Update('Things', \$item.id, {done: true})
     }, [\$item])
+    const canDragItem = undefined
     const styles = {color: 'red', width: 200}
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there ' + TextInput2 + ' in ' + TextInput1}),
         React.createElement(TextInput, {path: pathWith('TextInput2'), label: 'Text Input 2'}),
         React.createElement(Button, {path: pathWith('ButtonUpdate'), content: 'Update', appearance: 'outline', action: ButtonUpdate_action}),
@@ -1387,9 +1393,10 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     const {$item, $itemId, $selected, onClick} = props
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
+    const canDragItem = undefined
     const styles = undefined
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Text1'), content: 'Hi there!'}),
     )
 })
@@ -1410,7 +1417,7 @@ function Page2(props) {
 
 })
 
-test('generates Block element with properties and children', ()=> {
+test('generates Block element with properties and children and includes drag functions if needed', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
@@ -1419,16 +1426,20 @@ test('generates Block element with properties and children', ()=> {
                 new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
                 new Button('b1', 'B1', {content: 'Click here!'}),
-            ])
+            ]),
+            new Text('text2', 'T2', {content: ex`If(DragIsOver(Layout1) && DraggedItemId == 'blue', 'Drag', '')`})
             ]
         )])
 
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathWith = name => props.path + '.' + name
+    const {DragIsOver, DraggedItemId} = Elemento.dragFunctions()
     const {Page, NumberInput, Block, TextElement, TextInput, SelectInput, Button} = Elemento.components
+    const {If} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const WidgetCount = _state.setObject(pathWith('WidgetCount'), new NumberInput.State({value: 18}))
+    const Layout1 = _state.setObject(pathWith('Layout1'), new Block.State({}))
     const NameInput = _state.setObject(pathWith('NameInput'), new TextInput.State({}))
     const Colour = _state.setObject(pathWith('Colour'), new SelectInput.State({}))
     Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
@@ -1441,6 +1452,7 @@ test('generates Block element with properties and children', ()=> {
             React.createElement(SelectInput, {path: pathWith('Colour'), label: 'Colour', values: ['red', 'green']}),
             React.createElement(Button, {path: pathWith('B1'), content: 'Click here!', appearance: 'outline'}),
     ),
+        React.createElement(TextElement, {path: pathWith('T2'), content: If(DragIsOver(Layout1) && DraggedItemId == 'blue', 'Drag', '')}),
     )
 }
 `)
@@ -1938,9 +1950,10 @@ test('generates local user defined functions in a list item that use a page item
     const ExtraHeight = React.useCallback(() => {
         return $item.height - MinHeight
     }, [$item, MinHeight])
+    const canDragItem = undefined
     const styles = undefined
 
-    return React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+    return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
         React.createElement(TextElement, {path: pathWith('Desc'), content: 'Hi!'}),
     )
 })

@@ -11,6 +11,7 @@ type Properties = Partial<Readonly<{
     selectedItems: PropertyValueType<any>,
     selectable: PropertyValueType<Selectable>,
     selectAction: PropertyExpr,
+    canDragItem: PropertyValueType<boolean>,
     itemStyles: StylingProps
 }>>
 
@@ -24,6 +25,7 @@ export default class ItemSet extends BaseElement<Properties> implements Element 
     get selectedItems() { return this.properties.selectedItems }
     get selectable() { return this.properties.selectable }
     get selectAction() { return this.properties.selectAction }
+    get canDragItem() { return this.properties.canDragItem }
     get itemStyles() { return this.properties.itemStyles }
 
     get propertyDefs(): PropertyDef[] {
@@ -32,6 +34,7 @@ export default class ItemSet extends BaseElement<Properties> implements Element 
             propDef('selectedItems', 'expr', {state: true}),
             propDef('selectable', selectableChoices, {state: true}),
             propDef('selectAction', eventAction('$item', '$itemId'), {state: true}),
+            propDef('canDragItem', 'boolean'),
             propDef('itemStyles', 'styles')
         ]
     }

@@ -3,9 +3,10 @@ import {commonStylingPropNames, defaultUnits} from '../../util/StylingTypes'
 import {camel, mapValues} from 'radash'
 import BaseType from '../types/BaseType'
 import {Icon as MuiIcon, IconButton, InputAdornment, SxProps, Tooltip} from '@mui/material'
-import React from 'react'
+import React, {createContext, useRef, useState} from 'react'
 import {definedPropertiesOf, isNumericAnySign} from '../../util/helpers'
 import {PropVal, StylesProps, StylesPropVals} from '../runtimeFunctions'
+import {DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, UniqueIdentifier, useSensor, useSensors} from '@dnd-kit/core'
 
 export type BaseInputComponentProperties =
     Readonly<{
@@ -92,4 +93,37 @@ export const inputElementProps = (styles: {}, readOnly: boolean, dataTypeProps: 
 
     const inputPropsValues = {...dataTypeProps, ...definedPropertiesOf({readOnly}), ...inputElementStyleAttr}
     return Object.keys(inputPropsValues).length > 0 ? {inputProps: inputPropsValues} : {}
+}
+
+export const PageDndContext = createContext<React.MutableRefObject<any> | null>(null)
+
+export function DndWrapper(props: {elementToWrap: React.FunctionComponentElement<any>}) {
+    const [, setActiveId] = useState<UniqueIdentifier | null>(null)
+
+    const onDragStart = (event: DragStartEvent) => {
+        setActiveId(event.active.id)
+    }
+
+    const onDragEnd = (event: DragEndEvent) => {
+        setActiveId(null)
+        dndRef.current = null
+    }
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {distance: 8}
+        })
+    )
+    const dndRef = useRef<React.ReactElement | null>(null)
+    const elementInContext = React.createElement(PageDndContext.Provider, {value: dndRef}, props.elementToWrap)
+    const overlay = React.createElement(DragOverlay, {dropAnimation: null}, dndRef.current)
+
+    return React.createElement(DndContext, {onDragStart, onDragEnd, sensors}, elementInContext, overlay)
+}
+
+export function dndWrappedComponent(component: React.FunctionComponent<any>) {
+    return function DndWrapped(props: any) {
+        const elementToWrap = React.createElement(component, props)
+        return DndWrapper({elementToWrap})
+    }
 }

@@ -1,46 +1,73 @@
-import React from 'react'
+import React, {RefObject} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Box, Stack, SxProps} from '@mui/material'
 import {sxProps} from './ComponentHelpers'
+import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
+import {BaseComponentState, ComponentState} from './ComponentState'
+import {useGetObjectState} from '../appData'
 
 const layoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
 export type BlockLayout = typeof layoutChoices[number]
-type Properties = { path: string, layout: BlockLayout, show?: PropVal<boolean>, styles?: StylesPropVals, children?: React.ReactElement[] }
-type LayoutProperties = { path: string, horizontal?: PropVal<boolean>, wrap?: PropVal<boolean>, show?: PropVal<boolean>, styles?: StylesPropVals, children?: any }
+export type RefType = ((instance: HTMLDivElement | null) => void) | RefObject<HTMLDivElement> | null | undefined
+type Properties = { path: string, layout: BlockLayout, dropAction?: () => void, show?: PropVal<boolean>, styles?: StylesPropVals, children?: React.ReactElement[] }
+type StateProperties = Partial<Readonly<{}>>
 
-function Layout({children, path,  ...props}: LayoutProperties) {
-    const {horizontal = false, wrap = false, show, styles = {}} = valueOfProps(props)
-    const direction = horizontal ? 'row' : 'column'
-    const flexWrap = wrap ? 'wrap' : 'nowrap'
-    const sx = {
-        py: horizontal ? 0 : 1,
-        overflow: horizontal ? 'visible' : 'scroll',
-        maxHeight: '100%',
-        boxSizing: 'border-box',
-        alignItems: 'flex-start',
-        padding: horizontal ? 0 : 1,
-        ...sxProps(styles, show),
-    } as SxProps
-    return React.createElement(Stack, {
-        id: path,
-        direction,
-        flexWrap,
-        useFlexGap: true,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        spacing: 2,
-        sx,
-        children
-    })
+type StateUpdatableProperties = Partial<Readonly<{
+    isOver: boolean
 }
+>>
 
 const stackLayouts: BlockLayout[] = ['horizontal', 'horizontal wrapped', 'vertical']
+
 export default function Block({children = [], path,  ...props}: Properties) {
-    const {show, layout, styles = {}} = valueOfProps(props)
+    const {show, layout, styles = {}, dropAction} = valueOfProps(props)
+    const {isOver, setNodeRef} = useDroppable({
+        id: path,
+    })
+    const state = useGetObjectState<BlockState>(path)
+    state.setIsOver(isOver)
+
+    useDndMonitor({
+        onDragEnd(event: DragEndEvent) {
+            const {item, itemId} = event.active.data.current ?? {}
+            if (event.over?.id === path) {
+                dropAction?.(item, itemId)
+            } else if (event.collisions?.some( coll => coll.id === path)) {
+                const itemCollision = event.collisions.find( coll => coll.id !== path )
+                const {item: droppedItem, itemId: droppedItemId} = itemCollision?.data?.droppableContainer.data.current ?? {}
+                dropAction?.(item, itemId, droppedItem, droppedItemId)
+            }
+        }
+    })
+
     if (stackLayouts.includes(layout)) {
         const horizontal: boolean = layout.startsWith('horizontal')
         const wrap= layout === 'horizontal wrapped'
-        return React.createElement(Layout, {path, horizontal, wrap, show, styles, children})
+        const direction = horizontal ? 'row' : 'column'
+        const flexWrap = wrap ? 'wrap' : 'nowrap'
+
+        const sx = {
+            py: horizontal ? 0 : 1,
+            overflow: horizontal ? 'visible' : 'scroll',
+            maxHeight: '100%',
+            boxSizing: 'border-box',
+            alignItems: 'flex-start',
+            padding: horizontal ? 0 : 1,
+            ...sxProps(styles, show),
+        } as SxProps
+
+        return React.createElement(Stack, {
+            id: path,
+            ref: setNodeRef,
+            direction,
+            flexWrap,
+            useFlexGap: true,
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            spacing: 2,
+            sx,
+            children
+        })
     }
 
     // use block layout
@@ -51,7 +78,24 @@ export default function Block({children = [], path,  ...props}: Properties) {
     } as SxProps
     return React.createElement(Box, {
         id: path,
+        ref: setNodeRef,
         sx,
         children
     })
 }
+
+export class BlockState extends BaseComponentState<StateProperties, StateUpdatableProperties>
+    implements ComponentState<BlockState> {
+
+    get isOver() {
+        return this.state.isOver ?? false
+    }
+
+    setIsOver(isOver: boolean) {
+        if (this.latest().isOver !== isOver) {
+            this.latest().updateState({isOver})
+        }
+    }
+}
+
+(Block as any).State = BlockState

@@ -1,9 +1,11 @@
 import lodash from 'lodash';
-import {map} from 'ramda'
+import {equals, map} from 'ramda'
 import {mapValues} from 'radash'
 import * as Module from "module";
 import BigNumber from 'bignumber.js'
 import {StylingProp} from '../util/StylingTypes'
+import {DragOverEvent, DragStartEvent, useDndMonitor} from '@dnd-kit/core'
+import {useState} from 'react'
 
 export {isoDateReviver} from '../util/helpers'
 
@@ -146,3 +148,34 @@ export function asArray(value: any[] | object | any) {
 export const ensureSlash = (prefix: string | null) => prefix?.replace(/^\/?/, '/') ?? ''
 export const lastItemIdOfPath = (path: string) => path.match(/\.#(\w+)[^#]*$/)?.[1]
 export const indexedPath = (path: string, index: number) => path + '.#' + index
+
+export const dragFunctions = () => {
+
+    const [draggedData, setDraggedData] = useState<any | null>(null)
+    const [dragOverItem, setDragOverItem] = useState<any | null>(null)
+
+    const clearDrag = () => {
+        setDragOverItem(null)
+        setDraggedData(null)
+    }
+
+    useDndMonitor({
+        onDragStart(event: DragStartEvent) {
+            setDraggedData(event.active.data.current)
+        },
+
+        onDragOver(event: DragOverEvent) {
+            const item = event.over?.data?.current?.item
+            setDragOverItem(item ?? null)
+        },
+
+        onDragEnd: clearDrag,
+        onDragCancel: clearDrag
+    })
+
+    return {
+        DragIsOver: (blockOrItem: any) => blockOrItem.isOver !== undefined ? blockOrItem.isOver : equals(blockOrItem, dragOverItem),
+        DraggedItem: ()=> draggedData?.item,
+        DraggedItemId: ()=> draggedData?.itemId
+    }
+}

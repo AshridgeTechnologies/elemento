@@ -30,6 +30,7 @@
     "src/appswebsite/terms/index.html"
   ],
   "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@hapi/topo": "^6.0.0",

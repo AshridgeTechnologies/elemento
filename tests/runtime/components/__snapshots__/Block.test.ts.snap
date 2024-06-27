@@ -1,115 +1,331 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Block element produces output containing multiple children 1`] = `
-<div
-  className="MuiBox-root css-b40tk8"
-  id="app.page1.things"
->
-  <div
-    className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
-    id="app.page1.things.text1"
-  >
-    First text
-  </div>
-  <div
-    className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
-    id="app.page1.things.text2"
-  >
-    Second text
-  </div>
-</div>
-`;
-
-exports[`Block element produces output containing single child 1`] = `
-<div
-  className="MuiBox-root css-b40tk8"
-  id="app.page1.things"
->
-  <div
-    className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
-    id="app.page1.things.text1"
-  >
-    First text
-  </div>
-</div>
-`;
-
-exports[`Block element produces output with layout none 1`] = `
-<div
-  className="MuiBox-root css-1wjyq3z"
-  id="app.page1.things"
->
-  <div
-    className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
-    id="app.page1.things.text1"
-  >
-    First text
-  </div>
-  <div
-    className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
-    id="app.page1.things.text2"
-  >
-    Second text
-  </div>
-</div>
-`;
-
 exports[`Block element produces output containing children horizontal 1`] = `
-<div
-  className="MuiStack-root css-2oo4uo-MuiStack-root"
-  id="app.page1.things"
->
+[
   <div
-    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-    id="app.page1.things.text1"
+    className="MuiStack-root css-2oo4uo-MuiStack-root"
+    id="app.page1.things5"
   >
-    First text
-  </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      id="app.page1.things.text2"
+    >
+      Second text
+    </div>
+  </div>,
   <div
-    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
-    id="app.page1.things.text2"
+    id="DndDescribedBy-4"
+    style={
+      {
+        "display": "none",
+      }
+    }
   >
-    Second text
-  </div>
-</div>
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-4"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;
 
 exports[`Block element produces output containing children horizontal and wrapped with styles 1`] = `
-<div
-  className="MuiStack-root css-140cui-MuiStack-root"
-  id="app.page1.things"
->
+[
   <div
-    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-    id="app.page1.things.text1"
+    className="MuiStack-root css-140cui-MuiStack-root"
+    id="app.page1.things"
   >
-    First text
-  </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      id="app.page1.things.text2"
+    >
+      Second text
+    </div>
+  </div>,
   <div
-    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
-    id="app.page1.things.text2"
+    id="DndDescribedBy-5"
+    style={
+      {
+        "display": "none",
+      }
+    }
   >
-    Second text
-  </div>
-</div>
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-5"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;
 
 exports[`Block element produces output containing children vertical 1`] = `
-<div
-  className="MuiStack-root css-1pw6n3e-MuiStack-root"
-  id="app.page1.things"
->
+[
   <div
-    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-    id="app.page1.things.text1"
+    className="MuiBox-root css-1wjyq3z"
+    id="app.page1.things"
   >
-    First text
-  </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      id="app.page1.things.text2"
+    >
+      Second text
+    </div>
+  </div>,
   <div
-    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
-    id="app.page1.things.text2"
+    id="DndDescribedBy-3"
+    style={
+      {
+        "display": "none",
+      }
+    }
   >
-    Second text
-  </div>
-</div>
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-3"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`Block element produces output containing multiple children 1`] = `
+[
+  <div
+    className="MuiBox-root css-b40tk8"
+    id="app.page1.things"
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
+      id="app.page1.things.text2"
+    >
+      Second text
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-1"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-1"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`Block element produces output containing single child 1`] = `
+[
+  <div
+    className="MuiBox-root css-b40tk8"
+    id="app.page1.things"
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-0"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-0"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`Block element produces output with layout none 1`] = `
+[
+  <div
+    className="MuiBox-root css-1wjyq3z"
+    id="app.page1.things"
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      id="app.page1.things.text1"
+    >
+      First text
+    </div>
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
+      id="app.page1.things.text2"
+    >
+      Second text
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-2"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-2"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
 `;

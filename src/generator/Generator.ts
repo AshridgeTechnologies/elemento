@@ -245,17 +245,20 @@ export default class Generator {
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
         const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $selected, onClick} = props' : ''
-
+        const dragFunctionIdentifiers = this.parser.dragFunctionIdentifiers(component.id)
+        const dragFunctionDeclarations =
+            dragFunctionIdentifiers.length ? `    const {${dragFunctionIdentifiers.join(', ')}} = Elemento.dragFunctions()` : ''
         const uiElementActionFunctions = generateActionHandlers(allComponentElements, uiElementActionHandlers)
         const functionNamePrefix = this.functionNamePrefix(containingComponent)
         const functionName = functionNamePrefix + (componentIsListItem ? component.itemSet.codeName + 'Item' : component.codeName)
 
+        const canDragDeclaration = componentIsListItem ? `    const canDragItem = ${this.getExpr(component.itemSet, 'canDragItem')}` : ''
         const stylesDeclaration = componentIsListItem ? `    const styles = ${this.getExpr(component.itemSet, 'itemStyles')}` : ''
+        const listItemVarDeclarations = [canDragDeclaration, stylesDeclaration].filter(s => !!s).join('\n')
 
         const declarations = [
-            pathWith, parentPathWith, extraDeclarations, elementoDeclarations,
-            backgroundFixedDeclarations, stateBlock, uiElementActionFunctions,
-            stylesDeclaration
+            pathWith, parentPathWith, extraDeclarations, dragFunctionDeclarations, elementoDeclarations,
+            backgroundFixedDeclarations, stateBlock, uiElementActionFunctions, listItemVarDeclarations
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
         const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))` : ''
@@ -348,7 +351,7 @@ ${declarations}${debugHook}
         }
 
         if (element instanceof ListItem) {
-            return `React.createElement(ItemSetItem, {path: props.path, onClick, styles},
+            return `React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
 ${generateChildren(element.itemSet)}
     )`
         }
@@ -453,7 +456,7 @@ ${generateChildren(form, indentLevel2, form)}
                 topLevelFunctions.add(itemCode)
                 const itemContentComponent = containingComponent!.codeName + '_' + itemSet.codeName + 'Item'
 
-                const modelProperties = omit(['itemStyles'], this.modelProperties(element))  // used in the item content component
+                const modelProperties = omit(['canDragItem', 'itemStyles'], this.modelProperties(element))  // used in the item content component
                 const reactProperties = {path, itemContentComponent, ...modelProperties}
                 return `React.createElement(${runtimeElementName(element)}, ${objectLiteral(reactProperties)})`
             }
@@ -529,8 +532,7 @@ ${generateChildren(form, indentLevel2, form)}
         }
 
         if (element.kind === 'Function') {
-            const functionDef = element as FunctionDef
-            return functionDef
+            return element as FunctionDef
         }
 
         if (element.kind === 'ServerAppConnector') {

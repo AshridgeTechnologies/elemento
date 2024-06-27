@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import {createElement, Fragment, MouseEventHandler} from 'react'
+import {createElement, MouseEventHandler} from 'react'
 import {ItemSet, TextElement} from '../../../src/runtime/components/index'
-import {snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {inDndContext, snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
@@ -15,7 +15,14 @@ import {ItemSetItem} from '../../../src/runtime/components'
 
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
     const styles = {color: 'red', width: 300}
-    return createElement(ItemSetItem, {path: props.path, onClick: props.onClick, styles, children:
+    return createElement(ItemSetItem, {path: props.path, onClick: props.onClick, styles, item: props.$item, itemId: props.$itemId, children:
+        createElement(TextElement, {path: `${props.path}.Text99`, content: [props.$item?.text, 'item id ' + props.$itemId, 'selected', props.$selected.toString()].join('\n') }) }
+    )
+}
+
+function ItemSetItemDraggable(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
+    const styles = {color: 'red', width: 300}
+    return createElement(ItemSetItem, {path: props.path, onClick: props.onClick, canDragItem: true, styles, item: props.$item, itemId: props.$itemId, children:
         createElement(TextElement, {path: `${props.path}.Text99`, content: [props.$item?.text, 'item id ' + props.$itemId, 'selected', props.$selected.toString()].join('\n') }) }
     )
 }
@@ -24,12 +31,16 @@ const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'ove
 const longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
 const itemSetDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
 
-const [itemSet, appStoreHook] = wrappedTestElement(ItemSet, ItemSetState)
+const [itemSet, appStoreHook] = wrappedTestElement(ItemSet, ItemSetState, true)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('produces output containing ReactElement children', () => {
     snapshot(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1, itemStyles: {color: 'red', width: 300}}))()
+})
+
+test('produces output containing ReactElement children if draggable', () => {
+    snapshot(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItemDraggable, itemStyles: {color: 'red', width: 300}}))()
 })
 
 test('produces output with indexes if items have no ids', () => {
@@ -65,7 +76,7 @@ test('produces output when an item is null', () => {
 })
 
 test('updates its selectedItem in the app state', async () => {
-    const {el, user}  = testContainer(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1}))
+    const {el, user}  = testContainer(inDndContext(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1})))
     const itemSetItem0El = el`[id="app.page1.itemSet1.#id1.Text99"]`
     await user.click(itemSetItem0El)
     expect(stateAt('app.page1.itemSet1').selectedItem).toStrictEqual(itemSetData[0])

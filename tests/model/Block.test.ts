@@ -14,20 +14,24 @@ test('Block has correct defaults', ()=> {
     expect(block.name).toBe('Block the First')
     expect(block.codeName).toBe('BlocktheFirst')
     expect(block.layout).toBe('vertical')
+    expect(block.dropAction).toBe(undefined)
     expect(block.show).toBe(undefined)
     expect(block.styles).toBe(undefined)
     expect(block.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(block.type()).toBe('statefulUI')
 })
 
 test('Block has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const block = new Block('blk1', 'Block the First', {show: true, layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
+    let dropAction = ex`Log('drop')`
+    const block = new Block('blk1', 'Block the First', {show: true, layout: 'horizontal wrapped', dropAction, styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
 
     expect(block.id).toBe('blk1')
     expect(block.name).toBe('Block the First')
     expect(block.codeName).toBe('BlocktheFirst')
     expect(block.layout).toBe('horizontal wrapped')
+    expect(block.dropAction).toStrictEqual(dropAction)
     expect(block.show).toBe(true)
     expect(block.styles).toStrictEqual({width: 500, backgroundColor: 'blue'})
     expect(block.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
@@ -39,6 +43,11 @@ test('tests if an object is this type', ()=> {
 
     expect(Block.is(block)).toBe(true)
     expect(Block.is(page)).toBe(false)
+})
+
+test('has correct property defs', () => {
+    const block = new Block('l1', 'Block 1', {}, [])
+    expect(block.propertyDefs.map( d => d.name)).toStrictEqual(['layout', 'dropAction', 'show', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

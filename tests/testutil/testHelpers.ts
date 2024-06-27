@@ -8,6 +8,8 @@ import {LocalizationProvider} from '@mui/x-date-pickers'
 import enGB from 'date-fns/locale/en-GB'
 import {isArray} from 'lodash'
 import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
+import {DndContext} from '@dnd-kit/core'
+import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -195,19 +197,19 @@ const TestWrapper = <State extends object>({
 }
 type Class<T> = new (...args: any[]) => T
 
-export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>): [any, any] => {
+export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>, wrapForDnd = false): [any, any] => {
 
     const appStoreHook = testAppStoreHook()
 
-    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, children?: React.ReactNode) => {
+    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, ...children: React.ReactNode[]) => {
         const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
         const component = isArray(children)
             ? createElement(componentClass as any, {path, ...componentProps}, ...children)
             : createElement(componentClass as any, {path, ...componentProps}, children)
+        const componentElement = createElement(TestWrapper, {path, state}, component)
+        const innerElement = wrapForDnd ? createElement(DndContext, null, componentElement) : componentElement
         return createElement(StoreProvider, {appStoreHook, children:
-            createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB},
-                createElement(TestWrapper, {path, state}, component)
-            )}
+            createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }
     return [testElementCreatorFn, appStoreHook]
@@ -313,3 +315,5 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
         throw new Error('Not implemented')
     }
 }
+
+export const inDndContext = (itemSet: any) => createElement(DndWrapper, {elementToWrap: itemSet})

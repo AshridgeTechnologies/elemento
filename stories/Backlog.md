@@ -7,6 +7,7 @@ Bugs
 
 - P1: Losing Notes at random points
 - If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
+- If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
 - Preview hangs on to old versions of imported functions even after reload of project and reload frame
 - P1: Runtime errors give no clue that they have even occurred, let alone where or what
 - P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
@@ -124,6 +125,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Guards on actions - some of: do nothing, warn, error, programming error, confirm
 - Functions have auto await insertion
 - Consider other deploy options like https://render.com/
 - More styling options work on SelectInput

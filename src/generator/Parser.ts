@@ -33,7 +33,8 @@ const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'JSON', 'window', 'document'].includes(name)
 const isToolWindowGlobal = (name: string) => ['Editor', 'Preview'].includes(name)
-const isItemVar = (name: string) => name === '$item' || name === '$itemId' || name === '$index' || name === '$selected'
+const isItemVar = (name: string) => ['$item', '$itemId', '$index', '$selected'].includes(name)
+const isDragFunction = (name: string) => ['DragIsOver', 'DraggedItem', 'DraggedItemId'].includes(name)
 const isFormVar = (name: string) => name === '$form'
 const isPropsVar = (name: string) => name === 'props'
 
@@ -60,6 +61,10 @@ export default class Parser {
 
     componentIdentifiers(elementId: ElementId): string[] {
         return this.identifiersForComponent[elementId] || []
+    }
+
+    dragFunctionIdentifiers(elementId: ElementId): string[] {
+        return this.componentIdentifiers(elementId).filter(isDragFunction)
     }
 
     appStateFunctionIdentifiers(elementId: ElementId) {
@@ -135,7 +140,7 @@ export default class Parser {
             || isDataTypes(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
-            || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
+            || (/*componentIsListItem &&*/ isItemVar(name) || isDragFunction(name)) //TODO allow $item only in ListItem and predicates
             || isServerApp(name)
             || isAppElement(name)
             || isContainerElement(name)
@@ -165,7 +170,7 @@ export default class Parser {
             || isAppFunction(name)
             || isAppStateFunction(name)
             || isComponentElement(name)
-            || (/*componentIsListItem &&*/ isItemVar(name)) //TODO allow $item only in ListItem and predicates
+            || (/*componentIsListItem &&*/ isItemVar(name) || isDragFunction(name)) //TODO allow $item only in ListItem and predicates
             || (componentIsForm && isFormVar(name))
             || (componentIsCompDef && isPropsVar(name))
             || isServerApp(name)

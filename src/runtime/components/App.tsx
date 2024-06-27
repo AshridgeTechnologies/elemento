@@ -7,6 +7,8 @@ import {noop} from '../../util/helpers'
 import {isSignedIn, useSignedInState} from './authentication'
 import {subscribeToNotifications, type Notification} from './notifications'
 
+import {dndWrappedComponent} from './ComponentHelpers'
+
 type Properties = {path: string, maxWidth?: string | number, startupAction?: () => void, children?: any, topChildren?: any}
 
 const containerBoxCss = {
@@ -29,7 +31,7 @@ const notify = (notification: Notification) => {
     enqueueSnackbar(snackbarMessage, {variant: level})
 }
 
-export default function App({path, maxWidth, startupAction = noop, children, topChildren}: Properties) {
+const App: any = dndWrappedComponent(function App({path, maxWidth, startupAction = noop, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
@@ -57,6 +59,8 @@ export default function App({path, maxWidth, startupAction = noop, children, top
         </Box>
     </Box>
 
-}
+})
 
 App.State = AppData
+
+export default App
