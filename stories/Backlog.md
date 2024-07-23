@@ -4,12 +4,21 @@ Elemento Backlog
 
 Bugs
 ----
-
+- Duplicate function name causes runtime error but no error in studio
+- Can call any element (eg a button) as a function in an action formula and no error is shown
+- Show which formula is wrong in 'Unable to display the app due to an error in a formula'
+- $itemId is a string if using index, can't do arithmetic with it unless convert
+- Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
+- Functions inside item components do not depend on $item $selected etc
+- P1: Item Set doesn't work in a Component - generator fails as no containingComponent at line 457
+- Components don't work with passed-in element references
+- P3: If Page too big for preview window, squashes some elements instead of scrolling - need to know to set min height
 - P1: Losing Notes at random points
+- Inspector error: in Tile Diamonds Correct Indicator get TypeError: AllTilesMatchSides is not a function for visibility
 - If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
 - If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
 - Preview hangs on to old versions of imported functions even after reload of project and reload frame
-- P1: Runtime errors give no clue that they have even occurred, let alone where or what
+- P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what
 - P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
 - Uploading file does not copy to client files
 - Formula error in app bar kills the preview
@@ -99,8 +108,7 @@ Stories
 - Web file datastores
 
 ### Priority for education and games
-- Event actions: double click, drop
-- Drag and drop
+- Event actions: double click, keydown, etc
 - Speech synthesis
 - Shapes, drawing, - clip-path, svg?
 - Multi-user shared data
@@ -212,6 +220,7 @@ Epics
 Tech debt
 ---------
 
+- Consider es-toolkit
 - Allow multiple state updates to same object in same deferred updates set, refactor Collection value update
 - Fix flaky Timer tests - mock requestAnimationFrame and call a certain number of times?
 - Cannot upgrade MUI as slotProps.backdrop not available
@@ -367,6 +376,7 @@ Done
 - Freeform list, generated from a list, with positions set by data
 - Iframe element
 - Rich text
+- Drag and drop item set items
 
 Bugs fixed
 ----------
@@ -403,3 +413,6 @@ Bugs fixed
 - Inspector kills app by trying to evaluate JavaScript function calculation
 - Inspector eval (usually) fails if not displaying the page whose element is selected, as the required functions and elements are not in scope
 - Merge multiple deferred updates
+- P1: Preview fails with Cannot destructure property 'CurrentUrl' of 'app' as it is undefined. while editing formula, needs preview reload
+- Eq does not compare booleans correctly
+- TrueFalse input cannot be readonly

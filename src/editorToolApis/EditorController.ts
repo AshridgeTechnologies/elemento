@@ -28,7 +28,6 @@ export default class EditorController {
     private get options() { return getStoredOptions() }
 
     setSelectedItemId(id: ElementId) {
-        console.log('setSelectedItemId', id)
         this.selectedItemIdObservable.send(id)
     }
 

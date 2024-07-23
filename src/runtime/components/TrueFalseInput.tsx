@@ -11,6 +11,7 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
+import {noop} from 'lodash'
 
 type Properties = BaseInputComponentProperties
 
@@ -40,8 +41,8 @@ export default function TrueFalseInput({path, ...props}: Properties) {
         size: 'small',
         color: 'primary',
         checked: value,
-        readOnly,
-        onChange: onChange,
+        onChange: readOnly ? noop : onChange,
+        disabled: readOnly,
         onBlur,
         ...inputProps,
         ...inputComponentProps.InputProps,

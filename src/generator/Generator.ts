@@ -261,7 +261,7 @@ export default class Generator {
             backgroundFixedDeclarations, stateBlock, uiElementActionFunctions, listItemVarDeclarations
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
-        const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))` : ''
+        const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))` : ''
         const notLoggedInPage = componentIsPage && component.notLoggedInPage ? `\n${functionName}.notLoggedInPage = '${component.notLoggedInPage.expr}'` : ''
 
         const functionCode = `function ${functionName}(props) {

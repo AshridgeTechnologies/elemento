@@ -12,7 +12,7 @@ function Page1(props: any) {
     const pathWith = (name: string) => props.path + '.' + name
     const {Page, TextElement} = Elemento.components
     const {Sum} = Elemento.globalFunctions
-    Elemento.elementoDebug(eval(Elemento.useDebugExpr()))
+    Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
     // @ts-ignore
     return React.createElement(Page, {id: props.path as any},
@@ -35,7 +35,7 @@ test('Page element evaluates debug info and sends event and updates if debug exp
     expect(event!.detail).toStrictEqual({foo: 49});
 })
 
-test('Page element traps errors and returns error result', async () => {
+test('Page element traps errors in debug exprs and returns error result', async () => {
     (window as any).elementoDebugExpr = `({t2: () => xxx.value })`
     let event: CustomEvent
     const listener = ((evt: CustomEvent) => event = evt) as unknown as EventListener
@@ -43,4 +43,14 @@ test('Page element traps errors and returns error result', async () => {
     const component = createElement(Page1, {path: 'page1'})
     const {el} = testContainer(component)
     expect(event!.detail).toStrictEqual({t2: {_error: 'ReferenceError: xxx is not defined'} })
+})
+
+test('Page element traps errors in evaluating debug exprs and returns error result', async () => {
+    (window as any).elementoDebugExpr = `const app = null\nconst {CurrentUrl} = app;`
+    let event: CustomEvent
+    const listener = ((evt: CustomEvent) => event = evt) as unknown as EventListener
+    window.addEventListener('debugData', listener)
+    const component = createElement(Page1, {path: 'page1'})
+    const {el} = testContainer(component)
+    expect(event!.detail).toStrictEqual({_error: "TypeError: Cannot destructure property 'CurrentUrl' of 'app' as it is null."})
 })

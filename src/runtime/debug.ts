@@ -21,7 +21,17 @@ export const useDebugExpr = () => {
     return (window as any).elementoDebugExpr ?? null
 }
 
-function getDebugData(valFns: DebugFunctions) {
+function getDebugData(valFnsFn: () => DebugFunctions) {
+    let valFns: DebugFunctions
+    try {
+        valFns = valFnsFn()
+    } catch(e: any) {
+        return {_error: e.toString()}
+    }
+    if (!valFns) {
+        return null
+    }
+
     const {_state, ...vals} = valFns
     const state = _state && (_state as DebugFn)() as UpdateBlockable
     return mapValues(vals, (val, name) => {
@@ -43,9 +53,9 @@ function getDebugData(valFns: DebugFunctions) {
     })
 }
 
-export const elementoDebug = (valFns: DebugFunctions | null) => {
+export const elementoDebug = (valFnsFn: (() => DebugFunctions) | null) => {
 
-    const data = valFns ? getDebugData(valFns) : null
+    const data = valFnsFn ? getDebugData(valFnsFn) : null
     const event = new CustomEvent('debugData', { detail: data })
     window.dispatchEvent(event)
 }

@@ -64,6 +64,13 @@ test('TrueFalseInput stores updated values in the app store section for its path
     expect(stateAt('app.page1.sprocket').value).toBe(true)
 } )
 
+test('TrueFalseInput does not change if readonly', async () => {
+    const {el, user} = testContainer(trueFalseInput('app.page1.sprocket', {value: false, readOnly: true}))
+    const inputEl = el`app.page1.sprocket`
+    await user.click(inputEl)
+    expect(stateAt('app.page1.sprocket').value).toBe(false)
+} )
+
 test('State class has correct properties', () => {
     const emptyState = new TrueFalseInput.State({})
     expect(emptyState.value).toBe(false)

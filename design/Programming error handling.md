@@ -35,6 +35,7 @@ Forces
 - !!! React elements must be given the actual prop values, not just a big lump
 - Some warnings will pass through the unusual value
 - Errors may want to substitute a harmless value and report error 
+- Can't pass functions into React components or state objects as they would not compare equal so would continuously re-render
 
 Possibilities
 -------------
@@ -52,8 +53,17 @@ Possibilities
 - Wrap React.createElement in another fn that builds the props first
 - useObjectState could take constructor and buildable args separately, and build/check the args first before passing to state object constructor, and have path to report
 - Translate/explain JS errors into plain language
-- Actions catch programming errors and notify
 - All Elemento functions check their arguments and report errors with as much detail as poss
+- Pull out all expressions in React props into separate variables before the return statement
+- Pull out expressions in state object props into variables before each component
+- In ErrorFallback, pull out line from stack trace, use to find line in source and extract variable name, and then component/prop
+- Insert trace statements to set current component/prop before evaluating expr
+
+Possibilities - Actions
+-----------------------
+- 
+- Actions catch programming errors and notify
+
 
 Tolerance
 ---------
@@ -68,6 +78,6 @@ Tolerance
 Decisions
 ---------
 
-- Spike
+- Spike separate vars
 
 

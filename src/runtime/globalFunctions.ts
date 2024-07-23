@@ -1,4 +1,4 @@
-import {equals, flatten, fromPairs, isNil, last, reverse, sort, splitEvery, takeWhile, without} from 'ramda'
+import {equals, flatten, fromPairs, identity, isNil, last, reverse, sort, splitEvery, takeWhile, without} from 'ramda'
 import {
     add,
     differenceInCalendarDays,
@@ -27,6 +27,7 @@ export type DecimalType = BigNumber
 type DecimalOrNumber = DecimalType | number
 type DecimalVal = Value<string | number | BigNumber>
 type DecimalValOrNull = DecimalVal | null
+type ComparisonValOrNull = DecimalValOrNull | boolean
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
 
@@ -52,7 +53,7 @@ function decimalOp(op: OpType, initialValue: number | undefined, ...args: Decima
     return initialValue !== undefined ? <BigNumber>args.reduce(reducer, initialValue) : <BigNumber>args.reduce(reducer)
 }
 
-function comparisonOp(op: ComparisonOpType, arg1Val: DecimalValOrNull | Date, arg2Val: DecimalValOrNull | Date): boolean {
+function comparisonOp(op: ComparisonOpType, arg1Val: ComparisonValOrNull | Date, arg2Val: ComparisonValOrNull | Date): boolean {
     const [arg1, arg2] = valuesOf(arg1Val, arg2Val)
     if (isNil(arg1) && isNil(arg2)) {
         switch(op) {
@@ -64,8 +65,8 @@ function comparisonOp(op: ComparisonOpType, arg1Val: DecimalValOrNull | Date, ar
         }
     }
 
-    const isStringOrNil = (arg: any) => isNil(arg) || typeof arg === 'string'
-    if (isStringOrNil(arg1) && isStringOrNil(arg2)) {
+    const isStringOrBooleanOrNil = (arg: any) => isNil(arg) || typeof arg === 'string' || typeof arg === 'boolean'
+    if (isStringOrBooleanOrNil(arg1) && isStringOrBooleanOrNil(arg2)) {
         const arg1ToCompare = arg1 ?? '',  arg2ToCompare = arg2 ?? ''
         switch(op) {
             case 'gt':  return arg1ToCompare >  arg2ToCompare
@@ -127,23 +128,23 @@ export const globalFunctions = {
         return decimalOp('div', undefined, ...args)
     },
 
-    Gt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
+    Gt(arg1: ComparisonValOrNull, arg2: ComparisonValOrNull): boolean {
         return comparisonOp('gt', arg1, arg2)
     },
 
-    Gte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
+    Gte(arg1: ComparisonValOrNull, arg2: ComparisonValOrNull): boolean {
         return comparisonOp('gte', arg1, arg2)
     },
 
-    Lt(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
+    Lt(arg1: ComparisonValOrNull, arg2: ComparisonValOrNull): boolean {
         return comparisonOp('lt', arg1, arg2)
     },
 
-    Lte(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
+    Lte(arg1: ComparisonValOrNull, arg2: ComparisonValOrNull): boolean {
         return comparisonOp('lte', arg1, arg2)
     },
 
-    Eq(arg1: DecimalValOrNull, arg2: DecimalValOrNull): boolean {
+    Eq(arg1: ComparisonValOrNull, arg2: ComparisonValOrNull): boolean {
         return comparisonOp('eq', arg1, arg2)
     },
 
@@ -379,7 +380,7 @@ export const globalFunctions = {
         return index >= 0 ? index : null
     },
 
-    Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[]): any[] {
+    Sort(listVal: Value<any[] | null>, sortKeyFn: (item: any) => any | any[] = identity): any[] {
         const compareItems = (a: any, b: any): -1 | 0 | 1 => {
             const aa = sortKeyFn(a), bb = sortKeyFn(b)
             return compareValues(aa, bb)

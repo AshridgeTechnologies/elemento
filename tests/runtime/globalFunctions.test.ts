@@ -114,6 +114,29 @@ describe('Decimal arithmetic', () => {
 
     })
 
+    test('compares booleans from any source', () => {
+        expect(Gt(true, false)).toBe(true)
+        expect(Gt(false, true)).toBe(false)
+        expect(Gt(false, false)).toBe(false)
+
+        expect(Gte(true, false)).toBe(true)
+        expect(Gte(true, true)).toBe(true)
+        expect(Gte(false, true)).toBe(false)
+
+        expect(Lt(true, false)).toBe(false)
+        expect(Lt(false, true)).toBe(true)
+        expect(Lt(false, false)).toBe(false)
+
+        expect(Lte(true, false)).toBe(false)
+        expect(Lte(true, true)).toBe(true)
+        expect(Lte(false, true)).toBe(true)
+
+        expect(Eq(false, false)).toBe(true)
+        expect(Eq(true, false)).toBe(false)
+        expect(Eq(false, true)).toBe(false)
+        expect(Eq(true, true)).toBe(true)
+    })
+
     test('treats nulls as zero in number comparisons', () => {
         expect(Gt(null, 2)).toBe(false)
         expect(Gt(2, null)).toBe(true)
@@ -827,6 +850,11 @@ describe('Sort', () => {
         expect(Sort(undefined as unknown as any[], (item: any) => item.a)).toStrictEqual([])
         expect(Sort(null as unknown as any[], (item: any) => item.a)).toStrictEqual([])
 
+    })
+
+    test('sorts by values if no sort function supplied', () => {
+        const values = ['Sun', 'Moon', 'Stars']
+        expect(Sort(values)).toStrictEqual(['Moon', 'Stars', 'Sun'])
     })
 })
 
