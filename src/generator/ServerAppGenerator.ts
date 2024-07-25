@@ -4,7 +4,7 @@ import ServerAppParser from './ServerAppParser'
 import Element from '../model/Element'
 import {ExprType} from './Types'
 import {isTruthy} from '../util/helpers'
-import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateEntry, topoSort} from './generatorHelpers'
+import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
 
@@ -58,7 +58,7 @@ export default class ServerAppGenerator {
     private generateComponents = () => {
         const components = this.components()
         const isComponentName = (name: string) => components.find(comp => comp.codeName === name)
-        const componentEntries = components.map( (el): StateEntry => {
+        const componentEntries = components.map( (el): StateInitializer => {
             const entry = this.componentExpression(el)
             const identifiers = this.parser.elementIdentifiers(el.id)
             const componentIdentifiersUsed = identifiers.filter(isComponentName)

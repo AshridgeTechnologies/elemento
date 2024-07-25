@@ -28,7 +28,7 @@ const notify = (notification: Notification) => {
         <Typography color='white'>{message}</Typography>
         <Typography color='white' variant='body2'>{details}</Typography>
     </div>
-    enqueueSnackbar(snackbarMessage, {variant: level})
+    enqueueSnackbar(snackbarMessage, {variant: level, persist: level === 'error'})
 }
 
 const App: any = dndWrappedComponent(function App({path, maxWidth, startupAction = noop, children, topChildren}: Properties) {

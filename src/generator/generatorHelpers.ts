@@ -19,20 +19,30 @@ function safeKey(name: string) {
 }
 
 export const quote = (s: string) => `'${s}'`
-
-export function objectLiteralEntries(obj: object, suffixIfNotEmpty: string = '') {
-    const entries = Object.entries(obj)
-    return entries.length ? entries.map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ') + suffixIfNotEmpty : ''
-}
-
 export function objectLiteral(obj: object) {
-    return `{${objectLiteralEntries(obj)}}`
+    const objectEntries = Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')
+    return `{${objectEntries}}`
 }
 
-export type StateEntry = [el: Element, code: string | FunctionDef, dependencies: string[]]
+export type ObjectBuilderName = string | {fullName: string}
+export function objectBuilder(name: ObjectBuilderName, obj: object, state = false) {
+    const entries = Object.entries(obj)
+    const builderFn = state ? 'stateProps' : 'elProps'
+    const entriesCalls = entries.map(([name, val]) => `.${safeKey(name)}(${val})`).join('')
+    const builderName = (name as {fullName: string}).fullName ?? `pathTo('${name}')`
+    return `${builderFn}(${builderName})${entriesCalls}.props`
+}
 
-export const topoSort = (entries: StateEntry[]): StateEntry[] => {
-    const sorter = new Topo.Sorter<StateEntry>()
+export function appPropsBuilder(name: string, obj: object) {
+    const entries = Object.entries(obj)
+    const entriesCalls = entries.map(([name, val]) => `.${safeKey(name)}(${val})`).join('')
+    return `elProps('${name}')${entriesCalls}.props`
+}
+
+export type StateInitializer = [el: Element, code: string | FunctionDef, dependencies: string[]]
+
+export const topoSort = (entries: StateInitializer[]): StateInitializer[] => {
+    const sorter = new Topo.Sorter<StateInitializer>()
     entries.forEach(entry => {
         const [el, , dependencies] = entry
         sorter.add([entry], {after: dependencies, group: el.codeName})  // if add plain tuple, sorter treats it as an array

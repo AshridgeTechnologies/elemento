@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react'
 import {mapValues} from 'radash'
 import {UpdateBlockable} from './appData'
+import {addNotification} from './components/notifications'
+import {startCase} from 'lodash'
 
-export type DebugExprs = {[name: string]: string}
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
 export type DebugFunctions = {[name: string]: DebugFn | UpdateFunction}
@@ -60,4 +61,47 @@ export const elementoDebug = (valFnsFn: (() => DebugFunctions) | null) => {
     window.dispatchEvent(event)
 }
 
+let _lastTrace: {component: string, property: string} | null = null
+export const lastTrace = () => _lastTrace
 export type DebugData = { [p: string]: any }
+
+type Props = { [p: string]: any }
+export const elProps = (path: string, includePathProp = true) => {
+    const target: Props = includePathProp ? {path}: {}
+
+    const handler = {
+        get(target: Props, property: string) {
+            if (property === 'props') {
+                _lastTrace = null
+                return target
+            }
+
+            _lastTrace = {component: path, property}
+
+            return (propValue: any) => {
+                target[property] = propValue
+                return proxy
+            }
+        }
+    };
+
+    const proxy = new Proxy(target, handler)
+    return proxy
+}
+
+export const stateProps = (name: string) => elProps(name, false)
+
+export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any) => {
+    const notifyError = (message: string) => {
+        addNotification('error', `Error: ${message}`, `in the ${startCase(propertyName)} property of element ${path}`)
+    }
+    return (...args: any[]) => {
+        try {
+            const result = func(...args)
+            const isPromise = typeof result?.then === 'function'
+            return isPromise ? result.catch((e: any) => notifyError(e.message)) : result
+        } catch (e: any) {
+            notifyError(e.message)
+        }
+    }
+}

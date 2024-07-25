@@ -1,4 +1,4 @@
-import {ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr, PropertyValue} from '../model/Types'
+import {CombinedPropertyValue, ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr, PropertyValue} from '../model/Types'
 import lodash from 'lodash';
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
@@ -10,7 +10,7 @@ export function definedPropertiesOf(obj: object) {
     return Object.fromEntries(Object.entries(obj).filter(([,val]) => val !== undefined))
 }
 
-export const isExpr = (propertyValue: PropertyValue): propertyValue is PropertyExpr => isObject(propertyValue) && 'expr' in propertyValue
+export const isExpr = (propertyValue: CombinedPropertyValue): propertyValue is PropertyExpr => isObject(propertyValue) && 'expr' in propertyValue
 export const isEventAction = (propertyDef: PropertyDef): boolean => isObject(propertyDef.type) && (propertyDef.type as EventActionPropertyDef).type === 'Action'
 
 export const isNumeric = (s: string | undefined) : boolean => s !== undefined && s!== '' && s.match(/^\d*\.?\d*$/) !== null

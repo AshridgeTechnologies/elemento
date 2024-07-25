@@ -48,6 +48,7 @@ Possibilities
 - Calculate expression values in separate variables with mechanism to catch errors
 - Format all values on separate lines to keep readable
 - Builder has functions for expression values, not for plain, just evaluates them all
+- Builder is a proxy that provides chainable setter methods for any property
 - Builder could add the path argument separately
 - Builders can return all values that do work, even if errors
 - Wrap React.createElement in another fn that builds the props first
