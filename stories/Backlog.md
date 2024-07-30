@@ -105,7 +105,6 @@ Stories
 - Payments
 - API calls from browser
 - External API calls (eg for webhook)
-- Web file datastores
 
 ### Priority for education and games
 - Event actions: double click, keydown, etc
@@ -377,6 +376,7 @@ Done
 - Iframe element
 - Rich text
 - Drag and drop item set items
+- Web file datastores
 
 Bugs fixed
 ----------

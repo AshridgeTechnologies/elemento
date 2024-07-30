@@ -10,11 +10,11 @@ Aim
 Requirements
 ------------
 
-- Client can read data
-- All data downloaded in one request
-- Data can be retrieved from any URL
-- Multiple collections
-- External systems can update data without redeploy
+- ✅ Client can read data
+- ✅ All data downloaded in one request
+- ✅ Data can be retrieved from any URL
+- ✅ Multiple collections
+- ✅ External systems can update data without redeploy
 
 Further requirements
 --------------------
