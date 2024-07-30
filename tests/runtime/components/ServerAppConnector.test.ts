@@ -1,4 +1,4 @@
-import {Collection, ServerAppConnector} from '../../../src/runtime/components'
+import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
 import {AppStateForObject} from '../../../src/runtime/appData'
