@@ -68,6 +68,7 @@ export type ElementType =
     'Data' |
     'Calculation' |
     'FileDataStore' |
+    'WebFileDataStore' |
     'BrowserDataStore' |
     'MemoryDataStore' |
     'Function' |

@@ -2,10 +2,10 @@ import {ComponentType, ParentType, PropertyDef, PropertyExpr, PropertyValueType}
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 
-type Properties = {
+type Properties = Partial<Readonly<{
     readonly serverApp?: PropertyExpr,
     readonly serverUrl?: PropertyValueType<string>,
-}
+}>>
 
 export default class ServerAppConnector extends BaseElement<Properties> implements Element {
 

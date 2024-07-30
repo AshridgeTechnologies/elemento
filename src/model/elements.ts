@@ -17,6 +17,7 @@ import List from './List'
 import ItemSet from './ItemSet'
 import Data from './Data'
 import FileDataStore from './FileDataStore'
+import WebFileDataStore from './WebFileDataStore'
 import BrowserDataStore from './BrowserDataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
@@ -95,6 +96,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Calculation: Calculation,
         Timer: Timer,
         FileDataStore: FileDataStore,
+        WebFileDataStore: WebFileDataStore,
         BrowserDataStore: BrowserDataStore,
         FirestoreDataStore: FirestoreDataStore,
         MemoryDataStore: MemoryDataStore,
