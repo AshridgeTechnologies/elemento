@@ -70,3 +70,13 @@ test('gets empty observable', async () => {
     expect(onNextWidgets).not.toHaveBeenCalled()
     await wait()
 })
+
+test('update functions reject with exception', () => {
+    const data = {Widgets: [{id: 'id1', a: 10}]}
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    expect(store.add('Widgets', 'id1', {a: 20})).rejects.toStrictEqual(new Error('Cannot change readonly datastore'))
+    expect(store.addAll('Widgets', {'id1': {a: 20}})).rejects.toStrictEqual(new Error('Cannot change readonly datastore'))
+    expect(store.remove('Widgets', 'id1')).rejects.toStrictEqual(new Error('Cannot change readonly datastore'))
+    expect(store.update('Widgets', 'id1', {'id1': {a: 20}})).rejects.toStrictEqual(new Error('Cannot change readonly datastore'))
+})

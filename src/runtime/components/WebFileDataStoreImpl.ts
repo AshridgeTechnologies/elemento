@@ -6,6 +6,10 @@ import {isoDateReviver} from '../../util/helpers'
 
 const EMPTY_OBSERVABLE = Observable.from([])
 
+function readonlyError() {
+    return Promise.reject(new Error('Cannot change readonly datastore'))
+}
+
 export default class WebFileDataStoreImpl implements DataStore {
     private inMemoryStore: MemoryDataStore | null = null
     constructor(private props: {url: string, fetch?: typeof globalThis.fetch}) {}
@@ -14,11 +18,11 @@ export default class WebFileDataStoreImpl implements DataStore {
         return this.props.fetch ?? globalThis.fetch
     }
     add(collection: CollectionName, id: Id, item: DataStoreObject): Promise<void> {
-        return Promise.resolve(undefined)
+        return readonlyError()
     }
 
     addAll(collection: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
-        return Promise.resolve(undefined)
+        return readonlyError()
     }
 
     async getById(collection: CollectionName, id: Id): Promise<DataStoreObject | null> {
@@ -49,11 +53,11 @@ export default class WebFileDataStoreImpl implements DataStore {
     }
 
     remove(collection: CollectionName, id: Id): Promise<void> {
-        return Promise.resolve(undefined)
+        return readonlyError()
     }
 
     update(collection: CollectionName, id: Id, changes: object): Promise<void> {
-        return Promise.resolve(undefined)
+        return readonlyError()
     }
 
 }
