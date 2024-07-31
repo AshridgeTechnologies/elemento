@@ -11,7 +11,6 @@ import {ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, 
 import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
-    appPropsBuilder,
     convertAstToValidJavaScript,
     indent,
     isAppLike,
@@ -366,7 +365,8 @@ ${generateChildren(element.itemSet)}
                 const topChildren = topChildrenElements.length ? `, topChildren: React.createElement( React.Fragment, null, ${topChildrenElements})\n    ` : ''
                 const bottomChildrenElements = app.bottomChildren.map(p => `        ${this.generateElement(p, app, topLevelFunctions)}`).filter(line => !!line.trim()).join(',\n')
                 const bottomChildren = bottomChildrenElements ? `\n${bottomChildrenElements}\n    ` : ''
-                return `React.createElement(App, {...${appPropsBuilder(app.codeName, this.modelProperties(element))}${topChildren}},${bottomChildren})`
+                const propsEntries = omit(['fonts'], this.modelProperties(app))
+                return `React.createElement(App, {...${(objectBuilder({fullName: `'${(app.codeName)}'`}, propsEntries))}${topChildren}},${bottomChildren})`
             }
 
             case 'Page': {
@@ -656,13 +656,17 @@ ${generateChildren(form, indentLevel2, form)}
     }
 
     private htmlRunnerFile() {
+        const {fontList} = this.app
+        const fontFamilies = ['Roboto', ...fontList].map( font => `family=${font}`).join('&')
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width" />
   <title>${this.app.name}</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?${fontFamilies}&display=swap"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
   <style>
     body { margin: 0; padding: 0}

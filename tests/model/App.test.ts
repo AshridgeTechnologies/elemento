@@ -12,13 +12,15 @@ import DateInput from '../../src/model/DateInput'
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`}, [page1, page2])
+    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`, fonts: '   \nMontserrat\n   \nComic Sans'}, [page1, page2])
 
     expect(app.id).toBe('t1')
     expect(app.name).toBe('test1')
     expect(app.author).toBe('Herself')
     expect(app.maxWidth).toBe(200)
     expect(app.startupAction).toStrictEqual(ex`Log('Hi')`)
+    expect(app.fonts).toBe('   \nMontserrat\n   \nComic Sans')
+    expect(app.fontList).toStrictEqual(['Montserrat', 'Comic Sans'])
     expect(app.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
 })
 
@@ -184,7 +186,7 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('has correct property names', () => {
-    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'startupAction'])
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction'])
 })
 
 test('converts to JSON', ()=> {

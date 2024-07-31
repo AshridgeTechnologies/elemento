@@ -15,6 +15,7 @@ import Page from './Page'
 export type Properties = Partial<Readonly<{
     author: PropertyValueType<string>,
     maxWidth: PropertyValueType<string | number>,
+    fonts: string,
     startupAction: PropertyExpr
 }>>
 
@@ -47,14 +48,19 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     get maxWidth() {
         return this.properties.maxWidth
     }
+    get fonts() { return this.properties.fonts }
+    get fontList() {
+        return (this.fonts ?? '').split(/\n+/).filter( line => !!line.trim())
+    }
     get startupAction() {
         return this.properties.startupAction
     }
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('author', 'string'),
+            propDef('author', 'string', {fixedOnly: true}),
             propDef('maxWidth', 'string|number'),
+            propDef('fonts', 'string multiline', {fixedOnly: true}),
             propDef('startupAction', eventAction()),
         ]
     }
@@ -66,5 +72,4 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     }
 
     static get parentType(): ParentType { return 'Project' }
-
 }

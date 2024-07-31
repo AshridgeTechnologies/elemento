@@ -46,7 +46,7 @@ import {knownSync} from '../../src/generator/generatorHelpers'
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
 test('generates app and all page output files', ()=> {
-    const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
+    const app = new App('app1', 'App 1', {maxWidth: '60%', fonts: 'Crazy Font\nWeird Font'}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 new Text('id2', 't2', {content: ex`23 + 45`}),
@@ -287,7 +287,7 @@ export default function App1(props) {
 })
 
 test('generates html runner file', () => {
-    const app = new App('app1', 'App 1', {}, [
+    const app = new App('app1', 'App 1', {fonts: 'Crazy Font\nWeird Font'}, [
             new Page('p1', 'Page 1', {}, [
                     new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 ]
@@ -303,7 +303,9 @@ test('generates html runner file', () => {
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width" />
   <title>App 1</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Crazy Font&family=Weird Font&display=swap"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
   <style>
     body { margin: 0; padding: 0}

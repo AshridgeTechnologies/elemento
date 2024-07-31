@@ -377,6 +377,7 @@ Done
 - Rich text
 - Drag and drop item set items
 - Web file datastores
+- Web fonts
 
 Bugs fixed
 ----------

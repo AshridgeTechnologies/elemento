@@ -33,12 +33,6 @@ export function objectBuilder(name: ObjectBuilderName, obj: object, state = fals
     return `${builderFn}(${builderName})${entriesCalls}.props`
 }
 
-export function appPropsBuilder(name: string, obj: object) {
-    const entries = Object.entries(obj)
-    const entriesCalls = entries.map(([name, val]) => `.${safeKey(name)}(${val})`).join('')
-    return `elProps('${name}')${entriesCalls}.props`
-}
-
 export type StateInitializer = [el: Element, code: string | FunctionDef, dependencies: string[]]
 
 export const topoSort = (entries: StateInitializer[]): StateInitializer[] => {
