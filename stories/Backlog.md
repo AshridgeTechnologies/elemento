@@ -148,7 +148,6 @@ Stories
   - OR dynamic DataTypes that change depending on another value - most flexible
 - Any calculation can be fixed, formula or JavaScript
 - Any formula can have intermediate values, client or server
-- ShowDialog to show a Page or Form in a modal dialog
 - Extension auto-loads latest code from git repo via CDN
 - Single copy of expressUtils between two projects
 - OPFS file store
@@ -378,6 +377,7 @@ Done
 - Drag and drop item set items
 - Web file datastores
 - Web fonts
+- Dialogs
 
 Bugs fixed
 ----------

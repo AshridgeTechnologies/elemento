@@ -7,7 +7,7 @@ import {snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../te
 import {fireEvent, render, within} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
-import {ChoiceType, NumberType} from '../../../src/runtime/types'
+import {ChoiceType} from '../../../src/runtime/types'
 
 const [selectInput, appStoreHook] = wrappedTestElement(SelectInput, SelectInputState)
 

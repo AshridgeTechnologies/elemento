@@ -3,8 +3,8 @@ import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 import {ComponentType, ElementType, eventAction, PropertyDef, PropertyExpr, Show, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
 
-const layoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
-export type BlockLayout = typeof layoutChoices[number]
+export const blockLayoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
+export type BlockLayout = typeof blockLayoutChoices[number]
 type Properties = Partial<Readonly<{layout: BlockLayout, dropAction: PropertyExpr}>> & Styling & Show
 
 export default class Block extends BaseElement<Properties> implements Element {
@@ -21,7 +21,7 @@ export default class Block extends BaseElement<Properties> implements Element {
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('layout', layoutChoices),
+            propDef('layout', blockLayoutChoices),
             propDef('dropAction', eventAction('$item', '$itemId', '$droppedOnItem', '$droppedOnItemId')),
             ...visualPropertyDefs(),
         ]

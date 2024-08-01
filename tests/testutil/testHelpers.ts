@@ -175,14 +175,15 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
 
 export function testAppStoreHook() {
     return {
-        storeApi: null,
+        storeApi: null as null | StoreApi<AppStore>,
         setAppStore(sa: StoreApi<AppStore>) {
-            // @ts-ignore
             this.storeApi = sa
         },
+        setStateAt(path: string, stateObject: any) {
+            this.storeApi!.setState( state => state.setStoredStates({[path]: stateObject}))
+        },
         stateAt (path: string) {
-            const storeApi = this.storeApi as unknown as StoreApi<AppStore>
-            return storeApi.getState().store.select(path)
+            return this.storeApi!.getState().store.select(path)
         }
     }
 }

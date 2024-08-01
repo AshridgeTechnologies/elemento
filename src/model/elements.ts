@@ -2,6 +2,7 @@ import Project from './Project'
 import App from './App'
 import AppBar from './AppBar'
 import Page from './Page'
+import Dialog from './Dialog'
 import Text from './Text'
 import TextInput from './TextInput'
 import NumberInput from './NumberInput'
@@ -105,6 +106,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Component: Component,
         Collection: Collection,
         Block: Block,
+        Dialog: Dialog,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         Adapter: Adapter,

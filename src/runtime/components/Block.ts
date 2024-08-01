@@ -1,5 +1,5 @@
 import React, {RefObject} from 'react'
-import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesProps, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Box, Stack, SxProps} from '@mui/material'
 import {sxProps} from './ComponentHelpers'
 import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
@@ -9,7 +9,10 @@ import {useGetObjectState} from '../appData'
 const layoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
 export type BlockLayout = typeof layoutChoices[number]
 export type RefType = ((instance: HTMLDivElement | null) => void) | RefObject<HTMLDivElement> | null | undefined
-type Properties = { path: string, layout: BlockLayout, dropAction?: () => void, show?: PropVal<boolean>, styles?: StylesPropVals, children?: React.ReactElement[] }
+type Properties = { path: string, layout: BlockLayout, dropAction?: () => void, show?: PropVal<boolean>, styles?: StylesPropVals,
+    children?: React.ReactElement[] }
+type BlockContentProperties = { path: string, layout: BlockLayout, show?: boolean, styles?: StylesProps,
+    children?: React.ReactElement[], dragElementRef?: RefType }
 type StateProperties = Partial<Readonly<{}>>
 
 type StateUpdatableProperties = Partial<Readonly<{
@@ -17,7 +20,50 @@ type StateUpdatableProperties = Partial<Readonly<{
 }
 >>
 
-const stackLayouts: BlockLayout[] = ['horizontal', 'horizontal wrapped', 'vertical']
+export function BlockContent({path, layout, styles = {}, show, dragElementRef, children}: BlockContentProperties) {
+    if (['horizontal', 'horizontal wrapped', 'vertical'].includes(layout)) {
+        const horizontal: boolean = layout.startsWith('horizontal')
+        const wrap = layout === 'horizontal wrapped'
+        const direction = horizontal ? 'row' : 'column'
+        const flexWrap = wrap ? 'wrap' : 'nowrap'
+
+        const sx = {
+            py: horizontal ? 0 : 1,
+            overflow: horizontal ? 'visible' : 'scroll',
+            maxHeight: '100%',
+            boxSizing: 'border-box',
+            alignItems: 'flex-start',
+            padding: horizontal ? 0 : 1,
+            ...sxProps(styles, show),
+        } as SxProps
+
+        return React.createElement(Stack, {
+            id: path,
+            ref: dragElementRef,
+            direction,
+            flexWrap,
+            useFlexGap: true,
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            spacing: 2,
+            sx,
+            children
+        })
+    }
+
+    // use block layout
+    const sx = {
+        position: layout === 'positioned' ? 'relative' : 'inherit',
+        width: '100%',  // so that absolutely positioned children are inside the block
+        ...sxProps(styles, show)
+    } as SxProps
+    return React.createElement(Box, {
+        id: path,
+        ref: dragElementRef,
+        sx,
+        children
+    })
+}
 
 export default function Block({children = [], path,  ...props}: Properties) {
     const {show, layout, styles = {}, dropAction} = valueOfProps(props)
@@ -39,49 +85,7 @@ export default function Block({children = [], path,  ...props}: Properties) {
             }
         }
     })
-
-    if (stackLayouts.includes(layout)) {
-        const horizontal: boolean = layout.startsWith('horizontal')
-        const wrap= layout === 'horizontal wrapped'
-        const direction = horizontal ? 'row' : 'column'
-        const flexWrap = wrap ? 'wrap' : 'nowrap'
-
-        const sx = {
-            py: horizontal ? 0 : 1,
-            overflow: horizontal ? 'visible' : 'scroll',
-            maxHeight: '100%',
-            boxSizing: 'border-box',
-            alignItems: 'flex-start',
-            padding: horizontal ? 0 : 1,
-            ...sxProps(styles, show),
-        } as SxProps
-
-        return React.createElement(Stack, {
-            id: path,
-            ref: setNodeRef,
-            direction,
-            flexWrap,
-            useFlexGap: true,
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            spacing: 2,
-            sx,
-            children
-        })
-    }
-
-    // use block layout
-    const sx = {
-        position: layout === 'positioned' ? 'relative' : 'inherit',
-        width: '100%',  // so that absolutely positioned children are inside the block
-        ...sxProps(styles, show)
-    } as SxProps
-    return React.createElement(Box, {
-        id: path,
-        ref: setNodeRef,
-        sx,
-        children
-    })
+    return React.createElement(BlockContent, {layout: layout, styles: styles, show: show, path: path, dragElementRef: setNodeRef, children: children})
 }
 
 export class BlockState extends BaseComponentState<StateProperties, StateUpdatableProperties>

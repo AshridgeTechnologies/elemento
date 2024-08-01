@@ -42,6 +42,7 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ItemSet from '../../src/model/ItemSet'
 import {knownSync} from '../../src/generator/generatorHelpers'
+import Dialog from '../../src/model/Dialog'
 
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
@@ -1455,6 +1456,35 @@ test('generates Block element with properties and children and includes drag fun
             React.createElement(Button, elProps(pathTo('B1')).content('Click here!').appearance('outline').props),
     ),
         React.createElement(TextElement, elProps(pathTo('T2')).content(If(DragIsOver(Layout1) && DraggedItemId == 'blue', 'Drag', '')).props),
+    )
+}
+`)
+})
+
+test('generates Dialog element with properties and children', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new Dialog('dlg1', 'Dialog 1', {initiallyOpen: true, styles: {width: 500, backgroundColor: 'pink'}}, [
+                new Text('text1', 'T1', {content: ex`23 + 45`}),
+                new TextInput('input1', 'Name Input', {}),
+            ]),
+            ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathTo = name => props.path + '.' + name
+    const {Page, Dialog, TextElement, TextInput} = Elemento.components
+    const _state = Elemento.useGetStore()
+    const Dialog1 = _state.setObject(pathTo('Dialog1'), new Dialog.State(stateProps(pathTo('Dialog1')).initiallyOpen(true).props))
+    const NameInput = _state.setObject(pathTo('NameInput'), new TextInput.State(stateProps(pathTo('NameInput')).props))
+    Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, elProps(props.path).props,
+        React.createElement(Dialog, elProps(pathTo('Dialog1')).styles(elProps(pathTo('Dialog1.Styles')).width(500).backgroundColor('pink').props).props,
+            React.createElement(TextElement, elProps(pathTo('T1')).content(23 + 45).props),
+            React.createElement(TextInput, elProps(pathTo('NameInput')).label('Name Input').props),
+    ),
     )
 }
 `)

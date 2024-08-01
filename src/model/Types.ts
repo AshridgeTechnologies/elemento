@@ -49,6 +49,7 @@ export type ElementType =
     'Tool' |
     'AppBar' |
     'Page' |
+    'Dialog' |
     'Text' |
     'TextInput' |
     'NumberInput' |

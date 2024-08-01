@@ -441,6 +441,7 @@ ${generateChildren(form, indentLevel2, form)}
             case 'Menu':
             case 'AppBar':
             case 'Block':
+            case 'Dialog':
             case 'List': {
                 return `React.createElement(${runtimeElementName(element)}, ${objectBuilder(element.codeName, this.modelProperties(element))}${generateChildren(element, indentLevel3, containingComponent)})`
             }
