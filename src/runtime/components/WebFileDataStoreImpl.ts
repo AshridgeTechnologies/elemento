@@ -14,9 +14,28 @@ export default class WebFileDataStoreImpl implements DataStore {
     private inMemoryStore: MemoryDataStore | null = null
     constructor(private props: {url: string, fetch?: typeof globalThis.fetch}) {}
 
-    private get fetch() {
-        return this.props.fetch ?? globalThis.fetch
+    private async store(): Promise<MemoryDataStore> {
+        if (this.inMemoryStore === null) {
+            const fetch = this.props.fetch ?? globalThis.fetch.bind(globalThis)
+            const response = await fetch(this.props.url)
+            const contentType = response.headers.get('Content-Type')
+            const isJson = contentType?.startsWith('application/json')
+            if (!response.ok) {
+                const jsonError = isJson ? (await response.json()).error?.message ?? '' : ''
+                throw new Error(`Error getting data: ${response.status} ${jsonError}`)
+            }
+            if (!isJson) {
+                throw new Error(`Error getting data: Content-Type is not JSON - ${contentType}`)
+            }
+            const jsonText = await response.text()
+            const data = JSON.parse(jsonText, isoDateReviver)
+            const dataForMemoryStore = mapValues(data, (items: any[]) => Object.fromEntries( items.map( (item, index) => [item.id ?? String(index) , item])))
+            this.inMemoryStore = new MemoryDataStore(dataForMemoryStore)
+        }
+
+        return this.inMemoryStore
     }
+
     add(collection: CollectionName, id: Id, item: DataStoreObject): Promise<void> {
         return readonlyError()
     }
@@ -26,15 +45,7 @@ export default class WebFileDataStoreImpl implements DataStore {
     }
 
     async getById(collection: CollectionName, id: Id): Promise<DataStoreObject | null> {
-        if (this.inMemoryStore === null) {
-            const response = await this.fetch(this.props.url)
-            const jsonText = await response.text()
-            const data = JSON.parse(jsonText, isoDateReviver)
-            const dataForMemoryStore = mapValues(data, (items: any[]) => Object.fromEntries( items.map( item => [item.id, item])))
-            this.inMemoryStore = new MemoryDataStore(dataForMemoryStore)
-        }
-
-        return this.inMemoryStore.getById(collection, id)
+        return (await this.store()).getById(collection, id)
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {
@@ -42,14 +53,7 @@ export default class WebFileDataStoreImpl implements DataStore {
     }
 
     async query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        if (this.inMemoryStore === null) {
-            const response = await this.fetch(this.props.url)
-            const data = await response.json()
-            const dataForMemoryStore = mapValues(data, (items: any[]) => Object.fromEntries( items.map( item => [item.id, item])))
-            this.inMemoryStore = new MemoryDataStore(dataForMemoryStore)
-        }
-
-        return this.inMemoryStore.query(collection, criteria)
+        return (await this.store()).query(collection, criteria)
     }
 
     remove(collection: CollectionName, id: Id): Promise<void> {

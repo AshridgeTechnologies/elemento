@@ -1,15 +1,38 @@
 import {WebFileDataStoreImpl} from '../../../src/runtime/components/index'
 import {wait} from '../../testutil/testHelpers'
 
-const mockJsonResponse = (data: any) => ({status: 200, ok: true, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
+const mockJsonResponse = (data: any) => ({status: 200, ok: true, headers: {get() { return "application/json"}}, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
+const mockTextResponse = (data: string) => ({status: 200, ok: true, headers: {get() { return "text/plain"}}, text: jest.fn().mockResolvedValue(data)})
+const mockError = (message: string) => {
+    const body = {error: {message}}
+    return {
+        status: 500, ok: false, headers: {
+            get() {return "application/json"}
+        }, json: jest.fn().mockResolvedValue(body), text: jest.fn().mockResolvedValue(JSON.stringify(body))
+    }
+}
 let mockFetch: jest.MockedFunction<any>
 beforeEach(()=> mockFetch = jest.fn())
 
-test('has empty data store if cannot load data', async () => {
-    mockFetch.mockRejectedValue( new Error('No data') )
+test('getById rejects if cannot load data', async () => {
+    mockFetch.mockRejectedValue( new Error('No network') )
 
     const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
-    await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `No data`)
+    await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `No network`)
+})
+
+test('getById rejects if error result', async () => {
+    mockFetch.mockResolvedValueOnce(mockError('Server error'))
+
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Error getting data: 500 Server error`)
+})
+
+test('getById rejects if result is not json', async () => {
+    mockFetch.mockResolvedValueOnce(mockTextResponse('Hi!'))
+
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Error getting data: Content-Type is not JSON - text/plain`)
 })
 
 test('can get by id from a collection', async () => {
@@ -33,6 +56,22 @@ test('can get by id from a collection', async () => {
     expect(mockFetch).toHaveBeenCalledTimes(1)
 })
 
+test('can get by index from a collection of objects without ids', async () => {
+    const data = {
+        Widgets: [
+            {name: 'Widget 1'},
+            {name: 'Widget 2'},
+            {name: 'Widget 3'},
+        ],
+    }
+
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    const widget = await store.getById('Widgets', '1')
+    expect(await store.getById('Widgets', '0')).toStrictEqual({name: 'Widget 1'})
+    expect(await store.getById('Widgets', '2')).toStrictEqual({name: 'Widget 3'})
+})
+
 test('can query', async () => {
     const data = {
         Widgets: [
@@ -44,6 +83,19 @@ test('can query', async () => {
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
     const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
     expect(await store.query('Widgets', {a: 20})).toStrictEqual([{id: 'id2', a: 20, b: 'Bee2', c: true}, {id: 'id3', a: 20, b: 'Bee3', c: false}])
+})
+
+test('can query objects supplied without ids', async () => {
+    const data = {
+        Widgets: [
+            {a: 10, b: 'Bee1', c: true},
+            {a: 20, b: 'Bee2', c: true},
+            {a: 20, b: 'Bee3', c: false}
+        ]
+    }
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    expect(await store.query('Widgets', {a: 20})).toStrictEqual([{a: 20, b: 'Bee2', c: true}, {a: 20, b: 'Bee3', c: false}])
 })
 
 test('retrieves dates in ISO format', async () => {

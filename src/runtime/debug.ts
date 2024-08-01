@@ -92,16 +92,17 @@ export const elProps = (path: string, includePathProp = true) => {
 export const stateProps = (name: string) => elProps(name, false)
 
 export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any) => {
-    const notifyError = (message: string) => {
-        addNotification('error', `Error: ${message}`, `in the ${startCase(propertyName)} property of element ${path}`)
+    const notifyError = (e: any) => {
+        console.error(e)
+        addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`)
     }
     return (...args: any[]) => {
         try {
             const result = func(...args)
             const isPromise = typeof result?.then === 'function'
-            return isPromise ? result.catch((e: any) => notifyError(e.message)) : result
+            return isPromise ? result.catch((e: any) => notifyError(e)) : result
         } catch (e: any) {
-            notifyError(e.message)
+            notifyError(e)
         }
     }
 }
