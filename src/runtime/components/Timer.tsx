@@ -43,7 +43,8 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     get interval() { return valueOf(this.props.interval) ?? null }
     get intervalAction() { return this.props.intervalAction ?? null }
     get endAction() { return this.props.endAction ?? null }
-    get isRunning() { return this.startTime !== null && !this.state.stoppedTime && !this.isFinished }
+    get isStarted() { return this.startTime !== null && !this.isFinished }
+    get isRunning() { return this.isStarted && !this.state.stoppedTime }
     get isFinished() {return Boolean(this.period && this.startTime && this.elapsedTime! >= this.period)}
     get value() { return this.elapsedTime }
     get startTime() { return this.state.startTime ?? null }
@@ -74,7 +75,7 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
         return previousElapsedMillis + currentElapsedMillis}
 
     Start() {
-        if (this.isRunning) return
+        if (this.latest().isRunning) return
 
         if (this.state.stoppedTime) {
             this.updateState({startTime: new Date(), stoppedTime: undefined, previousElapsedMillis: this.totalElapsedMillis})
@@ -85,7 +86,7 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     }
 
     Stop() {
-        if (!this.isRunning) return
+        if (!this.latest().isRunning) return
         this.updateState({stoppedTime: new Date()})
     }
 

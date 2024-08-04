@@ -9,7 +9,7 @@ import {subscribeToNotifications, type Notification} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 
-type Properties = {path: string, maxWidth?: string | number, startupAction?: () => void, children?: any, topChildren?: any}
+type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, children?: any, topChildren?: any}
 
 const containerBoxCss = {
     height: '100%',
@@ -31,11 +31,22 @@ const notify = (notification: Notification) => {
     enqueueSnackbar(snackbarMessage, {variant: level, persist: level === 'error'})
 }
 
-const App: any = dndWrappedComponent(function App({path, maxWidth, startupAction = noop, children, topChildren}: Properties) {
+const insertFontLink = (fonts: string[]) => {
+    if (fonts.length && !document.head.querySelector('link#web-font-link')) {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        const fontFamilies = fonts.map(font => `family=${font}`).join('&')
+        link.href=`https://fonts.googleapis.com/css2?${fontFamilies}&display=swap`
+        document.head.appendChild(link)
+    }
+}
+
+const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 
+    useEffect( () => { insertFontLink(fonts) }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect( () => { startupAction() }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect(() => subscribeToNotifications( notify ), [])
     useSignedInState()

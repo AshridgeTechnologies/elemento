@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Often loses last character in editing, doesn't show error
 - Duplicate function name causes runtime error but no error in studio
 - Can call any element (eg a button) as a function in an action formula and no error is shown
 - Show which formula is wrong in 'Unable to display the app due to an error in a formula'
@@ -60,6 +61,7 @@ Bugs
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 - Can refresh app after navigating to page
 - Can't type date into property field
+- Circular dependency gives cryptic message 'item added into group <element-name> created a dependencies error'
 
 
 Stories
@@ -107,6 +109,7 @@ Stories
 - External API calls (eg for webhook)
 
 ### Priority for education and games
+- Color picker for color fields
 - Event actions: double click, keydown, etc
 - Speech synthesis
 - Shapes, drawing, - clip-path, svg?
@@ -132,6 +135,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Consider TinyBase
 - Guards on actions - some of: do nothing, warn, error, programming error, confirm
 - Functions have auto await insertion
 - Consider other deploy options like https://render.com/
@@ -239,7 +243,6 @@ Tech debt
 - Consider replacing state management with self-updating immutable objects using Immer, maybe Proxies, useContext and useReducer
 - Consider Temporal
 - Upgrade date-fns v3
-- Consider TinyBase
 - Consider escodegen in generator
 - Latest yarn
 - Remove initialProperties
@@ -417,3 +420,4 @@ Bugs fixed
 - P1: Preview fails with Cannot destructure property 'CurrentUrl' of 'app' as it is undefined. while editing formula, needs preview reload
 - Eq does not compare booleans correctly
 - TrueFalse input cannot be readonly
+- Timer fails to start every second time - because checks state but not in latest

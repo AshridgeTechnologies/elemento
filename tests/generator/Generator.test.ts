@@ -97,7 +97,7 @@ Page2.notLoggedInPage = 'Page1'
     const _state = Elemento.useGetStore()
     const app = _state.setObject('App1', new App.State({pages, appContext}))
 
-    return React.createElement(App, {...elProps('App1').maxWidth('60%').props},)
+    return React.createElement(App, {...elProps('App1').maxWidth('60%').fonts(['Crazy Font', 'Weird Font']).props},)
 }
 `)
 
@@ -306,7 +306,7 @@ test('generates html runner file', () => {
   <title>App 1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Crazy Font&family=Weird Font&display=swap"/>
+  <link id="web-font-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Crazy Font&family=Weird Font&display=swap"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
   <style>
     body { margin: 0; padding: 0}

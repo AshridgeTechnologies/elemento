@@ -365,7 +365,8 @@ ${generateChildren(element.itemSet)}
                 const topChildren = topChildrenElements.length ? `, topChildren: React.createElement( React.Fragment, null, ${topChildrenElements})\n    ` : ''
                 const bottomChildrenElements = app.bottomChildren.map(p => `        ${this.generateElement(p, app, topLevelFunctions)}`).filter(line => !!line.trim()).join(',\n')
                 const bottomChildren = bottomChildrenElements ? `\n${bottomChildrenElements}\n    ` : ''
-                const propsEntries = omit(['fonts'], this.modelProperties(app))
+                const fontProp = app.fontList.length ? {fonts: `[${app.fontList.map(quote).join(', ')}]`} : {}
+                const propsEntries = {...omit(['fonts'], this.modelProperties(app)), ...fontProp}
                 return `React.createElement(App, {...${(objectBuilder({fullName: `'${(app.codeName)}'`}, propsEntries))}${topChildren}},${bottomChildren})`
             }
 
@@ -658,7 +659,7 @@ ${generateChildren(form, indentLevel2, form)}
 
     private htmlRunnerFile() {
         const {fontList} = this.app
-        const fontFamilies = ['Roboto', ...fontList].map( font => `family=${font}`).join('&')
+        const fontFamilies = ['Roboto:ital,wght@0,100..900;1,100..900', ...fontList].map( font => `family=${font}`).join('&')
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -667,7 +668,7 @@ ${generateChildren(form, indentLevel2, form)}
   <title>${this.app.name}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?${fontFamilies}&display=swap"/>
+  <link id="web-font-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?${fontFamilies}&display=swap"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
   <style>
     body { margin: 0; padding: 0}
