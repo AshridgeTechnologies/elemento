@@ -75,7 +75,11 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
         return previousElapsedMillis + currentElapsedMillis}
 
     Start() {
-        if (this.latest().isRunning) return
+        this.latest().doStart()
+    }
+
+    private doStart() {
+        if (this.isRunning) return
 
         if (this.state.stoppedTime) {
             this.updateState({startTime: new Date(), stoppedTime: undefined, previousElapsedMillis: this.totalElapsedMillis})
@@ -86,12 +90,16 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     }
 
     Stop() {
-        if (!this.latest().isRunning) return
+        this.latest().doStop()
+    }
+
+    private doStop() {
+        if (!this.isRunning) return
         this.updateState({stoppedTime: new Date()})
     }
 
     Reset() {
-        this.updateState(stateReset)
+        this.latest().updateState(stateReset)
 
     }
 

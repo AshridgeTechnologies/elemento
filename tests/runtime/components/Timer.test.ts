@@ -140,7 +140,7 @@ test('Has correct output properties if start called while running', async () => 
     state.Start()
     await wait(80)  // 2 intervals
 
-    state.latest().Start()
+    state.Start()
 
     const updatedState = state.latest()
     expect(updatedState.startTime?.getTime()).toBeCloseTo(startTime.getTime())
@@ -316,18 +316,49 @@ test('Stop, Stop again and Start without Reset', async () => {
     state.Start()
     await wait(115)  // 2 intervals
 
-    state.latest().Stop()
+    state.Stop()
     await wait(30)
 
-    state.latest().Stop()
+    state.Stop()
     await wait(30)
 
-    state.latest().Start()
+    state.Start()
     await wait(70)  // at least one more interval
 
     const stateAfterRestart = state.latest()
     const newStartTime = stateAfterRestart.startTime?.getTime()
     expect(newStartTime).toBeCloseTo(startTime.getTime() + 175, -1)
+    expect(stateAfterRestart.intervalCount).toBe(3)
+    expect(stateAfterRestart.intervalTime).toBeCloseTo(0.15, 2)
+    expect(stateAfterRestart.elapsedTime).toBeCloseTo(0.185, 2)
+    expect(stateAfterRestart.remainingTime).toBeCloseTo(1.0 - 0.185, 2)
+    expect(stateAfterRestart.isStarted).toBe(true)
+    expect(stateAfterRestart.isRunning).toBe(true)
+    expect(stateAfterRestart.isFinished).toBe(false)
+    expect(intervalAction).toHaveBeenCalledTimes(3)
+    expect(intervalAction).toHaveBeenLastCalledWith(stateAfterRestart)
+    expect(endAction).not.toHaveBeenCalled()
+})
+
+test('Stop, Start again without Reset', async () => {
+    const intervalAction = jest.fn(), endAction = jest.fn()
+    const state = new Timer.State({interval: 0.05, period: 1.0, intervalAction, endAction })
+    const appInterface = testAppInterface('testPath', state)
+    const startTime = new Date()
+    state.Start()
+    await wait(115)  // 2 intervals
+
+    state.Stop()
+    await wait(30)
+
+    expect(state.latest().intervalCount).toBe(2)
+
+    state.Start()
+    await wait(70)  // at least one more interval
+
+    const stateAfterRestart = state.latest()
+    const newStartTime = stateAfterRestart.startTime?.getTime()
+    expect(newStartTime).toBeCloseTo(startTime.getTime() + 145, -1)
     expect(stateAfterRestart.intervalCount).toBe(3)
     expect(stateAfterRestart.intervalTime).toBeCloseTo(0.15, 2)
     expect(stateAfterRestart.elapsedTime).toBeCloseTo(0.185, 2)
@@ -347,14 +378,14 @@ test('Stop, Reset, Start', async () => {
     state.Start()
     await wait(80)  // 2 intervals
 
-    state.latest().Stop()
+    state.Stop()
     await wait(20)
 
     expect(intervalAction).toHaveBeenCalledTimes(2)
-    state.latest().Reset()
+    state.Reset()
 
     const restartTime = new Date()
-    state.latest().Start()
+    state.Start()
     await wait(50) // 1 interval
 
     const stateAfterRestart = state.latest()
@@ -379,7 +410,7 @@ test('Reset while running', async () => {
     state.Start()
     await wait(50)  // 1 interval
 
-    state.latest().Reset()
+    state.Reset()
     await wait(20)
 
     const stateAfterReset = state.latest()
@@ -401,12 +432,12 @@ test('Has correct output properties and calls to actions when finished after Sto
     const appInterface = testAppInterface('testPath', state)
     state.Start()
     await wait(70)
-    state.latest().Stop()
+    state.Stop()
     await wait(100)
     const restartTime = new Date()
-    state.latest().Start()
+    state.Start()
     await wait(50)
-    expect(state.latest().isFinished).toBe(false)
+    expect(state.isFinished).toBe(false)
     await wait(70)
 
     const updatedState = state.latest()
@@ -428,7 +459,7 @@ test('Has correct output properties and calls to actions after Start, finish, St
     const appInterface = testAppInterface('testPath', state)
     state.Start()
     await wait(200)
-    state.latest().Start()
+    state.Start()
     await wait(200)
 
     const updatedState = state.latest()
