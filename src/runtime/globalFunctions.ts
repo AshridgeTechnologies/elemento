@@ -218,6 +218,11 @@ export const globalFunctions = {
         return s.replace(new RegExp(toReplace, 'g'), replaceWith)
     },
 
+    Trim(sVal: Value<string | null>) {
+        const s = valueOf(sVal) ?? ''
+        return s.trim()
+    },
+
     And(...args: Value<any>[]) {
         return args.reduce( (prev, curr) => prev && !!valueOf(curr), true )
     },

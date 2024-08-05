@@ -6,7 +6,7 @@ import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Split, Join, Contains, Len,
+    Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
     Record, WithUpdates, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
@@ -453,6 +453,13 @@ describe('Substitute', () => {
     test('replaces single occurrence with empty if replacement string is null', () => expect(Substitute('abcde', 'bc', null)).toBe('ade'))
     test('replaces all occurrences if string to replace is found multiple times', () => expect(Substitute('abcdeffdeggde', 'de', 'xx')).toBe('abcxxffxxggxx'))
     test('Gets value of objects', ()=> expect(Substitute(valueObj('abcdeffdeggde'), valueObj('de'), valueObj('xx'))).toBe('abcxxffxxggxx'))
+})
+
+describe('Trim', () => {
+    test('removes spaces at both ends but not the middle', () => expect(Trim(' \nxy z\n  ')).toBe('xy z'))
+    test('Gets empty string for null string', ()=> expect(Trim(null)).toBe(''))
+    test('Gets empty string for all space string', ()=> expect(Trim('  \n  ')).toBe(''))
+    test('Gets value of objects', () => expect(Trim(valueObj(' zzz'))).toBe('zzz'))
 })
 
 describe('And', () => {

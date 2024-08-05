@@ -5,6 +5,21 @@ import App from '../../src/model/App'
 import Project1 from '../../src/model/Project'
 import {newIdTransformer} from '../../src/model/BaseElement'
 
+test('keeps notes when updating another property', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`, notes: 'Some notes'})
+    const updatedProps = {...text1.properties, allowHtml: true}
+    expect(text1.notes).toBe('Some notes')
+    const text1a = text1.create(text1.id, text1.name, updatedProps, text1.elements)
+    expect(text1a.notes).toBe('Some notes')
+})
+
+test('can update notes', () => {
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`, notes: 'Some notes'})
+    const updatedProps = {...text1.properties, notes: 'More notes'}
+    const text1a = text1.create(text1.id, text1.name, updatedProps, text1.elements)
+    expect(text1a.notes).toBe('More notes')
+})
+
 test('assigns new ids to a tree of elements', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
     const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})

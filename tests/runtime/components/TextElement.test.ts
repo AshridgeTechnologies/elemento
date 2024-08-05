@@ -7,7 +7,7 @@ import {TextElement, Button, Icon} from '../../../src/runtime/components/index'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {ErrorResult} from '../../../src/runtime/DataStore'
-import TextInput, {TextInputState} from '../../../src/runtime/components/TextInput'
+import {TextInputState} from '../../../src/runtime/components/TextInput'
 
 const {Sum} = globalFunctions
 

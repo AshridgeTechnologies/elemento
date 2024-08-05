@@ -1,7 +1,7 @@
 import Element from './Element'
 import {CombinedPropertyValue, ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
 import {elementId, noSpaces} from '../util/helpers'
-import {uniq} from 'ramda'
+import {prop, uniq} from 'ramda'
 
 type Class<T> = new (...args: any[]) => T
 
@@ -223,7 +223,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
            properties: PropertiesType,
            elements: ReadonlyArray<Element> | undefined) {
         const ctor = this.constructor as any
-        return new ctor(id, name, properties, elements)
+        const newProperties = {notes: this.notes, ...properties}
+        return new ctor(id, name, newProperties, elements)
     }
 
     doInsert(insertPosition: InsertPosition, targetItemId: ElementId, elements: Element[]): this {

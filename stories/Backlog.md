@@ -14,7 +14,6 @@ Bugs
 - P1: Item Set doesn't work in a Component - generator fails as no containingComponent at line 457
 - Components don't work with passed-in element references
 - P3: If Page too big for preview window, squashes some elements instead of scrolling - need to know to set min height
-- P1: Losing Notes at random points
 - Inspector error: in Tile Diamonds Correct Indicator get TypeError: AllTilesMatchSides is not a function for visibility
 - If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
 - If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
@@ -421,3 +420,5 @@ Bugs fixed
 - Eq does not compare booleans correctly
 - TrueFalse input cannot be readonly
 - Timer fails to start every second time - because checks state but not in latest
+- P1: Losing Notes at random points
+
