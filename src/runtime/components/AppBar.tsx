@@ -19,11 +19,23 @@ export default function AppBar({children, path, ...props}: Properties) {
                     justifyContent="flex-start"
                     alignItems="center"
                     spacing={2}
+                    flexWrap='wrap'
+                    useFlexGap
+                    rowGap={0}
                 >
-                {title && <Typography variant="h6" component="div" sx={typographySxProps}>
+                {title && <Typography variant="h6" component="div" marginRight={2} sx={typographySxProps}>
                     {title}
                 </Typography>}
-                {children}
+                    <Stack direction="row"
+                           justifyContent="flex-start"
+                           alignItems="center"
+                           spacing={2}
+                           flexWrap='wrap'
+                           useFlexGap
+                           rowGap={0}
+                    >
+                        {children}
+                    </Stack>
                 </Stack>
             </Toolbar>
         </MuiAppBar>

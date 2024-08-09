@@ -17,13 +17,16 @@ exports[`App element produces output containing normal page if logged in 1`] = `
           className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
           <div
-            className="MuiStack-root css-jp2etx-MuiStack-root"
+            className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
             >
               The App bar
             </div>
+            <div
+              className="MuiStack-root css-zqp9gt-MuiStack-root"
+            />
           </div>
         </div>
       </header>
@@ -32,10 +35,10 @@ exports[`App element produces output containing normal page if logged in 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root css-1hi109z-MuiStack-root"
+          className="MuiStack-root css-cb6y0-MuiStack-root"
           id="app1.page1"
         >
           <div
@@ -105,13 +108,16 @@ exports[`App element produces output containing not logged in page if it exists 
           className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
           <div
-            className="MuiStack-root css-jp2etx-MuiStack-root"
+            className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
             >
               The App bar
             </div>
+            <div
+              className="MuiStack-root css-zqp9gt-MuiStack-root"
+            />
           </div>
         </div>
       </header>
@@ -120,10 +126,10 @@ exports[`App element produces output containing not logged in page if it exists 
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root css-1hi109z-MuiStack-root"
+          className="MuiStack-root css-cb6y0-MuiStack-root"
           id="app1.page1"
         >
           <div
@@ -189,10 +195,10 @@ exports[`App element produces output containing page 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root css-1hi109z-MuiStack-root"
+          className="MuiStack-root css-cb6y0-MuiStack-root"
           id="app1.page1"
         >
           <div
@@ -264,13 +270,16 @@ exports[`App element produces output containing page and additional components w
           className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
         >
           <div
-            className="MuiStack-root css-jp2etx-MuiStack-root"
+            className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
             >
               The App bar
             </div>
+            <div
+              className="MuiStack-root css-zqp9gt-MuiStack-root"
+            />
           </div>
         </div>
       </header>
@@ -279,10 +288,10 @@ exports[`App element produces output containing page and additional components w
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root css-169v6mb-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root css-1hi109z-MuiStack-root"
+          className="MuiStack-root css-cb6y0-MuiStack-root"
           id="app1.page1"
         >
           <div
@@ -371,10 +380,10 @@ exports[`App element produces output with max width 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root css-8z7glm-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-32ajlx-MuiContainer-root"
       >
         <div
-          className="MuiStack-root css-1hi109z-MuiStack-root"
+          className="MuiStack-root css-cb6y0-MuiStack-root"
           id="app1.page1"
         >
           <div

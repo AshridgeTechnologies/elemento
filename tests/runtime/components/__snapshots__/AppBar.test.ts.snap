@@ -9,19 +9,23 @@ exports[`AppBar element produces output with children 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="MuiStack-root css-jp2etx-MuiStack-root"
+      className="MuiStack-root css-zqp9gt-MuiStack-root"
     >
       <div
-        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-        id="app.bar1.text1"
+        className="MuiStack-root css-zqp9gt-MuiStack-root"
       >
-        First text
-      </div>
-      <div
-        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-        id="app.bar1.text2"
-      >
-        Second text
+        <div
+          className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+          id="app.bar1.text1"
+        >
+          First text
+        </div>
+        <div
+          className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+          id="app.bar1.text2"
+        >
+          Second text
+        </div>
       </div>
     </div>
   </div>
@@ -37,24 +41,28 @@ exports[`AppBar element produces output with children and title 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="MuiStack-root css-jp2etx-MuiStack-root"
+      className="MuiStack-root css-zqp9gt-MuiStack-root"
     >
       <div
-        className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
       >
         My App
       </div>
       <div
-        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-        id="app.bar1.text1"
+        className="MuiStack-root css-zqp9gt-MuiStack-root"
       >
-        First text
-      </div>
-      <div
-        className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
-        id="app.bar1.text2"
-      >
-        Second text
+        <div
+          className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+          id="app.bar1.text1"
+        >
+          First text
+        </div>
+        <div
+          className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+          id="app.bar1.text2"
+        >
+          Second text
+        </div>
       </div>
     </div>
   </div>
@@ -70,13 +78,16 @@ exports[`AppBar element produces output with title 1`] = `
     className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
   >
     <div
-      className="MuiStack-root css-jp2etx-MuiStack-root"
+      className="MuiStack-root css-zqp9gt-MuiStack-root"
     >
       <div
-        className="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
       >
         My App
       </div>
+      <div
+        className="MuiStack-root css-zqp9gt-MuiStack-root"
+      />
     </div>
   </div>
 </header>

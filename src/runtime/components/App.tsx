@@ -13,8 +13,6 @@ type Properties = {path: string, maxWidth?: string | number, fonts?: string[], s
 
 const containerBoxCss = {
     height: '100%',
-    paddingLeft: 2,
-    paddingRight: 2,
     paddingTop: 1,
     paddingBottom: 1,
     marginTop: 0,
@@ -61,7 +59,7 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], s
             {topChildren}
         </Box>
         <Box flex='1' minHeight={0}>
-            <Container maxWidth={false} sx={{...containerBoxCss, maxWidth}}>
+            <Container maxWidth={false} disableGutters sx={{...containerBoxCss, maxWidth}}>
                 {createElement(pageToDisplay, {path: pagePath} as React.Attributes) /*we do not know the properties of each page*/}
             </Container>
         </Box>
