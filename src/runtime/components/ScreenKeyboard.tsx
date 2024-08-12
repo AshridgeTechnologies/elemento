@@ -78,12 +78,11 @@ export default function ScreenKeyboard({path, ...props}: Properties) {
         if (useRealKeyboard) {
             const handleKeydown = (event: KeyboardEvent) => onKeyPress(event.key)
             const page = document.querySelector('.ElPage') as HTMLElement
-            page.addEventListener('keydown', handleKeydown);
+            page.addEventListener('keydown', handleKeydown)
             return () => page.removeEventListener('keydown', handleKeydown);
         }
     }, [])
     const onKeyPress = (key: string) => {
-        console.log('onKeyPress', key)
         if (key === "{shift}") {
             setLayoutName(layoutName === "default" ? "shift" : "default");
         } else if (key === "{abc}") {
@@ -96,8 +95,17 @@ export default function ScreenKeyboard({path, ...props}: Properties) {
         }
     }
 
-    return <Box
-        sx={sxProps(styles, show)}>
+    if (useRealKeyboard && document.hasFocus()) {
+        const page = document.querySelector('.ElPage') as HTMLElement
+        const pageWithFocus = document.activeElement?.closest('.ElPage')
+        if (pageWithFocus !== page) {
+            document.getElementById(path)?.focus()
+        }
+    }
+
+
+
+    return <Box id={path} sx={sxProps(styles, show)} tabIndex={-1}>
         <SimpleKeyboard.KeyboardReact
         layout={layout}
         display={display}

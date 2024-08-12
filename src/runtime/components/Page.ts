@@ -16,7 +16,7 @@ export default function Page({children, path, ...props}: Properties) {
         spacing: 2,
         height: '100%', width: '100%',
         boxSizing: 'border-box',
-        tabIndex: 0,
+        tabIndex: -1,
         sx: {
             outline: 'none',
             overflowY: 'scroll',

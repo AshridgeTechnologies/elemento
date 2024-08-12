@@ -4,7 +4,7 @@ exports[`Page element produces output containing children 1`] = `
 <div
   className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
   id="page1"
-  tabIndex={0}
+  tabIndex={-1}
 >
   <div
     className="MuiTypography-root MuiTypography-body1 css-1pnky8i-MuiTypography-root"

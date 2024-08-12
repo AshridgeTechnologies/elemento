@@ -40,7 +40,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
         <div
           className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
           id="app1.page1"
-          tabIndex={0}
+          tabIndex={-1}
         >
           <div
             className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -132,7 +132,7 @@ exports[`App element produces output containing not logged in page if it exists 
         <div
           className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
           id="app1.page1"
-          tabIndex={0}
+          tabIndex={-1}
         >
           <div
             className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -202,7 +202,7 @@ exports[`App element produces output containing page 1`] = `
         <div
           className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
           id="app1.page1"
-          tabIndex={0}
+          tabIndex={-1}
         >
           <div
             className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -296,7 +296,7 @@ exports[`App element produces output containing page and additional components w
         <div
           className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
           id="app1.page1"
-          tabIndex={0}
+          tabIndex={-1}
         >
           <div
             className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -389,7 +389,7 @@ exports[`App element produces output with max width 1`] = `
         <div
           className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
           id="app1.page1"
-          tabIndex={0}
+          tabIndex={-1}
         >
           <div
             className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
