@@ -53,6 +53,7 @@ import ComponentFolder from './ComponentFolder'
 import Block from './Block'
 import Timer from './Timer'
 import Frame from './Frame'
+import ScreenKeyboard from './ScreenKeyboard'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -115,6 +116,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         ComponentFolder: ComponentFolder,
         ToolFolder: ToolFolder,
         ToolImport: ToolImport,
+        ScreenKeyboard: ScreenKeyboard,
         ...dataTypeElementTypes()
     }
 }

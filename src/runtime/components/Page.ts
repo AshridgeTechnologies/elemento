@@ -10,12 +10,15 @@ export default function Page({children, path, ...props}: Properties) {
 
     return React.createElement(Stack, {
         id: path,
+        className: 'ElPage',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         spacing: 2,
         height: '100%', width: '100%',
         boxSizing: 'border-box',
+        tabIndex: 0,
         sx: {
+            outline: 'none',
             overflowY: 'scroll',
             padding: 1,
             position: 'relative',

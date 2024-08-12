@@ -607,13 +607,14 @@ ${generateChildren(form, indentLevel2, form)}
             }
 
             const exprCode = printAst(ast)
+            const bodyPrefix = element.kind === 'Form' && propertyName === 'keyAction' ? `const \$key = \$event.key\n` : ''
 
             switch (exprType) {
                 case 'singleExpression':
                     return exprCode
                 case 'action': {
                     const argList = (argumentNames ?? []).join(', ')
-                    const body = propertyName === 'keyAction' ? `const \$key = \$event.key\n${exprCode}` : exprCode
+                    const body = `${bodyPrefix}${exprCode}`
                     const asyncPrefix = body.match(/\bawait\b/) ? 'async ' : ''
                     return `${asyncPrefix}(${argList}) => {\n${indent(body, '        ')}\n    }`
                 }

@@ -380,6 +380,7 @@ Done
 - Web file datastores
 - Web fonts
 - Dialogs
+- Screen keyboard
 
 Bugs fixed
 ----------

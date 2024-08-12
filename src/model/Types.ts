@@ -86,6 +86,7 @@ export type ElementType =
     'ToolFolder' |
     'ComponentFolder' |
     'ToolImport' |
+    'ScreenKeyboard' |
     DataTypeElementType |
     UserDefinedType
 
