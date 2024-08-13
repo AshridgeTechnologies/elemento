@@ -59,7 +59,6 @@ Bugs
 - Editor height styles allow property panel to be larger than container, so page scrolls up
 - Can refresh app after navigating to page
 - Can't type date into property field
-- Circular dependency gives cryptic message 'item added into group <element-name> created a dependencies error'
 
 
 Stories
@@ -422,3 +421,4 @@ Bugs fixed
 - Timer fails to start every second time - because checks state but not in latest
 - P1: Losing Notes at random points
 - P1: Often loses last character in editing, doesn't show error
+- Circular dependency gives cryptic message 'item added into group <element-name> created a dependencies error'

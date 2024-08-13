@@ -2591,6 +2591,23 @@ test('Unexpected number error in expression generates error', ()=> {
     })
 })
 
+test('Circular reference generates error', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new FunctionDef('fn1', 'Get Stuff', {calculation: ex`'abc' + 12`}),
+                new TextInput('id1', 'Val 1', {initialValue: ex`Val2`}),
+                new TextInput('id2', 'Val 2', {initialValue: ex`Val1 + GetStuff()`}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({
+        id2: {
+            element: 'Circular reference: this element uses another element which then uses this one.  The element is one of: Val 1, Get Stuff'
+        }
+    })
+})
+
 test('Accepts modern JavaScript features', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [

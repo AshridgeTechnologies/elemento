@@ -1,5 +1,5 @@
 import Topo from '@hapi/topo'
-import lodash from 'lodash';
+import lodash, {startCase} from 'lodash';
 import Element from '../model/Element'
 import {flatten, last} from 'ramda'
 import {ExprType, ListItem} from './Types'
@@ -11,6 +11,7 @@ import {visit} from 'ast-types'
 import FunctionDef from '../model/FunctionDef'
 import ItemSet from '../model/ItemSet'
 import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
+import {ElementId} from '../model/Types'
 
 const {isArray, isPlainObject} = lodash;
 
@@ -35,11 +36,28 @@ export function objectBuilder(name: ObjectBuilderName, obj: object, state = fals
 
 export type StateInitializer = [el: Element, code: string | FunctionDef, dependencies: string[]]
 
+export class TopoSortError extends Error {
+    readonly elementId: ElementId
+
+    constructor(elementId: ElementId, message: string) {
+        super(message)
+        this.elementId = elementId
+    }
+}
 export const topoSort = (entries: StateInitializer[]): StateInitializer[] => {
     const sorter = new Topo.Sorter<StateInitializer>()
     entries.forEach(entry => {
         const [el, , dependencies] = entry
-        sorter.add([entry], {after: dependencies, group: el.codeName})  // if add plain tuple, sorter treats it as an array
+        try {
+            sorter.add([entry], {after: dependencies, group: el.codeName})  // if add plain tuple, sorter treats it as an array
+        } catch(e: any) {
+            const messageMatch = e.message.match(/item added into group (\S+) created a dependencies error/)
+            if (messageMatch) {
+                throw new TopoSortError(el.id, `Circular reference: this element uses another element which then uses this one.  The element is one of: ${dependencies.map(startCase).join(', ')}`)
+            } else {
+                throw e
+            }
+        }
     })
     return sorter.nodes
 }

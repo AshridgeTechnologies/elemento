@@ -5,9 +5,9 @@ import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
 import FunctionDef from '../model/FunctionDef'
-import {flatten, identity, omit} from 'ramda'
+import {flatten, identity, mergeDeepRight, omit} from 'ramda'
 import Parser, {PropertyError} from './Parser'
-import {ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeElementTypeName, runtimeImportPath} from './Types'
+import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeElementTypeName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
@@ -18,7 +18,7 @@ import {
     printAst,
     quote,
     StateInitializer,
-    topoSort,
+    topoSort, TopoSortError,
     valueLiteral
 } from './generatorHelpers'
 import Project from '../model/Project'
@@ -56,6 +56,7 @@ export function generate(app: BaseApp, project: Project, imports: string[] = DEF
 export default class Generator {
     private parser: Parser
     private typesGenerator
+    private errors: AllErrors = {}
 
     constructor(public app: BaseApp, private project: Project, public imports: string[] = DEFAULT_IMPORTS) {
         this.parser = new Parser(app, project)
@@ -91,7 +92,7 @@ export default class Generator {
         const typesConstants = typesFiles.length ? `const {types: {${typesClassNames.join(', ')}}} = Elemento\n\n` : ''
         return <GeneratorOutput>{
             files: [...typesFiles, ...componentFiles, ...pageFiles, appFile],
-            errors: this.parser.allErrors(),
+            errors: mergeDeepRight(this.errors, this.parser.allErrors()),
             get code() {
                 return imports + typesConstants + this.files.map(f => `// ${f.name}\n${f.contents}`).join('\n')
             },
@@ -214,7 +215,21 @@ export default class Generator {
             return [el, initState, stateComponentIdentifiersUsed]
         }).filter(([, initState]) => !!initState)
 
-        const inlineStateBlock = () => topoSort(stateInitializers).map(([el, initState]) => {
+        const sortStateInitializers = () => {
+            try {
+                return topoSort(stateInitializers)
+            } catch(e: any) {
+                if (e instanceof TopoSortError) {
+                    this.errors[e.elementId] ||= {}
+                    this.errors[e.elementId]['element'] = e.message
+                } else {
+                    throw e
+                }
+
+                return stateInitializers
+            }
+        }
+        const inlineStateBlock = () => sortStateInitializers().map(([el, initState]) => {
             const name = el.codeName
             const pathExpr = componentIsApp ? `'${app.codeName}.${name}'` : `pathTo('${name}')`
             if (initState instanceof FunctionDef) {

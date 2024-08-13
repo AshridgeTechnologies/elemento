@@ -56,6 +56,10 @@ const errorValue = (label: string) => {
     const helperId = `${(input(label).id)}-helper-text`
     return container.querySelector(`[id="${helperId}"]`).textContent
 }
+const elementErrorValue = () => {
+    const helperId = `elementErrors`
+    return container.querySelector(`[data-testid="${helperId}"]`).textContent
+}
 const textareaValue = (label: string) => textarea(label).textContent
 const selectValue = (label: string) => select(label).value
 const kindButton = (index: number) => {
@@ -498,6 +502,16 @@ service cloud.firestore {
     expect(inputValue('Collections')).toBe('Things: user-private')
     expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
     expect(input('Security Rules').readOnly).toBe(true)
+})
+
+test('shows errors for element', () => {
+    const element = new Text('id1', 'Text 1', {content: 'abc'})
+    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} errors={{
+        element: 'Unknown condition',
+    }}/>)
+    expect(nameInputValue()).toBe('Text 1')
+    expect(textareaValue('Content')).toBe('abc')
+    expect(elementErrorValue()).toBe('Unknown condition')
 })
 
 test('shows errors for a normal property', () => {

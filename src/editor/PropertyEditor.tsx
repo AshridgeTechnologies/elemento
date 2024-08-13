@@ -98,6 +98,7 @@ export default function PropertyEditor({element, propertyDefs, onChange, onNameS
             <Typography data-testid="elementId" variant='body2' title='Elemento internal id for this element'>{element.id}</Typography>
         </Stack>
         <NotesTextField id='notes' value={element.notes} onChange={onNotesChange}/>
+        <Typography data-testid="elementErrors" variant='body2' color='red' title='Errors for this element'>{errors['element' as keyof object]}</Typography>
         {children}
     </Box>
 }
