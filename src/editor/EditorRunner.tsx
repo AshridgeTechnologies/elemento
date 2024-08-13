@@ -5,7 +5,7 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {AlertColor, Box, Button, Grid, Stack, Typography,} from '@mui/material'
+import {AlertColor, Box, Button, Grid, IconButton, Link, Stack, Typography,} from '@mui/material'
 import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -49,6 +49,7 @@ import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {Status} from './ThrottledCombinedFileWriter'
 import ServerMultiFileWriter from './ServerMultiFileWriter'
 import {PanelTitle} from './PanelTitle'
+import {OpenInNew} from '@mui/icons-material'
 
 const {debounce} = lodash;
 
@@ -674,7 +675,11 @@ export default function EditorRunner() {
                                     </Box>
                                 </Grid>
                                 <Grid item xs={10} height='100%' overflow='scroll'>
-                                    <PanelTitle name='Preview'/>
+                                    <PanelTitle name='Preview'>
+                                        <Link href={previewUrl} target='elementoPreview' aria-label="open in new window" title="open in new window" color='inherit'>
+                                            <OpenInNew color='inherit' sx={{marginTop: '5px', fontSize: '1.2rem'}}/>
+                                        </Link>
+                                    </PanelTitle>
                                     <PreviewPanel height='calc(100% - 32px)'
                                         preview={
                                             <iframe name='appFrame' src={previewUrl} ref={previewFrameRef}
