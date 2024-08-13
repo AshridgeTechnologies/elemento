@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- P1: Often loses last character in editing, doesn't show error
 - Duplicate function name causes runtime error but no error in studio
 - Can call any element (eg a button) as a function in an action formula and no error is shown
 - Show which formula is wrong in 'Unable to display the app due to an error in a formula'
@@ -422,4 +421,4 @@ Bugs fixed
 - TrueFalse input cannot be readonly
 - Timer fails to start every second time - because checks state but not in latest
 - P1: Losing Notes at random points
-
+- P1: Often loses last character in editing, doesn't show error

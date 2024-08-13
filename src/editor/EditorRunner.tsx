@@ -69,13 +69,15 @@ const safeJsonParse = (text: string) => {
     }
 }
 
-const debouncedSave = debounce((updatedProject: Project, projectStore: DiskProjectStore) => {
-    projectStore.writeProjectFile(updatedProject.withoutFiles())
-}, 1000)
+const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, projectId: string) => {
+    await projectStore.writeProjectFile(updatedProject.withoutFiles())
+    projectBuilder.buildProjectFiles()
+    await projectBuilder.writeProjectFiles()
+    navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
+}
 
-const debouncedWrite = debounce( (projectBuilder: ProjectBuilder, projectId: string) => {
-    projectBuilder.writeProjectFiles().then( () => navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId}))
-}, 100)
+const debouncedSaveAndBuild = debounce(saveAndBuild, 100)
+
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
 const tutorialsToolImport = new ToolImport('tutorialsTool', 'Tutorials', {source: '/help/tutorials/?header=0'})
 const inspectorImport = new ToolImport('inspectorTool', 'Inspector', {source: '/inspector'})
@@ -128,9 +130,7 @@ export default function EditorRunner() {
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
         setProject(updatedProject)
-        debouncedSave(updatedProject, projectStore())
-        projectBuilderRef.current!.buildProjectFiles()
-        debouncedWrite(projectBuilderRef.current!, projectIdRef.current!)
+        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, projectIdRef.current!)
     }
 
     const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
