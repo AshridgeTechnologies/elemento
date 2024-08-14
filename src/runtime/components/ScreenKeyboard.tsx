@@ -2,8 +2,8 @@ import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import React, {useEffect, useState} from 'react'
 import {BaseComponentState} from './ComponentState'
 
-import * as SimpleKeyboard from 'react-simple-keyboard';
-import css from './ScreenKeyboard.css'
+import * as SimpleKeyboard from 'react-simple-keyboard'
+import css from './ScreenKeyboard_css'
 import {useGetObjectState} from '../appData'
 import {sxProps} from './ComponentHelpers'
 import {Box} from '@mui/material'
@@ -103,9 +103,8 @@ export default function ScreenKeyboard({path, ...props}: Properties) {
         }
     }
 
-
-
-    return <Box id={path} sx={sxProps(styles, show)} tabIndex={-1}>
+    const defaultStyles = {fontSize: '20px'}
+    return <Box id={path} sx={sxProps({...defaultStyles, ...styles}, show)} tabIndex={-1}>
         <SimpleKeyboard.KeyboardReact
         layout={layout}
         display={display}
