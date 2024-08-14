@@ -4,8 +4,8 @@ import React, {useEffect, useRef, useState} from 'react'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
-import {ActionsAvailableFn, AppElementAction, AppElementActionName} from './Types'
-import {AlertColor, Box, Button, Grid, IconButton, Link, Stack, Typography,} from '@mui/material'
+import {ActionsAvailableFn, AppElementAction, AppElementActionName, VoidFn} from './Types'
+import {AlertColor, Box, Button, Grid, Link, Stack, Typography,} from '@mui/material'
 import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -32,7 +32,7 @@ import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../appsShared/AppBar'
 import EditorMenuBar from './EditorMenuBar'
-import {last, without} from 'ramda'
+import {equals, last, without} from 'ramda'
 import {UploadDialog} from './UploadDialog'
 import {CreateGitHubRepoDialog} from './CreateGitHubRepoDialog'
 import {CommitDialog} from './CommitDialog'
@@ -70,9 +70,13 @@ const safeJsonParse = (text: string) => {
     }
 }
 
-const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, projectId: string) => {
+const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, onErrorChange: VoidFn, projectId: string) => {
     await projectStore.writeProjectFile(updatedProject.withoutFiles())
+    const previousErrors = projectBuilder.errors
     projectBuilder.buildProjectFiles()
+    if (!equals(projectBuilder.errors, previousErrors)) {
+        onErrorChange()
+    }
     await projectBuilder.writeProjectFiles()
     navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
 }
@@ -95,13 +99,15 @@ function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "upda
     </Stack>
 }
 
+let updateCount = 0
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [serverUpdateStatus, setServerUpdateStatus] = useState<Status>('complete')
 
     const [gitHubUrl, setGitHubUrl] = useState<string | null>('')
     const [openFromGitHubUrl, setOpenFromGitHubUrl] = useState<string | null>('')
-    const [, setProject] = useState<Project | null>(null)
+    const [, setUpdateCount] = useState(0)
     const [alertMessage, setAlertMessage] = useState<React.ReactNode | null>(null)
     const [dialog, setDialog] = useState<React.ReactNode | null>(null)
     const [tools, setTools] = useState<(Tool | ToolImport)[]>([])
@@ -115,6 +121,7 @@ export default function EditorRunner() {
     const previewFrameRef = useRef<HTMLIFrameElement>(null)
 
     const projectStore = ()=> projectStoreRef.current!
+    const updateUI = ()=> setUpdateCount(++updateCount)
 
     const elementoUrl = () => window.location.origin
 
@@ -130,8 +137,8 @@ export default function EditorRunner() {
 
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
-        setProject(updatedProject)
-        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, projectIdRef.current!)
+        updateUI()
+        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!)
     }
 
     const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
@@ -144,8 +151,7 @@ export default function EditorRunner() {
         updatePreviewUrlFromSettings()
         await projectBuilderRef.current?.build()
         console.log('Project build complete')
-
-        setProject(proj)
+        updateUI()
 
         const gitProjectStore = new GitProjectStore(projectStore.fileSystem, http, null, null)
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
