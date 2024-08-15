@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
 - Duplicate function name causes runtime error but no error in studio
 - Can call any element (eg a button) as a function in an action formula and no error is shown
 - $itemId is a string if using index, can't do arithmetic with it unless convert
@@ -421,3 +420,4 @@ Bugs fixed
 - Circular dependency gives cryptic message 'item added into group <element-name> created a dependencies error'
 - Show which formula is wrong in 'Unable to display the app due to an error in a formula'
 - P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what
+- Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches

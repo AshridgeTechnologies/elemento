@@ -183,7 +183,6 @@ export default class Generator {
         }
 
         const functionDeclaration = (el: FunctionDef) => {
-            const functionName = el.codeName
             const functionCode = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs) ?? '() => {}'
             const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), 'calculation', ${functionCode})`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')
@@ -191,7 +190,7 @@ export default class Generator {
                 (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
                     || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
             const dependencies = identifiers.filter(functionDependsOnIdentifier)
-            return `    const ${functionName} = React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
+            return `React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
         }
 
         const actionHandlers = (el: Element, state: boolean) => {
@@ -233,7 +232,7 @@ export default class Generator {
             const name = el.codeName
             const pathExpr = componentIsApp ? `'${app.codeName}.${name}'` : `pathTo('${name}')`
             if (initState instanceof FunctionDef) {
-                return functionDeclaration(initState)
+                return `    const ${name} = _state.setObject(${pathExpr}, ${functionDeclaration(initState)})`
             } else {
                 const actionFunctions = stateActionHandlers(el).filter( notBlank ).join('\n')
                 const stateObjectDeclaration = `    const ${name} = _state.setObject(${pathExpr}, ${initState})`

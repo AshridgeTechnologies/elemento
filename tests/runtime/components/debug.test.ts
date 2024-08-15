@@ -11,10 +11,19 @@ import {lastTrace} from '../../../src/runtime/debug'
 import {elProps, stateProps, wrapFn} from '../../../src/runtime/index'
 
 import * as notifications from '../../../src/runtime/components/notifications'
+import {AppStateForObject} from '../../../src/runtime/appData'
 jest.mock('../../../src/runtime/components/notifications')
 
+let originalConsoleError: any
+let mockConsoleError: any
 beforeEach(() => {
     jest.clearAllMocks()
+    originalConsoleError = console.error
+    console.error = mockConsoleError = jest.fn()
+})
+
+afterEach(() => {
+    console.error = originalConsoleError
 })
 
 function Page1(props: any) {
@@ -106,6 +115,7 @@ test('wrapFn returns function that passes on args and notifies errors in normal 
     const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
     wrappedFn(99)
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent')
+    expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
 })
 
 test('wrapFn returns function that passes on args and returns promise if no errors', async () => {
@@ -126,4 +136,17 @@ test('wrapFn returns function that notifies errors in promises', async () => {
     const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
     await wrappedFn(99)
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent')
+    expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
+})
+
+test('wrapFn returns function that implements ComponentState interface', async () => {
+    const doStuff = () => 'Good result: ' + 1
+    const doStuff2 = () => 'Good result: ' + 2
+
+    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn2 = wrapFn('AComponent', 'DoYourStuff', doStuff2)
+    expect(() => wrappedFn.init(null as unknown as AppStateForObject, 'x')).not.toThrow()
+    expect(wrappedFn.updateFrom(wrappedFn2)).toBe(wrappedFn2)
+    expect(wrappedFn.withMergedState({a: 10})).toBe(wrappedFn)
+    expect(wrappedFn.latest()).toBe(wrappedFn)
 })

@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react'
 import {mapValues} from 'radash'
-import {UpdateBlockable} from './appData'
+import {AppStateForObject, UpdateBlockable} from './appData'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
+import {ComponentState} from './components/ComponentState'
 
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
@@ -91,12 +92,20 @@ export const elProps = (path: string, includePathProp = true) => {
 
 export const stateProps = (name: string) => elProps(name, false)
 
-export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any) => {
+const functionComponentState = (fn: Function): ComponentState<Function> => ({
+    init(_asi: AppStateForObject, _path: string): void {},
+    updateFrom(newObj: Function): Function {return newObj},
+    withMergedState(_changes: object): Function {return fn},
+    latest(): Function {return fn}
+})
+
+type WrappedFunction = ComponentState<Function> & Function
+export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any): WrappedFunction => {
     const notifyError = (e: any) => {
         console.error(e)
         addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`)
     }
-    return (...args: any[]) => {
+    const wrappedFn = (...args: any[]) => {
         try {
             const result = func(...args)
             const isPromise = typeof result?.then === 'function'
@@ -105,4 +114,6 @@ export const wrapFn = (path: string, propertyName: string, func: (...args: any[]
             notifyError(e)
         }
     }
+    Object.assign(wrappedFn, functionComponentState(wrappedFn))
+    return wrappedFn as unknown as WrappedFunction
 }

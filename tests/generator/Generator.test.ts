@@ -1824,14 +1824,14 @@ test('generates local user defined functions even if empty in a page', () => {
     const {Or, Select} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('App1.Widgets')
-    const EmptyFunction = React.useCallback(wrapFn(pathTo('EmptyFunction'), 'calculation', () => {}), [])
-    const VeryEmptyFunction = React.useCallback(wrapFn(pathTo('VeryEmptyFunction'), 'calculation', () => {}), [])
+    const EmptyFunction = _state.setObject(pathTo('EmptyFunction'), React.useCallback(wrapFn(pathTo('EmptyFunction'), 'calculation', () => {}), []))
+    const VeryEmptyFunction = _state.setObject(pathTo('VeryEmptyFunction'), React.useCallback(wrapFn(pathTo('VeryEmptyFunction'), 'calculation', () => {}), []))
     const MinHeight = _state.setObject(pathTo('MinHeight'), new NumberInput.State(stateProps(pathTo('MinHeight')).props))
-    const IsTallWidget = React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
+    const IsTallWidget = _state.setObject(pathTo('IsTallWidget'), React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
         let heightAllowed = MinHeight
         let isShiny = widget.shiny
         return Or(widget.height > heightAllowed, isShiny)
-    }), [MinHeight])
+    }), [MinHeight]))
     const TallWidgets = _state.setObject(pathTo('TallWidgets'), new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))).props))
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
@@ -1865,14 +1865,14 @@ return y
     const {Page} = Elemento.components
     const {Sum} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const WidgetHeight = React.useCallback(wrapFn(pathTo('WidgetHeight'), 'calculation', (widget) => {
+    const WidgetHeight = _state.setObject(pathTo('WidgetHeight'), React.useCallback(wrapFn(pathTo('WidgetHeight'), 'calculation', (widget) => {
         let y = 10
         for (let i = 1; i < 10; i++) {
             y += Sum(widget, 10)
         }
         return y
-    }), [])
-    const DoNothing = React.useCallback(wrapFn(pathTo('DoNothing'), 'calculation', () => {}), [])
+    }), []))
+    const DoNothing = _state.setObject(pathTo('DoNothing'), React.useCallback(wrapFn(pathTo('DoNothing'), 'calculation', () => {}), []))
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -1907,7 +1907,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
     const pathTo = name => props.path + '.' + name
     const {Page} = Elemento.components
     const _state = Elemento.useGetStore()
-    const WidgetHeight = React.useCallback(wrapFn(pathTo('WidgetHeight'), 'calculation', (words, factory, formula) => {
+    const WidgetHeight = _state.setObject(pathTo('WidgetHeight'), React.useCallback(wrapFn(pathTo('WidgetHeight'), 'calculation', (words, factory, formula) => {
         function generateClause(placeholder) {
             const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)
             
@@ -1915,7 +1915,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
             return factory.call(null, args)
         }
         return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
-    }), [])
+    }), []))
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -1944,9 +1944,9 @@ test('generates local user defined functions in the app', () => {
     const appContext = Elemento.useGetAppContext()
     const _state = Elemento.useGetStore()
     const app = _state.setObject('Test1', new App.State({pages, appContext}))
-    const AppBarText = React.useCallback(wrapFn(pathTo('AppBarText'), 'calculation', (greeting) => {
+    const AppBarText = _state.setObject('Test1.AppBarText', React.useCallback(wrapFn(pathTo('AppBarText'), 'calculation', (greeting) => {
         return greeting + 'our new app'
-    }), [])
+    }), []))
 
     return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
             React.createElement(TextElement, elProps(pathTo('Text0')).content(AppBarText('Welcome to ')).props),
@@ -1979,9 +1979,9 @@ test('generates local user defined functions in a list item that use a page item
     const {ItemSetItem, TextElement} = Elemento.components
     const _state = Elemento.useGetStore()
     const MinHeight = _state.useObject(parentPathWith('MinHeight'))
-    const ExtraHeight = React.useCallback(wrapFn(pathTo('ExtraHeight'), 'calculation', () => {
+    const ExtraHeight = _state.setObject(pathTo('ExtraHeight'), React.useCallback(wrapFn(pathTo('ExtraHeight'), 'calculation', () => {
         return $item.height - MinHeight
-    }), [$item, MinHeight])
+    }), [$item, MinHeight]))
     const canDragItem = undefined
     const styles = undefined
 
@@ -1998,9 +1998,9 @@ function Page1(props) {
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('App1.Widgets')
     const MinHeight = _state.setObject(pathTo('MinHeight'), new NumberInput.State(stateProps(pathTo('MinHeight')).props))
-    const IsTallWidget = React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
+    const IsTallWidget = _state.setObject(pathTo('IsTallWidget'), React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
         return Or(widget.height > MinHeight, widget.shiny)
-    }), [MinHeight])
+    }), [MinHeight]))
     const TallWidgets = _state.setObject(pathTo('TallWidgets'), new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))).props))
     const WidgetSet = _state.setObject(pathTo('WidgetSet'), new ItemSet.State(stateProps(pathTo('WidgetSet')).items(Widgets.Query({})).props))
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
