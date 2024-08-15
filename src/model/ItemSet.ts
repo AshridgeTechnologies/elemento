@@ -33,7 +33,7 @@ export default class ItemSet extends BaseElement<Properties> implements Element 
             propDef('items', 'expr', {state: true}),
             propDef('selectedItems', 'expr', {state: true}),
             propDef('selectable', selectableChoices, {state: true}),
-            propDef('selectAction', eventAction('$item', '$itemId'), {state: true}),
+            propDef('selectAction', eventAction('$item', '$itemId', '$index'), {state: true}),
             propDef('canDragItem', 'boolean'),
             propDef('itemStyles', 'styles')
         ]

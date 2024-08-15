@@ -59,6 +59,8 @@ exports[`produces output containing ReactElement children 1`] = `
       <br />
       item id id1
       <br />
+      index 0
+      <br />
       selected
       <br />
       false
@@ -81,6 +83,8 @@ exports[`produces output containing ReactElement children 1`] = `
       over here!
       <br />
       item id id2
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -146,6 +150,8 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
       <br />
       item id id1
       <br />
+      index 0
+      <br />
       selected
       <br />
       false
@@ -170,6 +176,8 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
       over here!
       <br />
       item id id2
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -233,6 +241,8 @@ exports[`produces output when an item is null 1`] = `
       <br />
       item id id1
       <br />
+      index 0
+      <br />
       selected
       <br />
       false
@@ -254,6 +264,8 @@ exports[`produces output when an item is null 1`] = `
     >
       <br />
       item id 1
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -277,6 +289,8 @@ exports[`produces output when an item is null 1`] = `
       Three
       <br />
       item id id3
+      <br />
+      index 2
       <br />
       selected
       <br />
@@ -340,6 +354,8 @@ exports[`produces output with indexes if items have no ids 1`] = `
       <br />
       item id 0
       <br />
+      index 0
+      <br />
       selected
       <br />
       false
@@ -362,6 +378,8 @@ exports[`produces output with indexes if items have no ids 1`] = `
       over here!
       <br />
       item id 1
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -405,7 +423,7 @@ exports[`produces output with indexes if items have no ids 1`] = `
 ]
 `;
 
-exports[`shows null items 1`] = `
+exports[`shows items with no ids 1`] = `
 [
   <div
     aria-describedby="DndDescribedBy-4"
@@ -424,6 +442,8 @@ exports[`shows null items 1`] = `
       where are you?
       <br />
       item id 0
+      <br />
+      index 0
       <br />
       selected
       <br />
@@ -447,6 +467,8 @@ exports[`shows null items 1`] = `
       over here!
       <br />
       item id 1
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -510,6 +532,8 @@ exports[`shows only first selectedItem as selected if no ids when given zero as 
       <br />
       item id 0
       <br />
+      index 0
+      <br />
       selected
       <br />
       true
@@ -532,6 +556,8 @@ exports[`shows only first selectedItem as selected if no ids when given zero as 
       over here!
       <br />
       item id 1
+      <br />
+      index 1
       <br />
       selected
       <br />
@@ -595,6 +621,8 @@ exports[`shows single selectedItem as selected 1`] = `
       <br />
       item id id1
       <br />
+      index 0
+      <br />
       selected
       <br />
       false
@@ -617,6 +645,8 @@ exports[`shows single selectedItem as selected 1`] = `
       over here!
       <br />
       item id id2
+      <br />
+      index 1
       <br />
       selected
       <br />

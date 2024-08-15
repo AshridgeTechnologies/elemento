@@ -4,13 +4,14 @@ Elemento Backlog
 
 Bugs
 ----
+- Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Can call any element (eg a button) as a function in an action formula and no error is shown
-- $itemId is a string if using index, can't do arithmetic with it unless convert
 - Functions inside item components do not depend on $item $selected etc
 - P1: Item Set doesn't work in a Component - generator fails as no containingComponent at line 457
 - Components don't work with passed-in element references
 - P3: If Page too big for preview window, squashes some elements instead of scrolling - need to know to set min height
+- ItemSet selection doesn't work correctly if items are numbers
 - Inspector error: in Tile Diamonds Correct Indicator get TypeError: AllTilesMatchSides is not a function for visibility
 - If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
 - If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
@@ -421,3 +422,4 @@ Bugs fixed
 - Show which formula is wrong in 'Unable to display the app due to an error in a formula'
 - P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what
 - Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
+- $itemId is a string if using index, can't do arithmetic with it unless convert - now have $index too

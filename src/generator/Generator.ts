@@ -259,7 +259,7 @@ export default class Generator {
             : `    const pathTo = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
 
-        const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $selected, onClick} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $index, $selected, onClick} = props' : ''
         const dragFunctionIdentifiers = this.parser.dragFunctionIdentifiers(component.id)
         const dragFunctionDeclarations =
             dragFunctionIdentifiers.length ? `    const {${dragFunctionIdentifiers.join(', ')}} = Elemento.dragFunctions()` : ''
@@ -366,7 +366,7 @@ ${declarations}${debugHook}
         }
 
         if (element instanceof ListItem) {
-            return `React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, onClick, canDragItem, styles},
+            return `React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, index: $index, onClick, canDragItem, styles},
 ${generateChildren(element.itemSet)}
     )`
         }

@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import {ScreenKeyboard} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {ScreenKeyboardState} from '../../../src/runtime/components/ScreenKeyboard'

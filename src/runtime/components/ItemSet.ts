@@ -1,5 +1,5 @@
-import React, {Fragment, MouseEventHandler, SyntheticEvent} from 'react'
-import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel, valueOfProps} from '../runtimeFunctions'
+import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
+import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {isNil, last, range, reverse, without} from 'ramda'
@@ -11,11 +11,11 @@ type Selectable = typeof selectableChoices[number]
 
 type SelectionType = 'replace' | 'addRemove' | 'fromLast'
 
-type OnClickFn = MouseEventHandler<HTMLDivElement>
+export type OnClickFn = (event: SyntheticMouseEvent<HTMLDivElement>, index: number) => void
 
 type Properties = Readonly<{
     path: string,
-    itemContentComponent: (props: { path: string, $item: any, $itemId: (string | number), $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
+    itemContentComponent: (props: { path: string, $item: any, $itemId: string, $index: number, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
 }>
 
@@ -23,7 +23,7 @@ type StateProperties = Partial<Readonly<{
     items: PropVal<any[]>,
     selectable: PropVal<Selectable>,
     selectedItems: PropVal<any>,
-    selectAction: ($items: any, $itemIds: any) => void}
+    selectAction: ($items: any, $itemIds: any, $indexes: any) => void}
 >>
 
 type StateUpdatableProperties = Partial<Readonly<{
@@ -31,10 +31,10 @@ type StateUpdatableProperties = Partial<Readonly<{
 }
 >>
 
-const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...props}: Properties) {
+const ItemSet = React.memo(function ItemSet({path, itemContentComponent}: Properties) {
     const state = useGetObjectState<ItemSetState>(path)
-    const onClick: OnClickFn = (event:SyntheticEvent) => {
-        const {shiftKey, ctrlKey, metaKey} = (event.nativeEvent as MouseEvent)
+    const onClick: OnClickFn = (event:SyntheticMouseEvent, index: number) => {
+        const {shiftKey, ctrlKey, metaKey} = event
         if (shiftKey) {
             document.getSelection()?.empty()
         }
@@ -42,7 +42,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
         const itemId = lastItemIdOfPath(targetId)
         if (itemId) {
             const selectionType: SelectionType = (metaKey || ctrlKey) ? 'addRemove' : shiftKey ? 'fromLast' : 'replace'
-            state.onSelect(itemId, selectionType)
+            state.onSelect(itemId, index, selectionType)
         }
     }
 
@@ -50,7 +50,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent, ...prop
             const itemId = item?.id ?? String(index)
             const itemPath = indexedPath(path, itemId)
             const selected = state.isSelected(index)
-            return React.createElement(itemContentComponent, {path: itemPath, $item: item, $itemId: itemId, $selected: selected, onClick, key: itemId})
+            return React.createElement(itemContentComponent, {path: itemPath, $item: item, $itemId: itemId, $index: index, $selected: selected, onClick, key: itemId})
         }
     )
 
@@ -89,7 +89,7 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     }
 
     _setSelectedItems(selectedItems: any) {
-        const selectedItemIds = selectedItems ? asArray(valueOfOneLevel(selectedItems)).map( (it: any) => this.findId(it)) : undefined
+        const selectedItemIds = selectedItems ? asArray(valueOfOneLevel(selectedItems)).map( (it: any) => this.latest().findId(it)) : undefined
         this.latest().updateState({selectedItemIds})
     }
 
@@ -102,7 +102,7 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     }
 
     Select(selectedItems: any) {
-        this._setSelectedItems(this.selectedItems.concat(valueOfOneLevel(selectedItems)))
+        this._setSelectedItems(this.latest().selectedItems.concat(valueOfOneLevel(selectedItems)))
     }
 
     isSelected(itemIndex: number) {
@@ -111,11 +111,11 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         return selectedItemIds.includes(item?.id) || selectedItemIds.includes(itemIndex)
     }
 
-    onSelect(selectedItemId: (string|number), type: SelectionType) {
+    onSelect(selectedItemId: (string|number), index: number, type: SelectionType) {
         const selectActionSingle = () => {
             const newItemId = this.findId(selectedItemId)
             const newItem = this.findItem(newItemId)
-            this.selectAction?.(newItem, newItemId)
+            this.selectAction?.(newItem, newItemId, index)
         }
 
         if (this.selectable === 'none') {
@@ -132,12 +132,13 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
                 if (existingSelectedIds.includes(newItemId)) {
                     const newItemIds = without([newItemId], existingSelectedIds)
                     this._setSelectedItems(newItemIds)
-                    this.selectAction?.(null, null)
+                    this.selectAction?.(null, null, null)
                 } else {
                     this._setSelectedItems(existingSelectedIds.concat(newItemId))
                     const newItemIds = [newItemId]
                     const newItems = newItemIds.map( it => this.findItem(it))
-                    this.selectAction?.(newItems, newItemIds)
+                    const newIndexes = newItems.map( it => this.findIndex(it))
+                    this.selectAction?.(newItems, newItemIds, newIndexes)
                 }
             } else if (type === 'fromLast') {
                 const itemIndex = (id: typeof selectedItemId) => {
@@ -159,7 +160,8 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
                     this._setSelectedItems(selectedIndexes)
                     const newItemIds = selectedIndexes.map( ind => this.findId(ind) )
                     const newItems = newItemIds.map( it => this.findItem(it))
-                    this.selectAction?.(newItems, newItemIds)
+                    const newIndexes = newItems.map( it => this.findIndex(it))
+                    this.selectAction?.(newItems, newItemIds, newIndexes)
                 }
             } else {
                 this._setSelectedItems(selectedItemId)
@@ -175,8 +177,12 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         return this.items.find( it => !isNil(it) && (it === item || it.id === item) ) ?? undefined
     }
 
+    private findIndex(item: any) {
+        return this.items.findIndex( it => !isNil(it) && (it === item || it.id === item) )
+    }
+
     private findId(item: any) {
-        const itemIndex = this.items.findIndex( it => !isNil(it) && (it === item || it.id === item) )
+        const itemIndex = this.findIndex(item)
         if (itemIndex !== -1) {
             return this.items[itemIndex].id ?? itemIndex
         }

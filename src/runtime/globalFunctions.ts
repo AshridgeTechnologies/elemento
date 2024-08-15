@@ -588,7 +588,7 @@ export const globalFunctions = {
     }
 }
 
-// for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when neeeded
+// for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when needed
 export const functionArgs = {
     Select: {1: ['$item', '$index']},
     Count: {1: ['$item', '$index']},

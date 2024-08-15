@@ -1,20 +1,22 @@
-import React, {MouseEventHandler, useContext} from 'react'
+import React, {MouseEventHandler, MouseEvent, useContext} from 'react'
 import {Box} from '@mui/material'
 import {StylesPropVals, valueOf} from '../runtimeFunctions'
 import {PageDndContext, sxProps} from './ComponentHelpers'
 import {DragStartEvent, useDndMonitor, useDraggable, useDroppable} from '@dnd-kit/core'
+import {OnClickFn} from './ItemSet'
 
 type Properties = {
     path: string,
     item: any,
-    itemId: string | number,
-    onClick?: MouseEventHandler<HTMLDivElement> | undefined,
+    itemId: string,
+    index: number,
+    onClick?: OnClickFn | undefined,
     canDragItem?: boolean,
     styles?: StylesPropVals,
     children: React.ReactNode
 }
 
-export default function ItemSetItem({path, item, itemId, onClick, canDragItem = false, styles: styleVals = {}, children}: Properties) {
+export default function ItemSetItem({path, item, itemId, index, onClick, canDragItem = false, styles: styleVals = {}, children}: Properties) {
     const styles = valueOf(styleVals) ?? {}
 
     const droppableProps = {id: path, data: {item, itemId} }
@@ -42,5 +44,6 @@ export default function ItemSetItem({path, item, itemId, onClick, canDragItem = 
         return React.createElement(Box, {id: path, ref: setNodeRef, sx: sxProps(stylesForDragPlaceholder), ...listeners, ...attributes}, children)
     }
 
-    return React.createElement(Box, {id: path, ref: setNodeRef, onClick, sx: sxProps(styles), ...listeners, ...attributes}, children)
+    const onClickWithIndex: MouseEventHandler<HTMLDivElement> = (event: MouseEvent<HTMLDivElement>) => onClick?.(event, index)
+    return React.createElement(Box, {id: path, ref: setNodeRef, onClick: onClickWithIndex, sx: sxProps(styles), ...listeners, ...attributes}, children)
 }
