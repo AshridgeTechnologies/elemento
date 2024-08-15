@@ -4,11 +4,10 @@ Elemento Backlog
 
 Bugs
 ----
+- Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
 - Duplicate function name causes runtime error but no error in studio
 - Can call any element (eg a button) as a function in an action formula and no error is shown
-- Show which formula is wrong in 'Unable to display the app due to an error in a formula'
 - $itemId is a string if using index, can't do arithmetic with it unless convert
-- Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
 - Functions inside item components do not depend on $item $selected etc
 - P1: Item Set doesn't work in a Component - generator fails as no containingComponent at line 457
 - Components don't work with passed-in element references
@@ -17,11 +16,9 @@ Bugs
 - If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
 - If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
 - Preview hangs on to old versions of imported functions even after reload of project and reload frame
-- P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what
 - P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
 - Uploading file does not copy to client files
 - Formula error in app bar kills the preview
-- Still occasional failures to build the latest version - one missing char
 - Preview cannot reload named pages - service worker gives 404
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
@@ -422,3 +419,5 @@ Bugs fixed
 - P1: Losing Notes at random points
 - P1: Often loses last character in editing, doesn't show error
 - Circular dependency gives cryptic message 'item added into group <element-name> created a dependencies error'
+- Show which formula is wrong in 'Unable to display the app due to an error in a formula'
+- P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what

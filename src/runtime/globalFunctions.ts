@@ -15,7 +15,7 @@ import {
 } from 'date-fns'
 import Papa, {ParseConfig} from 'papaparse'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
-import {isNumeric, noSpaces} from '../util/helpers'
+import {isNumeric, noSpaces, notEmpty} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {assign, clone, isArray, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
@@ -336,6 +336,17 @@ export const globalFunctions = {
         const listVal = valueOf(list) ?? []
         if (condition === undefined) throw new Error('Wrong number of arguments to Select. Expected list, expression.')
         return listVal.filter(condition)
+    },
+
+    SelectFirst(list: Value<any[]> | null, condition: (item: any, index: number) => boolean = notEmpty) {
+        const listVal = valueOf(list) ?? []
+        if (arguments.length < 1) throw new Error('Wrong number of arguments to SelectFirst. Expected list, expression (optional).')
+        return listVal.find(condition) ?? null
+    },
+
+    FirstNotNull(...args: Value<any>[]) {
+        const argVals = valuesOf(...args)
+        return argVals.find(notEmpty) ?? null
     },
 
     Count(listVal: Value<any[]> | null, condition?: (item: any, index: number) => boolean) {

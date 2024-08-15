@@ -9,7 +9,7 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, WithUpdates, Pick, List, Range, Select, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
+    Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
     CommonItems, HasSameItems, WithoutItems, ListContains, FlatList,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
@@ -665,6 +665,27 @@ describe('Select', () => {
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(Select(pendingValue, (it: any) => it <= 0)).toStrictEqual([]))
     test('Null list input gives empty list', ()=> expect(Select(null, (it: any) => it <= 0)).toStrictEqual([]))
+})
+
+describe('SelectFirst', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => SelectFirst()).toThrow('Wrong number of arguments to SelectFirst. Expected list, expression (optional).'))
+    test('returns the selected item', () => expect(SelectFirst([0, -1, 4, 0], (it: any) => it > 0)).toBe(4))
+    test('returns the first not empty if no condition', () => expect(SelectFirst([null, undefined, 0, 4])).toBe(0))
+    test('Gets value of object for the list', ()=> expect(SelectFirst(valueObj([0, -1, 4, 0]), (it: any) => it < 0)).toBe(-1))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(SelectFirst(pendingValue, (it: any) => it <= 0)).toBe(null))
+    test('Null list input gives null', ()=> expect(SelectFirst(null)).toBe(null))
+})
+
+describe('FirstNotNull', () => {
+    // @ts-ignore
+    test('returns null for no arguments', () => expect(FirstNotNull()).toBe(null))
+    test('returns null if all arguments null', () => expect(FirstNotNull(undefined, null, undefined)).toBe(null))
+    test('returns the first not null item in the args', () => expect(FirstNotNull(undefined, null, 0, -1, 2)).toBe(0))
+    test('Gets value of objects for the list', ()=> expect(FirstNotNull(valueObj(null), valueObj(-1))).toBe(-1))
+    // @ts-ignore
+    test('Pending value gives null', ()=> expect(FirstNotNull(pendingValue, 'abc')).toBe('abc'))
 })
 
 describe('Count', () => {
