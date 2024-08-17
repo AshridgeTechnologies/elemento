@@ -6,7 +6,6 @@ Bugs
 ----
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
-- Can call any element (eg a button) as a function in an action formula and no error is shown
 - Functions inside item components do not depend on $item $selected etc
 - P1: Item Set doesn't work in a Component - generator fails as no containingComponent at line 457
 - Components don't work with passed-in element references
@@ -423,3 +422,4 @@ Bugs fixed
 - P1: Runtime errors in actions give no clue that they have even occurred, let alone where or what
 - Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
 - $itemId is a string if using index, can't do arithmetic with it unless convert - now have $index too
+- Can call any element (eg a button) as a function in an action formula and no error is shown
