@@ -13,7 +13,7 @@ Requirements
 - App Show Tests setting
 - Test has:
   - Calculation
-  - Description - defaults to Calculation
+  - Description
   - Expected value
   - Actual value
   - Correct/Not
