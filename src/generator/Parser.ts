@@ -188,6 +188,9 @@ export default class Parser {
             const stylesPropertyDef = itemSet.propertyDefs.find(def => def.name === 'itemStyles')!
             const stylesIdentifiers = this.parseStylesProperty(itemSet, stylesPropertyDef, isKnown)
             addAllTo(identifierSet, stylesIdentifiers)
+            const canDragPropertyDef = itemSet.propertyDefs.find(def => def.name === 'canDragItem')!
+            const canDragIdentifiers = this.parseProperty(itemSet, canDragPropertyDef, isKnown)
+            addAllTo(identifierSet, canDragIdentifiers)
         }
 
         if (component.kind === 'App') {

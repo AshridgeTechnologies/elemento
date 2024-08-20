@@ -320,10 +320,10 @@ test('Has new selected item after onSelect with item index, replace and selectab
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
-    state.onSelect(1, 'replace')
+    state.onSelect(1, 1, 'replace')
     expect(state.latest().selectedItems).toStrictEqual([item2])
     expect(state.latest().selectedItemIds).toStrictEqual([1])
-    expect(selectAction).toHaveBeenCalledWith(item2, 1)
+    expect(selectAction).toHaveBeenCalledWith(item2, 1, 1)
 })
 
 test('Has new single selected item after onSelect with item id, addRemove or fromLast and selectable single', () => {
@@ -331,15 +331,15 @@ test('Has new single selected item after onSelect with item id, addRemove or fro
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(idItem1)
 
-    state.onSelect(idItem2.id, 'addRemove')
+    state.onSelect(idItem2.id, 1, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([idItem2])
     expect(state.latest().selectedItemIds).toStrictEqual([idItem2.id])
-    expect(selectAction).toHaveBeenCalledWith(idItem2, idItem2.id)
+    expect(selectAction).toHaveBeenCalledWith(idItem2, idItem2.id, 1)
 
-    state.latest().onSelect(idItem1.id, 'fromLast')
+    state.latest().onSelect(idItem1.id, 0, 'fromLast')
     expect(state.latest().selectedItems).toStrictEqual([idItem1])
     expect(state.latest().selectedItemIds).toStrictEqual([idItem1.id])
-    expect(selectAction).toHaveBeenCalledWith(idItem1, idItem1.id)
+    expect(selectAction).toHaveBeenCalledWith(idItem1, idItem1.id, 0)
 })
 
 test('State class adds new single selected item after onSelect and addRemove if selectable is multiple', () => {
@@ -347,17 +347,17 @@ test('State class adds new single selected item after onSelect and addRemove if 
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
-    state.onSelect(1, 'addRemove')
+    state.onSelect(1, 1, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([item1, item2])
     expect(state.latest().selectedItemIds).toStrictEqual([0, 1])
     expect(state.latest().selectedItem).toStrictEqual(item2)
-    expect(selectAction).toHaveBeenCalledWith([item2], [1])
+    expect(selectAction).toHaveBeenCalledWith([item2], [1], [1])
 
-    state.latest().onSelect(3, 'addRemove')
+    state.latest().onSelect(3, 3, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([item1, item2, item4])
     expect(state.latest().selectedItemIds).toStrictEqual([0, 1, 3])
     expect(state.latest().selectedItem).toStrictEqual(item4)
-    expect(selectAction).toHaveBeenLastCalledWith([item4], [3])
+    expect(selectAction).toHaveBeenLastCalledWith([item4], [3], [3])
 })
 
 test('State class removes new single selected item in onSelect and addRemove if select is multiple and already selected in properties', () => {
@@ -366,17 +366,17 @@ test('State class removes new single selected item in onSelect and addRemove if 
     expect(state.selectedItems).toStrictEqual([item1, item3])
     expect(state.selectedItemIds).toStrictEqual([0, 2])
 
-    state.onSelect(2, 'addRemove')
+    state.onSelect(2, 1, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([item1])
     expect(state.latest().selectedItemIds).toStrictEqual([0])
     expect(state.latest().selectedItem).toStrictEqual(item1)
-    expect(selectAction).toHaveBeenCalledWith(null, null)
+    expect(selectAction).toHaveBeenCalledWith(null, null, null)
 
-    state.latest().onSelect(0, 'addRemove')
+    state.latest().onSelect(0, 0, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([])
     expect(state.latest().selectedItemIds).toStrictEqual([])
     expect(state.latest().selectedItem).toStrictEqual(null)
-    expect(selectAction).toHaveBeenCalledWith(null, null)
+    expect(selectAction).toHaveBeenCalledWith(null, null, null)
 })
 
 test('State class always adds new single selected item after onSelect if selectable is multipleAuto', () => {
@@ -384,17 +384,17 @@ test('State class always adds new single selected item after onSelect if selecta
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
-    state.onSelect(1, 'addRemove')
+    state.onSelect(1, 1, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([item1, item2])
     expect(state.latest().selectedItemIds).toStrictEqual([0, 1])
     expect(state.latest().selectedItem).toStrictEqual(item2)
-    expect(selectAction).toHaveBeenCalledWith([item2], [1])
+    expect(selectAction).toHaveBeenCalledWith([item2], [1], [1])
 
-    state.latest().onSelect(3, 'replace')
+    state.latest().onSelect(3, 3, 'replace')
     expect(state.latest().selectedItems).toStrictEqual([item1, item2, item4])
     expect(state.latest().selectedItemIds).toStrictEqual([0, 1, 3])
     expect(state.latest().selectedItem).toStrictEqual(item4)
-    expect(selectAction).toHaveBeenLastCalledWith([item4], [3])
+    expect(selectAction).toHaveBeenLastCalledWith([item4], [3], [3])
 })
 
 test('State class always removes new single selected item in onSelect if selectable is multipleAuto and already selected in properties', () => {
@@ -403,17 +403,17 @@ test('State class always removes new single selected item in onSelect if selecta
     expect(state.selectedItems).toStrictEqual([item1, item3])
     expect(state.selectedItemIds).toStrictEqual([0, 2])
 
-    state.onSelect(2, 'replace')
+    state.onSelect(2, 2, 'replace')
     expect(state.latest().selectedItems).toStrictEqual([item1])
     expect(state.latest().selectedItemIds).toStrictEqual([0])
     expect(state.latest().selectedItem).toStrictEqual(item1)
-    expect(selectAction).toHaveBeenCalledWith(null, null)
+    expect(selectAction).toHaveBeenCalledWith(null, null, null)
 
-    state.latest().onSelect(0, 'addRemove')
+    state.latest().onSelect(0, 0, 'addRemove')
     expect(state.latest().selectedItems).toStrictEqual([])
     expect(state.latest().selectedItemIds).toStrictEqual([])
     expect(state.latest().selectedItem).toStrictEqual(null)
-    expect(selectAction).toHaveBeenCalledWith(null, null)
+    expect(selectAction).toHaveBeenCalledWith(null, null, null)
 })
 
 test('State class sets new block of selected items in onSelect with fromLast if select is multiple', () => {
@@ -421,11 +421,11 @@ test('State class sets new block of selected items in onSelect with fromLast if 
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([item1, item2])
 
-    state.onSelect(3, 'fromLast')
+    state.onSelect(3, 3, 'fromLast')
     expect(state.latest().selectedItems).toStrictEqual([item2, item3, item4])
     expect(state.latest().selectedItemIds).toStrictEqual([1, 2, 3])
     expect(state.latest().selectedItem).toStrictEqual(item4)
-    expect(selectAction).toHaveBeenCalledWith([item2, item3, item4], [1, 2, 3])
+    expect(selectAction).toHaveBeenCalledWith([item2, item3, item4], [1, 2, 3], [1, 2, 3])
 })
 
 test('State class sets new block of selected items in onSelect with fromLast and item before last selected', () => {
@@ -433,11 +433,11 @@ test('State class sets new block of selected items in onSelect with fromLast and
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([idItem3, idItem4])
 
-    state.onSelect(idItem2.id, 'fromLast')
+    state.onSelect(idItem2.id, 1, 'fromLast')
     expect(state.latest().selectedItems).toStrictEqual([idItem4, idItem3, idItem2])
     expect(state.latest().selectedItemIds).toStrictEqual([idItem4.id, idItem3.id, idItem2.id])
     expect(state.latest().selectedItem).toStrictEqual(idItem2)
-    expect(selectAction).toHaveBeenCalledWith([idItem4, idItem3, idItem2], [idItem4.id, idItem3.id, idItem2.id])
+    expect(selectAction).toHaveBeenCalledWith([idItem4, idItem3, idItem2], [idItem4.id, idItem3.id, idItem2.id], [3, 2, 1])
 })
 
 test('State class sets new block of selected items from first item in onSelect with fromLast if select is multiple and none selected', () => {
@@ -445,11 +445,11 @@ test('State class sets new block of selected items from first item in onSelect w
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItems).toStrictEqual([])
 
-    state.onSelect(2, 'fromLast')
+    state.onSelect(2, 2, 'fromLast')
     expect(state.latest().selectedItems).toStrictEqual([item1, item2, item3])
     expect(state.latest().selectedItemIds).toStrictEqual([0, 1, 2])
     expect(state.latest().selectedItem).toStrictEqual(item3)
-    expect(selectAction).toHaveBeenCalledWith([item1, item2, item3], [0, 1, 2])
+    expect(selectAction).toHaveBeenCalledWith([item1, item2, item3], [0, 1, 2], [0, 1, 2])
 })
 
 test('Has no new selected item after onSelect if selectable is none, but selectAction is called', () => {
@@ -457,7 +457,7 @@ test('Has no new selected item after onSelect if selectable is none, but selectA
     const appInterface = testAppInterface('testPath', state)
     expect(state.selectedItem).toStrictEqual(item1)
 
-    state.onSelect(1, 'replace')
+    state.onSelect(1, 1, 'replace')
     expect(state.latest().selectedItem).toStrictEqual(item1)
-    expect(selectAction).toHaveBeenCalledWith(item2, 1)
+    expect(selectAction).toHaveBeenCalledWith(item2, 1, 1)
 })

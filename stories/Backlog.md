@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- P1: In ItemSet Can Drag Item prop expression (others?), Cannot use global functions or surrounding page items
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Functions inside item components do not depend on $item $selected etc
@@ -215,6 +216,7 @@ Epics
 Tech debt
 ---------
 
+- Exclude ItemSet props that go into the component (itemStyles, canDragItem) from the parent parsing
 - Consider es-toolkit
 - Allow multiple state updates to same object in same deferred updates set, refactor Collection value update
 - Fix flaky Timer tests - mock requestAnimationFrame and call a certain number of times?
