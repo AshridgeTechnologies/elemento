@@ -77,6 +77,7 @@ Needs
 - Need a simple intuitive way of referring to elements involved
 - Need to know in formulas which apply to more than one element eg in Item Sets to set item background
 - Dropping on a Block or an Item of an Item set in the block will have different rules and inputs
+- Drag into Block containing empty item set
 - Need to know: Block OR ItemSetItem dropped on, and item being dragged
 - Use in formulas for properties of Block, Item Styles, possibly styles of dragged item
 - Use in Can Drop and Drop Action

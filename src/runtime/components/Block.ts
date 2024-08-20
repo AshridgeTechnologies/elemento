@@ -67,24 +67,28 @@ export function BlockContent({path, layout, styles = {}, show, dragElementRef, c
 
 export default function Block({children = [], path,  ...props}: Properties) {
     const {show, layout, styles = {}, dropAction} = valueOfProps(props)
-    const {isOver, setNodeRef} = useDroppable({
-        id: path,
-    })
-    const state = useGetObjectState<BlockState>(path)
-    state.setIsOver(isOver)
+    let setNodeRef: ((element: (HTMLElement | null)) => void) | undefined
+    let isOver = false
+    if (dropAction) {
+        // ok - you should not call hooks inside a conditional block
+        // BUT dropAction will always be defined or not defined for any given element
+        ({isOver, setNodeRef} = useDroppable({id: path}))
+        const state = useGetObjectState<BlockState>(path)
+        state.setIsOver(isOver)
 
-    useDndMonitor({
-        onDragEnd(event: DragEndEvent) {
-            const {item, itemId} = event.active.data.current ?? {}
-            if (event.over?.id === path) {
-                dropAction?.(item, itemId)
-            } else if (event.collisions?.some( coll => coll.id === path)) {
-                const itemCollision = event.collisions.find( coll => coll.id !== path )
-                const {item: droppedItem, itemId: droppedItemId} = itemCollision?.data?.droppableContainer.data.current ?? {}
-                dropAction?.(item, itemId, droppedItem, droppedItemId)
+        useDndMonitor({
+            onDragEnd(event: DragEndEvent) {
+                const {item, itemId} = event.active.data.current ?? {}
+                if (event.over?.id === path) {
+                    dropAction?.(item, itemId)
+                } else if (event.collisions?.some( coll => coll.id === path)) {
+                    const itemCollision = event.collisions.find( coll => coll.id !== path && coll.data?.droppableContainer.data.current)
+                    const {item: droppedOnItem, itemId: droppedOnItemId} = itemCollision?.data?.droppableContainer.data.current ?? {}
+                    dropAction?.(item, itemId, droppedOnItem, droppedOnItemId)
+                }
             }
-        }
-    })
+        })
+    }
     return React.createElement(BlockContent, {layout: layout, styles: styles, show: show, path: path, dragElementRef: setNodeRef, children: children})
 }
 

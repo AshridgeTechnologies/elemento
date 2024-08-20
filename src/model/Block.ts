@@ -22,7 +22,7 @@ export default class Block extends BaseElement<Properties> implements Element {
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('layout', blockLayoutChoices),
-            propDef('dropAction', eventAction('$droppedItem', '$droppedItemId')),
+            propDef('dropAction', eventAction('$droppedItem', '$droppedItemId', '$droppedOnItem', '$droppedOnItemId')),
             ...visualPropertyDefs(),
         ]
     }

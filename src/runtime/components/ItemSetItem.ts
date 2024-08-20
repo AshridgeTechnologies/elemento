@@ -34,7 +34,8 @@ export default function ItemSetItem({path, item, itemId, index, onClick, canDrag
         onDragStart(event: DragStartEvent) {
             if (event.active.id === path) {
                 const dragStyles = transform ? {transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, position: 'fixed', top: 0}: {}
-                dndInfo!.current = React.createElement(Box, {id: path, sx: sxProps({...styles, ...dragStyles})}, children)
+                const dragPlaceholderStyles = {width: '100%', height: '100%',} // ensure placeholder fills the drag item container
+                dndInfo!.current = React.createElement(Box, {id: path+ '_drag', sx: sxProps({...styles,  ...dragPlaceholderStyles, ...dragStyles})}, children)
             }
         }
     })
