@@ -162,6 +162,12 @@ export const globalFunctions = {
         return arg === null || arg == undefined
     },
 
+    NotNull(argVal: any) {
+        if (arguments.length === 0) throw new Error('Wrong number of arguments to NotNull. Expected 1 argument.')
+        const arg = valueOf(argVal)
+        return arg !== null && arg !== undefined
+    },
+
     If(condition: any, trueValue: any, falseValue?: any) {
         const getVal = (fnOrVal: any) => isFunction(fnOrVal) ? fnOrVal() : fnOrVal
         return valueOf(condition) ? getVal(trueValue) : getVal(falseValue)
@@ -443,7 +449,7 @@ export const globalFunctions = {
     HasSameItems(list1Val: Value<any[]> | null, list2Val: Value<any[]> | null) {
         const [list1, list2] = valuesOf(list1Val, list2Val)
         if (isNil(list1) || isNil(list2) ) return false
-        return list1.length === list2.length && list1.every( (x:any) => list2.includes(x))
+        return without(list1, list2).length == 0 && without(list2, list1).length == 0
     },
 
     WithoutItems(listVal: Value<any[]> | null, ...itemVals: Value<any>[]) {

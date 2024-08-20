@@ -6,7 +6,7 @@ import {diff} from 'radash'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
-    Log, IsNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
+    Log, IsNull, NotNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
     Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
@@ -295,6 +295,35 @@ describe('IsNull', () => {
     test('is true for Value object that returns null or undefined', () => {
         expect(IsNull(valueObj(null))).toBe(true)
         expect(IsNull(valueObj(undefined))).toBe(true)
+    })
+})
+
+describe('NotNull', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => NotNull()).toThrow('Wrong number of arguments to NotNull. Expected 1 argument'))
+
+    test('is false for null or undefined', () => {
+        expect(NotNull(null)).toBe(false)
+        expect(NotNull(undefined)).toBe(false)
+    })
+
+    test('is true for other falsy values', () => {
+        expect(NotNull(0)).toBe(true)
+        expect(NotNull(false)).toBe(true)
+        expect(NotNull('')).toBe(true)
+        expect(NotNull(valueObj(0))).toBe(true)
+    })
+
+    test('is true for other values', () => {
+        expect(NotNull(42)).toBe(true)
+        expect(NotNull({a: 10})).toBe(true)
+        expect(NotNull('')).toBe(true)
+        expect(NotNull(valueObj(99))).toBe(true)
+    })
+
+    test('is false for Value object that returns null or undefined', () => {
+        expect(NotNull(valueObj(null))).toBe(false)
+        expect(NotNull(valueObj(undefined))).toBe(false)
     })
 })
 
@@ -906,6 +935,8 @@ describe('CommonItems', () => {
 describe('HasSameItems', () => {
     test('false if no common items', () => expect(HasSameItems([1, 2, 3, 4], [5, 6, 7])).toBe(false))
     test('false if some common items', () => expect(HasSameItems([1, 2, 3, 4], [3, 4, 5, 6, 7])).toBe(false))
+    test('false if all items in left are in right', () => expect(HasSameItems(['left', 'left'], ['left', 'right'])).toBe(false))
+    test('false if all items in left are in right', () => expect(HasSameItems(['left', 'right'], ['right', 'right'])).toBe(false))
     test('false if more items in first list', () => expect(HasSameItems([1, 2, 3, 4], [2, 3])).toBe(false))
     test('false if more items in second list', () => expect(HasSameItems([1, 2, 3, 4], [1, 2, 3, 4, 5])).toBe(false))
     test('false if first list is null', () => expect(HasSameItems(null, [1, 2])).toBe(false))
