@@ -46,5 +46,6 @@ export default function ItemSetItem({path, item, itemId, index, onClick, canDrag
     }
 
     const onClickWithIndex: MouseEventHandler<HTMLDivElement> = (event: MouseEvent<HTMLDivElement>) => onClick?.(event, index)
-    return React.createElement(Box, {id: path, ref: setNodeRef, onClick: onClickWithIndex, sx: sxProps(styles), ...listeners, ...attributes}, children)
+    const draggableStyles: any = canDragItem ? {touchAction: 'none'} : {}
+    return React.createElement(Box, {id: path, ref: setNodeRef, onClick: onClickWithIndex, sx: sxProps({...styles, ...draggableStyles}), ...listeners, ...attributes}, children)
 }
