@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- P1: In ItemSet Can Drag Item prop expression (others?), Cannot use global functions or surrounding page items
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Functions inside item components do not depend on $item $selected etc
@@ -425,3 +424,4 @@ Bugs fixed
 - Error when try to use page function inside an item component: Cannot use object state that has not been initialised: MainApp.MainPage.TileMatches
 - $itemId is a string if using index, can't do arithmetic with it unless convert - now have $index too
 - Can call any element (eg a button) as a function in an action formula and no error is shown
+- P1: In ItemSet Can Drag Item prop expression (others?), Cannot use global functions or surrounding page items

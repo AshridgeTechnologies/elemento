@@ -692,7 +692,7 @@ ${generateChildren(form, indentLevel2, form)}
 </head>
 <body>
 <script type="module">
-    window.elementoRuntimeUrl = (location.host.match(/^localhost:/)) ? location.origin + '/lib/runtime.js' : 'https://elemento.online/lib/runtime.js'
+    window.elementoRuntimeUrl = location.origin + '/lib/runtime.js'
     import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
 </script>
 </body>
