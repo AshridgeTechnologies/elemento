@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- P1: Copies over git repo and remotes when Save As
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Functions inside item components do not depend on $item $selected etc

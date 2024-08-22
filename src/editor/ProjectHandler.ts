@@ -67,7 +67,7 @@ export default class ProjectHandler {
         this.projectStack.update(newProject)
     }
 
-    async elementAction(elementIds: ElementId[], action: AppElementActionName) {
+    async elementAction(elementIds: ElementId[], action: AppElementActionName): Promise<ElementId[] | null> {
         const deleteElements = () => elementIds.reduce((proj, id) => proj.delete(id), this.getProject())
 
         const copyElementsToClipboard = async () => {
@@ -82,7 +82,7 @@ export default class ProjectHandler {
             }
         }
 
-        const doAction = async () => {
+        const doAction = async (): Promise<[Project, ElementId[] | null] | null> => {
             switch (action) {
                 case 'copy': {
                     await copyElementsToClipboard()
@@ -90,7 +90,7 @@ export default class ProjectHandler {
                 }
                 case 'cut': {
                     await copyElementsToClipboard()
-                    return deleteElements()
+                    return [deleteElements(), null]
                 }
                 case 'pasteAfter':
                 case 'pasteBefore':
@@ -98,17 +98,17 @@ export default class ProjectHandler {
                     const insertPosition = action.replace(/paste/, '').toLowerCase() as InsertPosition
                     const clipboardText = await navigator.clipboard.readText()
                     const elementsToInsert = loadJSONFromString(clipboardText)
-                    const [newProject] = this.getProject().insert(insertPosition, elementIds[0], elementsToInsert)
-                    return newProject
+                    const [newProject, newElements] = this.getProject().insert(insertPosition, elementIds[0], elementsToInsert)
+                    return [newProject, newElements.map( el => el.id )]
                 }
                 case 'duplicate': {
                     const elements = elementIds.map(id => this.getProject().findElement(id)) as Element[]
                     const duplicateElements = elements.map(el => el.set(el.id, 'name', el.name + ' Copy'))
-                    const [newProject] = this.getProject().insert('after', last(elementIds) as string, duplicateElements)
-                    return newProject
+                    const [newProject, newElements] = this.getProject().insert('after', last(elementIds) as string, duplicateElements)
+                    return [newProject, newElements.map( el => el.id )]
                 }
                 case 'delete':
-                    return deleteElements()
+                    return [deleteElements(), null]
                 case 'upload':
                     return null
                 case 'undo':
@@ -124,11 +124,12 @@ export default class ProjectHandler {
         }
 
         try {
-            const newProject = await doAction()
+            const actionResult = await doAction()
+            const [newProject, newElementIds] = actionResult ?? [null, null]
             if (newProject) {
                 this.projectStack.update(newProject)
             }
-
+            return newElementIds
         } catch (e) {
             console.error(`Could not do ${action} on element(s) ${elementIds.join(', ')}`, e)
             throw e

@@ -123,8 +123,6 @@ export default function EditorRunner() {
     const projectStore = ()=> projectStoreRef.current!
     const updateUI = ()=> setUpdateCount(++updateCount)
 
-    const elementoUrl = () => window.location.origin
-
     const removeDialog = () => setDialog(null)
 
     const getOpenProject = (): Project => {
@@ -442,8 +440,11 @@ export default function EditorRunner() {
         }
 
         try {
-            await projectHandler.elementAction(ids, action.toString() as AppElementActionName)
+            const newElementIds = await projectHandler.elementAction(ids, action.toString() as AppElementActionName)
             updateProjectAndSave()
+            if (newElementIds) {
+                onSelectedItemsChange(newElementIds)
+            }
         } catch (error: any) {
             alert(error.message)
         }

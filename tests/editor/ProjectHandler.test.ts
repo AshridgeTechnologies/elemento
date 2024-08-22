@@ -163,32 +163,36 @@ test('can do cut action on the project with multiple ids', async () => {
 test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the project after the first id with single item', async (action) => {
     const elementToPaste = new Button('xyz', 'Big button', {})
     clipboardData = elementToJSON(elementToPaste)
-    await handler.elementAction(['layout_1', 'text_1'], action as AppElementActionName)
+    const actionResult = await handler.elementAction(['layout_1', 'text_1'], action as AppElementActionName)
     const pastedElement = handler.current?.findElement('button_1')
     expect(pastedElement!.name).toBe('Big button')
+    expect(actionResult).toStrictEqual(['button_1'])
 })
 
 test('can do pasteAfter action on the project after the first id with multiple items in correct order', async () => {
     const elementToPaste1 = new Button('xyz', 'Big button', {})
     const elementToPaste2 = new TextInput('pqr', 'Big Text Input', {})
     clipboardData = elementToJSON([elementToPaste1, elementToPaste2])
-    await handler.elementAction(['text_3', 'text_1'], 'pasteAfter')
+    const actionResult = await handler.elementAction(['text_3', 'text_1'], 'pasteAfter')
     const page2 = handler.current?.findElement('page_2')
     const childNames = page2?.elements!.map( el => el.name )
     expect(childNames).toStrictEqual(['Some Text', 'Big button', 'Big Text Input', 'More Text'])
+    expect(actionResult).toStrictEqual(['button_1', 'textinput_1'])
 })
 
 test('can do duplicate action on the project with single id', async () => {
-    await handler.elementAction(['text_3'], 'duplicate')
+    const actionResult = await handler.elementAction(['text_3'], 'duplicate')
     const newElement = handler.current?.findElement('text_5')
     expect(newElement?.name).toBe('Some Text Copy')
+    expect(actionResult).toStrictEqual([newElement?.id])
 })
 
 test('can do duplicate action on the project with multiple ids', async () => {
-    await handler.elementAction(['text_1', 'text_3'], 'duplicate')
+    const actionResult = await handler.elementAction(['text_1', 'text_3'], 'duplicate')
     const page2 = handler.current?.findElement('page_2')
     const childNames = page2?.elements!.map( el => el.name )
     expect(childNames).toStrictEqual(['Some Text', 'First Text Copy', 'Some Text Copy', 'More Text'])
+    expect(actionResult).toStrictEqual(['text_5', 'text_6'])
 })
 
 test('illegal action leaves the project unchanged and throws error', async () => {
