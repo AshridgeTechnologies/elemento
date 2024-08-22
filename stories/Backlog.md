@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- P1: Copies over git repo and remotes when Save As
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Functions inside item components do not depend on $item $selected etc
@@ -426,3 +425,4 @@ Bugs fixed
 - $itemId is a string if using index, can't do arithmetic with it unless convert - now have $index too
 - Can call any element (eg a button) as a function in an action formula and no error is shown
 - P1: In ItemSet Can Drag Item prop expression (others?), Cannot use global functions or surrounding page items
+- P1: Copies over git repo and remotes when Save As

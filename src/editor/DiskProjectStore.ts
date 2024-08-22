@@ -379,13 +379,16 @@ export class DiskProjectStore implements DiskProjectStoreInterface {
 async function copyDir(srcDirectoryHandle: FileSystemDirectoryHandle, destDirectoryHandle: FileSystemDirectoryHandle) {
     // @ts-ignore
     for await (const [name, handle] of srcDirectoryHandle) {
-        console.log(name, handle)
-        if (handle.kind === 'file') {
-            await copyFile(handle, destDirectoryHandle)
-        } else {
-            const subDirHandle = await destDirectoryHandle.getDirectoryHandle(name, {create: true})
-            await copyDir(handle, subDirHandle)
+        if (!name.startsWith('.')) {
+            console.log('Copying', handle)
+            if (handle.kind === 'file') {
+                await copyFile(handle, destDirectoryHandle)
+            } else {
+                const subDirHandle = await destDirectoryHandle.getDirectoryHandle(name, {create: true})
+                await copyDir(handle, subDirHandle)
+            }
         }
+
     }
 }
 
