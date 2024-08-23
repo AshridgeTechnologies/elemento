@@ -272,10 +272,9 @@ export const globalFunctions = {
         return floor(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
     },
 
-    Len(textVal: Value<string | null>) {
+    Len(val: Value<{length: number} | null>) {
         if (arguments.length < 1) throw new Error('Wrong number of arguments to Len. Expected text.')
-        const text = valueOf(textVal) ?? ''
-        return text.length
+        return (valueOf(val) ?? '').length
     },
 
     Record(...args: Value<any>[]) {

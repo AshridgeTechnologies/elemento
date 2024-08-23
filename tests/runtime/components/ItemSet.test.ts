@@ -13,6 +13,7 @@ import {highlightClassName, highlightElement, StylesProps} from '../../../src/ru
 import renderer from 'react-test-renderer'
 import {ItemSetItem} from '../../../src/runtime/components'
 import MockedFunction = jest.MockedFunction
+import {CalculationState} from '../../../src/runtime/components/Calculation'
 
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, $index: number, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
     const styles = {color: 'red', width: 300}
@@ -200,4 +201,15 @@ test('can extend selection single item even if multiple', () => {
     const appInterface = testAppInterface('testPath', state)
     state.onSelect(3, 3, 'replace')
     expect(state.latest().selectedItems).toStrictEqual([longItemSetData[3]])
+})
+
+test('states are equal if items structurally equal', () => {
+    const state1 = new ItemSetState({items: [1,2,3], selectable: 'multiple'})
+    const state2 = new ItemSetState({items: [1,2,3], selectable: 'multiple'})
+    const state3 = new ItemSetState({items: [1,2,3], selectable: 'single'})
+    const state4 = new ItemSetState({items: [3, 4, 5], selectable: 'multiple'})
+
+    expect(state1.updateFrom(state2)).toBe(state1)
+    expect(state1.updateFrom(state3)).not.toBe(state1)
+    expect(state1.updateFrom(state4)).not.toBe(state1)
 })

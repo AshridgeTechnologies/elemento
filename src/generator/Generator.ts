@@ -43,6 +43,12 @@ const trimParens = (expr?: string) => expr?.startsWith('(') ? expr.replace(/^\(|
 
 const isActionProperty = (def: PropertyDef) => (def.type as EventActionPropertyDef).type === 'Action'
 
+class CodeError {
+    constructor(public expression: string, public error: string) {}
+    toString() {
+        return `Elemento.codeGenerationError(\`${this.expression}\`, '${(this.error)}')`
+    }
+}
 export const DEFAULT_IMPORTS = [
     `const runtimeUrl = window.elementoRuntimeUrl || '${runtimeImportPath}/runtime.js'`,
     `const Elemento = await import(runtimeUrl)`,
@@ -183,7 +189,8 @@ export default class Generator {
         }
 
         const functionDeclaration = (el: FunctionDef) => {
-            const functionCode = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs) ?? '() => {}'
+            const functionExpr = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs) ?? '() => {}'
+            const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
             const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), 'calculation', ${functionCode})`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')
             const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
@@ -594,7 +601,7 @@ ${generateChildren(form, indentLevel2, form)}
 
             } else {
                 const errorMessage = `Unknown name`
-                configExpr = `Elemento.codeGenerationError(\`'${connector.serverApp?.expr}'\`, '${errorMessage}')`
+                configExpr = new CodeError(`'${connector.serverApp?.expr}'`, errorMessage)
             }
         }
         const configFunction = `function ${configFunctionName}() {
@@ -608,7 +615,7 @@ ${generateChildren(form, indentLevel2, form)}
         const getExprCode = (propertyValue: PropertyValue | undefined, error: PropertyError)=> {
             const isIncompleteItemError = (errorMessage: PropertyError) => errorMessage && typeof errorMessage === 'string' && errorMessage.startsWith('Incomplete item')
             if (error && (typeof error === 'string') && !isIncompleteItemError(error)) {
-                return `Elemento.codeGenerationError(\`${this.parser.getExpression(propertyValue)}\`, '${error}')`
+                return new CodeError(this.parser.getExpression(propertyValue) ?? '', error)
             }
 
             const ast = this.parser.getAst(propertyValue)
@@ -669,7 +676,7 @@ ${generateChildren(form, indentLevel2, form)}
     }
 
     private getExprWithoutParens(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
-        return trimParens(this.getExpr(element, propertyName, exprType))
+        return trimParens(this.getExpr(element, propertyName, exprType)?.toString())
     }
 
     private htmlRunnerFile() {

@@ -1810,12 +1810,13 @@ test('transforms expressions to functions where needed and does not fail where n
 `)
 })
 
-test('generates local user defined functions even if empty in a page', () => {
+test('generates local user defined functions even if empty or code error in a page', () => {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
             new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`let heightAllowed = MinHeight\nlet isShiny = widget.shiny\nOr(widget.height > heightAllowed, isShiny)`}),
             new FunctionDef('f2', 'Empty Function', {calculation: ex``}),
             new FunctionDef('f3', 'Very Empty Function', {calculation: undefined}),
+            new FunctionDef('f4', 'Bad Code Function', {calculation: ex`let x =`}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
             ]
@@ -1833,6 +1834,7 @@ test('generates local user defined functions even if empty in a page', () => {
     const Widgets = _state.useObject('App1.Widgets')
     const EmptyFunction = _state.setObject(pathTo('EmptyFunction'), React.useCallback(wrapFn(pathTo('EmptyFunction'), 'calculation', () => {}), []))
     const VeryEmptyFunction = _state.setObject(pathTo('VeryEmptyFunction'), React.useCallback(wrapFn(pathTo('VeryEmptyFunction'), 'calculation', () => {}), []))
+    const BadCodeFunction = _state.setObject(pathTo('BadCodeFunction'), React.useCallback(wrapFn(pathTo('BadCodeFunction'), 'calculation', () => Elemento.codeGenerationError(\`let x =\`, 'Error: Unexpected character(s) (Line 1 Position 7)')), []))
     const MinHeight = _state.setObject(pathTo('MinHeight'), new NumberInput.State(stateProps(pathTo('MinHeight')).props))
     const IsTallWidget = _state.setObject(pathTo('IsTallWidget'), React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
         let heightAllowed = MinHeight

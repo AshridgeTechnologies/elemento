@@ -733,11 +733,13 @@ describe('Len', () => {
     // @ts-ignore
     test('errors for nor arguments', () => expect(() => Len()).toThrow('Wrong number of arguments to Len. Expected text.'))
     test('returns the length of a string', () => expect(Len('abcd')).toBe(4))
-    test('Gets value of object for the list', ()=> expect(Len(valueObj('a'))).toBe(1))
+    test('returns the length of an array', () => expect(Len([1, 2, 3])).toBe(3))
+    test('Gets value of object', ()=> expect(Len(valueObj('a'))).toBe(1))
     // @ts-ignore
     test('Null text gives 0', ()=> expect(Len(null)).toBe(0))
     // @ts-ignore
-    test('Pending value gives 0', ()=> expect(Len(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))})
+    test('Pending value gives 0', ()=> expect(Len(pendingValue, (it: any) => it <= 0)).toStrictEqual(0))
+})
 
 describe('ForEach', () => {
     // @ts-ignore

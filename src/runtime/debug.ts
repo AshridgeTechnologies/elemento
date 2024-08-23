@@ -102,8 +102,10 @@ const functionComponentState = (fn: Function): ComponentState<Function> => ({
 type WrappedFunction = ComponentState<Function> & Function
 export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any): WrappedFunction => {
     const notifyError = (e: any) => {
-        console.error(e)
-        addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`)
+        const notified = addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`, 30000)
+        if (notified) {
+            console.error(e)
+        }
     }
     const wrappedFn = (...args: any[]) => {
         try {

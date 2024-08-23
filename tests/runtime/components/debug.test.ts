@@ -20,6 +20,7 @@ beforeEach(() => {
     jest.clearAllMocks()
     originalConsoleError = console.error
     console.error = mockConsoleError = jest.fn()
+    jest.spyOn(notifications, 'addNotification').mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -114,8 +115,20 @@ test('wrapFn returns function that passes on args and notifies errors in normal 
 
     const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
     wrappedFn(99)
-    expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent')
+    expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
+})
+
+test('wrapFn returns function that does not log to console if not notified ', () => {
+    const doStuff = (length: number) => {
+        throw new Error('Bad result: ' + length)
+    }
+    jest.spyOn(notifications, 'addNotification').mockReturnValue(false)
+
+    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    wrappedFn(99)
+    expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
+    expect(mockConsoleError).not.toHaveBeenCalled()
 })
 
 test('wrapFn returns function that passes on args and returns promise if no errors', async () => {
@@ -135,7 +148,7 @@ test('wrapFn returns function that notifies errors in promises', async () => {
 
     const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
     await wrappedFn(99)
-    expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent')
+    expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
 })
 

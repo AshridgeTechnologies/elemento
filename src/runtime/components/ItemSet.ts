@@ -2,9 +2,10 @@ import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {isNil, last, range, reverse, without} from 'ramda'
+import {equals, isNil, last, omit, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
+import {shallow} from 'zustand/shallow'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
 type Selectable = typeof selectableChoices[number]
@@ -86,6 +87,12 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
 
     get selectedItem() {
         return last(this.selectedItems) ?? null
+    }
+
+    protected isEqualTo(newObj: this): boolean {
+        const otherProps = omit(['items'], this.props)
+        const otherNewProps = omit(['items'], newObj.props)
+        return equals(this.props.items, newObj.props.items) && shallow(otherProps, otherNewProps)
     }
 
     _setSelectedItems(selectedItems: any) {

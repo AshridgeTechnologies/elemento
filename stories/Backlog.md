@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Error storm when have invalid code in a function used in display
 - Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
