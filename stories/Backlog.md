@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
 - Functions inside item components do not depend on $item $selected etc

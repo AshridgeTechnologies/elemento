@@ -315,7 +315,7 @@ test('generates html runner file', () => {
 </head>
 <body>
 <script type="module">
-    window.elementoRuntimeUrl = (location.host.match(/^localhost:/)) ? location.origin + '/lib/runtime.js' : 'https://elemento.online/lib/runtime.js'
+    window.elementoRuntimeUrl = location.origin + '/lib/runtime.js'
     import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
 </script>
 </body>
@@ -1767,6 +1767,7 @@ test('transforms expressions to functions where needed and does not fail where n
         new Page('p1', 'Page 1', {}, [
                 new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), $item.height > $index)`}),
                 new Data('d2', 'TallerWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), $item.height + 10)`}),
+                new Data('d2a', 'FixedWidgets', {initialValue: ex`ForEach(Widgets.getAllData(), 99)`}),
                 new Data('d3', 'NoWidgets', {initialValue: ex`Select(Widgets.getAllData())`}),
                 new Data('d4', 'CountNoCondition', {initialValue: ex`Count(Widgets.getAllData())`}),
                 new Data('d5', 'IfPlainValues', {initialValue: ex`If(true, 1, Date)`}),
@@ -1787,6 +1788,7 @@ test('transforms expressions to functions where needed and does not fail where n
     const Widgets = _state.useObject('App1.Widgets')
     const TallWidgets = _state.setObject(pathTo('TallWidgets'), new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => $item.height > $index)).props))
     const TallerWidgets = _state.setObject(pathTo('TallerWidgets'), new Data.State(stateProps(pathTo('TallerWidgets')).value(ForEach(Widgets.getAllData(), ($item, $index) => $item.height + 10)).props))
+    const FixedWidgets = _state.setObject(pathTo('FixedWidgets'), new Data.State(stateProps(pathTo('FixedWidgets')).value(ForEach(Widgets.getAllData(), ($item, $index) => 99)).props))
     const NoWidgets = _state.setObject(pathTo('NoWidgets'), new Data.State(stateProps(pathTo('NoWidgets')).value(Select(Widgets.getAllData())).props))
     const CountNoCondition = _state.setObject(pathTo('CountNoCondition'), new Data.State(stateProps(pathTo('CountNoCondition')).value(Count(Widgets.getAllData())).props))
     const IfPlainValues = _state.setObject(pathTo('IfPlainValues'), new Data.State(stateProps(pathTo('IfPlainValues')).value(If(true, 1, Date)).props))
@@ -1797,6 +1799,7 @@ test('transforms expressions to functions where needed and does not fail where n
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(Data, elProps(pathTo('TallWidgets')).display(false).props),
         React.createElement(Data, elProps(pathTo('TallerWidgets')).display(false).props),
+        React.createElement(Data, elProps(pathTo('FixedWidgets')).display(false).props),
         React.createElement(Data, elProps(pathTo('NoWidgets')).display(false).props),
         React.createElement(Data, elProps(pathTo('CountNoCondition')).display(false).props),
         React.createElement(Data, elProps(pathTo('IfPlainValues')).display(false).props),

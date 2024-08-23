@@ -3,19 +3,11 @@ import {Button as MuiButton, Link as MuiLink, SxProps, Typography} from '@mui/ma
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
 import {omit, pick} from 'ramda'
-import {sxProps} from './ComponentHelpers'
+import {sxProps, typographyStyles} from './ComponentHelpers'
 
 const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
 type Properties = {path: string, appearance?: PropVal<Appearance> , content: PropVal<React.ReactNode>, action?: () => void, show?: PropVal<boolean>, enabled?: PropVal<boolean>, styles?: StylesPropVals}
-
-const typographyStyles = [
-    'font',
-    'fontFamily',
-    'fontSize',
-    'fontWeight',
-    'lineHeight',
-]
 
 export default function Button({path, ...props}: Properties) {
     const {action, content, appearance, show, enabled = true, styles = {}} = valueOfProps(props)

@@ -59,10 +59,10 @@ exports[`ItemSetItem produces output containing ReactElement children 1`] = `
 exports[`ItemSetItem produces output containing ReactElement children if draggable 1`] = `
 [
   <div
-    aria-describedby="DndDescribedBy-1"
+    aria-describedby="DndDescribedBy-0"
     aria-disabled={false}
     aria-roledescription="draggable"
-    className="MuiBox-root css-1frel66"
+    className="MuiBox-root css-qls7rp"
     id="page1.para1"
     onClick={[Function]}
     onPointerDown={[Function]}
@@ -77,7 +77,7 @@ exports[`ItemSetItem produces output containing ReactElement children if draggab
     </div>
   </div>,
   <div
-    id="DndDescribedBy-1"
+    id="DndDescribedBy-0"
     style={
       {
         "display": "none",
@@ -93,7 +93,7 @@ exports[`ItemSetItem produces output containing ReactElement children if draggab
   <div
     aria-atomic={true}
     aria-live="assertive"
-    id="DndLiveRegion-1"
+    id="DndLiveRegion-0"
     role="status"
     style={
       {

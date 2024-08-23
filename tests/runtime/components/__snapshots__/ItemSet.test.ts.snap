@@ -131,10 +131,10 @@ exports[`produces output containing ReactElement children 1`] = `
 exports[`produces output containing ReactElement children if draggable 1`] = `
 [
   <div
-    aria-describedby="DndDescribedBy-1"
+    aria-describedby="DndDescribedBy-0"
     aria-disabled={false}
     aria-roledescription="draggable"
-    className="MuiBox-root css-1r6lq6j"
+    className="MuiBox-root css-1ahtup"
     id="app.page1.itemSet1.#id1"
     onClick={[Function]}
     onKeyDown={[Function]}
@@ -158,10 +158,10 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
     </div>
   </div>,
   <div
-    aria-describedby="DndDescribedBy-1"
+    aria-describedby="DndDescribedBy-0"
     aria-disabled={false}
     aria-roledescription="draggable"
-    className="MuiBox-root css-1r6lq6j"
+    className="MuiBox-root css-1ahtup"
     id="app.page1.itemSet1.#id2"
     onClick={[Function]}
     onKeyDown={[Function]}
@@ -185,7 +185,7 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
     </div>
   </div>,
   <div
-    id="DndDescribedBy-1"
+    id="DndDescribedBy-0"
     style={
       {
         "display": "none",
@@ -201,7 +201,7 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
   <div
     aria-atomic={true}
     aria-live="assertive"
-    id="DndLiveRegion-1"
+    id="DndLiveRegion-0"
     role="status"
     style={
       {

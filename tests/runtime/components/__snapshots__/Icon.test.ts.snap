@@ -3,7 +3,7 @@
 exports[`Icon element produces button output with properties supplied 1`] = `
 <button
   aria-label="Star it"
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1stao2l-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -25,7 +25,7 @@ exports[`Icon element produces button output with properties supplied 1`] = `
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1mup3j0-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
   >
     star
   </span>
@@ -34,7 +34,7 @@ exports[`Icon element produces button output with properties supplied 1`] = `
 
 exports[`Icon element produces empty  output with display false 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-v3imdt-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1t0xgfa-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -64,7 +64,7 @@ exports[`Icon element produces empty  output with display false 1`] = `
 
 exports[`Icon element produces empty output with display false 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-v3imdt-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1t0xgfa-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -119,7 +119,7 @@ exports[`Icon element produces output with default values where properties omitt
 
 exports[`Icon element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-q6c508-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
