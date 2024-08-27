@@ -1,0 +1,691 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `
+[
+  <div
+    id="DndDescribedBy-6"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-6"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`produces output containing ReactElement children 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-0"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      where are you?
+      <br />
+      item id id1
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-0"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id2"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id2.Text99"
+    >
+      over here!
+      <br />
+      item id id2
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-0"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-0"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`produces output containing ReactElement children if draggable 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-1"
+    aria-disabled={false}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1ahtup"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    onPointerDown={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      where are you?
+      <br />
+      item id id1
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-1"
+    aria-disabled={false}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1ahtup"
+    id="app.page1.itemSet1.#id2"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    onPointerDown={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id2.Text99"
+    >
+      over here!
+      <br />
+      item id id2
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-1"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-1"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`produces output when an item is null 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-7"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      One
+      <br />
+      item id id1
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-7"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      <br />
+      item id 1
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-7"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id3"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id3.Text99"
+    >
+      Three
+      <br />
+      item id id3
+      <br />
+      index 2
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-7"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-7"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`produces output with indexes if items have no ids 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-2"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      <br />
+      item id 0
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-2"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      <br />
+      item id 1
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-2"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-2"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`shows items with no ids 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-4"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      <br />
+      item id 0
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-4"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      <br />
+      item id 1
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      true
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-4"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-4"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`shows only first selectedItem as selected if no ids when given zero as index 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-5"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#0"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#0.Text99"
+    >
+      where are you?
+      <br />
+      item id 0
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      true
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-5"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#1.Text99"
+    >
+      over here!
+      <br />
+      item id 1
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-5"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-5"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
+exports[`shows single selectedItem as selected 1`] = `
+[
+  <div
+    aria-describedby="DndDescribedBy-3"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id1"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id1.Text99"
+    >
+      where are you?
+      <br />
+      item id id1
+      <br />
+      index 0
+      <br />
+      selected
+      <br />
+      false
+    </div>
+  </div>,
+  <div
+    aria-describedby="DndDescribedBy-3"
+    aria-disabled={true}
+    aria-roledescription="draggable"
+    className="MuiBox-root css-1r6lq6j"
+    id="app.page1.itemSet1.#id2"
+    onClick={[Function]}
+    role="button"
+    tabIndex={0}
+  >
+    <div
+      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      id="app.page1.itemSet1.#id2.Text99"
+    >
+      over here!
+      <br />
+      item id id2
+      <br />
+      index 1
+      <br />
+      selected
+      <br />
+      true
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-3"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-3"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;

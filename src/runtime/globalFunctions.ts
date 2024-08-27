@@ -65,6 +65,10 @@ function comparisonOp(op: ComparisonOpType, arg1Val: ComparisonValOrNull | Date,
         }
     }
 
+    if (op === 'eq' && (arg1 === 0 && isNil(arg2) || isNil(arg1) && arg2 === 0)) {
+        return false
+    }
+
     const isStringOrBooleanOrNil = (arg: any) => isNil(arg) || typeof arg === 'string' || typeof arg === 'boolean'
     if (isStringOrBooleanOrNil(arg1) && isStringOrBooleanOrNil(arg2)) {
         const arg1ToCompare = arg1 ?? '',  arg2ToCompare = arg2 ?? ''

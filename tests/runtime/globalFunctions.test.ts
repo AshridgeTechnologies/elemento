@@ -137,14 +137,18 @@ describe('Decimal arithmetic', () => {
         expect(Eq(true, true)).toBe(true)
     })
 
-    test('treats nulls as zero in number comparisons', () => {
+    test('treats nulls as zero in greater or less than comparisons', () => {
         expect(Gt(null, 2)).toBe(false)
         expect(Gt(2, null)).toBe(true)
         expect(Gte(0, null)).toBe(true)
         expect(Lt(0, null)).toBe(false)
         expect(Lte(null, 0)).toBe(true)
-        expect(Eq(null, 0)).toBe(true)
-        expect(Eq(0, null)).toBe(true)
+    })
+
+    test('null is not equal to zero', () => {
+        expect(Eq(0, 0)).toBe(true)
+        expect(Eq(null, 0)).toBe(false)
+        expect(Eq(0, null)).toBe(false)
         expect(Eq(1, null)).toBe(false)
     })
 
@@ -154,7 +158,6 @@ describe('Decimal arithmetic', () => {
         expect(Lt(null, null)).toBe(false)
         expect(Lte(null, null)).toBe(true)
         expect(Eq(null, null)).toBe(true)
-
     })
 })
 
