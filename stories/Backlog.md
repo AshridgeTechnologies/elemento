@@ -4,7 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- Error storm when have invalid code in a function used in display
 - Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
@@ -14,12 +13,9 @@ Bugs
 - P3: If Page too big for preview window, squashes some elements instead of scrolling - need to know to set min height
 - ItemSet selection doesn't work correctly if items are numbers
 - Inspector error: in Tile Diamonds Correct Indicator get TypeError: AllTilesMatchSides is not a function for visibility
-- If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
-- If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
 - Preview hangs on to old versions of imported functions even after reload of project and reload frame
 - P1: Code generation can fail if start line with brackets and no semi-colon on prev line, in addReturnStatement eg CleanPunctuation
 - Uploading file does not copy to client files
-- Formula error in app bar kills the preview
 - Preview cannot reload named pages - service worker gives 404
 - Runtime blow-up if dereference null in formula
 - TrueFalse readOnly does not work
@@ -428,3 +424,7 @@ Bugs fixed
 - Can call any element (eg a button) as a function in an action formula and no error is shown
 - P1: In ItemSet Can Drag Item prop expression (others?), Cannot use global functions or surrounding page items
 - P1: Copies over git repo and remotes when Save As
+- Error storm when have invalid code in a function used in display
+- If use an element's own name in one of it's formulas, blows up app - can happen while editing eg ItemSet Board uses a Data called BoardItems in its Items
+- If set Item Set items to a literal array, get continuous re-render as it is a different array instance each time
+- Formula error in app bar kills the preview

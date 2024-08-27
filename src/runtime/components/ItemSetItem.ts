@@ -1,6 +1,6 @@
 import React, {MouseEventHandler, MouseEvent, useContext} from 'react'
 import {Box} from '@mui/material'
-import {StylesPropVals, valueOf} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOf} from '../runtimeFunctions'
 import {PageDndContext, sxProps} from './ComponentHelpers'
 import {DragStartEvent, useDndMonitor, useDraggable, useDroppable} from '@dnd-kit/core'
 import {OnClickFn} from './ItemSet'
@@ -11,7 +11,7 @@ type Properties = {
     itemId: string,
     index: number,
     onClick?: OnClickFn | undefined,
-    canDragItem?: boolean,
+    canDragItem?: PropVal<boolean>,
     styles?: StylesPropVals,
     children: React.ReactNode
 }
@@ -20,7 +20,7 @@ export default function ItemSetItem({path, item, itemId, index, onClick, canDrag
     const styles = valueOf(styleVals) ?? {}
 
     const droppableProps = {id: path, data: {item, itemId} }
-    const draggableProps = {...droppableProps, disabled: !canDragItem}
+    const draggableProps = {...droppableProps, disabled: !valueOf(canDragItem)}
     const {attributes, listeners, setNodeRef: setDraggableNodeRef, transform} = useDraggable(draggableProps)
     const {setNodeRef: setDroppableNodeRef} = useDroppable(droppableProps)
 
