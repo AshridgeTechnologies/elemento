@@ -756,9 +756,9 @@ test('generates Calculation elements with initial value and no errors on object 
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Calculation, elProps(pathTo('t1')).show(true).props),
+        React.createElement(Calculation, elProps(pathTo('t1')).props),
         React.createElement(Calculation, elProps(pathTo('t2')).label('My Calc').show(true).styles(elProps(pathTo('t2.Styles')).width(3+100).props).props),
-        React.createElement(Calculation, elProps(pathTo('t3')).show(true).props),
+        React.createElement(Calculation, elProps(pathTo('t3')).props),
     )
 }
 `)
@@ -1524,7 +1524,7 @@ test('generates simple Form element with separate child component and includes D
     return React.createElement(Form, props,
         React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
         React.createElement(NumberInput, elProps(pathTo('NumberInput1')).label('Number Input 1').props),
-        React.createElement(Calculation, elProps(pathTo('Calculation1')).show(true).props),
+        React.createElement(Calculation, elProps(pathTo('Calculation1')).props),
         React.createElement(Data, elProps(pathTo('Data1')).display(false).props),
     )
 }

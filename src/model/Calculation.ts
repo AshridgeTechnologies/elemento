@@ -18,7 +18,7 @@ export default class Calculation extends BaseElement<Properties> implements Elem
     get calculation() {return this.properties.calculation}
     get label() {return this.properties.label}
     get whenTrueAction() {return this.properties.whenTrueAction}
-    get show() {return this.properties.show ?? true}
+    get show() {return this.properties.show}
     get styles() {return this.properties.styles}
 
     get propertyDefs(): PropertyDef[] {

@@ -28,7 +28,7 @@ const formatDisplay = (value: any) => {
 }
 
 export default function Calculation({path, ...props}: Properties) {
-    const {label, show, styles = {}} = valueOfProps(props)
+    const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
     const state = useGetObjectState<CalculationState>(path)

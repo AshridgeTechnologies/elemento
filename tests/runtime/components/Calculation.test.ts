@@ -12,16 +12,25 @@ import {act} from '@testing-library/react/pure'
 
 const [calculation] = wrappedTestElement(Calculation, CalculationState)
 
+test('Calculation element produces empty output with show not supplied', () => {
+    const {container} = render(calculation('app.page1.width', {value: 'Hi there!'}, {
+        styles: {width: 23},
+        label: 'Item Description',
+    }))
+    expect(container.innerHTML).toMatchSnapshot()
+})
+
 test('Calculation element produces output with properties supplied', () => {
     const {container} = render(calculation('app.page1.width', {value: 'Hi there!'}, {
-            styles: {width: 23},
-            label: 'Item Description'
-        }))
+        styles: {width: 23},
+        label: 'Item Description',
+        show: true
+    }))
     expect(container.innerHTML).toMatchSnapshot()
 })
 
 test('Calculation element produces output with multiline', () => {
-    const {container} = render(calculation('app.page1.description', {value: 'Hi there!\nHow are you?'}, {label: 'Item Description'}))
+    const {container} = render(calculation('app.page1.description', {value: 'Hi there!\nHow are you?'}, {label: 'Item Description', show: true}))
     expect(container.innerHTML).toMatchSnapshot()
 })
 

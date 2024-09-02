@@ -10,7 +10,7 @@ test('Calculation has correct properties with default values', ()=> {
     expect(calculation1.name).toBe('Calculation 1')
     expect(calculation1.calculation).toBe(undefined)
     expect(calculation1.whenTrueAction).toBe(undefined)
-    expect(calculation1.show).toBe(true)
+    expect(calculation1.show).toBe(undefined)
     expect(calculation1.styles).toBe(undefined)
     expect(calculation1.label).toBe(undefined)
 })
