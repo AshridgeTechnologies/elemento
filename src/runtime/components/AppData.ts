@@ -3,7 +3,7 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import {AppStateForObject} from '../appData'
 import {shallow} from 'zustand/shallow'
 import Url, {asQueryObject} from '../Url'
-import {valuesOf} from '../runtimeFunctions'
+import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
 import type {FunctionComponent} from 'react'
 
@@ -73,8 +73,8 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         }
     }
 
-    FileUrl = (filename: string) => {
+    FileUrl = (filename: PropVal<string>) => {
         const {appContext} = this.props
-        return appContext.getResourceUrl(filename)
+        return appContext.getResourceUrl(valueOf(filename))
     }
 }

@@ -15,6 +15,7 @@ import {createMemoryHistory, MemoryHistory} from 'history'
 import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
+import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 
 jest.mock('../../../src/runtime/components/authentication')
 
@@ -272,12 +273,13 @@ test('App.State can get a File Url', () => {
         onUrlChange: jest.fn(),
         goBack: jest.fn(),
         getFullUrl: jest.fn(),
-        getResourceUrl(name: string) {
-            return 'resource/url/to/' + name
+        getResourceUrl(resourceName: string) {
+            return 'resource/url/to' + ensureSlash(resourceName)
         }
     }
     const state = new App.State({pages, appContext})._withStateForTest({currentUrl: urlForPage('Page2')})
     expect(state.FileUrl('image1.jpg')).toBe('resource/url/to/image1.jpg')
+    expect(state.FileUrl(valueObj('image1.jpg'))).toBe('resource/url/to/image1.jpg')
 })
 
 test('App.State responds to app context url changes', () => {
