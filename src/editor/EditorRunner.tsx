@@ -684,8 +684,12 @@ export default function EditorRunner() {
                                 <Grid item xs={10} height='100%' overflow='scroll'>
                                     <PanelTitle name='Preview'>
                                         <Link href={previewUrl} target='elementoPreview' aria-label="open in new window" title="open in new window" color='inherit'>
-                                            <OpenInNew color='inherit' sx={{marginTop: '5px', fontSize: '1.2rem'}}/>
+                                            <Typography sx={{px: 2, py: 0.5}}>Open in new window</Typography>
                                         </Link>
+                                        {runUrl ? <Link href={runUrl} target='elementoPublishedApp' aria-label="open app from GitHub" title="open app from GitHub" color='inherit'>
+                                            <Typography sx={{px: 2, py: 0.5}}>Open from GitHub</Typography>
+                                        </Link> : null
+                                        }
                                     </PanelTitle>
                                     <PreviewPanel height='calc(100% - 32px)'
                                         preview={
