@@ -3,6 +3,7 @@ import Observable from 'zen-observable'
 import MemoryDataStore from './MemoryDataStore'
 import {mapValues} from 'radash'
 import {isoDateReviver} from '../../util/helpers'
+import {globalFetch} from './ComponentHelpers'
 
 const EMPTY_OBSERVABLE = Observable.from([])
 
@@ -16,7 +17,7 @@ export default class WebFileDataStoreImpl implements DataStore {
 
     private async store(): Promise<MemoryDataStore> {
         if (this.inMemoryStore === null) {
-            const fetch = this.props.fetch ?? globalThis.fetch.bind(globalThis)
+            const fetch = this.props.fetch ?? globalFetch
             const response = await fetch(this.props.url)
             const contentType = response.headers.get('Content-Type')
             const isJson = contentType?.startsWith('application/json')

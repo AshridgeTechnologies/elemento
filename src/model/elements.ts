@@ -54,6 +54,7 @@ import Block from './Block'
 import Timer from './Timer'
 import Frame from './Frame'
 import ScreenKeyboard from './ScreenKeyboard'
+import WebFile from './WebFile'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -111,6 +112,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         Adapter: Adapter,
+        WebFile: WebFile,
         File: File,
         FileFolder: FileFolder,
         ComponentFolder: ComponentFolder,

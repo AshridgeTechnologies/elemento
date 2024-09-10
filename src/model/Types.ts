@@ -72,6 +72,7 @@ export type ElementType =
     'WebFileDataStore' |
     'BrowserDataStore' |
     'MemoryDataStore' |
+    'WebFile' |
     'Function' |
     'FunctionImport' |
     'Component' |

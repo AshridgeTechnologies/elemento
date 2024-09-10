@@ -1,16 +1,9 @@
 import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
-import {
-    ComponentType,
-    ElementType,
-    eventAction,
-    ParentType,
-    PropertyDef,
-    PropertyExpr,
-    PropertyValueType
-} from './Types'
+import {ComponentType, ElementType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import {without} from 'ramda'
 import Page from './Page'
+import {isArray} from 'lodash'
 
 export type Properties = Partial<Readonly<{
     author: PropertyValueType<string>,
@@ -66,8 +59,8 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     }
 
     protected appCanContain(elementType: ElementType, parentType: ParentType) {
-        return parentType === 'App' ||
-            parentType === this.kind || // to cover element types that extend App
+        const canBeChild = (type: ParentType) => type === 'App' || type === this.kind
+        return canBeChild(parentType) || isArray(parentType) && parentType.some(canBeChild) ||
             ['Collection', 'Function', 'FunctionImport', 'Component'].includes(elementType)
     }
 

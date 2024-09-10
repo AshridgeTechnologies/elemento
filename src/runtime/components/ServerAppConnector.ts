@@ -5,7 +5,9 @@ import {equals, mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import {AppStateForObject} from '../appData'
-import lodash from 'lodash'; const {startCase} = lodash;
+import lodash from 'lodash';
+import {globalFetch} from './ComponentHelpers'
+const {startCase} = lodash;
 
 type Properties = {path: string}
 
@@ -23,7 +25,7 @@ export interface Configuration {
 type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
 type StateProperties = {resultCache: object, versionId: string, versionFetch: Promise<string>, authSubscription?: VoidFunction }
 
-export default function ServerAppConnector({path}: Properties) {
+export default function ServerAppConnector(_props: Properties) {
     return null
 }
 
@@ -36,7 +38,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     private get versionId() { return this.state.versionId}
 
     constructor(props: ExternalProperties) {
-        super({fetch: globalThis.fetch.bind(globalThis), ...props})
+        super({fetch: globalFetch, ...props})
         const functions = this.props.configuration?.functions ?? []
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
     }

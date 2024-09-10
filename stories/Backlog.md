@@ -126,6 +126,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Plain links with href and target
 - Consider TinyBase
 - Guards on actions - some of: do nothing, warn, error, programming error, confirm
 - Functions have auto await insertion
@@ -374,6 +375,8 @@ Done
 - Web fonts
 - Dialogs
 - Screen keyboard
+- Load content of text file
+
 
 Bugs fixed
 ----------

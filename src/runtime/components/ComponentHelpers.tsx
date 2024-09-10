@@ -127,3 +127,5 @@ export function dndWrappedComponent(component: React.FunctionComponent<any>) {
         return DndWrapper({elementToWrap})
     }
 }
+
+export const globalFetch = (...args: any[]) => globalThis.fetch.apply(globalThis, args as any)
