@@ -81,6 +81,10 @@ test('Can show HTML text ', () => {
     snapshot(createElement(TextElement, {path: 'page1.para1', allowHtml: true, content:'<h1>Hello</h1>\n\n<b>where</b> are you?'} ))()
 })
 
+test('Can show HTML text with embedded styles', () => {
+    snapshot(createElement(TextElement, {path: 'page1.para1', allowHtml: true, content:'<style>h1 {color: blue} </style><h1>Hello</h1>\n\n<b>who</b> are you?'} ))()
+})
+
 test('Sanitises bad tags in HTML text', () => {
     snapshot(createElement(TextElement, {path: 'page1.para1', allowHtml: true, content:'<h1>Hello</h1>\n\n<script>alert("!!")</script>'} ))()
 })

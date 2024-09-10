@@ -16,6 +16,29 @@ exports[`Can show HTML text  1`] = `
 </div>
 `;
 
+exports[`Can show HTML text with embedded styles 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  id="page1.para1"
+>
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": "h1 {color: blue} ",
+      }
+    }
+  />
+  <h1>
+    Hello
+  </h1>
+  <br />
+  <b>
+    who
+  </b>
+   are you?
+</div>
+`;
+
 exports[`Can show HTML text with values in a template string 1`] = `
 <div
   className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"

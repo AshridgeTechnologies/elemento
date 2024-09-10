@@ -65,7 +65,7 @@ function findReactChildren(text: string, allowHtml: boolean, children: React.Rea
 
     const htmlWithBrs = (text: string) => {
         const textWithBreaks = text.replace(/\n+/g, (match: string) => match.substring(1).replace(/\n/g, '<br/>'))
-        const contentText = DOMPurify.sanitize(textWithBreaks)
+        const contentText = DOMPurify.sanitize(textWithBreaks, {FORCE_BODY: true})
         const substitutePlaceholders = (domNode: DOMNode) => domNode.type === 'text' ? React.createElement(React.Fragment, null, substituteElementsForPlaceholders(domNode.data)) : domNode
         return parse(contentText, {replace: substitutePlaceholders})
     }
