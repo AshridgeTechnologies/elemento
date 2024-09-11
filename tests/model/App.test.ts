@@ -7,13 +7,12 @@ import {asJSON, ex} from '../testutil/testHelpers'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
-import DateInput from '../../src/model/DateInput'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
     const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`, fonts: '   \nMontserrat\n   \nComic Sans',
-        cookieMessage: 'We use cookies'}, [page1, page2])
+        cookieMessage: 'We use cookies', faviconUrl: 'coolicon.png'}, [page1, page2])
 
     expect(app.id).toBe('t1')
     expect(app.name).toBe('test1')
@@ -23,6 +22,7 @@ test('App has correct properties', ()=> {
     expect(app.fonts).toBe('   \nMontserrat\n   \nComic Sans')
     expect(app.fontList).toStrictEqual(['Montserrat', 'Comic Sans'])
     expect(app.cookieMessage).toBe('We use cookies')
+    expect(app.faviconUrl).toBe('coolicon.png')
     expect(app.pages.map( p => p.id )).toStrictEqual(['p1', 'p2'])
 })
 
@@ -36,7 +36,6 @@ test('can distinguish different types of element', () => {
     expect(app.otherComponents.map( p => p.id )).toStrictEqual(['ab2', 'coll1'])
     expect(app.topChildren.map( p => p.id )).toStrictEqual(['ab2'])
     expect(app.bottomChildren.map( p => p.id )).toStrictEqual(['coll1'])
-
 })
 
 test('can find app itself by id', ()=> {
@@ -188,7 +187,7 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('has correct property names', () => {
-    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'cookieMessage'])
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'cookieMessage', 'faviconUrl'])
 })
 
 test('converts to JSON', ()=> {

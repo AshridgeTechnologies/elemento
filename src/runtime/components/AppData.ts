@@ -19,11 +19,10 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
 
     init(asi: AppStateForObject, path: string): void {
         super.init(asi, path)
-        const {appContext} = this.props
         const {subscription} = this.state
 
         if (!subscription) {
-            this.state.subscription = appContext.onUrlChange(() => this.latest().updateState({currentUrl: appContext.getUrl()}))  // need state update to cause re-render
+            this.state.subscription = this.appContext.onUrlChange(() => this.latest().updateState({currentUrl: this.appContext.getUrl()}))  // need state update to cause re-render
         }
     }
 
@@ -33,6 +32,10 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         const pagesEqual = shallow(thisPages, newPages)
         const propsEqual = shallow(thisProps, newProps)
         return pagesEqual && propsEqual ? this : new AppData(newObj.props).withState(this.state) as this
+    }
+
+    get appContext() {
+        return this.props.appContext
     }
 
     get currentPage() {
@@ -51,17 +54,15 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     }
 
     CurrentUrl = () => {
-        const {appContext} = this.props
-        const {location, pathPrefix} = appContext.getUrl()
+        const {location, pathPrefix} = this.appContext.getUrl()
         const {origin, pathname, query, hash} = location
         return new Url(origin, pathname, pathPrefix, query, hash)
     }
 
     ShowPage = (page: string | FunctionComponent, ...args: (string | object | null)[]) => {
         const argValues = valuesOf(...args)
-        const {appContext} = this.props
         if (page === Url.previous) {
-            appContext.goBack()
+            this.appContext.goBack()
         } else {
             const pageName = typeof page === 'string' ? page : page.name
             const isString = (arg: any) => typeof arg === 'string'
@@ -69,12 +70,11 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
             const path = '/' + [pageName, ...pathSegments].join('/')
             const remainingArgs = dropWhile(isString, argValues)
             const [query, anchor] = [...remainingArgs, null, null]
-            appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
+            this.appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
         }
     }
 
     FileUrl = (filename: PropVal<string>) => {
-        const {appContext} = this.props
-        return appContext.getResourceUrl(valueOf(filename))
+        return this.appContext.getResourceUrl(valueOf(filename))
     }
 }

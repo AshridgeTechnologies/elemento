@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- File resources not found in run from GitHub in WebFile/WebFileDataStore
 - Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
 - Duplicate function name causes runtime error but no error in studio
@@ -126,6 +127,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Use versioned runtime with deployed apps
 - Menu buttons can be styled and be an icon
 - Plain links with href and target
 - Consider TinyBase

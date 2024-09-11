@@ -1,16 +1,16 @@
 import React, {createElement, useEffect} from 'react'
 import {useGetObjectState} from '../appData'
-import {Box, Button, Container, Theme, Typography, useTheme} from '@mui/material'
-import {SnackbarProvider, enqueueSnackbar, closeSnackbar} from 'notistack'
+import {Box, Button, Container, Typography, useTheme} from '@mui/material'
+import {closeSnackbar, enqueueSnackbar, SnackbarProvider} from 'notistack'
 import CookieConsent from 'react-cookie-consent'
 import {AppData} from './AppData'
 import {noop} from '../../util/helpers'
 import {isSignedIn, useSignedInState} from './authentication'
-import {subscribeToNotifications, type Notification} from './notifications'
+import {type Notification, subscribeToNotifications} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 
-type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, cookieMessage?: string, children?: any, topChildren?: any}
+type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
 
 const containerBoxCss = {
     height: '100%',
@@ -40,6 +40,18 @@ const insertFontLink = (fonts: string[]) => {
     }
 }
 
+const insertFaviconLink = (href: string | undefined) => {
+    if (href) {
+        let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link')
+            link.rel = 'icon'
+            document.head.appendChild(link)
+        }
+        link.href = href
+    }
+}
+
 function CookieMessage({path, message}: {path: string, message: string}) {
     const theme = useTheme()
     return <CookieConsent cookieName={`CookieConsent_${path}`}
@@ -52,12 +64,14 @@ function CookieMessage({path, message}: {path: string, message: string}) {
     </CookieConsent>
 }
 
-const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, cookieMessage, children, topChildren}: Properties) {
+const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, cookieMessage, faviconUrl, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 
-    useEffect( () => { insertFontLink(fonts) }, [] ) // wrap startupAction to ensure no result is returned to useEffect
+    useEffect( () => { insertFontLink(fonts) }, [] )
+    const fullFaviconUrl = state.appContext.getFullUrl(faviconUrl)
+    useEffect( () => { insertFaviconLink(fullFaviconUrl) }, [fullFaviconUrl] )
     useEffect( () => { startupAction() }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect(() => subscribeToNotifications( notify ), [])
     useSignedInState()

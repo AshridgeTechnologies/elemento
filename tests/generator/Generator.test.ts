@@ -315,7 +315,8 @@ test('generates html runner file', () => {
 </head>
 <body>
 <script type="module">
-    window.elementoRuntimeUrl = location.origin + '/lib/runtime.js'
+    const elementoRuntimeHost = (location.host.match(/^(localhost:|elemento-apps)/)) ? location.origin : 'https://elemento.online'
+    window.elementoRuntimeUrl = elementoRuntimeHost + '/lib/runtime.js'
     import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
 </script>
 </body>

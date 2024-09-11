@@ -10,6 +10,8 @@ import {isArray} from 'lodash'
 import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
+import {DefaultAppContext} from '../../src/runtime/AppContext'
+import {AppContextContext} from '../../src/runner/AppRunner'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -22,6 +24,11 @@ export const snapshotTest = (element: JSX.Element) => test(`${element.type.name}
 export const componentProps = (domElement: any) => {
     const propsKey = Object.keys(domElement).find(k => k.startsWith("__reactProps$"))
     return propsKey !== undefined ? domElement[propsKey as string] : null
+}
+
+export const inAppContextProvider = (prefix: string | undefined, el: any) => {
+    const appContext = new DefaultAppContext(null, prefix)
+    return createElement(AppContextContext.Provider, {value: appContext}, el)
 }
 
 let suppressionReported = false

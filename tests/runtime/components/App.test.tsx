@@ -16,6 +16,7 @@ import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
+import renderer from 'react-test-renderer'
 
 jest.mock('../../../src/runtime/components/authentication')
 
@@ -54,6 +55,14 @@ test('App element produces output containing page', () => {
 test('App element produces output with max width', () => {
     const component = appComponent('app1', {pages: {mainPage}, appContext}, {maxWidth: 500})
     expect(componentJSON(component)).toMatchSnapshot()
+})
+
+test('App element inserts favicon link', () => {
+    const faviconUrl = 'https://example.com/favicon.svg'
+    const component = appComponent('app1', {pages: {mainPage}, appContext}, {faviconUrl})
+    renderer.create(component)
+    const linkHref = (window.document.head.querySelector('link[rel=icon]') as any).href
+    expect(linkHref).toBe(faviconUrl)
 })
 
 test('App element produces output containing page and additional components with app bar at the top', () => {

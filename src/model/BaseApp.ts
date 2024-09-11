@@ -11,6 +11,7 @@ export type Properties = Partial<Readonly<{
     fonts: string,
     startupAction: PropertyExpr,
     cookieMessage: PropertyValueType<string>
+    faviconUrl: PropertyValueType<string>
 }>>
 
 export abstract class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
@@ -52,6 +53,9 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     get cookieMessage() {
         return this.properties.cookieMessage
     }
+    get faviconUrl() {
+        return this.properties.faviconUrl
+    }
 
     get propertyDefs(): PropertyDef[] {
         return [
@@ -60,6 +64,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
             propDef('fonts', 'string multiline', {fixedOnly: true}),
             propDef('startupAction', eventAction()),
             propDef('cookieMessage', 'string'),
+            propDef('faviconUrl', 'string'),
         ]
     }
 

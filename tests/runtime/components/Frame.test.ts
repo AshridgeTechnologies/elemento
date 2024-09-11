@@ -4,14 +4,7 @@
 
 import {createElement} from 'react'
 import {Frame} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, valueObj, wait} from '../../testutil/testHelpers'
-import {AppContextContext} from '../../../src/runner/AppRunner'
-import {DefaultAppContext} from '../../../src/runtime/AppContext'
-
-const inAppContextProvider = (prefix: string | undefined, el: any) => {
-    const appContext = new DefaultAppContext(null, prefix)
-    return createElement(AppContextContext.Provider, {value: appContext}, el)
-}
+import {componentJSON, inAppContextProvider, snapshot, valueObj, wait} from '../../testutil/testHelpers'
 
 test('Frame element produces frame output with default properties',
     snapshot(inAppContextProvider(undefined, createElement(Frame, {path: 'app.page1.photo', source: 'sidebar.pdf', })))
