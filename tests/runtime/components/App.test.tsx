@@ -151,6 +151,11 @@ test('App shows first page initially and other page when state changes and only 
     unmount() // to check nothing returned from the startup action is called
 })
 
+test('App element produces output with cookie message', () => {
+    const component = appComponent('app1', {pages: {mainPage}, appContext}, {cookieMessage: 'We love cookies'})
+    expect(componentJSON(component)).toMatchSnapshot()
+})
+
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
     const pages = {Page1, Page2, Page3}

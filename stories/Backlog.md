@@ -126,6 +126,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Menu buttons can be styled and be an icon
 - Plain links with href and target
 - Consider TinyBase
 - Guards on actions - some of: do nothing, warn, error, programming error, confirm
@@ -376,6 +377,7 @@ Done
 - Dialogs
 - Screen keyboard
 - Load content of text file
+- Cookie consent
 
 
 Bugs fixed

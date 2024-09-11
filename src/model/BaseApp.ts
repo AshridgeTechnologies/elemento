@@ -9,7 +9,8 @@ export type Properties = Partial<Readonly<{
     author: PropertyValueType<string>,
     maxWidth: PropertyValueType<string | number>,
     fonts: string,
-    startupAction: PropertyExpr
+    startupAction: PropertyExpr,
+    cookieMessage: PropertyValueType<string>
 }>>
 
 export abstract class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
@@ -48,6 +49,9 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     get startupAction() {
         return this.properties.startupAction
     }
+    get cookieMessage() {
+        return this.properties.cookieMessage
+    }
 
     get propertyDefs(): PropertyDef[] {
         return [
@@ -55,6 +59,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
             propDef('maxWidth', 'string|number'),
             propDef('fonts', 'string multiline', {fixedOnly: true}),
             propDef('startupAction', eventAction()),
+            propDef('cookieMessage', 'string'),
         ]
     }
 

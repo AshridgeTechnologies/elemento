@@ -1,7 +1,8 @@
 import React, {createElement, useEffect} from 'react'
 import {useGetObjectState} from '../appData'
-import {Box, Button, Container, Typography} from '@mui/material'
+import {Box, Button, Container, Theme, Typography, useTheme} from '@mui/material'
 import {SnackbarProvider, enqueueSnackbar, closeSnackbar} from 'notistack'
+import CookieConsent from 'react-cookie-consent'
 import {AppData} from './AppData'
 import {noop} from '../../util/helpers'
 import {isSignedIn, useSignedInState} from './authentication'
@@ -9,7 +10,7 @@ import {subscribeToNotifications, type Notification} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 
-type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, children?: any, topChildren?: any}
+type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, cookieMessage?: string, children?: any, topChildren?: any}
 
 const containerBoxCss = {
     height: '100%',
@@ -39,7 +40,19 @@ const insertFontLink = (fonts: string[]) => {
     }
 }
 
-const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, children, topChildren}: Properties) {
+function CookieMessage({path, message}: {path: string, message: string}) {
+    const theme = useTheme()
+    return <CookieConsent cookieName={`CookieConsent_${path}`}
+                          buttonText='OK'
+                          enableDeclineButton declineButtonText='Not Ok' flipButtons
+                          style={{backgroundColor: theme.palette.primary.main, color: 'white', left: '5px', width: 'calc(100% - 10px)'}}
+                          buttonStyle={{backgroundColor: '#16f316', borderRadius: '5px'}}
+                          declineButtonStyle={{backgroundColor: '#dd3535', color: 'white', borderRadius: '5px'}}>
+        <Typography>{message}</Typography>
+    </CookieConsent>
+}
+
+const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, cookieMessage, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
@@ -66,6 +79,7 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], s
         <Box flex='0'>
             {children}
         </Box>
+        {cookieMessage ? <CookieMessage path={path} message={cookieMessage}/> : null}
     </Box>
 
 })

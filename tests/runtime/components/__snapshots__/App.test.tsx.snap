@@ -371,6 +371,161 @@ exports[`App element produces output containing page and additional components w
 ]
 `;
 
+exports[`App element produces output with cookie message 1`] = `
+[
+  <div
+    className="ElApp MuiBox-root css-3j596c"
+    id="app1"
+  >
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+    <div
+      className="MuiBox-root css-zi2l0h"
+    >
+      <div
+        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+      >
+        <div
+          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          id="app1.page1"
+          tabIndex={-1}
+        >
+          <div
+            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            id="app1.page1.para1"
+          >
+            Hello
+            <br />
+            where are you
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="MuiBox-root css-72fd9l"
+    />
+    <div
+      className="CookieConsent"
+      style={
+        {
+          "alignItems": "baseline",
+          "background": "#353535",
+          "backgroundColor": "#1976d2",
+          "bottom": "0",
+          "color": "white",
+          "display": "flex",
+          "flexWrap": "wrap",
+          "justifyContent": "space-between",
+          "left": "5px",
+          "position": "fixed",
+          "width": "calc(100% - 10px)",
+          "zIndex": "999",
+        }
+      }
+    >
+      <div
+        className=""
+        style={
+          {
+            "flex": "1 0 300px",
+            "margin": "15px",
+          }
+        }
+      >
+        <p
+          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          We love cookies
+        </p>
+      </div>
+      <div
+        className=""
+      >
+        <button
+          aria-label="Accept cookies"
+          className=""
+          id="rcc-confirm-button"
+          onClick={[Function]}
+          style={
+            {
+              "background": "#ffd42d",
+              "backgroundColor": "#16f316",
+              "border": "0",
+              "borderRadius": "5px",
+              "boxShadow": "none",
+              "color": "black",
+              "cursor": "pointer",
+              "flex": "0 0 auto",
+              "margin": "15px",
+              "padding": "5px 10px",
+            }
+          }
+        >
+          OK
+        </button>
+        <button
+          aria-label="Decline cookies"
+          className=""
+          id="rcc-decline-button"
+          onClick={[Function]}
+          style={
+            {
+              "background": "#c12a2a",
+              "backgroundColor": "#dd3535",
+              "border": "0",
+              "borderRadius": "5px",
+              "boxShadow": "none",
+              "color": "white",
+              "cursor": "pointer",
+              "flex": "0 0 auto",
+              "margin": "15px",
+              "padding": "5px 10px",
+            }
+          }
+        >
+          Not Ok
+        </button>
+      </div>
+    </div>
+  </div>,
+  <div
+    id="DndDescribedBy-9"
+    style={
+      {
+        "display": "none",
+      }
+    }
+  >
+    
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+  </div>,
+  <div
+    aria-atomic={true}
+    aria-live="assertive"
+    id="DndLiveRegion-9"
+    role="status"
+    style={
+      {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(100%)",
+        "height": 1,
+        "margin": -1,
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "fixed",
+        "whiteSpace": "nowrap",
+        "width": 1,
+      }
+    }
+  />,
+]
+`;
+
 exports[`App element produces output with max width 1`] = `
 [
   <div
