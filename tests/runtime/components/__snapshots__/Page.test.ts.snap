@@ -2,7 +2,7 @@
 
 exports[`Page element produces output containing children 1`] = `
 <div
-  className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+  className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
   id="page1"
   tabIndex={-1}
 >

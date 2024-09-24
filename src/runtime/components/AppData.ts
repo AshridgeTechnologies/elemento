@@ -53,6 +53,9 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         return this.props.pages[notLoggedInPageName]
     }
 
+    AppWidth = () => this.domElement?.clientWidth ?? 0
+    AppHeight = () => this.domElement?.clientHeight ?? 0
+
     CurrentUrl = () => {
         const {location, pathPrefix} = this.appContext.getUrl()
         const {origin, pathname, query, hash} = location

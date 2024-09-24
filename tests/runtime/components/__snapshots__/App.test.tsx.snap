@@ -38,7 +38,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
         className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -130,7 +130,7 @@ exports[`App element produces output containing not logged in page if it exists 
         className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -200,7 +200,7 @@ exports[`App element produces output containing page 1`] = `
         className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -294,7 +294,7 @@ exports[`App element produces output containing page and additional components w
         className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -387,7 +387,7 @@ exports[`App element produces output with cookie message 1`] = `
         className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -542,7 +542,7 @@ exports[`App element produces output with max width 1`] = `
         className="MuiContainer-root MuiContainer-disableGutters css-32ajlx-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-pao7ie-MuiStack-root"
+          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
