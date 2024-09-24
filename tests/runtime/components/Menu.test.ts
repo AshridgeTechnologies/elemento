@@ -16,6 +16,15 @@ test('Menu element produces output with properties supplied when closed',
     }))
 )
 
+test('Menu element produces output with properties supplied when closed and has icon name',
+    snapshot(createElement(Menu, {
+        path: 'app.page1.fileMenu', label: 'File', iconName: 'menu', children: [
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: jest.fn, styles: {color: 'red'} }),
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: jest.fn(), show: false})
+        ]
+    }))
+)
+
 test('Menu element produces output with properties supplied when open', async () => {
         const {el, user} = testContainer(createElement(Menu, {
             path: 'app.page1.fileMenu', label: 'File', children: [

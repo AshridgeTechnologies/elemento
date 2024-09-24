@@ -1,20 +1,22 @@
-import React from 'react'
-import {Button, Menu as Mui_Menu} from '@mui/material'
-import {compose} from 'ramda'
-import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {sxProps} from './ComponentHelpers'
+import React, {MouseEventHandler} from 'react'
+import {Button, Icon, Icon as MuiIcon, IconButton, IconButton as MuiIconButton, Menu as Mui_Menu} from '@mui/material'
+import {compose, omit, pick} from 'ramda'
+import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
+import {sxProps, typographyStyles} from './ComponentHelpers'
 
 type Properties = Readonly<{
     path: string,
     label?: PropVal<string>,
+    iconName?: PropVal<string>,
     filled?: PropVal<boolean>,
     show?: PropVal<boolean>,
     styles?: StylesPropVals
+    buttonStyles?: StylesPropVals
     children?: any
 }>
 
 export default function Menu({path, children = [], ...props}: Properties) {
-    const {label, filled, show, styles = {}} = valueOfProps(props)
+    const {label, iconName, filled, show, styles = {}, buttonStyles = {}} = valueOfProps(props)
     const showProps = show !== undefined && !show ? {display: 'none'} : {}
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -34,19 +36,29 @@ export default function Menu({path, children = [], ...props}: Properties) {
         const key = props.key ?? props.label ?? index
         return React.cloneElement(child, {action: newAction, key})
     })
-    return <div style={showProps}>
+
+    const buttonStyleProps = sxProps(omit(typographyStyles, buttonStyles))
+    const typographySx = sxProps(pick(typographyStyles, buttonStyles))
+    const button = iconName ?
+        <IconButton id={buttonId} aria-label={label} title={label} sx={buttonStyleProps} onClick={handleClick}>
+            <Icon sx={typographySx}>{iconName}</Icon>
+        </IconButton> :
         <Button
-            id={buttonId}
-            variant={filled ? 'contained' : 'text'}
-            size = 'small'
-            disableElevation={true}
-            aria-controls={open ? path : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-        >
-            {label}
-        </Button>
+        id={buttonId}
+        variant={filled ? 'contained' : 'text'}
+        size='small'
+        disableElevation={true}
+        aria-controls={open ? path : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+        sx={sxProps(buttonStyles)}
+    >
+        {label}
+    </Button>
+
+    return <div style={showProps}>
+        {button}
         <Mui_Menu
             anchorEl={anchorEl}
             open={open}

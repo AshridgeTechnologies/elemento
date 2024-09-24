@@ -1,10 +1,12 @@
-import {ComponentType, ElementType, PropertyDef, PropertyValueType, Show, Styling} from './Types'
+import {ComponentType, ElementType, PropertyDef, PropertyValueType, Show, Styling, StylingProps} from './Types'
 import Element from './Element'
 import BaseElement, {propDef, visualPropertyDefs} from './BaseElement'
 
 type Properties = Partial<Readonly<{
     label: PropertyValueType<string>,
-    filled: PropertyValueType<boolean>
+    iconName: PropertyValueType<string>,
+    filled: PropertyValueType<boolean>,
+    buttonStyles?: StylingProps
 }>> & Styling & Show
 
 export default class Menu extends BaseElement<Properties> implements Element {
@@ -14,15 +16,20 @@ export default class Menu extends BaseElement<Properties> implements Element {
     type(): ComponentType { return 'statelessUI' }
 
     get label() {return this.properties.label ?? this.name}
+    get iconName() {return this.properties.iconName}
     get filled() {return this.properties.filled}
     get show() { return this.properties.show }
     get styles() { return this.properties.styles }
+    get buttonStyles() { return this.properties.buttonStyles }
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('label', 'string'),
+            propDef('iconName', 'string'),
             propDef('filled', 'boolean'),
-            ...visualPropertyDefs()
+            ...visualPropertyDefs(),
+            propDef('buttonStyles', 'styles')
+
         ]
     }
 
