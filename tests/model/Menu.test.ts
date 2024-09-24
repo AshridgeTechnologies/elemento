@@ -72,7 +72,7 @@ test('can contain only MenuItem', () => {
     expect(menu.canContain('Button')).toBe(false)
 })
 
-test('converts to JSON without optional proerties', ()=> {
+test('converts to JSON without optional properties', ()=> {
     const menu = new Menu('id1', 'Menu 1', {label: ex`"Some menu"`}, [item1, item2])
     expect(asJSON(menu)).toStrictEqual({
         kind: 'Menu',

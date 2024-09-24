@@ -13,7 +13,7 @@ export default function Page({children, path, ...props}: Properties) {
         className: 'ElPage',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        spacing: 0,
+        spacing: 2,
         height: '100%', width: '100%',
         boxSizing: 'border-box',
         tabIndex: -1,
