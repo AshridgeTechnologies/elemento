@@ -14,8 +14,8 @@ type Properties = {path: string, maxWidth?: string | number, fonts?: string[], s
 
 const containerBoxCss = {
     height: '100%',
-    paddingTop: 1,
-    paddingBottom: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
     marginTop: 0,
     marginBottom: 0,
 }

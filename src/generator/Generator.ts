@@ -694,7 +694,7 @@ ${generateChildren(form, indentLevel2, form)}
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
   <style>
     body { margin: 0; padding: 0}
-    #main { height: calc(100vh - 8px); width: calc(100vw - 8px); margin: 4px }
+    #main { height: 100vh; width: 100vw; margin: 0 }
   </style>
 </head>
 <body>

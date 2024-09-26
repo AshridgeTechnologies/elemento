@@ -14,6 +14,7 @@ export default function Page({children, path, ...props}: Properties) {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         spacing: 2,
+        useFlexGap: true,
         height: '100%', width: '100%',
         boxSizing: 'border-box',
         tabIndex: -1,
