@@ -35,10 +35,10 @@ exports[`App element produces output containing normal page if logged in 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -127,10 +127,10 @@ exports[`App element produces output containing not logged in page if it exists 
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -197,10 +197,10 @@ exports[`App element produces output containing page 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -291,10 +291,10 @@ exports[`App element produces output containing page and additional components w
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -384,10 +384,10 @@ exports[`App element produces output with cookie message 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-6119j1-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >
@@ -539,10 +539,10 @@ exports[`App element produces output with max width 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-32ajlx-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1gclkka-MuiContainer-root"
       >
         <div
-          className="MuiStack-root ElPage css-1gvmodg-MuiStack-root"
+          className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
           id="app1.page1"
           tabIndex={-1}
         >

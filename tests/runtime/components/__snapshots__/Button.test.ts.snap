@@ -74,6 +74,41 @@ exports[`Button element produces output with enabled true 1`] = `
 </button>
 `;
 
+exports[`Button element produces output with icon 1`] = `
+<button
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+  disabled={false}
+  id="app.page1.save"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onContextMenu={[Function]}
+  onDragLeave={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onKeyUp={[Function]}
+  onMouseDown={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  <span
+    className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"
+  >
+    <span
+      aria-hidden={true}
+      className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    >
+      send
+    </span>
+  </span>
+  Send
+</button>
+`;
+
 exports[`Button element produces output with link style 1`] = `
 <a
   className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-1uaw2hx-MuiTypography-root-MuiLink-root"

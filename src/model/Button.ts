@@ -6,6 +6,7 @@ const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
 type Properties = Partial<Readonly<{
     content: PropertyValueType<string>,
+    iconName: PropertyValueType<string>,
     action: PropertyExpr,
     appearance: PropertyValueType<Appearance>,
     enabled: PropertyValueType<boolean>,
@@ -19,6 +20,7 @@ export default class Button extends BaseElement<Properties> implements Element {
     type(): ComponentType { return 'statelessUI' }
 
     get content() {return this.properties.content ?? this.name}
+    get iconName() {return this.properties.iconName}
     get appearance() {return this.properties.appearance ?? appearanceChoices[0]}
     get show() {return this.properties.show}
     get enabled() {return this.properties.enabled}
@@ -28,6 +30,7 @@ export default class Button extends BaseElement<Properties> implements Element {
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('content', 'string'),
+            propDef('iconName', 'string'),
             propDef('appearance', appearanceChoices),
             propDef('show', 'boolean'),
             propDef('enabled', 'boolean'),

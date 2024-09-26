@@ -393,8 +393,8 @@ test('has fields for Button', () => {
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
     expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(4).textContent).toBe('fx=')
-    expect(kindButton(4).disabled).toBe(true)
+    expect(kindButton(5).textContent).toBe('fx=')
+    expect(kindButton(5).disabled).toBe(true)
     expect(selectValue('Show')).toBe('false')
 })
 

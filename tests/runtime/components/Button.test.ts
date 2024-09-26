@@ -21,6 +21,10 @@ test('Button element produces output with styles supplied',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'outline', styles: {width: 300}, action: () => {doIt()}}))
 )
 
+test('Button element produces output with icon',
+    snapshot(createElement(Button, {path: 'app.page1.save', content: 'Send', iconName: 'send', appearance: 'outline', action: () => {doIt()}}))
+)
+
 test('Button element produces output with link style',
     snapshot(createElement(Button, {path: 'app.page1.save', content: 'Click me!', appearance: 'link', action: () => {doIt()}}))
 )
