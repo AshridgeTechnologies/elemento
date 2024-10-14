@@ -57,8 +57,8 @@ export default function UserLogon() {
             <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1}
                   onClick={handleLogout}>Logout</Link>
         </Box>
-        : <Box minWidth={400} margin={2}>
-            <Typography variant='body1'>Please log in</Typography>
+        : <Box minWidth={300} margin={2}>
+            <Typography variant='body1'>Please log in or sign up</Typography>
             <AuthDialog onSignIn={handleSignIn}/>
         </Box>
 
@@ -77,12 +77,14 @@ export default function UserLogon() {
             >
                 <Icon>account_circle</Icon>
             </IconButton>
-                : <Button variant='contained' disableElevation={true}
+                : <Button variant='contained' size='small' disableElevation={true}
                           aria-label="account of current user"
                           aria-controls="userMenu"
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
-                          onClick={handleButtonClick}>Login
+                          onClick={handleButtonClick}
+                          sx={{px: 1, minWidth: '32px'}}
+                >Login
                 </Button>
         }
 
@@ -94,6 +96,7 @@ export default function UserLogon() {
                 onClose={handleClose}
                 anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                 transformOrigin={{vertical: 'top', horizontal: 'right'}}
+                sx={{marginTop: '8px'}}
             >
                 {userPanel}
             </Popover>

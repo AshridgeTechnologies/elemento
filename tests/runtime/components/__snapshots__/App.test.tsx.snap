@@ -25,7 +25,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
               The App bar
             </div>
             <div
-              className="MuiStack-root css-zqp9gt-MuiStack-root"
+              className="MuiStack-root css-bfp4wl-MuiStack-root"
             />
           </div>
         </div>
@@ -117,7 +117,7 @@ exports[`App element produces output containing not logged in page if it exists 
               The App bar
             </div>
             <div
-              className="MuiStack-root css-zqp9gt-MuiStack-root"
+              className="MuiStack-root css-bfp4wl-MuiStack-root"
             />
           </div>
         </div>
@@ -281,7 +281,7 @@ exports[`App element produces output containing page and additional components w
               The App bar
             </div>
             <div
-              className="MuiStack-root css-zqp9gt-MuiStack-root"
+              className="MuiStack-root css-bfp4wl-MuiStack-root"
             />
           </div>
         </div>

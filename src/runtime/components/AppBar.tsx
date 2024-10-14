@@ -29,7 +29,7 @@ export default function AppBar({children, path, ...props}: Properties) {
                     <Stack direction="row"
                            justifyContent="flex-start"
                            alignItems="center"
-                           spacing={2}
+                           spacing={1.5}
                            flexWrap='wrap'
                            useFlexGap
                            rowGap={0}

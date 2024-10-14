@@ -12,7 +12,7 @@ exports[`AppBar element produces output with children 1`] = `
       className="MuiStack-root css-zqp9gt-MuiStack-root"
     >
       <div
-        className="MuiStack-root css-zqp9gt-MuiStack-root"
+        className="MuiStack-root css-bfp4wl-MuiStack-root"
       >
         <div
           className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
@@ -49,7 +49,7 @@ exports[`AppBar element produces output with children and title 1`] = `
         My App
       </div>
       <div
-        className="MuiStack-root css-zqp9gt-MuiStack-root"
+        className="MuiStack-root css-bfp4wl-MuiStack-root"
       >
         <div
           className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
@@ -86,7 +86,7 @@ exports[`AppBar element produces output with title 1`] = `
         My App
       </div>
       <div
-        className="MuiStack-root css-zqp9gt-MuiStack-root"
+        className="MuiStack-root css-bfp4wl-MuiStack-root"
       />
     </div>
   </div>
