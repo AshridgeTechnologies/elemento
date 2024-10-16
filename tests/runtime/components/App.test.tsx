@@ -165,6 +165,40 @@ test('App element produces output with cookie message', () => {
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
+test('App element receives messages sent to window', async () => {
+    const messageAction = jest.fn()
+    const app = () => {
+        const _store = useGetStore()
+        _store.setObject('app1', new App.State({pages: {mainPage}, appContext}))
+        return createElement(App, {path: 'app1', messageAction})
+    }
+
+    const {unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})), 'messageActionTest')
+
+    window.postMessage({greeting: 'Hi there app!'}, '*')
+    await wait()
+    expect(messageAction).toHaveBeenCalledWith(null, {greeting: 'Hi there app!'})
+
+    unmount() // check message listener is removed
+
+    window.postMessage({greeting: 'Hi again app!'}, '*')
+    await wait()
+    expect(messageAction).toHaveBeenCalledTimes(1)
+})
+
+test('App.State can send messages', async () => {
+    const Page1 = (props: any) => null
+    const state = new App.State({Page1}, appContext)
+
+    let data: any
+    const listener = (event: MessageEvent) => data = event.data
+    window.addEventListener('message', listener)
+
+    state.SendMessage('top', {greeting: 'Hi there!'})
+    await wait()
+    expect(data).toStrictEqual({greeting: 'Hi there!'})
+})
+
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {
     const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
     const pages = {Page1, Page2, Page3}
@@ -276,11 +310,6 @@ test('App.State can get current url object', () => {
 test('App.State can get a File Url', () => {
     const Page1 = (props: any) => null
     const pages = {Page1}
-    const origin = 'http.example.com'
-    const pathname = '/someapp/somewhere/Page1/tabA/12345'
-    const query = {a: '10', b: 'foo'}
-    const hash = '#id123'
-    const pathPrefix = 'someapp/somewhere'
     const appContext: AppContext = {
         getUrl: jest.fn(),
         updateUrl: jest.fn(),

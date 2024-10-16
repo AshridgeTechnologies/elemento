@@ -10,6 +10,7 @@ export type Properties = Partial<Readonly<{
     maxWidth: PropertyValueType<string | number>,
     fonts: string,
     startupAction: PropertyExpr,
+    messageAction: PropertyExpr,
     cookieMessage: PropertyValueType<string>
     faviconUrl: PropertyValueType<string>
 }>>
@@ -50,6 +51,9 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     get startupAction() {
         return this.properties.startupAction
     }
+    get messageAction() {
+        return this.properties.messageAction
+    }
     get cookieMessage() {
         return this.properties.cookieMessage
     }
@@ -63,6 +67,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
             propDef('maxWidth', 'string|number'),
             propDef('fonts', 'string multiline', {fixedOnly: true}),
             propDef('startupAction', eventAction()),
+            propDef('messageAction', eventAction('$sender', '$message')),
             propDef('cookieMessage', 'string'),
             propDef('faviconUrl', 'string'),
         ]

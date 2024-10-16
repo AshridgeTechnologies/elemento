@@ -80,4 +80,13 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     FileUrl = (filename: PropVal<string>) => {
         return this.appContext.getResourceUrl(valueOf(filename))
     }
+
+    SendMessage = (targetName: string | number, message: any) => {
+        const targetWindow = globalThis[targetName as keyof typeof globalThis]
+        if (!targetWindow) {
+            console.warn(`Cannot find window "${targetName}"`)
+        }
+
+        targetWindow.postMessage(message, '*')
+    }
 }
