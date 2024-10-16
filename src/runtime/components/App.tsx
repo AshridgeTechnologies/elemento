@@ -10,7 +10,8 @@ import {type Notification, subscribeToNotifications} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 
-type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
+type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void,
+    messageAction?: ($sender: Window, $data: any) => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
 
 const containerBoxCss = {
     height: '100%',
@@ -64,7 +65,7 @@ function CookieMessage({path, message}: {path: string, message: string}) {
     </CookieConsent>
 }
 
-const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, cookieMessage, faviconUrl, children, topChildren}: Properties) {
+const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
@@ -74,6 +75,13 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], s
     useEffect( () => { insertFaviconLink(fullFaviconUrl) }, [fullFaviconUrl] )
     useEffect( () => { startupAction() }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect(() => subscribeToNotifications( notify ), [])
+    useEffect(() => {
+        if (messageAction) {
+            const listener = (event: MessageEvent) => messageAction(event.source as Window, event.data)
+            globalThis.addEventListener('message', listener)
+            return ()=> globalThis.removeEventListener('message', listener)
+        }
+    }, [messageAction])
     useSignedInState()
     const pageToDisplay = state.pageToDisplay(isSignedIn())
     return <Box id={path} display='flex' flexDirection='column' height='100%' width='100%'  className='ElApp'>

@@ -11,7 +11,7 @@ import {ElementType} from '../../src/model/Types'
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
     let page2 = new Page('p2', 'Page 2', {}, [])
-    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`, fonts: '   \nMontserrat\n   \nComic Sans',
+    const app = new App('t1', 'test1', {author: 'Herself', maxWidth: 200, startupAction: ex`Log('Hi')`, messageAction: ex`Log('Message')`, fonts: '   \nMontserrat\n   \nComic Sans',
         cookieMessage: 'We use cookies', faviconUrl: 'coolicon.png'}, [page1, page2])
 
     expect(app.id).toBe('t1')
@@ -19,6 +19,7 @@ test('App has correct properties', ()=> {
     expect(app.author).toBe('Herself')
     expect(app.maxWidth).toBe(200)
     expect(app.startupAction).toStrictEqual(ex`Log('Hi')`)
+    expect(app.messageAction).toStrictEqual(ex`Log('Message')`)
     expect(app.fonts).toBe('   \nMontserrat\n   \nComic Sans')
     expect(app.fontList).toStrictEqual(['Montserrat', 'Comic Sans'])
     expect(app.cookieMessage).toBe('We use cookies')
@@ -187,7 +188,7 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('has correct property names', () => {
-    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'cookieMessage', 'faviconUrl'])
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'messageAction', 'cookieMessage', 'faviconUrl'])
 })
 
 test('converts to JSON', ()=> {
@@ -219,4 +220,3 @@ test('converts from plain object', ()=> {
     const newApp = loadJSON(asJSON(app))
     expect(newApp).toStrictEqual<App>(app)
 })
-
