@@ -20,13 +20,14 @@ beforeEach( () => {
 
 describe('Add', () => {
 
-    test('makes correct update', () => {
-        collection.Add({id: 'x1', a:20, b:'Cee'})
+    test('makes correct update and returns item created', async () => {
+        const newItem = await collection.Add({id: 'x1', a:20, b:'Cee'})
         expect(dataStore.add).toHaveBeenCalledWith('Widgets', 'x1', {id: 'x1', a:20, b:'Cee'})
+        expect(newItem).toStrictEqual({id: 'x1', a:20, b:'Cee'})
     })
 
-    test('makes correct update for item without id', () => {
-        collection.Add({a:20, b:'Cee'})
+    test('makes correct update for item without id and returns item created', async () => {
+        const resultItem = await collection.Add({a:20, b:'Cee'})
         expect(dataStore.add).toHaveBeenCalled()
         const mock = (dataStore.add as jest.MockedFunction<any>).mock
 
@@ -34,6 +35,7 @@ describe('Add', () => {
         const newItem = mock.calls[0][2]
         expect(newItem.id).toBe(newId)
         expect(Number(newId)).toBeGreaterThan(0)
+        expect(resultItem).toBe(newItem)
     })
 
     test('makes correct update for simple value', () => {
@@ -41,11 +43,23 @@ describe('Add', () => {
         expect(dataStore.add).toHaveBeenCalledWith('Widgets','green', 'green')
     })
 
-    test('makes correct update for multiple items', () => {
-        collection.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
+    test('makes correct update for multiple items and returns items created', async () => {
+        const results = await collection.Add([{id: 'x1', a:20, b:'Cee'}, {id: 'x2', a:30, b:'Dee'}])
         expect(dataStore.addAll).toHaveBeenCalledWith('Widgets', {
             x1: {id: 'x1', a:20, b:'Cee'},
             x2: {id: 'x2', a:30, b:'Dee'},
+        })
+        expect(results).toStrictEqual({
+            x1: {id: 'x1', a:20, b:'Cee'},
+            x2: {id: 'x2', a:30, b:'Dee'},
+        })
+    })
+
+    test('makes correct update for multiple items without ids and returns items created', async () => {
+        const results = await collection.Add([{a:20, b:'Cee'}, {a:30, b:'Dee'}])
+        Object.keys(results).forEach( id => {
+            expect(Number(id)).toBeGreaterThan(0)
+            expect(results[id].id).toBe(id)
         })
     })
 })

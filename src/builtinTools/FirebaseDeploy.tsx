@@ -13,7 +13,7 @@ type ProjectStatus = {
     description: string
 }
 
-const elementoAppServerVersion = '0.1.4-alpha.0'
+const elementoAppServerVersion = '0.1.7-alpha.0'
 
 const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     console.log('Deploying from', gitRepoUrl, 'to', firebaseProjectId)
