@@ -49,9 +49,11 @@ export default class Collection {
             })
 
             await this.dataStore.addAll(this.collectionName!, addItems)
+            return addItems
         } else {
             const [id, itemWithId] = toEntry(item)
             await this.dataStore.add(this.collectionName!, id as Id, itemWithId as object)
+            return itemWithId
         }
     }
 

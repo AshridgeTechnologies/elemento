@@ -30,9 +30,10 @@ export function parseQueryParams(req: {query: { [key: string]: string; }}): obje
     return mapValues(req.query as any, parseParam) as object
 }
 export function errorHandler (err: any, req: any, res: any, _next: any) {
-    const status = err.status ?? (err instanceof ValidationError ? 400 : 500)
+    const isValidation = err instanceof ValidationError
+    const status = err.status ?? (isValidation ? 400 : 500)
     const {message} = err
-    console.error(message)
+    console.error(message, isValidation ? '' : err)
     res?.status(status)
     res?.send({error: {status, message}})
 }
