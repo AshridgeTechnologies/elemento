@@ -179,6 +179,7 @@ Stories
 - Calendar control - consider https://github.com/williamtroup/Calendar.js
 - Form-level Rules display message - at the position where they occur in the form
 - Clean old files from generated code dir
+- Eliminate confusion between Action functions that return a value and query functions that don't - can easily get it wrong and wonder why no return value
 
 ### The Rest
 - Animation
