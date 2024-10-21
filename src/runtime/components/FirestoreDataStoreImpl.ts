@@ -87,7 +87,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     private docRef(collectionName: CollectionName, id: Id) {
-        return doc(this.collectionRef(collectionName), id.toString())
+        return doc(this.collectionRef(collectionName), String(id))
     }
 
     async getById(collectionName: CollectionName, id: Id) {
