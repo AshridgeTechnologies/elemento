@@ -41,3 +41,12 @@ Possibilities
 
 - Deploy server could install container as now and then upload new versions
 - Deploy server could create a new container image for each deploy
+
+
+Initial spike 22 Oct 24
+=======================
+
+- Current extension functions are all on same URL (different to deployed site)
+- First part of path indicates the individual functions (app server, preview, admin)
+- So could have an app server process where first part of path decided the area - app server, preview admin
+- Express can have other express apps as request handlers?
