@@ -13,11 +13,12 @@ type ProjectStatus = {
     description: string
 }
 
-const elementoAppServerVersion = '0.1.4-alpha.0'
+const serverBaseUrl = 'http://localhost:9090'
+const serverUrl = (type: 'app' | 'admin' | 'preview') => serverBaseUrl + '/' + type
 
-const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
-    console.log('Deploying from', gitRepoUrl, 'to', firebaseProjectId)
-    const deployUrl = `https://europe-west2-${firebaseProjectId}.cloudfunctions.net/ext-elemento-app-server-adminServer/deploy`
+const deployProject = async (gitRepoUrl: string, elementoServerUrl: string) => {
+    console.log('Deploying from', gitRepoUrl, 'to', elementoServerUrl)
+    const deployUrl = `${elementoServerUrl}/admin/deploy`
     const data = {gitRepoUrl}
     try {
         const response = await fetch(deployUrl, {
@@ -38,9 +39,9 @@ const deployProject = async (gitRepoUrl: string, firebaseProjectId: string) => {
     }
 }
 
-const initFirebaseProject = async (firebaseProjectId: string, previewPassword: string) => {
-    console.log('Initialising', firebaseProjectId)
-    const initUrl = `https://europe-west2-${firebaseProjectId}.cloudfunctions.net/ext-elemento-app-server-adminServer/setup`
+const initFirebaseProject = async (elementoServerUrl: string, previewPassword: string) => {
+    console.log('Initialising', elementoServerUrl)
+    const initUrl = `${elementoServerUrl}/admin/setup`
     const data = {previewPassword}
     try {
         const response = await fetch(initUrl, {
@@ -60,22 +61,22 @@ const initFirebaseProject = async (firebaseProjectId: string, previewPassword: s
     }
 }
 
-const getFirebaseProjectStatus = async (firebaseProjectId: string): Promise<ProjectStatus> => {
-    console.log('Check status', firebaseProjectId)
-    const statusUrl = `https://europe-west2-${firebaseProjectId}.cloudfunctions.net/ext-elemento-app-server-adminServer/status`
+const getFirebaseProjectStatus = async (elementoServerUrl: string): Promise<ProjectStatus> => {
+    console.log('Check status', elementoServerUrl)
+    const statusUrl = `${elementoServerUrl}/admin/status`
     try {
         const response = await fetch(statusUrl)
         if (response.status === 404) {
-            return {ok: false, extensionFound: false, description: `Could not find Elemento Extension in Firebase project ${firebaseProjectId}`}
+            return {ok: false, extensionFound: false, description: `Could not find Elemento Server at ${elementoServerUrl}`}
         }
         if (!response.ok) {
-            return {ok: false, extensionFound: true, description: 'Error checking Elemento Extension - status: ' + response.status}
+            return {ok: false, extensionFound: true, description: 'Error checking Elemento Server - status: ' + response.status}
         }
 
-        return {ok: true, extensionFound: true, description: `Elemento Extension set up OK in Firebase project ${firebaseProjectId}`}
+        return {ok: true, extensionFound: true, description: `Elemento Server set up OK at ${elementoServerUrl}`}
     } catch (e: any) {
-        const message = e instanceof TypeError ? 'Project does not exist or Elemento Extension not installed' : e.message
-        return {ok: false, extensionFound: false, description: 'Error checking Elemento Extension - ' + message}
+        const message = e instanceof TypeError ? 'Project does not exist or Elemento Server not installed' : e.message
+        return {ok: false, extensionFound: false, description: 'Error checking Elemento Server - ' + message}
     }
 }
 
@@ -128,37 +129,37 @@ export default function FirebaseDeploy() {
     const [settingsUpdateTime, setSettingsUpdateTime] = useState(0)
     const settings = useAsync({promiseFn: getSettings, watch: settingsUpdateTime})
 
-    const {projectId: firebaseProjectIdFromSettings, previewPassword: previewPasswordFromSettings} = settings.data ?? {}
-    const [previewFirebaseProject, setPreviewFirebaseProject] = useState<string | null>(null)
+    const {elementoServerUrl: elementoServerUrlFromSettings, previewPassword: previewPasswordFromSettings} = settings.data ?? {}
+    const [previewElementoServerUrl, setPreviewElementoServerUrl] = useState<string | null>(null)
     const [previewPassword, setPreviewPassword] = useState<string | null>(null)
     const [gitRepoUrl, setGitRepoUrl] = useState<string>('')
-    const [deployFirebaseProject, setDeployFirebaseProject] = useState<string | null>(null)
+    const [deployElementoServerUrl, setDeployElementoServerUrl] = useState<string | null>(null)
     const [message, setMessage] = useState<React.ReactNode>(null)
     const [projectStatusRequested, setProjectStatusRequested] = useState(false)
     const [projectStatus, setProjectStatus] = useState<ProjectStatus>()
 
     const updateGitRepoUrl = (event: ChangeEvent) => {setGitRepoUrl((event.target as HTMLInputElement).value)}
-    const updateDeployFirebaseProject = (event: ChangeEvent) => {setDeployFirebaseProject((event.target as HTMLInputElement).value ?? null)}
-    const updatePreviewFirebaseProject = (event: ChangeEvent) => {
-        setPreviewFirebaseProject((event.target as HTMLInputElement).value ?? null)
+    const updateDeployElementoServerUrl = (event: ChangeEvent) => {setDeployElementoServerUrl((event.target as HTMLInputElement).value ?? null)}
+    const updatePreviewElementoServerUrl = (event: ChangeEvent) => {
+        setPreviewElementoServerUrl((event.target as HTMLInputElement).value ?? null)
     }
     const updatePreviewPassword = (event: ChangeEvent) => {setPreviewPassword((event.target as HTMLInputElement).value ?? null)}
-    const previewFirebaseProjectIdValue = previewFirebaseProject ?? firebaseProjectIdFromSettings ?? ''
+    const previewElementoServerUrlValue = previewElementoServerUrl ?? elementoServerUrlFromSettings ?? ''
     const previewPasswordValue = previewPassword ?? previewPasswordFromSettings ?? ''
-    const deployFirebaseProjectIdValue = deployFirebaseProject ?? firebaseProjectIdFromSettings ?? ''
-    const readyToSetup = googleAccessToken() && previewFirebaseProjectIdValue && previewPasswordValue
-    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && deployFirebaseProjectIdValue && projectStatus?.ok
+    const deployElementoServerUrlValue = deployElementoServerUrl ?? elementoServerUrlFromSettings ?? ''
+    const readyToSetup = googleAccessToken() && previewElementoServerUrlValue && previewPasswordValue
+    const readyToDeploy = googleAccessToken() && gitHubAccessToken() && gitRepoUrl && deployElementoServerUrlValue && projectStatus?.ok
     const isInToolWindow = window.parent !== window.self
 
     const updateSettings = async () => {
-        await Editor.UpdateSettings('firebase', {projectId: previewFirebaseProjectIdValue, previewPassword: previewPasswordValue})
+        await Editor.UpdateSettings('firebase', {elementoServerUrl: previewElementoServerUrlValue, previewPassword: previewPasswordValue})
         setSettingsUpdateTime(Date.now())
         await initFirebase()
     }
 
     const deploy = () => {
         setMessage('Deploying...')
-        deployProject(gitRepoUrl, deployFirebaseProjectIdValue!).then(
+        deployProject(gitRepoUrl, deployElementoServerUrlValue!).then(
             () => {
                 setMessage(<span>Deploy succeeded</span>)
             },
@@ -169,23 +170,23 @@ export default function FirebaseDeploy() {
     const initFirebase = () => {
         setProjectStatus({ok: false, extensionFound: true, description: 'Setting up Firebase project...'})
         // handle both success and error by checking status
-        const checkStatus = () => checkProjectStatus(previewFirebaseProjectIdValue)
-        return initFirebaseProject(previewFirebaseProjectIdValue, previewPasswordValue).then(checkStatus, checkStatus)
+        const checkStatus = () => checkProjectStatus(previewElementoServerUrlValue)
+        return initFirebaseProject(previewElementoServerUrlValue, previewPasswordValue).then(checkStatus, checkStatus)
     }
 
-    const checkProjectStatus = (projectId: string) => {
+    const checkProjectStatus = (elementoServerUrl: string) => {
         setProjectStatus({ok: false, extensionFound: undefined, description: 'Checking Firebase project status...'})
-        return getFirebaseProjectStatus(projectId).then(setProjectStatus,
+        return getFirebaseProjectStatus(elementoServerUrl).then(setProjectStatus,
             (e: Error) => setProjectStatus({ok: false, description: 'Could not get Firebase project status: ' + e.message})
         )
     }
 
-    if (!projectStatusRequested && firebaseProjectIdFromSettings) {
-        checkProjectStatus(firebaseProjectIdFromSettings)
+    if (!projectStatusRequested && elementoServerUrlFromSettings) {
+        checkProjectStatus(elementoServerUrlFromSettings)
         setProjectStatusRequested(true)
     }
 
-    const deployedUrl = deployFirebaseProjectIdValue && `https://${deployFirebaseProjectIdValue}.web.app`
+    const deployedUrl = deployElementoServerUrlValue && `https://${deployElementoServerUrlValue}.web.app`
 
     return <Stack padding={2} spacing={2}>
         <Typography variant='h1' mb={2} fontSize={32}>Firebase</Typography>
@@ -194,15 +195,15 @@ export default function FirebaseDeploy() {
             <>
                 <FieldSet title='Project Settings'>
                     <GoogleLogin/>
-                    <TextField label='Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updatePreviewFirebaseProject}
-                               value={previewFirebaseProjectIdValue}/>
+                    <TextField label='Elemento Server URL' size='small' sx={{width: '40em'}} onChange={updatePreviewElementoServerUrl}
+                               value={previewElementoServerUrlValue}/>
                     <TextField label='Preview password' type='password' size='small' sx={{width: '40em'}} onChange={updatePreviewPassword}
                                value={previewPasswordValue}/>
                     <Button variant='outlined' sx={{width: '10em'}} onClick={updateSettings} disabled={!readyToSetup}>Save</Button>
                     <Typography variant='h1' mt={4} fontSize={18}>{projectStatus?.description}</Typography>
-                    {projectStatus?.extensionFound === false && <Link variant='body1'
-                           href={`https://console.firebase.google.com/project/${firebaseProjectIdFromSettings}/extensions/install?ref=elemento/elemento-app-server@${elementoAppServerVersion}`}
-                           target='_blank'>Install Elemento extension in {firebaseProjectIdFromSettings}</Link>}
+                    {/*{projectStatus?.extensionFound === false && <Link variant='body1'*/}
+                    {/*       href={`https://console.firebase.google.com/project/${elementoServerUrlFromSettings}/extensions/install?ref=elemento/elemento-app-server@${elementoAppServerVersion}`}*/}
+                    {/*       target='_blank'>Install Elemento server at {elementoServerUrlFromSettings}</Link>}*/}
                 </FieldSet>
             </>
             : null}
@@ -211,7 +212,7 @@ export default function FirebaseDeploy() {
             <GitHubLogin/>
             <GoogleLogin/>
             <TextField label='Deploy from Git Repo URL' size='small' sx={{width: '40em'}} onChange={updateGitRepoUrl} />
-            <TextField label='Deploy to Firebase Project Id' size='small' sx={{width: '40em'}} onChange={updateDeployFirebaseProject} value={deployFirebaseProjectIdValue}/>
+            <TextField label='Deploy to Elemento Server URL' size='small' sx={{width: '40em'}} onChange={updateDeployElementoServerUrl} value={deployElementoServerUrlValue}/>
             <Typography variant='h1' mt={4} fontSize={16} fontWeight='600'>
                 Note: the project is deployed from GitHub, not this computer.
                 If you have made changes that you have not saved to GitHub, they will not be included.

@@ -49,4 +49,25 @@ Initial spike 22 Oct 24
 - Current extension functions are all on same URL (different to deployed site)
 - First part of path indicates the individual functions (app server, preview, admin)
 - So could have an app server process where first part of path decided the area - app server, preview admin
-- Express can have other express apps as request handlers?
+- Express can have other express apps as request handlers
+
+Running in container locally
+----------------------------
+
+- PROJECT_ID set as env var, so can pick up to set default bucket when initialize admin app
+- Service account key file dir set as bind mount
+- GOOGLE_APPLICATION_CREDENTIAL set to internal location of service account key file
+- Could also get service account key contents another way and pass to init admin app
+- Expose container port on local machine
+- Temporarily hardcode localhost url in FirebaseDeploy tool and EditorRunner
+
+Running on Google Cloud
+-----------------------
+
+- Change elemento site to full URL
+- Build image
+- Follow steps to deploy manually
+- Deploy from firebase tool
+- Use deployed as preview server
+
+
