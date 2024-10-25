@@ -139,9 +139,11 @@ export default function EditorRunner() {
         debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!)
     }
 
-    const getProjectId = ()=> (projectHandler.getSettings('firebase') as any).projectId
+    const getPreviewFirebaseProject = ()=> (projectHandler.getSettings('firebase') as any).previewFirebaseProject
     const getPreviewPassword = ()=> (projectHandler.getSettings('firebase') as any).previewPassword
-    const updatePreviewUrlFromSettings = () => setPreviewServerUrl(`https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer`)
+    const getElementoServerUrl = ()=> `https://${getPreviewFirebaseProject()}.web.app`
+    const previewUploadUrl = () => `${getElementoServerUrl()}/preview`
+    const updatePreviewUrlFromSettings = () => setPreviewServerUrl(previewUploadUrl())
 
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
@@ -180,7 +182,6 @@ export default function EditorRunner() {
             new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
         )
 
-        const previewUploadUrl = () => `https://europe-west2-${getProjectId()}.cloudfunctions.net/ext-elemento-app-server-previewServer/preview`
         const serverFileWriter = new ServerMultiFileWriter({
             previewUploadUrl,
             previewPassword: getPreviewPassword,

@@ -14,6 +14,13 @@
       {
         "source": "/studio/**",
         "destination": "/studio/index.html"
+      },
+      {
+        "source": "/install/**",
+        "run": {
+          "serviceId": "elemento-app-server",
+          "region": "europe-west2"
+        }
       }
     ],
     "headers": [

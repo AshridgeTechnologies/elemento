@@ -20,7 +20,7 @@ export default class HttpCombinedFileWriter implements CombinedFileWriter {
         const headers = await this.headers()
         const fileItems = Object.entries(files).map(([name, contents]) => FILE_HEADER_PREFIX + name + '\n' + contents.toString() + '\n' + EOF_DELIMITER )
         const contents = fileItems.join('\n')
-        return fetch(this.urlFn(), {method: 'PUT', body: contents, headers}).then( checkResponse )
+        return fetch(this.urlFn() + '/', {method: 'PUT', body: contents, headers}).then( checkResponse )
     }
 
     async clean(): Promise<void> {

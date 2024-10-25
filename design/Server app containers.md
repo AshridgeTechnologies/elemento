@@ -49,4 +49,46 @@ Initial spike 22 Oct 24
 - Current extension functions are all on same URL (different to deployed site)
 - First part of path indicates the individual functions (app server, preview, admin)
 - So could have an app server process where first part of path decided the area - app server, preview admin
-- Express can have other express apps as request handlers?
+- Express can have other express apps as request handlers
+
+Running in container locally
+----------------------------
+
+- PROJECT_ID set as env var, so can pick up to set default bucket when initialize admin app
+- Service account key file dir set as bind mount
+- GOOGLE_APPLICATION_CREDENTIAL set to internal location of service account key file
+- Could also get service account key contents another way and pass to init admin app
+- Expose container port on local machine
+- Temporarily hardcode localhost url in FirebaseDeploy tool and EditorRunner
+
+Running on Google Cloud
+-----------------------
+
+- Change elemento site to full URL
+- Build image
+- Follow steps to deploy manually
+- Deploy from firebase tool
+- Use server as preview server
+
+Ready for use
+-------------
+
+- ✅ App server image on Dockerhub
+- ✅ Bootstrap deploy tool in Elemento studio for Google Cloud Run
+- ✅ Friendly URL set up in hosting redirect
+
+Further steps
+-------------
+
+- ✅ App server can do apps, deploy, preview and install
+- ✅ Each facility can be switched on or off when deployed
+- ✅ Consider how the project id is/should be supplied to each service
+- ✅ Have a default project id for each deployment
+- ✅ Get default project id from env var
+- ✅ Installer sets env var
+- ✅ App server has to use the default project
+- ✅ Admin server deploy and setup should use the default project id but allow override in request
+- ✅ Install server never uses default project
+
+
+
