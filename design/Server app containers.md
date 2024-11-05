@@ -68,6 +68,33 @@ Running on Google Cloud
 - Build image
 - Follow steps to deploy manually
 - Deploy from firebase tool
-- Use deployed as preview server
+- Use server as preview server
 
+Ready for use
+-------------
+
+- ✅ App server image on Dockerhub
+- ✅ Bootstrap deploy tool in Elemento studio for Google Cloud Run
+- ✅ Friendly URL set up in hosting redirect
+
+Further steps
+-------------
+
+- ✅ App server can do apps, deploy, preview and install
+- ✅ Each facility can be switched on or off when deployed
+- ✅ Consider how the project id is/should be supplied to each service
+- ✅ Have a default project id for each deployment
+- ✅ Get default project id from env var
+- ✅ Installer sets env var
+- ✅ App server has to use the default project
+- ✅ Admin server deploy and setup should use the default project id but allow override in request
+- ✅ Install server never uses default project
+
+
+Further requirements
+--------------------
+- Firebase deploy tool has UI for install
+- Server with install capability on elemento.online
+- Firebase deploy tool can deploy to different firebase project
+- Server has basic home page showing status and services available
 

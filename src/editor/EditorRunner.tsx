@@ -139,9 +139,11 @@ export default function EditorRunner() {
         debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!)
     }
 
-    const getElementoServerUrl = ()=> (projectHandler.getSettings('firebase') as any).elementoServerUrl
+    const getPreviewFirebaseProject = ()=> (projectHandler.getSettings('firebase') as any).previewFirebaseProject
     const getPreviewPassword = ()=> (projectHandler.getSettings('firebase') as any).previewPassword
-    const updatePreviewUrlFromSettings = () => setPreviewServerUrl(`${getElementoServerUrl()}/preview`)
+    const getElementoServerUrl = ()=> `https://${getPreviewFirebaseProject()}.web.app`
+    const previewUploadUrl = () => `${getElementoServerUrl()}/preview`
+    const updatePreviewUrlFromSettings = () => setPreviewServerUrl(previewUploadUrl())
 
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
         const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
@@ -180,7 +182,6 @@ export default function EditorRunner() {
             new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
         )
 
-        const previewUploadUrl = () => `${getElementoServerUrl()}/preview`
         const serverFileWriter = new ServerMultiFileWriter({
             previewUploadUrl,
             previewPassword: getPreviewPassword,
