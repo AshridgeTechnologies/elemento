@@ -31,7 +31,7 @@ File 1 contents
 `.trim()
     await expect(makeWriter().writeFile('file1.txt', 'File 1 contents')).resolves.toBe(undefined)
     await wait(70)
-    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview', {
+    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/', {
         method: 'PUT',
         body: expectedBody,
         headers: {
@@ -62,7 +62,7 @@ File 1 contents
     expect(globalThis.fetch).not.toHaveBeenCalled()
     await writer.flush()
     await wait(10)
-    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview', {
+    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/', {
         method: 'PUT',
         body: expectedBody,
         headers: {

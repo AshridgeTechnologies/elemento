@@ -21,7 +21,7 @@ Line 2
 //// End of file
 `.trim()
     await expect(makeWriter().writeFiles(files)).resolves.toBe(undefined)
-    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview', {
+    expect(globalThis.fetch).toHaveBeenCalledWith('http://the.dev.server/preview/', {
         method: 'PUT',
         body: expectedBody,
         headers: {
