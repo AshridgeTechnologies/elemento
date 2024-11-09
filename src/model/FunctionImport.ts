@@ -1,6 +1,6 @@
-import BaseElement, {propDef} from "./BaseElement";
-import Element from "./Element";
-import {ComponentType, ElementType, ParentType, PropertyDef, PropertyExpr} from "./Types";
+import BaseElement, {propDef} from "./BaseElement"
+import Element from "./Element"
+import {ComponentType, ElementType, ParentType, PropertyDef, PropertyExpr} from "./Types"
 
 type Properties = {
     readonly source?: string

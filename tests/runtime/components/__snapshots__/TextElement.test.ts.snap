@@ -2,8 +2,9 @@
 
 exports[`Can show HTML text  1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <h1>
     Hello
@@ -18,8 +19,9 @@ exports[`Can show HTML text  1`] = `
 
 exports[`Can show HTML text with embedded styles 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <style
     dangerouslySetInnerHTML={
@@ -41,8 +43,9 @@ exports[`Can show HTML text with embedded styles 1`] = `
 
 exports[`Can show HTML text with values in a template string 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <h2>
     Hello
@@ -55,15 +58,17 @@ exports[`Can show HTML text with values in a template string 1`] = `
 
 exports[`Can show html text with child elements and placeholders 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <article>
     Hi this is 
     <span>
       <div
-        className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
         id="page1.para1.Comp1"
+        style={{}}
       >
         This is Comp 1
       </div>
@@ -72,13 +77,13 @@ exports[`Can show html text with child elements and placeholders 1`] = `
   </article>
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
     id="page1.para1.Comp2"
   >
     some_icon
   </span>
   <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
     disabled={false}
     id="page1.para1.Comp3"
     onBlur={[Function]}
@@ -97,36 +102,35 @@ exports[`Can show html text with child elements and placeholders 1`] = `
     type="button"
   >
     Button Comp 3
-    <span
-      className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-    />
   </button>
 </div>
 `;
 
 exports[`Can show plain text with child elements and placeholders 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hi this is 
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="page1.para1.Comp1"
+    style={{}}
   >
     This is Comp 1
   </div>
    with 
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
     id="page1.para1.Comp2"
   >
     some_icon
   </span>
    but not Comp3
   <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
     disabled={false}
     id="page1.para1.Comp3"
     onBlur={[Function]}
@@ -151,8 +155,9 @@ exports[`Can show plain text with child elements and placeholders 1`] = `
 
 exports[`Does not show HTML text if allowHtml is false 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   &lt;h1&gt;Hello&lt;/h1&gt;
   <br />
@@ -163,8 +168,9 @@ exports[`Does not show HTML text if allowHtml is false 1`] = `
 
 exports[`Sanitises bad tags in HTML text 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <h1>
     Hello
@@ -175,8 +181,9 @@ exports[`Sanitises bad tags in HTML text 1`] = `
 
 exports[`Sanitises incorrect HTML text 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   <h1>
     Hello
@@ -187,8 +194,9 @@ exports[`Sanitises incorrect HTML text 1`] = `
 
 exports[`TextElement adds line break for newlines even if allowHtml is none 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hello
   <br />
@@ -205,8 +213,9 @@ exports[`TextElement adds line break for newlines even if allowHtml is none 1`] 
 
 exports[`TextElement element DOES NOT produce output containing ReactElement children 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-1is0exk-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-1qa7v9y-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   [object Object]
 </div>
@@ -214,8 +223,9 @@ exports[`TextElement element DOES NOT produce output containing ReactElement chi
 
 exports[`TextElement element produces display: none output with show false 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-1yb50b0-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-1ylwpvp-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hello where are you
 </div>
@@ -223,8 +233,9 @@ exports[`TextElement element produces display: none output with show false 1`] =
 
 exports[`TextElement element produces normal output with show true 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hello where are you
 </div>
@@ -232,15 +243,17 @@ exports[`TextElement element produces normal output with show true 1`] = `
 
 exports[`TextElement element produces output containing empty children 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 />
 `;
 
 exports[`TextElement element produces output containing string children 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hello where are you
 </div>
@@ -248,8 +261,9 @@ exports[`TextElement element produces output containing string children 1`] = `
 
 exports[`TextElement element produces output containing string version of function children 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   function Sum
 </div>
@@ -257,8 +271,9 @@ exports[`TextElement element produces output containing string version of functi
 
 exports[`TextElement element produces output containing string version of object children 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   {a: 10, c: 'Hi'}
 </div>
@@ -266,8 +281,9 @@ exports[`TextElement element produces output containing string version of object
 
 exports[`TextElement element produces output containing toString of ErrorResult 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Error: Bad function - It went wrong
 </div>
@@ -275,8 +291,9 @@ exports[`TextElement element produces output containing toString of ErrorResult 
 
 exports[`TextElement element produces output containing toString of class object 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   This is a MyClass
 </div>
@@ -284,8 +301,9 @@ exports[`TextElement element produces output containing toString of class object
 
 exports[`TextElement element produces output containing valueOf object 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   where are you
 </div>
@@ -293,8 +311,9 @@ exports[`TextElement element produces output containing valueOf object 1`] = `
 
 exports[`TextElement gets property values supplied as state objects 1`] = `
 <div
-  className="MuiTypography-root MuiTypography-body1 css-341k9t-MuiTypography-root"
+  className="MuiTypography-root MuiTypography-body1 css-1ntffwy-MuiTypography-root"
   id="page1.para1"
+  style={{}}
 >
   Hello
 </div>

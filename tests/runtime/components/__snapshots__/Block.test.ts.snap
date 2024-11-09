@@ -7,14 +7,16 @@ exports[`Block element produces output containing children horizontal 1`] = `
     id="app.page1.things5"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-mtp603-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
     <div
-      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1qyh66r-MuiTypography-root"
       id="app.page1.things.text2"
+      style={{}}
     >
       Second text
     </div>
@@ -63,14 +65,16 @@ exports[`Block element produces output containing children horizontal and wrappe
     id="app.page1.things"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-mtp603-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
     <div
-      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1qyh66r-MuiTypography-root"
       id="app.page1.things.text2"
+      style={{}}
     >
       Second text
     </div>
@@ -119,14 +123,16 @@ exports[`Block element produces output containing children vertical 1`] = `
     id="app.page1.things"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-mtp603-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
     <div
-      className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1qyh66r-MuiTypography-root"
       id="app.page1.things.text2"
+      style={{}}
     >
       Second text
     </div>
@@ -175,14 +181,16 @@ exports[`Block element produces output containing multiple children 1`] = `
     id="app.page1.things"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1ewvver-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
     <div
-      className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1qetob9-MuiTypography-root"
       id="app.page1.things.text2"
+      style={{}}
     >
       Second text
     </div>
@@ -231,8 +239,9 @@ exports[`Block element produces output containing single child 1`] = `
     id="app.page1.things"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1ewvver-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
@@ -281,14 +290,16 @@ exports[`Block element produces output with layout none 1`] = `
     id="app.page1.things"
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-e4ugai-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1ewvver-MuiTypography-root"
       id="app.page1.things.text1"
+      style={{}}
     >
       First text
     </div>
     <div
-      className="MuiTypography-root MuiTypography-body1 css-1fbibiz-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-1qetob9-MuiTypography-root"
       id="app.page1.things.text2"
+      style={{}}
     >
       Second text
     </div>

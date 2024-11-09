@@ -19,8 +19,8 @@ export default function Menu({path, children = [], ...props}: Properties) {
     const {label, iconName, filled, show, styles = {}, buttonStyles = {}} = valueOfProps(props)
     const showProps = show !== undefined && !show ? {display: 'none'} : {}
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const open = Boolean(anchorEl)
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget)
     }

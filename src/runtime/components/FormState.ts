@@ -64,12 +64,12 @@ export default abstract class BaseFormState extends InputComponentState<object, 
     }
 
     Reset() {
-        super.Reset();
+        super.Reset()
         this.fieldNames.forEach(name => this.getChildState(name)?.Reset())
     }
 
     ShowErrors(errorsShown: boolean) {
-        super.ShowErrors(errorsShown);
+        super.ShowErrors(errorsShown)
         this.fieldNames.forEach(name => this.getChildState(name)?.ShowErrors(errorsShown))
     }
 

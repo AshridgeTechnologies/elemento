@@ -2,7 +2,7 @@
 
 exports[`ListItem produces output containing ReactElement children 1`] = `
 <div
-  className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-1dc20sj-MuiButtonBase-root-MuiListItemButton-root"
+  className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-divider css-spalme-MuiButtonBase-root-MuiListItemButton-root"
   id="page1.para1"
   onBlur={[Function]}
   onClick={[Function]}
@@ -21,8 +21,9 @@ exports[`ListItem produces output containing ReactElement children 1`] = `
   tabIndex={0}
 >
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="path1"
+    style={{}}
   >
     where are you?
   </div>

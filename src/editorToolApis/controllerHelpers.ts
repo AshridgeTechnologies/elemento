@@ -208,7 +208,7 @@ export const setElementValue = async (element: HTMLElement, container: HTMLEleme
         await userEvent.click(select)
         await wait(700)
         const itemToSelect = Array.from(container.querySelector('[role=listbox]')?.querySelectorAll(`[role=option]`) ?? []).find(el => textMatch(el, value.toString()))
-        itemToSelect && await userEvent.click(itemToSelect)
+        itemToSelect && (await userEvent.click(itemToSelect))
     }
 
     const checkbox = (isCheckboxElement(element) ? element : element.querySelector('input[type=checkbox]')) as HTMLInputElement

@@ -2,7 +2,7 @@
 
 exports[`Button element produces output with default values where properties omitted 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -26,7 +26,7 @@ exports[`Button element produces output with default values where properties omi
 
 exports[`Button element produces output with enabled false 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
   disabled={true}
   id="app.page1.save"
   onBlur={[Function]}
@@ -51,7 +51,7 @@ exports[`Button element produces output with enabled false 1`] = `
 
 exports[`Button element produces output with enabled true 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-zt059t-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-axpitj-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -76,7 +76,7 @@ exports[`Button element produces output with enabled true 1`] = `
 
 exports[`Button element produces output with icon 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -96,11 +96,11 @@ exports[`Button element produces output with icon 1`] = `
   type="button"
 >
   <span
-    className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"
+    className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeSmall css-1tjwu2m-MuiButton-startIcon"
   >
     <span
       aria-hidden={true}
-      className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+      className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
     >
       send
     </span>
@@ -111,14 +111,16 @@ exports[`Button element produces output with icon 1`] = `
 
 exports[`Button element produces output with link style 1`] = `
 <a
-  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-1uaw2hx-MuiTypography-root-MuiLink-root"
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-w028g3-MuiTypography-root-MuiLink-root"
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  style={{}}
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+    style={{}}
   >
     Click me!
   </p>
@@ -127,14 +129,16 @@ exports[`Button element produces output with link style 1`] = `
 
 exports[`Button element produces output with link style and styles 1`] = `
 <a
-  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-1uaw2hx-MuiTypography-root-MuiLink-root"
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-w028g3-MuiTypography-root-MuiLink-root"
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  style={{}}
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 css-dpqqps-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-qydhyv-MuiTypography-root"
+    style={{}}
   >
     Click me!
   </p>
@@ -143,7 +147,7 @@ exports[`Button element produces output with link style and styles 1`] = `
 
 exports[`Button element produces output with properties supplied 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1kf6eet-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -168,7 +172,7 @@ exports[`Button element produces output with properties supplied 1`] = `
 
 exports[`Button element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-bx9fca-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-uj8ugd-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -193,7 +197,7 @@ exports[`Button element produces output with properties supplied as state values
 
 exports[`Button element produces output with show false 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-bx9fca-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-uj8ugd-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -213,15 +217,12 @@ exports[`Button element produces output with show false 1`] = `
   type="button"
 >
   Click me!
-  <span
-    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-  />
 </button>
 `;
 
 exports[`Button element produces output with show true 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-zt059t-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-axpitj-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -246,7 +247,7 @@ exports[`Button element produces output with show true 1`] = `
 
 exports[`Button element produces output with styles supplied 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1bh4wyw-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1h19fhx-MuiButtonBase-root-MuiButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -266,8 +267,5 @@ exports[`Button element produces output with styles supplied 1`] = `
   type="button"
 >
   Click me!
-  <span
-    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-  />
 </button>
 `;

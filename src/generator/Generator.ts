@@ -26,8 +26,8 @@ import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
-import FunctionImport from "../model/FunctionImport";
-import {ASSET_DIR} from "../shared/constants";
+import FunctionImport from "../model/FunctionImport"
+import {ASSET_DIR} from "../shared/constants"
 import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'

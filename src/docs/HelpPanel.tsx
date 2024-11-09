@@ -1,8 +1,8 @@
 import {equals} from 'ramda'
-import {Box, Button, Fab, IconButton, Typography} from '@mui/material'
+import {Box, IconButton, Typography} from '@mui/material'
 import Mui_AppBar from '@mui/material/AppBar'
 
-import {TreeItem, TreeView} from '@mui/x-tree-view'
+import {SimpleTreeView, TreeItem} from '@mui/x-tree-view'
 import {ChevronRight, ExpandMore, NavigateBefore, NavigateNext} from '@mui/icons-material'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
@@ -14,19 +14,18 @@ const goForward = ()=> history.forward()
 
 function HelpContents({items, selected, onSelected}: {items: ContentsItem[], selected: string | null, onSelected: (id: string) => void}) {
     const treeItem = ({id, title, children = []}: ContentsItem) =>
-        <TreeItem nodeId={id} label={title} key={id} onClick={() => onSelected(id)} sx={{marginTop: '1rem', fontSize: '0.8rem'}}>
+        <TreeItem itemId={id} label={title} key={id} onClick={() => onSelected(id)} sx={{marginTop: '1rem', fontSize: '0.8rem'}}>
             {children.map(treeItem)}
         </TreeItem>
 
-    return (<TreeView
+    return (<SimpleTreeView
         aria-label="help contents"
-        defaultCollapseIcon={<ExpandMore />}
-        defaultExpandIcon={<ChevronRight />}
-        selected={selected}
+        slots={{ expandIcon: ChevronRight, collapseIcon: ExpandMore }}
+        selectedItems={selected}
         sx={{ height: '100%', overflowY: 'auto' }}
     >
         {items.map(treeItem) }
-    </TreeView>)
+    </SimpleTreeView>)
 }
 
 function HelpBar(props: {title: string}) {
@@ -104,7 +103,7 @@ export default function HelpPanel({children, showTitleBar, title}: { children: R
         }
     })
 
-    const onScroll = (event: any) => {
+    const onScroll = (_event: any) => {
         //console.log('Scroll', event.currentTarget?.scrollTop)
     }
 

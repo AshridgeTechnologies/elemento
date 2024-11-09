@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {ElementId, EventActionPropertyDef, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
-import lodash from 'lodash'; const {isArray, startCase} = lodash;
+import lodash from 'lodash'; const {isArray, startCase} = lodash
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
 import {isExpr, isNumeric, wordAtPosition} from '../util/helpers'
 import {OnChangeFn, OnNameSelectedFn} from './Types'

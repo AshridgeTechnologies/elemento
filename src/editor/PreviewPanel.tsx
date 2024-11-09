@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
+import * as React from 'react'
+import Box from '@mui/material/Box'
 import {Link, Stack, Typography} from '@mui/material'
 
 export default function PreviewPanel(props: { preview: React.ReactNode, runUrl?: string, height: string }) {

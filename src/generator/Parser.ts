@@ -140,7 +140,7 @@ export default class Parser {
             || isDataTypes(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
-            || (/*componentIsListItem &&*/ isItemVar(name) || isDragFunction(name)) //TODO allow $item only in ListItem and predicates
+            || (/*componentIsListItem &&*/ (isItemVar(name) || isDragFunction(name))) //TODO allow $item only in ListItem and predicates
             || isServerApp(name)
             || isAppElement(name)
             || isContainerElement(name)
@@ -170,7 +170,7 @@ export default class Parser {
             || isAppFunction(name)
             || isAppStateFunction(name)
             || isComponentElement(name)
-            || (/*componentIsListItem &&*/ isItemVar(name) || isDragFunction(name)) //TODO allow $item only in ListItem and predicates
+            || (/*componentIsListItem &&*/ (isItemVar(name) || isDragFunction(name))) //TODO allow $item only in ListItem and predicates
             || (componentIsForm && isFormVar(name))
             || (componentIsCompDef && isPropsVar(name))
             || isServerApp(name)

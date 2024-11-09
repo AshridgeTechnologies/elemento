@@ -2,12 +2,11 @@
 
 exports[`DateInput element produces output with DataType supplied 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"
   onClick={[Function]}
-  onMouseUp={[Function]}
 >
   <label
-    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.start1"
     id="app.page1.start1-label"
@@ -15,14 +14,14 @@ exports[`DateInput element produces output with DataType supplied 1`] = `
     Starting Date
   </label>
   <div
-    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoComplete="off"
       autoFocus={false}
-      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.start1"
       inputMode="text"
@@ -39,11 +38,11 @@ exports[`DateInput element produces output with DataType supplied 1`] = `
       value="12 Nov 2021"
     />
     <div
-      className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-1laqsz7-MuiInputAdornment-root"
+      className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-elo8k2-MuiInputAdornment-root"
     >
       <button
         aria-label="Choose date, selected date is 12 Nov 2021"
-        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-oeq6yz-MuiButtonBase-root-MuiIconButton-root"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -63,7 +62,7 @@ exports[`DateInput element produces output with DataType supplied 1`] = `
       >
         <svg
           aria-hidden={true}
-          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
           data-testid="CalendarIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -76,10 +75,10 @@ exports[`DateInput element produces output with DataType supplied 1`] = `
     </div>
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-14lo706"
+        className="css-w1u3ce"
       >
         <span>
           Starting Date
@@ -92,19 +91,18 @@ exports[`DateInput element produces output with DataType supplied 1`] = `
 
 exports[`DateInput element produces output with default values where properties omitted 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"
   onClick={[Function]}
-  onMouseUp={[Function]}
 >
   <div
-    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoComplete="off"
       autoFocus={false}
-      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.finish"
       inputMode="text"
@@ -121,11 +119,11 @@ exports[`DateInput element produces output with default values where properties 
       value=""
     />
     <div
-      className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-1laqsz7-MuiInputAdornment-root"
+      className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-elo8k2-MuiInputAdornment-root"
     >
       <button
         aria-label="Choose date"
-        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
+        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-oeq6yz-MuiButtonBase-root-MuiIconButton-root"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -145,7 +143,7 @@ exports[`DateInput element produces output with default values where properties 
       >
         <svg
           aria-hidden={true}
-          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
           data-testid="CalendarIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -154,17 +152,14 @@ exports[`DateInput element produces output with default values where properties 
             d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
           />
         </svg>
-        <span
-          className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-        />
       </button>
     </div>
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-ihdtdm"
+        className="css-w4cd9x"
       >
         <span
           className="notranslate"
@@ -177,16 +172,15 @@ exports[`DateInput element produces output with default values where properties 
 </div>
 `;
 
-exports[`DateInput element produces output with description info 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.description" id="app.page1.description-label">Starting Date</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" autocomplete="off" id="app.page1.description" placeholder="DD MMMM YYYY" type="text" inputmode="text" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input" value="12 Nov 2021"><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-1vu0h4l-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-ea2eqt-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A date input for entering dates" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span><span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></div><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"><legend class="css-14lo706"><span>Starting Date</span></legend></fieldset></div></div>"`;
+exports[`DateInput element produces output with description info 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.description" id="app.page1.description-label">Starting Date</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" autocomplete="off" id="app.page1.description" placeholder="DD MMMM YYYY" type="text" inputmode="text" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input" value="12 Nov 2021"><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-hr18t1-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1jg1csc-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A date input for entering dates" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></div><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"><legend class="css-w1u3ce"><span>Starting Date</span></legend></fieldset></div></div>"`;
 
 exports[`DateInput element produces output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"
   onClick={[Function]}
-  onMouseUp={[Function]}
 >
   <label
-    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.start"
     id="app.page1.start-label"
@@ -194,14 +188,14 @@ exports[`DateInput element produces output with properties supplied 1`] = `
     Starting Date
   </label>
   <div
-    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-ugk1i8-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-1lbzng9-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoComplete="off"
       autoFocus={false}
-      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.start"
       inputMode="text"
@@ -219,10 +213,10 @@ exports[`DateInput element produces output with properties supplied 1`] = `
     />
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-14lo706"
+        className="css-w1u3ce"
       >
         <span>
           Starting Date
@@ -235,12 +229,11 @@ exports[`DateInput element produces output with properties supplied 1`] = `
 
 exports[`DateInput element produces readonly output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root MuiTextField-root css-350ohs-MuiFormControl-root-MuiTextField-root"
+  className="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"
   onClick={[Function]}
-  onMouseUp={[Function]}
 >
   <label
-    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1jy569b-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     htmlFor="app.page1.start"
     id="app.page1.start-label"
@@ -248,14 +241,14 @@ exports[`DateInput element produces readonly output with properties supplied 1`]
     Starting Date
   </label>
   <div
-    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root"
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"
     onClick={[Function]}
   >
     <input
       aria-invalid={false}
       autoComplete="off"
       autoFocus={false}
-      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input"
+      className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
       disabled={false}
       id="app.page1.start"
       inputMode="text"
@@ -278,10 +271,10 @@ exports[`DateInput element produces readonly output with properties supplied 1`]
     />
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-14lo706"
+        className="css-w1u3ce"
       >
         <span>
           Starting Date

@@ -14,7 +14,7 @@ import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'
 import Dexie, {Table} from 'dexie'
-import lodash from 'lodash'; const {matches} = lodash;
+import lodash from 'lodash'; const {matches} = lodash
 import BigNumber from 'bignumber.js'
 
 const DECIMAL_PREFIX = '#Dec'

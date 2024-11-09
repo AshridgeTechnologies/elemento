@@ -71,7 +71,7 @@ const translateKey = (key: string) => {
 
 export default function ScreenKeyboard({path, ...props}: Properties) {
     const {keyAction, useRealKeyboard, show = true, styles = {}} = valueOfProps(props)
-    const [layoutName, setLayoutName] = useState("lettersOnly");
+    const [layoutName, setLayoutName] = useState("lettersOnly")
     const state = useGetObjectState<ScreenKeyboardState>(path)
     useEffect(() => insertStyleElement('ScreenKeyboardCss', css), [])
     useEffect(() => {
@@ -79,16 +79,16 @@ export default function ScreenKeyboard({path, ...props}: Properties) {
             const handleKeydown = (event: KeyboardEvent) => onKeyPress(event.key)
             const page = document.querySelector('.ElPage') as HTMLElement
             page.addEventListener('keydown', handleKeydown)
-            return () => page.removeEventListener('keydown', handleKeydown);
+            return () => page.removeEventListener('keydown', handleKeydown)
         }
     }, [])
     const onKeyPress = (key: string) => {
         if (key === "{shift}") {
-            setLayoutName(layoutName === "default" ? "shift" : "default");
+            setLayoutName(layoutName === "default" ? "shift" : "default")
         } else if (key === "{abc}") {
-            setLayoutName("default");
+            setLayoutName("default")
         } else if (key === "{numbers}") {
-            setLayoutName("numbers");
+            setLayoutName("numbers")
         } else {
             state.handleKeypress(translateKey(key))
             keyAction?.(translateKey(key))

@@ -3,9 +3,9 @@ import {valueLiteral} from '../runtimeFunctions'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {clone} from 'radash'
-import lodash from 'lodash';
+import lodash from 'lodash'
 
-const {isPlainObject} = lodash;
+const {isPlainObject} = lodash
 
 type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}

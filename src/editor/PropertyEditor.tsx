@@ -4,11 +4,11 @@ import {Box, Stack, TextField, TextFieldProps, Typography} from '@mui/material'
 import {OnChangeFn, OnNameSelectedFn} from './Types'
 import PropertyInput from './PropertyInput'
 import {PropertyDef, PropertyType, PropertyValue, StylingProps} from '../model/Types'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import {FILES_ID, TOOLS_ID} from '../model/Project'
 import {StylesPropertyEditor} from './StylesPropertyEditor'
 
-const {startCase} = lodash;
+const {startCase} = lodash
 
 function NameTextField(props: TextFieldProps & {readOnly: boolean}) {
     const [changedValue, setChangedValue] = useState<string | undefined>(undefined)

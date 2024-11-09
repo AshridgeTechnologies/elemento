@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {AppBar as MuiAppBar, Stack, Toolbar, Typography} from '@mui/material'
 import {sxProps, typographyStyles} from './ComponentHelpers'

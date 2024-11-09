@@ -1,6 +1,6 @@
 import express, {type NextFunction} from 'express'
 import {DecodedIdToken, getAuth} from 'firebase-admin/auth'
-import {isObject, mapValues} from 'radash'
+import {isObject, isString, mapValues} from 'radash'
 import {parseISO} from 'date-fns'
 import {parseParam} from '../util/helpers'
 import {ValidationError} from '../runtime/globalFunctions'
@@ -10,10 +10,13 @@ import {ValidationError} from '../runtime/globalFunctions'
  */
 
 const convertDataValues = (val: any): any => {
-    const date = parseISO(val)
-    if (!Number.isNaN(date.getTime())) {
-        return date
+    if (isString(val)) {
+        const date = parseISO(val)
+        if (!Number.isNaN(date.getTime())) {
+            return date
+        }
     }
+
     if (isObject(val)) {
         return mapValues(val, convertDataValues)
     }

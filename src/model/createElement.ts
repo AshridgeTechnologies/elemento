@@ -1,4 +1,4 @@
-import lodash, {isArray} from 'lodash'; const {startCase} = lodash;
+import lodash, {isArray} from 'lodash'; const {startCase} = lodash
 import Element from './Element'
 import {elementId} from '../util/helpers'
 import {elementOfType, isBuiltInType, parentTypeOf} from './elements'

@@ -3,7 +3,7 @@
 exports[`Icon element produces button output with properties supplied 1`] = `
 <button
   aria-label="Star it"
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1stao2l-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-11q1dcb-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -25,7 +25,7 @@ exports[`Icon element produces button output with properties supplied 1`] = `
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
   >
     star
   </span>
@@ -34,7 +34,7 @@ exports[`Icon element produces button output with properties supplied 1`] = `
 
 exports[`Icon element produces empty  output with display false 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1t0xgfa-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-q5nb25-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -55,7 +55,7 @@ exports[`Icon element produces empty  output with display false 1`] = `
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
   >
     star
   </span>
@@ -64,7 +64,7 @@ exports[`Icon element produces empty  output with display false 1`] = `
 
 exports[`Icon element produces empty output with display false 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1t0xgfa-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-q5nb25-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -85,13 +85,10 @@ exports[`Icon element produces empty output with display false 1`] = `
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
   >
     star
   </span>
-  <span
-    className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-  />
 </button>
 `;
 
@@ -99,7 +96,7 @@ exports[`Icon element produces icon output with properties supplied 1`] = `
 <span
   aria-hidden={true}
   aria-label="Star it"
-  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-oo23qg-MuiIcon-root"
+  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-19xhswp-MuiIcon-root"
   id="app.page1.save"
   title="Star it"
 >
@@ -110,7 +107,7 @@ exports[`Icon element produces icon output with properties supplied 1`] = `
 exports[`Icon element produces output with default values where properties omitted 1`] = `
 <span
   aria-hidden={true}
-  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+  className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
   id="app.page1.save"
 >
   star
@@ -119,7 +116,7 @@ exports[`Icon element produces output with default values where properties omitt
 
 exports[`Icon element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-q6c508-MuiButtonBase-root-MuiIconButton-root"
+  className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-11bqc0x-MuiButtonBase-root-MuiIconButton-root"
   disabled={false}
   id="app.page1.save"
   onBlur={[Function]}
@@ -140,7 +137,7 @@ exports[`Icon element produces output with properties supplied as state values 1
 >
   <span
     aria-hidden={true}
-    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kp9ftd-MuiIcon-root"
+    className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1n5qiej-MuiIcon-root"
   >
     star
   </span>

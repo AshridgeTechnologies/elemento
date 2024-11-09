@@ -1,10 +1,10 @@
 import {CombinedPropertyValue, ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr, PropertyValue} from '../model/Types'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
 import {pickBy} from 'ramda'
 
-const {isObject} = lodash;
+const {isObject} = lodash
 
 export function definedPropertiesOf(obj: object) {
     return Object.fromEntries(Object.entries(obj).filter(([,val]) => val !== undefined))
@@ -51,7 +51,7 @@ export const parseParam = (param: string) => {
 }
 
 export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5000): Promise<T> => {
-    const startTime = new Date().getTime();
+    const startTime = new Date().getTime()
     try {
         const result = await fn()
         if (result) {
@@ -62,21 +62,21 @@ export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5
                     try {
                         const result = await fn()
                         if (result) {
-                            clearInterval(timer);
-                            resolve(result);
+                            clearInterval(timer)
+                            resolve(result)
                         } else if (new Date().getTime() - startTime > timeout) {
-                            clearInterval(timer);
-                            reject(new Error('Max wait reached for ' + fn.toString()));
+                            clearInterval(timer)
+                            reject(new Error('Max wait reached for ' + fn.toString()))
                         }
                     } catch (e) {
-                        clearInterval(timer);
-                        reject(e);
+                        clearInterval(timer)
+                        reject(e)
                     }
-                }, intervalTime);
-            });
+                }, intervalTime)
+            })
         }
     } catch (e) {
-        return Promise.reject(e);
+        return Promise.reject(e)
     }
 }
 export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))

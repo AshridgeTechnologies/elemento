@@ -6,9 +6,9 @@ import {asArray, PropVal, StylesPropVals, valueLiteral, valueOfProps} from '../r
 import {sxProps} from './ComponentHelpers'
 import {flatten} from 'ramda'
 
-import lodash from 'lodash';
+import lodash from 'lodash'
 
-const {isFunction, isPlainObject, isObject} = lodash;
+const {isFunction, isPlainObject, isObject} = lodash
 
 type Properties = React.PropsWithChildren<Readonly<{
     path: string,

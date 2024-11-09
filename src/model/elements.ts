@@ -40,8 +40,8 @@ import Rule from './types/Rule'
 import NumberType from './types/NumberType'
 import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
-import SpeechInput from "./SpeechInput";
-import FunctionImport from "./FunctionImport";
+import SpeechInput from "./SpeechInput"
+import FunctionImport from "./FunctionImport"
 import Form from './Form'
 import DateInput from './DateInput'
 import DecimalType from './types/DecimalType'

@@ -1,5 +1,5 @@
 import Topo from '@hapi/topo'
-import lodash, {startCase} from 'lodash';
+import lodash, {startCase} from 'lodash'
 import Element from '../model/Element'
 import {flatten, last} from 'ramda'
 import {ExprType, ListItem} from './Types'

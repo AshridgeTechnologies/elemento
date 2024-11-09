@@ -3,8 +3,8 @@ import {generate} from './Generator'
 import App from '../model/App'
 import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
-import lodash from 'lodash';
-import {AllErrors} from "./Types";
+import lodash from 'lodash'
+import {AllErrors} from "./Types"
 import Tool from '../model/Tool'
 import {pickBy} from 'ramda'
 

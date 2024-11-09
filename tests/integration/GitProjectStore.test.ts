@@ -87,7 +87,7 @@ test('updates repo in GitHub', async () => {
     const commitResults = await git.log({fs, dir: localDirPath})
     expect(commitResults[0].commit.message).toBe(message + '\n')
     const updatedFileContent = () => fetch(`https://raw.githubusercontent.com/${username}/${repo}/main/${currentTimeFile}`).then(resp => resp.text())
-    await waitUntil( async () => await updatedFileContent() === currentTime, 2000, 12000 )
+    await waitUntil( async () => (await updatedFileContent()) === currentTime, 2000, 12000 )
     await expect(store.isModified()).resolves.toBe(false)
 })
 
@@ -101,7 +101,7 @@ test('adds and deletes files in repo in GitHub', async () => {
     await store.commitAndPush('Add new stuff')
 
     const fileStatus = () => fetch(`https://github.com/${username}/${repo}/blob/main/${newFile}`).then(resp => resp.status)
-    await waitForGitHub( async () => await fileStatus() === 200 )
+    await waitForGitHub( async () => (await fileStatus()) === 200 )
 
     fs.unlinkSync(`${localDirPath}/${newFile}`)
     await store.deleteFile(newFile)
@@ -110,7 +110,7 @@ test('adds and deletes files in repo in GitHub', async () => {
     await store.commitAndPush('Delete new stuff')
     await expect(store.isModified()).resolves.toBe(false)
 
-    await waitForGitHub( async () => await fileStatus() === 404 )
+    await waitForGitHub( async () => (await fileStatus()) === 404 )
 })
 
 test('renames files in repo in GitHub', async () => {
@@ -124,7 +124,7 @@ test('renames files in repo in GitHub', async () => {
     await store.commitAndPush('Add new stuff')
 
     const fileStatus = (file: string) => fetch(`https://github.com/${username}/${repo}/blob/main/${file}`).then(resp => resp.status)
-    await waitForGitHub( async () => await fileStatus(newFile) === 200 )
+    await waitForGitHub( async () => (await fileStatus(newFile)) === 200 )
 
     fs.renameSync(`${localDirPath}/${newFile}`, `${localDirPath}/${renamedFile}`)
     await store.rename(newFile, renamedFile)
@@ -133,8 +133,8 @@ test('renames files in repo in GitHub', async () => {
 
     await expect(store.isModified()).resolves.toBe(false)
 
-    await waitForGitHub( async () => await fileStatus(newFile) === 404 )
-    await waitForGitHub( async () => await fileStatus(renamedFile) === 200 )
+    await waitForGitHub( async () => (await fileStatus(newFile)) === 404 )
+    await waitForGitHub( async () => (await fileStatus(renamedFile)) === 200 )
 })
 
 test('detects if dir is a git repo and origin remote returns null if not', async () => {
@@ -235,6 +235,6 @@ test('creates GitHub repo and pushes and can pull', async () => {
     await wait(1000)
     await store.commitAndPush()
     const updatedFileContent = () => fetch(`https://raw.githubusercontent.com/${username}/${actualName}/main/${currentTimeFile}`).then( resp => resp.text())
-    await waitForGitHub( async () => await updatedFileContent() === currentTime)
+    await waitForGitHub( async () => (await updatedFileContent()) === currentTime)
     await store.pull()
 })

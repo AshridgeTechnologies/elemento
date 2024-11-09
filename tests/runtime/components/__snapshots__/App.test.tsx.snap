@@ -10,17 +10,23 @@ exports[`App element produces output containing normal page if logged in 1`] = `
       className="MuiBox-root css-72fd9l"
     >
       <header
-        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-ptdwpq-MuiPaper-root-MuiAppBar-root"
         id="app1.appBar1"
+        style={
+          {
+            "--Paper-shadow": "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+          }
+        }
       >
         <div
-          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-s3ewxw-MuiToolbar-root"
         >
           <div
             className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-lbrw2m-MuiTypography-root"
+              style={{}}
             >
               The App bar
             </div>
@@ -35,7 +41,7 @@ exports[`App element produces output containing normal page if logged in 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1x30bt1-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -43,8 +49,9 @@ exports[`App element produces output containing normal page if logged in 1`] = `
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             You are logged in
           </div>
@@ -102,17 +109,23 @@ exports[`App element produces output containing not logged in page if it exists 
       className="MuiBox-root css-72fd9l"
     >
       <header
-        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-ptdwpq-MuiPaper-root-MuiAppBar-root"
         id="app1.appBar1"
+        style={
+          {
+            "--Paper-shadow": "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+          }
+        }
       >
         <div
-          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-s3ewxw-MuiToolbar-root"
         >
           <div
             className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-lbrw2m-MuiTypography-root"
+              style={{}}
             >
               The App bar
             </div>
@@ -127,7 +140,7 @@ exports[`App element produces output containing not logged in page if it exists 
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1x30bt1-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -135,8 +148,9 @@ exports[`App element produces output containing not logged in page if it exists 
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             Please log in
           </div>
@@ -197,7 +211,7 @@ exports[`App element produces output containing page 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1x30bt1-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -205,8 +219,9 @@ exports[`App element produces output containing page 1`] = `
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             Hello
             <br />
@@ -266,17 +281,23 @@ exports[`App element produces output containing page and additional components w
       className="MuiBox-root css-72fd9l"
     >
       <header
-        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-hip9hq-MuiPaper-root-MuiAppBar-root"
+        className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-ptdwpq-MuiPaper-root-MuiAppBar-root"
         id="app1.appBar1"
+        style={
+          {
+            "--Paper-shadow": "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
+          }
+        }
       >
         <div
-          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-10ltm04-MuiToolbar-root"
+          className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-dense css-s3ewxw-MuiToolbar-root"
         >
           <div
             className="MuiStack-root css-zqp9gt-MuiStack-root"
           >
             <div
-              className="MuiTypography-root MuiTypography-h6 css-69xlwv-MuiTypography-root"
+              className="MuiTypography-root MuiTypography-h6 css-lbrw2m-MuiTypography-root"
+              style={{}}
             >
               The App bar
             </div>
@@ -291,7 +312,7 @@ exports[`App element produces output containing page and additional components w
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1x30bt1-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -299,8 +320,9 @@ exports[`App element produces output containing page and additional components w
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             Hello
             <br />
@@ -384,7 +406,7 @@ exports[`App element produces output with cookie message 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1d03jue-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1x30bt1-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -392,8 +414,9 @@ exports[`App element produces output with cookie message 1`] = `
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             Hello
             <br />
@@ -434,7 +457,8 @@ exports[`App element produces output with cookie message 1`] = `
         }
       >
         <p
-          className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+          style={{}}
         >
           We love cookies
         </p>
@@ -539,7 +563,7 @@ exports[`App element produces output with max width 1`] = `
       className="MuiBox-root css-zi2l0h"
     >
       <div
-        className="MuiContainer-root MuiContainer-disableGutters css-1gclkka-MuiContainer-root"
+        className="MuiContainer-root MuiContainer-disableGutters css-1fgx08c-MuiContainer-root"
       >
         <div
           className="MuiStack-root ElPage css-1r8j2qy-MuiStack-root"
@@ -547,8 +571,9 @@ exports[`App element produces output with max width 1`] = `
           tabIndex={-1}
         >
           <div
-            className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
             id="app1.page1.para1"
+            style={{}}
           >
             Hello
             <br />

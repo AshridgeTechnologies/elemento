@@ -16,7 +16,7 @@ export async function loadModuleHttp(url: string): Promise<Module> {
     const tempDir = os.tmpdir()
     const urlAsFilePath = url.replace(/:/g, '')
     const importFilePath = path.join(tempDir, urlAsFilePath)
-    if (!await exists(importFilePath)) {
+    if (!(await exists(importFilePath))) {
         const fileContents = await fetch(url).then( resp => resp.text())
         await Fs.writeFile(importFilePath, fileContents)
     }

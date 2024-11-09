@@ -84,7 +84,7 @@ export const elProps = (path: string, includePathProp = true) => {
                 return proxy
             }
         }
-    };
+    }
 
     const proxy = new Proxy(target, handler)
     return proxy

@@ -1,7 +1,7 @@
-import lodash from 'lodash';
+import lodash from 'lodash'
 import {equals, map} from 'ramda'
 import {mapValues} from 'radash'
-import * as Module from "module";
+import * as Module from "module"
 import BigNumber from 'bignumber.js'
 import {StylingProp} from '../util/StylingTypes'
 import {DragOverEvent, DragStartEvent, useDndMonitor} from '@dnd-kit/core'
@@ -9,7 +9,7 @@ import {useState} from 'react'
 
 export {isoDateReviver} from '../util/helpers'
 
-const {isArray, isObject, isPlainObject} = lodash;
+const {isArray, isObject, isPlainObject} = lodash
 
 export function codeGenerationError(_expr: string, _err: string) {
     return undefined

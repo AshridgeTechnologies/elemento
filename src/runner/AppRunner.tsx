@@ -1,7 +1,7 @@
 import React, {createRef, useContext, useEffect} from 'react'
-import {LocalizationProvider} from '@mui/x-date-pickers';
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
-import enGB from 'date-fns/locale/en-GB'
+import {LocalizationProvider} from '@mui/x-date-pickers'
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
+import {enGB} from 'date-fns/locale/en-GB'
 import {AppStoreHook, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'

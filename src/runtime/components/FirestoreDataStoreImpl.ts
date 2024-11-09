@@ -102,7 +102,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
         const itemWithId = {id, ...item}
-        await setDoc(this.docRef(collectionName, id), itemWithId);
+        await setDoc(this.docRef(collectionName, id), itemWithId)
         this.notify(collectionName, Add, id, item)
     }
 
@@ -111,7 +111,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
         const addIdToItem = (item: DataStoreObject, id: Id) => ({id, ...item})
         const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items))
 
-        const batch = writeBatch(this.db);
+        const batch = writeBatch(this.db)
 
         Object.values(itemsWithIds).forEach(item => {
             batch.set(this.docRef(collectionName, item.id), item)

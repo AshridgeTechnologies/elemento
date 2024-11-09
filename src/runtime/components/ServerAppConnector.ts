@@ -5,9 +5,9 @@ import {equals, mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import {AppStateForObject} from '../appData'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import {globalFetch} from './ComponentHelpers'
-const {startCase} = lodash;
+const {startCase} = lodash
 
 type Properties = {path: string}
 
@@ -44,7 +44,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     }
 
     init(asi: AppStateForObject, path: string) {
-        super.init(asi, path);
+        super.init(asi, path)
         if (!this.state.authSubscription) {
             this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({resultCache: {}}) )
         }

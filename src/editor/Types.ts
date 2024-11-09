@@ -39,7 +39,7 @@ export interface DirectoryNode {
 }
 export interface FileNode {
     file: {
-        contents: string | Uint8Array;
+        contents: string | Uint8Array
     }
 }
 

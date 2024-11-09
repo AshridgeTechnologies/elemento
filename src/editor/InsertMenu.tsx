@@ -1,5 +1,5 @@
 import MenuItem from '@mui/material/MenuItem'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import Menu from '@mui/material/Menu'
 import * as React from 'react'
 import {useState} from 'react'
@@ -9,7 +9,7 @@ import {editorMenuPositionProps} from './Editor'
 import {editorDialogContainer} from './EditorElement'
 import {InsertMenuItemsFn, OnInsertFnWithPositionFn} from './Types'
 
-const {startCase} = lodash;
+const {startCase} = lodash
 
 
 const MenuSubTitle = (props: {children: React.ReactNode}) =>

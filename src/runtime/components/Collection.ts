@@ -286,7 +286,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             const existingQueries = queries as {[key:string] : object[]}
             // @ts-ignore
             const updatedQueries = mapObjIndexed(updateQueryResults, existingQueries)
-            const adjustedQueries = (id! in updatedValue) ? mapObjIndexed(addOrRemoveFromQueryResults, updatedQueries) : updatedQueries;
+            const adjustedQueries = (id! in updatedValue) ? mapObjIndexed(addOrRemoveFromQueryResults, updatedQueries) : updatedQueries
             this.latest().updateState({value: updatedValue, queries: adjustedQueries})
         }
 

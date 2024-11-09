@@ -2,15 +2,15 @@
 
 exports[`SelectInput element produces output with default values where properties omitted 1`] = `
 <div
-  className="MuiFormControl-root css-4d3iom-MuiFormControl-root"
+  className="MuiFormControl-root css-tgm0y6-MuiFormControl-root"
 >
   <label
-    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled css-1y3nboe-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={false}
     id="app.page1.height_label"
   />
   <div
-    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-utk17j-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-6khn8x-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
@@ -18,7 +18,7 @@ exports[`SelectInput element produces output with default values where propertie
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-labelledby="app.page1.height_label app.page1.height"
-      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
+      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-idivhk-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
       id="app.page1.height"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -36,7 +36,7 @@ exports[`SelectInput element produces output with default values where propertie
     <input
       aria-hidden={true}
       aria-invalid={false}
-      className="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+      className="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
       disabled={false}
       onAnimationStart={[Function]}
       onChange={[Function]}
@@ -46,7 +46,7 @@ exports[`SelectInput element produces output with default values where propertie
     />
     <svg
       aria-hidden={true}
-      className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+      className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-lohd6h-MuiSvgIcon-root-MuiSelect-icon"
       data-testid="ArrowDropDownIcon"
       focusable="false"
       viewBox="0 0 24 24"
@@ -57,26 +57,26 @@ exports[`SelectInput element produces output with default values where propertie
     </svg>
   </div>
   <p
-    className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained css-k4qjio-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained css-2s8ubb-MuiFormHelperText-root"
   />
 </div>
 `;
 
-exports[`SelectInput element produces output with description info from data type 1`] = `"<div class="MuiFormControl-root css-4d3iom-MuiFormControl-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" id="app.page1.description_label">Color</label><div class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd  css-1g4og1f-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"><div tabindex="0" role="combobox" aria-controls=":r2:" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="app.page1.description_label app.page1.description" id="app.page1.description" class="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-1rjmp1l-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input">Green</div><input aria-invalid="false" aria-hidden="true" tabindex="-1" class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput" value="Green"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-hfutr2-MuiSvgIcon-root-MuiSelect-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon"><path d="M7 10l5 5 5-5z"></path></svg><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeSmall css-1w2pb4l-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-ea2eqt-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A select input for choosing something" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span><span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></div></div><p class="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-k4qjio-MuiFormHelperText-root"></p></div>"`;
+exports[`SelectInput element produces output with description info from data type 1`] = `"<div class="MuiFormControl-root css-tgm0y6-MuiFormControl-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-1dj2ypp-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" id="app.page1.description_label">Color</label><div class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiFilledInput-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd  css-1lrtipe-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"><div tabindex="0" role="combobox" aria-controls=":r2:" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="app.page1.description_label app.page1.description" id="app.page1.description" class="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-7urd10-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input">Green</div><input aria-invalid="false" aria-hidden="true" tabindex="-1" class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput" value="Green"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-lohd6h-MuiSvgIcon-root-MuiSelect-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon"><path d="M7 10l5 5 5-5z"></path></svg><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeSmall css-d1i31j-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1jg1csc-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A select input for choosing something" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></div></div><p class="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-2s8ubb-MuiFormHelperText-root"></p></div>"`;
 
 exports[`SelectInput element produces output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root css-4d3iom-MuiFormControl-root"
+  className="MuiFormControl-root css-tgm0y6-MuiFormControl-root"
 >
   <label
-    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root"
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-1dj2ypp-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink={true}
     id="app.page1.background_label"
   >
     Background
   </label>
   <div
-    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-eemqcy-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
+    className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-4p9ek4-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
     onClick={[Function]}
   >
     <div
@@ -84,7 +84,7 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-labelledby="app.page1.background_label app.page1.background"
-      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-1gzkxga-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
+      className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-idivhk-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
       id="app.page1.background"
       onBlur={[Function]}
       onFocus={[Function]}
@@ -98,7 +98,7 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
     <input
       aria-hidden={true}
       aria-invalid={false}
-      className="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+      className="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
       disabled={false}
       onAnimationStart={[Function]}
       onChange={[Function]}
@@ -108,7 +108,7 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
     />
     <svg
       aria-hidden={true}
-      className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+      className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-lohd6h-MuiSvgIcon-root-MuiSelect-icon"
       data-testid="ArrowDropDownIcon"
       focusable="false"
       viewBox="0 0 24 24"
@@ -119,9 +119,9 @@ exports[`SelectInput element produces output with properties supplied 1`] = `
     </svg>
   </div>
   <p
-    className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-k4qjio-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-2s8ubb-MuiFormHelperText-root"
   />
 </div>
 `;
 
-exports[`SelectInput takes values from data type 1`] = `"<div class="MuiFormControl-root css-4d3iom-MuiFormControl-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-11qvwfa-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" id="app.page1.description_label">Color</label><div class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd  css-1g4og1f-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"><div tabindex="0" role="combobox" aria-controls=":r0:" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="app.page1.description_label app.page1.description" id="app.page1.description" class="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-1rjmp1l-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input">Green</div><input aria-invalid="false" aria-hidden="true" tabindex="-1" class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput" value="Green"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-hfutr2-MuiSvgIcon-root-MuiSelect-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon"><path d="M7 10l5 5 5-5z"></path></svg><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeSmall css-1w2pb4l-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-ea2eqt-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A select input for choosing something" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-kh3qk0-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span><span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></div></div><p class="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-k4qjio-MuiFormHelperText-root"></p></div>"`;
+exports[`SelectInput takes values from data type 1`] = `"<div class="MuiFormControl-root css-tgm0y6-MuiFormControl-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-1dj2ypp-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" id="app.page1.description_label">Color</label><div class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiFilledInput-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd  css-1lrtipe-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"><div tabindex="0" role="combobox" aria-controls=":r0:" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="app.page1.description_label app.page1.description" id="app.page1.description" class="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-7urd10-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input">Green</div><input aria-invalid="false" aria-hidden="true" tabindex="-1" class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput" value="Green"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-lohd6h-MuiSvgIcon-root-MuiSelect-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon"><path d="M7 10l5 5 5-5z"></path></svg><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeSmall css-d1i31j-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1jg1csc-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A select input for choosing something" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></div></div><p class="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-2s8ubb-MuiFormHelperText-root"></p></div>"`;

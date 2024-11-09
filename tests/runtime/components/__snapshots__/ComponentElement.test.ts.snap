@@ -6,14 +6,16 @@ exports[`Component element produces output containing children and wrapped with 
   id="app.page1.things"
 >
   <div
-    className="MuiTypography-root MuiTypography-body1 css-vybajm-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-mtp603-MuiTypography-root"
     id="app.page1.things.text1"
+    style={{}}
   >
     First text
   </div>
   <div
-    className="MuiTypography-root MuiTypography-body1 css-110he2w-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-1qyh66r-MuiTypography-root"
     id="app.page1.things.text2"
+    style={{}}
   >
     Second text
   </div>

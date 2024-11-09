@@ -7,8 +7,9 @@ exports[`Page element produces output containing children 1`] = `
   tabIndex={-1}
 >
   <div
-    className="MuiTypography-root MuiTypography-body1 css-1pnky8i-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-q50eim-MuiTypography-root"
     id="page1.para1"
+    style={{}}
   >
     Hello
     <br />

@@ -1,5 +1,5 @@
 import Observable from 'zen-observable'
-import lodash from 'lodash'; const {matches} = lodash;
+import lodash from 'lodash'; const {matches} = lodash
 
 const pendingFlag = Symbol('pending')
 export type Criteria = object

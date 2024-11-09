@@ -3,10 +3,10 @@ import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
 import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
 
-const {debounce} = lodash;
+const {debounce} = lodash
 
 type Properties = Readonly<{
     path: string,
@@ -28,7 +28,7 @@ const ListElement = React.memo( function ListElement({path, children, ...props}:
     }
 
     const debouncedScrollHandler = useMemo(() => debounce(scrollHandler, 300), [])
-    useEffect(() => () => debouncedScrollHandler.cancel(), []);
+    useEffect(() => () => debouncedScrollHandler.cancel(), [])
 
     const listRef = useRef<HTMLUListElement>(null)
     useEffect(() => listRef.current?.scroll?.(0, scrollTop), [scrollTop]) // scroll() not implemented in JSDOM

@@ -134,7 +134,7 @@ export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, 
 
     const [searchText, setSearchText] = useState('')
     const [showAdvanced, setShowAdvanced] = useState(false)
-    const onChangeShowAdvanced = (event: React.ChangeEvent<HTMLInputElement>) => setShowAdvanced(event.target.checked);
+    const onChangeShowAdvanced = (event: React.ChangeEvent<HTMLInputElement>) => setShowAdvanced(event.target.checked)
 
     const onChangeStyleProperty = (_: ElementId, stylePropName: string, stylePropValue: any) => {
         const styleUpdates = () => {

@@ -47,8 +47,8 @@ export class SpeechInputState extends BaseComponentState<ExternalProperties, Sta
 
         const logEvent = (event: SpeechRecognitionEvent) => console.log('SpeechRecognition', event.type)
         recognition.onresult = (event: SpeechRecognitionEvent) => {
-            const firstResult = event.results[0][0];
-            console.log('SpeechRecognition', '- Result:', firstResult);
+            const firstResult = event.results[0][0]
+            console.log('SpeechRecognition', '- Result:', firstResult)
             this.updateState({value: firstResult.transcript, confidence: firstResult.confidence})
         }
         recognition.onnomatch = logEvent
@@ -60,7 +60,7 @@ export class SpeechInputState extends BaseComponentState<ExternalProperties, Sta
         }
 
         recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-            console.error('Speech recognition', 'error', event.error);
+            console.error('Speech recognition', 'error', event.error)
             recognition.abort()
             this.updateState({recording: false, value: undefined, confidence: null})
         }

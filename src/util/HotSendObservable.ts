@@ -10,7 +10,7 @@ export default class HotSendObservable<T> extends SendObservable<T> {
             observer.next(this.latestValue)
         }
 
-        return super.onSubscribe(observer);
+        return super.onSubscribe(observer)
     }
 
     send(value: T) {

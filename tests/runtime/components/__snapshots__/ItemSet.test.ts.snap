@@ -52,8 +52,9 @@ exports[`produces output containing ReactElement children 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id1.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -77,8 +78,9 @@ exports[`produces output containing ReactElement children 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id2.Text99"
+      style={{}}
     >
       over here!
       <br />
@@ -143,8 +145,9 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id1.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -170,8 +173,9 @@ exports[`produces output containing ReactElement children if draggable 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id2.Text99"
+      style={{}}
     >
       over here!
       <br />
@@ -234,8 +238,9 @@ exports[`produces output when an item is null 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id1.Text99"
+      style={{}}
     >
       One
       <br />
@@ -259,8 +264,9 @@ exports[`produces output when an item is null 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#1.Text99"
+      style={{}}
     >
       <br />
       item id 1
@@ -283,8 +289,9 @@ exports[`produces output when an item is null 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id3.Text99"
+      style={{}}
     >
       Three
       <br />
@@ -347,8 +354,9 @@ exports[`produces output with indexes if items have no ids 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#0.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -372,8 +380,9 @@ exports[`produces output with indexes if items have no ids 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#1.Text99"
+      style={{}}
     >
       over here!
       <br />
@@ -436,8 +445,9 @@ exports[`shows items with no ids 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#0.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -461,8 +471,9 @@ exports[`shows items with no ids 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#1.Text99"
+      style={{}}
     >
       over here!
       <br />
@@ -525,8 +536,9 @@ exports[`shows only first selectedItem as selected if no ids when given zero as 
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#0.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -550,8 +562,9 @@ exports[`shows only first selectedItem as selected if no ids when given zero as 
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#1.Text99"
+      style={{}}
     >
       over here!
       <br />
@@ -614,8 +627,9 @@ exports[`shows single selectedItem as selected 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id1.Text99"
+      style={{}}
     >
       where are you?
       <br />
@@ -639,8 +653,9 @@ exports[`shows single selectedItem as selected 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
       id="app.page1.itemSet1.#id2.Text99"
+      style={{}}
     >
       over here!
       <br />

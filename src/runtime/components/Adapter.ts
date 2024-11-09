@@ -1,12 +1,12 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../DataStore'
 import {equals, mergeRight, without} from 'ramda'
-import lodash from 'lodash';
+import lodash from 'lodash'
 import {valuesOf} from '../runtimeFunctions'
 import appFunctions from '../appFunctions'
 import Observable from 'zen-observable'
 
-const {startCase} = lodash;
+const {startCase} = lodash
 
 type Properties = {path: string}
 

@@ -2,7 +2,7 @@
 
 exports[`ListElement produces output containing an item set 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
+  className="MuiList-root MuiList-padding css-1g2t0e5-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 />
@@ -10,19 +10,21 @@ exports[`ListElement produces output containing an item set 1`] = `
 
 exports[`ListElement produces output containing an item set and fixed children 1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
+  className="MuiList-root MuiList-padding css-1g2t0e5-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 >
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="app.page1.list1.Text99"
+    style={{}}
   >
     Text 99
   </div>
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="app.page1.list1.Text100"
+    style={{}}
   >
     Text 100
   </div>
@@ -31,19 +33,21 @@ exports[`ListElement produces output containing an item set and fixed children 1
 
 exports[`ListElement produces output containing fixed ReactElement children  1`] = `
 <ul
-  className="MuiList-root MuiList-padding css-12zc4wp-MuiList-root"
+  className="MuiList-root MuiList-padding css-1g2t0e5-MuiList-root"
   id="app.page1.list1"
   onScroll={[Function]}
 >
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="app.page1.list1.Text99"
+    style={{}}
   >
     Text 99
   </div>
   <div
-    className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="app.page1.list1.Text100"
+    style={{}}
   >
     Text 100
   </div>

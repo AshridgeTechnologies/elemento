@@ -8,7 +8,7 @@ const OPFS_PROJECTS_DIR = 'Projects'
 export type ShowAlertFn = (title: string, message: string, detail: React.ReactNode, severity: AlertColor) => void
 
 export type Optional<T> = {
-    [Property in keyof T]+?: T[Property];
+    [Property in keyof T]+?: T[Property]
 }
 
 export async function chooseDirectory(): Promise<FileSystemDirectoryHandle | null> {

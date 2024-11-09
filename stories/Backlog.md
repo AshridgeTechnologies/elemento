@@ -381,6 +381,7 @@ Done
 - Screen keyboard
 - Load content of text file
 - Cookie consent
+- Firebase Deploy 2
 
 
 Bugs fixed

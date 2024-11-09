@@ -2,14 +2,14 @@
 
 exports[`TrueFalseInput element produces output with default values where properties omitted 1`] = `
 <div
-  className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
+  className="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
 >
   <label
-    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1fp819w-MuiFormControlLabel-root"
+    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1intw90-MuiFormControlLabel-root"
     htmlFor="app.page1.height"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-imrjgg-MuiButtonBase-root-MuiCheckbox-root"
       onBlur={[Function]}
       onContextMenu={[Function]}
       onDragLeave={[Function]}
@@ -26,7 +26,7 @@ exports[`TrueFalseInput element produces output with default values where proper
     >
       <input
         checked={false}
-        className="PrivateSwitchBase-input css-1m9pwf3"
+        className="PrivateSwitchBase-input css-j8yymo"
         data-indeterminate={false}
         disabled={false}
         id="app.page1.height"
@@ -37,7 +37,7 @@ exports[`TrueFalseInput element produces output with default values where proper
       />
       <svg
         aria-hidden={true}
-        className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+        className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
         data-testid="CheckBoxOutlineBlankIcon"
         focusable="false"
         viewBox="0 0 24 24"
@@ -46,30 +46,28 @@ exports[`TrueFalseInput element produces output with default values where proper
           d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
         />
       </svg>
-      <span
-        className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-      />
     </span>
     <span
-      className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
+      style={{}}
     />
   </label>
   <p
-    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-18y2hez-MuiFormHelperText-root"
   />
 </div>
 `;
 
 exports[`TrueFalseInput element produces output with properties supplied 1`] = `
 <div
-  className="MuiFormControl-root css-1nrlq1o-MuiFormControl-root"
+  className="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
 >
   <label
-    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1fp819w-MuiFormControlLabel-root"
+    className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1intw90-MuiFormControlLabel-root"
     htmlFor="app.page1.width"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-6nizlf-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-18vjyi6-MuiButtonBase-root-MuiCheckbox-root"
       endAdornment={null}
       onBlur={[Function]}
       onContextMenu={[Function]}
@@ -87,7 +85,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
     >
       <input
         checked={true}
-        className="PrivateSwitchBase-input css-1m9pwf3"
+        className="PrivateSwitchBase-input css-j8yymo"
         data-indeterminate={false}
         disabled={false}
         id="app.page1.width"
@@ -98,7 +96,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
       />
       <svg
         aria-hidden={true}
-        className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+        className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
         data-testid="CheckBoxIcon"
         focusable="false"
         viewBox="0 0 24 24"
@@ -109,13 +107,14 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
       </svg>
     </span>
     <span
-      className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+      className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
+      style={{}}
     >
       Covered
     </span>
   </label>
   <p
-    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-1d1r5q-MuiFormHelperText-root"
+    className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-18y2hez-MuiFormHelperText-root"
   />
 </div>
 `;

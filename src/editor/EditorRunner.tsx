@@ -20,7 +20,7 @@ import {ASSET_DIR} from '../shared/constants'
 import {wait, waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
-import lodash, {startCase} from 'lodash';
+import lodash, {startCase} from 'lodash'
 import {NewProjectDialog} from './actions/NewProject'
 import ProjectBuilder from '../generator/ProjectBuilder'
 import BrowserProjectLoader from '../generator/BrowserProjectLoader'
@@ -51,7 +51,7 @@ import ServerMultiFileWriter from './ServerMultiFileWriter'
 import {PanelTitle} from './PanelTitle'
 import {OpenInNew} from '@mui/icons-material'
 
-const {debounce} = lodash;
+const {debounce} = lodash
 
 declare global {
     var getProject: () => Project | null

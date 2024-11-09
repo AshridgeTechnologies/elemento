@@ -16,7 +16,7 @@ exports[`Image element not visible with display false 1`] = `
 >
   <img
     alt=""
-    className="mui-image-img  css-jlmoib"
+    className="mui-image-img  css-dih690"
     id="app.page1.photo"
     onError={[Function]}
     onLoad={[Function]}
@@ -67,7 +67,7 @@ exports[`Image element produces image output with default properties 1`] = `
 >
   <img
     alt=""
-    className="mui-image-img  css-jlmoib"
+    className="mui-image-img  css-dih690"
     id="app.page1.photo"
     onError={[Function]}
     onLoad={[Function]}
@@ -119,7 +119,7 @@ exports[`Image element produces output with properties supplied as state values 
 >
   <img
     alt="A big mountain"
-    className="mui-image-img  css-jlmoib"
+    className="mui-image-img  css-dih690"
     id="app.page1.photo"
     onError={[Function]}
     onLoad={[Function]}
