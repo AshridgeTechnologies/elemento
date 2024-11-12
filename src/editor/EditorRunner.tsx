@@ -626,7 +626,7 @@ export default function EditorRunner() {
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
             const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-            const previewUrl = `/studio/preview/${projectIdRef.current}/${appName()}/`
+            const previewUrl = projectIdRef.current ? `/studio/preview/${projectIdRef.current}/${appName()}/` : ''
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
             const insertMenuItems = project.insertMenuItems.bind(project)

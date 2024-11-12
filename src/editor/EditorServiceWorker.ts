@@ -44,6 +44,7 @@ export default class EditorServiceWorker {
         }
 
         if (data?.type === 'projectStore') {
+            console.log('EditorServiceWorker', 'projectStore message', data)
             this.projectStores.set(data.projectId, new DiskProjectStore(data.dirHandle))
         }
 
@@ -90,6 +91,18 @@ export default class EditorServiceWorker {
                         }
                     })
                 }
+
+                const isValidAppName = await this.dirExists(projectId, prefix + appName)
+                if (isValidAppName) {
+                    let file = await this.getFileContents(projectId, prefix + appName + '/index.html')
+                    if (file) {
+                        return new Response(file, {
+                            headers: {
+                                'Content-Type': 'text/html'
+                            }
+                        })
+                    }
+                }
             }
 
             return new Response(null, {status: 404, statusText: 'File not found (in service worker)'})
@@ -123,6 +136,26 @@ export default class EditorServiceWorker {
         } catch (e: any) {
             console.error('Failed reading', path, e.message)
             return null
+        }
+    }
+
+    private async dirExists(projectId: string, path: string): Promise<boolean> {
+        const fullPath = `dist/client/${path}`
+        let projectStore = this.projectStores.get(projectId)
+        try {
+            if (!projectStore) {
+                await this.sendToClients('dirHandleRequest', {projectId})
+                projectStore = await waitUntil(() => this.projectStores.get(projectId), 50, this.dirHandleTimeout)
+            }
+            if (!projectStore) {
+                console.warn('Failed reading', path, 'projectStore not set')
+                return false
+            }
+
+            return await projectStore.exists(fullPath)
+        } catch (e: any) {
+            console.error('Failed reading', path, e.message)
+            return false
         }
     }
 

@@ -14,7 +14,7 @@ const files: FileSystemTree = {
                             contents: 'top index.html contents'
                         }
                     },
-                    'dir1': {
+                    'App1': {
                         directory: {
                             'stuff.js': {
                                 file: {
@@ -28,7 +28,7 @@ const files: FileSystemTree = {
                             },
                             'index.html': {
                                 file: {
-                                    contents: 'dir1 index.html contents'
+                                    contents: 'App1 index.html contents'
                                 }
                             },
                         }
@@ -95,7 +95,7 @@ test('can NOT get response for mounted file at top level', async () => {
 })
 
 test('can get response for mounted file in sub-directory', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir1/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/App1/stuff.js'))
     expect(result.status).toBe(200)
     expect(result.headers.get('Content-Type')).toBe('application/javascript; charset=utf-8')
     expect(await result.text()).toBe('stuff.js contents')
@@ -103,8 +103,8 @@ test('can get response for mounted file in sub-directory', async () => {
 
 test('can get response for mounted file in sub-directory after waiting for project dir handle', async () => {
 
-    const filesCopy345 = JSON.parse(JSON.stringify(files).replace(/dir1/g, 'dir2').replace(/stuff.js contents/, 'stuff.js 345 contents'))
-    const resultPromise = worker.handleRequest(request('http://example.com/studio/preview/project-345/dir2/stuff.js'))
+    const filesCopy345 = JSON.parse(JSON.stringify(files).replace(/App1/g, 'App2').replace(/stuff.js contents/, 'stuff.js 345 contents'))
+    const resultPromise = worker.handleRequest(request('http://example.com/studio/preview/project-345/App2/stuff.js'))
 
     await wait(10)
     expect(swScope.theClients[0].postMessage).toHaveBeenCalledWith({type: 'dirHandleRequest', projectId: 'project-345'})
@@ -117,7 +117,7 @@ test('can get response for mounted file in sub-directory after waiting for proje
 })
 
 test('can get not found response for file in sub-directory after timeout waiting for project dir handle', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-345/dir2/stuff.js'))
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-345/App2/stuff.js'))
     expect(result.status).toBe(404)
 })
 
@@ -133,13 +133,8 @@ test('can get not found response for non-existent top-level file', async () => {
     expect(result.status).toBe(404)
 })
 
-test('can get not found response for non-existent file in sub dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir1/xxx.js'))
-    expect(result.status).toBe(404)
-})
-
-test('can get not found response for non-existent dir', async () => {
-    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/dir2/stuff.js'))
+test('can get not found response for non-existent app name', async () => {
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/App2/stuff.js'))
     expect(result.status).toBe(404)
 })
 
@@ -161,9 +156,24 @@ test('does NOT serve index.html if top-level path ends in /', async () => {
     expect(result.status).toBe(404)
 })
 
+test('serves index.html if sub-dir path ends in app name', async () => {
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/App1'))
+    expect(await result.text()).toBe('App1 index.html contents')
+})
+
 test('serves index.html if sub-dir path ends in /', async () => {
-    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/dir1/'))
-    expect(await result.text()).toBe('dir1 index.html contents')
+    const result = await worker.handleRequest(request('https://example.com/studio/preview/project-123/App1/'))
+    expect(await result.text()).toBe('App1 index.html contents')
+})
+
+test('serves index.html for non-existent file in app dir', async () => {
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/App1/xxx.js'))
+    expect(await result.text()).toBe('App1 index.html contents')
+})
+
+test('serves index.html for non-existent file in app sub-dir', async () => {
+    const result = await worker.handleRequest(request('http://example.com/studio/preview/project-123/App1/xxx/yyy'))
+    expect(await result.text()).toBe('App1 index.html contents')
 })
 
 test('serves index.html if tools sub-dir path ends in /', async () => {

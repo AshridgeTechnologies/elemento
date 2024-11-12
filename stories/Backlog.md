@@ -120,6 +120,8 @@ Stories
 ### Priority for usability
 - Inspector Part 3
 - Runtime error and notification handling
+- Server side error location
+- Confusion between CurrentUser and a Users collection
 - Function editing and validation
 - Complex formula editing - auto format on separate lines where it helps eg for nested function calls
 - General usability Part 3
