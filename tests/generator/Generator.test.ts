@@ -2629,15 +2629,16 @@ test('Accepts modern JavaScript features', ()=> {
     expect(output.errors).toStrictEqual({})
 })
 
-test('generates standalone expressions block for selected element', ()=> {
+test('generates standalone expressions block for selected element and includes app level elements', ()=> {
     const app = new App('app1', 'Test1', {}, [
+        new Data('d1', 'Width', {initialValue: 200}),
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
             new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-                new TextInput('id1', 't1', {initialValue: ex`t2.value`, multiline: true, label: "Text Input One", styles: {width: 150}}),
+                new TextInput('id1', 't1', {initialValue: ex`t2.value`, multiline: true, label: "Text Input One", styles: {width: ex`Width`}}),
                 new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
-                new TextInput('id2', 't3', {}),
+                new TextInput('id3', 't3', {}),
             ]
         )])
 
@@ -2646,7 +2647,8 @@ test('generates standalone expressions block for selected element', ()=> {
     const exprs = {
         't1.value': `t2.value`,
         't2.value': `_selectedElement.value`,
-        't3.update': `Set(t3, 'Xyz')`
+        't3.update': `Set(t3, 'Xyz')`,
+        'the width': `Width.value`
     }
     const updatesAllowed = ['t3.update']
     const selectedElement = project1.findElement('id1')
@@ -2656,12 +2658,14 @@ test('generates standalone expressions block for selected element', ()=> {
 const pathTo = name => props.path + '.' + name
 const _selectedElement = _state.getObject('Test1.Page1.t1')
 const {Set} = Elemento.appFunctions
+const Width = _state.getObject('Test1.Width')
 const t2 = _state.getObject(pathTo('t2'))
 const t3 = _state.getObject(pathTo('t3'));
 ({
   't1.value': () => (t2.value),
   't2.value': () => (_selectedElement.value),
-  't3.update': {updateAllowed: true, fn: () => (Set(t3, 'Xyz'))}
+  't3.update': {updateAllowed: true, fn: () => (Set(t3, 'Xyz'))},
+  'the width': () => (Width.value)
 })`.trimStart())
 })
 

@@ -23,6 +23,15 @@ export const useDebugExpr = () => {
     return (window as any).elementoDebugExpr ?? null
 }
 
+const makeCloneable = (val: any) => {
+    try {
+        return structuredClone(val)
+    } catch(e: any) {
+        const json = JSON.stringify(val)
+        return json ? JSON.parse(json) : {_error: 'Value unavailable'}
+    }
+}
+
 function getDebugData(valFnsFn: () => DebugFunctions) {
     let valFns: DebugFunctions
     try {
@@ -43,7 +52,7 @@ function getDebugData(valFnsFn: () => DebugFunctions) {
             if (state && !updateAllowed) {
                 state.setPreventUpdates( ()=> updateAttempted = true)
             }
-            const result = updateAllowed ? (val as UpdateFunction).fn() : (val as DebugFn)()
+            const result = updateAllowed ? (val as UpdateFunction).fn() : makeCloneable((val as DebugFn)())
             return updateAllowed || updateAttempted ? {_isUpdate: true, result} : result
         } catch (e: any) {
             return {_error: e.toString()}

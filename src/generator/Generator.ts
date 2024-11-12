@@ -325,7 +325,7 @@ ${declarations}${debugHook}
 
         let appLevelDeclarations
         const appLevelIdentifiers = identifiers.filter(isAppElement)
-        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('appCodeName.${ident}')`).join('\n')
+        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('${appCodeName}.${ident}')`).join('\n')
         let containerDeclarations
         const containerIdentifiers = identifiers.filter(isContainerElement)
         containerDeclarations = containerIdentifiers.map(ident => `const ${ident} = _state.getObject(pathTo('${ident}'))`).join('\n')

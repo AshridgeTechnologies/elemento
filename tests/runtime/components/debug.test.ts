@@ -55,13 +55,23 @@ test('Page element evaluates debug info and sends event and updates if debug exp
 })
 
 test('Page element traps errors in debug exprs and returns error result', async () => {
-    (window as any).elementoDebugExpr = `({t2: () => xxx.value })`
+    (window as any).elementoDebugExpr = `({t1: () => 10 + 20, t2: () => xxx.value })`
     let event: CustomEvent
     const listener = ((evt: CustomEvent) => event = evt) as unknown as EventListener
     window.addEventListener('debugData', listener)
     const component = createElement(Page1, {path: 'page1'})
     const {el} = testContainer(component)
-    expect(event!.detail).toStrictEqual({t2: {_error: 'ReferenceError: xxx is not defined'} })
+    expect(event!.detail).toStrictEqual({t1: 30, t2: {_error: 'ReferenceError: xxx is not defined'} })
+})
+
+test('Page element traps uncloneable values in debug exprs and returns JSON copy or error result', async () => {
+    (window as any).elementoDebugExpr = `({t1: () => 10 + 20, t2: () => Date, t3: () => ({ x: 10, doStuff() { console.log('Doing stuff') } }) })`
+    let event: CustomEvent
+    const listener = ((evt: CustomEvent) => event = evt) as unknown as EventListener
+    window.addEventListener('debugData', listener)
+    const component = createElement(Page1, {path: 'page1'})
+    const {el} = testContainer(component)
+    expect(event!.detail).toStrictEqual({t1: 30, t2: {_error: 'Value unavailable'}, t3: {x: 10} })
 })
 
 test('Page element traps errors in evaluating debug exprs and returns error result', async () => {
