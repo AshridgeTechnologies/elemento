@@ -2,8 +2,10 @@ import {valueObj} from '../testutil/testHelpers'
 import dataFunctions from '../../src/runtime/dataFunctions'
 
 const dataStoreResult = "result"
-const mockFn = jest.fn().mockResolvedValue(dataStoreResult)
-const {Update, Add, AddAll, Remove, Get, Query, GetRandomId} = dataFunctions
+let mockFn: jest.Mock
+const {Update, Add, AddAll, Remove, Get, GetIfExists, Query, GetRandomId} = dataFunctions
+
+beforeEach(()=> mockFn = jest.fn().mockResolvedValue(dataStoreResult))
 
 describe('Update single item', () => {
     test('updates object state value', () => {
@@ -92,6 +94,52 @@ describe('Get', () => {
     test('uses object value for id', () => {
         const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
         const result = Get(elementState, valueObj('x1'))
+        expect(result).toStrictEqual({a: 50, b: 'Bee'})
+        expect(elementState.Get).toBeCalledWith('x1')
+    })
+})
+
+describe('GetIfExists', () => {
+    const existingCollection = {}
+
+    test('gets an object by id', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = GetIfExists(elementState, 'x1')
+        expect(result).toStrictEqual({a: 50, b: 'Bee'})
+        expect(elementState.Get).toBeCalledWith('x1')
+    })
+
+    test('gets null if id is nullish', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = GetIfExists(elementState, undefined)
+        expect(result).toBe(null)
+        expect(elementState.Get).not.toHaveBeenCalled()
+    })
+
+    test('gets default if id is nullish', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = GetIfExists(elementState, null, {name: 'Ali'})
+        expect(result).toStrictEqual({name: 'Ali'})
+        expect(elementState.Get).not.toHaveBeenCalled()
+    })
+
+    test('gets null if not found', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockImplementationOnce(() => { throw new Error('Not found') })}
+        const result = GetIfExists(elementState, 'x1')
+        expect(result).toBe(null)
+        expect(elementState.Get).toBeCalledWith('x1')
+    })
+
+    test('gets default if not found', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockImplementationOnce(() => { throw new Error('Not found') })}
+        const result = GetIfExists(elementState, 'x1', {name: 'Ali'})
+        expect(result).toStrictEqual({name: 'Ali'})
+        expect(elementState.Get).toBeCalledWith('x1')
+    })
+
+    test('uses object value for id', () => {
+        const elementState = {value: existingCollection, Get: mockFn.mockReturnValue({a: 50, b: 'Bee'})}
+        const result = GetIfExists(elementState, valueObj('x1'))
         expect(result).toStrictEqual({a: 50, b: 'Bee'})
         expect(elementState.Get).toBeCalledWith('x1')
     })

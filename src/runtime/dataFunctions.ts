@@ -1,6 +1,7 @@
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {Criteria, Id} from './DataStore'
 import {customAlphabet} from 'nanoid'
+import {isEmpty} from 'ramda'
 
 const idSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 4)
 
@@ -29,6 +30,15 @@ const dataFunctions = {
 
     Get(component: { Get: (id: Id) => any }, id: Value<Id>) {
         return component.Get(valueOf(id))
+    },
+
+    GetIfExists(component: { Get: (id: Id) => any }, id: Value<Id | null | undefined>, defaultValue: any = null) {
+        try {
+            const idVal = valueOf(id)
+            return (idVal === null || idVal === undefined) ? defaultValue : component.Get(idVal)
+        } catch (e) {
+            return defaultValue
+        }
     },
 
     Query(component: { Query: (criteria: Criteria) => any[] }, criteria: Value<Criteria>) {

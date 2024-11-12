@@ -13,7 +13,7 @@ const {Reset, Set, SetWithUpdates, CurrentUser, Notify, NotifyError} = appFuncti
 beforeEach( ()=> jest.resetAllMocks() )
 
 test('can get app functions names', () => {
-    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'SetWithUpdates', 'NotifyError', 'Notify', 'CurrentUser', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query', 'GetRandomId'])
+    expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'SetWithUpdates', 'NotifyError', 'Notify', 'CurrentUser', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetIfExists', 'Query', 'GetRandomId'])
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {
