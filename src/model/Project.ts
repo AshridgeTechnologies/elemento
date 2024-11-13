@@ -117,6 +117,7 @@ export default class Project extends BaseElement<Properties> implements Element 
                 File: [new ConfirmAction('delete')],
                 Tool: ['show', ...standardActionsAvailable],
                 ToolImport: ['show', ...standardActionsAvailable],
+                Page: ['show', ...standardActionsAvailable],
             }
             return (specialActionsAvailable[element.kind as keyof object] ?? standardActionsAvailable)
         }

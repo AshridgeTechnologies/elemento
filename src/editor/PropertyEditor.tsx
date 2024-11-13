@@ -28,8 +28,10 @@ function NameTextField(props: TextFieldProps & {readOnly: boolean}) {
     return <TextField {...props}
                       variant='outlined' size='small'
                       sx={{flexGrow: 0.7 }}
-                      InputProps={{sx: {fontSize: 20}}}
-                      inputProps={{readOnly: props.readOnly}}
+                      slotProps={{
+                          input: {sx: {fontSize: 20}},
+                          htmlInput: {readOnly: props.readOnly}
+                      }}
                       value={changedValue ?? props.value}
                       data-eltype='elementName'
                       label='Name'

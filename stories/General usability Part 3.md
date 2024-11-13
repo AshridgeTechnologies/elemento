@@ -2,7 +2,7 @@ General usability Part 3
 ========================
 
 - Prevent duplicate element names and using system object names
-- Can show page from Navigator
+- ✅ Can show page from Navigator
 - Reset function acts on whole page or layout
 - Keep scroll position in preview when change something
 - Fixed top-level data types folder

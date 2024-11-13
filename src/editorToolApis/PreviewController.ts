@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import {
     ActionFn,
     ActionQueue,
-    ensureVisible, getStoredOptions,
+    ensureVisible,
+    getStoredOptions,
     hidePointer,
     highlightElements,
-    Options,
     selectElements,
     selectSingleElement,
     setElementValue,
@@ -16,6 +16,9 @@ import {mapValues} from 'radash'
 import {Value} from '../runtime/runtimeFunctions'
 import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
+import timerObservable from '../util/timerObservable'
+import AppContext from '../runtime/AppContext'
+
 
 export function valueOf<T>(x: Value<T>): T {
     if (x instanceof Date) return x as T
@@ -31,6 +34,7 @@ export default class PreviewController {
 
     private get container(): HTMLElement { return this.window.document.body }
     private get options() { return getStoredOptions() }
+    private get appContext(): AppContext | undefined { return (this.window as any).appContext }
 
     Show(selector?: string) {
         console.log('Show', selector)
@@ -91,6 +95,26 @@ export default class PreviewController {
             const {detail} = (evt as CustomEvent)
             return valueOf(detail)
         })
+    }
+
+    Url() {
+        return timerObservable(window, () => this.appContext?.getUrlString() ?? '')
+    }
+
+    SetUrl(url: string) {
+        this.appContext?.pushUrl(url)
+    }
+
+    Back() {
+        this.appContext?.goBack()
+    }
+
+    Forward() {
+        this.appContext?.goForward()
+    }
+
+    Reload() {
+        this.window.location.reload()
     }
 
     private queueAction(selector: string | null, fn: ActionFn) {

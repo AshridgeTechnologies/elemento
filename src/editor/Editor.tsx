@@ -6,7 +6,7 @@ import PropertyEditor from './PropertyEditor'
 import {ActionsAvailableFn, AppElementAction, OnActionFn, OnChangeFn, OnInsertWithSelectedFn, OnMoveFn, OnNameSelectedFn} from './Types'
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 
-import {Box, Grid} from '@mui/material'
+import {Box, Grid2 as Grid} from '@mui/material'
 import './splitPane.css'
 import Project from '../model/Project'
 import {AllErrors} from '../generator/Types'
@@ -63,7 +63,7 @@ export default function Editor({
 
     /* Note on position attributes: Scrollable elements have position = 'relative' so EditorController can calculate pointer position */
     return <Grid container columns={10} spacing={0} height='100%'>
-        <Grid item xs={4} id='navigationPanel' height='100%' overflow='scroll' position='relative'/* see comment above */>
+        <Grid size={4} id='navigationPanel' height='100%' overflow='scroll' position='relative'/* see comment above */>
             <PanelTitle name='Navigator'/>
             <Box id='navigator' width='100%' height='calc(100% - 32px)' paddingLeft={1} paddingTop={1} overflow='scroll' position='relative'>
                 <AppStructureTree treeData={treeData(project, errors)} onSelect={onSelectedItemsChange}
@@ -74,7 +74,7 @@ export default function Editor({
                                   onMove={onMove}/>
             </Box>
         </Grid>
-        <Grid item xs={6} height='100%' sx={{borderLeft: '1px solid lightgray'}} flexDirection='column' /* see comment above */>
+        <Grid size={6} height='100%' sx={{borderLeft: '1px solid lightgray'}} flexDirection='column' /* see comment above */>
             <PanelTitle name='Properties'/>
             <Box id='propertiesPanel' width='100%' height='calc(100% - 32px)' paddingLeft={1} paddingTop={1} overflow='scroll' position='relative'>
                 {propertyArea}

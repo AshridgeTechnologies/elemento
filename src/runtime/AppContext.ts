@@ -23,12 +23,18 @@ const getHistory = () => _standardHistory ?? (_standardHistory = createBrowserHi
 
 export default interface AppContext{
     getUrl(): UrlType
+    pushUrl(newUrl: string): void
     updateUrl(path: string, query: object | null, anchor: string | null): void
     goBack(): void
+    goForward(): void
     onUrlChange(callback: CallbackFn): UnsubscribeFn
     getFullUrl(url: string | undefined): any
     getResourceUrl(resourceName: string): any
+
+    getUrlString(): string
 }
+
+export type AppContextHook = (appContext: AppContext) => void
 
 const convertSearch = (search: string) => {
     const itemPairs = search.replace(/^\?/, '').split(/&/).filter( pair => !!pair)
@@ -73,12 +79,25 @@ export class DefaultAppContext implements AppContext {
         return this.url
     }
 
+    getUrlString() {
+        const {pathname, query, hash} = this.getUrl().location
+        const queryString = asQueryString(query)
+        const queryPart = queryString ? '?' + queryString : ''
+        const hashPart = hash ? '#' + hash : ''
+        return pathname + queryPart + hashPart
+    }
+
     updateUrl(path: string, query: object | null, anchor: string | null) {
-        const prefix = this.pathPrefix ? this.pathPrefix.replace(/^\/?/, '/') : ''
         const queryString = asQueryString(query)
         const hashString = anchor ? anchor.replace(/^#?/, '#') : ''
+        const newUrl = path + queryString + hashString
+        this.pushUrl(newUrl)
+    }
+
+    pushUrl(newUrl: string) {
+        const prefix = this.pathPrefix ? this.pathPrefix.replace(/^\/?/, '/') : ''
         this.url = null
-        this.history.push(prefix + path + queryString + hashString)
+        this.history.push(prefix + newUrl)
     }
 
     onUrlChange(callback: CallbackFn) {
@@ -92,6 +111,11 @@ export class DefaultAppContext implements AppContext {
     goBack() {
         this.url = null
         this.history.back()
+    }
+
+    goForward() {
+        this.url = null
+        this.history.forward()
     }
 
     getFullUrl(url: string | undefined) {
@@ -112,12 +136,13 @@ export class DefaultAppContext implements AppContext {
 }
 
 export const dummyAppContext: AppContext = {
-    getUrl(): UrlType {
-        return {location: { origin: '', pathname: '', query: {}, hash: ''}, pathPrefix: null}
-    },
+    getUrl(): UrlType {return {location: { origin: '', pathname: '', query: {}, hash: ''}, pathPrefix: null}},
+    getUrlString(): string {return ''},
     goBack(): void {},
+    goForward(): void {},
     onUrlChange(_callback: CallbackFn): UnsubscribeFn { return () => {} },
+    pushUrl(_newUrl: string): void {},
     updateUrl(_path: string, _query: object | null, _anchor: string | null): void {},
     getFullUrl(_url: string | undefined): any {},
-    getResourceUrl(_resourceName: string): any {},
+    getResourceUrl(_resourceName: string): any {}
 }

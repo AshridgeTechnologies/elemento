@@ -477,7 +477,7 @@ test('gets actions available for a single item', () => {
     expect(textActions).toStrictEqual(standardActions)
 
     const pageActions = project.actionsAvailable(['p1'])
-    expect(pageActions).toStrictEqual(standardActions)
+    expect(pageActions).toStrictEqual(['show', ...standardActions])
 
     const toolActions = project.actionsAvailable(['tool1'])
     expect(toolActions).toStrictEqual(['show', ...standardActions])

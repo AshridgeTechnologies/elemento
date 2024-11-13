@@ -5,7 +5,7 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName, VoidFn} from './Types'
-import {AlertColor, Box, Button, Grid, Link, Stack, Typography,} from '@mui/material'
+import {AlertColor, Box, Button, Grid2 as Grid, Icon, IconButton, Link, Stack, Typography,} from '@mui/material'
 import {default as ModelElement} from '../model/Element'
 import Project from '../model/Project'
 import {loadJSONFromString} from '../model/loadJSON'
@@ -49,7 +49,9 @@ import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {Status} from './ThrottledCombinedFileWriter'
 import ServerMultiFileWriter from './ServerMultiFileWriter'
 import {PanelTitle} from './PanelTitle'
-import {OpenInNew} from '@mui/icons-material'
+import {Preview} from '../editorToolApis/PreviewControllerClient'
+import ConfirmOnEnterTextField from './ConfirmOnEnterTextField'
+import Page from '../model/Page'
 
 const {debounce} = lodash
 
@@ -101,6 +103,10 @@ function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "upda
 
 let updateCount = 0
 
+function PreviewIconButton(props: {onClick: VoidFn, iconName: string}) {
+    return <IconButton size={'small'} sx={{padding: 0, marginRight: '8px'}} onClick={props.onClick}><Icon sx={{color: 'white'}} >{props.iconName}</Icon></IconButton>
+}
+
 export default function EditorRunner() {
     const [projectHandler] = useState<ProjectHandler>(new ProjectHandler())
     const [serverUpdateStatus, setServerUpdateStatus] = useState<Status>('complete')
@@ -114,6 +120,7 @@ export default function EditorRunner() {
     const [selectedToolId, setSelectedToolId] = useState<string | null>(null)
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
+    const [previewCurrentUrl, setPreviewCurrentUrl] = useState<string>('')
     const projectStoreRef = useRef<DiskProjectStore>()
     const projectIdRef = useRef<string>()
     const projectBuilderRef = useRef<ProjectBuilder>()
@@ -347,6 +354,10 @@ export default function EditorRunner() {
     useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current])
     useEffect(openInitialTools, [])
     useEffect(sendSelectionToTools, [])
+    useEffect(() => {
+        const subscription = Preview.Url().subscribe(setPreviewCurrentUrl)
+        return () => subscription.unsubscribe()
+    }, [previewFrameRef.current])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
     const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id
@@ -566,8 +577,13 @@ export default function EditorRunner() {
     }
 
     const onShow = (id: ElementId) => {
-        const tool = projectHandler.current?.findElement(id) as (Tool | ToolImport)
-        showTool(tool)
+        const element = projectHandler.current?.findElement(id)
+        if (element?.kind === 'Tool' || element?.kind === 'ToolImport') {
+            showTool(element as (Tool | ToolImport))
+        }
+        if (element?.kind === 'Page') {
+            showPageInPreview(element as Page)
+        }
     }
 
     const showTool = (tool: Tool | ToolImport) => {
@@ -577,6 +593,10 @@ export default function EditorRunner() {
         }
         setSelectedToolId(tool.id)
         setShowTools(true)
+    }
+
+    const showPageInPreview = (page: Page) => {
+        Preview.SetUrl('/' + page.codeName)
     }
 
     const onCloseTool = (toolId: string) => {
@@ -626,7 +646,9 @@ export default function EditorRunner() {
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
             const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-            const previewUrl = projectIdRef.current ? `/studio/preview/${projectIdRef.current}/${appName()}/` : ''
+            const previewUrlPrefix = `/studio/preview/${projectIdRef.current}`
+            const previewUrl = projectIdRef.current ? `${previewUrlPrefix}/${appName()}/` : ''
+            const displayPreviewUrl = previewCurrentUrl ?? ''
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
             const insertMenuItems = project.insertMenuItems.bind(project)
@@ -639,6 +661,13 @@ export default function EditorRunner() {
                 'Firebase': onFirebase,
                 ...projectTools
             }
+            const updatePreviewUrl = (path: string) => {
+                Preview.SetUrl(path)
+            }
+
+            const previewBack = ()=> Preview.Back()
+            const previewForward = ()=> Preview.Forward()
+            const previewReload = ()=> Preview.Reload()
 
             const appBarTitle = `Elemento Studio - ${projectStoreName}`
             const OverallAppBar = <Box flex='0'>
@@ -666,7 +695,7 @@ export default function EditorRunner() {
                         {OverallAppBar}
                         <Box flex='1' minHeight={0}>
                             <Grid container columns={20} spacing={0} height='100%'>
-                                <Grid item xs={10} height='100%'>
+                                <Grid size={10} height='100%'>
                                     <Box display='flex' flexDirection='column' height='100%' width='100%'
                                          id='editorMain' className='editorDialogContainer' position='relative'>
                                         {EditorHeader}
@@ -682,8 +711,13 @@ export default function EditorRunner() {
                                         </Box>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={10} height='100%' overflow='scroll'>
+                                <Grid size={10} height='100%' overflow='scroll'>
                                     <PanelTitle name='Preview'>
+                                        <PreviewIconButton iconName='arrow_back' onClick={previewBack}/>
+                                        <PreviewIconButton iconName='arrow_forward' onClick={previewForward}/>
+                                        <PreviewIconButton iconName='refresh' onClick={previewReload}/>
+                                        <ConfirmOnEnterTextField value={displayPreviewUrl} onFinishChange={updatePreviewUrl}
+                                                                 sx={{backgroundColor: 'white', height: '1.8em', marginTop: '4px', width: '30em', borderRadius: '10px'}}/>
                                         <Link href={previewUrl} target='elementoPreview' aria-label="open in new window" title="open in new window" color='inherit'>
                                             <Typography sx={{px: 2, py: 0.5}}>Open in new window</Typography>
                                         </Link>
