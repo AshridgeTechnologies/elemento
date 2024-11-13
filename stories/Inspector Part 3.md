@@ -14,6 +14,7 @@ Requirements
 - Prevent errors when trying to postMessage functions etc
 - Break in Functions before return and debug intermediate values or any expression
 - Break in actions before return and debug intermediate values or any expression
+- Break in server functions before return and debug intermediate values or any expression
 - Find values of $item etc inside Items
 - Can evaluate expressions with async calls, without repeating each time the debugging is re-evaluated
 - Can cache and refresh expressions with async calls
