@@ -38,3 +38,5 @@ Formula improvements Part 3
 - Find a way to ensure that fixed values are the correct types (esp booleans) 
 - Click on a name in a formula to go to its definition
 - Sub-expressions in Calculation, maybe others - maybe: generate fn inline, call it immediately, no useCallback
+- PageUrl(page, ...args) function to get url on current site for a page, maybe with args
+

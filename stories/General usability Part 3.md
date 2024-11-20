@@ -1,6 +1,8 @@
 General usability Part 3
 ========================
 
+- Prevent hiding global or app functions/components with own name
+- Install as app (non PWA) - rearrange UI, update window title, menu with install option that gives instructions
 - Prevent duplicate element names and using system object names
 - ✅ Can show page from Navigator
 - Reset function acts on whole page or layout
