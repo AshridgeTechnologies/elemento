@@ -3,13 +3,14 @@ import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/g
 import {valueObj} from '../testutil/testHelpers'
 import {Value} from '../../src/runtime/runtimeFunctions'
 import {diff} from 'radash'
+import {identity} from 'ramda'
 
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, IsNull, NotNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min,
     Round, Ceiling, Floor,
-    Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
+    Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, GroupBy, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
     CommonItems, HasSameItems, WithoutItems, ListContains, FlatList,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
@@ -918,6 +919,28 @@ describe('Sort', () => {
         const values = ['Sun', 'Moon', 'Stars']
         expect(Sort(values)).toStrictEqual(['Moon', 'Stars', 'Sun'])
     })
+})
+
+describe('GroupBy', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => GroupBy()).toThrow('Wrong number of arguments to GroupBy. Expected list, expression.'))
+    test('empty list gives empty object', () => expect(GroupBy([], identity)).toStrictEqual({}))
+    test('gets single-entry object if key constant', () => {
+        expect(GroupBy([{a: 10}, {a: 20, c: 30}], (it: any) => 'foo')).toStrictEqual({foo: [{a: 10}, {a: 20, c: 30}]})
+    })
+    test('gets grouped arrays', () =>
+        expect(GroupBy([{a: 20, c: 30}, {a: 10}, {a: 20, b: false}], (it: any) => it.a)).toStrictEqual({
+            '20': [{a: 20, c: 30}, {a: 20, b: false}],
+            '10': [{a: 10}],
+        }))
+    test('Gets value of object for the list', ()=> expect(GroupBy(valueObj([{a: 10}, {a: 20, c: 30}]), (it: any) => it.a)).toStrictEqual({
+        '20': [{a: 20, c: 30}],
+        '10': [{a: 10}],
+    })
+    )
+    // @ts-ignore
+    test('Pending value gives empty list', ()=> expect(GroupBy(pendingValue, (it: any) => it + 10)).toStrictEqual({}))
+    test('Null value gives empty list', ()=> expect(GroupBy(null, (it: any) => it + 10)).toStrictEqual({}))
 })
 
 describe('Reverse', () => {

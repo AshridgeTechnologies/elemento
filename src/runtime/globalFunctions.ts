@@ -18,7 +18,7 @@ import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces, notEmpty} from '../util/helpers'
 import {ceil, floor, round} from 'lodash'
 import BigNumber from 'bignumber.js'
-import {assign, clone, isArray, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
+import {assign, clone, group, isArray, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
 type TimeUnit = 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years'
 const unitTypes = ['seconds' , 'minutes' , 'hours' , 'days' , 'months' , 'years']
@@ -437,6 +437,12 @@ export const globalFunctions = {
 
         const list = valueOf(listVal) ?? []
         return sort(compareItems, list)
+    },
+
+    GroupBy(listVal: Value<any[]> | null, keyFn: (item: any) => any) {
+        const list = valueOf(listVal) ?? []
+        if (keyFn === undefined) throw new Error('Wrong number of arguments to GroupBy. Expected list, expression.')
+        return group(list, keyFn)
     },
 
     Reverse(listVal: Value<any[]> | null) {
