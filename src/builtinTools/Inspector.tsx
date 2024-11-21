@@ -1,7 +1,7 @@
 import {ElementId, PropertyDef, PropertyExpr, StylingProps} from '../model/Types'
 import React, {ChangeEvent, ReactNode, useEffect, useState} from 'react'
 import {Box, IconButton, Stack, TextField, Tooltip, Typography} from '@mui/material'
-import {Delete, SaveAlt, PlayCircleOutline, HorizontalRule} from '@mui/icons-material'
+import {Delete, HorizontalRule, PlayCircleOutline, SaveAlt} from '@mui/icons-material'
 import {Editor} from '../editorToolApis/EditorControllerClient'
 import Project from '../model/Project'
 import {isEventAction, isExpr, notBlank} from '../util/helpers'
@@ -13,7 +13,6 @@ import App from '../model/App'
 import Page from '../model/Page'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
-import index from 'isomorphic-git'
 
 const tooltipSlotProps = {
     popper: {

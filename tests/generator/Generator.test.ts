@@ -43,6 +43,7 @@ import ComponentFolder from '../../src/model/ComponentFolder'
 import ItemSet from '../../src/model/ItemSet'
 import {knownSync} from '../../src/generator/generatorHelpers'
 import Dialog from '../../src/model/Dialog'
+import WebFileDataStore from '../../src/model/WebFileDataStore'
 
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
@@ -2666,6 +2667,35 @@ const t3 = _state.getObject(pathTo('t3'));
   't2.value': () => (_selectedElement.value),
   't3.update': {updateAllowed: true, fn: () => (Set(t3, 'Xyz'))},
   'the width': () => (Width.value)
+})`.trimStart())
+})
+
+test('generates standalone expressions block for app level selected element and includes other app level elements', ()=> {
+    const app = new App('app1', 'Test1', {}, [
+        new WebFileDataStore('wf1', 'Store 1', {url: 'http://foo.com'}),
+        new Collection('c1', 'Puzzles', {dataStore: ex`Store1`, collectionName: 'Puzzles'}),
+        new Page('p1', 'Page 1', {}, [
+                new TextInput('id3', 't3', {}),
+            ]
+        )])
+
+    const project1 = project(app)
+    const gen = new Generator(app, project1)
+    const exprs = {
+        'dataStore': `Store1`,
+        'selectedElement': `Puzzles`,
+    }
+    const selectedElement = project1.findElement('c1')
+    const page = app.findElement('p1') as Page
+    const [block] = gen.generateStandaloneBlock(selectedElement, exprs, app, [])
+    expect(block).toBe(`
+const pathTo = name => props.path + '.' + name
+const _selectedElement = _state.getObject('Test1.Puzzles')
+const Store1 = _state.getObject(pathTo('Store1'))
+const Puzzles = _state.getObject(pathTo('Puzzles'));
+({
+  'dataStore': () => (Store1),
+  'selectedElement': () => (Puzzles)
 })`.trimStart())
 })
 

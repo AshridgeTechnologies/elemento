@@ -18,6 +18,7 @@ import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
 import timerObservable from '../util/timerObservable'
 import AppContext from '../runtime/AppContext'
+import Observable from 'zen-observable'
 
 
 export function valueOf<T>(x: Value<T>): T {
@@ -29,12 +30,19 @@ export function valueOf<T>(x: Value<T>): T {
 
 export default class PreviewController {
     private readonly actionQueue = new ActionQueue()
+    private debugObservable: Observable<any> | undefined
 
     constructor(private readonly window: Window) {}
 
     private get container(): HTMLElement { return this.window.document.body }
     private get options() { return getStoredOptions() }
     private get appContext(): AppContext | undefined { return (this.window as any).appContext }
+    private get debugDataObservable() {
+        return this.debugObservable ??= eventObservable(this.window, 'debugData', (evt: Event) => {
+            const {detail} = (evt as CustomEvent)
+            return valueOf(detail)
+        })
+    }
 
     Show(selector?: string) {
         console.log('Show', selector)
@@ -91,10 +99,7 @@ export default class PreviewController {
         const windowAny = this.window as any
         windowAny.elementoDebugExpr = debugExpr
         this.window.dispatchEvent(new CustomEvent('debugExpr', {detail: debugExpr}))
-        return eventObservable(this.window, 'debugData', (evt: Event) => {
-            const {detail} = (evt as CustomEvent)
-            return valueOf(detail)
-        })
+        return this.debugDataObservable
     }
 
     Url() {

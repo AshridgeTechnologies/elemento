@@ -5,7 +5,7 @@ import Page from '../model/Page'
 import Text from '../model/Text'
 import Element from '../model/Element'
 import FunctionDef from '../model/FunctionDef'
-import {flatten, identity, mergeDeepRight, omit} from 'ramda'
+import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
 import Parser, {PropertyError} from './Parser'
 import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeElementTypeName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty} from '../util/helpers'
@@ -323,12 +323,11 @@ ${declarations}${debugHook}
         const appFunctionIdentifiers = this.parser.appFunctionIdentifiers(exprId)
         const appFunctionDeclarations = appFunctionIdentifiers.length ? `const {${appFunctionIdentifiers.join(', ')}} = Elemento.appFunctions` : ''
 
-        let appLevelDeclarations
-        const appLevelIdentifiers = identifiers.filter(isAppElement)
-        appLevelDeclarations = appLevelIdentifiers.map(ident => `const ${ident} = _state.getObject('${appCodeName}.${ident}')`).join('\n')
-        let containerDeclarations
         const containerIdentifiers = identifiers.filter(isContainerElement)
-        containerDeclarations = containerIdentifiers.map(ident => `const ${ident} = _state.getObject(pathTo('${ident}'))`).join('\n')
+        const containerDeclarations = containerIdentifiers.map(ident => `const ${ident} = _state.getObject(pathTo('${ident}'))`).join('\n')
+        const appLevelIdentifiers = identifiers.filter(isAppElement)
+        const appLevelOnlyIdentifiers = without(containerIdentifiers, appLevelIdentifiers)
+        const appLevelDeclarations = appLevelOnlyIdentifiers.map(ident => `const ${ident} = _state.getObject('${appCodeName}.${ident}')`).join('\n')
         const elementoDeclarations = [globalDeclarations, selectedElementDeclaration,
             appStateDeclaration, appStateFunctionDeclarations, appFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
