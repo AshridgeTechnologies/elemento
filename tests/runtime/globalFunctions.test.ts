@@ -748,11 +748,18 @@ describe('Len', () => {
 describe('ForEach', () => {
     // @ts-ignore
     test('errors for no arguments', () => expect(() => ForEach()).toThrow('Wrong number of arguments to ForEach. Expected list, expression.'))
-    test('returns the selected items', () => expect(ForEach([3, -1, 4, 0], (it: any) => it * 10)).toStrictEqual([30, -10, 40, 0]))
+    test('returns the transformed items', () => expect(ForEach([3, -1, 4, 0], (it: any) => it * 10)).toStrictEqual([30, -10, 40, 0]))
+    test('returns the transformed items using the index', () => expect(ForEach([3, -1, 4, 0], (it: any, index: number) => it + index)).toStrictEqual([3, 0, 6, 3]))
     test('Gets value of object for the list', ()=> expect(ForEach(valueObj([3, -1]), (it: any) => it + ' times')).toStrictEqual(['3 times', '-1 times']))
     // @ts-ignore
     test('Pending value gives empty list', ()=> expect(ForEach(pendingValue, (it: any) => it + 10)).toStrictEqual([]))
     test('Null value gives empty list', ()=> expect(ForEach(null, (it: any) => it + 10)).toStrictEqual([]))
+
+    describe('with an object', () => {
+        test('returns the transformed items from the values', () => expect(ForEach({a: 10, b: 20, c: 2}, (it: any) => it * 10)).toStrictEqual([100, 200, 20]))
+        test('returns the transformed items using the values and keys', () => expect(ForEach({a: 10, b: 20, c: 2}, (it: any, key: string) => it + key)).toStrictEqual(['10a', '20b', '2c']))
+        test('Gets value of object for the list', ()=> expect(ForEach(valueObj({a: 10, b: 20}), (it: any, key: string) => it + key)).toStrictEqual(['10a', '20b']))
+    })
 })
 
 describe('First', () => {

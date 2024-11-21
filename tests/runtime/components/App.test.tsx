@@ -187,7 +187,7 @@ test('App element receives messages sent to window', async () => {
 })
 
 test('App.State can send messages', async () => {
-    const Page1 = (props: any) => null
+    const Page1 = (_props: any) => null
     const state = new App.State({Page1}, appContext)
 
     let data: any
@@ -200,7 +200,7 @@ test('App.State can send messages', async () => {
 })
 
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page1)
@@ -227,7 +227,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
 })
 
 test('App.State page, path, query and hash can be updated by ShowPage', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null
     const pages = {Page1, Page2}
     const updateUrlSpy = jest.spyOn(DefaultAppContext.prototype, 'updateUrl');
     const state = new App.State({pages, appContext})
@@ -252,7 +252,7 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
 })
 
 test('App.State uses latest default page version if it changes', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page1updated = (props: any) => null, Page2updated = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page1updated = (_props: any) => null
     const pages = {Page1, Page2}
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page1)
@@ -262,7 +262,7 @@ test('App.State uses latest default page version if it changes', () => {
 })
 
 test('App.State uses latest set page version if it changes ', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page1updated = (props: any) => null, Page2updated = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page1updated = (_props: any) => null, Page2updated = (_props: any) => null
     const pages = {Page1, Page2}
     const [appContext] = getRealAppContext('/Page2')
     const state = new App.State({pages, appContext})
@@ -273,7 +273,7 @@ test('App.State uses latest set page version if it changes ', () => {
 })
 
 test('App.State does next level compare on pages', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2}
     const samePages = {Page1, Page2}
     const newPages = {Page1, Page2, Page3}
@@ -284,7 +284,7 @@ test('App.State does next level compare on pages', () => {
 })
 
 test('App.State can get current url object', () => {
-    const Page1 = (props: any) => null
+    const Page1 = (_props: any) => null
     const pages = {Page1}
     const origin = 'http.example.com'
     const pathname = '/someapp/somewhere/Page1/tabA/12345'
@@ -292,6 +292,9 @@ test('App.State can get current url object', () => {
     const hash = '#id123'
     const pathPrefix = 'someapp/somewhere'
     const appContext: AppContext = {
+        getUrlString: jest.fn(),
+        goForward: jest.fn(),
+        pushUrl: jest.fn(),
         getUrl(): any {
             return { location: {origin, pathname, query, hash}, pathPrefix }
         },
@@ -308,9 +311,12 @@ test('App.State can get current url object', () => {
 })
 
 test('App.State can get a File Url', () => {
-    const Page1 = (props: any) => null
+    const Page1 = (_props: any) => null
     const pages = {Page1}
     const appContext: AppContext = {
+        getUrlString: jest.fn(),
+        goForward: jest.fn(),
+        pushUrl: jest.fn(),
         getUrl: jest.fn(),
         updateUrl: jest.fn(),
         onUrlChange: jest.fn(),
@@ -326,7 +332,7 @@ test('App.State can get a File Url', () => {
 })
 
 test('App.State responds to app context url changes', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page1)
@@ -346,7 +352,7 @@ test('App.State responds to app context url changes', () => {
 })
 
 test('App.State responds to browser history changes', () => {
-    const Page1 = (props: any) => null, Page2 = (props: any) => null, Page3 = (props: any) => null
+    const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
     const [appContext, history] = getRealAppContext('/Page1/abc')
     const state = new App.State({pages, appContext})

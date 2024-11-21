@@ -16,7 +16,7 @@ import {
 import Papa, {ParseConfig} from 'papaparse'
 import {Value, valueOf, valuesOf} from './runtimeFunctions'
 import {isNumeric, noSpaces, notEmpty} from '../util/helpers'
-import {ceil, floor, round} from 'lodash'
+import {ceil, floor, isPlainObject, round} from 'lodash'
 import BigNumber from 'bignumber.js'
 import {assign, clone, group, isArray, isFunction, isObject, mapValues, pick, shuffle} from 'radash'
 
@@ -30,6 +30,9 @@ type DecimalValOrNull = DecimalVal | null
 type ComparisonValOrNull = DecimalValOrNull | boolean
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
+type ForEachArrayTransform = (it: any, index: number) => any
+type ForEachObjectTransform = (it: any, key: string) => any
+type ForEachTransform = ForEachArrayTransform | ForEachObjectTransform
 
 export class ValidationError extends Error {}
 
@@ -365,10 +368,13 @@ export const globalFunctions = {
         return condition ? list.filter(condition!).length : list.length
     },
 
-    ForEach(listVal: Value<any[]> | null, transform: (item: any) => any) {
+    ForEach(listVal: Value<any[] | object> | null, transform: ForEachTransform) {
         const list = valueOf(listVal) ?? []
         if (transform === undefined) throw new Error('Wrong number of arguments to ForEach. Expected list, expression.')
-        return list.map(transform)
+        if (isPlainObject(list)) {
+            return Object.entries(list).map( ([key, item]) => (transform as ForEachObjectTransform)(item, key))
+        }
+        return (list as any[]).map(transform as ForEachArrayTransform)
     },
 
     First(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
