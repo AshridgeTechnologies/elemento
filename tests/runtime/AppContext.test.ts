@@ -21,13 +21,6 @@ test('DefaultAppContext gets data from browser history with all parts', () => {
     })
 })
 
-test('DefaultAppContext caches url', () => {
-    const history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-    const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
-
-    expect(appContext.getUrl()).toBe(appContext.getUrl())
-})
-
 test('DefaultAppContext gets data from window location with path prefix and removes trailing slash', () => {
 
     const history = createMemoryHistory({initialEntries: ['/theApp/somewhere/Page1/abc/123']})

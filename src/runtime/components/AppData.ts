@@ -12,7 +12,8 @@ type StateExternalProps = {
     appContext: AppContext
 }
 type StateInternalProps = {
-    currentUrl?: UrlType, subscription?: any
+    updateCount?: number,
+    subscription?: any
 }
 
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
@@ -22,7 +23,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         const {subscription} = this.state
 
         if (!subscription) {
-            this.state.subscription = this.appContext.onUrlChange(() => this.latest().updateState({currentUrl: this.appContext.getUrl()}))  // need state update to cause re-render
+            this.state.subscription = this.appContext.onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
         }
     }
 

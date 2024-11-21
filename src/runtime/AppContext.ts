@@ -54,7 +54,6 @@ export class DefaultAppContext implements AppContext {
     }
     private resourceUrl: string | null
     private pathPrefix: string | null
-    private url: UrlType | null = null
     private listeners: CallbackFn[] = []
     private historySubscription: any
 
@@ -66,17 +65,15 @@ export class DefaultAppContext implements AppContext {
     }
 
     getUrl() {
-        if (this.url === null) {
-            const {pathname, search, hash} = this.history.location
-            this.url = {location: {
-                    origin: this.origin,
-                    pathname: removePrefix(pathname, this.pathPrefix),
-                    query: convertSearch(search),
-                    hash: hash.replace(/^#/, '')
-                }, pathPrefix: this.pathPrefix}
-        }
-
-        return this.url
+        const {pathname, search, hash} = this.history.location
+        return {
+            location: {
+                origin: this.origin,
+                pathname: removePrefix(pathname, this.pathPrefix),
+                query: convertSearch(search),
+                hash: hash.replace(/^#/, '')
+            }, pathPrefix: this.pathPrefix
+        } as UrlType
     }
 
     getUrlString() {
@@ -96,7 +93,6 @@ export class DefaultAppContext implements AppContext {
 
     pushUrl(newUrl: string) {
         const prefix = this.pathPrefix ? this.pathPrefix.replace(/^\/?/, '/') : ''
-        this.url = null
         this.history.push(prefix + newUrl)
     }
 
@@ -109,12 +105,10 @@ export class DefaultAppContext implements AppContext {
     }
 
     goBack() {
-        this.url = null
         this.history.back()
     }
 
     goForward() {
-        this.url = null
         this.history.forward()
     }
 
@@ -129,9 +123,7 @@ export class DefaultAppContext implements AppContext {
     }
 
     private urlChanged() {
-        this.url = null
-        const newUrl = this.getUrl()
-        this.listeners.forEach(l => l(newUrl))
+        this.listeners.forEach(l => l(this.getUrl()))
     }
 }
 
