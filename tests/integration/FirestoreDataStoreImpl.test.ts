@@ -34,7 +34,6 @@ describe('shared collections', () => {
         await signInAs('private/userTestAccount.json')
     })
 
-
     test('has initial empty data store', async () => {
         await expect(store.getById('Widgets', 'wxxx')).rejects.toHaveProperty('message', `Object with id 'wxxx' not found in collection 'Widgets'`)
     })
@@ -84,6 +83,20 @@ describe('shared collections', () => {
         await store.add('Widgets', 'w99', {a: 10, foo: null})
         const item = await store.getById('Widgets', 'w99')
         expect(item).toStrictEqual({id: 'w99', a: 10, foo: null})
+    })
+
+    test('stores undefined as null in add, addAll and update', async () => {
+        await store.add('Widgets', 'w99', {a: 10, foo: undefined})
+        const item = await store.getById('Widgets', 'w99')
+        expect(item).toStrictEqual({id: 'w99', a: 10, foo: null})
+
+        await store.addAll('Widgets', {'w77': {a: 10, foo: undefined}})
+        const item1 = await store.getById('Widgets', 'w77')
+        expect(item1).toStrictEqual({id: 'w77', a: 10, foo: null})
+
+        await store.update('Widgets', 'w99', {a: undefined})
+        const item2 = await store.getById('Widgets', 'w99')
+        expect(item2).toStrictEqual({id: 'w99', a: null, foo: null})
     })
 
     describe('log in and out', () => {
@@ -210,5 +223,4 @@ describe('user-private collections', () => {
             expect(result[0]).toMatchObject({id: 'z1', a: 22, b: 'Bee22', c: true})
             expect(result[1]).toMatchObject({id: 'z2', a: 90, b: 'Bee90', c: true})
     })
-
 })

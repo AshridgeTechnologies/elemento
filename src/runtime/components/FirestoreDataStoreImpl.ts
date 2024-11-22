@@ -11,30 +11,20 @@ import DataStore, {
     UpdateNotification,
     UpdateType
 } from '../DataStore'
-import {
-    collection,
-    deleteDoc,
-    doc,
-    Firestore,
-    getDoc,
-    getDocs,
-    getFirestore,
-    query,
-    setDoc,
-    updateDoc,
-    where,
-    writeBatch
-} from 'firebase/firestore'
-import {onAuthChange, currentUser} from './authentication'
+import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where, writeBatch} from 'firebase/firestore'
+import {currentUser, onAuthChange} from './authentication'
 
 import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'
-import {getAppAndSubscribeToChanges, FirebaseApp} from './firebaseApp'
+import {FirebaseApp, getAppAndSubscribeToChanges} from './firebaseApp'
 import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 
 const convertValue = (value: any) => typeof value?.toDate === 'function' ? value.toDate() : value
+const undefinedToNull = (value: any) => value ?? null
 const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
+const convertInboundData = (data: any) => mapObjIndexed(undefinedToNull, data)
+const addIdToItem = (item: DataStoreObject, id: Id) => ({id, ...convertInboundData(item)})
 
 type Properties = {collections: string}
 export default class FirestoreDataStoreImpl implements DataStore {
@@ -104,15 +94,14 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
-        const itemWithId = {id, ...item}
-        await setDoc(this.docRef(collectionName, id), itemWithId)
+        await setDoc(this.docRef(collectionName, id), addIdToItem(item, id))
         this.notify(collectionName, Add, id, item)
     }
 
     async addAll(collectionName: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
         if (!this.db) throw new Error(`Not connected to Firestore database`)
-        const addIdToItem = (item: DataStoreObject, id: Id) => ({id, ...item})
-        const itemsWithIds = Object.values(mapObjIndexed( addIdToItem, items))
+        const addId = (item: DataStoreObject, id: Id) => addIdToItem(item, id)
+        const itemsWithIds = Object.values(mapObjIndexed( addId, items))
 
         const batch = writeBatch(this.db)
 
@@ -124,7 +113,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
     }
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
-        await updateDoc(this.docRef(collectionName, id), changes)
+        await updateDoc(this.docRef(collectionName, id), convertInboundData(changes))
         this.notify(collectionName, Update, id, changes)
     }
 
