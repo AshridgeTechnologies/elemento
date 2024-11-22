@@ -90,10 +90,13 @@ export default class FirestoreDataStoreImpl implements DataStore {
         return doc(this.collectionRef(collectionName), String(id))
     }
 
-    async getById(collectionName: CollectionName, id: Id) {
+    async getById(collectionName: CollectionName, id: Id, nullIfNotFound = false) {
         if (!this.db) return null
         const docSnap = await getDoc(this.docRef(collectionName, id))
         if (!docSnap.exists()) {
+            if (nullIfNotFound) {
+                return null
+            }
             throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
         }
 

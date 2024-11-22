@@ -39,6 +39,10 @@ describe('shared collections', () => {
         await expect(store.getById('Widgets', 'wxxx')).rejects.toHaveProperty('message', `Object with id 'wxxx' not found in collection 'Widgets'`)
     })
 
+    test('returns null if not found and nullIfNotFound set', async () => {
+        await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
+    })
+
     test('errors for unknown collection names', async () => {
         await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
     })
@@ -69,7 +73,6 @@ describe('shared collections', () => {
     })
 
     test('stores dates', async () => {
-
         const hour = 10
         const theDate = new Date(2022, 6, 2, hour, 11, 12)
         await store.add('Widgets', 'w1', {a: 10, date: theDate})
@@ -78,8 +81,6 @@ describe('shared collections', () => {
     })
 
     test('stores nulls', async () => {
-
-        const hour = 10
         await store.add('Widgets', 'w99', {a: 10, foo: null})
         const item = await store.getById('Widgets', 'w99')
         expect(item).toStrictEqual({id: 'w99', a: 10, foo: null})

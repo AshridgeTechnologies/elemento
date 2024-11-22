@@ -173,14 +173,14 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
     }
 
-    Get(id: Id) {
+    Get(id: Id, nullIfNotFound = false) {
         const storedValue = this.storedValue(id)
-        if (storedValue) {
+        if (storedValue !== undefined) {
             return storedValue
         }
 
         if (this.dataStore) {
-            const result = pending(this.dataStore.getById(this.props.collectionName!, id).then( data => {
+            const result = pending(this.dataStore.getById(this.props.collectionName!, id, nullIfNotFound).then( data => {
                 this.latest().updateValue(id, data)
                 return data
             }))

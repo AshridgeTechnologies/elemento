@@ -456,7 +456,7 @@ describe('Get with external datastore', () => {
         const [state, appInterface] = initState({});
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
         const initialResult = state.Get('x1')
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         expect(isPending(initialResult)).toBe(true)
         expect(initialResult).resolves.toStrictEqual({a: 10, b: 'Bee'})
         const newState = calls(appInterface.updateVersion)[0][0]
@@ -468,7 +468,24 @@ describe('Get with external datastore', () => {
                 x1: {a: 10, b: 'Bee'}
             }
         })
+    })
 
+    test('get null for non-existent object by id when not in cache', async () => {
+        const [state, appInterface] = initState({});
+        (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue(null)
+        const initialResult = state.Get('x1', true)
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', true)
+        expect(isPending(initialResult)).toBe(true)
+        expect(initialResult).resolves.toBe(null)
+        const newState = calls(appInterface.updateVersion)[0][0]
+        expect(isPending(newState.value.x1)).toBe(true)
+
+        await actWait()
+        expect(appInterface.updateVersion).toHaveBeenLastCalledWith({
+            value: {
+                x1: null
+            }
+        })
     })
 
     test('get object by id puts error in cache', async () => {
@@ -477,7 +494,7 @@ describe('Get with external datastore', () => {
         const initialResult = state.Get('x1')
         expect(isPending(initialResult)).toBe(true)
         expect(initialResult).resolves.toStrictEqual(new ErrorResult('Some', 'problem'))
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         const newState = calls(appInterface.updateVersion)[0][0]
         expect(isPending(newState.value.x1)).toBe(true)
 
@@ -500,11 +517,23 @@ describe('Get with external datastore', () => {
         expect(dataStore.getById).not.toHaveBeenCalled()
     })
 
+    test('get null for non-existent object by id when in cache', async () => {
+        const initialCollection = {
+            x1: null,
+            x2: pending(Promise.resolve(null)),
+        }
+        const [state] = initState(initialCollection);
+        expect(state.Get('x1')).toBe(null)
+        expect(isPending(state.Get('x2'))).toBe(true)
+        expect(state.Get('x2')).resolves.toBe(null)
+        expect(dataStore.getById).not.toHaveBeenCalled()
+    })
+
     test('gets pending when already requested in same render', async () => {
         const [state, appInterface] = initState({});
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
         const result = state.Get('x1')
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         expect(isPending(result)).toBe(true)
 
         const result2 = state.Get('x1')
@@ -519,9 +548,9 @@ describe('Get with external datastore', () => {
             .mockResolvedValueOnce({a: 20, b: 'Cee'})
 
         state.Get('x1')
-        state.Get('x2')
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x2')
+        state.Get('x2', false)
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x2', false)
         expect(isPending(state.Get('x1'))).toBe(true)
         expect(isPending(state.Get('x2'))).toBe(true)
         await actWait()
@@ -625,7 +654,7 @@ describe('Query with external datastore', () => {
 
         state.Get('x1')
         state.Query({a: 20})
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         expect(dataStore.query).toHaveBeenCalledWith('Widgets', {a: 20})
         expect(isPending(state.latest().Get('x1'))).toBe(true)
         expect(isPending(state.latest().Query({a: 20}))).toBe(true)

@@ -95,7 +95,7 @@ describe('Get', () => {
     test('get object by id', async () => {
         (dataStore.getById as jest.MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
         const initialResult = await collection.Get('x1')
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         expect(initialResult).toStrictEqual({a: 10, b: 'Bee'})
     })
 
@@ -107,7 +107,7 @@ describe('Get', () => {
         } catch(e) {
             error = e
         }
-        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1')
+        expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'x1', false)
         expect(error).toStrictEqual(new Error('Some problem'))
     })
 })

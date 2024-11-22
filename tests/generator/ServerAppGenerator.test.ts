@@ -245,7 +245,7 @@ async function SelectStuff(min) {
 }
 
 async function IfSomething(min) {
-    return If(min > 0, 1, () => Sum(min, 10))
+    return await If(min > 0, 1, () => Sum(min, 10))
 }
 
 async function Subtract5(when) {
@@ -259,8 +259,8 @@ async function DoItAll(when) {
 }
 
 async function AssignmentsToEquals(foo) {
-    let a = If(true, 10, () => Sum(Log == 12, 3, 4))
-    let b = If(foo.value == 42, 10, 20)
+    let a = await If(true, 10, () => Sum(Log == 12, 3, 4))
+    let b = await If(foo.value == 42, 10, 20)
     Sum == 1
 }
 

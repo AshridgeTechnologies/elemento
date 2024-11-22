@@ -31,9 +31,9 @@ const mockDataStore = (): WebFileDataStoreImpl => ({
 }) as unknown as WebFileDataStoreImpl
 
 test('delegates getById to data store', async () => {
-    const result = state.getById('Widgets', 'w1')
+    const result = state.getById('Widgets', 'w1', false)
     await expect(result).resolves.toStrictEqual({a: 77})
-    expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'w1')
+    expect(dataStore.getById).toHaveBeenCalledWith('Widgets', 'w1', false)
 })
 
 test('delegates query to data store', async () => {

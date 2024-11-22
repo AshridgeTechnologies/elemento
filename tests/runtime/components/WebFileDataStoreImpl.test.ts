@@ -35,6 +35,18 @@ test('getById rejects if result is not json', async () => {
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Error getting data: Content-Type is not JSON - text/plain`)
 })
 
+test('returns null if not found and nullIfNotFound set', async () => {
+    const data = {
+        Widgets: [
+            {id: 'id1', name: 'Widget 1'},
+        ],
+    }
+
+    mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
+    const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
+    await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
+})
+
 test('can get by id from a collection', async () => {
     const data = {
         Widgets: [

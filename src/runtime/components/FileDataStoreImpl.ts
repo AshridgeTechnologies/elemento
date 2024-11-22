@@ -124,8 +124,8 @@ export default class FileDataStoreImpl implements DataStore {
         }
     }
 
-    async getById(collection: CollectionName, id: Id) {
-        return await this.inMemoryStore.getById(collection, id)
+    async getById(collection: CollectionName, id: Id, nullIfNotFound = false) {
+        return await this.inMemoryStore.getById(collection, id, nullIfNotFound)
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {

@@ -1,6 +1,7 @@
 General usability Part 3
 ========================
 
+- Review semantics of Get vs GetIfExists with Collection and the Data Store implementations
 - Prevent hiding global or app functions/components with own name
 - Firestore data store changes undefined fields to null
 - Install as app (non PWA) - rearrange UI, update window title, menu with install option that gives instructions

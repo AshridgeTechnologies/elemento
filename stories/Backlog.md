@@ -4,8 +4,6 @@ Elemento Backlog
 
 Bugs
 ----
-- GetIfExists caches empty result
-- Firestore data store blows up on null field values
 - File resources not found in run from GitHub in WebFile/WebFileDataStore
 - Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
@@ -444,3 +442,4 @@ Bugs fixed
 - Formula error in app bar kills the preview
 - If() may return a promise, but assumed sync
 - Auto await insertion not happening on client
+- Firestore data store blows up on null field values

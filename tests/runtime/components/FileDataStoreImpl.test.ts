@@ -18,6 +18,11 @@ test('has initial empty data store', async () => {
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
 })
 
+test('returns null if not found and nullIfNotFound set', async () => {
+    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
+})
+
 test('can add, update and remove before Save', async () => {
     const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})

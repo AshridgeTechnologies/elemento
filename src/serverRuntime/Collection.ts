@@ -25,7 +25,7 @@ export const toEntry = (value: any): [PropertyKey, any] => {
 type AddItem = object | string | number
 
 export default class Collection {
-    private collectionName: CollectionName
+    private readonly collectionName: CollectionName
     private dataStore: BasicDataStore
 
     constructor({collectionName, dataStore}: { dataStore: BasicDataStore, collectionName: CollectionName }) {
@@ -61,8 +61,8 @@ export default class Collection {
         await this.dataStore.remove(this.collectionName!, id)
     }
 
-    async Get(id: Id) {
-        return this.dataStore.getById(this.collectionName, id)
+    async Get(id: Id, nullIfNotFound = false) {
+        return this.dataStore.getById(this.collectionName, id, nullIfNotFound)
     }
 
     async Query(criteria: Criteria) {

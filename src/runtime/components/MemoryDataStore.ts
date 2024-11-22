@@ -11,9 +11,12 @@ export default class MemoryDataStore implements DataStore {
         this.data = clone(initialData)
     }
 
-    async getById(collectionName: CollectionName, id: Id): Promise<DataStoreObject> {
+    async getById(collectionName: CollectionName, id: Id, nullIfNotFound = false): Promise<DataStoreObject | null> {
         const resultObject = (this.getCollection(collectionName, true))[id as keyof object]
         if (!resultObject) {
+            if (nullIfNotFound) {
+                return null
+            }
             throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
         }
 

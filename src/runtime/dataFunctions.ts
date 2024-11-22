@@ -31,13 +31,9 @@ const dataFunctions = {
         return component.Get(valueOf(id))
     },
 
-    GetIfExists(component: { Get: (id: Id) => any }, id: Value<Id | null | undefined>, defaultValue: any = null) {
-        try {
-            const idVal = valueOf(id)
-            return (idVal === null || idVal === undefined) ? defaultValue : component.Get(idVal)
-        } catch (e) {
-            return defaultValue
-        }
+    GetIfExists(component: { Get: (id: Id, nullOk: boolean) => any }, id: Value<Id | null | undefined>, defaultValue: any = null) {
+        const idVal = valueOf(id)
+        return (idVal === null || idVal === undefined) ? defaultValue : component.Get(idVal, true) ?? defaultValue
     },
 
     Query(component: { Query: (criteria: Criteria) => any[] }, criteria: Value<Criteria>) {

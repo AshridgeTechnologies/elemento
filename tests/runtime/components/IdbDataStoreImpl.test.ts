@@ -17,6 +17,10 @@ test('has initial empty data store', async () => {
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
 })
 
+test('returns null if not found and nullIfNotFound set', async () => {
+    await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
+})
+
 test('errors for unknown collection names', async () => {
     // const store = new IdbDataStoreImpl({dbName: 'db2', collectionNames: ['Gadgets']})
     await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
@@ -53,7 +57,7 @@ test('stores dates', async () => {
     const theDate = new Date(2022, 6, 2, hour, 11, 12)
     await store.add('Widgets', 'w1', {a: 10, date: theDate})
     const item = await store.getById('Widgets', 'w1')
-    expect(item.date.getTime()).toStrictEqual(theDate.getTime())
+    expect(item!.date.getTime()).toStrictEqual(theDate.getTime())
 })
 
 describe('stores decimals', () => {
@@ -61,8 +65,8 @@ describe('stores decimals', () => {
         const theNumber = new BigNumber('1234.56')
         await store.add('Widgets', 'w1', {a: 10, amount: theNumber})
         const item = await store.getById('Widgets', 'w1')
-        expect(item.amount).toBeInstanceOf(BigNumber)
-        expect(item.amount).toStrictEqual(theNumber)
+        expect(item!.amount).toBeInstanceOf(BigNumber)
+        expect(item!.amount).toStrictEqual(theNumber)
     })
 
     test('in addAll and query', async () => {
@@ -78,8 +82,8 @@ describe('stores decimals', () => {
         await store.add('Widgets', 'w1', {a: 10})
         await store.update('Widgets', 'w1', {amount: theNumber})
         const item = await store.getById('Widgets', 'w1')
-        expect(item.amount).toBeInstanceOf(BigNumber)
-        expect(item.amount).toStrictEqual(theNumber)
+        expect(item!.amount).toBeInstanceOf(BigNumber)
+        expect(item!.amount).toStrictEqual(theNumber)
     })
 })
 

@@ -45,8 +45,8 @@ export default class WebFileDataStoreImpl implements DataStore {
         return readonlyError()
     }
 
-    async getById(collection: CollectionName, id: Id): Promise<DataStoreObject | null> {
-        return (await this.store()).getById(collection, id)
+    async getById(collection: CollectionName, id: Id, nullIfNotFound = false): Promise<DataStoreObject | null> {
+        return (await this.store()).getById(collection, id, nullIfNotFound)
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {

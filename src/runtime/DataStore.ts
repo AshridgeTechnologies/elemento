@@ -38,7 +38,7 @@ export function queryMatcher(criteria: Criteria) {
 }
 
 export interface BasicDataStore {
-    getById(collection: CollectionName, id: Id): Promise<DataStoreObject | null>
+    getById(collection: CollectionName, id: Id, nullIfNotFound: boolean): Promise<DataStoreObject | null>
     query(collection: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>>
 
     add(collection: CollectionName, id: Id, item: DataStoreObject): Promise<void>

@@ -50,8 +50,8 @@ export class BrowserDataStoreState extends BaseComponentState<ExternalProperties
         return this.dataStore.remove(collection, id).catch( e => NotifyError('Could not remove item from data store', e) )
     }
 
-    getById(collection: CollectionName, id: Id) {
-        return this.dataStore.getById(collection, id).catch( e => {
+    getById(collection: CollectionName, id: Id, nullIfNotFound: boolean) {
+        return this.dataStore.getById(collection, id, nullIfNotFound).catch( e => {
             NotifyError('Could not get item from data store', e)
             return new ErrorResult('Could not get item from data store', e.message)
         })

@@ -40,13 +40,16 @@ export default class IdbDataStoreImpl implements DataStore {
         return this.db[collection as keyof Dexie] as unknown as Table
     }
 
-    async getById(collection: CollectionName, id: Id) {
+    async getById(collection: CollectionName, id: Id, nullIfNotFound = false) {
         if (!this.props.collectionNames.includes(collection)) {
             throw new Error(`Collection '${collection}' not found`)
         }
 
         const item = await this.table(collection).get(id)
         if (!item) {
+            if (nullIfNotFound) {
+                return null
+            }
             throw new Error(`Object with id '${id}' not found in collection '${collection}'`)
         }
 
