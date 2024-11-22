@@ -2,6 +2,7 @@ General usability Part 3
 ========================
 
 - Prevent hiding global or app functions/components with own name
+- Firestore data store changes undefined fields to null
 - Install as app (non PWA) - rearrange UI, update window title, menu with install option that gives instructions
 - Prevent duplicate element names and using system object names
 - ✅ Can show page from Navigator

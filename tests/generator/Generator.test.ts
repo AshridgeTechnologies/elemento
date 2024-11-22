@@ -1692,7 +1692,7 @@ function Page1(props) {
     const DetailsForm = _state.setObject(pathTo('DetailsForm'), new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27})).submitAction(DetailsForm_submitAction).props))
     const DetailsForm_keyAction = React.useCallback(wrapFn(pathTo('DetailsForm'), 'keyAction', async (\$event) => {
         const \$key = \$event.key
-        Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', async () => await DetailsForm.submit())
+        Log('You pressed', \$key, \$event.ctrlKey); await If(\$key == 'Enter', async () => await DetailsForm.submit())
     }), [])
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
@@ -1819,6 +1819,7 @@ test('generates local user defined functions even if empty or code error in a pa
             new FunctionDef('f2', 'Empty Function', {calculation: ex``}),
             new FunctionDef('f3', 'Very Empty Function', {calculation: undefined}),
             new FunctionDef('f4', 'Bad Code Function', {calculation: ex`let x =`}),
+            new FunctionDef('f5', 'Async Function', {calculation: ex`Get(Widgets, 123).height + 10`, action: true}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
             ]
@@ -1832,11 +1833,15 @@ test('generates local user defined functions even if empty or code error in a pa
     const pathTo = name => props.path + '.' + name
     const {Page, Data, NumberInput} = Elemento.components
     const {Or, Select} = Elemento.globalFunctions
+    const {Get} = Elemento.appFunctions
     const _state = Elemento.useGetStore()
     const Widgets = _state.useObject('App1.Widgets')
     const EmptyFunction = _state.setObject(pathTo('EmptyFunction'), React.useCallback(wrapFn(pathTo('EmptyFunction'), 'calculation', () => {}), []))
     const VeryEmptyFunction = _state.setObject(pathTo('VeryEmptyFunction'), React.useCallback(wrapFn(pathTo('VeryEmptyFunction'), 'calculation', () => {}), []))
     const BadCodeFunction = _state.setObject(pathTo('BadCodeFunction'), React.useCallback(wrapFn(pathTo('BadCodeFunction'), 'calculation', () => Elemento.codeGenerationError(\`let x =\`, 'Error: Unexpected character(s) (Line 1 Position 7)')), []))
+    const AsyncFunction = _state.setObject(pathTo('AsyncFunction'), React.useCallback(wrapFn(pathTo('AsyncFunction'), 'calculation', async () => {
+        (await Get(Widgets, 123)).height + 10
+    }), []))
     const MinHeight = _state.setObject(pathTo('MinHeight'), new NumberInput.State(stateProps(pathTo('MinHeight')).props))
     const IsTallWidget = _state.setObject(pathTo('IsTallWidget'), React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
         let heightAllowed = MinHeight
@@ -2544,9 +2549,9 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const {Page, Button} = Elemento.components
     const {If, Sum, Log} = Elemento.globalFunctions
     const _state = Elemento.useGetStore()
-    const Button1_action = React.useCallback(wrapFn(pathTo('Button1'), 'action', () => {
-        let a = If(true, 10, () => Sum(Log == 12, 3, 4))
-            let b = If(Sum == 42, 10, 20)
+    const Button1_action = React.useCallback(wrapFn(pathTo('Button1'), 'action', async () => {
+        let a = await If(true, 10, () => Sum(Log == 12, 3, 4))
+            let b = await If(Sum == 42, 10, 20)
             Sum == 1
     }), [])
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
@@ -2765,6 +2770,6 @@ test.each(['Reset', 'Set', 'NotifyError', 'Notify', 'CurrentUser', 'GetRandomId'
     expect(knownSync(fnName)).toBe(true)
 })
 
-test.each(['Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query'])('%s is not included in knownSync', (fnName) => {
+test.each(['If', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetIfExists', 'Query'])('%s is not included in knownSync', (fnName) => {
     expect(knownSync(fnName)).toBe(false)
 })

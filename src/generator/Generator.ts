@@ -189,7 +189,8 @@ export default class Generator {
         }
 
         const functionDeclaration = (el: FunctionDef) => {
-            const functionExpr = this.getExpr(el, 'calculation', 'multilineExpression', el.inputs) ?? '() => {}'
+            const exprType = el.action ? 'action' : 'multilineExpression'
+            const functionExpr = this.getExpr(el, 'calculation', exprType, el.inputs) ?? '() => {}'
             const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
             const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), 'calculation', ${functionCode})`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')

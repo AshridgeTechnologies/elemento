@@ -105,9 +105,11 @@ export function printAst(ast: any) {
 
 export const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map(line => indent + line).join('\n')
 export const isGlobalFunction = (name: string) => name in globalFunctions
-export const knownSync = (functionName: string) => isGlobalFunction(functionName) || knownSyncAppFunctionsNames().includes(functionName)
+export const assumeAsync = ['If' /* because it can return anything including a promise */ ]
+export const knownSync = (functionName: string) => !assumeAsync.includes(functionName) && (isGlobalFunction(functionName) || knownSyncAppFunctionsNames().includes(functionName))
 
 export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[]) {
+    const canBeAsync = asyncExprTypes.includes(exprType)
     function isShorthandProperty(node: any) {
         return node.shorthand
     }
@@ -140,7 +142,7 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
             visitCallExpression(path) {
                 const callExpr = path.value
                 const b = types.builders
-                if (asyncExprTypes.includes(exprType) && !knownSync(callExpr.callee.name)) {
+                if (canBeAsync && !knownSync(callExpr.callee.name)) {
                     const awaitExpr = b.awaitExpression(callExpr)
                     path.replace(awaitExpr)
                     this.traverse(path.get('argument')) // start one level down so don't parse this node again

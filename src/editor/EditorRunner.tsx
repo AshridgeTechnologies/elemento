@@ -207,7 +207,7 @@ export default function EditorRunner() {
     }
 
     async function openOrUpdateProjectFromStore(name: string, projectStore: DiskProjectStore) {
-        document.title = `${name} - Elemento Studio`
+        document.title = name
         const projectWorkingCopy = await projectStore.getProject()
         const project = projectWorkingCopy.projectWithFiles
         projectBuilderRef.current = newProjectBuilder(projectStore)
