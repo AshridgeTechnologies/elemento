@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Calculation display unreadable for large objects/arrays
 - File resources not found in run from GitHub in WebFile/WebFileDataStore
 - Nested Item Sets don't work - code generation fails
 - Invalid expression -> return value required
@@ -129,6 +130,13 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- User menu can have extra options like My Account
+- Can run server functions from Inspector even when no Page is selected, reliably, and refresh them
+- Can debug server functions from Inspector
+- Admin server apps separate from main client app
+- Action on user creation
+- Get Or Create
+- Update Or Create
 - Use versioned runtime with deployed apps
 - Menu buttons can be styled and be an icon
 - Plain links with href and target

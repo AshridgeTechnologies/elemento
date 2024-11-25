@@ -617,5 +617,6 @@ export const functionArgs = {
     First: {1: ['$item']},
     Last: {1: ['$item']},
     Sort: {1: ['$item']},
+    GroupBy: {1: ['$item']},
     If: {1: 'lazy', 2: 'lazy'}
 }
