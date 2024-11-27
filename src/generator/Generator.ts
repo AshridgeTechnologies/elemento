@@ -612,6 +612,11 @@ ${generateChildren(form, indentLevel2, form)}
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression', argumentNames?: string[]) {
 
+        const isKnownSyncUserFunction = (fnName: string) => {
+            const el = this.project.findClosestElementByCodeName(element.id, fnName)
+            return el?.kind === 'Function' && !(el as FunctionDef).action
+        }
+
         const getExprCode = (propertyValue: PropertyValue | undefined, error: PropertyError)=> {
             const isIncompleteItemError = (errorMessage: PropertyError) => errorMessage && typeof errorMessage === 'string' && errorMessage.startsWith('Incomplete item')
             if (error && (typeof error === 'string') && !isIncompleteItemError(error)) {
@@ -624,7 +629,7 @@ ${generateChildren(form, indentLevel2, form)}
             }
             const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
             if (!isJavascriptFunctionBody) {
-                convertAstToValidJavaScript(ast, exprType, ['action'])
+                convertAstToValidJavaScript(ast, exprType, ['action'], isKnownSyncUserFunction)
             }
 
             const exprCode = printAst(ast)

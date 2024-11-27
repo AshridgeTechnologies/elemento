@@ -62,5 +62,16 @@ Decision
 - Create a GetFile function that uses an Adapter internally
 
 
+Further considerations
+----------------------
+
+### Auto inserting await and async in generated code
+
+- Was only done on server
+- BUT need awaits in actions if going to use the result directly
+- Changed to do on client as well, ForEach stopped working where used in an action
+- When generated fn arg to ForEach contains a call to a local fn, regarded as possibly async, so ForEach returns a load of nulls
+- SO need to ensure that calls to non-action local fns don't have awaits inserted
+
 
 

@@ -613,6 +613,8 @@ test('findClosestElementByCodeName finds in Page or App', () => {
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2, appBar])
     const project = Project.new([app])
 
+    expect(project.findClosestElementByCodeName('project_1', 'xxx')).toBe(undefined)
+    expect(project.findClosestElementByCodeName('a1', 'xxx')).toBe(undefined)
     expect(project.findClosestElementByCodeName('t1', 'xxx')).toBe(undefined)
     expect(project.findClosestElementByCodeName('t2', 'Text1')).toBe(text1)
     expect(project.findClosestElementByCodeName('t3', 'Text1')).toBe(text1a)

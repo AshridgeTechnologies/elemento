@@ -152,6 +152,8 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
+        const isKnownSyncUserFunction = (fnName: string) => false
+
         const isSingleExpr = exprType === 'singleExpression'
         const errorMessage = this.parser.propertyError(element.id, propertyName)
         if (errorMessage && !errorMessage.startsWith('Incomplete item')) {
@@ -166,7 +168,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
 
         const isJavascriptFunctionBody = element.kind === 'Function' && propertyName === 'calculation' && (element as FunctionDef).javascript
         if (!isJavascriptFunctionBody) {
-            convertAstToValidJavaScript(ast, exprType, ['action', 'multilineExpression']);
+            convertAstToValidJavaScript(ast, exprType, ['action', 'multilineExpression'], isKnownSyncUserFunction);
         }
 
         const exprCode = printAst(ast)

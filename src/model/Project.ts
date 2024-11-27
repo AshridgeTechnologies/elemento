@@ -198,7 +198,7 @@ export default class Project extends BaseElement<Properties> implements Element 
             return elementInPage
         }
         const containingApp = this.findAncestorOfType(id, 'App') as App
-        return containingApp.findElementsBy(el => el.codeName === name && !this.findAncestorOfType(el.id, 'Page'))[0]
+        return containingApp?.findElementsBy(el => el.codeName === name && !this.findAncestorOfType(el.id, 'Page'))[0]
     }
 }
 

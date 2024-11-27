@@ -1819,7 +1819,7 @@ test('generates local user defined functions even if empty or code error in a pa
             new FunctionDef('f2', 'Empty Function', {calculation: ex``}),
             new FunctionDef('f3', 'Very Empty Function', {calculation: undefined}),
             new FunctionDef('f4', 'Bad Code Function', {calculation: ex`let x =`}),
-            new FunctionDef('f5', 'Async Function', {calculation: ex`Get(Widgets, 123).height + 10`, action: true}),
+            new FunctionDef('f5', 'Async Action', {calculation: ex`let a = EmptyFunction()\nlet tw = Select(Widgets.getAllData(), IsTallWidget(\$item))\nGet(Widgets, 123).height + 10`, action: true}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
             ]
@@ -1839,15 +1839,17 @@ test('generates local user defined functions even if empty or code error in a pa
     const EmptyFunction = _state.setObject(pathTo('EmptyFunction'), React.useCallback(wrapFn(pathTo('EmptyFunction'), 'calculation', () => {}), []))
     const VeryEmptyFunction = _state.setObject(pathTo('VeryEmptyFunction'), React.useCallback(wrapFn(pathTo('VeryEmptyFunction'), 'calculation', () => {}), []))
     const BadCodeFunction = _state.setObject(pathTo('BadCodeFunction'), React.useCallback(wrapFn(pathTo('BadCodeFunction'), 'calculation', () => Elemento.codeGenerationError(\`let x =\`, 'Error: Unexpected character(s) (Line 1 Position 7)')), []))
-    const AsyncFunction = _state.setObject(pathTo('AsyncFunction'), React.useCallback(wrapFn(pathTo('AsyncFunction'), 'calculation', async () => {
-        (await Get(Widgets, 123)).height + 10
-    }), []))
     const MinHeight = _state.setObject(pathTo('MinHeight'), new NumberInput.State(stateProps(pathTo('MinHeight')).props))
     const IsTallWidget = _state.setObject(pathTo('IsTallWidget'), React.useCallback(wrapFn(pathTo('IsTallWidget'), 'calculation', (widget) => {
         let heightAllowed = MinHeight
         let isShiny = widget.shiny
         return Or(widget.height > heightAllowed, isShiny)
     }), [MinHeight]))
+    const AsyncAction = _state.setObject(pathTo('AsyncAction'), React.useCallback(wrapFn(pathTo('AsyncAction'), 'calculation', async () => {
+        let a = EmptyFunction()
+        let tw = Select(await Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))
+        (await Get(Widgets, 123)).height + 10
+    }), [EmptyFunction, IsTallWidget]))
     const TallWidgets = _state.setObject(pathTo('TallWidgets'), new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget(\$item))).props))
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 

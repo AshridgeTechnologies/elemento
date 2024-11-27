@@ -108,7 +108,7 @@ export const isGlobalFunction = (name: string) => name in globalFunctions
 export const assumeAsync = ['If' /* because it can return anything including a promise */ ]
 export const knownSync = (functionName: string) => !assumeAsync.includes(functionName) && (isGlobalFunction(functionName) || knownSyncAppFunctionsNames().includes(functionName))
 
-export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[]) {
+export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[], knownSyncFunction: (fnName: string) => boolean) {
     const canBeAsync = asyncExprTypes.includes(exprType)
     function isShorthandProperty(node: any) {
         return node.shorthand
@@ -142,7 +142,7 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
             visitCallExpression(path) {
                 const callExpr = path.value
                 const b = types.builders
-                if (canBeAsync && !knownSync(callExpr.callee.name)) {
+                if (canBeAsync && !knownSync(callExpr.callee.name) && !knownSyncFunction(callExpr.callee.name)) {
                     const awaitExpr = b.awaitExpression(callExpr)
                     path.replace(awaitExpr)
                     this.traverse(path.get('argument')) // start one level down so don't parse this node again
