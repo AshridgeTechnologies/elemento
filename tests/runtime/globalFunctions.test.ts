@@ -8,7 +8,7 @@ import {identity} from 'ramda'
 const {Decimal, D, Sub, Mult, Sum, Div,
     Gt, Gte, Lt, Lte, Eq,
     Log, IsNull, NotNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
-    And, Or, Not, Substitute, Max, Min,
+    And, Or, Not, Substitute, Max, Min, Average,
     Round, Ceiling, Floor,
     Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, GroupBy, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
     CommonItems, HasSameItems, WithoutItems, ListContains, FlatList,
@@ -255,6 +255,11 @@ describe('Sum', () => {
         expect(Sum()).toBe(0)
     })
 
+    test('flattens array arguments', ()=> {
+        expect(Sum([1,2,3])).toBe(6)
+        expect(Sum([1, 2,], 3, [4, 5])).toBe(15)
+    })
+
     test('uses valueOf all arguments', ()=> {
         const numberObj = valueObj(10)
         expect(Sum(numberObj,2,numberObj)).toBe(22)
@@ -270,7 +275,34 @@ describe('Sum', () => {
     test('adds string arguments to decimal result', ()=> {
         expect(Sum("20", 10, D`30`)).toStrictEqual(D`60`)
     })
+})
 
+describe('Average', () => {
+    test('averages all arguments or NaN if empty', ()=> {
+        expect(Average(1,2,3)).toBe(2)
+        expect(Average()).toBeNaN()
+    })
+
+    test('flattens array arguments', ()=> {
+        expect(Average([1,2,3])).toBe(2)
+        expect(Average([1, 2,], 3, [4, 5])).toBe(3)
+    })
+
+    test('uses valueOf all arguments', ()=> {
+        const numberObj = valueObj(10)
+        expect(Average(numberObj,1,numberObj)).toBe(7)
+        const decimalObj = valueObj(D`10`)
+        expect(Average(decimalObj,1,decimalObj)).toStrictEqual(D`7`)
+    })
+
+    test('Decimal result if any argument is a Decimal or a string', ()=> {
+        expect(Average(D`10`, 20)).toStrictEqual(D`15`)
+        expect(Average('10', 20)).toStrictEqual(D`15`)
+    })
+
+    test('adds string arguments to decimal result', ()=> {
+        expect(Average("20", 10, D`30`)).toStrictEqual(D`20`)
+    })
 })
 
 describe('IsNull', () => {
@@ -535,6 +567,7 @@ describe('Max', () => {
     test('returns the argument for single argument', () => expect(Max(3)).toBe(3))
     test('returns the max argument for multiple arguments', () => expect(Max(3, -1, 4, 0)).toBe(4))
     test('returns the max argument for arguments treating null as zero', () => expect(Max(-1, null)).toBe(0))
+    test('flattens array arguments', () => expect(Max([2, 4, 3], [], [5])).toBe(5))
     test('returns a Decimal argument for mixed arguments', () => expect(Max(3, '-1', D`4`, 0)).toStrictEqual(D`4`))
     test('returns a Decimal argument for mixed arguments even if Max is a number', () => expect(Max(5, '-1', D`4`, 0, null)).toStrictEqual(D`5`))
     test('Gets value of objects', ()=> expect(Max(valueObj(3), valueObj(2))).toBe(3))
@@ -547,6 +580,7 @@ describe('Min', () => {
     test('returns the argument for single argument', () => expect(Min(3)).toBe(3))
     test('returns the min argument for multiple arguments', () => expect(Min(3, -1, 4, 0)).toBe(-1))
     test('returns the min argument treating null as zero', () => expect(Min(null, 1)).toBe(0))
+    test('flattens array arguments', () => expect(Min([2, 4, 3], [], [5])).toBe(2))
     test('returns a Decimal argument for mixed arguments', () => expect(Min(3, '-1', D`4`, 0)).toStrictEqual(D`-1`))
     test('returns a Decimal argument for mixed arguments even if Min is a number', () => expect(Min(5, '-1', D`4`, 0, null)).toStrictEqual(D`-1`))
     test('returns a Decimal argument for mixed arguments even if Min is a null', () => expect(Min(null, D`4`)).toStrictEqual(D`0`))

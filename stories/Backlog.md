@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Generated functions for Select, ForEach, etc must never be async
 - Calculation display unreadable for large objects/arrays
 - File resources not found in run from GitHub in WebFile/WebFileDataStore
 - Nested Item Sets don't work - code generation fails
@@ -451,3 +452,4 @@ Bugs fixed
 - If() may return a promise, but assumed sync
 - Auto await insertion not happening on client
 - Firestore data store blows up on null field values
+- Sum should take an array for first arg

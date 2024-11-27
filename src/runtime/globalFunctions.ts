@@ -27,6 +27,7 @@ export type DecimalType = BigNumber
 type DecimalOrNumber = DecimalType | number
 type DecimalVal = Value<string | number | BigNumber>
 type DecimalValOrNull = DecimalVal | null
+type DecimalValOrArrayOrNull = DecimalValOrNull | DecimalValOrNull[] | null
 type ComparisonValOrNull = DecimalValOrNull | boolean
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
@@ -155,8 +156,14 @@ export const globalFunctions = {
         return comparisonOp('eq', arg1, arg2)
     },
 
-    Sum(...args: DecimalValOrNull[]) {
-        return decimalOp('plus', 0, ...args)
+    Sum(...args: DecimalValOrArrayOrNull[]) {
+        return decimalOp('plus', 0, ...flatten(args))
+    },
+
+    Average(...args: DecimalValOrArrayOrNull[]) {
+        const flatArgs = flatten(args)
+        const sum = decimalOp('plus', 0, ...flatArgs)
+        return decimalOp('div', sum.valueOf() as number, flatArgs.length)
     },
 
     Log(...args: any[]) {
@@ -248,24 +255,24 @@ export const globalFunctions = {
         return !valueOf(arg)
     },
 
-    Max: function (...args: DecimalValOrNull[]) {
+    Max: function (...args: DecimalValOrArrayOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Max. Expected at least 1 argument.')
         const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
             const acc = valueOf(accVal), val = valueOf(valVal) ?? 0
             if (typeof acc === 'number' && typeof val === 'number') return Math.max(acc, val)
             return Decimal(acc).gte(Decimal(val)) ? Decimal(acc) : Decimal(val)
         }
-        return <BigNumber>args.reduce(reducer, -Number.MAX_VALUE)
+        return <BigNumber>flatten(args).reduce(reducer, -Number.MAX_VALUE)
     },
 
-    Min(...args: DecimalValOrNull[]) {
+    Min(...args: DecimalValOrArrayOrNull[]) {
         if (args.length === 0) throw new Error('Wrong number of arguments to Min. Expected at least 1 argument.')
         const reducer = (accVal: DecimalValOrNull, valVal: DecimalValOrNull): DecimalOrNumber => {
             const acc = valueOf(accVal) , val = valueOf(valVal) ?? 0
             if (typeof acc === 'number' && typeof val === 'number') return Math.min(acc, val)
             return Decimal(accVal).lte(Decimal(valVal)) ? Decimal(accVal)  : Decimal(valVal)
         }
-        return <BigNumber>args.reduce(reducer, Number.MAX_VALUE)    },
+        return <BigNumber>flatten(args).reduce(reducer, Number.MAX_VALUE)    },
 
     Round(n?: Value<number | null>, decimalDigits?: Value<number | null>): number {
         return round(valueOf(n) ?? 0, valueOf(decimalDigits) ?? 0)
@@ -612,6 +619,7 @@ export const globalFunctions = {
 // for each function, the arguments that should be functions, and the argument names of those functions OR lazy to evaluate the argument only when needed
 export const functionArgs = {
     Select: {1: ['$item', '$index']},
+    SelectFirst: {1: ['$item', '$index']},
     Count: {1: ['$item', '$index']},
     ForEach: {1: ['$item', '$index']},
     First: {1: ['$item']},

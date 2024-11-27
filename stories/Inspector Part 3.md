@@ -30,3 +30,14 @@ Requirements
 
 Technical
 ---------
+
+- Log could return last argument so could assign and log
+- Use debugger on client
+- Chrome dev tools panel for Elemento
+- Server side logging/debugging returned alongside data - in response, or headers
+- Calculations inside server functions auto logged - but just use log?
+- Insert a debug statement at end of every function that logs requested expressions
+- Expressions requested on client in map of fn path to exprs, in window global
+- Way of passing requested expressions to server, maybe in header, and make available in global
+  - Must make sure this is preview-only!
+- Debug function that logged an expr or passed back to inspector, as well as returning the result, or nothing in prod

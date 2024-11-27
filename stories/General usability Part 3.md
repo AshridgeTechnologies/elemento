@@ -1,6 +1,6 @@
 General usability Part 3
 ========================
-
+- Links can be inline in text elements
 - Review semantics of Get vs GetIfExists with Collection and the Data Store implementations
 - Prevent hiding global or app functions/components with own name
 - Firestore data store changes undefined fields to null
