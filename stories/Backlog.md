@@ -61,8 +61,7 @@ Stories
 -------
 
 ### Next up
-- Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
-- Good performance on large list
+- Search in project
 
 ### Run and deploy
 - Server app containers
@@ -110,6 +109,7 @@ Stories
 - Card game assets - eg https://www.revk.uk/2018/06/svg-vector-playing-cards.html
 
 ### Priority for credibility
+- Elemento favicon - https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs
 - Dependency vulnerability review
 - Supply-chain review - https://github.com/readme/guides/dependency-risk
 - Security review
@@ -120,6 +120,7 @@ Stories
 
 ### Priority for usability
 - Inspector Part 3
+- Style copying and presets
 - Runtime error and notification handling
 - Server side error location
 - Confusion between CurrentUser and a Users collection
@@ -130,6 +131,7 @@ Stories
 - Search in project - consider Fuse.js
 
 ### Priority 1
+- Good performance on large list
 - User menu can have extra options like My Account
 - Can run server functions from Inspector even when no Page is selected, reliably, and refresh them
 - Can debug server functions from Inspector

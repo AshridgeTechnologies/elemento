@@ -3,9 +3,9 @@ General usability Part 3
 - Links can be inline in text elements
 - Review semantics of Get vs GetIfExists with Collection and the Data Store implementations
 - Prevent hiding global or app functions/components with own name
-- Firestore data store changes undefined fields to null
-- Install as app (non PWA) - rearrange UI, update window title, menu with install option that gives instructions
 - Prevent duplicate element names and using system object names
+- ✅ Firestore data store changes undefined fields to null
+- Install as app (non PWA) - rearrange UI, update window title, menu with install option that gives instructions
 - ✅ Can show page from Navigator
 - Reset function acts on whole page or layout
 - Keep scroll position in preview when change something
@@ -42,7 +42,7 @@ General usability Part 3
 - Record editor
 - Function to make record from values of a list of controls - use their names, if available in the state object
 - Way of debugging functions and complex expressions eg the word up to date function in revision app
-- Show URL of preview frame
+- ✅ Show URL of preview frame
 - Stop functions showing as toString when don't have braces
 - Can edit text elements content in place if fixed value (use contentEditable)
 - Store project as separate YAML files
