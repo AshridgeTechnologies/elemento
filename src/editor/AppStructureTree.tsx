@@ -8,15 +8,23 @@ import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ActionsAvailableFn, InsertMenuItemsFn, OnActionFn, OnInsertFnWithPositionFn} from './Types'
 import {flatten, union, without} from 'ramda'
 import EditMenu from './EditMenu'
+import {unique} from 'radash'
 
 export class ModelTreeItem implements DataNode {
     constructor(public id: string,
                 public title: string,
                 public kind: ElementType,
                 public iconClass: string,
-                public hasErrors: boolean = false, public children?: ModelTreeItem[]) {}
+                public hasErrors: boolean = false,
+                public isSearchResult: boolean = false,
+                public children?: ModelTreeItem[]) {}
     get key() { return this.id }
-    get className() { return `${this.hasErrors ? 'rc-tree-error' : ''} ${this.hasChildErrors() ? 'rc-tree-child-error' : ''}`.trim()}
+    get className() {
+        const errorClass = this.hasErrors ? 'rc-tree-error' : ''
+        const childErrorClass = this.hasChildErrors() ? 'rc-tree-child-error' : ''
+        const searchResultClass = this.isSearchResult ? 'rc-tree-search-result' : ''
+        return [errorClass, childErrorClass, searchResultClass].join(' ').trim()
+    }
 
     ancestorKeysOf = (id: Key | undefined): Key[] => {
         const hasChildWithId = this.children?.some( item => item.id === id)
@@ -42,6 +50,12 @@ export class ModelTreeItem implements DataNode {
 
     hasChildErrors(): boolean {
         return (this.children ?? []).some( item => item.hasErrors || item.hasChildErrors())
+    }
+
+    searchResultIds(): Key[] {
+        const thisId = this.isSearchResult ? [this.id] : []
+        const childIds = flatten((this.children ?? []).map( item => item.searchResultIds()))
+        return [...thisId, ...childIds]
     }
 }
 
@@ -115,20 +129,26 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
     const undraggables = ['Project', 'File', 'FileFolder']
     const canDrag = (node: DataNode) => !undraggables.includes((node as ModelTreeItem).kind)
 
-    const alwaysShownKeys = flatten([treeData.ancestorKeysOf(selectedItemIds[0]), treeData.key, (treeData.children?? []).map( child => child.key )])
+    const alwaysShownKeys = flatten([
+        treeData.ancestorKeysOf(selectedItemIds[0]),
+        treeData.key,
+        (treeData.children?? []).map( child => child.key )
+    ])
+    const searchResultAncestors = unique(flatten(treeData.searchResultIds().map( id => treeData.ancestorKeysOf(id))))
 
     const allExpandedKeys = union(expandedKeys, alwaysShownKeys)
     if (allExpandedKeys.length > expandedKeys.length) {
         setExpandedKeys(allExpandedKeys)
     }
 
+    const currentExpandedKeys = [...expandedKeys, ...searchResultAncestors]
     return <>
-        <Tree //treeData={[treeData] as DataNode[]}
+        <Tree //treeData={[asTreeNode(treeData)] as DataNode[]}
             draggable={canDrag}
             multiple
             icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
             selectedKeys={selectedItemIds}
-            expandedKeys={expandedKeys}
+            expandedKeys={currentExpandedKeys}
             onSelect={itemSelected}
             onExpand={onExpand}
             // @ts-ignore

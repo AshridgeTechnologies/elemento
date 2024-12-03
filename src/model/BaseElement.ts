@@ -1,7 +1,7 @@
 import Element from './Element'
 import {CombinedPropertyValue, ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
-import {elementId, noSpaces} from '../util/helpers'
-import {prop, uniq} from 'ramda'
+import {elementId, isExpr, noSpaces} from '../util/helpers'
+import {flatten, isEmpty, isNil, uniq} from 'ramda'
 
 type Class<T> = new (...args: any[]) => T
 
@@ -158,6 +158,20 @@ export default abstract class BaseElement<PropertiesType extends object> {
         const fromSelf = selectorFn(this) ? [this as Element] : [] as Element[]
         const fromChildren = this.elementArray().map( childEl => childEl.findElementsBy(selectorFn))
         return [fromSelf, ...fromChildren].flat()
+    }
+
+    searchElements(search: RegExp): Element[] {
+        const self = this.hasMatchingProperties(search) ? [this] : []
+        const childMatches = flatten(this.elementArray().map( el => el.searchElements(search)))
+        return [...self, ...childMatches]
+    }
+
+    private hasMatchingProperties(search: RegExp): boolean {
+        const propMatch = Object.values(this.properties).some(propVal => {
+            const textToSearch: string = isExpr(propVal) ? propVal.expr : (propVal ?? '').toString()
+            return textToSearch.match(search)
+        })
+        return propMatch || !!this.name.match(search) || !!this.notes?.match(search)
     }
 
     set(id: ElementId, propertyName: string, value: any): this {

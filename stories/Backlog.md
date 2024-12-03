@@ -128,7 +128,7 @@ Stories
 - Complex formula editing - auto format on separate lines where it helps eg for nested function calls
 - General usability Part 3
 - Preview improvements - screen size, scrolling, etc
-- Search in project - consider Fuse.js
+
 
 ### Priority 1
 - Good performance on large list
@@ -395,7 +395,8 @@ Done
 - Cookie consent
 - Firebase Deploy 2
 - View/set preview URL
-
+- Search in project
+- 
 
 Bugs fixed
 ----------

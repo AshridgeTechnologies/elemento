@@ -18,7 +18,8 @@ import ServerApp from '../../src/model/ServerApp'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
-import Collection from '../../src/model/Collection'
+import NumberInput from '../../src/model/NumberInput'
+import SelectInput from '../../src/model/SelectInput'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -622,4 +623,32 @@ test('findClosestElementByCodeName finds in Page or App', () => {
     expect(project.findClosestElementByCodeName('t11', 'Text2')).toBe(text2a)
     expect(project.findClosestElementByCodeName('t2a', 'TheAppBar')).toBe(appBar)
     expect(project.findClosestElementByCodeName('t3a', 'Text2')).toBe(text2a)
+})
+
+test('searchElements finds elements matching the regexp', () => {
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`, notes: 'Important text'})
+    const text2 = new Text('t2', 'Text 2', {content: "More text"})
+    const textInput1 = new TextInput('ti1', 'Text Input 1', {initialValue: 'Starting with...'})
+    const numberInput1 = new NumberInput('ni1', 'Number Input 1', {initialValue: 77})
+    const numberInput2 = new NumberInput('ni2', 'Number Input 2', {initialValue: ex`0`})
+    const selectInput1 = new SelectInput('si1', 'Select Input 1', {initialValue: undefined})
+    const page1 = new Page('p1', 'Page 1', {}, [text1, text2, textInput1, numberInput1, numberInput2, selectInput1])
+    const text1a = new Text('t11', 'Text 1', {content: ex`"Some stuff"`})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"More stuff"`})
+    const page2 = new Page('p2', 'Page 2', {}, [text1a, text3])
+
+    const text2a = new Text('t2a', 'Text 2', {content: ex`"Top stuff"`})
+    const text3a = new Text('t3a', 'Text 3', {content: "Other stuff"})
+    const appBar = new AppBar('ab1', 'The App Bar', {}, [text2a, text3a]  )
+    const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2, appBar])
+    const project = Project.new([app], 'Project 1', 'proj1', {author: 'Joseph'})
+
+    expect(project.searchElements(/stuff/)).toStrictEqual([text1a, text3, text2a, text3a])
+    expect(project.searchElements(/7/)).toStrictEqual([numberInput1])
+    expect(project.searchElements(/77/)).toStrictEqual([numberInput1])
+    expect(project.searchElements(/777/)).toStrictEqual([])
+    expect(project.searchElements(/0/)).toStrictEqual([numberInput2])
+    expect(project.searchElements(/Jo/)).toStrictEqual([project, app])
+    expect(project.searchElements(/page/i)).toStrictEqual([page1, page2])
+    expect(project.searchElements(/Import/)).toStrictEqual([text1])
 })

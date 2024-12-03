@@ -18,6 +18,7 @@ export default interface Element {
     findElementPath(id: ElementId) : string | null
     findElementByPath(path: string) : Element | null
     findElementsBy(selectorFn: (el: Element) => boolean) : Element[]
+    searchElements(search: RegExp): Element[]
     findMaxId(elementType: ElementType): number
     set(id: ElementId, propertyName: string, value: any): Element
     delete(itemId: ElementId): Element

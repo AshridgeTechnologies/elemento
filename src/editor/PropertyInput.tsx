@@ -1,24 +1,34 @@
 import React, {useState} from 'react'
 import {ElementId, EventActionPropertyDef, PropertyExpr, PropertyType, PropertyValue} from '../model/Types'
-import lodash from 'lodash'; const {isArray, startCase} = lodash
+import lodash from 'lodash';
 import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
 import {isExpr, isNumeric, wordAtPosition} from '../util/helpers'
 import {OnChangeFn, OnNameSelectedFn} from './Types'
 import UnsupportedValueError from '../util/UnsupportedValueError'
-import {format, isDate} from 'date-fns'
+import {format} from 'date-fns'
 import {editorMenuPositionProps} from './Editor'
-
 import {editorElement} from './EditorElement'
+import {HighlightedTextField} from './HighlightedTextField'
+
+const {isArray, startCase} = lodash
+
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
-    onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, fixedOnly?: boolean, readOnly?: boolean, error?: string
+    onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, fixedOnly?: boolean, readOnly?: boolean, error?: string, search?: RegExp
 }
-export default function PropertyInput({ elementId, name, type, value, onChange, onNameSelected, fixedOnly = false, readOnly = false,  error}: PropertyInputProps) {
+
+export default function PropertyInput({ elementId, name, type, value, onChange, onNameSelected, fixedOnly = false, readOnly = false,  error, search}: PropertyInputProps) {
     const isEventAction = (type as EventActionPropertyDef).type === 'Action'
     const exprOnlyProperty = isEventAction || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
     const [expr, setExpr] = useState(valueIsExpr)
+
+    const fixedBoolean = type === 'boolean' && !expr
+    const fixedChoiceList = isArray(type) && !expr
+    const fixedNumber = type === 'number' && !expr
+    const fixedDate = type === 'date' && !expr
+    const multiline = type === 'string multiline' || expr
 
     const typedValue = (input: string): PropertyValue => {
         if (isArray(type) || isEventAction) {
@@ -92,8 +102,8 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
         }
     }
 
-    const numericProps = (type === 'number' && !expr) ? {type: 'number', inputProps: {min: 0}, sx: { minWidth: 120, flex: 0 }} : {}
-    const dateProps = (type === 'date' && !expr) ? {type: 'date', InputLabelProps:{ shrink: true }, sx: { minWidth: 150, flex: 0 }} : {}
+    const numericProps = fixedNumber ? {type: 'number', slotProps: {htmlInput: {min: 0}}, sx: { minWidth: 120, flex: 0 }} : {}
+    const dateProps = fixedDate ? {type: 'date', slotProps:{inputLabel: {shrink: true }}, sx: { minWidth: 150, flex: 0 }} : {}
     const label = startCase(name)
     const fixedButtonColor = 'primary'
     const exprButtonColor = 'secondary'
@@ -123,9 +133,6 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
 
         return <Button {...commonProps} color={buttonColor} onClick={toggleKind} title={buttonMessage}>{buttonLabel}</Button>
     }
-
-    const fixedBoolean = type === 'boolean' && !expr
-    const fixedChoiceList = isArray(type) && !expr
 
     const onClick = (event: React.MouseEvent) => {
         if (expr && (event.ctrlKey || event.metaKey)) {
@@ -167,15 +174,26 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                     {type.map( choiceVal => <MenuItem value={choiceVal} key={choiceVal}>{startCase(choiceVal)}</MenuItem>)}
                 </Select>
             </FormControl>
-            : <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
+            : (fixedNumber || fixedDate) ?
+                <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
+                           value={initialInputValue()}
+                           slotProps={{input: {readOnly, sx:{fontFamily: 'monospace', fontSize: '13px'}}}}
+                           {...numericProps}
+                           {...dateProps}
+                           {...errorProps}
+                           onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
+                           onClick={onClick}
+                />
+            : <HighlightedTextField id={name}
+                sx={{width: '100%'}}
+                label={label}
+                multiline={multiline}
+                readOnly={readOnly}
                 value={initialInputValue()}
-                multiline={type === 'string multiline' || expr}
-                inputProps={{readOnly, sx:{fontFamily: 'monospace', fontSize: '13px'}}}
-                {...numericProps}
-                {...dateProps}
                 {...errorProps}
                 onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}
                 onClick={onClick}
+                highlightRegex={search}
                 />
         }
     </div>

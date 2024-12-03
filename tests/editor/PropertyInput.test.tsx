@@ -26,20 +26,20 @@ beforeEach(() => {
 test('shows read only control for string property', () => {
     ({container} = render(<PropertyInput elementId='el1' name='description' type='string' readOnly={true} value='This is what it is'  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton()).toBe(null)
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('description')
-    expect(input().value).toBe('This is what it is')
-    expect(input().readOnly).toBe(true)
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('description')
+    expect(textarea().value).toBe('This is what it is')
+    expect(textarea().readOnly).toBe(true)
     expect(label().textContent).toBe('Description')
 })
 
 test('shows fixed value control for string property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={undefined}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('abc')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('')
-    expect(componentProps(input()).value).toBe('')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('length')
+    expect(textarea().value).toBe('')
+    expect(componentProps(textarea()).value).toBe('')
     expect(label().textContent).toBe('Length')
 })
 
@@ -56,19 +56,19 @@ test('shows fixed value control for date property if current value is empty', ()
 test('shows fixed value control for string or number property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={undefined}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('a12')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('')
-    expect(componentProps(input()).value).toBe('')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('length')
+    expect(textarea().value).toBe('')
+    expect(componentProps(textarea()).value).toBe('')
     expect(label().textContent).toBe('Length')
 })
 
 test('shows fixed value control for string list property if current value is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={undefined}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('abc')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('color')
-    expect(input().value).toBe('')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('color')
+    expect(textarea().value).toBe('')
     expect(label().textContent).toBe('Color')
 })
 
@@ -103,19 +103,19 @@ test('shows fixed-only control for string fixed-only property if current value i
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={undefined} fixedOnly  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('abc')
     expect(kindButton().disabled).toBe(true)
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('')
-    expect(componentProps(input()).value).toBe('')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('length')
+    expect(textarea().value).toBe('')
+    expect(componentProps(textarea()).value).toBe('')
     expect(label().textContent).toBe('Length')
 })
 
 test('shows fixed value control for string property if current value is a string', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Hi there!'}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('abc')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('Hi there!')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('length')
+    expect(textarea().value).toBe('Hi there!')
     expect(label().textContent).toBe('Length')
 })
 
@@ -130,9 +130,9 @@ test('shows fixed value control for string property if current value is a multil
 test('shows fixed value control for string or number property if current value is a string', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Hi there!'}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('a12')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('length')
-    expect(input().value).toBe('Hi there!')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('length')
+    expect(textarea().value).toBe('Hi there!')
     expect(label().textContent).toBe('Length')
 })
 
@@ -168,9 +168,9 @@ test('shows fixed value control for boolean property if current value is a boole
 test('shows fixed value control for string list property if current value is a list', () => {
     ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={['Green', 'Blue', 'Red']}  onChange={onChange} onNameSelected={onNameSelected}/>))
     expect(kindButton().textContent).toBe('abc')
-    expect(input().type).toBe('text')
-    expect(input().id).toBe('color')
-    expect(input().value).toBe('Green, Blue, Red')
+    expect(textarea().type).toBe('textarea')
+    expect(textarea().id).toBe('color')
+    expect(textarea().value).toBe('Green, Blue, Red')
     expect(label().textContent).toBe('Color')
 })
 
@@ -235,14 +235,14 @@ test('shows error message for text field if given', () => {
 test('calls onChange with undefined if input is empty', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Old value'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.input(input(), {target: {value: ''}})
+    fireEvent.input(textarea(), {target: {value: ''}})
     expect(newValue).toBeUndefined()
 })
 
 test('calls onChange with new string fixed value', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'Old value'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.input(input(), {target: {value: 'New value'}})
+    fireEvent.input(textarea(), {target: {value: 'New value'}})
     expect(newValue).toBe('New value')
 })
 
@@ -256,14 +256,14 @@ test('calls onChange with new string multiline fixed value', () => {
 test('calls onChange with new string fixed value in string or number', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Old value'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.input(input(), {target: {value: 'New value'}})
+    fireEvent.input(textarea(), {target: {value: 'New value'}})
     expect(newValue).toBe('New value')
 })
 
 test('calls onChange with new number fixed value in string or number', () => {
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string|number' value={'Old value'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.input(input(), {target: {value: '27'}})
+    fireEvent.input(textarea(), {target: {value: '27'}})
     expect(newValue).toBe(27)
 })
 
@@ -285,7 +285,7 @@ test('calls onChange with new date fixed value', () => {
 test('calls onChange with new string list fixed value and ignores spaces around values', () => {
     ({container} = render(<PropertyInput elementId='el1' name='color' type='string list' value={['Green', 'Red']}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.input(input(), {target: {value: ' Blue, Green,   Red, Pinkish grey   '}})
+    fireEvent.input(textarea(), {target: {value: ' Blue, Green,   Red, Pinkish grey   '}})
     expect(newValue).toStrictEqual(['Blue', 'Green', 'Red', 'Pinkish grey'])
 })
 
@@ -403,7 +403,7 @@ test('does not call onNameSelected with clicked word if not in a formula', () =>
     const onNameSelected = jest.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'AnotherElement.something'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
-    fireEvent.click(input(), {metaKey: true, offsetX: 60, offsetY: 12})
+    fireEvent.click(textarea(), {metaKey: true, offsetX: 60, offsetY: 12})
     expect(onNameSelected).not.toHaveBeenCalled()
 })
 

@@ -130,9 +130,9 @@ function SearchBox({value, onChange}: {value: string, onChange: (searchText: str
 
 }
 
-export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, onChange, onNameSelected, errors = {}}: { elementId: ElementId, name: string, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object }) {
+export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, onChange, onNameSelected, errors = {}, search}: { elementId: ElementId, name: string, value: StylingProps, onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, errors?: object, search?: RegExp }) {
 
-    const [searchText, setSearchText] = useState('')
+    const [propertySearchText, setPropertySearchText] = useState('')
     const [showAdvanced, setShowAdvanced] = useState(false)
     const onChangeShowAdvanced = (event: React.ChangeEvent<HTMLInputElement>) => setShowAdvanced(event.target.checked)
 
@@ -155,15 +155,15 @@ export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, 
         const error = errors[name as keyof object]
         const key = `${elementId}.styles.${name}.kind`
         return <PropertyInput key={key} elementId={elementId} name={name} type={type} value={propertyValue} onChange={onChangeStyleProperty}
-                              onNameSelected={onNameSelected} error={error}/>
+                              onNameSelected={onNameSelected} error={error} search={search}/>
     }
 
     const presetPositionField = propertyField('presetPosition', presetPositionNames)
-    const search = searchText.replace(/ /g, '')
+    const propertySearch = propertySearchText.replace(/ /g, '')
     const selectedProps = allStylingProps.filter( (p: string) => {
         const isInUse =  p in stylesValue
         const isInPropertiesToShow = showAdvanced || p in commonStylingPropTypes
-        return isInUse || isInPropertiesToShow && search && p.match(new RegExp(search, 'i'))
+        return isInUse || isInPropertiesToShow && propertySearch && p.match(new RegExp(propertySearch, 'i'))
     })
     const fields = [presetPositionField, ...selectedProps.map((name) => propertyField(name))]
     const showAdvancedBox = <FormControlLabel control={<Checkbox
@@ -178,7 +178,7 @@ export function StylesPropertyEditor({elementId, name, value: stylesValue = {}, 
     >
         <Typography variant='h6'>{startCase(name)}</Typography>
         <Stack direction='row' gap={2}>
-            <SearchBox value={searchText} onChange={setSearchText}/>
+            <SearchBox value={propertySearchText} onChange={setPropertySearchText}/>
             {showAdvancedBox}
         </Stack>
 
