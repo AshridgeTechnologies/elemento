@@ -61,7 +61,6 @@ Stories
 -------
 
 ### Next up
-- Search in project
 
 ### Run and deploy
 - Server app containers
@@ -396,7 +395,7 @@ Done
 - Firebase Deploy 2
 - View/set preview URL
 - Search in project
-- 
+
 
 Bugs fixed
 ----------
