@@ -73,11 +73,4 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected updateState(changes: Partial<StateProps>) {
         this._appStateInterface!.updateVersion(changes)
     }
-
-    protected propsMatchValueEqual(thisProps: { value: any }, newProps: { value: any }) {
-        const thisSimpleProps = omit(['value'], thisProps)
-        const newSimpleProps = omit(['value'], newProps)
-        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
-        return simplePropsMatch && equals(thisProps.value, newProps.value)
-    }
 }

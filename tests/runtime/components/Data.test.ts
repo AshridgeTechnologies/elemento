@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {Collection, Data, TextInput} from '../../../src/runtime/components/index'
+import {Data} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {DataState} from '../../../src/runtime/components/Data'
@@ -33,22 +33,25 @@ test('Set returns correct update', () => {
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
+    expect(state.value).toStrictEqual({a:20, b:'Cee'})
 })
 
 test('Reset returns correct update', () => {
-    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
+    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})._withStateForTest({value: {a:5, c:'Cee'}})
     const appInterface = testAppInterface('testPath', state)
-    expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
+    expect(state.value).toStrictEqual({a:5, c:'Cee'})
 
     state.Set({a:20, b:'Cee'})
     const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
     expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
+    expect(state.value).toStrictEqual({a:20, b:'Cee'})
 
     state.Reset()
     const expectedState2 = state._withStateForTest({value: undefined})
     expect(expectedState2.value).toStrictEqual({a: 10, b: 'Bee1', c: true}) //initial value
     expect(appInterface.updateVersion).toHaveBeenLastCalledWith({value: undefined})
+    expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 })
 
 test('Set returns correct update for array', () => {
@@ -60,6 +63,7 @@ test('Set returns correct update for array', () => {
     const expectedState = state._withStateForTest({value: ['a', 20]})
     expect(expectedState.value).toStrictEqual(['a', 20])
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: ['a', 20]})
+    expect(state.value).toStrictEqual(['a', 20])
 })
 
 test('Update returns correct update for object', () => {

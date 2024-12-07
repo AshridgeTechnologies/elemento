@@ -17,6 +17,9 @@ Technical
 ---------
 
 - Seeing new value in same function possible by having a cached pending value in the Data object
-- Seeing new value in other called functions difficult: they are memoized with useCallback, so have an old version in the closure
+- Seeing new value in other called functions should also work:
+  - every function should depend on the Data object if code generation of useCallback dependencies is correct
+  - so all the current versions of each function in the page should refer to the same version of the Data object
+
 
 

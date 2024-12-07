@@ -1,7 +1,7 @@
 import {createElement} from 'react'
 import {idOf, valueLiteral} from '../runtimeFunctions'
 import lodash from 'lodash'; const {clone, isArray, isNumber, isObject, isString} = lodash;
-import {map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
+import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
 import DataStore, {
     CollectionName,
     Criteria,
@@ -17,6 +17,7 @@ import {AppStateForObject, useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
+import {shallow} from 'zustand/shallow'
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
@@ -110,8 +111,11 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
     }
 
-    updateFrom(newObj: CollectionState): this {
-        return this.propsMatchValueEqual(this.props, newObj.props) ? this : new CollectionState(newObj.props).withState(this.state) as this
+    protected isEqualTo(newObj: this) {
+        const thisSimpleProps = omit(['value'], this.props)
+        const newSimpleProps = omit(['value'], newObj.props)
+        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
+        return simplePropsMatch && equals(this.props.value, newObj.props.value)
     }
 
     get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
