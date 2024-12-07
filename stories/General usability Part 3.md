@@ -1,6 +1,6 @@
 General usability Part 3
 ========================
-- Links can be inline in text elements
+- ✅ Links can be inline in text elements
 - Review semantics of Get vs GetIfExists with Collection and the Data Store implementations
 - Prevent hiding global or app functions/components with own name
 - Prevent duplicate element names and using system object names
@@ -36,7 +36,7 @@ General usability Part 3
 - Have fixed kind buttons non-disables but warn if try to change
 - Icons on Insert Menu
 - Search in Help
-- Search in Navigator
+- ✅ Search in Navigator
 - Popup help by each control, property on menu and properties panel
 - Some way of getting snippets (eg a File Menu) - maybe from an Examples project that you open in another window
 - Record editor
@@ -47,7 +47,7 @@ General usability Part 3
 - Can edit text elements content in place if fixed value (use contentEditable)
 - Store project as separate YAML files
 - Direct editing of YAML in Studio
-- Reload project from disk
+- ✅ Reload project from disk
 - Better required indication - https://www.accessibility-developer-guide.com/examples/forms/required/
 - Drag and drop elements inside another
 - Sliders for numeric props like font-size

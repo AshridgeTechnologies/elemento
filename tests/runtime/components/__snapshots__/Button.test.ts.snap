@@ -111,7 +111,7 @@ exports[`Button element produces output with icon 1`] = `
 
 exports[`Button element produces output with link style 1`] = `
 <a
-  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-w028g3-MuiTypography-root-MuiLink-root"
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-1ritgho-MuiTypography-root-MuiLink-root"
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -129,7 +129,7 @@ exports[`Button element produces output with link style 1`] = `
 
 exports[`Button element produces output with link style and styles 1`] = `
 <a
-  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-w028g3-MuiTypography-root-MuiLink-root"
+  className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineHover css-1ritgho-MuiTypography-root-MuiLink-root"
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
