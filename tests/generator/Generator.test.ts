@@ -657,6 +657,38 @@ test('generates Button elements with properties including await in action', ()=>
 `)
 })
 
+test('generates Button element action functions that depend on stateful components even if they have the same name as the button', () => {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+            new TextInput('ti1', 'Description', {}),
+            new FunctionDef('f1', 'Do Stuff', {calculation: ex`Log("Doing it")`}),
+            new Button('id1', 'Do Stuff', {content: 'Click here!', action: ex`DoStuff(Description)`})
+            ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathTo = name => props.path + '.' + name
+    const {Page, TextInput, Button} = Elemento.components
+    const {Log} = Elemento.globalFunctions
+    const _state = Elemento.useGetStore()
+    const Description = _state.setObject(pathTo('Description'), new TextInput.State(stateProps(pathTo('Description')).props))
+    const DoStuff = _state.setObject(pathTo('DoStuff'), React.useCallback(wrapFn(pathTo('DoStuff'), 'calculation', () => {
+        return Log('Doing it')
+    }), []))
+    const DoStuff_action = React.useCallback(wrapFn(pathTo('DoStuff'), 'action', () => {
+        DoStuff(Description)
+    }), [DoStuff, Description])
+    Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, elProps(props.path).props,
+        React.createElement(TextInput, elProps(pathTo('Description')).label('Description').props),
+        React.createElement(Button, elProps(pathTo('DoStuff')).content('Click here!').appearance('outline').action(DoStuff_action).props),
+    )
+}
+`)
+})
+
 test('generates User Logon elements with properties', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
@@ -1693,7 +1725,7 @@ function Page1(props) {
     const DetailsForm_keyAction = React.useCallback(wrapFn(pathTo('DetailsForm'), 'keyAction', async (\$event) => {
         const \$key = \$event.key
         Log('You pressed', \$key, \$event.ctrlKey); await If(\$key == 'Enter', async () => await DetailsForm.submit())
-    }), [])
+    }), [DetailsForm])
     Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,

@@ -18,7 +18,8 @@ import {
     printAst,
     quote,
     StateInitializer,
-    topoSort, TopoSortError,
+    topoSort,
+    TopoSortError,
     valueLiteral
 } from './generatorHelpers'
 import Project from '../model/Project'
@@ -174,31 +175,32 @@ export default class Generator {
         const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext, appFunctionDeclarations, getStateDeclaration,
             appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
+        const findDependencies = (identifiers: string[]) => {
+            const functionDependsOnIdentifier = (ident: string) => isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
+                || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item')
+            return identifiers.filter(functionDependsOnIdentifier)
+        }
+
+        const useCallbackCode = (el: Element, propertyName: string, functionCode: string | CodeError | undefined) => {
+            const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), '${propertyName}', ${functionCode})`
+            const identifiers = this.parser.statePropertyIdentifiers(el.id, propertyName)
+            const dependencies = findDependencies(identifiers)
+            return `React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
+        }
+
         const actionHandler = (el: Element, def: PropertyDef) => {
             const actionDef = def.type as EventActionPropertyDef
             const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
-            const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), '${def.name}', ${functionCode})`
             const functionName = `${el.codeName}_${def.name}`
-            const identifiers = this.parser.statePropertyIdentifiers(el.id, def.name)
-            const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
-                (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
-                    || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
-            const dependencies = identifiers.filter(functionDependsOnIdentifier)
-
-            return functionCode && `    const ${functionName} = React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
+            return functionCode && `    const ${functionName} = ${useCallbackCode(el, def.name, functionCode)}`
         }
 
         const functionDeclaration = (el: FunctionDef) => {
             const exprType = el.action ? 'action' : 'multilineExpression'
             const functionExpr = this.getExpr(el, 'calculation', exprType, el.inputs) ?? '() => {}'
             const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
-            const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), 'calculation', ${functionCode})`
-            const identifiers = this.parser.statePropertyIdentifiers(el.id, 'calculation')
-            const functionDependsOnIdentifier = (ident: string) => ident !== el.codeName &&
-                (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
-                    || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
-            const dependencies = identifiers.filter(functionDependsOnIdentifier)
-            return `React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
+            const propertyName = 'calculation'
+            return useCallbackCode(el, propertyName, functionCode)
         }
 
         const actionHandlers = (el: Element, state: boolean) => {
