@@ -4,6 +4,8 @@ Elemento Backlog
 
 Bugs
 ----
+- Selectable Item sets should show pointer on hover
+- Selected Item shows automatically
 - Calculation display unreadable for large objects/arrays
 - File resources not found in run from GitHub in WebFile/WebFileDataStore
 - Nested Item Sets don't work - code generation fails

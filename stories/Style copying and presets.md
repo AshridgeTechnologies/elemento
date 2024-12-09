@@ -6,6 +6,7 @@ Aims
 
 - Make reuse of sets of styles easy
 - Copy and paste of one or more styles easy
+- Make easy to apply several styles at once governed by a condition
 
 Requirements
 ------------
