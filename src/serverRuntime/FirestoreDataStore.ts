@@ -1,15 +1,22 @@
-import {BasicDataStore, CollectionName, Criteria, DataStoreObject, Id} from '../runtime/DataStore'
-import admin from 'firebase-admin'
+import {BasicDataStore, CollectionName, ComplexCriteria, Criteria, DataStoreObject, Id, SimpleCriteria} from '../runtime/DataStore'
+import admin, {firestore} from 'firebase-admin'
 
 import {mapObjIndexed} from 'ramda'
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import Firestore = admin.firestore.Firestore
 import {getApp} from './firebaseApp'
+import {isArray} from 'radash'
+import WhereFilterOp = firestore.WhereFilterOp
 
 const convertValue = (value: any) => typeof value?.toDate === 'function' ? value.toDate() : value
 const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
 
 type Properties = {collections: string}
+
+const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
+    return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '==', value])
+}
+
 export default class FirestoreDataStore implements BasicDataStore {
     private theDb: Firestore | null = null
     private readonly collections: CollectionConfig[]
@@ -84,13 +91,14 @@ export default class FirestoreDataStore implements BasicDataStore {
         await this.docRef(collectionName, id).delete()
     }
 
+
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        const constraints = Object.entries(criteria)
+        const constraints = normalizeCriteria(criteria)
 
         const collectionRef = this.collectionRef(collectionName)
         const [firstConstraint, ...otherConstraints] = constraints
-        const queryRefBase = firstConstraint ? collectionRef.where(firstConstraint[0], '==', firstConstraint[1]) : collectionRef
-        const queryRef = otherConstraints.reduce( (ref, [name, value]) => ref.where(name, '==', value), queryRefBase)
+        const queryRefBase = firstConstraint ? collectionRef.where(firstConstraint[0], firstConstraint[1] as WhereFilterOp, firstConstraint[2]) : collectionRef
+        const queryRef = otherConstraints.reduce( (ref, [name, op, value]) => ref.where(name, op as WhereFilterOp, value), queryRefBase)
         const snapshot = await queryRef.get()
         return snapshot.docs.map(d => convertDocumentData(d.data()))
     }

@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Huge number of requests and error storm when enter PuzzlesServerApp.PotdLeagueData('hiddenWords', new Date()) into Inspector Current Watch - because new Date() is different every time!
 - Selectable Item sets should show pointer on hover
 - Selected Item shows automatically
 - Calculation display unreadable for large objects/arrays
@@ -89,6 +90,7 @@ Stories
 - Formulas tutorial
 - Help up to date
 - Tutorial and general improvements
+- Document the Select By Page Id pattern - Item Set has Select action to ShowPage(this page, $item.id), Selectable None, Selected Items is CurrentUrl().pathSections[0]
 - Server apps example
 - Data types guide
 - General showcase example - with all features

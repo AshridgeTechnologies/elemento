@@ -2,7 +2,10 @@ import Observable from 'zen-observable'
 import lodash from 'lodash'; const {matches} = lodash
 
 const pendingFlag = Symbol('pending')
-export type Criteria = object
+export type SimpleCriteria = object
+export type CriteriaCondition = [fieldName: string, operator: string, value: any]
+export type ComplexCriteria = CriteriaCondition[]
+export type Criteria = SimpleCriteria | ComplexCriteria
 
 export type CollectionName = string
 export type DataStoreObject = object

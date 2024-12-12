@@ -33,7 +33,7 @@ test('creates and updates user', async () => {
 })
 
 test('get correct app function names', () => {
-    expect(appFunctionsNames()).toStrictEqual([ 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'Query',
+    expect(appFunctionsNames()).toStrictEqual([ 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetIfExists', 'Query',
         'GetRandomId', 'CreateUser', 'UpdateUser', 'GetUser', 'CurrentUser'])
 
 })
