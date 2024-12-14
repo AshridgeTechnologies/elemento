@@ -73,8 +73,9 @@ export const sxProps = (styles: StylesProps, show?: boolean): SxProps<{}> => {
 }
 export const sxFieldSetProps = (styles: {}) => sxProps({...pick(fieldsetComponentStyles, styles), zIndex: -1})
 export const sxPropsForFormControl = (styles: {}, show: boolean, additionalProps: {} = {}) => ({
+    ...additionalProps,
     ...sxProps(pick(formControlStyles, styles), show),
-    fieldset: sxFieldSetProps(styles), ...additionalProps
+    fieldset: sxFieldSetProps(styles)
 }) as SxProps<{}>
 
 export const propsForInputComponent = (dataType: BaseType<any, any> | undefined, styles: {}) => {

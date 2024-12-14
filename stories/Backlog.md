@@ -4,6 +4,9 @@ Elemento Backlog
 
 Bugs
 ----
+- ServerAppConnector should send dates in get and post as ISO string
+- DateVal should take argument values
+- Cryptic error if try to show date objects as values of a SelectInput (should format them, but blowup is confusing)
 - Huge number of requests and error storm when enter PuzzlesServerApp.PotdLeagueData('hiddenWords', new Date()) into Inspector Current Watch - because new Date() is different every time!
 - Selectable Item sets should show pointer on hover
 - Selected Item shows automatically
@@ -459,3 +462,5 @@ Bugs fixed
 - Firestore data store blows up on null field values
 - Sum should take an array for first arg
 - Local functions in client app must not be assumed async unless they need to be
+- Select Input should take width styles
+

@@ -1,5 +1,9 @@
 General usability Part 3
 ========================
+- Select Input can have separate values and labels
+- Sort out using own functions in ForEach and Select on server where calculation functions can return promises
+- ForEach and Select can handle generated async functions by awaiting promises - on server only?
+- Don't update server app until finished editing
 - ✅ Links can be inline in text elements
 - Review semantics of Get vs GetIfExists with Collection and the Data Store implementations
 - Prevent hiding global or app functions/components with own name
