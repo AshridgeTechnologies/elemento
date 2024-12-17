@@ -48,7 +48,7 @@ import WebFileDataStore from '../../src/model/WebFileDataStore'
 const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {})
 
 test('generates app and all page output files', ()=> {
-    const app = new App('app1', 'App 1', {maxWidth: '60%', fonts: 'Crazy Font\nWeird Font'}, [
+    const app = new App('app1', 'App 1', {maxWidth: '60%', fonts: 'Crazy Font\nWeird Font', themeOptions: ex`{primary: 'blue'}`}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 new Text('id2', 't2', {content: ex`23 + 45`}),
@@ -95,8 +95,9 @@ Page2.notLoggedInPage = 'Page1'
     const {App} = Elemento.components
     const pages = {Page1, Page2}
     const appContext = Elemento.useGetAppContext()
+    const themeOptions = ({primary: 'blue'})
     const _state = Elemento.useGetStore()
-    const app = _state.setObject('App1', new App.State({pages, appContext}))
+    const app = _state.setObject('App1', new App.State({pages, appContext, themeOptions}))
 
     return React.createElement(App, {...elProps('App1').maxWidth('60%').fonts(['Crazy Font', 'Weird Font']).props},)
 }

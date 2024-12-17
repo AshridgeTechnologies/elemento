@@ -188,7 +188,7 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('has correct property names', () => {
-    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'messageAction', 'cookieMessage', 'faviconUrl'])
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'messageAction', 'cookieMessage', 'faviconUrl', 'themeOptions'])
 })
 
 test('converts to JSON', ()=> {

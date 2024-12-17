@@ -241,7 +241,25 @@ exports[`TextElement element produces normal output with show true 1`] = `
 </div>
 `;
 
+exports[`TextElement element produces output containing ErrorResult message 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+  id="page1.para1"
+  style={{}}
+>
+  It went wrong
+</div>
+`;
+
 exports[`TextElement element produces output containing empty children 1`] = `
+<div
+  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+  id="page1.para1"
+  style={{}}
+/>
+`;
+
+exports[`TextElement element produces output containing null for ErrorResult 1`] = `
 <div
   className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
   id="page1.para1"
@@ -276,16 +294,6 @@ exports[`TextElement element produces output containing string version of object
   style={{}}
 >
   {a: 10, c: 'Hi'}
-</div>
-`;
-
-exports[`TextElement element produces output containing toString of ErrorResult 1`] = `
-<div
-  className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
-  id="page1.para1"
-  style={{}}
->
-  Error: Bad function - It went wrong
 </div>
 `;
 

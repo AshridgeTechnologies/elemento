@@ -1,6 +1,6 @@
 import React, {createElement, useEffect} from 'react'
 import {useGetObjectState} from '../appData'
-import {Box, Button, Container, Typography, useTheme} from '@mui/material'
+import {Box, Button, Container, ThemeOptions, Typography, useTheme} from '@mui/material'
 import {closeSnackbar, enqueueSnackbar, SnackbarProvider} from 'notistack'
 import CookieConsent from 'react-cookie-consent'
 import {AppData} from './AppData'
@@ -9,6 +9,7 @@ import {isSignedIn, useSignedInState} from './authentication'
 import {type Notification, subscribeToNotifications} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
+import {ThemeProvider} from '@mui/material/styles'
 
 type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void,
     messageAction?: ($sender: Window, $data: any) => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
@@ -65,7 +66,8 @@ function CookieMessage({path, message}: {path: string, message: string}) {
     </CookieConsent>
 }
 
-const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren}: Properties) {
+const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [],
+                                                      startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren}: Properties) {
     const state = useGetObjectState<AppData>(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
@@ -84,7 +86,9 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], s
     }, [messageAction])
     useSignedInState()
     const pageToDisplay = state.pageToDisplay(isSignedIn())
-    return <Box id={path} display='flex' flexDirection='column' height='100%' width='100%'  className='ElApp'>
+
+    return <ThemeProvider theme={state.Theme()}>
+    <Box id={path} display='flex' flexDirection='column' height='100%' width='100%'  className='ElApp'>
         <SnackbarProvider action={(snackbarId) => (
             <Button sx={{color: 'white'}} onClick={() => closeSnackbar(snackbarId)}>
                 Dismiss
@@ -103,6 +107,7 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [], s
         </Box>
         {cookieMessage ? <CookieMessage path={path} message={cookieMessage}/> : null}
     </Box>
+    </ThemeProvider>
 
 })
 

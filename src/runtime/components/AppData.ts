@@ -1,4 +1,4 @@
-import AppContext, {UrlType} from '../AppContext'
+import AppContext from '../AppContext'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {AppStateForObject} from '../appData'
 import {shallow} from 'zustand/shallow'
@@ -6,10 +6,13 @@ import Url, {asQueryObject} from '../Url'
 import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
 import type {FunctionComponent} from 'react'
+import {Theme, ThemeOptions} from '@mui/material'
+import {createTheme} from '@mui/material/styles'
 
 type StateExternalProps = {
     pages: { [key: string]: FunctionComponent },
-    appContext: AppContext
+    appContext: AppContext,
+    themeOptions: ThemeOptions
 }
 type StateInternalProps = {
     updateCount?: number,
@@ -18,6 +21,7 @@ type StateInternalProps = {
 
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
 
+    private theme: Theme | undefined
     init(asi: AppStateForObject, path: string): void {
         super.init(asi, path)
         const {subscription} = this.state
@@ -56,6 +60,8 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
 
     AppWidth = () => this.domElement?.clientWidth ?? 0
     AppHeight = () => this.domElement?.clientHeight ?? 0
+
+    Theme = () => this.theme ??= createTheme(this.props.themeOptions)
 
     CurrentUrl = () => {
         const {location, pathPrefix} = this.appContext.getUrl()

@@ -143,9 +143,10 @@ export default class Generator {
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
         const appContext = componentIsApp ? `    const appContext = Elemento.useGetAppContext()` : ''
+        const themeOptions = componentIsApp && app.themeOptions ? `    const themeOptions = ${this.getExpr(app, 'themeOptions', 'singleExpression')}` : ''
         const getStateDeclaration = `    const _state = Elemento.useGetStore()`
         const appStateDeclaration = componentIsApp
-            ? `    const app = _state.setObject('${app.codeName}', new App.State({pages, appContext}))`
+            ? `    const app = _state.setObject('${app.codeName}', new App.State({pages, appContext${themeOptions ? ', themeOptions' : ''}}))`
             : appStateFunctionIdentifiers.length ? `    const app = _state.useObject('${app.codeName}')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
@@ -172,7 +173,7 @@ export default class Generator {
             const containerIdentifiers = identifiers.filter(isContainerElement)
             containerDeclarations = containerIdentifiers.map(ident => `    const ${ident} = _state.useObject(parentPathWith('${ident}'))`).join('\n')
         }
-        const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext, appFunctionDeclarations, getStateDeclaration,
+        const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext, themeOptions, appFunctionDeclarations, getStateDeclaration,
             appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
         const findDependencies = (identifiers: string[]) => {

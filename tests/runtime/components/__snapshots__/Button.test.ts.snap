@@ -119,7 +119,7 @@ exports[`Button element produces output with link style 1`] = `
   style={{}}
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-1cqj0g3-MuiTypography-root"
     style={{}}
   >
     Click me!
@@ -137,7 +137,7 @@ exports[`Button element produces output with link style and styles 1`] = `
   style={{}}
 >
   <p
-    className="MuiTypography-root MuiTypography-body1 css-qydhyv-MuiTypography-root"
+    className="MuiTypography-root MuiTypography-body1 css-j79n3z-MuiTypography-root"
     style={{}}
   >
     Click me!

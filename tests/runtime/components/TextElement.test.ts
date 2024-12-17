@@ -40,9 +40,14 @@ test('TextElement element produces output containing string version of function 
     snapshot(createElement(TextElement, {path: 'page1.para1', content: Sum}))
 )
 
-test('TextElement element produces output containing toString of ErrorResult',
+test('TextElement element produces output containing null for ErrorResult',
     // @ts-ignore
     snapshot(createElement(TextElement, {path: 'page1.para1', content: new ErrorResult('Bad function', 'It went wrong')} ))
+)
+
+test('TextElement element produces output containing ErrorResult message',
+    // @ts-ignore
+    snapshot(createElement(TextElement, {path: 'page1.para1', content: new ErrorResult('Bad function', 'It went wrong').errorMessage} ))
 )
 
 test('TextElement element produces output containing toString of class object',
