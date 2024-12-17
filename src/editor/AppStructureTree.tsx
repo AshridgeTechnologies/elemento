@@ -136,12 +136,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
     ])
     const searchResultAncestors = unique(flatten(treeData.searchResultIds().map( id => treeData.ancestorKeysOf(id))))
 
-    const allExpandedKeys = union(expandedKeys, alwaysShownKeys)
-    if (allExpandedKeys.length > expandedKeys.length) {
-        setExpandedKeys(allExpandedKeys)
-    }
-
-    const currentExpandedKeys = [...expandedKeys, ...searchResultAncestors]
+    const currentExpandedKeys = [...expandedKeys, ...searchResultAncestors, ...alwaysShownKeys]
     return <>
         <Tree //treeData={[asTreeNode(treeData)] as DataNode[]}
             draggable={canDrag}
