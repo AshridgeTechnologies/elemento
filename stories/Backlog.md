@@ -102,6 +102,8 @@ Stories
 - Gamification
 
 ### Priority for customer-facing apps
+- Google Analytics
+- Themes
 - Payments
 - API calls from browser
 - External API calls (eg for webhook)
