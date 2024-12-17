@@ -30,10 +30,12 @@ export const pending = (p: Promise<any>) => {
 }
 export const isPending = (val: any) => Boolean(val?.[pendingFlag])
 export class ErrorResult {
+    readonly isError = true
     constructor(public description: string, public errorMessage: string) {}
     toString() {
         return `Error: ${(this.description)} - ${this.errorMessage}`
     }
+    valueOf() { return null }
 }
 
 export function queryMatcher(criteria: Criteria) {
