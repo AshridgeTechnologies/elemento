@@ -25,7 +25,7 @@ export default function Button({path, ...props}: Properties) {
     if (appearance === 'link') {
         const linkStyleProps = sxProps(omit(typographyStyles, styles), show)
         const sx = {cursor: 'pointer', display: 'inline-flex', ...linkStyleProps}
-        const typographySx = {...sxProps(pick(typographyStyles, styles))}
+        const typographySx = {...sxProps(pick(typographyStyles, styles)), width: '100%'}
         return React.createElement(MuiLink, {
             id: path,
             underline: 'hover',
