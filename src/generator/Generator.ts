@@ -176,16 +176,21 @@ export default class Generator {
         const elementoDeclarations = [componentDeclarations, globalDeclarations, toolsDeclarations, pages, appContext, themeOptions, appFunctionDeclarations, getStateDeclaration,
             appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerDeclarations].filter(d => d !== '').join('\n').trimEnd()
 
-        const findDependencies = (identifiers: string[]) => {
-            const functionDependsOnIdentifier = (ident: string) => isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
-                || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item')
+        const findDependencies = (identifiers: string[], nameToIgnore: string | null) => {
+            // const functionDependsOnIdentifier = (ident: string) => isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
+            //     || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item')
+            const functionDependsOnIdentifier = (ident: string) => ident !== nameToIgnore &&
+                (isStatefulComponentName(ident) || isStatefulContainerComponentName(ident)
+                    || (componentIsForm && ident === '$form') || (componentIsListItem && ident === '$item'))
+
             return identifiers.filter(functionDependsOnIdentifier)
         }
 
-        const useCallbackCode = (el: Element, propertyName: string, functionCode: string | CodeError | undefined) => {
+        const useCallbackCode = (el: Element, propertyName: string, functionCode: string | CodeError | undefined, ignoreOwnName: boolean) => {
             const wrappedFunctionCode = `wrapFn(pathTo('${el.codeName}'), '${propertyName}', ${functionCode})`
             const identifiers = this.parser.statePropertyIdentifiers(el.id, propertyName)
-            const dependencies = findDependencies(identifiers)
+            const nameToIgnore = ignoreOwnName ? el.codeName : null
+            const dependencies = findDependencies(identifiers, nameToIgnore)
             return `React.useCallback(${wrappedFunctionCode}, [${dependencies.join(', ')}])`
         }
 
@@ -193,7 +198,7 @@ export default class Generator {
             const actionDef = def.type as EventActionPropertyDef
             const functionCode = this.getExpr(el, def.name, 'action', actionDef.argumentNames)
             const functionName = `${el.codeName}_${def.name}`
-            return functionCode && `    const ${functionName} = ${useCallbackCode(el, def.name, functionCode)}`
+            return functionCode && `    const ${functionName} = ${useCallbackCode(el, def.name, functionCode, false)}`
         }
 
         const functionDeclaration = (el: FunctionDef) => {
@@ -201,7 +206,7 @@ export default class Generator {
             const functionExpr = this.getExpr(el, 'calculation', exprType, el.inputs) ?? '() => {}'
             const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
             const propertyName = 'calculation'
-            return useCallbackCode(el, propertyName, functionCode)
+            return useCallbackCode(el, propertyName, functionCode, true)
         }
 
         const actionHandlers = (el: Element, state: boolean) => {

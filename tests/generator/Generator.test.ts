@@ -1894,6 +1894,34 @@ test('generates local user defined functions even if empty or code error in a pa
 `)
 })
 
+test('Function can be recursive and does not depend on itself', ()=> {
+    const app = new App('app1', 'test1', {}, [
+        new Page('p1', 'Page 1', {}, [
+                new FunctionDef('fn1', 'Get Stuff', {calculation: ex`'abc' + GetStuff()`}),
+                new TextInput('id2', 'Val 2', {initialValue: ex`GetStuff()`}),
+            ]
+        )])
+
+    const output = new Generator(app, project(app)).output()
+    expect(output.errors).toStrictEqual({})
+    expect(output.files[0].contents).toBe(`function Page1(props) {
+    const pathTo = name => props.path + '.' + name
+    const {Page, TextInput} = Elemento.components
+    const _state = Elemento.useGetStore()
+    const GetStuff = _state.setObject(pathTo('GetStuff'), React.useCallback(wrapFn(pathTo('GetStuff'), 'calculation', () => {
+        return 'abc' + GetStuff()
+    }), []))
+    const Val2 = _state.setObject(pathTo('Val2'), new TextInput.State(stateProps(pathTo('Val2')).value(GetStuff()).props))
+    Elemento.elementoDebug(() => eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, elProps(props.path).props,
+        React.createElement(TextInput, elProps(pathTo('Val2')).label('Val 2').props),
+    )
+}
+`)
+})
+
+
 test('generates javascript functions in a page that can use global functions', () => {
     const javascriptCode =
 `let y = 10
