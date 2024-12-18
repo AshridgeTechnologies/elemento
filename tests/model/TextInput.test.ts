@@ -43,7 +43,7 @@ test('TextInput has default values', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new TextInput('t1', 'Text Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'multiline', 'styles'])
+    expect(new TextInput('t1', 'Text Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'multiline', 'keyAction', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {

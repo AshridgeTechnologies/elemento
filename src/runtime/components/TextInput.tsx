@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FocusEvent} from 'react'
+import React, {ChangeEvent, FocusEvent, KeyboardEventHandler} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
@@ -15,7 +15,7 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 
-type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>}
+type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
 
 const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     const props = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))
@@ -28,7 +28,7 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
 }
 
 export default function TextInput({path, ...props}: Properties) {
-    const {label, multiline: multilineProp, readOnly, show, styles = {}} = valueOfProps(props)
+    const {label, multiline: multilineProp, readOnly, show, keyAction, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
     const state = useGetObjectState<TextInputState>(path)
@@ -60,6 +60,7 @@ export default function TextInput({path, ...props}: Properties) {
         helperText,
         onChange,
         onBlur,
+        onKeyDown: keyAction,
         sx,
         ...inputProps,
         ...inputComponentProps,

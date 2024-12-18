@@ -10,6 +10,7 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 import {TextType} from '../../../src/runtime/types'
+import MockedFunction = jest.MockedFunction
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 
@@ -45,6 +46,19 @@ test('TextInput element produces output with description info', () => {
     const {container} = render(textInput('app.page1.description', {value: 'Hi there!', dataType: textType}, {multiline: true, label: 'Item Description'}))
     expect(container.innerHTML).toMatchSnapshot()
 })
+
+test('keyAction function is called with key event', async () => {
+    const keyAction = jest.fn()
+    const {keyDown} = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {
+        label: 'Item Description',
+        readOnly: false,
+        keyAction
+    }))
+    await actWait( () => keyDown('app.page1.widget1', 'Enter'))
+    expect(keyAction).toHaveBeenCalled()
+    expect((keyAction as MockedFunction<any>).mock.calls[0][0].key).toBe('Enter')
+})
+
 
 test('TextInput element produces output with default values where properties omitted',
     snapshot(textInput('app.page1.height', {value: undefined}))
