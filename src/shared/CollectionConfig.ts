@@ -1,6 +1,7 @@
 export default class CollectionConfig {
     constructor(public name: string, public roles: string[]) {}
     isUserPrivate() { return this.roles.includes('user-private')}
+    isSignedIn() { return this.roles.includes('signed-in')}
 }
 
 const parseLine = (line: string) => {

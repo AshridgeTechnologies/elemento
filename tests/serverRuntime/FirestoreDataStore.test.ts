@@ -24,6 +24,10 @@ describe('shared collections', () => {
         await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
     })
 
+    test('returns null if not found and nullIfNotFound set', async () => {
+        await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
+    })
+
     test('can add, update and remove', async () => {
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
         const retrievedObj = await store.getById('Widgets', 'w1')

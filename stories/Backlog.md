@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Using If in a mapping function makes the mapping function async which leads to using unresolved promises in calculations
 - ServerAppConnector should send dates in get and post as ISO string
 - DateVal should take argument values
 - Cryptic error if try to show date objects as values of a SelectInput (should format them, but blowup is confusing)
@@ -200,6 +201,7 @@ Stories
 - Form-level Rules display message - at the position where they occur in the form
 - Clean old files from generated code dir
 - Eliminate confusion between Action functions that return a value and query functions that don't - can easily get it wrong and wonder why no return value
+- Input mode and enterkey hint for inputs
 
 ### The Rest
 - Animation

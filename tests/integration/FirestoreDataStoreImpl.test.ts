@@ -22,7 +22,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-    store = new FirestoreDataStoreImpl({collections: 'Widgets: signed-in\nUserStuff: user-private'})
+    store = new FirestoreDataStoreImpl({collections: 'Widgets: signed-in\nUserStuff: user-private\nFreeStuff'})
 })
 
 afterAll(async () => {
@@ -98,6 +98,18 @@ describe('shared collections', () => {
         const item2 = await store.getById('Widgets', 'w99')
         expect(item2).toStrictEqual({id: 'w99', a: null, foo: null})
     })
+
+    test('can query shared non-signed-in collection if not logged in', async () => {
+        await store.add('FreeStuff', 'w1', {a: 10, b: 'Bee1', c: true})
+        await store.add('FreeStuff', 'w2', {a: 20, b: 'Bee2', c: true})
+        await store.add('FreeStuff', 'w3', {a: 20, b: 'Bee3', c: false})
+        await signOut()
+        const result = await store.query('FreeStuff', {a: 20})
+        expect(result.length).toBe(2)
+        expect(result[0]).toMatchObject({id: 'w2', a: 20, b: 'Bee2', c: true})
+        expect(result[1]).toMatchObject({id: 'w3', a: 20, b: 'Bee3', c: false})
+    })
+
 
     describe('log in and out', () => {
 

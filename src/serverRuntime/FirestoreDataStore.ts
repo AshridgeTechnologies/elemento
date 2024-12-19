@@ -57,9 +57,12 @@ export default class FirestoreDataStore implements BasicDataStore {
         return this.collectionRef(collectionName).doc(id.toString())
     }
 
-    async getById(collectionName: CollectionName, id: Id) {
+    async getById(collectionName: CollectionName, id: Id, nullIfNotFound = false) {
         const doc = await this.docRef(collectionName, id).get()
         if (!doc.exists) {
+            if (nullIfNotFound) {
+                return null
+            }
             throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
         }
 

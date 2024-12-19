@@ -60,10 +60,7 @@ export default class FirestoreDataStoreImpl implements DataStore {
 
     private collectionRef(collectionName: CollectionName) {
         if (!this.db) throw new Error(`Not connected to Firestore database`)
-        const collectionConfig = this.collections.find( coll => coll.name === collectionName)
-        if (!collectionConfig) {
-            throw new Error(`Collection '${collectionName}' not found`)
-        }
+        const collectionConfig = this.findCollectionConfig(collectionName)
 
         if (collectionConfig.isUserPrivate()) {
             const user = this.getCurrentUser()
@@ -74,6 +71,14 @@ export default class FirestoreDataStoreImpl implements DataStore {
         }
 
         return collection(this.db, collectionName)
+    }
+
+    private findCollectionConfig(collectionName: string) {
+        const collectionConfig = this.collections.find(coll => coll.name === collectionName)
+        if (!collectionConfig) {
+            throw new Error(`Collection '${collectionName}' not found`)
+        }
+        return collectionConfig
     }
 
     private docRef(collectionName: CollectionName, id: Id) {
@@ -124,7 +129,8 @@ export default class FirestoreDataStoreImpl implements DataStore {
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
         if (!this.db) return []
-        if (!this.getCurrentUser()) {
+        const collectionConfig = this.findCollectionConfig(collectionName)
+        if (!this.getCurrentUser() && (collectionConfig.isSignedIn() || collectionConfig.isUserPrivate())) {
             return []
         }
         const asConstraint = ([name, value]: [name: string, value: any]) => where(name, '==', value)
