@@ -40,7 +40,7 @@ export default function Calculation({path, ...props}: Properties) {
     const inputComponentProps = propsForInputComponent(undefined, styles)
     const inputProps = inputElementProps(styles, false, {})
 
-    return React.createElement(TextField, {
+    return show ? React.createElement(TextField, {
         id: path,
         type: 'text',
         variant: 'outlined',
@@ -51,7 +51,7 @@ export default function Calculation({path, ...props}: Properties) {
         ...inputProps,
         ...inputComponentProps,
         ...optionalProps
-    })
+    }) : null
 }
 
 export class CalculationState extends BaseComponentState<ExternalStateProperties, InternalStateProperties>

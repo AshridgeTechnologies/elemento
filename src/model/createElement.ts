@@ -27,6 +27,10 @@ export function createNewElement(elementType: ElementType, newIdSeq: number, pro
 }
 
 export const elementHasParentTypeOf = (elementType: ElementType, thisEl: any) => {
+    return elementHasParentTypeOfKind(elementType, thisEl.kind)
+}
+
+export const elementHasParentTypeOfKind = (elementType: ElementType, kind: ElementType) => {
     const parentType = parentTypeOf(elementType)
-    return parentType === 'any' || parentType === thisEl.kind || isArray(parentType) && parentType.includes(thisEl.kind)
+    return parentType === 'any' || parentType === kind || isArray(parentType) && parentType.includes(kind)
 }

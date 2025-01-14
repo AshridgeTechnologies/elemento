@@ -133,3 +133,36 @@ test('can defer updates and send together', () => {
     expect(listenerAll).toHaveBeenCalledTimes(1)
     expect(listenerAll).toHaveBeenCalledWith([id1, id2])
 })
+
+test('new updates in a sendNotifications callback are sent separately', () => {
+    const listener1 = jest.fn().mockImplementationOnce( ()=> {
+        store.deferNotifications()
+        store.set(id2, item2)
+    })
+    const listener2 = jest.fn()
+    const listenerAll = jest.fn()
+    store.subscribe(id1, listener1)
+    store.subscribe(id2, listener2)
+    store.subscribeAll(listenerAll)
+
+    store.deferNotifications()
+    expect(store.isNotifyDeferred).toBe(true)
+    store.set(id1, item1)
+
+    expect(listener1).not.toHaveBeenCalled()
+    expect(listenerAll).not.toHaveBeenCalled()
+
+    store.sendNotifications()
+    expect(store.isNotifyDeferred).toBe(true)  // because listener 1 sets it again
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).not.toHaveBeenCalled()
+    expect(listenerAll).toHaveBeenCalledWith([id1])
+
+    store.sendNotifications()
+    expect(store.isNotifyDeferred).toBe(false)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(1)
+    expect(listenerAll).toHaveBeenLastCalledWith([id2])
+
+
+})

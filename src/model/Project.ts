@@ -17,6 +17,7 @@ import ServerApp from './ServerApp'
 import ComponentDef from './ComponentDef'
 import ComponentFolder from './ComponentFolder'
 import ComponentInstance from './ComponentInstance'
+import InputProperty from './InputProperty'
 
 type Properties = { author?: PropertyValue }
 
@@ -88,11 +89,26 @@ export default class Project extends BaseElement<Properties> implements Element 
         if (element instanceof ComponentInstance) {
             const componentDef = this.userDefinedComponents.find( comp => comp.codeName === element.kind)
             if (!componentDef) throw new Error('Component Def ' + element.kind + ' not found')
-            const propDefs = componentDef.inputs.map( name => propDef(name, 'string|number'))
+            const propDefs = componentDef.findChildElements(InputProperty)
+                .map( input => propDef(input.codeName, input.propertyType, {state: true, stateAndDom: true}))
             return [...propDefs, ...visualPropertyDefs()]
         }
 
-        return element.propertyDefs
+        return element.propertyDefs ?? []
+    }
+
+    componentType(element: Element): ComponentType {
+        if (element instanceof ComponentInstance) {
+            const componentDef = this.userDefinedComponents.find( comp => comp.codeName === element.kind)
+            if (!componentDef) throw new Error('Component Def ' + element.kind + ' not found')
+            return componentDef.instanceType(this)
+        }
+
+        return element.type()
+    }
+
+    componentTypeIs(element: Element, ...types: ComponentType[]) {
+        return types.includes(this.componentType(element))
     }
 
     actionsAvailable(targetItemIds: ElementId[]): AppElementAction[] {

@@ -37,7 +37,7 @@ const fixPath = (path: string, pathPrefix: string | undefined) => [pathPrefix, p
 let loggingOn = false
 const log = (...args: any[]) => loggingOn && console.log(...args)
 
-const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=> AppStore): AppStore => {
+export const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=> AppStore): AppStore => {
     const deferredUpdates = new Map<string, StoredState>()
     let deferringUpdates = false
     let preventUpdates: VoidFn | null = null
@@ -173,7 +173,7 @@ export type UpdateBlockable = {
     setPreventUpdates: (callback: VoidFn | null) => void
 }
 
-class StateStore {
+export class StateStore {
     constructor(private readonly storeApi: StoreApi<AppStore>) {}
 
     setOrCreateStoredStates(initialStates: StateMap, pathPrefix: string | undefined): StateMap {

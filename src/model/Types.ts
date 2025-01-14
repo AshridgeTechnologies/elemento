@@ -20,14 +20,12 @@ export interface EventActionPropertyDef {
 
 export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
 
+export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean, readOnly?: boolean }
+
 export type PropertyDef = {
     name: string,
     type: PropertyType,
-    multilineExpr?: boolean,
-    state?: boolean,
-    fixedOnly?: boolean,
-    readOnly?: boolean
-}
+} & PropOptions
 
 export type DataTypeElementType =
     'ChoiceType' |
@@ -76,6 +74,8 @@ export type ElementType =
     'Function' |
     'FunctionImport' |
     'Component' |
+    'InputProperty' |
+    'OutputProperty' |
     'Collection' |
     'Block' |
     'FirestoreDataStore' |

@@ -106,4 +106,4 @@ export class BlockState extends BaseComponentState<StateProperties, StateUpdatab
     }
 }
 
-(Block as any).State = BlockState
+Block.State = BlockState

@@ -17,7 +17,7 @@ test('Calculation element produces empty output with show not supplied', () => {
         styles: {width: 23},
         label: 'Item Description',
     }))
-    expect(container.innerHTML).toMatchSnapshot()
+    expect(container.innerHTML).toBe("")
 })
 
 test('Calculation element produces output with properties supplied', () => {
@@ -36,18 +36,18 @@ test('Calculation element produces output with multiline', () => {
 
 test('Calculation element produces output with default values where properties omitted',
     () => {
-        const {container} = render(calculation('app.page1.width', {}))
+        const {container} = render(calculation('app.page1.width', {}, {show: true}))
         expect(container.innerHTML).toMatchSnapshot()
     }
 )
 
 test('Calculation shows value from the state supplied', () => {
-    const {el} = testContainer(calculation('app.page1.widget1', {value:'Hello!'}, {}))
+    const {el} = testContainer(calculation('app.page1.widget1', {value:'Hello!'}, {show: true}))
     expect(el`app.page1.widget1`.textContent).toBe('Hello!')
 })
 
 test('Calculation shows empty value when state value is absent', () => {
-    const {el} = testContainer(calculation('app.page1.widget1', {}))
+    const {el} = testContainer(calculation('app.page1.widget1', {}, {show: true}))
     expect(el`app.page1.widget1`.textContent).toBe('')
 })
 

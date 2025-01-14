@@ -1,6 +1,7 @@
 import Element from '../model/Element'
 import {ElementId, ElementType} from '../model/Types'
 import ItemSet from '../model/ItemSet'
+import {Class} from '../model/BaseElement'
 
 export class ListItem {
     constructor(public itemSet: ItemSet) {
@@ -14,6 +15,10 @@ export class ListItem {
     }
 
     elementArray() { return this.itemSet.elementArray() }
+
+    findChildElements<T extends Element>(elementType: Class<T> | ElementType): T[] {
+        return this.itemSet.findChildElements(elementType)
+    }
 }
 
 const runtimeNames = {

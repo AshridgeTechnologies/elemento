@@ -19,7 +19,7 @@ export default class FunctionDef extends BaseElement<Properties> implements Elem
     get iconClass() { return 'functions' }
     kind: ElementType = 'Function'
     type(): ComponentType { return 'background' }
-    static get parentType(): ParentType { return ['App', 'Page', 'ItemSet'] }
+    static get parentType(): ParentType { return ['App', 'Page', 'ItemSet', 'Component'] }
 
     get input1() { return this.properties.input1}
     get input2() { return this.properties.input2}

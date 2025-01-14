@@ -2,14 +2,22 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
+import ComponentDef from '../../src/model/ComponentDef'
+import Project, {COMPONENTS_ID} from '../../src/model/Project'
+import ComponentFolder from '../../src/model/ComponentFolder'
 
 test('ComponentInstance has correct properties with default values', ()=> {
+    const componentDef1 = new ComponentDef('cd1', 'MyComponent', {})
+    const compFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [componentDef1])
+
+    const project = Project.new([compFolder])
+
     const component1 = new ComponentInstance('t1', 'ComponentInstance 1', {componentType: 'MyComponent'})
 
     expect(component1.id).toBe('t1')
     expect(component1.name).toBe('ComponentInstance 1')
     expect(component1.kind).toBe('MyComponent')
-    expect(component1.type()).toBe('statelessUI')
+    expect(project.componentType(component1)).toBe('statelessUI')
     expect(component1.notes).toBe(undefined)
     expect(component1.styles).toBe(undefined)
     expect(component1.show).toBe(undefined)

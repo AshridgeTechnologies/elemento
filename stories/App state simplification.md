@@ -32,8 +32,8 @@ Requirements - Part 1
 - ✅ Debugging still works
 - ✅ Actions and functions in Item Sets still work
 - Prevent updates still works
-- New unit tests
-- Ensure everything in appData.test is tested in new tests
+- ✅ New unit tests
+- ✅ Ensure everything in appData.test is tested in new tests
 - User defined components still work when merged in
 - Define state object interface contract
 - Try to simplify BaseComponentState
@@ -49,4 +49,5 @@ Requirements - Part 1
 To do
 -----
 
-
+- Component state needed if have non-stateful child component that uses the state class eg Button or is generated in it eg FunctionDef
+- createChildStates needs to be able to use input properties

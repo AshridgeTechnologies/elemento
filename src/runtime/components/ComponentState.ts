@@ -59,7 +59,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     get app() {
-        return this._appStateInterface!.getApp()
+        return this._appStateInterface?.getApp()
     }
 
     Focus() {
@@ -110,5 +110,16 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     setPreventUpdates() {
 
+    }
+
+    protected getChildState(name: string) {
+        return (this._appStateInterface?.getChildState(name) as ComponentState<any>)
+    }
+
+    protected updateChildStates(childStates: StateMap) {
+        if (!shallow(this.childStates, childStates)) {
+            // @ts-ignore
+            this.updateState({childStates})
+        }
     }
 }

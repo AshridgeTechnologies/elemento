@@ -115,8 +115,8 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         return this.props.value?.[name as keyof object]
     }
 
-    private getChildState(name: string) {
-        return this.childStates[name] as InputComponentState<any, any>
+    protected getChildState(name: string) {
+        return super.getChildState(name) as InputComponentState<any, any>
     }
 
     Reset() {

@@ -133,6 +133,37 @@ Possibilities
 - Could have child placeholder elements, with optional name
 - Have a Block called $children
 
+Providing Output properties
+---------------------------
+
+- Could be Calculation elements, maybe with a public marker
+- Could be names in the model properties
+- Could be special ComponentProperty elements
+- Expressions will want to use the other state elements in the component
+- So need a way to access those
+- And need to have them available for expressions in generated code
+
+Providing a state object
+------------------------
+
+- Could generate a specific class
+- Only needed if has any state features
+- Could use a general ComponentInstanceState
+
+Providing actions
+-----------------
+
+- Component property definitions need to be like PropDefs, not just names
+- Have a special InputProperty element for them
+- Its properties are: type - most of the PropertyType values
+
+Making a state object trigger an update if any child states update
+------------------------------------------------------------------
+
+- Component state has a child states object in its state
+- Child state update triggers re-render of component
+- Component render gets all child states anyway, compares with current child states, updates if different
+
 Wrapping existing components
 ----------------------------
 
@@ -146,3 +177,40 @@ Decision - 14 Jan 2025
 
 - Try Approach 2 Composition first
 - Spike embedding children first
+- Spike OutputProperty elements
+- Spike InputProperty elements, including actions
+
+Providing state functions
+=========================
+
+Needs
+-----
+- Component functions could be private, but normally public to be accessed from container
+- Component functions need to be called on the state object
+- Component functions must be able to access child element state objects - including Data
+- Component functions need to call other component functions
+- Action functions or calculations need to call component functions
+- Don't need to use this, self etc to call other component functions
+
+Forces
+------
+
+- Functions inside a Page are created as React callbacks, and set as state objects so they can be accessed within that component
+- Functions inside a Page can use all the other components - but the Page state? - doesn't have any
+- Components are self-contained, so can't access container functions
+- Don't want two kinds of functions - one for app/page, one for component
+- If can access without own functions without this, names may shadow system functions
+- Data objects are really like instance variables of the state object 
+
+Possibilities
+-------------
+
+- All Functions are generated on the state object - each Page has a _generated_ state object too
+- Functions are bound to the state object so can be called without this
+- Child states become properties of the component - but would expose details
+- Component is a proxy
+- Use FunctionDefs inside the component in model, generate as state class methods
+- Function Defs have a public/private option - start with all public on Component
+- Get dependencies of each function and set consts like in output properties
+- Change Page/App to work like a component later
+

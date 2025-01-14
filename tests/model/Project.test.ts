@@ -20,6 +20,7 @@ import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import NumberInput from '../../src/model/NumberInput'
 import SelectInput from '../../src/model/SelectInput'
+import InputProperty from '../../src/model/InputProperty'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -85,7 +86,9 @@ let testProject = function () {
     const button1 = new Button('b1', 'Button 1', {})
     const appBar = new AppBar('ab1', 'AppBar 1', {}, [button1])
     const app = new App('app1', 'App 1', {}, [page1, page2, appBar])
-    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {input1: 'source', input2: 'destination', input4: 'route'})
+    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {}, [
+        new InputProperty('ip1', 'source', {}), new InputProperty('ip2', 'destination', {}), new InputProperty('ip3', 'route', {}),
+    ])
     const compFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef1])
     const project = Project.new([app, compFolder])
     return {text1, text2, page1, text3, text4, text5, comp1, layout1, page2, app, appBar, button1, compDef1, project}

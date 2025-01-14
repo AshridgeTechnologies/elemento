@@ -240,6 +240,7 @@ Epics
 Tech debt
 ---------
 
+- Check on vulnerabilities in https://kibty.town/blog/todesktop/?ck_subscriber_id=1691077560
 - Review libraries in https://www.robinwieruch.de/react-libraries/
 - Use FileSystemObserver api in studio for tree, preview, service worker, database...
 - Exclude ItemSet props that go into the component (itemStyles, canDragItem) from the parent parsing

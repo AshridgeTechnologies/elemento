@@ -55,6 +55,8 @@ import Timer from './Timer'
 import Frame from './Frame'
 import ScreenKeyboard from './ScreenKeyboard'
 import WebFile from './WebFile'
+import OutputProperty from './OutputProperty'
+import InputProperty from './InputProperty'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -106,6 +108,8 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         Function: Function,
         FunctionImport: FunctionImport,
         Component: Component,
+        InputProperty: InputProperty,
+        OutputProperty: OutputProperty,
         Collection: Collection,
         Block: Block,
         Dialog: Dialog,

@@ -1,15 +1,10 @@
-import {ComponentType, ElementType, PropertyDef, ParentType} from './Types'
-import BaseElement, {propDef} from './BaseElement'
+import {ComponentType, ElementType, ParentType, PropertyDef} from './Types'
+import BaseElement from './BaseElement'
 import Element from './Element'
 import {elementHasParentTypeOf} from './createElement'
+import Project from './Project'
 
-type Properties = Partial<Readonly<{
-    input1: string,
-    input2: string,
-    input3: string,
-    input4: string,
-    input5: string,
-}>>
+type Properties = {}
 
 export default class ComponentDef extends BaseElement<Properties> implements Element {
 
@@ -17,21 +12,8 @@ export default class ComponentDef extends BaseElement<Properties> implements Ele
     kind: ElementType = 'Component'
     type(): ComponentType { return 'utility' }
 
-    get input1() { return this.properties.input1}
-    get input2() { return this.properties.input2}
-    get input3() { return this.properties.input3}
-    get input4() { return this.properties.input4}
-    get input5() { return this.properties.input5}
-    get inputs() { return [this.input1, this.input2, this.input3, this.input4, this.input5].filter( p => !!p) as string[]}
-
     get propertyDefs(): PropertyDef[] {
-        return [
-            propDef('input1', 'string', {fixedOnly: true}),
-            propDef('input2', 'string', {fixedOnly: true}),
-            propDef('input3', 'string', {fixedOnly: true}),
-            propDef('input4', 'string', {fixedOnly: true}),
-            propDef('input5', 'string', {fixedOnly: true}),
-        ]
+        return []
     }
 
     canContain(elementType: ElementType) {
@@ -40,5 +22,12 @@ export default class ComponentDef extends BaseElement<Properties> implements Ele
 
     static get parentType(): ParentType { return 'ComponentFolder' }
 
-    // get instanceParentType() { return 'any'}
+    isStateful(project: Project): boolean {
+        const requiresState = (el: Element) => el.kind === 'OutputProperty' || project.componentTypeIs(el, 'statefulUI', 'background')
+        return this.elementArray().some( requiresState )
+    }
+
+    instanceType(project: Project): ComponentType {
+        return this.isStateful(project) ? 'statefulUI' : 'statelessUI'
+    }
 }

@@ -1,6 +1,7 @@
 import Element from './Element'
-import BaseElement, {propDef} from './BaseElement'
+import BaseElement from './BaseElement'
 import {CombinedPropertyValue, ComponentType, ElementId, ElementType, PropertyDef, Show, Styling} from './Types'
+import {elementHasParentTypeOfKind} from './createElement'
 
 type Properties = {[p: string]: any} & { componentType: ElementType }  & Styling & Show
 
@@ -17,7 +18,9 @@ export default class ComponentInstance extends BaseElement<Properties> implement
 
     get iconClass() { return 'width_normal' }
 
-    type(): ComponentType { return 'statelessUI' }
+    type(): ComponentType {
+        throw new Error('Must use project.componentType() to get the type of a ComponentInstance ' + this.name)
+    }
 
     get styles() {return this.properties.styles}
     get show() {return this.properties.show}
@@ -30,4 +33,7 @@ export default class ComponentInstance extends BaseElement<Properties> implement
         return super.propertyValue(name) ?? this.properties[name]
     }
 
+    canContain(elementType: ElementType): boolean {
+        return elementHasParentTypeOfKind(elementType, 'Block')
+    }
 }

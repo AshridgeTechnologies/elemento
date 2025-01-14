@@ -170,10 +170,7 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
             _latest = _latest.withMergedState(changes)
             _latest.init(appInterface, path)
         }),
-        getChildState: (subPath: string) => {
-            const childStateValue = childStateValues[subPath as keyof object]
-            return childStateValue && {value: childStateValue} as ComponentState
-        },
+        getChildState: (subPath: string) => childStateValues[subPath as keyof object],
         getOrCreateChildState(subPath: string, item: StoredState): StoredState {
             const initItem = (item: StoredState) => {
                 item.init(appInterface, path + '.' + subPath)

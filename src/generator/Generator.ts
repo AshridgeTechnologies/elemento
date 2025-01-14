@@ -18,7 +18,8 @@ import {
     isAppLike,
     objectBuilder,
     printAst,
-    quote, RequiredImports,
+    quote,
+    RequiredImports,
     StateInitializer,
     topoSort,
     TopoSortError,
@@ -35,6 +36,10 @@ import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
 import ItemSet from '../model/ItemSet'
+import ComponentInstance from '../model/ComponentInstance'
+import OutputProperty from '../model/OutputProperty'
+import BaseElement from '../model/BaseElement'
+import InputProperty from '../model/InputProperty'
 
 export type DebugErrors = {[name: string]: string}
 
@@ -146,6 +151,7 @@ export default class Generator {
         const componentIsListItem = component instanceof ListItem
         const componentIsForm = component instanceof Form
         const componentIsPage = component instanceof Page
+        const componentIsComponentDef = component instanceof ComponentDef
         const canUseContainerElements = componentIsListItem && containingComponent
         const topLevelFunctions = new Set<string>()
         const allPages = app.pages
@@ -153,6 +159,7 @@ export default class Generator {
         const allContainerElements = canUseContainerElements ? allElements(containingComponent, true) : []
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
+        const isStateProperty = (name: string) => this.project.propertyDefsOf(component as Element).some( def => def.name === name && def.state)
         const uiElementCode = this.generateComponentCode(component, app, topLevelFunctions, requiredImports)
         const identifiers = this.parser.componentIdentifiers(component.id)
         const appLevelIdentifiers = identifiers.filter(isAppElement)
@@ -169,12 +176,18 @@ export default class Generator {
         const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
         const itemSetItemIdentifier = componentIsListItem ? ['ItemSetItem'] : []
         const componentIdentifiers = [...itemSetItemIdentifier, ...componentIdentifiersFound]
-        const statefulComponents = allComponentElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
+        const inputPropertyElements = (component as BaseElement<any>).findChildElements(InputProperty)
+        const inputPropertyNames = inputPropertyElements.map( el => el.codeName )
+        const outputPropertyElements = (component as BaseElement<any>).findChildElements(OutputProperty)
+        const statefulComponents = allComponentElements.filter(el => this.project.componentTypeIs(el, 'statefulUI', 'background') )
         const functionComponents = statefulComponents.filter(el => el.kind === 'Function')
         const nonFunctionComponents = statefulComponents.filter(el => el.kind !== 'Function')
-        const statefulContainerComponents = allContainerElements.filter(el => el.type() === 'statefulUI' || el.type() === 'background')
-        const isStatefulComponentName = (name: string) => statefulComponents.some(comp => comp.codeName === name)
+        const statefulContainerComponents = allContainerElements.filter(el => this.project.componentTypeIs(el, 'statefulUI', 'background') )
+        const isStatefulComponentName = (name: string) => nonFunctionComponents.some(comp => comp.codeName === name)
         const isStatefulContainerComponentName = (name: string) => statefulContainerComponents.some(comp => comp.codeName === name)
+        const isInputProperty = (name: string) => inputPropertyNames.includes(name)
+        const isOutputProperty = (name: string) => outputPropertyElements.some(comp => comp.codeName === name)
+        const isStateFunction = (name: string) => functionComponents.some(comp => comp.codeName === name)
         componentIdentifiers.forEach( id => requiredImports.components.add(id) )
         const globalFunctionIdentifiers = this.parser.globalFunctionIdentifiers(component.id)
         globalFunctionIdentifiers.forEach( id => requiredImports.globalFunctions.add(id) )
@@ -188,6 +201,9 @@ export default class Generator {
         let stateObjectDeclaration = ''
         if (componentIsPage) {
             stateObjectDeclaration = `    const _state = setObject(props.path, new ${functionName}.State({}))`
+        }
+        if (componentIsComponentDef && (component as ComponentDef).isStateful(this.project)) {
+            stateObjectDeclaration = `    const _state = useObject(props.path)`
         }
         if (componentIsListItem) {
             stateObjectDeclaration = `    const _state = setObject(props.path, new ${functionName}.State({$item, $itemId, $index, $selected, $container}))`
@@ -246,7 +262,7 @@ export default class Generator {
             return actions.join('\n')
         }
 
-        const stateInitializers = statefulComponents.map((el): StateInitializer => {
+        const stateInitializers = nonFunctionComponents.map((el): StateInitializer => {
             const initState = this.initialState(el, topLevelFunctions, componentIsListItem ? component.itemSet : component)
             const identifiers = this.parser.stateIdentifiers(el.id)
             const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
@@ -267,37 +283,34 @@ export default class Generator {
                 return stateInitializers
             }
         }
-        const inlineStateBlock = () => sortStateInitializers().map(([el, initState]) => {
-            const name = el.codeName
-            const pathExpr = componentIsApp ? `'${app.codeName}.${name}'` : `pathTo('${name}')`
-            if (initState instanceof FunctionDef) {
-                return `    const ${name} = setObject(${pathExpr}, ${functionDeclaration(initState)})`
-            } else {
-                // const actionFunctions = stateActionHandlers(el).filter( notBlank ).join('\n')
-                const stateObjectDeclaration = `    const ${name} = setObject(${pathExpr}, ${initState})`
-                return [stateObjectDeclaration].filter( notBlank ).join('\n')
-            }
-        }).join('\n')
 
         const dependencyDeclarations =  (el: Element, propertyName: string, lineIndent = '') => {
             const identifiers = this.parser.statePropertyIdentifiers(el.id, propertyName)
-            const childStates = identifiers.filter(isStatefulComponentName)
-            const childStateNameDeclarations = childStates.length ? `const {${childStates.join(', ')}} = this` : ''
+            const thisDeclarationNames = identifiers.filter(ident => isStatefulComponentName(ident) || isOutputProperty(ident) || isStateFunction(ident))
+            const thisDeclarations = thisDeclarationNames.length ? `const {${thisDeclarationNames.join(', ')}} = this` : ''
             const appTarget = componentIsApp ? 'this' : 'this.app'
             const appFeatures = identifiers.filter(isAppElement)
             const appFeatureDeclarations = appFeatures.length ? `const {${appFeatures.join(', ')}} = ${appTarget}` : ''
             const appStateFunctions = identifiers.filter(isAppStateFunction)
             const appStateFunctionDeclarations = appStateFunctions.length ? `const {${appStateFunctions.join(', ')}} = ${appTarget}` : ''
+            const inputProperties = identifiers.filter(isInputProperty)
+            const inputPropertyNameDeclarations = inputProperties.length ? `const {${inputProperties.join(', ')}} = this.props` : ''
 
-            return [childStateNameDeclarations, appFeatureDeclarations, appStateFunctionDeclarations].filter(identity).join('\n' + lineIndent)
+            return [thisDeclarations, appFeatureDeclarations, appStateFunctionDeclarations, inputPropertyNameDeclarations].filter(identity).join('\n' + lineIndent)
         }
 
         const statefulComponentNames = statefulComponents.map( el => el.codeName )
-        const stateConsts = statefulComponentNames.length ? `    const {${statefulComponentNames.join(', ')}} = _state` : ''
+        const stateBlock = statefulComponentNames.length ? `    const {${statefulComponentNames.join(', ')}} = _state` : ''
 
-        const stateBlock = componentIsForm || componentIsPage || componentIsApp || componentIsListItem ? stateConsts : inlineStateBlock()
+        const outputProperty = (el: OutputProperty) => {
+            const declarations = dependencyDeclarations(el, 'calculation', indentLevel2)
+            return `    get ${el.codeName}() { 
+        ${declarations}
+        return ${this.getExpr(el, 'calculation')}
+    }`
+        }
 
-        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => comp.type() === 'backgroundFixed') : []
+        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => this.project.componentTypeIs(comp, 'backgroundFixed')) : []
         const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
             const entry = this.initialState(comp, topLevelFunctions, componentIsListItem ? component.itemSet : component)
             return `    const [${comp.codeName}] = React.useState(${entry})`
@@ -306,7 +319,7 @@ export default class Generator {
         const pathTo = componentIsApp ? `    const pathTo = name => '${component.codeName}' + '.' + name`
             : `    const pathTo = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
-
+        const inputProperties = inputPropertyElements.length ? `    const {${inputPropertyElements.map( el => el.codeName).join(', ')}} = props` : ''
         const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $index, $selected, onClick} = props' : ''
         const dragFunctionIdentifiers = this.parser.dragFunctionIdentifiers(component.id)
         const dragFunctionDeclarations =
@@ -317,7 +330,7 @@ export default class Generator {
         const listItemVarDeclarations = [canDragDeclaration, stylesDeclaration].filter(s => !!s).join('\n')
 
         const declarations = [
-            pathTo, parentPathWith, extraDeclarations, dragFunctionDeclarations, elementoDeclarations,
+            pathTo, parentPathWith, inputProperties, extraDeclarations, dragFunctionDeclarations, elementoDeclarations,
             backgroundFixedDeclarations, stateBlock, listItemVarDeclarations
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
@@ -351,9 +364,14 @@ ${declarations}${debugHook}
 
         const containerIdentifiers = identifiers.filter(isContainerElement)
         const stateContainerDeclarations = containerIdentifiers.length ? `        const {${containerIdentifiers.join(', ')}} = \$container` : ''
+        const statePropertyIdentifiers = identifiers.filter(isInputProperty)
+        const statePropertyDeclarations = statePropertyIdentifiers.length ? `        const {${statePropertyIdentifiers.join(', ')}} = this.props` : ''
+        const stateFunctionIdentifiers = identifiers.filter(isStateFunction)
+        const stateFunctionNameDeclarations = stateFunctionIdentifiers.length ? `        const {${stateFunctionIdentifiers.join(', ')}} = this` : ''
+
         const createChildNamesFn = () => childStateNames.length ? `    createChildStates() {
         const pathTo = name => this._path + '.' + name
-${[appFeatureDeclarations, itemSetItemDeclarations, stateContainerDeclarations].filter(identity).join(', ')}
+${[appFeatureDeclarations, itemSetItemDeclarations, stateContainerDeclarations, statePropertyDeclarations, stateFunctionNameDeclarations].filter(identity).join('\n')}
 ${pageStateBlock()}
         return {${childStateNames.join(', ')}}
     }` : ''
@@ -361,29 +379,34 @@ ${pageStateBlock()}
         const childStateNames = nonFunctionComponents.map( el => el.codeName )
         const childNamesOverride = childStateNames.length ? `    childNames = [${childStateNames.map(quote).join(', ')}]` : ''
         const childStateGetters = childStateNames.map( name => `    get ${name}() { return this.childStates.${name} }` ).join('\n')
-        const stateFunctions = functionComponents.map( el => functionDeclaration(el as FunctionDef)).join('\n')
+        const stateFunctionDecls = functionComponents.map( el => functionDeclaration(el as FunctionDef)).join('\n')
         const stateActionHandlerFunctions = generateActionHandlers(allComponentElements, stateActionHandlers)
         const uiActionHandlers = generateActionHandlers(allComponentElements, uiElementActionHandlers)
 
         const baseClass = componentIsApp ? 'App.State' : 'Elemento.components.BaseComponentState'
         const pageOrAppStateClass = componentIsPage || componentIsApp ? `${component.codeName}.State = class ${component.codeName}_State extends ${baseClass} {
-${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctions, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
 }
 `.trimStart() : ''
 
         const stateNames = statefulComponents.filter( el => el.kind !== 'Calculation').map( el => el.codeName )
         const formStateClass = componentIsForm ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseFormState {
     ownFieldNames = [${stateNames.map(quote).join(', ')}]
-${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctions, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
 }
 `.trimStart() : ''
 
         const itemSetItemStateClass = componentIsListItem ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseComponentState {
-${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctions, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+}
+`.trimStart() : ''
+        const componentStateClass = componentIsComponentDef && (component as ComponentDef).isStateful(this.project) ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseComponentState {
+${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${component.findChildElements(OutputProperty).map( outputProperty).join('\n')}
 }
 `.trimStart() : ''
 
-        const stateClass = formStateClass || pageOrAppStateClass || itemSetItemStateClass
+        const stateClass = formStateClass || componentStateClass || pageOrAppStateClass || itemSetItemStateClass
         return { requiredImports, contents: [...topLevelFunctions, componentFunction, stateClass].filter(identity).join('\n\n') }
     }
 
@@ -435,7 +458,7 @@ ${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctions, 
     }
 
     private modelProperties = (element: Element) => {
-        const propertyDefs = this.project.propertyDefsOf(element).filter(def => !def.state)
+        const propertyDefs = this.project.propertyDefsOf(element).filter(def => !def.state || def.stateAndDom)
         const propertyExprs = propertyDefs.map(def => {
             const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
             const expr = this.getExprWithoutParens(element, def.name, exprType)
@@ -450,8 +473,8 @@ ${[childNamesOverride, createChildNamesFn(), childStateGetters, stateFunctions, 
         const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
             const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, requiredImports, containingComponent))
-            const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
-            return generatedUiElementLines.join('\n')
+            const generatedUiElementLines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line}`)
+            return generatedUiElementLines.join(',\n')
         }
 
         if (element instanceof ListItem) {
@@ -506,10 +529,15 @@ ${generateChildren(form, indentLevel2, form)}
         const generateChildren = (element: Element, indent: string = indentLevel2, containingComponent?: Page | Form) => {
             const elementArray = element.elements ?? []
             const generatedUiElements = elementArray.map(p => this.generateElement(p, app, topLevelFunctions, requiredImports, containingComponent))
-            const lines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line},`)
-            return lines.length ?  `,\n${lines.join('\n')}\n    ` : ''
+            const lines = generatedUiElements.filter(line => !!line).map(line => `${indent}${line}`)
+            const ownChildren = lines.length ?  `,\n${lines.join(',\n')}\n    ` : ''
+            const otherChildren = element.name === '$children' ? ', props.children' : ''
+            return ownChildren + otherChildren
         }
 
+        if (element instanceof ComponentInstance) {
+            return `React.createElement(${runtimeElementName(element)}, ${objectBuilder(element.codeName, this.modelProperties(element))}${generateChildren(element, indentLevel3, containingComponent)})`
+        }
         switch (element.kind as ElementType) {
             case 'Project':
             case 'App':
@@ -579,6 +607,8 @@ ${generateChildren(form, indentLevel2, form)}
             case 'Function':
             case 'FunctionImport':
             case 'Component':
+            case 'InputProperty':
+            case 'OutputProperty':
             case 'ServerApp':
             case 'ServerAppConnector':
             case 'File':
@@ -649,12 +679,12 @@ ${generateChildren(form, indentLevel2, form)}
             return `new ${formName}.State(${objectBuilder(element.codeName, modelProperties(), true)})`
         }
 
-        if (element.type() === 'statefulUI' || element.type() === 'background') {
+        if (this.project.componentTypeIs(element, 'statefulUI', 'background')) {
             const builderName = isAppLike(containingElement) ? {fullName: `'${containingElement.codeName}.${element.codeName}'`} : element.codeName
             return `new ${runtimeElementName(element)}.State(${objectBuilder(builderName, modelProperties(), true)})`
         }
 
-        if (element.type() === 'backgroundFixed') {
+        if (this.project.componentTypeIs(element, 'backgroundFixed')) {
             return `new ${runtimeElementName(element)}(${objectBuilder(element.codeName, modelProperties(), true)})`
         }
 

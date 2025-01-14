@@ -50,10 +50,10 @@ export default class SubscribableStore {
 
     sendNotifications() {
         const updatedIds = Array.from(this.updatedItemIds.values())
-        updatedIds.forEach( id => this.notifyListeners(id))
-        this.notifyListenersToAll(updatedIds)
         this.notifyDeferred = false
         this.updatedItemIds.clear()
+        updatedIds.forEach( id => this.notifyListeners(id))
+        this.notifyListenersToAll(updatedIds)
     }
 
     private notifyListeners(id: string) {

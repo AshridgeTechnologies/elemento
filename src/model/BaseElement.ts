@@ -1,9 +1,19 @@
 import Element from './Element'
-import {CombinedPropertyValue, ComponentType, ElementId, ElementType, InsertPosition, ParentType, PropertyDef, PropertyType} from './Types'
+import {
+    CombinedPropertyValue,
+    ComponentType,
+    ElementId,
+    ElementType,
+    InsertPosition,
+    ParentType,
+    PropertyDef,
+    PropertyType,
+    PropOptions
+} from './Types'
 import {elementId, isExpr, noSpaces} from '../util/helpers'
 import {flatten, isEmpty, isNil, uniq} from 'ramda'
 
-type Class<T> = new (...args: any[]) => T
+export type Class<T> = new (...args: any[]) => T
 
 export type BaseElementProperties = {notes?: string}
 
@@ -15,8 +25,6 @@ export function equalArrays(a: ReadonlyArray<any>, b: ReadonlyArray<any>) {
     }
     return true
 }
-
-type PropOptions = { multilineExpr?: boolean, state?: boolean, fixedOnly?: boolean, readOnly?: boolean }
 
 export function propDef(name: string, type: PropertyType = 'string', options: PropOptions = {}): PropertyDef {
     return {name, type, ...options}
