@@ -240,6 +240,8 @@ Epics
 Tech debt
 ---------
 
+- Review libraries in https://www.robinwieruch.de/react-libraries/
+- Use FileSystemObserver api in studio for tree, preview, service worker, database...
 - Exclude ItemSet props that go into the component (itemStyles, canDragItem) from the parent parsing
 - Consider es-toolkit
 - Allow multiple state updates to same object in same deferred updates set, refactor Collection value update

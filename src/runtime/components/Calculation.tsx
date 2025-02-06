@@ -3,11 +3,11 @@ import {SxProps, TextField} from '@mui/material'
 import yaml from 'js-yaml'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {isArray, isObject} from 'radash'
 import {equals, pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 
 type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
@@ -31,7 +31,7 @@ export default function Calculation({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useGetObjectState<CalculationState>(path)
+    const state: CalculationState = useObject(path)
     const {value} = state
     setTimeout( () => state.latest().checkTriggered(), 0)
     const multiline = true

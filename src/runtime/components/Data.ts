@@ -1,11 +1,11 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {clone} from 'radash'
 import lodash from 'lodash'
 import {shallow} from 'zustand/shallow'
 import {equals, omit} from 'ramda'
+import {useObject} from '../appStateHooks'
 
 const {isPlainObject} = lodash
 
@@ -13,7 +13,7 @@ type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}
 
 export default function Data({path, display = false}: Properties) {
-    const state = useGetObjectState<DataState>(path)
+    const state = useObject(path)
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null

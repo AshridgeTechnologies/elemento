@@ -3,7 +3,6 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import {useGetObjectState} from '../appData'
 import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
 import BigNumber from 'bignumber.js'
@@ -16,6 +15,7 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 type Properties = BaseInputComponentProperties
 
@@ -31,7 +31,7 @@ export default function NumberInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
-    const state = useGetObjectState<NumberInputState>(path)
+    const state: NumberInputState = useObject(path)
     const {dataValue, dataType} = state
 
     const formatValue = () => {

@@ -4,9 +4,9 @@ import {BaseComponentState} from './ComponentState'
 
 import * as SimpleKeyboard from 'react-simple-keyboard'
 import css from './ScreenKeyboard_css'
-import {useGetObjectState} from '../appData'
 import {sxProps} from './ComponentHelpers'
 import {Box} from '@mui/material'
+import {useObject} from '../appStateHooks'
 
 type Properties = {path: string, useRealKeyboard?: boolean, keyAction?: (key: string) => void, show?: PropVal<boolean>, styles?: StylesPropVals}
 type ExternalStateProps = {}
@@ -72,7 +72,7 @@ const translateKey = (key: string) => {
 export default function ScreenKeyboard({path, ...props}: Properties) {
     const {keyAction, useRealKeyboard, show = true, styles = {}} = valueOfProps(props)
     const [layoutName, setLayoutName] = useState("lettersOnly")
-    const state = useGetObjectState<ScreenKeyboardState>(path)
+    const state = useObject(path)
     useEffect(() => insertStyleElement('ScreenKeyboardCss', css), [])
     useEffect(() => {
         if (useRealKeyboard) {

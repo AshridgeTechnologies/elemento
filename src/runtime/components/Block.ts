@@ -4,7 +4,7 @@ import {Box, Stack, SxProps} from '@mui/material'
 import {sxProps} from './ComponentHelpers'
 import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {useGetObjectState} from '../appData'
+import {useObject} from '../appStateHooks'
 
 const layoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
 export type BlockLayout = typeof layoutChoices[number]
@@ -73,7 +73,7 @@ export default function Block({children = [], path,  ...props}: Properties) {
         // ok - you should not call hooks inside a conditional block
         // BUT dropAction will always be defined or not defined for any given element
         ({isOver, setNodeRef} = useDroppable({id: path}))
-        const state = useGetObjectState<BlockState>(path)
+        const state = useObject(path)
         state.setIsOver(isOver)
 
         useDndMonitor({

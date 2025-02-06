@@ -1,13 +1,13 @@
 import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import {useGetObjectState} from '../appData'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'
 import {formControlStyles, getLabelWithRequired, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {definedPropertiesOf} from '../../util/helpers'
 import {SxProps} from '@mui/material'
+import {useObject} from '../appStateHooks'
 
 type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean> }
 
@@ -15,7 +15,7 @@ export default function DateInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useGetObjectState<DateInputState>(path)
+    const state = useObject(path)
     const {value, dataType} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const optionalProps = definedPropertiesOf({label: labelWithRequired})

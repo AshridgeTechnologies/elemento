@@ -2,7 +2,6 @@ import React, {ChangeEvent, createElement, FocusEvent} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import {useGetObjectState} from '../appData'
 import {TrueFalseType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -12,6 +11,7 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {noop} from 'lodash'
+import {useObject} from '../appStateHooks'
 
 type Properties = BaseInputComponentProperties
 
@@ -19,7 +19,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
     const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state = useGetObjectState<TrueFalseInputState>(path)
+    const state = useObject(path)
     const {dataValue, dataType} = state
     const value = dataValue ?? false
     const labelWithRequired = getLabelWithRequired(dataType, label)

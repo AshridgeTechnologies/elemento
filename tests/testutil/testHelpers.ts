@@ -1,8 +1,7 @@
 import renderer from 'react-test-renderer'
 import React, {ComponentState, createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
-import {AppStateForObject, AppStore, StoreProvider, useGetStore} from '../../src/runtime/appData'
-import {StoreApi} from 'zustand'
+import {AppStateForObject, AppStoreHook, StoreProvider} from '../../src/runtime/appData'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import {enGB} from 'date-fns/locale/en-GB'
@@ -12,6 +11,8 @@ import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultAppContext} from '../../src/runtime/AppContext'
 import {AppContextContext} from '../../src/runner/AppRunner'
+import {setObject} from '../../src/runtime/appStateHooks'
+import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -161,7 +162,7 @@ export const filePickerErroring = () => Promise.reject(new Error('Could not acce
 export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
     let _latest: any = initialVersion
 
-    const appInterface = {
+    const appInterface: AppStateForObject = {
         latest() {
             return _latest
         },
@@ -172,8 +173,18 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
         getChildState: (subPath: string) => {
             const childStateValue = childStateValues[subPath as keyof object]
             return childStateValue && {value: childStateValue} as ComponentState
+        },
+        getOrCreateChildState(subPath: string, item: StoredState): StoredState {
+            const initItem = (item: StoredState) => {
+                item.init(appInterface, path + '.' + subPath)
+                return item
+            }
+            // @ts-ignore
+            return childStateValues[subPath as keyof object] ?? (childStateValues[subPath as keyof object] = initItem(item))
+        },
+        getApp(): StoredState {
+            throw new Error('getApp not implemented')
         }
-
     }
 
     initialVersion.init(appInterface, path)
@@ -181,18 +192,20 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
 }
 
 export function testAppStoreHook() {
-    return {
-        storeApi: null as null | StoreApi<AppStore>,
-        setAppStore(sa: StoreApi<AppStore>) {
-            this.storeApi = sa
+    const hook = {
+        store: null as (null | AppStateStore),
+        setAppStore(sa: AppStateStore) {
+            this.store = sa
         },
         setStateAt(path: string, stateObject: any) {
-            this.storeApi!.setState( state => state.setStoredStates({[path]: stateObject}))
+            this.store!.set(path, stateObject)
         },
         stateAt (path: string) {
-            return this.storeApi!.getState().store.select(path)
+            return this.store!.get(path)
         }
     }
+
+    return hook as AppStoreHook
 }
 
 const TestWrapper = <State extends object>({
@@ -200,7 +213,7 @@ const TestWrapper = <State extends object>({
                                                       state,
                                                       children
                                                   }: { path: string, state: any, children?: any }) => {
-    useGetStore().setObject(path, state)
+    setObject(path, state)
     return children
 }
 type Class<T> = new (...args: any[]) => T

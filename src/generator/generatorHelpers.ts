@@ -1,7 +1,7 @@
 import Topo from '@hapi/topo'
 import lodash, {startCase} from 'lodash'
 import Element from '../model/Element'
-import {flatten, last} from 'ramda'
+import {flatten, identity, last} from 'ramda'
 import {ExprType, ListItem} from './Types'
 import Form from '../model/Form'
 import {BaseApp} from '../model/BaseApp'
@@ -13,6 +13,15 @@ import ItemSet from '../model/ItemSet'
 import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
 import {ElementId} from '../model/Types'
 
+export type RequiredImports = {
+    components: Set<string>,
+    globalFunctions: Set<string>,
+    appFunctions: Set<string>
+}
+export type GeneratedFile = {
+    contents: string,
+    requiredImports: RequiredImports,
+}
 const {isArray, isPlainObject} = lodash;
 
 function safeKey(name: string) {
@@ -20,17 +29,19 @@ function safeKey(name: string) {
 }
 
 export const quote = (s: string) => `'${s}'`
+
 export function objectLiteral(obj: object) {
     const objectEntries = Object.entries(obj).map(([name, val]) => `${safeKey(name)}: ${val}`).join(', ')
     return `{${objectEntries}}`
 }
 
-export type ObjectBuilderName = string | {fullName: string}
+export type ObjectBuilderName = string | { fullName: string }
+
 export function objectBuilder(name: ObjectBuilderName, obj: object, state = false) {
     const entries = Object.entries(obj)
     const builderFn = state ? 'stateProps' : 'elProps'
     const entriesCalls = entries.map(([name, val]) => `.${safeKey(name)}(${val})`).join('')
-    const builderName = (name as {fullName: string}).fullName ?? `pathTo('${name}')`
+    const builderName = (name as { fullName: string }).fullName ?? `pathTo('${name}')`
     return `${builderFn}(${builderName})${entriesCalls}.props`
 }
 
@@ -44,13 +55,14 @@ export class TopoSortError extends Error {
         this.elementId = elementId
     }
 }
+
 export const topoSort = (entries: StateInitializer[]): StateInitializer[] => {
     const sorter = new Topo.Sorter<StateInitializer>()
     entries.forEach(entry => {
         const [el, , dependencies] = entry
         try {
             sorter.add([entry], {after: dependencies, group: el.codeName})  // if add plain tuple, sorter treats it as an array
-        } catch(e: any) {
+        } catch (e: any) {
             const messageMatch = e.message.match(/item added into group (\S+) created a dependencies error/)
             if (messageMatch) {
                 throw new TopoSortError(el.id, `Circular reference: this element uses another element which then uses this one.  The element is one of: ${dependencies.map(startCase).join(', ')}`)
@@ -79,6 +91,24 @@ export function isAppLike(component: Element | ListItem): component is BaseApp {
     return component instanceof BaseApp
 }
 
+export function generateDestructures(files: GeneratedFile[]) {
+    const allComponents = new Set<string>
+    const allGlobalFunctions = new Set<string>
+    const allAppFunctions = new Set<string>
+
+    for (let f of files) {
+        f.requiredImports.components.forEach( name => allComponents.add(name) )
+        f.requiredImports.globalFunctions.forEach( name => allGlobalFunctions.add(name) )
+        f.requiredImports.appFunctions.forEach( name => allAppFunctions.add(name) )
+    }
+
+    const componentDestructures = allComponents.size ? `const {${Array.from(allComponents).join(', ')}} = Elemento.components` :''
+    const globalFunctionDestructures = allGlobalFunctions.size ? `const {${Array.from(allGlobalFunctions).join(', ')}} = Elemento.globalFunctions` : ''
+    const appFunctionDestructures = allAppFunctions.size ? `const {${Array.from(allAppFunctions).join(', ')}} = Elemento.appFunctions` : ''
+
+    return [componentDestructures, globalFunctionDestructures, appFunctionDestructures].filter(identity).join('\n')
+}
+
 export const allElements = (component: Element | ListItem, isTopLevel = false): Element[] => {
     if (isAppLike(component)) {
         return [component, ...flatten(component.otherComponents.map(el => [el, allElements(el)]))]
@@ -105,11 +135,12 @@ export function printAst(ast: any) {
 
 export const indent = (codeBlock: string, indent: string) => codeBlock.split('\n').map(line => indent + line).join('\n')
 export const isGlobalFunction = (name: string) => name in globalFunctions
-export const assumeAsync = ['If' /* because it can return anything including a promise */ ]
+export const assumeAsync = ['If' /* because it can return anything including a promise */]
 export const knownSync = (functionName: string) => !assumeAsync.includes(functionName) && (isGlobalFunction(functionName) || knownSyncAppFunctionsNames().includes(functionName))
 
 export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncExprTypes: ExprType[], knownSyncFunction: (fnName: string) => boolean) {
     const canBeAsync = asyncExprTypes.includes(exprType)
+
     function isShorthandProperty(node: any) {
         return node.shorthand
     }
@@ -176,7 +207,7 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
             const b = types.builders
             const functionName = callExpr.callee.name
             const argsCalledAsFunctions = functionArgs[functionName as keyof typeof functionArgs] ?? {}
-            const isPlainValue = (expr: {type: string}) => expr.type === 'Identifier' || expr.type === 'Literal'
+            const isPlainValue = (expr: { type: string }) => expr.type === 'Identifier' || expr.type === 'Literal'
             Object.entries(argsCalledAsFunctions).forEach(([index, argNames]) => {
                 const isLazyEval = argNames === 'lazy'
                 const argIdentifiers = isLazyEval ? [] : argNames.map((name: string) => b.identifier(name))

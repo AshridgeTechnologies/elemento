@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useRef} from 'react'
-import {createStore, type StoreApi} from 'zustand'
+import React, {createContext, useRef} from 'react'
+import {type StoreApi} from 'zustand'
 import {useStoreWithEqualityFn as useStore} from 'zustand/traditional'
 import AppState from './AppState'
 import {ComponentState} from './components/ComponentState'
@@ -8,6 +8,7 @@ import {shallow} from 'zustand/shallow'
 import {zipObj} from 'ramda'
 import {notBlank} from '../util/helpers'
 import {VoidFn} from '../editor/Types'
+import AppStateStore from './AppStateStore'
 
 type StoredState = ComponentState<any>
 export type StateMap = {[key: string]: StoredState}
@@ -22,12 +23,14 @@ export type AppStore = {
 }
 
 export interface AppStateForObject {
-    latest: () => any
+    latest: () => StoredState
     updateVersion: (changes: object) => void,
     getChildState: (subPath: string) => StoredState
+    getOrCreateChildState: (subPath: string, item: StoredState) => StoredState
+    getApp: () => StoredState
 }
 
-export type AppStoreHook = {setAppStore(sa: StoreApi<AppStore>): void}
+export type AppStoreHook = {setAppStore(sa: AppStateStore): void}
 
 const fixPath = (path: string, pathPrefix: string | undefined) => [pathPrefix, path].filter(notBlank).join('.')
 
@@ -164,7 +167,7 @@ const baseStore = (set: (updater: (state: AppStore) => object) => void, get: ()=
     }
 }
 
-const StoreContext = createContext<StoreApi<AppStore>>(null as unknown as StoreApi<AppStore>)
+export const StoreContext = createContext<AppStateStore>(null as unknown as AppStateStore)
 
 export type UpdateBlockable = {
     setPreventUpdates: (callback: VoidFn | null) => void
@@ -219,19 +222,10 @@ class StateStore {
     }
 }
 
-const useGetObjectState = <T extends StoredState>(elementPath: string): T => {
-    return useGetStore().useObject(elementPath)
-}
-
-const useGetStore = () => {
-    const store = useContext(StoreContext)
-    return new StateStore(store)
-}
-
 const StoreProvider = ({children, appStoreHook}: {children: React.ReactNode, appStoreHook?: AppStoreHook} ) => {
-    const store = useRef(createStore(baseStore))
+    const store = useRef(new AppStateStore())
     appStoreHook?.setAppStore(store.current)
     return React.createElement(StoreContext.Provider, {value: store.current, children})
 }
-export {StoreProvider, useGetObjectState, useGetStore, fixPath}
+export {StoreProvider, fixPath}
 

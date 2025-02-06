@@ -3,7 +3,6 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import {useGetObjectState} from '../appData'
 import {TextType} from '../types'
 import {pick} from 'ramda'
 import BaseType from '../types/BaseType'
@@ -14,6 +13,7 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
 
@@ -31,7 +31,7 @@ export default function TextInput({path, ...props}: Properties) {
     const {label, multiline: multilineProp, readOnly, show, keyAction, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state = useGetObjectState<TextInputState>(path)
+    const state: TextInputState = useObject(path)
     const {value, dataType} = state
     const multiline = dataType?.format === 'multiline' || multilineProp
     const multilineProps = multiline ? {minRows: 2, maxRows: 10} : {}

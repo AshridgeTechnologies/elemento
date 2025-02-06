@@ -1,10 +1,10 @@
 import React from 'react'
 import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {Box, Dialog as MuiDialog, IconButton} from '@mui/material'
+import {Dialog as MuiDialog, IconButton} from '@mui/material'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {useGetObjectState} from '../appData'
 import {BlockContent, BlockLayout} from './Block'
 import {Close} from '@mui/icons-material'
+import {useObject} from '../appStateHooks'
 
 type Properties = { path: string, layout: BlockLayout, showCloseButton?: boolean, styles?: StylesPropVals, children?: React.ReactElement[] }
 type StateProperties = Partial<Readonly<{initiallyOpen: boolean}>>
@@ -34,7 +34,7 @@ function CloseButton(props: { onClose: () => void }) {
 
 export default function Dialog({children = [], path,  layout, showCloseButton, styles: styleProps = {}}: Properties) {
     const styles = valueOfProps(styleProps)
-    const state = useGetObjectState<DialogState>(path)
+    const state = useObject(path)
     const handleClose = ()=> { state.Close() }
     return React.createElement(MuiDialog, {open: state.isOpen, onClose: handleClose, slotProps: dialogSlotProps},
         (showCloseButton ? React.createElement(CloseButton, {onClose: handleClose}) : null),

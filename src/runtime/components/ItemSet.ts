@@ -1,11 +1,11 @@
 import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
-import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {equals, isNil, last, omit, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
 import {shallow} from 'zustand/shallow'
+import {useObject} from '../appStateHooks'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
 type Selectable = typeof selectableChoices[number]
@@ -32,8 +32,8 @@ type StateUpdatableProperties = Partial<Readonly<{
 }
 >>
 
-const ItemSet = React.memo(function ItemSet({path, itemContentComponent}: Properties) {
-    const state = useGetObjectState<ItemSetState>(path)
+const ItemSet = function ItemSet({path, itemContentComponent}: Properties) {
+    const state: ItemSetState = useObject(path)
     const onClick: OnClickFn = (event:SyntheticMouseEvent, index: number) => {
         const {shiftKey, ctrlKey, metaKey} = event
         if (shiftKey) {
@@ -56,7 +56,7 @@ const ItemSet = React.memo(function ItemSet({path, itemContentComponent}: Proper
     )
 
     return React.createElement(Fragment, null, ...children)
-})
+}
 
 export default ItemSet
 

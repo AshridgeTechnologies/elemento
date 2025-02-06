@@ -4,6 +4,8 @@ import {AppStateForObject, UpdateBlockable} from './appData'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
 import {ComponentState} from './components/ComponentState'
+import {StoredState} from './AppStateStore'
+import {GetObjectFn, useGetObjectFunction} from './appStateHooks'
 
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
@@ -32,10 +34,10 @@ const makeCloneable = (val: any) => {
     }
 }
 
-function getDebugData(valFnsFn: () => DebugFunctions) {
+function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => DebugFunctions, getObjectFn: GetObjectFn) {
     let valFns: DebugFunctions
     try {
-        valFns = valFnsFn()
+        valFns = valFnsFn(getObjectFn)
     } catch(e: any) {
         return {_error: e.toString()}
     }
@@ -65,8 +67,8 @@ function getDebugData(valFnsFn: () => DebugFunctions) {
 }
 
 export const elementoDebug = (valFnsFn: (() => DebugFunctions) | null) => {
-
-    const data = valFnsFn ? getDebugData(valFnsFn) : null
+    const getObjectFn = useGetObjectFunction()
+    const data = valFnsFn ? getDebugData(valFnsFn, getObjectFn) : null
     const event = new CustomEvent('debugData', { detail: data })
     window.dispatchEvent(event)
 }
@@ -100,23 +102,14 @@ export const elProps = (path: string, includePathProp = true) => {
 }
 
 export const stateProps = (name: string) => elProps(name, false)
-
-const functionComponentState = (fn: Function): ComponentState<Function> => ({
-    init(_asi: AppStateForObject, _path: string): void {},
-    updateFrom(newObj: Function): Function {return newObj},
-    withMergedState(_changes: object): Function {return fn},
-    latest(): Function {return fn}
-})
-
-type WrappedFunction = ComponentState<Function> & Function
-export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any): WrappedFunction => {
+export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any): Function => {
     const notifyError = (e: any) => {
         const notified = addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`, 30000)
         if (notified) {
             console.error(e)
         }
     }
-    const wrappedFn = (...args: any[]) => {
+    return (...args: any[]) => {
         try {
             const result = func(...args)
             const isPromise = typeof result?.then === 'function'
@@ -125,6 +118,4 @@ export const wrapFn = (path: string, propertyName: string, func: (...args: any[]
             notifyError(e)
         }
     }
-    Object.assign(wrappedFn, functionComponentState(wrappedFn))
-    return wrappedFn as unknown as WrappedFunction
 }

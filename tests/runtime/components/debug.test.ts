@@ -161,15 +161,3 @@ test('wrapFn returns function that notifies errors in promises', async () => {
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
 })
-
-test('wrapFn returns function that implements ComponentState interface', async () => {
-    const doStuff = () => 'Good result: ' + 1
-    const doStuff2 = () => 'Good result: ' + 2
-
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
-    const wrappedFn2 = wrapFn('AComponent', 'DoYourStuff', doStuff2)
-    expect(() => wrappedFn.init(null as unknown as AppStateForObject, 'x')).not.toThrow()
-    expect(wrappedFn.updateFrom(wrappedFn2)).toBe(wrappedFn2)
-    expect(wrappedFn.withMergedState({a: 10})).toBe(wrappedFn)
-    expect(wrappedFn.latest()).toBe(wrappedFn)
-})

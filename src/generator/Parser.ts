@@ -23,12 +23,12 @@ type ElementIdentifiers = {[elementId: ElementId]: string[]}
 export type PropertyError = string | ElementErrors | undefined
 
 const appFunctions = appFunctionsNames()
-const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
+const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: null as unknown as AppContext, themeOptions: {}})).filter( fnName => !['props', 'state', 'updateFrom'].includes(fnName))
 const runtimeElementTypes = () => elementTypeNames().filter(key => key !== 'Function' && key !== 'FunctionImport').map( key => runtimeElementTypeName(key as ElementType))
 
-const isGlobalFunction = (name: string) => name in globalFunctions
-const isAppFunction = (name: string) => appFunctions.includes(name)
-const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
+export const isGlobalFunction = (name: string) => name in globalFunctions
+export const isAppFunction = (name: string) => appFunctions.includes(name)
+export const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponent = (name: string) => runtimeElementTypes().includes(name)
 const isSeparateComponent = (el: Element | ListItem) => el instanceof ListItem || ['App', 'Page', 'Form', 'Component'].includes(el.kind)
 const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'JSON', 'window', 'document'].includes(name)

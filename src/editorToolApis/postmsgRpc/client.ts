@@ -4,9 +4,9 @@ import {identity} from 'ramda'
 const uniqueId = () => Date.now().toString() + '-' + (Math.random() * 1000000).toString().substring(6)
 
 export function caller (funcName: string, opts: any = {}) {
-  const addListener = opts.addListener || window.addEventListener
-  const removeListener = opts.removeListener || window.removeEventListener
-  const postMessage = opts.postMessage || window.postMessage
+  const addListener = opts.addListener || globalThis.addEventListener
+  const removeListener = opts.removeListener || globalThis.removeEventListener
+  const postMessage = opts.postMessage || globalThis.postMessage
   const targetOrigin = opts.targetOrigin || '*'
 
   return function (...args: any[]): Promise<any> {
@@ -39,9 +39,9 @@ export function caller (funcName: string, opts: any = {}) {
 }
 
 export function observer(funcName: string, opts: any = {}) {
-    const addListener = opts.addListener || window.addEventListener
-    const removeListener = opts.removeListener || window.removeEventListener
-    const postMessage = opts.postMessage || window.postMessage
+    const addListener = opts.addListener || globalThis.addEventListener
+    const removeListener = opts.removeListener || globalThis.removeEventListener
+    const postMessage = opts.postMessage || globalThis.postMessage
     const targetOrigin = opts.targetOrigin || '*'
     const transformFn: (val: any) => any = opts.transformFn ?? identity
 

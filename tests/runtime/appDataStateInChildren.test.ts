@@ -4,7 +4,7 @@
 
 import {createElement} from 'react'
 import {testContainer} from '../testutil/rtlHelpers'
-import {useGetObjectState, useGetStore} from '../../src/runtime/index'
+import {setObject, useObject} from '../../src/runtime/appStateHooks'
 import {StoreProvider} from '../../src/runtime/appData'
 import {BaseComponentState} from '../../src/runtime/components/ComponentState'
 
@@ -17,12 +17,12 @@ class Thing extends BaseComponentState<{a: number, b: string}>{
 }
 
 function Child(props: object) {
-    stateInChild = useGetObjectState('app.parent')
+    stateInChild = useObject('app.parent')
     return createElement('div', props)
 }
 
 function Parent(props: object) {
-    stateInParent = useGetStore().setObject('app.parent', new Thing({a: 10, b: 'Bee'}))
+    stateInParent = setObject('app.parent', new Thing({a: 10, b: 'Bee'}))
     return createElement(Child, props)
 }
 

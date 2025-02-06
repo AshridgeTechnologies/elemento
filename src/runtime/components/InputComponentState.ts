@@ -11,11 +11,11 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     abstract defaultValue: T | null
 
     get value() {
-        return this.propsOrStateValue ?? this.defaultValue
+        return this.dataValue ?? this.defaultValue
     }
 
     get originalValue() {
-        return valueOf(this.props.value)
+        return valueOf(this.props.value) as T
     }
 
     get valid() {

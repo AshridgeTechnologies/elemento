@@ -6,11 +6,11 @@ import React, {KeyboardEventHandler} from 'react'
 import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
-import {useGetObjectState, useGetStore} from '../../../src/runtime/appData'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
-import MockedFunction = jest.MockedFunction
 import {ErrorResult} from '../../../src/runtime/DataStore'
+import {setObject, useObject} from '../../../src/runtime/appStateHooks'
+import MockedFunction = jest.MockedFunction
 
 const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})
 const sizeType = new NumberType('nt1', {min: 1, max: 20})
@@ -25,69 +25,82 @@ const recordType = new RecordType('rt1', {}, [
 
 class TestFormState extends BaseFormState {
     protected readonly ownFieldNames = ['Description', 'BoxSize']
+    childNames = ['Description', 'BoxSize']
+
+    createChildStates() {
+        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
+        const BoxSize = this.getOrCreateChildState('BoxSize', new NumberInput.State({value: this.originalValue?.BoxSize, dataType: sizeType}))
+        return {Description, BoxSize}
+    }
+
+    get Description() { return this.childStates.Description }
+    get BoxSize() { return this.childStates.BoxSize }
 }
 
 function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
-    const pathWith = (name: string) => props.path + '.' + name
+    const pathTo = (name: string) => props.path + '.' + name
 
-    const $form = useGetObjectState<BaseFormState>(props.path)
-    const {Description, BoxSize} = useGetStore().setObjects( {
-        // @ts-ignore
-        Description: new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}),
-        // @ts-ignore
-        BoxSize: new NumberInput.State({value: $form.originalValue?.BoxSize, dataType: sizeType}),
-    }, props.path)
-    $form._updateValue()
+    const _state: TestFormState = useObject(props.path)
+    const {BoxSize} = _state
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}}),
-        React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
+        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}}),
+        React.createElement(NumberInput, {path: pathTo('BoxSize'), label: 'Size'}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'Size is ' + $form.value.BoxSize} )
+        React.createElement(TextElement, {path: pathTo('Feedback'), content: 'Size is ' + BoxSize} )
     )
 }
 
 class TestOneElementFormState extends BaseFormState {
     protected readonly ownFieldNames = ['Description']
+    childNames = ['Description']
+
+    createChildStates() {
+        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
+        return {Description}
+    }
+
+    get Description() { return this.childStates.Description }
 }
 
 function TestOneElementForm(props: {path: string}) {
-    const pathWith = (name: string) => props.path + '.' + name
+    const pathTo = (name: string) => props.path + '.' + name
 
-    const _store = useGetStore()
-    const $form = useGetObjectState<BaseFormState>(props.path)
-    // @ts-ignore
-    const Description = _store.setObject(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
-    $form._updateValue()
+    const _state = useObject(props.path)
 
     return React.createElement(Form, {path: props.path},
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}})
+        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}})
     )
 }
 
 class TestNestedFormState extends BaseFormState {
     protected readonly ownFieldNames = ['Description', 'BoxSize', 'Extra']
+    childNames = ['Description', 'BoxSize', 'Extra']
+
+    createChildStates() {
+        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
+        const BoxSize = this.getOrCreateChildState('BoxSize', new NumberInput.State({value: this.originalValue?.BoxSize, dataType: sizeType}))
+        const Extra = this.getOrCreateChildState('Extra', new TestOneElementFormState({value: this.originalValue?.Extra}))
+        return {Description, BoxSize, Extra}
+    }
+
+    get Description() { return this.childStates.Description }
+    get BoxSize() { return this.childStates.BoxSize }
+    get Extra() { return this.childStates.Extra }
 }
 
 function TestNestedForm(props: {path: string, keyAction: KeyboardEventHandler}) {
-    const pathWith = (name: string) => props.path + '.' + name
+    const pathTo = (name: string) => props.path + '.' + name
 
-    const _store = useGetStore()
-    const $form = useGetObjectState<BaseFormState>(props.path)
-    // @ts-ignore
-    const Description = _store.setObject(pathWith('Description'), new TextInput.State({value: $form.originalValue?.Description, dataType: descriptionType}))
-    // @ts-ignore
-    const BoxSize = _store.setObject(pathWith('BoxSize'), new NumberInput.State({value: $form.originalValue?.BoxSize, dataType: sizeType}))
-    // @ts-ignore
-    const Extra = _store.setObject(pathWith('Extra'), new TestOneElementFormState({value: $form.originalValue?.Extra}))
-    $form._updateValue()
+    const _state: TestNestedFormState = useObject(props.path)
+    const {BoxSize} = _state
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathWith('Description'), label: 'Description', styles: {width: '100%'}}),
-        React.createElement(NumberInput, {path: pathWith('BoxSize'), label: 'Size'}),
-        React.createElement(TestOneElementForm, {path: pathWith('Extra')}),
+        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}}),
+        React.createElement(NumberInput, {path: pathTo('BoxSize'), label: 'Size'}),
+        React.createElement(TestOneElementForm, {path: pathTo('Extra')}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'Size is ' + $form.value.BoxSize} )
+        React.createElement(TextElement, {path: pathTo('Feedback'), content: 'Size is ' + BoxSize} )
     )
 }
 
@@ -96,7 +109,7 @@ class TestEmptyFormState extends BaseFormState {
 }
 
 function TestEmptyForm(props: {path: string}) {
-    useGetObjectState<BaseFormState>(props.path)
+    useObject(props.path)
     return React.createElement(Form, {path: props.path})
 }
 
@@ -160,7 +173,7 @@ test('State class has empty object original value if props value is null', () =>
     const state = new TestFormState({value: null })
     const appInterface = testAppInterface('formPath', state, {})
     expect(state.originalValue).toStrictEqual({})
-    expect(state.value).toStrictEqual({})
+    expect(state.value).toStrictEqual({BoxSize: null, Description: null})
     expect(state.defaultValue).toStrictEqual({})
 })
 
@@ -223,11 +236,12 @@ test('State has expected values after update', async () => {
     const {domContainer, enter}  = testContainer(form('app.page1.form1', {
         value: {Description: 'Big', BoxSize: 17}
     }))
-    await wait()
+    await actWait()
+    expect(stateAt('app.page1.form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(stateAt('app.page1.form1').updates).toStrictEqual({})
 
     await enter('BoxSize', '33')
-    await wait()
+    await actWait()
     expect(stateAt('app.page1.form1').value).toStrictEqual({Description: 'Big', BoxSize: 33})
     expect(stateAt('app.page1.form1.BoxSize').value).toBe(33)
     expect(domContainer.querySelector('[id="app.page1.form1.Feedback"]')?.textContent).toBe('Size is 33')

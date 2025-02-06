@@ -2,7 +2,6 @@ import {createElement as el, FocusEvent} from 'react'
 import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import {useGetObjectState} from '../appData'
 import {ChoiceType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -11,6 +10,7 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
 
@@ -18,7 +18,7 @@ export default function SelectInput({path, ...props}: Properties) {
     const {label, values: valuesFromProps = [], readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
-    const state = useGetObjectState<SelectInputState>(path)
+    const state = useObject(path)
     const {value, dataType} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)

@@ -5,13 +5,14 @@
 import AppRunner from '../../src/runner/AppRunner'
 import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
+import {setObject, useGetStore, useObject} from '../../src/runtime/index'
 import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import AppContext, {UrlType} from '../../src/runtime/AppContext'
+import AppContext from '../../src/runtime/AppContext'
 import {AppData} from '../../src/runtime/components/AppData'
-import {useGetStore} from '../../src/runtime/index'
+import {TextInput} from '../../src/runtime/components'
 
 jest.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
 
@@ -29,12 +30,13 @@ const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
 })
 
 const testApp = (version: string) => {
+
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput, Image} = Elemento.components
-        const _store = useGetStore()
-        const input1 = _store.setObject(pathWith('input1'), new TextInput.State({value: undefined}),)
-        const app = Elemento.useGetObjectState('AppOne') as AppData
+        const app = useObject('AppOne') as AppData
+        const _state = setObject(props.path, new MainPage.State({}))
+        const {input1} = _state
 
         return React.createElement(Page, {path: props.path},
             React.createElement(TextElement, {path: pathWith('FirstText'), content:'This is App ' + version } ),
@@ -46,13 +48,25 @@ const testApp = (version: string) => {
         )
     }
 
+    MainPage.State = class MainPage_State extends Elemento.components.BaseComponentState<any> {
+        childNames = ['input1']
+
+        createChildStates() {
+            const input1 = this.getOrCreateChildState('input1', new TextInput.State({}))
+            return {input1}
+        }
+
+        get input1() {
+            return this.childStates.input1
+        }
+    }
+
     function AppOne(props: {appContext: AppContext}) {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
         const appContext = Elemento.useGetAppContext() as AppContext
-        const _store = Elemento.useGetStore()
-        const app = _store.setObject('AppOne', new App.State({pages, appContext}))
+        const app = setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -63,7 +77,7 @@ const badApp = () => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput} = Elemento.components
-        const app = Elemento.useGetObjectState('AppOne') as AppData
+        const app = useObject('AppOne') as AppData
 
         // @ts-ignore
         const goWrong = () => {throw new Error('Aaaargh!')}
@@ -76,11 +90,9 @@ const badApp = () => {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
-        const _store = Elemento.useGetStore()
-
         // @ts-ignore
         const {appContext} = props
-        const app = _store.setObject('AppOne', new App.State({pages, appContext}))
+        const app = setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 

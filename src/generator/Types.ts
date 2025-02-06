@@ -7,6 +7,7 @@ export class ListItem {
     }
 
     kind = 'ListItem'
+    get codeName() { return this.itemSet.codeName + '_ListItem'}
 
     get id() {
         return this.itemSet.id

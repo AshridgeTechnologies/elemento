@@ -1,23 +1,28 @@
 import {createElement} from 'react'
 import {idOf, valueLiteral} from '../runtimeFunctions'
-import lodash from 'lodash'; const {clone, isArray, isNumber, isObject, isString} = lodash;
+import lodash from 'lodash';
 import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
 import DataStore, {
+    Add,
     CollectionName,
     Criteria,
     Id,
     InvalidateAll,
     MultipleChanges,
-    pending, queryMatcher,
-    Add, Remove,
+    pending,
+    queryMatcher,
+    Remove,
     Update,
     UpdateNotification
 } from '../DataStore'
-import {AppStateForObject, useGetObjectState} from '../appData'
+import {AppStateForObject} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {shallow} from 'zustand/shallow'
+import {useObject} from '../appStateHooks'
+
+const {clone, isArray, isNumber, isObject, isString} = lodash;
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
@@ -26,7 +31,7 @@ type StateProperties = {value?: object, queries?: object, subscription?: any, au
 let lastGeneratedId = 1
 
 export default function Collection({path, display = false}: Properties) {
-    const state = useGetObjectState<CollectionState>(path)
+    const state = useObject(path)
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null

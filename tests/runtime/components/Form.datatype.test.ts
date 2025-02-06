@@ -9,7 +9,7 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {ChoiceType, DateType, NumberType, RecordType, Rule, TextType, TrueFalseType} from '../../../src/runtime/types'
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
 import React, {KeyboardEventHandler} from 'react'
-import {useGetObjectState, useGetStore} from '../../../src/runtime'
+import {useObject} from '../../../src/runtime'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
 import MockedFunction = jest.MockedFunction
@@ -52,26 +52,35 @@ const nestedType = new RecordType('rt4', {}, [
     descriptionType, sizeType, extraType
 ])
 
+class TestFormState extends DataTypeFormState {
+    protected readonly ownFieldNames = ['Count']
+    childNames = ['Description', 'BoxSize', 'Count']
+
+    createChildStates() {
+        const Count = this.getOrCreateChildState('Count', new NumberInput.State({value: this.originalValue?.Count, dataType: sizeType}))
+        return {Count}
+    }
+
+    get BoxSize() { return this.childStates.BoxSize }
+    get Count() { return this.childStates.Count }
+}
+
 function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     const pathWith = (name: string) => props.path + '.' + name
 
-    const $form = useGetObjectState<BaseFormState>(props.path)
-    const {Description, BoxSize, Count} = useGetStore().setObjects( {
-        // @ts-ignore
-        Count: new NumberInput.State({value: $form.originalValue?.Count, dataType: sizeType}),
-    }, props.path)
-    $form._updateValue()
+    const _state: TestFormState = useObject(props.path)
+    const {BoxSize} = _state
 
     return React.createElement(Form, props,
         React.createElement(TextInput, {path: pathWith('Description'), label: 'Description of the thing', styles: {width: '50%'}}),
         React.createElement(NumberInput, {path: pathWith('Count'), label: 'Count'}),
         // @ts-ignore
-        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'BoxSize is ' + $form.value.BoxSize } )
+        React.createElement(TextElement, {path: pathWith('Feedback'), content: 'BoxSize is ' + BoxSize } )
     )
 }
 
-const [form, appStoreHook] = wrappedTestElement(Form, DataTypeFormState)
-const [testForm] = wrappedTestElement(TestForm, DataTypeFormState)
+const [form, appStoreHook] = wrappedTestElement(Form, TestFormState)
+const [testForm] = wrappedTestElement(TestForm, TestFormState)
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 test('Form element produces output containing children', () => {
@@ -176,7 +185,6 @@ test('State class compares data types as objects', () => {
 test.skip('State class uses states of child objects where present', () => {
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}})
     const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
-    state._updateValue()
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
 })
 
@@ -190,7 +198,7 @@ test('State has expected values', async () => {
     }, {label: 'Test Form 1'})
     renderer.create(component)
     await actWait()
-    expect(stateAt('form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
+    expect(stateAt('form1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Count: null})
     expect(stateAt('form1.Description').value).toBe('Big')
     expect(stateAt('form1.BoxSize').value).toBe(17)
 })
@@ -205,7 +213,7 @@ test('State has expected values after update', async () => {
 
     await enter('BoxSize', '33')
     await wait()
-    expect(stateAt('app.page1.form1').value).toStrictEqual({Description: 'Big', BoxSize: 33})
+    expect(stateAt('app.page1.form1').value).toStrictEqual({Description: 'Big', BoxSize: 33, Count: null})
     expect(stateAt('app.page1.form1.BoxSize').value).toBe(33)
     expect(stateAt('app.page1.form1').updates).toStrictEqual({BoxSize: 33})
 
@@ -221,13 +229,13 @@ test('State of nested form has expected values', async () => {
     }))
     await wait(50)
     expect(stateAt('app.page1.nestedForm1').updates).toStrictEqual({})
-    expect(stateAt('app.page1.nestedForm1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Extra: {Description: 'Extra Big'}})
+    expect(stateAt('app.page1.nestedForm1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Count: null, Extra: {Description: 'Extra Big'}})
     expect(stateAt('app.page1.nestedForm1.Extra.Description').value).toBe('Extra Big')
     expect(stateAt('app.page1.nestedForm1.Extra').value).toStrictEqual({Description: 'Extra Big'})
 
     await enter('Extra.Description', 'Really Big')
     await wait(20)
-    expect(stateAt('app.page1.nestedForm1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Extra: {Description: 'Really Big'}})
+    expect(stateAt('app.page1.nestedForm1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Count: null, Extra: {Description: 'Really Big'}})
     expect(stateAt('app.page1.nestedForm1.Extra.Description').value).toBe('Really Big')
     expect(stateAt('app.page1.nestedForm1.Extra').value).toStrictEqual({Description: 'Really Big'})
     expect(stateAt('app.page1.nestedForm1').updates).toStrictEqual({Extra: {Description: 'Really Big'}})
@@ -261,7 +269,7 @@ test('State Resets all its component states and modified', async () => {
     stateAt('app.page2.form1').Reset()
     await wait()
 
-    expect(stateAt('app.page2.form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
+    expect(stateAt('app.page2.form1').value).toStrictEqual({Description: 'Big', BoxSize: 17, Count: null})
     expect(stateAt('app.page2.form1.Description').value).toBe('Big')
     expect(stateAt('app.page2.form1.BoxSize').value).toBe(17)
 

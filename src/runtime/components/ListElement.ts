@@ -1,10 +1,10 @@
 import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 const {debounce} = lodash
 
@@ -20,7 +20,7 @@ type StateProperties = {scrollTop?: number}
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0, flexShrink: 0}
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
-    const state = useGetObjectState<ListElementState>(path)
+    const state = useObject(path)
     const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)

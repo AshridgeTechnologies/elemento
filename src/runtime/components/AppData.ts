@@ -31,12 +31,12 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         }
     }
 
-    updateFrom(newObj: this): this {
+    protected isEqualTo(newObj: this) {
         const {pages: thisPages, ...thisProps} = this.props
         const {pages: newPages, ...newProps} = newObj.props
         const pagesEqual = shallow(thisPages, newPages)
         const propsEqual = shallow(thisProps, newProps)
-        return pagesEqual && propsEqual ? this : new AppData(newObj.props).withState(this.state) as this
+        return pagesEqual && propsEqual
     }
 
     get appContext() {

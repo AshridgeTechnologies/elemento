@@ -69,7 +69,7 @@ function MainPage(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, TextInput, Button} = Elemento.components
 
-    const app = Elemento.useGetObjectState('app')
+    const app = Elemento.useObject('app')
     const {ShowPage} = app
     const FirstTextInput = Elemento.useObjectState(pathWith('FirstTextInput'), new TextInput.State({value: "A text value"}))
 
@@ -85,7 +85,7 @@ function MainPage(props) {
 function OtherPage(props) {
     const pathWith = name => props.path + '.' + name
     const {Page, TextElement, Button} = Elemento.components
-    const app = Elemento.useGetObjectState('app')
+    const app = Elemento.useObject('app')
     const {ShowPage} = app
 
     return React.createElement(Page, {id: props.path},

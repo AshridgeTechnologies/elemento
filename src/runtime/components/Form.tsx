@@ -1,7 +1,6 @@
 import React, {createElement, Fragment, KeyboardEventHandler} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import {Box, FormHelperText, Stack, SxProps, Typography} from '@mui/material'
-import {StateMap, useGetObjectState, useGetStore} from '../appData'
 import BaseFormState, {DataTypeFormState} from './FormState'
 import {isArray} from 'lodash'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
@@ -16,6 +15,7 @@ import {isNil, last, without} from 'ramda'
 import DecimalType from '../types/DecimalType'
 import BigNumber from 'bignumber.js'
 import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -59,35 +59,6 @@ const formField = (parentPath: string, type: BaseType<any, any>) => {
     return <div>{`unknown type ${type}`}</div>
 }
 
-const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>) => {
-    if (type instanceof TextType) {
-        return new TextInputState({dataType: type, value: value as PropVal<string>})
-    }
-    if (type instanceof NumberType) {
-        return new NumberInputState({dataType: type, value: value as PropVal<number>})
-    }
-    if (type instanceof DecimalType) {
-        return new NumberInputState({dataType: type, value: value as PropVal<BigNumber>})
-    }
-    if (type instanceof ChoiceType) {
-        return new SelectInputState({dataType: type, value: value as PropVal<string>})
-    }
-    if (type instanceof TrueFalseType) {
-        return new TrueFalseInputState({dataType: type, value: value as PropVal<boolean>})
-    }
-    if (type instanceof DateType) {
-        return new DateInputState({dataType: type, value: value as PropVal<Date>})
-    }
-    if (type instanceof RecordType) {
-        return new DataTypeFormState({dataType: type, value: value as PropVal<object>})
-    }
-    // if (type instanceof ListType) {
-    //     return new ListElementState({})
-    // }
-
-    return {}
-}
-
 export default function Form({children, path, ...props}: Properties) {
     const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
@@ -103,19 +74,12 @@ export default function Form({children, path, ...props}: Properties) {
         ...sxProps(styles, show)
     } as SxProps
 
-    const state = useGetObjectState<BaseFormState>(path)
+    const state = useObject(path) as BaseFormState
     const dataType = state.dataType
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors?._self ? errorsToString(state.errors._self) : undefined
 
     const dataTypeFields = dataType?.fields ?? []
-
-    const childStates = Object.fromEntries( dataTypeFields.map( type => {
-        const {codeName} = type
-        return [codeName, formState(type, state.originalValue?.[codeName as keyof object])]
-    })) as StateMap
-    useGetStore().setObjects(childStates, path)
-    state._updateValue()
 
     const childrenList:React.CElement<any, any>[] = isNil(children) ? [] : typeof children[Symbol.iterator] === 'function' ? Array.from(children) : [children]
 

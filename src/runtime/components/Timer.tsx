@@ -2,10 +2,10 @@ import React from 'react'
 import {SxProps, TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {useGetObjectState} from '../appData'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
+import {useObject} from '../appStateHooks'
 
 
 type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
@@ -18,7 +18,7 @@ export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useGetObjectState<TimerState>(path)
+    const state = useObject(path)
     const optionalProps = definedPropertiesOf({label})
     const inputComponentProps = propsForInputComponent(undefined, styles)
     const inputProps = inputElementProps(styles, false, {})

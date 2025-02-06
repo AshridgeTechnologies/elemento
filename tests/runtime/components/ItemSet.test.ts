@@ -89,11 +89,13 @@ test('updates its selectedItem in the app state if no select action supplied', a
 })
 
 test('updates its selectedItem in the app state and calls select action with correct arguments', async () => {
-    const {el, user}  = testContainer(inDndContext(itemSet('app.page1.itemSet1', {items: itemSetData, selectAction}, {itemContentComponent: ItemSetItem1})))
-    const itemSetItem0El = el`[id="app.page1.itemSet1.#id1.Text99"]`
-    await user.click(itemSetItem0El)
-    expect(stateAt('app.page1.itemSet1').selectedItem).toStrictEqual(itemSetData[0])
-    expect(selectAction).toHaveBeenCalledWith(itemSetData[0], 'id1', 0)
+    const {el, user}  = testContainer(inDndContext(itemSet('app.page1.itemSet77', {items: itemSetData, selectAction}, {itemContentComponent: ItemSetItem1})))
+    // expect(stateAt('app.page1.itemSet1').selectedItem).toBe(null)
+    const itemSetItem1El = el`[id="app.page1.itemSet77.#id2.Text99"]`
+    await user.click(itemSetItem1El)
+    await wait()
+    expect(stateAt('app.page1.itemSet77').selectedItem).toStrictEqual(itemSetData[1])
+    expect(selectAction).toHaveBeenCalledWith(itemSetData[1], 'id2', 1)
 })
 
 test('adds to selectedItems in the app state with Control key', async () => {
@@ -115,15 +117,15 @@ test('selects a block in the app state with Shift key', async () => {
 })
 
 test('updates the selectedItem when it changes', async () => {
-    const {el, user, renderThe}  = testContainer(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1}))
-    const itemSetItem0El = el`[id="app.page1.itemSet1.#id1.Text99"]`
+    const {el, user, renderThe}  = testContainer(itemSet('app.page1.itemSet66', {items: itemSetData}, {itemContentComponent: ItemSetItem1}))
+    const itemSetItem0El = el`[id="app.page1.itemSet66.#id1.Text99"]`
     await user.click(itemSetItem0El)
-    expect(stateAt('app.page1.itemSet1').selectedItem).toStrictEqual(itemSetData[0])
+    expect(stateAt('app.page1.itemSet66').selectedItem).toStrictEqual(itemSetData[0])
 
     const updatedItemSetData = [{id: 'id1', text: 'new text'}, itemSetData[1]]
-    renderThe(itemSet('app.page1.itemSet1', {items: updatedItemSetData}, {itemContentComponent: ItemSetItem1}))
+    renderThe(itemSet('app.page1.itemSet66', {items: updatedItemSetData}, {itemContentComponent: ItemSetItem1}))
     await wait(20)
-    expect(stateAt('app.page1.itemSet1').selectedItem).toBe(updatedItemSetData[0])
+    expect(stateAt('app.page1.itemSet66').selectedItem).toBe(updatedItemSetData[0])
 })
 
 test('does not update its selectedItem if not selectable but does call select action', async () => {

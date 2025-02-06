@@ -1,6 +1,5 @@
 import React, {createElement, useEffect} from 'react'
-import {useGetObjectState} from '../appData'
-import {Box, Button, Container, ThemeOptions, Typography, useTheme} from '@mui/material'
+import {Box, Button, Container, Typography, useTheme} from '@mui/material'
 import {closeSnackbar, enqueueSnackbar, SnackbarProvider} from 'notistack'
 import CookieConsent from 'react-cookie-consent'
 import {AppData} from './AppData'
@@ -10,6 +9,7 @@ import {type Notification, subscribeToNotifications} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 import {ThemeProvider} from '@mui/material/styles'
+import {useObject} from '../appStateHooks'
 
 type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void,
     messageAction?: ($sender: Window, $data: any) => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
@@ -68,7 +68,7 @@ function CookieMessage({path, message}: {path: string, message: string}) {
 
 const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [],
                                                       startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren}: Properties) {
-    const state = useGetObjectState<AppData>(path)
+    const state: AppData = useObject(path)
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 

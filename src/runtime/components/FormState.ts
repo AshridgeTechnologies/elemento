@@ -1,9 +1,49 @@
 import InputComponentState from './InputComponentState'
-import {RecordType} from '../types'
+import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import {equals, mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../DataStore'
+import {StateMap} from '../appData'
+import BaseType from '../types/BaseType'
+import {PropVal} from '../runtimeFunctions'
+import {TextInputState} from './TextInput'
+import {NumberInputState} from './NumberInput'
+import DecimalType from '../types/DecimalType'
+import BigNumber from 'bignumber.js'
+import {SelectInputState} from './SelectInput'
+import {TrueFalseInputState} from './TrueFalseInput'
+import {DateInputState} from './DateInput'
+import {StoredState} from '../AppStateStore'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
+
+const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): StoredState => {
+    if (type instanceof TextType) {
+        return new TextInputState({dataType: type, value: value as PropVal<string>})
+    }
+    if (type instanceof NumberType) {
+        return new NumberInputState({dataType: type, value: value as PropVal<number>})
+    }
+    if (type instanceof DecimalType) {
+        return new NumberInputState({dataType: type, value: value as PropVal<BigNumber>})
+    }
+    if (type instanceof ChoiceType) {
+        return new SelectInputState({dataType: type, value: value as PropVal<string>})
+    }
+    if (type instanceof TrueFalseType) {
+        return new TrueFalseInputState({dataType: type, value: value as PropVal<boolean>})
+    }
+    if (type instanceof DateType) {
+        return new DateInputState({dataType: type, value: value as PropVal<Date>})
+    }
+    if (type instanceof RecordType) {
+        return new DataTypeFormState({dataType: type, value: value as PropVal<object>})
+    }
+    // if (type instanceof ListType) {
+    //     return new ListElementState({})
+    // }
+
+    return {} as StoredState
+}
 
 export default abstract class BaseFormState extends InputComponentState<object, RecordType, {submitAction?: SubmitActionFn}> {
     defaultValue = {}
@@ -11,6 +51,26 @@ export default abstract class BaseFormState extends InputComponentState<object, 
     protected abstract readonly ownFieldNames: string[]
 
     protected get submitAction() { return this.props.submitAction }
+
+    protected setupChildStates() {
+        const dataTypeFields = this.dataType?.fields ?? []
+        const dataTypeChildStates = Object.fromEntries( dataTypeFields.map( type => {
+            const {codeName} = type
+            const childState = this.getOrCreateChildState(codeName, formState(type, this.originalValue?.[codeName as keyof object]))
+            return [codeName, childState]
+        })) as StateMap
+
+        const ownChildStates = this.createChildStates()
+        this.state.childStates = {...dataTypeChildStates, ...ownChildStates}
+    }
+
+    get dataValue() {
+        return this.valueFromChildren()
+    }
+
+    get originalValue() {
+        return super.originalValue ?? {}
+    }
 
     get fieldNames() {
         const dataTypeFields = this.props.dataType?.fields?.map(f => f.codeName ) ?? []
@@ -48,7 +108,7 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         return Object.fromEntries(names.map(name => [name, this.getChildValue(name)]))
     }
 
-    protected getChildValue(name: string) {
+    private getChildValue(name: string) {
         const childStateValue = this.getChildState(name)?.dataValue
         if (childStateValue !== undefined) return childStateValue
 
@@ -56,11 +116,7 @@ export default abstract class BaseFormState extends InputComponentState<object, 
     }
 
     private getChildState(name: string) {
-        return (this._appStateInterface?.getChildState(name) as InputComponentState<any, any>)
-    }
-
-    get originalValue() {
-        return super.originalValue ?? {}
+        return this.childStates[name] as InputComponentState<any, any>
     }
 
     Reset() {
@@ -80,13 +136,6 @@ export default abstract class BaseFormState extends InputComponentState<object, 
             this.latest().updateState({submitErrors: {_self: [submitResult.errorMessage]}})
         } else {
             this.Reset()
-        }
-    }
-
-    _updateValue() {
-        const currentValue = this.valueFromChildren()
-        if (!equals(this.propsOrStateValue, currentValue)) {
-            this._setValue(currentValue)
         }
     }
 }
