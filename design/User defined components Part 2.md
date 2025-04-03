@@ -214,3 +214,42 @@ Possibilities
 - Get dependencies of each function and set consts like in output properties
 - Change Page/App to work like a component later
 
+Import/export
+=============
+
+Needs
+-----
+
+- Simple way of marking a component or function as exported
+- Simple way of importing a component or function
+- Components can be copied into files OR accessed via HTTP
+- Inter-op with standard JS import/export mechanism
+- Metadata about properties etc so can use in studio like a built in component
+- Imported Components are available in menus like local user-defined components
+
+Forces
+------
+
+- Don't want to use npm install for now
+- Browser cache acts like an npm cache in a way
+
+Possibilities
+-------------
+
+- Use http imports from a CDN like jsdelivr
+- We already have FunctionImport with source and export name - could have a ComponentImport
+- Convention to encode and find metadata for an imported component
+- Add metadata from another source if not there
+- ComponentImports go under Components folder, picked up like user defined
+- Components are all generated into their own files
+
+Design - Spike 1
+----------------
+
+- ComponentImport element - has source and import name, goes under component folder
+- ComponentImports are used like user-defined in editor and generator
+- Generate Components into separate files with default export
+- All components are exported for now
+- Add imports to each file that needs them - or all
+- Generate a file in Components for each Component Import that re-exports the imported component as default, then same usage as user-defined
+

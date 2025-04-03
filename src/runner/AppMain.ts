@@ -1,6 +1,5 @@
 import {createElement} from 'react'
 import {createRoot} from 'react-dom/client'
-import {DefaultAppContext} from '../runtime/AppContext'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {runPreview} from '../runtime/run'

@@ -18,12 +18,13 @@ Requirements
 - ✅ Which means properties can be functions, not just plain values
 - ✅ Component can have state update functions
 - ✅ Component can use state properties and state functions of child elements
-- Components can be exported and imported
 
 Further requirements
 --------------------
 
 - Component can have multiple slots for child elements
+- Components can be exported and imported
+
 
 
 To do
