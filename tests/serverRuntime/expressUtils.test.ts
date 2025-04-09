@@ -2,15 +2,12 @@ import {getApp} from '../../src/serverRuntime/firebaseApp'
 import {DecodedIdToken, getAuth} from 'firebase-admin/auth'
 import {mockImplementation} from '../testutil/testHelpers'
 import {
-    AppFactory,
     errorHandler,
-    getCurrentUser,
-    parseQueryParams,
-    requestHandler,
-    ServerAppHandler
+    getCurrentUser
 } from '../../src/serverRuntime/expressUtils'
 import {expressApp} from '../../src/serverRuntime'
 import {ValidationError} from '../../src/runtime/globalFunctions'
+import {AppFactory, parseQueryParams, requestHandler, ServerAppHandler} from '../../src/serverRuntime/requestHandler'
 
 jest.mock('firebase-admin/auth')
 jest.mock('../../src/serverRuntime/firebaseApp')

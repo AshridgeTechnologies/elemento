@@ -38,7 +38,7 @@ export interface CombinedFileWriter {
 export type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
-    projectInfoFileWriter: FileWriter,
+    rootFileWriter: FileWriter,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
     serverFileWriter: ServerFileWriter,
@@ -71,7 +71,7 @@ class FileHolder {
 }
 
 export default class ProjectBuilder {
-    private generatedProjectInfo = new FileHolder()
+    private generatedRootFiles = new FileHolder()
     private generatedClientCode = new FileHolder()
     private generatedToolCode = new FileHolder()
     private generatedServerCode = new FileHolder()
@@ -109,18 +109,18 @@ export default class ProjectBuilder {
             })
         }
 
-        const projectInfoFileWritePromises = writeFiles(this.generatedProjectInfo, this.props.projectInfoFileWriter)
+        const rootFileWritePromises = writeFiles(this.generatedRootFiles, this.props.rootFileWriter)
         const clientFileWritePromises = writeFiles(this.generatedClientCode, this.props.clientFileWriter)
         const toolFileWritePromises = writeFiles(this.generatedToolCode, this.props.toolFileWriter)
         const serverFileWritePromises = writeFiles(this.generatedServerCode, this.props.serverFileWriter)
-        await Promise.all([...projectInfoFileWritePromises, ...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
+        await Promise.all([...rootFileWritePromises, ...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
     }
 
     buildProjectFiles() {
         this.generatedErrors = {}
         const project = this.project
         const apps = project.findChildElements(App)
-        this.buildProjectInfoFiles()
+        this.buildRootFiles()
         apps.forEach(app => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(tool => this.buildToolAppFiles(tool))
@@ -129,9 +129,65 @@ export default class ProjectBuilder {
         }
     }
 
-    private buildProjectInfoFiles() {
+    private buildRootFiles() {
         const appNames = this.project.findChildElements(App).map( el => el.codeName)
-        this.generatedProjectInfo.storeFile('projectInfo.json', JSON.stringify({apps: appNames}))
+        this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, appNames))
+        this.generatedRootFiles.storeFile('package.json', this.packageJson(this.project.codeName))
+        this.generatedRootFiles.storeFile('index.js', this.indexJs())
+    }
+
+    private wranglerConfig(projectName: string, appNames: string[]) {
+        return `
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "${projectName.toLowerCase()}",
+    "main": "index.js",
+    "compatibility_date": "2025-04-02",
+    "observability": {
+        "enabled": true
+    },
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
+     "vars": { "APPS": "${appNames.join(',')}" },
+    "assets": { "directory": "./client", "binding": "ASSETS" }
+}
+`.trimStart()
+    }
+
+    private packageJson(projectName: string) {
+        return `
+{
+	"name": "${projectName}",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev"
+	},
+	"devDependencies": {
+		"wrangler": "^4.9.1"
+	}
+}
+`.trimStart()
+    }
+
+    private indexJs() {
+        const serverAppNames = this.project.findElementsBy( el => el.kind === 'ServerApp').map( el => el.codeName )
+        const serverImports = serverAppNames.map( name => `import ${name} from './server/${name}.mjs'`).join('\n')
+        const serverList = serverAppNames.join(', ')
+        return `
+import {cloudflareFetch} from './server/serverRuntime.cjs'
+${serverImports}
+const serverApps = {${serverList}}
+
+export default {
+  async fetch(request, env, ctx) {
+    return cloudflareFetch(request, env, ctx, serverApps)
+  }
+}
+`.trimStart()
     }
 
     private buildClientAppFiles(app: App) {

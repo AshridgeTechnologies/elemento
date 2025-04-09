@@ -179,27 +179,27 @@ export default function EditorRunner() {
     }
 
     const newProjectBuilder = (projectStore: DiskProjectStore) => {
-        const projectInfoFileWriter = new MultiFileWriter(
-            new DiskProjectStoreFileWriter(projectStore, 'dist')
+        const rootFileWriter = new MultiFileWriter(
+            new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare')
         )
         const clientFileWriter = new MultiFileWriter(
-            new DiskProjectStoreFileWriter(projectStore, 'dist/client'),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/client'),
         )
         const toolFileWriter = new MultiFileWriter(
-            new DiskProjectStoreFileWriter(projectStore, 'dist/client/tools'),
+            new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/client/tools'),
         )
 
         const serverFileWriter = new ServerMultiFileWriter({
             previewUploadUrl,
             previewPassword: getPreviewPassword,
             onServerUpdateStatusChange,
-            writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/server')]
+            writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/server')]
         })
 
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
-            projectInfoFileWriter,
+            rootFileWriter,
             clientFileWriter,
             toolFileWriter,
             serverFileWriter,

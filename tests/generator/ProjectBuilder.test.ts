@@ -81,7 +81,7 @@ const clientFileWriter = {
 const toolFileWriter = {
     writeFile: jest.fn().mockResolvedValue(undefined)
 }
-const projectInfoFileWriter = {
+const rootFileWriter = {
     writeFile: jest.fn().mockResolvedValue(undefined)
 }
 
@@ -98,7 +98,7 @@ const getFileLoader = (dirContents: object = {}, exists = true) => ({
 })
 
 const clearMocks = () => {
-    projectInfoFileWriter.writeFile.mockClear()
+    rootFileWriter.writeFile.mockClear()
     clientFileWriter.writeFile.mockClear()
     toolFileWriter.writeFile.mockClear()
     serverFileWriter.writeFile.mockClear()
@@ -111,7 +111,7 @@ beforeEach(clearMocks)
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}, project = project1) => {
     const properties = {projectLoader: getProjectLoader(project), fileLoader: getFileLoader(),
-        projectInfoFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
+        rootFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
     return new ProjectBuilder(properties)
 }
 
@@ -183,7 +183,7 @@ test('writes projectInfo file to top level', async () => {
     const builder = newProjectBuilder()
     await builder.build()
 
-    expect(projectInfoFileWriter.writeFile.mock.calls).toStrictEqual([
+    expect(rootFileWriter.writeFile.mock.calls).toStrictEqual([
         ['projectInfo.json', expectedProjectInfo()],
     ])
 })

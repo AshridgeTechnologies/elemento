@@ -1,4 +1,4 @@
-import {AppFactory, errorHandler, requestHandler} from '../serverRuntime/expressUtils'
+import {errorHandler} from '../serverRuntime/expressUtils'
 import express from 'express'
 
 import fs from 'fs'
@@ -6,6 +6,7 @@ import path from 'path'
 import {identity, last, sortBy} from 'ramda'
 import cors from 'cors'
 import {getModule} from './util'
+import {AppFactory, requestHandler} from '../serverRuntime/requestHandler'
 
 
 export async function run(elementoHost: string, elementoDirPath: string) {
