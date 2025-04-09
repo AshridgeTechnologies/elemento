@@ -295,6 +295,7 @@ Tech debt
 - Introducing new components
 - Mechanism for generating defaults, state and properties code from model object - mark as stateful?
 - Script environment creation
+- Use Navigation API https://developer.chrome.com/docs/web-platform/navigation-api
 
 
 Done
