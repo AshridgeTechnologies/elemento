@@ -167,14 +167,6 @@ export default () =>
                 named after the formula name of the Server App, with a .mjs extension, as it uses ESM imports.
             </Para>
 
-            <Para>There is also a file called ExpressApp.js that creates a standard Express app to run the Server Apps.
-                It imports the Elemento server runtime library from serverRuntime.cjs in the same directory.  This file is available from
-                https://elemento.online/lib/serverRuntime.cjs.</Para>
-            <Para>
-                The generated index.js and package.json are intended for running with Firebase, so you would probably need to replace them
-                with files suitable for your hosting environment.
-            </Para>
-
         </SubSection>
 
     </Section>

@@ -14,6 +14,7 @@ export default function LearnPage() {
             <Box flex='1' minHeight={0}>
                 <Container>
                     <Stack maxWidth={600} spacing={3} mt={3}>
+                        <b>Out of date</b>
                         <Typography variant='h4'>Elemento Development Server</Typography>
                         <Typography>Please download the correct version for your operating system.</Typography>
                         <Typography>Your computer will complain that the app is not known, approved, signed etc.<br/>

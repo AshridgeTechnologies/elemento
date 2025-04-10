@@ -286,7 +286,6 @@ test('updates files generated from project only where changed', async () => {
     const appFileContents = appFile.contents
     expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
         ['ServerApp2.mjs', appFileContents],
-        // express file not changed
     ])
 })
 

@@ -26,11 +26,11 @@ describe('generates files for app and exposes public functions and includes data
     const project = Project3.new([dataTypes1, dataTypes2, app], 'Project 1', 'proj1', {})
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
-    const [serverAppFile, expressAppFile] = files
+    const [serverAppFile] = files
 
 
-    test('generates only app and express file', () => {
-        expect(files.length).toBe(2)
+    test('generates only app file', () => {
+        expect(files.length).toBe(1)
     })
 
     test('app file', () => {
@@ -94,15 +94,6 @@ return {
 export default ServerApp1`)
     })
 
-    test('express app file', () => {
-        expect(expressAppFile.name).toBe('ServerApp1Express.js')
-        expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
-import baseAppFactory from './ServerApp1.mjs'
-
-const app = expressApp(baseAppFactory)
-
-export default app`)
-    })
 })
 
 describe('generates files using data components in dependency order', () => {
@@ -120,7 +111,7 @@ describe('generates files using data components in dependency order', () => {
 
     const gen = new ServerAppGenerator(app, project)
     const {files} = gen.output()
-    const [serverAppFile, expressAppFile] = files
+    const [serverAppFile] = files
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.mjs')
@@ -162,15 +153,6 @@ return {
 export default WidgetApp`)
     })
 
-    test('express app file', () => {
-        expect(expressAppFile.name).toBe('WidgetAppExpress.js')
-        expect(expressAppFile.contents).toBe(`import {expressApp} from './serverRuntime.cjs'
-import baseAppFactory from './WidgetApp.mjs'
-
-const app = expressApp(baseAppFactory)
-
-export default app`)
-    })
 
 })
 

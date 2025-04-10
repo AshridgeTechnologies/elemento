@@ -11,13 +11,14 @@ Requirements
 
 - ✅ Client apps served
 - ✅ Server functions work
-- Client and server preview changes available almost immediately
-- Client and server changes shown on preview app automatically
+- ✅ Client and server preview changes available almost immediately
+- ✅ Client changes shown on preview app automatically
+- Server changes shown on preview app automatically
 - Debugging works
 - Highlighting works
 
 - ✅ Service worker removed
-- Express removed
+- ✅ Express removed
 - Firebase removed
 
 Technical
