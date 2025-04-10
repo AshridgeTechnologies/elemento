@@ -1,19 +1,35 @@
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useEffect, useState} from 'react'
 import AppRunner from './AppRunner'
-import AppContext from '../runtime/AppContext'
 import AppLoadError from './AppLoadError'
 import {loadModuleHttp} from './loadModuleHttp'
 
 type Properties = {url: string, pathPrefix: string, resourceUrl: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 
+const isElementoOrigin = (origin: string) => {
+    return ['localhost', 'elemento.online'].includes(new URL(origin).hostname)
+}
+
 export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onComponentSelected  = () => {}, selectedComponentId}: Properties) {
     const [appComponent, setAppComponent] = useState<FunctionComponent | null>(null)
     const [appFetched, setAppFetched] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
+    const [version, setVersion] = useState<number>(0)
 
-    if (appFetched !== url) {
-        loadModuleHttp(url).then((module:any) => setAppComponent(() => module.default)).catch( setError )
-        setAppFetched(url)
+    useEffect( ()=> {
+        if (window.location.hostname === 'localhost') {
+            window.addEventListener("message", event => {
+                if (event.data.type === 'refreshCode' && isElementoOrigin(event.origin)) {
+                    setVersion((oldVersion) => oldVersion + 1)
+                }
+            })
+        }
+
+    }, [])
+
+    const versionedUrl = url + (version === 0 ? '' : `?${version}`)
+    if (appFetched !== versionedUrl) {
+        loadModuleHttp(versionedUrl).then((module:any) => setAppComponent(() => module.default)).catch( setError )
+        setAppFetched(versionedUrl)
     }
 
     if (error !== null) return <AppLoadError appUrl={url} error={error!}/>

@@ -47,7 +47,6 @@ import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
 import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
 import {Status} from './ThrottledCombinedFileWriter'
-import ServerMultiFileWriter from './ServerMultiFileWriter'
 import {PanelTitle} from './PanelTitle'
 import {Preview} from '../editorToolApis/PreviewControllerClient'
 import ConfirmOnEnterTextField from './ConfirmOnEnterTextField'
@@ -63,7 +62,7 @@ declare global {
     var showDirectoryPicker: (options: object) => Promise<FileSystemDirectoryHandle>
 }
 
-const devServerUrl = 'http://localhost:4444'
+const devServerUrl = 'http://localhost:8787'
 
 const safeJsonParse = (text: string) => {
     try {
@@ -73,7 +72,7 @@ const safeJsonParse = (text: string) => {
     }
 }
 
-const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, onErrorChange: VoidFn, projectId: string) => {
+const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, onErrorChange: VoidFn, projectId: string, previewFrame: HTMLIFrameElement | null) => {
     await projectStore.writeProjectFile(updatedProject.withoutFiles())
     const previousErrors = projectBuilder.errors
     projectBuilder.buildProjectFiles()
@@ -81,6 +80,7 @@ const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectSt
         onErrorChange()
     }
     await projectBuilder.writeProjectFiles()
+    previewFrame?.contentWindow?.postMessage({type: 'refreshCode'}, devServerUrl)
     //navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
 }
 
@@ -144,7 +144,7 @@ export default function EditorRunner() {
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
         updateUI()
-        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!)
+        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!, previewFrameRef.current)
     }
 
     const getPreviewFirebaseProject = ()=> (projectHandler.getSettings('firebase') as any).previewFirebaseProject
@@ -647,7 +647,7 @@ export default function EditorRunner() {
             const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
             const previewUrlPrefix = ''
-            const previewUrl = projectIdRef.current ? `${previewUrlPrefix}/${appName()}/` : ''
+            const previewUrl = projectIdRef.current ? `${devServerUrl}/${previewUrlPrefix}/${appName()}/` : ''
             const displayPreviewUrl = previewCurrentUrl ?? ''
             const errors = projectBuilderRef.current?.errors ?? {}
             const projectStoreName = projectHandler.name!
