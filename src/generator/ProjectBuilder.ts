@@ -1,18 +1,24 @@
 import Project, {TOOLS_ID} from '../model/Project'
 import {generate} from './Generator'
 import App from '../model/App'
-import ServerFirebaseGenerator from './ServerFirebaseGenerator'
 import {ASSET_DIR} from '../shared/constants'
 import lodash from 'lodash'
 import {AllErrors} from "./Types"
 import Tool from '../model/Tool'
-import {pickBy} from 'ramda'
+import {flatten, pickBy} from 'ramda'
+import ServerApp from '../model/ServerApp'
+import {generateServerApp} from './ServerAppGenerator'
 
 const {debounce} = lodash;
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
     getProject(): Project
+}
+
+export interface RuntimeLoader {
+    clientRuntime(): Promise<string>
+    serverRuntime(): Promise<string>
 }
 
 export interface FileLoader {
@@ -38,10 +44,11 @@ export interface CombinedFileWriter {
 export type Properties = {
     projectLoader: ProjectLoader,
     fileLoader: FileLoader,
+    runtimeLoader: RuntimeLoader,
     rootFileWriter: FileWriter,
     clientFileWriter: FileWriter,
     toolFileWriter: FileWriter,
-    serverFileWriter: ServerFileWriter,
+    serverFileWriter: FileWriter,
 }
 
 type FileSet = { [name: string]: string }
@@ -81,15 +88,9 @@ export default class ProjectBuilder {
     }
 
     async build() {
-        this.buildProjectFiles()
+        await this.buildProjectFiles()
         const {serverFileWriter} = this.props
-        if (this.project.hasServerApps) {
-            await serverFileWriter.clean()
-        }
         await Promise.all([this.writeProjectFiles(), this.copyAssetFiles()])
-        if (this.project.hasServerApps) {
-            await serverFileWriter.flush()
-        }
     }
 
     async updateAssetFile(path: string) {
@@ -100,6 +101,7 @@ export default class ProjectBuilder {
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
+    private get runtimeLoader() { return this.props.runtimeLoader }
 
     async writeProjectFiles() {
         const writeFiles = (fileHolder: FileHolder, fileWriter: FileWriter) => {
@@ -116,7 +118,7 @@ export default class ProjectBuilder {
         await Promise.all([...rootFileWritePromises, ...clientFileWritePromises, ...toolFileWritePromises, ...serverFileWritePromises])
     }
 
-    buildProjectFiles() {
+    async buildProjectFiles() {
         this.generatedErrors = {}
         const project = this.project
         const apps = project.findChildElements(App)
@@ -125,7 +127,7 @@ export default class ProjectBuilder {
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(tool => this.buildToolAppFiles(tool))
         if (this.project.hasServerApps) {
-            this.buildServerAppFiles()
+            await this.buildServerAppFiles()
         }
     }
 
@@ -134,6 +136,50 @@ export default class ProjectBuilder {
         this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, appNames))
         this.generatedRootFiles.storeFile('package.json', this.packageJson(this.project.codeName))
         this.generatedRootFiles.storeFile('index.js', this.indexJs())
+    }
+
+    private buildClientAppFiles(app: App) {
+        const {code, html, errors} = generate(app, this.project)
+        const appName = app.codeName + '/' + app.codeName + '.js'
+        const htmlRunnerFileName = app.codeName + '/' + 'index.html'
+        this.generatedClientCode.storeFile(appName, code)
+        this.generatedClientCode.storeFile(htmlRunnerFileName, html)
+        Object.assign(this.generatedErrors, errors)
+    }
+
+    private buildToolAppFiles(tool: Tool) {
+        const {code, html, errors} = generate(tool, this.project)
+        const toolName = tool.codeName + '/' + tool.codeName + '.js'
+        const htmlRunnerFileName = tool.codeName + '/' + 'index.html'
+        this.generatedToolCode.storeFile(toolName, code)
+        this.generatedToolCode.storeFile(htmlRunnerFileName, html)
+        Object.assign(this.generatedErrors, errors)
+    }
+
+    private async buildServerAppFiles() {
+        const serverApps = this.project.findChildElements(ServerApp)
+        const serverAppOutputs = serverApps.map(app => generateServerApp(app, this.project))
+        const files = flatten(serverAppOutputs.map(({files}) => files))
+        const errors = serverAppOutputs.reduce((acc, output) => ({...acc, ...output.errors}), {})
+
+        files.forEach( ({name, contents}) => this.generatedServerCode.storeFile(name, contents) )
+        Object.assign(this.generatedErrors, errors)
+        this.generatedServerCode.storeFile('serverRuntime.cjs', await this.runtimeLoader.serverRuntime())
+    }
+
+    private async copyAssetFile(filename: string) {
+        const {fileLoader, clientFileWriter} = this.props
+        const filepath = `${ASSET_DIR}/${filename}`
+        const fileContents = await fileLoader.readFile(filepath)
+        await clientFileWriter.writeFile(filepath, fileContents)
+    }
+
+    private async copyAssetFiles() {
+        const filesDirExists = await this.props.fileLoader.exists(ASSET_DIR)
+        if (filesDirExists) {
+            const files = await this.props.fileLoader.listFiles(ASSET_DIR)
+            await Promise.all(files.map( f => this.copyAssetFile(f) ))
+        }
     }
 
     private wranglerConfig(projectName: string, appNames: string[]) {
@@ -190,42 +236,4 @@ export default {
 `.trimStart()
     }
 
-    private buildClientAppFiles(app: App) {
-        const {code, html, errors} = generate(app, this.project)
-        const appName = app.codeName + '/' + app.codeName + '.js'
-        const htmlRunnerFileName = app.codeName + '/' + 'index.html'
-        this.generatedClientCode.storeFile(appName, code)
-        this.generatedClientCode.storeFile(htmlRunnerFileName, html)
-        Object.assign(this.generatedErrors, errors)
-    }
-
-    private buildToolAppFiles(tool: Tool) {
-        const {code, html, errors} = generate(tool, this.project)
-        const toolName = tool.codeName + '/' + tool.codeName + '.js'
-        const htmlRunnerFileName = tool.codeName + '/' + 'index.html'
-        this.generatedToolCode.storeFile(toolName, code)
-        this.generatedToolCode.storeFile(htmlRunnerFileName, html)
-        Object.assign(this.generatedErrors, errors)
-    }
-
-    private buildServerAppFiles() {
-        const {files, errors} = new ServerFirebaseGenerator(this.project).output()
-        files.forEach( ({name, contents}) => this.generatedServerCode.storeFile(name, contents) )
-        Object.assign(this.generatedErrors, errors)
-    }
-
-    private async copyAssetFile(filename: string) {
-        const {fileLoader, clientFileWriter} = this.props
-        const filepath = `${ASSET_DIR}/${filename}`
-        const fileContents = await fileLoader.readFile(filepath)
-        await clientFileWriter.writeFile(filepath, fileContents)
-    }
-
-    private async copyAssetFiles() {
-        const filesDirExists = await this.props.fileLoader.exists(ASSET_DIR)
-        if (filesDirExists) {
-            const files = await this.props.fileLoader.listFiles(ASSET_DIR)
-            await Promise.all(files.map( f => this.copyAssetFile(f) ))
-        }
-    }
 }

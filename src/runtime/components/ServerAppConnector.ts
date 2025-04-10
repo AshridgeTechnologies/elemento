@@ -23,7 +23,7 @@ export interface Configuration {
 }
 
 type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
-type StateProperties = {resultCache: object, versionId: string, versionFetch: Promise<string>, authSubscription?: VoidFunction }
+type StateProperties = {resultCache: object, authSubscription?: VoidFunction }
 
 export default function ServerAppConnector(_props: Properties) {
     return null
@@ -35,7 +35,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
     private get fetch() { return this.props.fetch }
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}
-    private get versionId() { return this.state.versionId}
 
     constructor(props: ExternalProperties) {
         super({fetch: globalFetch, ...props})
@@ -84,21 +83,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         return action ? this.doPostCall(name, params) : this.doGetCall(name, params)
     }
 
-    private async getVersion() {
-        if (this.versionId) return
-        if (!this.state.versionFetch) {
-            const versionFetch = this.fetch!('/version')
-                .then( resp => resp.json() )
-                .then( versionInfo => versionInfo.commitId as string)
-                .then( versionId => {
-                    this.updateVersion(versionId)
-                    return versionId
-                })
-                this.updateVersionFetch(versionFetch)
-        }
-        return this.state.versionFetch
-    }
-
     private doGetCall(name: string, params: any[]) {
         const functionArgsKey = this.getFunctionArgsKey(name, params)
         const cachedResult = this.resultCache[functionArgsKey as keyof object]
@@ -109,10 +93,9 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             const functionDef = config.functions[name]
             const paramNames = functionDef.params.slice(0, params.length)
             const queryString = paramNames.map((name, index) => `${name}=${valueOf(params[index])}`).join('&')
-            const resultPromise = this.getVersion()
-                .then(() => getIdToken())
+            const resultPromise = getIdToken()
                 .then(token => {
-                    const url = `${config.url.replace(':versionId', this.versionId)}/${name}?${queryString}`
+                    const url = `${config.url}/${name}?${queryString}`
                     const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
                     return this.fetch!(url, options)
                         .then(resp => {
@@ -144,10 +127,9 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         const paramNames = functionDef.params.slice(0, params.length)
         const objectEntries = paramNames.map((name, index) => [name, valueOf(params[index])])
         const bodyData = Object.fromEntries(objectEntries)
-        return this.getVersion()
-            .then(() => getIdToken())
+        return getIdToken()
             .then(token => {
-                const url = `${config.url.replace(':versionId', this.versionId)}/${name}`
+                const url = `${config.url}/${name}`
                 const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}
                 const headers = {...({'Content-Type': 'application/json'}), ...authHeaders} as HeadersInit
                 return this.fetch!(url, {
@@ -178,15 +160,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         this.updateState({resultCache: newCache})
     }
 
-    private updateVersion(versionId: string) {
-        this.state.versionId = versionId
-        this.updateState({versionId})
-    }
-
-    private updateVersionFetch(versionFetch: Promise<string>) {
-        this.state.versionFetch = versionFetch
-        this.updateState({versionFetch})
-    }
 }
 
 ServerAppConnector.State = ServerAppConnectorState

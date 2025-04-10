@@ -15,11 +15,6 @@ export const cloudflareFetch = async (request: Request, env: any, ctx: any, serv
         return fetch(`${elementoRuntimeHost}${pathname}`)
     }
 
-    if (pathname === '/version') {
-        const versionData = {commitId: 'preview'}
-        return new Response(JSON.stringify(versionData), {headers: {'content-type': 'application/json'}})
-    }
-
     if (pathname.startsWith('/capi/')) {
         return handleServerRequest(request, serverApps)
     }

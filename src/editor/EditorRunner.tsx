@@ -52,6 +52,7 @@ import {PanelTitle} from './PanelTitle'
 import {Preview} from '../editorToolApis/PreviewControllerClient'
 import ConfirmOnEnterTextField from './ConfirmOnEnterTextField'
 import Page from '../model/Page'
+import {StandardRuntimeLoader} from './StandardRuntimeLoader'
 
 const {debounce} = lodash
 
@@ -80,7 +81,7 @@ const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectSt
         onErrorChange()
     }
     await projectBuilder.writeProjectFiles()
-    navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
+    //navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
 }
 
 const debouncedSaveAndBuild = debounce(saveAndBuild, 100)
@@ -189,16 +190,14 @@ export default function EditorRunner() {
             new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/client/tools'),
         )
 
-        const serverFileWriter = new ServerMultiFileWriter({
-            previewUploadUrl,
-            previewPassword: getPreviewPassword,
-            onServerUpdateStatusChange,
-            writers: [new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/server')]
-        })
+        const serverFileWriter = new MultiFileWriter(
+            new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare/server')
+        )
 
         return new ProjectBuilder({
             projectLoader: new BrowserProjectLoader(() => getOpenProject()),
             fileLoader: new DiskProjectStoreFileLoader(projectStore),
+            runtimeLoader: new StandardRuntimeLoader(),
             rootFileWriter,
             clientFileWriter,
             toolFileWriter,
@@ -231,21 +230,21 @@ export default function EditorRunner() {
 
     function selectItemsInPreview(ids: string[]) {
         const idsWithinApp = ids.map( id => id.replace(/^Tools\./, ''))
-        navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids: idsWithinApp})
+        //navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids: idsWithinApp})
     }
 
     function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {
-        navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
+        //navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
     }
 
     function setPreviewServerUrl(url: string) {
         console.log('setPreviewServerUrl', url)
-        navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
+        //navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
     }
 
     function setDirHandleInServiceWorker(projectId: string, dirHandle: FileSystemDirectoryHandle) {
         console.log('setDirHandleInServiceWorker', dirHandle)
-        navigator.serviceWorker.controller!.postMessage({type: 'projectStore', projectId, dirHandle})
+        //navigator.serviceWorker.controller!.postMessage({type: 'projectStore', projectId, dirHandle})
     }
 
     function getMessageDataAndAuthorize(event: any) {
@@ -350,7 +349,7 @@ export default function EditorRunner() {
         }
         window.getProject = () => projectHandler.current
     })
-    useEffect(initServiceWorker, [])
+    // useEffect(initServiceWorker, [])
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
     useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current])
     useEffect(openInitialTools, [])
@@ -647,7 +646,7 @@ export default function EditorRunner() {
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
             const appName = () => project.findChildElements(App)[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
-            const previewUrlPrefix = `/studio/preview/${projectIdRef.current}`
+            const previewUrlPrefix = ''
             const previewUrl = projectIdRef.current ? `${previewUrlPrefix}/${appName()}/` : ''
             const displayPreviewUrl = previewCurrentUrl ?? ''
             const errors = projectBuilderRef.current?.errors ?? {}

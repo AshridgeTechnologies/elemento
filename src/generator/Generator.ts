@@ -225,7 +225,7 @@ export default class Generator {
             }
         }
         const elementoDeclarations = [toolsDeclarations, pages, appContext, themeOptions,
-            appStateDeclaration, appLevelDeclarations, containerUse, containerDeclarations, stateObjectDeclaration].filter(d => d !== '').join('\n').trimEnd()
+            appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerUse, containerDeclarations, stateObjectDeclaration].filter(d => d !== '').join('\n').trimEnd()
 
         const actionHandler = (el: Element, def: PropertyDef) => {
             const actionDef = def.type as EventActionPropertyDef
@@ -709,7 +709,7 @@ ${generateChildren(form, indentLevel2, form)}
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{
                 appName: '${serverApp.name}',
-                url: ${serverUrlExpr || `'/capi/:versionId/${serverApp.codeName}'`},
+                url: ${serverUrlExpr || `'/capi/${serverApp.codeName}'`},
                 functions: ${valueLiteral(Object.fromEntries(serverApp.functions.map(fn => [fn.codeName, functionInfo(fn)])))}
             }`
 

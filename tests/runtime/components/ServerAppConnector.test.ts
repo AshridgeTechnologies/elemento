@@ -16,7 +16,7 @@ const baseUrl = 'https://example.co/api'
 const appName = 'Server App 1'
 const configuration: Configuration = {
     appName,
-    url: `${baseUrl}/:versionId/${appName.replace(/ /, '')}`,
+    url: `${baseUrl}/${appName.replace(/ /, '')}`,
     functions: {
         GetWidget: {
             params: ['id', 'full']
@@ -30,7 +30,7 @@ const configuration: Configuration = {
         },
     }
 }
-const urlWithVersion = configuration.url.replace(':versionId', versionId)
+const urlWithVersion = configuration.url
 
 const mockJsonResponse = (data: any) => ({status: 200, ok: true, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: jest.fn().mockResolvedValue(data)})

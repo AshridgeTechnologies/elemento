@@ -25,10 +25,9 @@ export default class ServerAppGenerator {
 
     output() {
         const serverApp = this.serverApp()
-        const expressApp = this.expressApp()
 
         return {
-            files: [serverApp, expressApp],
+            files: [serverApp],
             errors: this.parser.allErrors(),
         }
     }
@@ -135,20 +134,6 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
         ].filter(isTruthy).join('\n\n')
 
         return {name: `${this.app.codeName}.mjs`, contents: serverAppCode}
-    }
-
-    private expressApp() {
-        const imports = [
-            `import {expressApp} from './serverRuntime.cjs'`,
-            `import baseAppFactory from './${this.app.codeName}.mjs'`,
-        ].join('\n')
-        const appDeclaration = `const app = expressApp(baseAppFactory)`
-        const theExports = `export default app`
-        const code = [
-            imports, appDeclaration, theExports
-        ].join('\n\n')
-
-        return {name: `${this.app.codeName}Express.js`, contents: code}
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {

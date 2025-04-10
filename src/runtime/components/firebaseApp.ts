@@ -10,7 +10,7 @@ class FirebaseAppManager {
 
     getApp() {
         if (!this.firebaseConfig) {
-            this.loadConfig()
+            // this.loadConfig()
         }
         return this.app
     }

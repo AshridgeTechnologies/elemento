@@ -9,9 +9,18 @@ Aims
 Requirements
 ------------
 
-- Client apps served
-- Server functions work
+- ✅ Client apps served
+- ✅ Server functions work
 - Client and server preview changes available almost immediately
 - Client and server changes shown on preview app automatically
+- Debugging works
+- Highlighting works
 
-- Service worker removed
+- ✅ Service worker removed
+- Express removed
+- Firebase removed
+
+Technical
+---------
+
+- Write client runtime to client files - know it matches, wrangler dev caches

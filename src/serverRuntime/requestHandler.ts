@@ -5,7 +5,7 @@ import {parseParam} from '../util/helpers'
 export type ServerAppHandler = {
     [key: string]: { func: (...args: Array<any>) => any, update: boolean, argNames: string[] }
 }
-export type AppFactory = (appName: string, user: any | null, version: string) => Promise<ServerAppHandler>
+export type AppFactory = (appName: string, user: any | null) => Promise<ServerAppHandler>
 
 export type AppFactoryMap = {[name: string]: AppFactory}
 
@@ -41,12 +41,12 @@ export const requestHandler = (appFactory: AppFactory) => async (req: Request) =
         // console.log('user id', currentUser?.uid)
         const url = new URL(req.url);
         const pathname = url.pathname
-        const match = pathname.match(/^\/capi\/(\w+)\/(\w+)\/(\w+)$/)
+        const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
         if (!match) {
             return responseError(404, 'Not Found: ' + pathname)
         }
-        const [, version, appName, functionName] = match
-        const handlerApp = await appFactory(appName, currentUser, version)
+        const [, appName, functionName] = match
+        const handlerApp = await appFactory(appName, currentUser)
 
         const {func, update, argNames} = handlerApp[functionName] ?? {}
         if (!func) {
@@ -70,12 +70,12 @@ export const requestHandler = (appFactory: AppFactory) => async (req: Request) =
 export const handleServerRequest = async (req: Request, apps: AppFactoryMap) => {
     const url = new URL(req.url);
     const pathname = url.pathname
-    const match = pathname.match(/^\/capi\/(\w+)\/(\w+)\/(\w+)$/)
+    const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
     if (!match) {
         return new Response('Not Found: ' + pathname, {status: 404})
     }
 
-    const [, , app] = match
+    const [, app] = match
     const appFactory = apps[app]
     console.log('appFactory', appFactory)
     const handler = requestHandler(appFactory)
