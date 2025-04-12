@@ -19,7 +19,7 @@ Requirements
 
 - ✅ Service worker removed
 - ✅ Express removed
-- Firebase removed
+- ~~Firebase removed~~  Later
 
 Technical
 ---------

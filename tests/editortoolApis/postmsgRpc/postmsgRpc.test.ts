@@ -1,5 +1,5 @@
-import {caller, observer} from '../../../src/editorToolApis/postmsgRpc/client'
-import {expose, exposeFunctions} from '../../../src/editorToolApis/postmsgRpc/server'
+import {caller, observer} from '../../../src/shared/postmsgRpc/client'
+import {expose, exposeFunctions} from '../../../src/shared/postmsgRpc/server'
 import fakeWindows from './helpers/fake-windows'
 import fs from 'fs'
 import {wait} from '../../testutil/testHelpers'
@@ -7,7 +7,30 @@ import SendObservable from '../../../src/util/SendObservable'
 
 const Fruits = JSON.parse(fs.readFileSync(__dirname + '/fixtures/fruits.json', 'utf8'))
 
-test('should fetch data from remote', async () => {
+test('should fetch data from remote function that returns data', async () => {
+  const [ server, client ] = fakeWindows()
+
+  const fruitService = {
+    getFruits: () => Fruits
+  }
+
+  expose('getFruits', fruitService.getFruits, {
+    addListener: server.addEventListener,
+    removeListener: server.removeEventListener,
+  })
+
+  const getFruits = caller('getFruits', {
+    addListener: client.addEventListener,
+    removeListener: client.removeEventListener,
+    postMessage: server.postMessage
+  })
+
+  const fruits = await getFruits()
+
+  expect(fruits).toStrictEqual(Fruits)
+})
+
+test('should fetch data from remote function that returns promise', async () => {
   const [ server, client ] = fakeWindows()
 
   const fruitService = {

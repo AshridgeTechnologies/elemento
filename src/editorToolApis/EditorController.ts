@@ -11,7 +11,7 @@ import {
     selectSingleElement,
     setElementValue,
     showPointer, updateStoredOptions
-} from './controllerHelpers'
+} from '../shared/controllerHelpers'
 import ProjectHandler from '../editor/ProjectHandler'
 import {ElementId} from '../model/Types'
 import HotSendObservable from '../util/HotSendObservable'

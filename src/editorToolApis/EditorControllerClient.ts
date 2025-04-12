@@ -1,21 +1,21 @@
-import {callParent, observeParent} from './controllerHelpers'
 import {loadJSON} from '../model/loadJSON'
+import {callRpc, observeRpc} from '../shared/rpcHelpers'
 
 export default class EditorControllerClient {
-    public SelectedItemId = observeParent('Editor.SelectedItemId')
-    public SelectedText = observeParent('Editor.SelectedText')
-    public Project = observeParent('Editor.Project', loadJSON)
-    public SetOptions = callParent('Editor.SetOptions')
-    public Show = callParent('Editor.Show')
-    public Click = callParent('Editor.Click')
-    public ContextClick = callParent('Editor.ContextClick')
-    public SetValue = callParent('Editor.SetValue')
-    public GetValue = callParent('Editor.GetValue')
-    public EnsureFormula = callParent('Editor.EnsureFormula')
-    public EnsureTreeItemsExpanded = callParent('Editor.EnsureTreeItemsExpanded')
-    public GetGitHubUrl = callParent('Editor.GetGitHubUrl')
-    public GetSettings = callParent('Editor.GetSettings')
-    public UpdateSettings = callParent('Editor.UpdateSettings')
+    public SelectedItemId = observeRpc('Editor.SelectedItemId')
+    public SelectedText = observeRpc('Editor.SelectedText')
+    public Project = observeRpc('Editor.Project', loadJSON)
+    public SetOptions = callRpc('Editor.SetOptions')
+    public Show = callRpc('Editor.Show')
+    public Click = callRpc('Editor.Click')
+    public ContextClick = callRpc('Editor.ContextClick')
+    public SetValue = callRpc('Editor.SetValue')
+    public GetValue = callRpc('Editor.GetValue')
+    public EnsureFormula = callRpc('Editor.EnsureFormula')
+    public EnsureTreeItemsExpanded = callRpc('Editor.EnsureTreeItemsExpanded')
+    public GetGitHubUrl = callRpc('Editor.GetGitHubUrl')
+    public GetSettings = callRpc('Editor.GetSettings')
+    public UpdateSettings = callRpc('Editor.UpdateSettings')
 }
 
 export const Editor = new EditorControllerClient()

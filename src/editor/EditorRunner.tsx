@@ -40,15 +40,14 @@ import ToolImport from '../model/ToolImport'
 import ToolTabsPanel from './ToolTabsPanel'
 import EditorController from '../editorToolApis/EditorController'
 import {editorDialogContainer} from './EditorElement'
-import PreviewController from '../editorToolApis/PreviewController'
 import {OpenFromGitHubDialog} from './actions/OpenFromGitHub'
 import {SaveAsDialog} from './actions/SaveAs'
 import {OpenDialog} from './actions/Open'
 import SettingsHandler from './SettingsHandler'
-import {exposeFunctions} from '../editorToolApis/postmsgRpc/server'
+import {exposeFunctions} from '../shared/postmsgRpc/server'
 import {Status} from './ThrottledCombinedFileWriter'
 import {PanelTitle} from './PanelTitle'
-import {Preview} from '../editorToolApis/PreviewControllerClient'
+import PreviewControllerClient, {Preview} from '../shared/PreviewControllerClient'
 import ConfirmOnEnterTextField from './ConfirmOnEnterTextField'
 import Page from '../model/Page'
 import {StandardRuntimeLoader} from './StandardRuntimeLoader'
@@ -122,6 +121,7 @@ export default function EditorRunner() {
     const [showTools, setShowTools] = useState<boolean>(false)
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
     const [previewCurrentUrl, setPreviewCurrentUrl] = useState<string>('')
+    const [previewController, setPreviewController] = useState<PreviewControllerClient>()
     const projectStoreRef = useRef<DiskProjectStore>()
     const projectIdRef = useRef<string>()
     const projectBuilderRef = useRef<ProjectBuilder>()
@@ -265,39 +265,6 @@ export default function EditorRunner() {
         console.warn('Unauthorised access from tool', tool.name)
         return null
     }
-
-    const initServiceWorker = () => {
-
-        if (!navigator.serviceWorker) {
-            console.error('navigator.serviceWorker not available')
-            return
-        }
-
-        const doInit = () => {
-            console.log('Initializing service worker')
-            navigator.serviceWorker.onmessage = (event) => {
-                const message = event.data
-                if (message.type === 'componentSelected') {
-                    const {id} = message
-                    const selectedItem = getOpenProject().findElementByPath(id)
-                    onSelectedItemsChange(selectedItem ? [selectedItem.id] : [])
-                }
-                if (message.type === 'dirHandleRequest') {
-                    if (projectIdRef.current && message.projectId === projectIdRef.current && projectStoreRef.current) {
-                        setDirHandleInServiceWorker(projectIdRef.current, projectStoreRef.current?.dirHandle)
-                    }
-                }
-            }
-        }
-
-        waitUntil(() => navigator.serviceWorker.controller, 500, 5000).then(() => doInit())
-            .catch(() => {
-                console.error('Timed out waiting for service worker')
-                // console.log('Reloading')
-                // window.location.reload()
-            })
-    }
-
     const openInitialProjectIfSupplied = () => {
         const searchParams = new URLSearchParams(location.search)
         const initialProjectUrl = searchParams.get('openFromGitHub')
@@ -324,9 +291,10 @@ export default function EditorRunner() {
         const previewWindow = previewFrame?.contentWindow
 
         if (previewWindow) {
-            const controller = new PreviewController(previewWindow)
+            const controller = new PreviewControllerClient(previewWindow)
+            setPreviewController(controller)
             const closeFn = exposeFunctions('Preview', controller)
-            console.log('Preview controller initialised')
+            console.log('Preview controller client initialised in editor')
             return closeFn
         }
     }
@@ -351,13 +319,15 @@ export default function EditorRunner() {
     })
     // useEffect(initServiceWorker, [])
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
-    useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current])
+    useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current?.contentWindow])
     useEffect(openInitialTools, [])
     useEffect(sendSelectionToTools, [])
     useEffect(() => {
-        const subscription = Preview.Url().subscribe(setPreviewCurrentUrl)
-        return () => subscription.unsubscribe()
-    }, [previewFrameRef.current])
+        if (previewController) {
+            const subscription = previewController.Url().subscribe(setPreviewCurrentUrl)
+            return () => subscription.unsubscribe()
+        }
+    }, [previewController])
 
     const isFileElement = (id: ElementId) => getOpenProject().findElement(id)?.kind === 'File'
     const itemNameFn = (id: ElementId) => getOpenProject().findElement(id)?.name ?? id
@@ -665,9 +635,9 @@ export default function EditorRunner() {
                 Preview.SetUrl(path)
             }
 
-            const previewBack = ()=> Preview.Back()
-            const previewForward = ()=> Preview.Forward()
-            const previewReload = ()=> Preview.Reload()
+            const previewBack = ()=> previewController?.Back()
+            const previewForward = ()=> previewController?.Forward()
+            const previewReload = ()=> previewController?.Reload()
 
             const appBarTitle = `Elemento Studio - ${projectStoreName}`
             const OverallAppBar = <Box flex='0'>

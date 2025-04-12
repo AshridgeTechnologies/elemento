@@ -70,6 +70,9 @@ Tasks
 - Cloudflare D1 datastore
 - Cloudflare KV datastore
 - Cloudflare Durable object datastore
+- Alternative authentication
+- Remove Firebase
+- Remove preview server
 
 Issues
 ------

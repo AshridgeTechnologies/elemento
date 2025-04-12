@@ -5,7 +5,7 @@ import {Delete, HorizontalRule, PlayCircleOutline, SaveAlt} from '@mui/icons-mat
 import {Editor} from '../editorToolApis/EditorControllerClient'
 import Project from '../model/Project'
 import {isEventAction, isExpr, notBlank} from '../util/helpers'
-import {Preview} from '../editorToolApis/PreviewControllerClient'
+import {Preview} from '../shared/PreviewControllerClient'
 import {pickBy} from 'ramda'
 import {DebugData} from '../runtime/debug'
 import Generator from '../generator/Generator'

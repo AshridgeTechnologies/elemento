@@ -2,6 +2,9 @@ import React, {FunctionComponent, useEffect, useState} from 'react'
 import AppRunner from './AppRunner'
 import AppLoadError from './AppLoadError'
 import {loadModuleHttp} from './loadModuleHttp'
+import PreviewController from '../shared/PreviewController'
+import {exposeFunctions} from '../shared/postmsgRpc/server'
+import AppContext from '../runtime/AppContext'
 
 type Properties = {url: string, pathPrefix: string, resourceUrl: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 
@@ -15,16 +18,27 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
     const [error, setError] = useState<Error | null>(null)
     const [version, setVersion] = useState<number>(0)
 
+    const isPreviewWindow = window.location.hostname === 'localhost'
     useEffect( ()=> {
-        if (window.location.hostname === 'localhost') {
+        if (isPreviewWindow) {
             window.addEventListener("message", event => {
                 if (event.data.type === 'refreshCode' && isElementoOrigin(event.origin)) {
                     setVersion((oldVersion) => oldVersion + 1)
                 }
             })
+
+            const controller = new PreviewController(window)
+            const closeFn = exposeFunctions('Preview', controller)
+            console.log('Preview controller initialised in app window')
+            return closeFn
         }
 
     }, [])
+
+    let appContextHook
+    if (isPreviewWindow) {
+        appContextHook = (appContext: AppContext) => (window as any).appContext = appContext
+    }
 
     const versionedUrl = url + (version === 0 ? '' : `?${version}`)
     if (appFetched !== versionedUrl) {
@@ -34,5 +48,5 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
 
     if (error !== null) return <AppLoadError appUrl={url} error={error!}/>
     if (appComponent === null) return <p>Loading...</p>
-    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId})
+    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appContextHook})
 }

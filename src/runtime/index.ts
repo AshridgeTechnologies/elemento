@@ -4,7 +4,7 @@ import {globalFunctions} from './globalFunctions'
 
 export {components, globalFunctions, types}
 export {Editor} from '../editorToolApis/EditorControllerClient'
-export {Preview} from '../editorToolApis/PreviewControllerClient'
+export {Preview} from '../shared/PreviewControllerClient'
 export {default as React} from 'react'
 export {default as ReactDOM} from 'react-dom/client'
 export {default as appFunctions} from './appFunctions'

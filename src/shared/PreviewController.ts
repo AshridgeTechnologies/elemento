@@ -103,7 +103,7 @@ export default class PreviewController {
     }
 
     Url() {
-        return 'to be reviewed' //timerObservable(window, () => this.appContext?.getUrlString() ?? '')
+        return timerObservable(window, () => this.appContext?.getUrlString() ?? '')
     }
 
     SetUrl(url: string) {
