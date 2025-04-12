@@ -1,8 +1,9 @@
-import {CombinedPropertyValue, ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr, PropertyValue} from '../model/Types'
+import {CombinedPropertyValue, ElementType, EventActionPropertyDef, PropertyDef, PropertyExpr} from '../model/Types'
 import lodash from 'lodash'
 import Element from '../model/Element'
 import {parseISO} from 'date-fns'
 import {pickBy} from 'ramda'
+import {ensureSlash} from '../runtime/runtimeFunctions'
 
 const {isObject} = lodash
 
@@ -133,4 +134,7 @@ export const wordAtPosition = (text: string, position: number) => {
     const previousWord = text.slice(previousWordPosition).match(/\w+/)?.[0]
     if (!previousWord || position > previousWordPosition + previousWord.length) return ''
     return previousWord
+}
+export const removePrefix = (pathname: string, prefix: string | null) => {
+    return pathname.replace(new RegExp(`^${ensureSlash(prefix)}`), '')
 }

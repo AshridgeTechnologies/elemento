@@ -2,6 +2,7 @@ import {asQueryString} from './Url'
 import {BrowserHistory, createBrowserHistory} from 'history'
 import {without} from 'ramda'
 import {ensureSlash} from './runtimeFunctions'
+import {removePrefix} from '../util/helpers'
 
 interface LocationType {
     origin: string,
@@ -40,10 +41,6 @@ const convertSearch = (search: string) => {
     const itemPairs = search.replace(/^\?/, '').split(/&/).filter( pair => !!pair)
     const entries = itemPairs.map(pair => pair.split(/=/))
     return Object.fromEntries(entries)
-}
-
-const removePrefix = (pathname: string, prefix: string | null) => {
-    return pathname.replace(new RegExp(`^${ensureSlash(prefix)}`), '')
 }
 
 export class DefaultAppContext implements AppContext {

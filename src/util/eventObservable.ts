@@ -2,7 +2,9 @@ import Observable from 'zen-observable'
 import {without} from 'ramda'
 import {Observer} from './SendObservable'
 
-export default function eventObservable(window: Window, eventType: string, getDataFromEvent: (evt: Event) => any)  {
+type EventSource = {addEventListener: typeof Window.prototype.addEventListener, removeEventListener: typeof Window.prototype.removeEventListener}
+
+export default function eventObservable(eventSource: EventSource, eventType: string, getDataFromEvent: (evt: Event) => any)  {
     let observers: Observer<Event>[] = []
     const handler = (event: Event) => {
         const data = getDataFromEvent(event)
@@ -12,7 +14,7 @@ export default function eventObservable(window: Window, eventType: string, getDa
     return new Observable(observer => {
 
         if (observers.length === 0) {
-            window.addEventListener(eventType, handler)
+            eventSource.addEventListener(eventType, handler)
         }
         observers.push(observer)
 
@@ -20,7 +22,7 @@ export default function eventObservable(window: Window, eventType: string, getDa
         return () => {
             observers = without([observer], observers)
             if (observers.length === 0) {
-                window.removeEventListener(eventType, handler)
+                eventSource.removeEventListener(eventType, handler)
             }
         }
     })

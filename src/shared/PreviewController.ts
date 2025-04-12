@@ -16,7 +16,6 @@ import {mapValues} from 'radash'
 import {Value} from '../runtime/runtimeFunctions'
 import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
-import timerObservable from '../util/timerObservable'
 import AppContext from '../runtime/AppContext'
 import Observable from 'zen-observable'
 
@@ -107,7 +106,14 @@ export default class PreviewController {
     }
 
     Url() {
-        return timerObservable(window, () => this.appContext?.getUrlString() ?? '')
+        return eventObservable((this.window as any).navigation, 'navigate', (event: any) => {
+            const url = new URL(event.destination.url)
+            const pathname = '/' + url.pathname.split('/').slice(2)
+            const queryString = url.search
+            const queryPart = queryString ? '?' + queryString : ''
+            const hashPart = url.hash ? '#' + url.hash : ''
+            return pathname + queryPart + hashPart
+        })
     }
 
     SetUrl(url: string) {
