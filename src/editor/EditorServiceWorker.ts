@@ -125,7 +125,7 @@ export default class EditorServiceWorker {
         try {
             if (!projectStore) {
                 await this.sendToClients('dirHandleRequest', {projectId})
-                projectStore = await waitUntil(() => this.projectStores.get(projectId), 50, this.dirHandleTimeout)
+                projectStore = await waitUntil(() => this.projectStores.get(projectId), {intervalTime: 50, timeout: this.dirHandleTimeout})
             }
             if (!projectStore) {
                 console.warn('Failed reading', path, 'projectStore not set')
@@ -145,7 +145,7 @@ export default class EditorServiceWorker {
         try {
             if (!projectStore) {
                 await this.sendToClients('dirHandleRequest', {projectId})
-                projectStore = await waitUntil(() => this.projectStores.get(projectId), 50, this.dirHandleTimeout)
+                projectStore = await waitUntil(() => this.projectStores.get(projectId), {intervalTime: 50, timeout: this.dirHandleTimeout})
             }
             if (!projectStore) {
                 console.warn('Failed reading', path, 'projectStore not set')

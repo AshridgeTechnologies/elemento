@@ -50,34 +50,49 @@ export const parseParam = (param: string) => {
     return param
 }
 
-export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5000): Promise<T> => {
-    const startTime = new Date().getTime()
+export const waitUntil = async <T>(fn: () => T, opts: {intervalTime?: number, timeout?: number, ignoreErrors?: boolean} = {}): Promise<T> => {
+    const {intervalTime = 1000, timeout = 5000, ignoreErrors = false} = opts
+
+    const waitForResult = (): Promise<T> => new Promise((resolve, reject) => {
+        const startTime = new Date().getTime()
+        const timer = setInterval(async () => {
+            const checkForTimeout = () => {
+                if (new Date().getTime() - startTime > timeout) {
+                    clearInterval(timer)
+                    reject(new Error('Max wait reached for ' + fn.toString()))
+                }
+            }
+            try {
+                const result = await fn()
+                if (result) {
+                    clearInterval(timer)
+                    resolve(result)
+                } else {
+                    checkForTimeout()
+                }
+            } catch (e) {
+                if (!ignoreErrors) {
+                    clearInterval(timer)
+                    reject(e)
+                } else {
+                    checkForTimeout()
+                }
+            }
+        }, intervalTime)
+    })
+
     try {
         const result = await fn()
         if (result) {
             return Promise.resolve(result)
-        } else {
-            return new Promise((resolve, reject) => {
-                const timer = setInterval(async () => {
-                    try {
-                        const result = await fn()
-                        if (result) {
-                            clearInterval(timer)
-                            resolve(result)
-                        } else if (new Date().getTime() - startTime > timeout) {
-                            clearInterval(timer)
-                            reject(new Error('Max wait reached for ' + fn.toString()))
-                        }
-                    } catch (e) {
-                        clearInterval(timer)
-                        reject(e)
-                    }
-                }, intervalTime)
-            })
         }
     } catch (e) {
-        return Promise.reject(e)
+        if (!ignoreErrors) {
+            return Promise.reject(e)
+        }
     }
+    return waitForResult()
+
 }
 export const wait = (time: number = 200): Promise<void> => new Promise(resolve => setTimeout(resolve, time))
 export const pathSegments = (path: string) => path.split('/')

@@ -67,7 +67,7 @@ export const getScrollableParent = (el: HTMLElement | null): HTMLElement => {
 
 export const ensureVisible = (element: HTMLElement) => {
     element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'})
-    return waitUntil( ()=> isScrolledIntoView(element), 20, 2000 )
+    return waitUntil( ()=> isScrolledIntoView(element), {intervalTime: 20, timeout: 2000} )
 }
 
 export const isScrolledIntoView = (element: HTMLElement) => {

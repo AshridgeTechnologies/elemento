@@ -44,6 +44,10 @@ export default class PreviewController {
         })
     }
 
+    IsReady() {
+        return true
+    }
+
     Show(selector?: string) {
         console.log('Show', selector)
         const elements = selector ? selectElements('id', this.container, selector) : []

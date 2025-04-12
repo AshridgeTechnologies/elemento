@@ -39,6 +39,7 @@ Technical approach
 - ✅ App window exposes functions via postMsgRpc
 - ✅ EditorRunner creates a PCC on the preview frame window and exposes it for tools
 - ✅ Preview variable for tools is the static one using parent window default
-- Ensure subscription to Url is made after PC initialised in app window
+- ✅ Ensure subscription to Url is made after PC initialised in app window
+- Unit test waitUntil, rpc timeout
 - Avoid having all of testing-library in runtime for every app
 - Use navigation api for url, back, forward etc

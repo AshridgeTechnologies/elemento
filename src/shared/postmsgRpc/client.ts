@@ -3,39 +3,46 @@ import {identity} from 'ramda'
 
 const uniqueId = () => Date.now().toString() + '-' + (Math.random() * 1000000).toString().substring(6)
 
-export function caller (funcName: string, opts: any = {}) {
-  const addListener = opts.addListener || globalThis.addEventListener
-  const removeListener = opts.removeListener || globalThis.removeEventListener
-  const postMessage = opts.postMessage || globalThis.postMessage
-  const targetOrigin = opts.targetOrigin || '*'
+export function caller(funcName: string, opts: any = {}) {
+    const addListener = opts.addListener || globalThis.addEventListener
+    const removeListener = opts.removeListener || globalThis.removeEventListener
+    const postMessage = opts.postMessage || globalThis.postMessage
+    const targetOrigin = opts.targetOrigin || '*'
+    const timeout = opts.timeout || 0
 
-  return function (...args: any[]): Promise<any> {
-    const msg = {
-      sender: 'elemento-postmsg-rpc/client',
-      id: uniqueId(),
-      func: funcName,
-      args
-    }
-
-    return new Promise((resolve, reject) => {
-      const handler = function (event: MessageEvent) {
-        const {data} = event
-        if (!data || data.sender !== 'elemento-postmsg-rpc/server' || data.id !== msg.id) return
-        removeListener('message', handler)
-
-        if (data.err) {
-          const err = new Error(`Unexpected error calling ${funcName}`)
-          Object.assign(err, data.err)
-          reject(err)
-        } else {
-          resolve(data.res)
+    return function (...args: any[]): Promise<any> {
+        const msg = {
+            sender: 'elemento-postmsg-rpc/client',
+            id: uniqueId(),
+            func: funcName,
+            args
         }
-      }
 
-      addListener('message', handler)
-      postMessage(msg, targetOrigin)
-    })
-  }
+        return new Promise((resolve, reject) => {
+            const handleTimeout = () => {
+                removeListener('message', handler)
+                reject(new Error(`Timeout calling ${funcName}`))
+            }
+            const timer = timeout ? setTimeout(handleTimeout, timeout) : null
+            const handler = function (event: MessageEvent) {
+                const {data} = event
+                if (!data || data.sender !== 'elemento-postmsg-rpc/server' || data.id !== msg.id) return
+                removeListener('message', handler)
+                timer && clearTimeout(timer)
+
+                if (data.err) {
+                    const err = new Error(`Unexpected error calling ${funcName}`)
+                    Object.assign(err, data.err)
+                    reject(err)
+                } else {
+                    resolve(data.res)
+                }
+            }
+
+            addListener('message', handler)
+            postMessage(msg, targetOrigin)
+        })
+    }
 }
 
 export function observer(funcName: string, opts: any = {}) {

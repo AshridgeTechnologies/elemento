@@ -292,9 +292,11 @@ export default function EditorRunner() {
 
         if (previewWindow) {
             const controller = new PreviewControllerClient(previewWindow)
-            setPreviewController(controller)
+            waitUntil(() => controller.IsReady(), {intervalTime: 200, ignoreErrors: true}).then( ()=> {
+                setPreviewController(controller)
+                console.log('Preview controller client ready in editor')
+            })
             const closeFn = exposeFunctions('Preview', controller)
-            console.log('Preview controller client initialised in editor')
             return closeFn
         }
     }

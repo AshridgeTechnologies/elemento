@@ -4,6 +4,7 @@ export default class PreviewControllerClient {
     constructor(public win: Window) {
     }
 
+    private isReady = callRpc('Preview.IsReady', this.win, 100)
     private show = callRpc('Preview.Show', this.win)
     private click = callRpc('Preview.Click', this.win)
     private setValue = callRpc('Preview.SetValue', this.win)
@@ -16,6 +17,10 @@ export default class PreviewControllerClient {
     private back = callRpc('Preview.Back', this.win)
     private forward = callRpc('Preview.Forward', this.win)
     private reload = callRpc('Preview.Reload', this.win)
+
+    IsReady() {
+        return this.isReady()
+    }
 
     Show(selector?: string) {
         return this.show(selector)
