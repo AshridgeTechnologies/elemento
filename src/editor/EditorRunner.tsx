@@ -230,6 +230,7 @@ export default function EditorRunner() {
 
     function selectItemsInPreview(ids: string[]) {
         const idsWithinApp = ids.map( id => id.replace(/^Tools\./, ''))
+        previewController?.Highlight(idsWithinApp)
         //navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids: idsWithinApp})
     }
 

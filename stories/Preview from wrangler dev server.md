@@ -15,7 +15,7 @@ Requirements
 - ✅ Client changes shown on preview app automatically
 - Server changes shown on preview app automatically
 - Debugging works
-- Highlighting works
+- ✅ Highlighting works
 
 - ✅ Service worker removed
 - ✅ Express removed

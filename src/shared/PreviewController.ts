@@ -18,6 +18,8 @@ import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
 import Observable from 'zen-observable'
 import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
+import {ElementId} from '../model/Types'
+import {flatten} from 'ramda'
 
 
 export function valueOf<T>(x: Value<T>): T {
@@ -44,6 +46,14 @@ export default class PreviewController {
 
     IsReady() {
         return true
+    }
+
+    Highlight(elementIds: ElementId[]) {
+        const elements = flatten(elementIds.map(id => selectElements('id', this.container, id)))
+        highlightElements(elements, this.container)
+        if (elements.length >= 1) {
+            ensureVisible(elements[0] as HTMLElement)
+        }
     }
 
     Show(selector?: string) {

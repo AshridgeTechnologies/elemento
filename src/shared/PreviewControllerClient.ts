@@ -1,10 +1,12 @@
 import {callRpc, observeRpc} from './rpcHelpers'
+import {ElementId} from '../model/Types'
 
 export default class PreviewControllerClient {
     constructor(public win: Window) {
     }
 
     private isReady = callRpc('Preview.IsReady', this.win, 100)
+    private highlight = callRpc('Preview.Highlight', this.win)
     private show = callRpc('Preview.Show', this.win)
     private click = callRpc('Preview.Click', this.win)
     private setValue = callRpc('Preview.SetValue', this.win)
@@ -21,6 +23,10 @@ export default class PreviewControllerClient {
 
     IsReady() {
         return this.isReady()
+    }
+
+    Highlight(elementIds: ElementId[]) {
+        return this.highlight(elementIds)
     }
 
     Show(selector?: string) {
