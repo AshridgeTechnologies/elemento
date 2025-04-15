@@ -10,10 +10,11 @@ export const convertSearch = (search: string) => {
     return Object.fromEntries(entries)
 }
 
-export const urlChangeObservable: Observable<any> = eventObservable((window as any).navigation, 'navigate', (event: any) => event.destination.url)
+let urlChangeObservable: Observable<any>
+export const getUrlChangeObservable = () => urlChangeObservable ??= eventObservable((window as any).navigation, 'navigate', (event: any) => event.destination.url)
 
 export const onUrlChange = (callback: CallbackFn) => {
-    return urlChangeObservable.subscribe(callback)
+    return getUrlChangeObservable().subscribe(callback)
 }
 
 export const goBack = () => {

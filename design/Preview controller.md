@@ -42,4 +42,4 @@ Technical approach
 - ✅ Ensure subscription to Url is made after PC initialised in app window
 - Unit test waitUntil, rpc timeout
 - Avoid having all of testing-library in runtime for every app
-- Use navigation api for url, back, forward etc, remove AppContext
+- ✅ Use navigation api for url, back, forward etc,  AppContext only for path and resource url 

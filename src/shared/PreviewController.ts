@@ -17,7 +17,7 @@ import {Value} from '../runtime/runtimeFunctions'
 import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
 import Observable from 'zen-observable'
-import {goBack, goForward, pushUrl, urlChangeObservable} from '../runtime/navigationHelpers'
+import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
 
 
 export function valueOf<T>(x: Value<T>): T {
@@ -105,7 +105,7 @@ export default class PreviewController {
     }
 
     Url() {
-        return urlChangeObservable.map( url => this.normalizeUrl(url) )
+        return getUrlChangeObservable().map( url => this.normalizeUrl(url) )
     }
 
     GetUrl() {
