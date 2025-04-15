@@ -8,7 +8,7 @@ import {flatten, uniq} from 'ramda'
 import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
 import {valueLiteral} from './generatorHelpers'
-import {dummyAppContext} from '../runtime/AppContext'
+import {dummyUrlContext} from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentInstance from '../model/ComponentInstance'
@@ -17,7 +17,7 @@ type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
-const appStateFunctions = Object.keys(new AppData({pages:{}, appContext: dummyAppContext})).filter( fnName => !['props', 'state'].includes(fnName))
+const appStateFunctions = Object.keys(new AppData({pages:{}, urlContext: dummyUrlContext})).filter(fnName => !['props', 'state'].includes(fnName))
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctionsNames().includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)

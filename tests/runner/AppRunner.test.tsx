@@ -10,7 +10,7 @@ import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
 import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
-import AppContext from '../../src/runtime/AppContext'
+import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
 import {TextInput} from '../../src/runtime/components'
 
@@ -61,11 +61,11 @@ const testApp = (version: string) => {
         }
     }
 
-    function AppOne(props: {appContext: AppContext}) {
+    function AppOne(props: {appContext: UrlContext}) {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
-        const appContext = Elemento.useGetAppContext() as AppContext
+        const appContext = Elemento.useGetUrlContext() as UrlContext
         const app = setObject('AppOne', new App.State({pages, appContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
@@ -86,7 +86,7 @@ const badApp = () => {
         )
     }
 
-    function AppOne(props: {appContext: AppContext}) {
+    function AppOne(props: {appContext: UrlContext}) {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components

@@ -73,7 +73,7 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [],
     const pagePath = path + '.' + currentPage.name
 
     useEffect( () => { insertFontLink(fonts) }, [] )
-    const fullFaviconUrl = state.appContext.getFullUrl(faviconUrl)
+    const fullFaviconUrl = state.urlContext.getFullUrl(faviconUrl)
     useEffect( () => { insertFaviconLink(fullFaviconUrl) }, [fullFaviconUrl] )
     useEffect( () => { startupAction() }, [] ) // wrap startupAction to ensure no result is returned to useEffect
     useEffect(() => subscribeToNotifications( notify ), [])

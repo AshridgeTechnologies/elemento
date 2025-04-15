@@ -5,7 +5,7 @@ import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
 import {previewPathComponents} from '../util/helpers'
-import AppContext from './AppContext'
+import UrlContext from './UrlContext'
 
 let root: Root
 

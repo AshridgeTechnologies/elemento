@@ -1,4 +1,4 @@
-import AppContext from '../AppContext'
+import UrlContext from '../UrlContext'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {AppStateForObject} from '../appData'
 import {shallow} from 'zustand/shallow'
@@ -12,7 +12,7 @@ import {goBack, onUrlChange} from '../navigationHelpers'
 
 type StateExternalProps = {
     pages: { [key: string]: FunctionComponent },
-    appContext: AppContext,
+    urlContext: UrlContext,
     themeOptions: ThemeOptions
 }
 type StateInternalProps = {
@@ -40,8 +40,8 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         return pagesEqual && propsEqual
     }
 
-    get appContext() {
-        return this.props.appContext
+    get urlContext() {
+        return this.props.urlContext
     }
 
     get currentPage() {
@@ -65,7 +65,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     Theme = () => this.theme ??= createTheme(this.props.themeOptions)
 
     CurrentUrl = () => {
-        const {location, pathPrefix} = this.appContext.getUrl()
+        const {location, pathPrefix} = this.urlContext.getUrl()
         const {origin, pathname, query, hash} = location
         return new Url(origin, pathname, pathPrefix, query, hash)
     }
@@ -81,12 +81,12 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
             const path = '/' + [this._path, pageName, ...pathSegments].join('/')
             const remainingArgs = dropWhile(isString, argValues)
             const [query, anchor] = [...remainingArgs, null, null]
-            this.appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
+            this.urlContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
         }
     }
 
     FileUrl = (filename: PropVal<string>) => {
-        return this.appContext.getResourceUrl(valueOf(filename))
+        return this.urlContext.getResourceUrl(valueOf(filename))
     }
 
     SendMessage = (targetName: string | number, message: any) => {

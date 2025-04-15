@@ -1,10 +1,10 @@
 import React, {CSSProperties, useContext} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import MuiImage from 'mui-image'
-import {AppContextContext} from '../../runner/AppRunner'
+import {UrlContextContext} from '../../runner/AppRunner'
 import {omit, pick} from 'ramda'
 import {sxProps} from './ComponentHelpers'
-import AppContext from '../AppContext'
+import UrlContext from '../UrlContext'
 
 type Properties = Readonly<{
     path: string,
@@ -25,12 +25,12 @@ const wrapperStyles = [
 ]
 
 export default function Image({path, ...props}: Properties) {
-    const appContext = useContext(AppContextContext) as AppContext
+    const urlContext = useContext(UrlContextContext) as UrlContext
 
     const {source, description, show, styles = {}} = valueOfProps(props)
     const wrapperStylesProps = sxProps(pick(wrapperStyles, styles), show) as CSSProperties
     const imageStylesProps = sxProps(omit(wrapperStyles, styles))
-    const src = appContext.getFullUrl(source)
+    const src = urlContext.getFullUrl(source)
 
     // @ts-ignore unknown property id
     return React.createElement(MuiImage, {id: path, src,

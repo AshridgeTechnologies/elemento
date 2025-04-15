@@ -9,7 +9,7 @@ import {StoreProvider} from '../../../src/runtime/appData'
 import {setObject, useObject} from '../../../src/runtime/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import '@testing-library/jest-dom'
-import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
+import UrlContext, {DefaultUrlContext, UrlType} from '../../../src/runtime/UrlContext'
 import Url from '../../../src/runtime/Url'
 import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
@@ -33,10 +33,10 @@ const urlForPage = (page: string): UrlType => ({
     }, pathPrefix: null
 })
 
-let appContext: AppContext
+let appContext: UrlContext
 
-function getRealAppContext(initialPath = '/'): [AppContext] {
-    const appContext = new DefaultAppContext(null, undefined)
+function getRealAppContext(initialPath = '/'): [UrlContext] {
+    const appContext = new DefaultUrlContext(null, undefined)
     return [appContext]
 }
 
@@ -221,7 +221,7 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
 test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null
     const pages = {Page1, Page2}
-    const updateUrlSpy = jest.spyOn(DefaultAppContext.prototype, 'updateUrl');
+    const updateUrlSpy = jest.spyOn(DefaultUrlContext.prototype, 'updateUrl');
     const state = new App.State({pages, appContext})
     expect(state.currentPage).toBe(Page1)
     appContext.updateUrl('/Page2', null, null)
@@ -283,7 +283,7 @@ test('App.State can get current url object', () => {
     const query = {a: '10', b: 'foo'}
     const hash = '#id123'
     const pathPrefix = 'someapp/somewhere'
-    const appContext: AppContext = {
+    const appContext: UrlContext = {
         getUrl(): any {
             return { location: {origin, pathname, query, hash}, pathPrefix }
         },
@@ -300,7 +300,7 @@ test('App.State can get current url object', () => {
 test('App.State can get a File Url', () => {
     const Page1 = (_props: any) => null
     const pages = {Page1}
-    const appContext: AppContext = {
+    const appContext: UrlContext = {
         getUrl: jest.fn(),
         updateUrl: jest.fn(),
         getFullUrl: jest.fn(),

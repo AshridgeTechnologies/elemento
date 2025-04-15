@@ -1,4 +1,4 @@
-import AppContext from '../runtime/AppContext'
+import UrlContext from '../runtime/UrlContext'
 import React, {useState} from 'react'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {ASSET_DIR} from '../shared/constants'

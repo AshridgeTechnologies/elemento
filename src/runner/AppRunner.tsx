@@ -6,11 +6,11 @@ import {AppStoreHook, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
-import AppContext, {DefaultAppContext} from '../runtime/AppContext'
+import UrlContext, {DefaultUrlContext} from '../runtime/UrlContext'
 
-export const AppContextContext = React.createContext<AppContext | null>(null)
+export const UrlContextContext = React.createContext<UrlContext | null>(null)
 
-export const useGetAppContext = () => useContext(AppContextContext)
+export const useGetUrlContext = () => useContext(UrlContextContext)
 
 function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
     const containerRef = createRef()
@@ -36,16 +36,16 @@ type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string
     onComponentSelected: (id: string) => void, selectedComponentId?: string, appStoreHook?: AppStoreHook }
 
 export default function AppRunner({appFunction, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook}: Properties) {
-    const appContext = new DefaultAppContext(pathPrefix, resourceUrl)
+    const urlContext = new DefaultUrlContext(pathPrefix, resourceUrl)
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider appStoreHook={appStoreHook}>
-            <AppContextContext.Provider value={appContext}>
+            <UrlContextContext.Provider value={urlContext}>
                 <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         {React.createElement(appFunction, {})}
                     </LocalizationProvider>
                 </SelectionProvider>
-            </AppContextContext.Provider>
+            </UrlContextContext.Provider>
         </StoreProvider>
     </ErrorBoundary>
 }

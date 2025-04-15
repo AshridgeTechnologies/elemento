@@ -166,11 +166,11 @@ export default class Generator {
 
         const appStateFunctionIdentifiers = this.parser.appStateFunctionIdentifiers(component.id)
         const pages = componentIsApp ? `    const pages = {${allPages.map(p => p.codeName).join(', ')}}` : ''
-        const appContext = componentIsApp ? `    const appContext = Elemento.useGetAppContext()` : ''
+        const urlContext = componentIsApp ? `    const urlContext = Elemento.useGetUrlContext()` : ''
         const themeOptions = componentIsApp && app.themeOptions ? `    const themeOptions = ${this.getExpr(app, 'themeOptions', 'singleExpression')}` : ''
         const usesApp = appStateFunctionIdentifiers.length || appLevelIdentifiers.length
         const appStateDeclaration = componentIsApp
-            ? `    const _state = setObject('${app.codeName}', new ${component.codeName}.State({pages, appContext${themeOptions ? ', themeOptions' : ''}}))`
+            ? `    const _state = setObject('${app.codeName}', new ${component.codeName}.State({pages, urlContext${themeOptions ? ', themeOptions' : ''}}))`
             : usesApp ? `    const app = useObject('${app.codeName}')` : ''
         const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
         const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
@@ -224,7 +224,7 @@ export default class Generator {
                 containerDeclarations = `    const {${containerIdentifiers.join(', ')}} = \$container`
             }
         }
-        const elementoDeclarations = [toolsDeclarations, pages, appContext, themeOptions,
+        const elementoDeclarations = [toolsDeclarations, pages, urlContext, themeOptions,
             appStateDeclaration, appStateFunctionDeclarations, appLevelDeclarations, containerUse, containerDeclarations, stateObjectDeclaration].filter(d => d !== '').join('\n').trimEnd()
 
         const actionHandler = (el: Element, def: PropertyDef) => {

@@ -15,14 +15,14 @@ export interface UrlType {
     pathPrefix: string | null
 }
 
-export default interface AppContext {
+export default interface UrlContext {
     getUrl(): UrlType
     getFullUrl(url: string | undefined): any
     getResourceUrl(resourceName: string): any
     updateUrl(path: string, query: object | null, anchor: string | null): void
 }
 
-export class DefaultAppContext implements AppContext {
+export class DefaultUrlContext implements UrlContext {
     constructor(pathPrefix: string | null = null, resourceUrl: string | undefined) {
         this.pathPrefix = pathPrefix ? pathPrefix.replace(/\/$/, '') : null
         this.resourceUrl = resourceUrl ? resourceUrl.replace(/\/$/, '') : ''
@@ -63,7 +63,7 @@ export class DefaultAppContext implements AppContext {
 
 }
 
-export const dummyAppContext: AppContext = {
+export const dummyUrlContext: UrlContext = {
     getUrl(): UrlType {return {location: { origin: '', pathname: '', query: {}, hash: ''}, pathPrefix: null}},
     getFullUrl(_url: string | undefined): any {},
     getResourceUrl(_resourceName: string): any {},

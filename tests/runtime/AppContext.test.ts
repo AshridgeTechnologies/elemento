@@ -1,10 +1,10 @@
-import AppContext, {DefaultAppContext} from '../../src/runtime/AppContext'
+import UrlContext, {DefaultUrlContext} from '../../src/runtime/UrlContext'
 import {goBack, onUrlChange, pushUrl} from '../../src/runtime/navigationHelpers'
 
 const resourceUrl = 'urls/from/here'
 
 test('DefaultAppContext gets data from browser history with all parts', () => {
-    const appContext = new DefaultAppContext(null, resourceUrl)
+    const appContext = new DefaultUrlContext(null, resourceUrl)
 
     expect(appContext.getUrl()).toStrictEqual({
         location: {
@@ -20,7 +20,7 @@ test('DefaultAppContext gets data from browser history with all parts', () => {
 
 test('DefaultAppContext gets data from window location with path prefix and removes trailing slash', () => {
 
-    const appContext = new DefaultAppContext('theApp/somewhere/', resourceUrl)
+    const appContext = new DefaultUrlContext('theApp/somewhere/', resourceUrl)
 
     expect(appContext.getUrl()).toStrictEqual({
         location: {
@@ -36,36 +36,36 @@ test('DefaultAppContext gets data from window location with path prefix and remo
 
 describe('getFullUrl', () => {
     test('adjusts local urls for resource url', () => {
-        const appContext = new DefaultAppContext(null, 'https://example.com:8090/theApp/somewhere')
+        const appContext = new DefaultUrlContext(null, 'https://example.com:8090/theApp/somewhere')
 
         expect(appContext.getFullUrl('/myImage.jpg')).toBe('https://example.com:8090/theApp/somewhere/myImage.jpg')
         expect(appContext.getFullUrl('special/files/myImage.jpg')).toBe('https://example.com:8090/theApp/somewhere/special/files/myImage.jpg')
     })
 
     test('adjusts local url for no resource url', () => {
-        const appContext: AppContext = new DefaultAppContext(null, undefined)
+        const appContext: UrlContext = new DefaultUrlContext(null, undefined)
 
         expect(appContext.getFullUrl('myImage.jpg')).toBe('/myImage.jpg')
         expect(appContext.getFullUrl('/special/files/myImage.jpg')).toBe('/special/files/myImage.jpg')
     })
 
     test('does not adjust external urls', () => {
-        const appContext: AppContext = new DefaultAppContext(null, 'https://example.com:8090/theApp/somewhere')
+        const appContext: UrlContext = new DefaultUrlContext(null, 'https://example.com:8090/theApp/somewhere')
         expect(appContext.getFullUrl('https://mysite.com/myImage.jpg')).toBe('https://mysite.com/myImage.jpg')
     })
 
     test('does not adjust undefined urls', () => {
-        const appContext: AppContext = new DefaultAppContext(null, 'https://example.com:8090/theApp/somewhere')
+        const appContext: UrlContext = new DefaultUrlContext(null, 'https://example.com:8090/theApp/somewhere')
         expect(appContext.getFullUrl(undefined)).toBe(undefined)
     })
 
 })
 
 describe('updateUrl', () => {
-    let appContext: AppContext
+    let appContext: UrlContext
 
     beforeEach(() => {
-        appContext = new DefaultAppContext(null, resourceUrl)
+        appContext = new DefaultUrlContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
     })
 
@@ -116,7 +116,7 @@ describe('updateUrl', () => {
 
     test('does push on history with path prefix and hash', () => {
 
-        const appContext = new DefaultAppContext('/theApp/somewhere', resourceUrl)
+        const appContext = new DefaultUrlContext('/theApp/somewhere', resourceUrl)
 
         appContext.updateUrl('/Page2/xyz', null, 'part1')
         expect(appContext.getUrl()).toStrictEqual({
@@ -134,7 +134,7 @@ describe('updateUrl', () => {
 
 test('goBack goes back in browser history', () => {
 
-    const appContext = new DefaultAppContext(null, resourceUrl)
+    const appContext = new DefaultUrlContext(null, resourceUrl)
     appContext.getUrl() //ensure url is cached before update
 
     appContext.updateUrl('/Page2/xyz', null, 'part1')
@@ -145,7 +145,7 @@ test('goBack goes back in browser history', () => {
 
 describe('can subscribe and be notified of url changes', () => {
     test('from external source', () => {
-        const appContext = new DefaultAppContext(null, resourceUrl)
+        const appContext = new DefaultUrlContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
         const callback = jest.fn() as (url: string) => void
@@ -165,7 +165,7 @@ describe('can subscribe and be notified of url changes', () => {
     })
 
     test('from updateUrl', () => {
-        const appContext = new DefaultAppContext(null, resourceUrl)
+        const appContext = new DefaultUrlContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
         const callback = jest.fn() as (url: string) => void
@@ -185,7 +185,7 @@ describe('can subscribe and be notified of url changes', () => {
     })
 
     test('can subscribe and unsubscribe', () => {
-        const appContext = new DefaultAppContext(null, resourceUrl)
+        const appContext = new DefaultUrlContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
         const callback1 = jest.fn() as (url: string) => void

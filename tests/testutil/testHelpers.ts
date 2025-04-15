@@ -9,8 +9,8 @@ import {isArray} from 'lodash'
 import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
-import {DefaultAppContext} from '../../src/runtime/AppContext'
-import {AppContextContext} from '../../src/runner/AppRunner'
+import {DefaultUrlContext} from '../../src/runtime/UrlContext'
+import {UrlContextContext} from '../../src/runner/AppRunner'
 import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 
@@ -28,8 +28,8 @@ export const componentProps = (domElement: any) => {
 }
 
 export const inAppContextProvider = (prefix: string | undefined, el: any) => {
-    const appContext = new DefaultAppContext(null, prefix)
-    return createElement(AppContextContext.Provider, {value: appContext}, el)
+    const appContext = new DefaultUrlContext(null, prefix)
+    return createElement(UrlContextContext.Provider, {value: appContext}, el)
 }
 
 let suppressionReported = false
