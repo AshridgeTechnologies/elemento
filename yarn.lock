@@ -3807,18 +3807,6 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@virtualstate/composite-key@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@virtualstate/composite-key/-/composite-key-1.0.0.tgz#352b93df5b9199951cc370897bca8bb5b171a375"
-  integrity sha512-5G3RT87X1w39UQyBvqQpTfsxK9FjoKlXfonvIY9esAHe9d0vOWVGtbElJppwJKWzh508Ja6gWn7W7dWHwj50Jw==
-
-"@virtualstate/navigation@^1.0.1-alpha.209":
-  version "1.0.1-alpha.209"
-  resolved "https://registry.yarnpkg.com/@virtualstate/navigation/-/navigation-1.0.1-alpha.209.tgz#c3dd66a7aba80cb1b51550894aae7a194e2dd9bd"
-  integrity sha512-tSIu0rt9rQRKSN6Pc8FW7tEwacgg92gfYC/ior75N9LWM2GQFsAi4c1skHNJqPZltrMKmreM0f6R5U22fCldGA==
-  dependencies:
-    "@virtualstate/composite-key" "^1.0.0"
-
 "@vitejs/plugin-react@^4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-4.2.1.tgz#744d8e4fcb120fc3dbaa471dadd3483f5a304bb9"
