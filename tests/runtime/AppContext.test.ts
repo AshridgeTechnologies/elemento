@@ -1,13 +1,10 @@
-import AppContext, {DefaultAppContext, UrlType} from '../../src/runtime/AppContext'
-import {BrowserHistory, createMemoryHistory} from 'history'
+import AppContext, {DefaultAppContext} from '../../src/runtime/AppContext'
+import {goBack, onUrlChange, pushUrl} from '../../src/runtime/navigationHelpers'
 
 const resourceUrl = 'urls/from/here'
 
 test('DefaultAppContext gets data from browser history with all parts', () => {
-    const history = createMemoryHistory({
-        initialEntries: ['/Page1/abc/123?a=10&b=true&c=foo#things'],
-    })
-    const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+    const appContext = new DefaultAppContext(null, resourceUrl)
 
     expect(appContext.getUrl()).toStrictEqual({
         location: {
@@ -23,8 +20,7 @@ test('DefaultAppContext gets data from browser history with all parts', () => {
 
 test('DefaultAppContext gets data from window location with path prefix and removes trailing slash', () => {
 
-    const history = createMemoryHistory({initialEntries: ['/theApp/somewhere/Page1/abc/123']})
-    const appContext = new DefaultAppContext('theApp/somewhere/', resourceUrl, history, 'http://example.com:8090')
+    const appContext = new DefaultAppContext('theApp/somewhere/', resourceUrl)
 
     expect(appContext.getUrl()).toStrictEqual({
         location: {
@@ -66,11 +62,10 @@ describe('getFullUrl', () => {
 })
 
 describe('updateUrl', () => {
-    let history: BrowserHistory, appContext: AppContext
+    let appContext: AppContext
 
     beforeEach(() => {
-        history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-        appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+        appContext = new DefaultAppContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
     })
 
@@ -121,7 +116,7 @@ describe('updateUrl', () => {
 
     test('does push on history with path prefix and hash', () => {
 
-        const appContext = new DefaultAppContext('/theApp/somewhere', resourceUrl, history, 'http://example.com:8090')
+        const appContext = new DefaultAppContext('/theApp/somewhere', resourceUrl)
 
         appContext.updateUrl('/Page2/xyz', null, 'part1')
         expect(appContext.getUrl()).toStrictEqual({
@@ -139,26 +134,24 @@ describe('updateUrl', () => {
 
 test('goBack goes back in browser history', () => {
 
-    const history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-    const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+    const appContext = new DefaultAppContext(null, resourceUrl)
     appContext.getUrl() //ensure url is cached before update
 
     appContext.updateUrl('/Page2/xyz', null, 'part1')
     expect(appContext.getUrl().location.pathname).toBe('/Page2/xyz')
-    appContext.goBack()
+    goBack()
     expect(appContext.getUrl().location.pathname).toBe('/Page1/abc')
 })
 
 describe('can subscribe and be notified of url changes', () => {
     test('from external source', () => {
-        const history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-        const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+        const appContext = new DefaultAppContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
-        const callback = jest.fn() as (url: UrlType) => void
-        appContext.onUrlChange( callback )
+        const callback = jest.fn() as (url: string) => void
+        onUrlChange( callback )
 
-        history.push('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
+        pushUrl('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
         expect(callback).toHaveBeenCalledWith({
             location: {
                 origin: 'http://example.com:8090',
@@ -172,12 +165,11 @@ describe('can subscribe and be notified of url changes', () => {
     })
 
     test('from updateUrl', () => {
-        const history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-        const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+        const appContext = new DefaultAppContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
-        const callback = jest.fn() as (url: UrlType) => void
-        appContext.onUrlChange( callback )
+        const callback = jest.fn() as (url: string) => void
+        onUrlChange( callback )
 
         appContext.updateUrl('/Page2/xyz', {a: 10, b: true, c: '2012-08-10'}, 'part1')
         expect(callback).toHaveBeenCalledWith({
@@ -193,21 +185,20 @@ describe('can subscribe and be notified of url changes', () => {
     })
 
     test('can subscribe and unsubscribe', () => {
-        const history = createMemoryHistory({initialEntries: ['/Page1/abc'],})
-        const appContext = new DefaultAppContext(null, resourceUrl, history, 'http://example.com:8090')
+        const appContext = new DefaultAppContext(null, resourceUrl)
         appContext.getUrl() //ensure url is cached before update
 
-        const callback1 = jest.fn() as (url: UrlType) => void
-        const callback2 = jest.fn() as (url: UrlType) => void
-        const unsubscribe1 = appContext.onUrlChange( callback1 )
-        appContext.onUrlChange( callback2 )
+        const callback1 = jest.fn() as (url: string) => void
+        const callback2 = jest.fn() as (url: string) => void
+        const subscription1 = onUrlChange( callback1 )
+        onUrlChange( callback2 )
 
-        history.push('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
+        pushUrl('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
         expect(callback1).toHaveBeenCalled()
         expect(callback2).toHaveBeenCalled()
 
-        unsubscribe1()
-        history.push('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
+        subscription1.unsubscribe()
+        pushUrl('/Page2/xyz?a=10&b=true&c=2012-08-10#part1')
         expect(callback1).toHaveBeenCalledTimes(1)
         expect(callback2).toHaveBeenCalledTimes(2)
     })

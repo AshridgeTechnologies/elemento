@@ -30,12 +30,12 @@ export default class Url {
         private hash?: string
     ){}
 
-    private get allPathSections() {
+    get allPathSections() {
         return this.pathname.replace(/^\/*/, '').split(/\//)
     }
 
     get page(): string | null {
-        return this.allPathSections[0] || null
+        return this.allPathSections[1] || null
     }
 
     get pathSections(): string[] {

@@ -287,8 +287,8 @@ export default function EditorRunner() {
         }
     }
 
-    const exposePreviewController = (previewFrame: HTMLIFrameElement | null) => {
-        const previewWindow = previewFrame?.contentWindow
+    const createPreviewController = () => {
+        const previewWindow = previewFrameRef.current?.contentWindow
 
         if (previewWindow) {
             const controller = new PreviewControllerClient(previewWindow)
@@ -296,8 +296,6 @@ export default function EditorRunner() {
                 setPreviewController(controller)
                 console.log('Preview controller client ready in editor')
             })
-            const closeFn = exposeFunctions('Preview', controller)
-            return closeFn
         }
     }
 
@@ -319,15 +317,19 @@ export default function EditorRunner() {
         }
         window.getProject = () => projectHandler.current
     })
-    // useEffect(initServiceWorker, [])
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
-    useEffect(() => exposePreviewController(previewFrameRef.current), [previewFrameRef.current?.contentWindow])
     useEffect(openInitialTools, [])
     useEffect(sendSelectionToTools, [])
     useEffect(() => {
         if (previewController) {
+            const closeFn = exposeFunctions('Preview', previewController)
+
+            previewController.GetUrl().then(setPreviewCurrentUrl)
             const subscription = previewController.Url().subscribe(setPreviewCurrentUrl)
-            return () => subscription.unsubscribe()
+            return () => {
+                subscription.unsubscribe()
+                closeFn()
+            }
         }
     }, [previewController])
 
@@ -568,7 +570,8 @@ export default function EditorRunner() {
     }
 
     const showPageInPreview = (page: Page) => {
-        Preview.SetUrl('/' + page.codeName)
+        const app = getOpenProject().findParent(page.id) as App
+        Preview.SetUrl('/' + app.codeName + '/' + page.codeName)
     }
 
     const onCloseTool = (toolId: string) => {
@@ -701,6 +704,7 @@ export default function EditorRunner() {
                                     <PreviewPanel height='calc(100% - 32px)'
                                         preview={
                                             <iframe name='appFrame' src={previewUrl} ref={previewFrameRef}
+                                                    onLoad={() => createPreviewController()}
                                                     style={{
                                                         width: '100%',
                                                         height: '100%',

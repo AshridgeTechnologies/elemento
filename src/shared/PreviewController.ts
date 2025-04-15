@@ -16,8 +16,8 @@ import {mapValues} from 'radash'
 import {Value} from '../runtime/runtimeFunctions'
 import {isObject, isPlainObject} from 'lodash'
 import eventObservable from '../util/eventObservable'
-import AppContext from '../runtime/AppContext'
 import Observable from 'zen-observable'
+import {goBack, goForward, pushUrl, urlChangeObservable} from '../runtime/navigationHelpers'
 
 
 export function valueOf<T>(x: Value<T>): T {
@@ -35,7 +35,6 @@ export default class PreviewController {
 
     private get container(): HTMLElement { return this.window.document.body }
     private get options() { return getStoredOptions() }
-    private get appContext(): AppContext | undefined { return (this.window as any).appContext }
     private get debugDataObservable() {
         return this.debugObservable ??= eventObservable(this.window, 'debugData', (evt: Event) => {
             const {detail} = (evt as CustomEvent)
@@ -106,30 +105,36 @@ export default class PreviewController {
     }
 
     Url() {
-        return eventObservable((this.window as any).navigation, 'navigate', (event: any) => {
-            const url = new URL(event.destination.url)
-            const pathname = '/' + url.pathname.split('/').slice(2)
-            const queryString = url.search
-            const queryPart = queryString ? '?' + queryString : ''
-            const hashPart = url.hash ? '#' + url.hash : ''
-            return pathname + queryPart + hashPart
-        })
+        return urlChangeObservable.map( url => this.normalizeUrl(url) )
+    }
+
+    GetUrl() {
+        return this.normalizeUrl(window.location.href)
     }
 
     SetUrl(url: string) {
-        this.appContext?.pushUrl(url)
+        pushUrl(url)
     }
 
     Back() {
-        this.appContext?.goBack()
+        goBack()
     }
 
     Forward() {
-        this.appContext?.goForward()
+        goForward()
     }
 
     Reload() {
         this.window.location.reload()
+    }
+
+    private normalizeUrl(urlString: string) {
+        const url = new URL(urlString)
+        const pathname = '/' + url.pathname.split('/').slice(1).join('/')
+        const queryString = url.search
+        const queryPart = queryString ? '?' + queryString : ''
+        const hashPart = url.hash ? '#' + url.hash : ''
+        return pathname + queryPart + hashPart
     }
 
     private queueAction(selector: string | null, fn: ActionFn) {

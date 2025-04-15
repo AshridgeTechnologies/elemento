@@ -39,7 +39,7 @@ export default function AppMain({pathname, origin}: Properties) {
     if (hostServerMatch) {
         const [, appName] = hostServerMatch
         const appCodeUrl = `${origin}/${appName}/${appName}.js`
-        const pathPrefix = appName
+        const pathPrefix = ''
         const resourceUrl = `${origin}/${ASSET_DIR}`
 
         console.log('Loading app from', appCodeUrl, 'resource url', resourceUrl)

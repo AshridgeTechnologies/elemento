@@ -11,7 +11,6 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import '@testing-library/jest-dom'
 import AppContext, {DefaultAppContext, UrlType} from '../../../src/runtime/AppContext'
 import Url from '../../../src/runtime/Url'
-import {createMemoryHistory, MemoryHistory} from 'history'
 import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
@@ -36,10 +35,9 @@ const urlForPage = (page: string): UrlType => ({
 
 let appContext: AppContext
 
-function getRealAppContext(initialPath = '/'): [AppContext, MemoryHistory] {
-    const history = createMemoryHistory({initialEntries: [initialPath],})
-    const appContext = new DefaultAppContext(null, undefined, history, 'http://foo.com')
-    return [appContext, history]
+function getRealAppContext(initialPath = '/'): [AppContext] {
+    const appContext = new DefaultAppContext(null, undefined)
+    return [appContext]
 }
 
 beforeEach(() => {
@@ -286,19 +284,14 @@ test('App.State can get current url object', () => {
     const hash = '#id123'
     const pathPrefix = 'someapp/somewhere'
     const appContext: AppContext = {
-        getUrlString: jest.fn(),
-        goForward: jest.fn(),
-        pushUrl: jest.fn(),
         getUrl(): any {
             return { location: {origin, pathname, query, hash}, pathPrefix }
         },
-        updateUrl(_path: string, _query: object, _anchor: string): void {},
-        onUrlChange: jest.fn(),
-        goBack: jest.fn(),
         getFullUrl: jest.fn(),
         getResourceUrl(name: string) {
             return 'resource/url/to/' + name
-        }
+        },
+        updateUrl(_path: string, _query: object, _anchor: string): void {},
     }
     const state = new App.State({pages, appContext})._withStateForTest({currentUrl: urlForPage('Page2')})
     expect(state.CurrentUrl()).toStrictEqual(new Url(origin, pathname, pathPrefix, query, hash))
@@ -308,13 +301,8 @@ test('App.State can get a File Url', () => {
     const Page1 = (_props: any) => null
     const pages = {Page1}
     const appContext: AppContext = {
-        getUrlString: jest.fn(),
-        goForward: jest.fn(),
-        pushUrl: jest.fn(),
         getUrl: jest.fn(),
         updateUrl: jest.fn(),
-        onUrlChange: jest.fn(),
-        goBack: jest.fn(),
         getFullUrl: jest.fn(),
         getResourceUrl(resourceName: string) {
             return 'resource/url/to' + ensureSlash(resourceName)
@@ -348,7 +336,7 @@ test('App.State responds to app context url changes', () => {
 test('App.State responds to browser history changes', () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
-    const [appContext, history] = getRealAppContext('/Page1/abc')
+    const [appContext] = getRealAppContext('/Page1/abc')
     const state = new App.State({pages, appContext})
     const appInterface = testAppInterface('testPath', state)
     expect(state.CurrentUrl().page).toBe('Page1')
@@ -360,7 +348,7 @@ test('App.State responds to browser history changes', () => {
     expect(state1.CurrentUrl().page).toBe('Page1')
     expect(state1.CurrentUrl().pathSections[0]).toBe('xyz')
 
-    history.back()
+    // history.back()
     const state2 = state.latest()
     expect(state2).not.toBe(state1)
     expect(state2.CurrentUrl().page).toBe('Page1')

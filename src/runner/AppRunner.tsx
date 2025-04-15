@@ -6,7 +6,7 @@ import {AppStoreHook, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
-import AppContext, {AppContextHook, DefaultAppContext} from '../runtime/AppContext'
+import AppContext, {DefaultAppContext} from '../runtime/AppContext'
 
 export const AppContextContext = React.createContext<AppContext | null>(null)
 
@@ -33,11 +33,10 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
 }
 
 type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string, resourceUrl?: string,
-    onComponentSelected: (id: string) => void, selectedComponentId?: string, appStoreHook?: AppStoreHook, appContextHook?: AppContextHook }
+    onComponentSelected: (id: string) => void, selectedComponentId?: string, appStoreHook?: AppStoreHook }
 
-export default function AppRunner({appFunction, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook, appContextHook}: Properties) {
+export default function AppRunner({appFunction, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook}: Properties) {
     const appContext = new DefaultAppContext(pathPrefix, resourceUrl)
-    appContextHook?.(appContext)
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider appStoreHook={appStoreHook}>
             <AppContextContext.Provider value={appContext}>

@@ -8,6 +8,7 @@ import {dropWhile, takeWhile} from 'ramda'
 import type {FunctionComponent} from 'react'
 import {Theme, ThemeOptions} from '@mui/material'
 import {createTheme} from '@mui/material/styles'
+import {goBack, onUrlChange} from '../navigationHelpers'
 
 type StateExternalProps = {
     pages: { [key: string]: FunctionComponent },
@@ -27,7 +28,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         const {subscription} = this.state
 
         if (!subscription) {
-            this.state.subscription = this.appContext.onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
+            this.state.subscription = onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
         }
     }
 
@@ -44,7 +45,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     }
 
     get currentPage() {
-        const pageName = this.CurrentUrl().page
+        const pageName = this.CurrentUrl().allPathSections[1]
         const defaultPage = Object.values(this.props.pages)[0]
         return pageName ? this.props.pages[pageName] ?? defaultPage : defaultPage
     }
@@ -72,12 +73,12 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
     ShowPage = (page: string | FunctionComponent, ...args: (string | object | null)[]) => {
         const argValues = valuesOf(...args)
         if (page === Url.previous) {
-            this.appContext.goBack()
+            goBack()
         } else {
             const pageName = typeof page === 'string' ? page : page.name
             const isString = (arg: any) => typeof arg === 'string'
             const pathSegments = takeWhile(isString, argValues)
-            const path = '/' + [pageName, ...pathSegments].join('/')
+            const path = '/' + [this._path, pageName, ...pathSegments].join('/')
             const remainingArgs = dropWhile(isString, argValues)
             const [query, anchor] = [...remainingArgs, null, null]
             this.appContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state

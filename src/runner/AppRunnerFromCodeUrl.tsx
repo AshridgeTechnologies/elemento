@@ -35,11 +35,6 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
 
     }, [])
 
-    let appContextHook
-    if (isPreviewWindow) {
-        appContextHook = (appContext: AppContext) => (window as any).appContext = appContext
-    }
-
     const versionedUrl = url + (version === 0 ? '' : `?${version}`)
     if (appFetched !== versionedUrl) {
         loadModuleHttp(versionedUrl).then((module:any) => setAppComponent(() => module.default)).catch( setError )
@@ -48,5 +43,5 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
 
     if (error !== null) return <AppLoadError appUrl={url} error={error!}/>
     if (appComponent === null) return <p>Loading...</p>
-    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appContextHook})
+    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId})
 }

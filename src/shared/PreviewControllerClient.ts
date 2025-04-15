@@ -13,6 +13,7 @@ export default class PreviewControllerClient {
     private getTextContent = callRpc('Preview.GetTextContent', this.win)
     private debug = observeRpc('Preview.Debug', undefined, this.win)
     private url = observeRpc('Preview.Url', undefined, this.win)
+    private getUrl = callRpc('Preview.GetUrl', this.win)
     private setUrl = callRpc('Preview.SetUrl', this.win)
     private back = callRpc('Preview.Back', this.win)
     private forward = callRpc('Preview.Forward', this.win)
@@ -52,6 +53,10 @@ export default class PreviewControllerClient {
 
     Url() {
         return this.url()
+    }
+
+    GetUrl() {
+        return this.getUrl()
     }
 
     SetUrl(url: string) {

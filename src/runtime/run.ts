@@ -5,7 +5,7 @@ import {ASSET_DIR} from '../shared/constants'
 import {AppStore, AppStoreHook, fixPath} from './appData'
 import {StoreApi} from 'zustand'
 import {previewPathComponents} from '../util/helpers'
-import AppContext, {AppContextHook} from './AppContext'
+import AppContext from './AppContext'
 
 let root: Root
 
@@ -16,8 +16,6 @@ const run = (urlPath: string,
              elementType: React.FunctionComponent,
              selectedComponentId?: string,
              onComponentSelected?: ComponentSelectedFn,
-             appStoreHook?: AppStoreHook,
-             appContextHook?: AppContextHook,
              containerElementId = 'main') => {
     const createContainer = () => {
         const container = document.createElement('div')
@@ -32,7 +30,7 @@ const run = (urlPath: string,
     }
     const resourceUrl = `/studio/preview/${projectId}/${ASSET_DIR}`
     // @ts-ignore
-    const appRunner = React.createElement(AppRunner, {appFunction: elementType, pathPrefix: urlPath, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook, appContextHook})
+    const appRunner = React.createElement(AppRunner, {appFunction: elementType, pathPrefix: urlPath, resourceUrl, selectedComponentId, onComponentSelected, appStoreHook})
     root.render(appRunner)
 }
 
@@ -55,12 +53,10 @@ export const runPreview = (urlPath: string) => {
             window.appStore = appStore
         }
     }
-    const appContextHook = (appContext: AppContext) => (window as any).appContext = appContext
-
     let hasSelections = false
 
     function runModule() {
-        run(`/studio/preview/${projectId}/${appName}`, projectId, appModule.default, selectedComponentIds[0], onComponentSelected, appStoreHook, appContextHook, 'main')
+        run(`/studio/preview/${projectId}/${appName}`, projectId, appModule.default, selectedComponentIds[0], onComponentSelected)
     }
 
     async function refreshCode() {
