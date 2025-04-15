@@ -83,6 +83,11 @@ export const treeItemClassNames = (container: any) => {
     return [...treeNodesShown.values()].map( (it: any) => it.className )
 }
 
+export const treeItemTitleClassNames = (container: any) => {
+    const treeNodesShown = container.querySelectorAll(treeItemTitleSelector + ' span')
+    return [...treeNodesShown.values()].map( (it: any) => it.className )
+}
+
 export const waitUntil = async <T>(fn: () => T, intervalTime = 1000, timeout = 5000): Promise<T> => {
     const startTime = new Date().getTime();
     try {

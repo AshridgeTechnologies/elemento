@@ -7,7 +7,13 @@ import {act, fireEvent, render, screen} from '@testing-library/react/pure'
 
 import AppStructureTree, {ModelTreeItem} from '../../src/editor/AppStructureTree'
 import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector, treeWrapperSelector} from './Selectors'
-import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemClassNames, treeItemLabels} from '../testutil/testHelpers'
+import {
+    stopSuppressingRcTreeJSDomError,
+    suppressRcTreeJSDomError,
+    treeItemClassNames,
+    treeItemLabels,
+    treeItemTitleClassNames
+} from '../testutil/testHelpers'
 import {InsertPosition} from '../../src/model/Types'
 import lodash from 'lodash'; const {startCase} = lodash;
 import {actWait} from '../testutil/rtlHelpers'
@@ -28,7 +34,7 @@ const itemIcons = () => {
     return [...treeNodesShown.values()].map( (it: any) => it.querySelector('.material-icons').textContent )
 }
 
-const itemClassNames = () => treeItemClassNames(container)
+const itemTitleClassNames = () => treeItemTitleClassNames(container)
 
 const selectedItemLabel = () => {
     const treeNodesSelected = container.querySelectorAll('.rc-tree-list .rc-tree-treenode-selected .rc-tree-title')
@@ -171,10 +177,10 @@ describe('ModelTreeItem', () => {
     })
 
     test('finds the item with a given key', () => {
-        expect(deepTree.findItem('project_1')).toHaveProperty('title', 'Project One')
-        expect(deepTree.findItem('app1')).toHaveProperty('title', 'App One')
-        expect(deepTree.findItem('page_2')).toHaveProperty('title', 'Other Page')
-        expect(deepTree.findItem('id2')).toHaveProperty('title', 'A deeper item')
+        expect(deepTree.findItem('project_1')).toHaveProperty('_title', 'Project One')
+        expect(deepTree.findItem('app1')).toHaveProperty('_title', 'App One')
+        expect(deepTree.findItem('page_2')).toHaveProperty('_title', 'Other Page')
+        expect(deepTree.findItem('id2')).toHaveProperty('_title', 'A deeper item')
         expect(deepTree.findItem('xxx')).toBe(null)
     })
 })
@@ -192,7 +198,7 @@ test("renders tree with all types of model elements",  async () => {
 test("renders tree with error and search result classes",  async () => {
     ({container, unmount} = render(<AppStructureTree treeData={treeWithErrorsAndSearchResults} {...defaultFunctions}/>))
     await clickExpandControl(0, 1, 2, 4, 5)
-    const classNamesByLabel = zipToObject(itemLabels(), itemClassNames())
+    const classNamesByLabel = zipToObject(itemLabels(), itemTitleClassNames())
     const hasSearchResult = (label: string) => classNamesByLabel[label].includes('rc-tree-search-result')
     const hasChildError = (label: string) => classNamesByLabel[label].includes('rc-tree-child-error')
     const hasOwnError = (label: string) => classNamesByLabel[label].includes('rc-tree-error')
@@ -201,6 +207,8 @@ test("renders tree with error and search result classes",  async () => {
     const hasOwnAndChildError = (label: string) => hasChildError(label)  && hasOwnError(label)
     const hasNoError = (label: string) => !hasChildError(label)  && !hasOwnError(label)
 
+    expect(hasChildError('Project One')).toBe(true)
+    expect(hasOwnError('Project One')).toBe(false)
     expect(hasChildErrorOnly('Project One')).toBe(true)
     expect(hasChildErrorOnly('App One')).toBe(true)
     expect(hasChildErrorOnly('Main Page')).toBe(true)

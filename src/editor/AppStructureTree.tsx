@@ -11,14 +11,19 @@ import EditMenu from './EditMenu'
 import {unique} from 'radash'
 
 export class ModelTreeItem implements DataNode {
+    private _title: string
     constructor(public id: string,
-                public title: string,
+                title: string,
                 public kind: ElementType,
                 public iconClass: string,
                 public hasErrors: boolean = false,
                 public isSearchResult: boolean = false,
-                public children?: ModelTreeItem[]) {}
+                public children?: ModelTreeItem[]) {
+        this._title = title
+    }
     get key() { return this.id }
+    get title() { return React.createElement('span', {className: this.className}, this._title) }
+    get titleText() { return this._title }
     get className() {
         const errorClass = this.hasErrors ? 'rc-tree-error' : ''
         const childErrorClass = this.hasChildErrors() ? 'rc-tree-child-error' : ''
@@ -61,18 +66,18 @@ export class ModelTreeItem implements DataNode {
 
 function TreeNodeIcon(color: string, props: TreeNodeProps) {
     // @ts-ignore
-    const iconClass = (props.data.data as ModelTreeItem).iconClass
+    const iconClass = (props.data as ModelTreeItem).iconClass
     const sx = { fontSize: 16, color }
     return <Icon sx={sx}>{iconClass}</Icon>
 }
 
-const asTreeNode = (modelItem: ModelTreeItem) => {
-    const {key, title, className, children} = modelItem
-    const hasChildren = children && children.length > 0
-    return <TreeNode key={key} title={title} isLeaf={!hasChildren} data={modelItem} className={className}>
-        {children?.map(asTreeNode)}
-    </TreeNode>
-}
+// const asTreeNode = (modelItem: ModelTreeItem) => {
+//     const {key, title, className, children} = modelItem
+//     const hasChildren = children && children.length > 0
+//     return <TreeNode key={key} title={title} isLeaf={!hasChildren} data={modelItem} className={className}>
+//         {children?.map(asTreeNode)}
+//     </TreeNode>
+// }
 
 export default function AppStructureTree({treeData, onSelect, selectedItemIds = [], onAction, onInsert,
                                              insertMenuItemFn, actionsAvailableFn, onMove}: {
@@ -99,7 +104,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
         setActionNode(null)
     }
 
-    const itemNameFn = (id:ElementId) => treeData.findItem(id)?.title ?? id
+    const itemNameFn = (id:ElementId) => treeData.findItem(id)?.titleText ?? id
     function itemSelected(selectedKeys: Key[], info: any) {
         const clickedId = info.node.key
         const addOrRemove = info.nativeEvent.metaKey || info.nativeEvent.ctrlKey
@@ -114,7 +119,7 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
 
     const onExpand = (newExpandedKeys: Key[], {expanded, node}: {expanded: boolean, node: DataNode}) => {
         setExpandedKeys(newExpandedKeys)
-        const nodeData = (node as TreeNodeProps).data  // if supply child nodes Tree passes the node props
+        const nodeData = node
         if (!expanded && (nodeData as ModelTreeItem).containsKey(selectedItemIds[0])) {
             onSelect?.([nodeData!.key.toString()])
         }
@@ -138,7 +143,8 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
 
     const currentExpandedKeys = [...expandedKeys, ...searchResultAncestors, ...alwaysShownKeys]
     return <>
-        <Tree //treeData={[asTreeNode(treeData)] as DataNode[]}
+        <Tree
+            treeData={[treeData]}
             draggable={canDrag}
             multiple
             icon={TreeNodeIcon.bind(null, theme.palette.secondary.main)}
@@ -148,11 +154,11 @@ export default function AppStructureTree({treeData, onSelect, selectedItemIds = 
             onExpand={onExpand}
             // @ts-ignore
             onDrop={onDrop}
-            onRightClick={({event, node}: { event: React.MouseEvent, node: EventDataNode<DataNode> }) => {
-                showContextMenu(event, node.key, node.title as string)
+            onRightClick={({event, node}: { event: React.MouseEvent, node: ModelTreeItem }) => {
+                showContextMenu(event, node.key, node.titleText as string)
             }}
-            style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}>
-            {[asTreeNode(treeData)]}
+            style={{fontFamily: theme.typography.fontFamily, fontSize: 14}}
+        >
         </Tree>
         <EditMenu anchorEl={actionEl}
                   anchorOrigin={{vertical: 'top', horizontal: 'right',}}

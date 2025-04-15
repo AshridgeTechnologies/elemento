@@ -1,15 +1,15 @@
-.rc-tree-error .rc-tree-title {
+.rc-tree-error {
     text-decoration: red wavy underline;
     text-decoration-skip-ink: none;
 
 }
-.rc-tree-child-error .rc-tree-title {
+.rc-tree-child-error {
     text-decoration: #c46ce7 wavy underline;
     text-decoration-skip-ink: none;
     text-decoration-thickness: 1.2px;
 }
 
-.rc-tree-search-result .rc-tree-title {
+.rc-tree-search-result {
     background-color: yellow;
     box-shadow: 0 0 0 1px #ffb951;
     opacity: 0.8;
