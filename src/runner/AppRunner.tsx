@@ -2,18 +2,31 @@ import React, {createRef, useContext, useEffect} from 'react'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
 import {enGB} from 'date-fns/locale/en-GB'
-import {AppStoreHook, StoreProvider} from '../runtime/appData'
+import {AppStoreHook, StoreContext, StoreProvider} from '../runtime/appData'
 import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
-import UrlContext, {DefaultUrlContext} from '../runtime/UrlContext'
-
-export const UrlContextContext = React.createContext<UrlContext | null>(null)
+import {DefaultUrlContext, UrlContextContext} from '../runtime/UrlContext'
+import PreviewController from '../shared/PreviewController'
+import {exposeFunctions} from '../shared/postmsgRpc/server'
 
 export const useGetUrlContext = () => useContext(UrlContextContext)
 
 function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
     const containerRef = createRef()
+
+    const isPreviewWindow = window.location.hostname === 'localhost'
+    const store = useContext(StoreContext)
+
+    useEffect( ()=> {
+        if (isPreviewWindow) {
+            const controller = new PreviewController(window, store)
+            const closeFn = exposeFunctions('Preview', controller)
+            console.log('Preview controller initialised in app window')
+            return closeFn
+        }
+    }, [])
+
 
     const selectionEventListener = (event: MouseEvent) => {
         if (event.altKey && onComponentSelected) {

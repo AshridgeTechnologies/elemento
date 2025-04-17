@@ -10,7 +10,7 @@ export const convertSearch = (search: string) => {
 }
 
 let urlChangeObservable: Observable<any>
-const navigationApiAvailable = (window as any).navigation !== undefined
+const navigationApiAvailable = (globalThis as any).navigation !== undefined
 const createUrlChangeObservable = () => {
     if (navigationApiAvailable) {
         return eventObservable((window as any).navigation, 'navigate', (event: any) => event.destination.url)

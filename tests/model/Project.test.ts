@@ -157,8 +157,8 @@ test('can find child elements by type', () => {
     const page1 = new Page('p1', 'Page 1', {}, [text1,])
 
     const app = new App('app1', 'App 1', {}, [page1])
-    const serverApp1 = new ServerApp('sa1', 'Live', {})
-    const serverApp2 = new ServerApp('sa2', 'Live 2', {})
+    const serverApp1 = new ServerApp('sa1', 'Live', {updateTime: new Date()})
+    const serverApp2 = new ServerApp('sa2', 'Live 2', {updateTime: new Date()})
     const project = Project.new([app, serverApp1, serverApp2])
     expect(project.findChildElements(ServerApp)).toStrictEqual([serverApp1, serverApp2])
 })
@@ -168,7 +168,7 @@ test('knows if has server apps', () => {
     const page1 = new Page('p1', 'Page 1', {}, [text1,])
 
     const app = new App('app1', 'App 1', {}, [page1])
-    const serverApp1 = new ServerApp('sa1', 'Live', {})
+    const serverApp1 = new ServerApp('sa1', 'Live', {updateTime: new Date()})
     const projectClientOnly = Project.new([app])
     const projectWithServerApps = Project.new([app, serverApp1])
     expect(projectClientOnly.hasServerApps).toBe(false)
@@ -501,8 +501,8 @@ test('cannot delete a Component that is in use', () => {
     const page1 = new Page('p1', 'Page 1', {}, [text1, comp1])
 
     const app = new App('app1', 'App 1', {}, [page1])
-    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {input1: 'source', input2: 'destination', input4: 'route'})
-    const compDef2 = new ComponentDef('cd2', 'Comp Type 2', {input1: 'high', input2: 'low'})
+    const compDef1 = new ComponentDef('cd1', 'Comp Type 1', {})
+    const compDef2 = new ComponentDef('cd2', 'Comp Type 2', {})
     const compFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef1, compDef2])
     const project = Project.new([app, compFolder])
 
@@ -654,4 +654,16 @@ test('searchElements finds elements matching the regexp', () => {
     expect(project.searchElements(/Jo/)).toStrictEqual([project, app])
     expect(project.searchElements(/page/i)).toStrictEqual([page1, page2])
     expect(project.searchElements(/Import/)).toStrictEqual([text1])
+})
+
+test('server build version is latest of any server app or null if no server apps', () => {
+    const time1 = new Date('2025-01-01')
+    const time2 = new Date('2025-01-02')
+    const serverApp1 = new ServerApp('sa1', 'App 1', {updateTime: time1})
+    const serverApp2 = new ServerApp('sa2', 'App 2', {updateTime: time2})
+    const proj1 = Project.new([serverApp1, serverApp2], 'Project 1', 'proj1', {author: 'Bip'})
+    const proj2 = Project.new([], 'Project 2', 'proj2', {author: 'Bip'})
+
+    expect(proj1.serverBuildVersion).toBe(time2.toISOString())
+    expect(proj2.serverBuildVersion).toBe(null)
 })

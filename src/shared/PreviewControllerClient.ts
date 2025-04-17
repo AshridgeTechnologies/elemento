@@ -6,7 +6,9 @@ export default class PreviewControllerClient {
     }
 
     private isReady = callRpc('Preview.IsReady', this.win, 100)
+    private serverStatus = callRpc('Preview.ServerStatus', this.win)
     private highlight = callRpc('Preview.Highlight', this.win)
+    private callFunction = callRpc('Preview.CallFunction', this.win)
     private show = callRpc('Preview.Show', this.win)
     private click = callRpc('Preview.Click', this.win)
     private setValue = callRpc('Preview.SetValue', this.win)
@@ -25,8 +27,16 @@ export default class PreviewControllerClient {
         return this.isReady()
     }
 
+    ServerStatus() {
+        return this.serverStatus()
+    }
+
     Highlight(elementIds: ElementId[]) {
         return this.highlight(elementIds)
+    }
+
+    CallFunction(componentId: string, functionName: string, args: any[] = []) {
+        return this.callFunction(componentId, functionName, args)
     }
 
     Show(selector?: string) {

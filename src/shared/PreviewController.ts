@@ -20,6 +20,8 @@ import Observable from 'zen-observable'
 import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
 import {ElementId} from '../model/Types'
 import {flatten} from 'ramda'
+import {fixPath} from '../runtime/appData'
+import AppStateStore from '../runtime/AppStateStore'
 
 
 export function valueOf<T>(x: Value<T>): T {
@@ -33,7 +35,7 @@ export default class PreviewController {
     private readonly actionQueue = new ActionQueue()
     private debugObservable: Observable<any> | undefined
 
-    constructor(private readonly window: Window) {}
+    constructor(private readonly window: Window, private readonly store: AppStateStore) {}
 
     private get container(): HTMLElement { return this.window.document.body }
     private get options() { return getStoredOptions() }
@@ -48,12 +50,23 @@ export default class PreviewController {
         return true
     }
 
+    async ServerStatus() {
+        return await fetch(`/capi/status/Info`).then( resp => resp.json() )
+    }
+
     Highlight(elementIds: ElementId[]) {
         const elements = flatten(elementIds.map(id => selectElements('id', this.container, id)))
         highlightElements(elements, this.container)
         if (elements.length >= 1) {
             ensureVisible(elements[0] as HTMLElement)
         }
+    }
+
+    CallFunction(componentId: string, functionName: string, args: any[]) {
+        const pathInState = fixPath(componentId, undefined)
+        const componentState = this.store.get(pathInState)
+        const func = (componentState as any)[functionName]
+        func.apply(componentState, args)
     }
 
     Show(selector?: string) {

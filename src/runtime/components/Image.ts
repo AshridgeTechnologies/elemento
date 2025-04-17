@@ -1,10 +1,9 @@
 import React, {CSSProperties, useContext} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import MuiImage from 'mui-image'
-import {UrlContextContext} from '../../runner/AppRunner'
 import {omit, pick} from 'ramda'
 import {sxProps} from './ComponentHelpers'
-import UrlContext from '../UrlContext'
+import UrlContext, {UrlContextContext} from '../UrlContext'
 
 type Properties = Readonly<{
     path: string,

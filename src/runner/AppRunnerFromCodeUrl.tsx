@@ -26,13 +26,7 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
                     setVersion((oldVersion) => oldVersion + 1)
                 }
             })
-
-            const controller = new PreviewController(window)
-            const closeFn = exposeFunctions('Preview', controller)
-            console.log('Preview controller initialised in app window')
-            return closeFn
         }
-
     }, [])
 
     const versionedUrl = url + (version === 0 ? '' : `?${version}`)

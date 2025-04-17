@@ -71,16 +71,25 @@ const safeJsonParse = (text: string) => {
     }
 }
 
-const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, onErrorChange: VoidFn, projectId: string, previewFrame: HTMLIFrameElement | null) => {
+const saveAndBuild = async (updatedProject: Project, projectStore: DiskProjectStore, projectBuilder: ProjectBuilder, onErrorChange: VoidFn, projectId: string, previewFrame: HTMLIFrameElement | null, previewController: PreviewControllerClient) => {
     await projectStore.writeProjectFile(updatedProject.withoutFiles())
     const previousErrors = projectBuilder.errors
-    projectBuilder.buildProjectFiles()
+    await projectBuilder.buildProjectFiles()
     if (!equals(projectBuilder.errors, previousErrors)) {
         onErrorChange()
     }
     await projectBuilder.writeProjectFiles()
     previewFrame?.contentWindow?.postMessage({type: 'refreshCode'}, devServerUrl)
-    //navigator.serviceWorker.controller!.postMessage({type: 'projectUpdated', projectId})
+
+    const serverUpToDate = async () => {
+        const serverBuildVersion = async (): Promise<string> => (await previewController.ServerStatus()).serverBuildVersion
+        return (await serverBuildVersion()) >= (updatedProject.serverBuildVersion ?? '')
+    }
+    await waitUntil(serverUpToDate, {intervalTime: 200})
+
+    const serverAppConnectorIds = updatedProject.findElementsBy(el => el.kind === 'ServerAppConnector').map(el => el.id)
+    const paths = serverAppConnectorIds.map(id => updatedProject.findElementPath(id))
+    paths.map(id => previewController.CallFunction(id!, 'Refresh'))
 }
 
 const debouncedSaveAndBuild = debounce(saveAndBuild, 100)
@@ -144,7 +153,7 @@ export default function EditorRunner() {
     const updateProjectAndSave = () => {
         const updatedProject = getOpenProject()
         updateUI()
-        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!, previewFrameRef.current)
+        debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!, previewFrameRef.current, previewController!)
     }
 
     const getPreviewFirebaseProject = ()=> (projectHandler.getSettings('firebase') as any).previewFirebaseProject

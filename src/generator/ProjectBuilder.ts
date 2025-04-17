@@ -165,6 +165,7 @@ export default class ProjectBuilder {
         files.forEach( ({name, contents}) => this.generatedServerCode.storeFile(name, contents) )
         Object.assign(this.generatedErrors, errors)
         this.generatedServerCode.storeFile('serverRuntime.cjs', await this.runtimeLoader.serverRuntime())
+        this.generatedServerCode.storeFile('status.mjs', this.statusJs())
     }
 
     private async copyAssetFile(filename: string) {
@@ -225,14 +226,33 @@ export default class ProjectBuilder {
         const serverList = serverAppNames.join(', ')
         return `
 import {cloudflareFetch} from './server/serverRuntime.cjs'
+import status from './server/status.mjs'
 ${serverImports}
-const serverApps = {${serverList}}
+const serverApps = {status, ${serverList}}
 
 export default {
   async fetch(request, env, ctx) {
-    return cloudflareFetch(request, env, ctx, serverApps)
+        return cloudflareFetch(request, env, ctx, serverApps)
   }
 }
+`.trimStart()
+    }
+
+    private statusJs() {
+        const {serverBuildVersion} = this.project
+        return `
+const status = () => {
+
+async function Info() {
+    return { serverBuildVersion: ${serverBuildVersion ? `'${serverBuildVersion}'` : null } }
+}
+
+return {
+    Info: {func: Info, update: false, argNames: []}
+}
+}
+
+export default status
 `.trimStart()
     }
 

@@ -1,8 +1,7 @@
 import React, {useContext} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {UrlContextContext} from '../../runner/AppRunner'
 import {sxProps} from './ComponentHelpers'
-import UrlContext from '../UrlContext'
+import UrlContext, {UrlContextContext} from '../UrlContext'
 
 type Properties = Readonly<{
     path: string,

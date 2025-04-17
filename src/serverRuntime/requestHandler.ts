@@ -60,7 +60,7 @@ export const requestHandler = (appFactory: AppFactory) => async (req: Request) =
         const argValues = argNames.map((n) => params[n])
         const result = await func(...argValues)
         const options = { headers: { "content-type": 'application/json' } };
-        return new Response(result, options)
+        return new Response(JSON.stringify(result), options)
     } catch (err) {
         console.error(err)
         return responseError(500, 'Server error\n' + err)

@@ -1,3 +1,4 @@
+import {createContext} from 'react'
 import {asQueryString} from './Url'
 import {ensureSlash} from './runtimeFunctions'
 import {removePrefix} from '../util/helpers'
@@ -69,3 +70,5 @@ export const dummyUrlContext: UrlContext = {
     getResourceUrl(_resourceName: string): any {},
     updateUrl(_path: string, _query: object | null, _anchor: string | null): void {}
 }
+
+export const UrlContextContext = createContext<UrlContext | null>(null)

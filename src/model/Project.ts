@@ -85,6 +85,12 @@ export default class Project extends BaseElement<Properties> implements Element 
         return ''
     }
 
+    get serverBuildVersion() {
+        const serverAppUpdateTimes = this.findChildElements(ServerApp).map(app => app.updateTime)
+        const latestTime = serverAppUpdateTimes.length ? serverAppUpdateTimes.reduce((max, time) => time > max ? time : max, new Date(0)) : null
+        return latestTime === null ? null : latestTime.toISOString()
+    }
+
     propertyDefsOf(element: Element): PropertyDef[] {
         if (element instanceof ComponentInstance) {
             const componentDef = this.userDefinedComponents.find( comp => comp.codeName === element.kind)
