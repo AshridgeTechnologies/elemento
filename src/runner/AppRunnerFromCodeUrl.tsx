@@ -3,13 +3,13 @@ import AppRunner from './AppRunner'
 import AppLoadError from './AppLoadError'
 import {loadModuleHttp} from './loadModuleHttp'
 
-type Properties = {url: string, pathPrefix: string, resourceUrl: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
+type Properties = {url: string, pathPrefix: string, resourceUrl: string}
 
 const isElementoOrigin = (origin: string) => {
     return ['localhost', 'elemento.online'].includes(new URL(origin).hostname)
 }
 
-export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onComponentSelected  = () => {}, selectedComponentId}: Properties) {
+export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl}: Properties) {
     const [appComponent, setAppComponent] = useState<FunctionComponent | null>(null)
     const [appFetched, setAppFetched] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
@@ -34,5 +34,5 @@ export default function AppRunnerFromCodeUrl({url, pathPrefix, resourceUrl, onCo
 
     if (error !== null) return <AppLoadError appUrl={url} error={error!}/>
     if (appComponent === null) return <p>Loading...</p>
-    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId})
+    return React.createElement(AppRunner, {appFunction: appComponent!, pathPrefix, resourceUrl})
 }

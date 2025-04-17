@@ -3,7 +3,6 @@ import {LocalizationProvider} from '@mui/x-date-pickers'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
 import {enGB} from 'date-fns/locale/en-GB'
 import {AppStoreHook, StoreContext, StoreProvider} from '../runtime/appData'
-import {highlightElement} from '../runtime/runtimeFunctions'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'
 import {DefaultUrlContext, UrlContextContext} from '../runtime/UrlContext'
@@ -12,9 +11,7 @@ import {exposeFunctions} from '../shared/postmsgRpc/server'
 
 export const useGetUrlContext = () => useContext(UrlContextContext)
 
-function SelectionProvider({children, onComponentSelected, selectedComponentId}: {children: React.ReactNode, onComponentSelected: (id: string) => void, selectedComponentId?: string}) {
-    const containerRef = createRef()
-
+function PreviewWrapper({children}: {children: React.ReactNode}) {
     const isPreviewWindow = window.location.hostname === 'localhost'
     const store = useContext(StoreContext)
 
@@ -27,24 +24,21 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
         }
     }, [])
 
-
-     // @ts-ignore
-    return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
+    return <>{children}</>
 }
 
-type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string, resourceUrl?: string,
-    onComponentSelected: (id: string) => void, selectedComponentId?: string, appStoreHook?: AppStoreHook }
+type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string, resourceUrl?: string, appStoreHook?: AppStoreHook }
 
-export default function AppRunner({appFunction, pathPrefix, resourceUrl, onComponentSelected, selectedComponentId, appStoreHook}: Properties) {
+export default function AppRunner({appFunction, pathPrefix, resourceUrl, appStoreHook}: Properties) {
     const urlContext = new DefaultUrlContext(pathPrefix, resourceUrl)
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
         <StoreProvider appStoreHook={appStoreHook}>
             <UrlContextContext.Provider value={urlContext}>
-                <SelectionProvider onComponentSelected={onComponentSelected} selectedComponentId={selectedComponentId}>
+                <PreviewWrapper>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         {React.createElement(appFunction, {})}
                     </LocalizationProvider>
-                </SelectionProvider>
+                </PreviewWrapper>
             </UrlContextContext.Provider>
         </StoreProvider>
     </ErrorBoundary>

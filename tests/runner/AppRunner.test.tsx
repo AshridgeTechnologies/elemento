@@ -25,8 +25,6 @@ const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
                    selectedComponentId?: string) => createElement(AppRunner, {
     appFunction,
     pathPrefix,
-    onComponentSelected,
-    selectedComponentId,
     resourceUrl
 })
 
