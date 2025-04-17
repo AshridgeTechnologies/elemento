@@ -4,7 +4,7 @@ import {Observer} from './SendObservable'
 
 type EventSource = {addEventListener: typeof Window.prototype.addEventListener, removeEventListener: typeof Window.prototype.removeEventListener}
 
-export default function eventObservable(eventSource: EventSource, eventType: string, getDataFromEvent: (evt: Event) => any)  {
+export default function eventObservable(eventSource: EventSource, eventType: string, getDataFromEvent: (evt: Event) => any, useCapture = false)  {
     let observers: Observer<Event>[] = []
     const handler = (event: Event) => {
         const data = getDataFromEvent(event)
@@ -14,7 +14,7 @@ export default function eventObservable(eventSource: EventSource, eventType: str
     return new Observable(observer => {
 
         if (observers.length === 0) {
-            eventSource.addEventListener(eventType, handler)
+            eventSource.addEventListener(eventType, handler, useCapture)
         }
         observers.push(observer)
 

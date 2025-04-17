@@ -19,7 +19,7 @@ import eventObservable from '../util/eventObservable'
 import Observable from 'zen-observable'
 import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
 import {ElementId} from '../model/Types'
-import {flatten} from 'ramda'
+import {flatten, isNil} from 'ramda'
 import {fixPath} from '../runtime/appData'
 import AppStateStore from '../runtime/AppStateStore'
 
@@ -34,6 +34,7 @@ export function valueOf<T>(x: Value<T>): T {
 export default class PreviewController {
     private readonly actionQueue = new ActionQueue()
     private debugObservable: Observable<any> | undefined
+    private selectionObservable: Observable<any> | undefined
 
     constructor(private readonly window: Window, private readonly store: AppStateStore) {}
 
@@ -44,6 +45,18 @@ export default class PreviewController {
             const {detail} = (evt as CustomEvent)
             return valueOf(detail)
         })
+    }
+    private get elementSelectedObservable() {
+        const getIdOfElementAltClicked = (evt: Event) => {
+            const event = evt as MouseEvent
+            if (event.altKey) {
+                event.preventDefault()
+                event.stopPropagation()
+                const target = event.target as HTMLElement
+                return target.id || target.closest('[id]')?.id
+            }
+        }
+        return this.selectionObservable ??= eventObservable(this.window, 'click', getIdOfElementAltClicked, true).filter( id => !isNil(id))
     }
 
     IsReady() {
@@ -129,6 +142,10 @@ export default class PreviewController {
 
     Url() {
         return getUrlChangeObservable().map( url => this.normalizeUrl(url) )
+    }
+
+    ElementSelected() {
+        return this.elementSelectedObservable
     }
 
     GetUrl() {

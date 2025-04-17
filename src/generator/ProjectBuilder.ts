@@ -214,7 +214,7 @@ export default class ProjectBuilder {
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
-		"wrangler": "^4.9.1"
+		"wrangler": "^4.12.0"
 	}
 }
 `.trimStart()

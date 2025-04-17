@@ -17,6 +17,7 @@ export default class PreviewControllerClient {
     private getTextContent = callRpc('Preview.GetTextContent', this.win)
     private debug = observeRpc('Preview.Debug', undefined, this.win)
     private url = observeRpc('Preview.Url', undefined, this.win)
+    private elementSelected = observeRpc('Preview.ElementSelected', undefined, this.win)
     private getUrl = callRpc('Preview.GetUrl', this.win)
     private setUrl = callRpc('Preview.SetUrl', this.win)
     private back = callRpc('Preview.Back', this.win)
@@ -69,6 +70,10 @@ export default class PreviewControllerClient {
 
     Url() {
         return this.url()
+    }
+
+    ElementSelected() {
+        return this.elementSelected()
     }
 
     GetUrl() {

@@ -14,9 +14,9 @@ Requirements
 - ✅ Client and server preview changes available almost immediately
 - ✅ Client changes shown on preview app automatically
 - ✅ Server changes shown on preview app automatically
-- Debugging works
+- ✅ Debugging works
 - ✅ Highlighting works
-- Highlighting from preview works
+- ✅ Highlighting from preview works
 
 - ✅ Service worker removed
 - ✅ Express removed
@@ -30,6 +30,9 @@ Technical
 - ✅ Write status function to server app dir with info including the serverBuild version
 - ✅ index.js includes the status app
 - ✅ Editor polls status until serverBuild version >= the Project's, then refreshes server apps
+
+- Preview Controller does component selected, has observable
+- EditorRunner observes that
 
 - Write client runtime to client files - know it matches, wrangler dev caches
 - Review Selection Provider and selectedComponentId

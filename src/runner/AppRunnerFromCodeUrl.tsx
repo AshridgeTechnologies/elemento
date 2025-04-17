@@ -2,9 +2,6 @@ import React, {FunctionComponent, useEffect, useState} from 'react'
 import AppRunner from './AppRunner'
 import AppLoadError from './AppLoadError'
 import {loadModuleHttp} from './loadModuleHttp'
-import PreviewController from '../shared/PreviewController'
-import {exposeFunctions} from '../shared/postmsgRpc/server'
-import UrlContext from '../runtime/UrlContext'
 
 type Properties = {url: string, pathPrefix: string, resourceUrl: string, onComponentSelected?: (id: string) => void, selectedComponentId?: string}
 

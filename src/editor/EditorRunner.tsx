@@ -174,20 +174,6 @@ export default function EditorRunner() {
         gitProjectStore.getOriginRemote().then(setGitHubUrl)
     }
 
-    const onServerUpdateStatusChange = (newStatus: Status) => {
-        if (newStatus === 'complete') {
-            // experimental fix: suspect preview url is being sent to service worker before it is ready in some cases, so do it again here
-            updatePreviewUrlFromSettings()
-            wait(50).then(refreshServerAppConnectors)
-        }
-
-        if (newStatus instanceof Error) {
-            showAlert('Server App Preview', 'Failed to update preview server', newStatus.message, 'error')
-        }
-
-        setServerUpdateStatus(newStatus)
-    }
-
     const newProjectBuilder = (projectStore: DiskProjectStore) => {
         const rootFileWriter = new MultiFileWriter(
             new DiskProjectStoreFileWriter(projectStore, 'dist/cloudflare')
@@ -231,20 +217,9 @@ export default function EditorRunner() {
         }
     }
 
-    function refreshServerAppConnectors() {
-        const serverAppConnectorIds = getOpenProject().findElementsBy(el => el.kind === 'ServerAppConnector').map( el => el.id)
-        const paths = serverAppConnectorIds.map( id => getOpenProject().findElementPath(id))
-        paths.map( id => callFunctionInPreview(id!, 'Refresh'))
-    }
-
     function selectItemsInPreview(ids: string[]) {
         const idsWithinApp = ids.map( id => id.replace(/^Tools\./, ''))
         previewController?.Highlight(idsWithinApp)
-        //navigator.serviceWorker.controller!.postMessage({type: 'editorHighlight', ids: idsWithinApp})
-    }
-
-    function callFunctionInPreview(componentId: string, functionName: string, args: any[] = []) {
-        //navigator.serviceWorker.controller!.postMessage({type: 'callFunction', componentId, functionName, args})
     }
 
     function setPreviewServerUrl(url: string) {
@@ -309,6 +284,25 @@ export default function EditorRunner() {
         }
     }
 
+    function setUpPreviewController() {
+        const closeFn = exposeFunctions('Preview', previewController!)
+
+        previewController!.GetUrl().then(setPreviewCurrentUrl)
+        const urlSubscription = previewController!.Url().subscribe(setPreviewCurrentUrl)
+        const handleElementSelected = (path: string) => {
+            const elementId = getOpenProject().findElementByPath(path)?.id
+            if (elementId) {
+                onSelectedItemsChange([elementId])
+            }
+        }
+        const elementSelectedSubscription = previewController!.ElementSelected().subscribe(handleElementSelected)
+        return () => {
+            urlSubscription.unsubscribe()
+            elementSelectedSubscription.unsubscribe()
+            closeFn()
+        }
+    }
+
     const openInitialTools = () => {
         const searchParams = new URLSearchParams(location.search)
         const toolUrls = searchParams.getAll('tool')
@@ -319,7 +313,6 @@ export default function EditorRunner() {
         const selectedText = document.getSelection()?.toString() ?? ''
         return editorControllerRef.current?.setSelectedText(selectedText)
     })
-
     useEffect(() => {
         window.setProject = (project: string | Project) => {
             const proj = typeof project === 'string' ? loadJSONFromString(project) as Project : project
@@ -329,17 +322,12 @@ export default function EditorRunner() {
     })
     useEffect(() => exposeEditorController(gitHubUrl, projectHandler), [gitHubUrl, projectHandler, editorDialogContainer()])
     useEffect(openInitialTools, [])
+
     useEffect(sendSelectionToTools, [])
+
     useEffect(() => {
         if (previewController) {
-            const closeFn = exposeFunctions('Preview', previewController)
-
-            previewController.GetUrl().then(setPreviewCurrentUrl)
-            const subscription = previewController.Url().subscribe(setPreviewCurrentUrl)
-            return () => {
-                subscription.unsubscribe()
-                closeFn()
-            }
+            return setUpPreviewController()
         }
     }, [previewController])
 

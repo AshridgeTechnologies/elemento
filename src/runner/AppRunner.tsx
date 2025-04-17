@@ -28,18 +28,6 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
     }, [])
 
 
-    const selectionEventListener = (event: MouseEvent) => {
-        if (event.altKey && onComponentSelected) {
-            event.preventDefault()
-            event.stopPropagation()
-            const target = event.target as HTMLElement
-            const id = target.id || target.closest('[id]')?.id
-            if (id) {
-                onComponentSelected(id)
-            }
-        }
-    }
-    useEffect(() => (containerRef.current as HTMLElement).addEventListener('click', selectionEventListener), [] )
     useEffect(() => highlightElement(selectedComponentId))
     // @ts-ignore
     return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
