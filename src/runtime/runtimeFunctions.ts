@@ -69,44 +69,6 @@ export const showAppCode = () => {
     return code
 }
 
-export const highlightClassName = 'editor-highlight'
-const highlightStyleId = 'elementoEditorHighlight'
-
-const findElementWith = (el: Element, condition: (el: Element) => boolean) => {
-    let currentEl: Element | null = el
-    while (currentEl !== null && !condition(currentEl)) {
-        currentEl = currentEl.parentElement
-    }
-
-    return currentEl
-}
-
-const findInputParentLabel = (el: Element) : Element | null => el.tagName === 'INPUT' ? findElementWith(el, el => el.tagName === 'LABEL') : null
-
-export const highlightElement = (id: string | undefined) => {
-    if (!document.getElementById(highlightStyleId)) {
-        const styleEl = document.createElement('style')
-        styleEl.id = highlightStyleId
-        styleEl.innerHTML = `.${highlightClassName} { outline: 2px dashed orangered !important; outline-offset: 2px}`
-        document.head.append(styleEl)
-    }
-    const oldHighlightedElements = document.querySelectorAll('.' + highlightClassName)
-    oldHighlightedElements.forEach( el => el.classList.remove(highlightClassName))
-
-    if (id) {
-        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${id}']`)
-        if (matchingElements.length === 0) {
-            const listItemIdRegExp = /\.#[^.]+/g
-            const allElementsWithId = document.querySelectorAll(`[id]`) as NodeList
-            matchingElements = Array.from(allElementsWithId).filter((node) => (<Element>node).id.replace(listItemIdRegExp, '') === id) as Element[]
-        }
-        matchingElements.forEach(el => {
-            const elToHighlight = findInputParentLabel(el) ?? el
-            elToHighlight.classList.add(highlightClassName)
-        })
-    }
-}
-
 export type Value<T>   = T | { valueOf: () => T }
 export type PropVal<T> = T | { valueOf: () => T }
 export type StylesPropVals = Partial<Readonly<{

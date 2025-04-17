@@ -28,8 +28,7 @@ function SelectionProvider({children, onComponentSelected, selectedComponentId}:
     }, [])
 
 
-    useEffect(() => highlightElement(selectedComponentId))
-    // @ts-ignore
+     // @ts-ignore
     return <div id='selectionProvider' style={{height: '100%', width:'100%'}} ref={containerRef}>{children}</div>
 }
 

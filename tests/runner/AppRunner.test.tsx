@@ -8,11 +8,12 @@ import * as Elemento from '../../src/runtime/index'
 import {setObject, useGetStore, useObject} from '../../src/runtime/index'
 import '@testing-library/jest-dom'
 import {App} from '../../src/runtime/components/index'
-import {highlightClassName, highlightElement} from '../../src/runtime/runtimeFunctions'
+import {highlightElement} from '../../src/runtime/runtimeFunctions'
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
 import {TextInput} from '../../src/runtime/components'
+import {highlightClassName} from '../../src/shared/controllerHelpers'
 
 jest.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
 

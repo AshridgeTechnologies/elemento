@@ -68,10 +68,10 @@ export default class PreviewController {
     }
 
     Highlight(elementIds: ElementId[]) {
-        const elements = flatten(elementIds.map(id => selectElements('id', this.container, id)))
-        highlightElements(elements, this.container)
-        if (elements.length >= 1) {
-            ensureVisible(elements[0] as HTMLElement)
+        highlightElements(elementIds, this.container)
+        if (elementIds.length >= 1) {
+            const firstElement = this.container.querySelector(`[id='${elementIds[0]}']`)
+            ensureVisible(firstElement as HTMLElement)
         }
     }
 
@@ -87,7 +87,7 @@ export default class PreviewController {
         const elements = selector ? selectElements('id', this.container, selector) : []
 
         this.queueAction(null, async () => {
-            highlightElements(elements, this.container)
+            highlightElements(elements.map( el => el.id), this.container)
             if (elements.length === 1) {
                 const singleElement = elements[0].closest('.MuiFormControl-root') as HTMLElement
                 await ensureVisible(singleElement)

@@ -9,11 +9,12 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
-import {highlightClassName, highlightElement, StylesProps} from '../../../src/runtime/runtimeFunctions'
+import {highlightElement, StylesProps} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 import {ItemSetItem} from '../../../src/runtime/components'
 import MockedFunction = jest.MockedFunction
 import {CalculationState} from '../../../src/runtime/components/Calculation'
+import {highlightClassName} from '../../../src/shared/controllerHelpers'
 
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, $index: number, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
     const styles = {color: 'red', width: 300}

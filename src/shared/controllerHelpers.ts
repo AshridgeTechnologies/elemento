@@ -14,6 +14,8 @@ export type Options = {
 export type ActionFn = () => void | Promise<void>
 
 export const highlightClassName = 'editor-highlight'
+const highlightStyleId = 'elementoEditorHighlight'
+
 export const editorDialogClassName = 'editorDialogContainer'
 
 let storedOptions: Options = {showBeforeActions: false, showWithPointer: false, delay: 500}
@@ -183,10 +185,38 @@ export const hidePointer = (container: HTMLElement) => {
     if (pointerEl) pointerEl.style.opacity = `0`
 }
 
-export const highlightElements = (elements: HTMLElement[], container: HTMLElement) => {
+const findElementWith = (el: Element, condition: (el: Element) => boolean) => {
+    let currentEl: Element | null = el
+    while (currentEl !== null && !condition(currentEl)) {
+        currentEl = currentEl.parentElement
+    }
+
+    return currentEl
+}
+
+export const highlightElements = (elementIds: string[], container: HTMLElement) => {
+    const findInputParentLabel = (el: Element) : Element | null => el.tagName === 'INPUT' ? findElementWith(el, el => el.tagName === 'LABEL') : null
+
+    if (!document.getElementById(highlightStyleId)) {
+        const styleEl = document.createElement('style')
+        styleEl.id = highlightStyleId
+        styleEl.innerHTML = `.${highlightClassName} { outline: 2px dashed orangered !important; outline-offset: 2px}`
+        document.head.append(styleEl)
+    }
     const oldHighlightedElements = container.querySelectorAll('.' + highlightClassName)
     oldHighlightedElements.forEach(el => el.classList.remove(highlightClassName))
-    elements.forEach(el => el.classList.add(highlightClassName))
+    elementIds.forEach(id => {
+        let matchingElements: NodeListOf<Element> | Element[] = document.querySelectorAll(`[id = '${id}']`)
+        if (matchingElements.length === 0) {
+            const listItemIdRegExp = /\.#[^.]+/g
+            const allElementsWithId = document.querySelectorAll(`[id]`) as NodeList
+            matchingElements = Array.from(allElementsWithId).filter((node) => (<Element>node).id.replace(listItemIdRegExp, '') === id) as Element[]
+        }
+        matchingElements.forEach(el => {
+            const elToHighlight = findInputParentLabel(el) ?? el
+            elToHighlight.classList.add(highlightClassName)
+        })
+    })
 }
 
 export const setElementValue = async (element: HTMLElement, container: HTMLElement, value: string | boolean) => {
@@ -246,5 +276,3 @@ export class ActionQueue {
         return completionPromise
     }
 }
-
-
