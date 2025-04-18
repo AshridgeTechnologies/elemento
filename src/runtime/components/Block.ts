@@ -73,7 +73,7 @@ export default function Block({children = [], path,  ...props}: Properties) {
         // ok - you should not call hooks inside a conditional block
         // BUT dropAction will always be defined or not defined for any given element
         ({isOver, setNodeRef} = useDroppable({id: path}))
-        const state = useObject(path)
+        const state: BlockState = useObject(path)
         state.setIsOver(isOver)
 
         useDndMonitor({

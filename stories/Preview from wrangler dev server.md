@@ -20,7 +20,11 @@ Requirements
 
 - ✅ Service worker removed
 - ✅ Express removed
-- ~~Firebase removed~~  Later
+
+Further requirements
+--------------------
+- Firebase removed
+- Write client runtime to client files - know it matches, wrangler dev caches
 
 Technical
 ---------
@@ -34,9 +38,8 @@ Technical
 - ✅ Preview Controller does component selected, has observable
 - ✅ EditorRunner observes that
 
-- Write client runtime to client files - know it matches, wrangler dev caches
 - ✅ Review Selection Provider and selectedComponentId
-- Review appStoreHook
+- ✅ Review appStoreHook
 
 
 Notes
