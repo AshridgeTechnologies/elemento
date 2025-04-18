@@ -1,7 +1,7 @@
 import {isPending} from '../../../src/runtime/DataStore'
 import {testAppInterface, wait} from '../../testutil/testHelpers'
-import {AppStateForObject} from '../../../src/runtime/appData'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: jest.fn().mockResolvedValue(data)})
 let originalFetch = globalThis.fetch

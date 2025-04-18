@@ -5,7 +5,6 @@
 import React, {createElement} from 'react'
 import {componentJSON, mockReturn, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
-import {StoreProvider} from '../../../src/runtime/appData'
 import {setObject, useObject} from '../../../src/runtime/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import '@testing-library/jest-dom'
@@ -16,6 +15,7 @@ import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
+import {StoreProvider} from '../../../src/runner/AppRunner'
 
 jest.mock('../../../src/runtime/components/authentication')
 

@@ -1,7 +1,6 @@
 import renderer from 'react-test-renderer'
 import React, {ComponentState, createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
-import {AppStateForObject, AppStoreHook, StoreProvider} from '../../src/runtime/appData'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import {enGB} from 'date-fns/locale/en-GB'
@@ -12,6 +11,8 @@ import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
 import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
+import {AppStoreHook, StoreProvider} from '../../src/runner/AppRunner'
+import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 

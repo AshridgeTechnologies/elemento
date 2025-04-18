@@ -1,11 +1,10 @@
 import {useEffect, useState} from 'react'
 import {mapValues} from 'radash'
-import {AppStateForObject, UpdateBlockable} from './appData'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
-import {ComponentState} from './components/ComponentState'
 import {StoredState} from './AppStateStore'
 import {GetObjectFn, useGetObjectFunction} from './appStateHooks'
+import {VoidFn} from '../editor/Types'
 
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
@@ -32,6 +31,10 @@ const makeCloneable = (val: any) => {
         const json = JSON.stringify(val)
         return json ? JSON.parse(json) : {_error: 'Value unavailable'}
     }
+}
+
+export type UpdateBlockable = {
+    setPreventUpdates: (callback: VoidFn | null) => void
 }
 
 function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => DebugFunctions, getObjectFn: GetObjectFn) {

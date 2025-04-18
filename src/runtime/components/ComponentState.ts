@@ -1,6 +1,13 @@
-import {AppStateForObject, StateMap} from '../appData'
 import {shallow} from 'zustand/shallow'
 import {StoredState} from '../AppStateStore'
+
+export interface AppStateForObject {
+    latest: () => StoredState
+    updateVersion: (changes: object) => void,
+    getChildState: (subPath: string) => StoredState
+    getOrCreateChildState: (subPath: string, item: StoredState) => StoredState
+    getApp: () => StoredState
+}
 
 export interface ComponentState<T> {
     init(asi: AppStateForObject, path: string): void
@@ -13,6 +20,8 @@ export interface ComponentState<T> {
 
     onChildStateChange(): void
 }
+
+export type StateMap = { [key: string]: StoredState }
 
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
     protected state: StateProps & {childStates?: StateMap} = {} as StateProps

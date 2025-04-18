@@ -3,7 +3,6 @@ import {mockReturn, valueObj} from '../testutil/testHelpers'
 import * as authentication from '../../src/runtime/components/authentication'
 import * as notifications from '../../src/runtime/components/notifications'
 
-jest.mock('../../src/runtime/appData')
 jest.mock('../../src/runtime/components/authentication')
 jest.mock('../../src/runtime/components/notifications')
 

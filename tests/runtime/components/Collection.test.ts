@@ -14,9 +14,9 @@ import DataStore, {
 import SendObservable from '../../../src/util/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
-import {AppStateForObject} from '../../../src/runtime/appData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {noop} from 'lodash'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 let dataStore: DataStore
 let testObservable: SendObservable<UpdateNotification>

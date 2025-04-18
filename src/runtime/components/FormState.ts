@@ -2,7 +2,6 @@ import InputComponentState from './InputComponentState'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import {equals, mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../DataStore'
-import {StateMap} from '../appData'
 import BaseType from '../types/BaseType'
 import {PropVal} from '../runtimeFunctions'
 import {TextInputState} from './TextInput'
@@ -13,6 +12,7 @@ import {SelectInputState} from './SelectInput'
 import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
 import {StoredState} from '../AppStateStore'
+import {StateMap} from './ComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 

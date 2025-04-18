@@ -11,7 +11,8 @@ import {lastTrace} from '../../../src/runtime/debug'
 import {elProps, stateProps, wrapFn} from '../../../src/runtime/index'
 
 import * as notifications from '../../../src/runtime/components/notifications'
-import {AppStateForObject} from '../../../src/runtime/appData'
+
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 jest.mock('../../../src/runtime/components/notifications')
 
 let originalConsoleError: any

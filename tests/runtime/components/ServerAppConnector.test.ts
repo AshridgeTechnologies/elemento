@@ -1,11 +1,11 @@
 import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
-import {AppStateForObject} from '../../../src/runtime/appData'
 import {mockClear, mockImplementation, testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {noop} from 'lodash'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 jest.mock('../../../src/runtime/components/authentication')
 jest.mock('../../../src/runtime/appFunctions')

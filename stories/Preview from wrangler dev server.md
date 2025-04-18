@@ -31,11 +31,11 @@ Technical
 - ✅ index.js includes the status app
 - ✅ Editor polls status until serverBuild version >= the Project's, then refreshes server apps
 
-- Preview Controller does component selected, has observable
-- EditorRunner observes that
+- ✅ Preview Controller does component selected, has observable
+- ✅ EditorRunner observes that
 
 - Write client runtime to client files - know it matches, wrangler dev caches
-- Review Selection Provider and selectedComponentId
+- ✅ Review Selection Provider and selectedComponentId
 - Review appStoreHook
 
 

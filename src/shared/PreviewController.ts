@@ -19,8 +19,7 @@ import eventObservable from '../util/eventObservable'
 import Observable from 'zen-observable'
 import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
 import {ElementId} from '../model/Types'
-import {flatten, isNil} from 'ramda'
-import {fixPath} from '../runtime/appData'
+import {isNil} from 'ramda'
 import AppStateStore from '../runtime/AppStateStore'
 
 
@@ -76,8 +75,7 @@ export default class PreviewController {
     }
 
     CallFunction(componentId: string, functionName: string, args: any[]) {
-        const pathInState = fixPath(componentId, undefined)
-        const componentState = this.store.get(pathInState)
+        const componentState = this.store.get(componentId)
         const func = (componentState as any)[functionName]
         func.apply(componentState, args)
     }

@@ -15,8 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../DataStore'
-import {AppStateForObject} from '../appData'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {shallow} from 'zustand/shallow'

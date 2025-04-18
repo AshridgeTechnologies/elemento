@@ -1,10 +1,10 @@
 import {Adapter} from '../../../src/runtime/components'
 import {AdapterState} from '../../../src/runtime/components/Adapter'
 import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
-import {AppStateForObject} from '../../../src/runtime/appData'
 import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 jest.mock('../../../src/runtime/appFunctions')
 jest.mock('../../../src/runtime/appFunctions')

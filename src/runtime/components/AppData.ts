@@ -1,6 +1,5 @@
 import UrlContext from '../UrlContext'
-import {BaseComponentState, ComponentState} from './ComponentState'
-import {AppStateForObject} from '../appData'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
 import {shallow} from 'zustand/shallow'
 import Url, {asQueryObject} from '../Url'
 import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
