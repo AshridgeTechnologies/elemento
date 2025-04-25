@@ -7,20 +7,13 @@ const isPassThrough = (pathname: string) => {
     return pathname.startsWith('/lib/')
 }
 
-const redirectResponse = (location: string) => new Response(null, {
-    status: 307,
-    headers: {
-        "Location": location
-    }
-})
-
 export const cloudflareFetch = async (request: Request, env: any, ctx: any, serverApps: AppFactoryMap) => {
     const url = new URL(request.url);
     const pathname = url.pathname
     console.log('In fetch', 'pathname', pathname)
     if (isPassThrough(pathname)) {
         const elementoRuntimeHost = (url.host.match(/^(localhost:)/)) ? localElementoHost : defaultElementoHost
-        return redirectResponse(`${elementoRuntimeHost}${pathname}`)
+        return Response.redirect(`${elementoRuntimeHost}${pathname}`, 307)
     }
 
     if (pathname.startsWith('/capi/')) {
@@ -30,7 +23,7 @@ export const cloudflareFetch = async (request: Request, env: any, ctx: any, serv
     const apps = (env.APPS ?? '').split(/ *, */)
     const appName = pathname.split(/\//)[1]
     if (appName === '') {
-        return redirectResponse(`/${apps[0]}/`)
+        return Response.redirect(`/${apps[0]}/`, 307)
     }
     if (apps.includes(appName)) {
         return env.ASSETS.fetch(`${url.origin}/${appName}/`)
