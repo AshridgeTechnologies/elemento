@@ -3,11 +3,16 @@ import {createRoot} from 'react-dom/client'
 import AppRunnerFromGitHub from './AppRunnerFromGitHub'
 import AppRunnerFromCodeUrl from './AppRunnerFromCodeUrl'
 import {ASSET_DIR} from '../shared/constants'
+import Login from '../runtime/components/Login'
 
 type Properties = {pathname: string, origin: string}
 
 export default function AppMain({pathname, origin}: Properties) {
     const path = decodeURIComponent(pathname)
+
+    if (path === '/auth') {
+        return createElement(Login)
+    }
 
     const githubToolsMatch = path.match(/^(.*)\/gh\/([-\w]+)\/([-\w]+)\/tools\/([-\w]+)/)
     if (githubToolsMatch) {

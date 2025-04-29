@@ -2229,6 +2229,15 @@
     "@octokit/webhooks-types" "7.6.1"
     aggregate-error "^3.1.0"
 
+"@openauthjs/openauth@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@openauthjs/openauth/-/openauth-0.4.3.tgz#a092df33f6e081a89f194de1457f69eb04229aa4"
+  integrity sha512-RlnjqvHzqcbFVymEwhlUEuac4utA5h4nhSK/i2szZuQmxTIqbGUxZ+nM+avM+VV4Ing+/ZaNLKILoXS3yrkOOw==
+  dependencies:
+    "@standard-schema/spec" "1.0.0-beta.3"
+    aws4fetch "1.0.20"
+    jose "5.9.6"
+
 "@opentelemetry/api@^1.6.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.8.0.tgz#5aa7abb48f23f693068ed2999ae627d2f7d902ec"
@@ -3110,6 +3119,11 @@
   integrity sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==
   dependencies:
     "@sinonjs/commons" "^3.0.0"
+
+"@standard-schema/spec@1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.0.0-beta.3.tgz#4dbf9a3c69e10fa2997e1ac1f39d8e9f33213576"
+  integrity sha512-0ifF3BjA1E8SY9C+nUew8RefNOIq0cDlYALPty4rhUm8Rrl6tCM8hBT4bhGhx7I7iXD0uAgt50lgo8dD73ACMw==
 
 "@swc/core-darwin-arm64@1.4.14":
   version "1.4.14"
@@ -4298,6 +4312,11 @@ available-typed-arrays@^1.0.7:
   integrity sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==
   dependencies:
     possible-typed-array-names "^1.0.0"
+
+aws4fetch@1.0.20:
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/aws4fetch/-/aws4fetch-1.0.20.tgz#090d6c65e32c6df645dd5e5acf04cc56da575cbe"
+  integrity sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==
 
 axios@^1.6.5:
   version "1.6.8"
@@ -7124,6 +7143,11 @@ hoist-non-react-statics@^3.3.1:
   dependencies:
     react-is "^16.7.0"
 
+hono@^4.7.8:
+  version "4.7.8"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.7.8.tgz#f84ffd39b69f1c851fe0b58efb207ee2b2cdac3a"
+  integrity sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==
+
 html-dom-parser@5.0.8:
   version "5.0.8"
   resolved "https://registry.yarnpkg.com/html-dom-parser/-/html-dom-parser-5.0.8.tgz#540057d8eb7ff28c9fd45fa9eead374c34dae20c"
@@ -8307,15 +8331,15 @@ join-path@^1.1.1:
     url-join "0.0.1"
     valid-url "^1"
 
+jose@5.9.6:
+  version "5.9.6"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.9.6.tgz#77f1f901d88ebdc405e57cce08d2a91f47521883"
+  integrity sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==
+
 jose@^4.14.6:
   version "4.15.5"
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.15.5.tgz#6475d0f467ecd3c630a1b5dadd2735a7288df706"
   integrity sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==
-
-jose@^5.1.1:
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-5.2.4.tgz#c0d296caeeed0b8444a8b8c3b68403d61aa4ed72"
-  integrity sha512-6ScbIk2WWCeXkmzF6bRPmEuaqy1m8SbsRFMa/FLrSCkGIhj8OLVG/IH+XHVmNMx/KUo8cVWEE6oKR4dJ+S0Rkg==
 
 js-cookie@^2.2.1:
   version "2.2.1"
@@ -12417,6 +12441,11 @@ v8-to-istanbul@^9.0.1:
     "@jridgewell/trace-mapping" "^0.3.12"
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^2.0.0"
+
+valibot@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/valibot/-/valibot-1.0.0.tgz#1f82514296abcd23d0ae4280088ba85f8651c564"
+  integrity sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==
 
 valid-url@^1:
   version "1.0.9"

@@ -45,6 +45,7 @@ export const serverConfig = {
     format: 'cjs',
     minify: true,
     platform: 'node',
+    conditions: ['worker'], // to get correct jose package for openauth in Cloudflare workers
     target: 'node18.16',
     outdir,
     plugins: [],

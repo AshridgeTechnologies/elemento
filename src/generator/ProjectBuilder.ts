@@ -136,6 +136,7 @@ export default class ProjectBuilder {
         this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, appNames))
         this.generatedRootFiles.storeFile('package.json', this.packageJson(this.project.codeName))
         this.generatedRootFiles.storeFile('index.js', this.indexJs())
+        this.generatedRootFiles.storeFile('auth.html', this.authHtml())
     }
 
     private buildClientAppFiles(app: App) {
@@ -256,4 +257,31 @@ export default status
 `.trimStart()
     }
 
+    private authHtml() {
+        return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <title>Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="web-font-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <style>
+    body { margin: 0; padding: 0}
+    #main { height: 100vh; width: 100vw; margin: 0 }
+  </style>
+</head>
+<body>
+<script type="module">
+    const elementoRuntimeHost = (location.host.match(/^(localhost:|elemento-apps)/)) ? location.origin : 'https://elemento.online'
+    window.elementoRuntimeUrl = elementoRuntimeHost + '/lib/runtime.js'
+    import(window.elementoRuntimeUrl).then( runtime => runtime.runAppFromWindowUrl() )
+</script>
+</body>
+</html>
+`.trimStart()
+    }
 }

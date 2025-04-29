@@ -1,32 +1,9 @@
 import * as React from 'react'
-import {createElement, useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {Box, Button, Icon, IconButton, Link, Popover, Typography} from '@mui/material'
-import {authIsReady, getAuth, onAuthChange, currentUser, signOut, useSignedInState, isSignedIn} from './authentication'
-import * as auth from 'firebase/auth'
-import {StyledFirebaseAuth} from 'react-firebaseui'
+import {authIsReady, onAuthChange, currentUser, signOut, useSignedInState, isSignedIn} from './authentication.js'
+import {openLoginPopup} from './LoginManager.js'
 
-function AuthDialog(props: {onSignIn: VoidFunction}) {
-    const uiConfig = {
-        signInFlow: 'popup',
-        signInOptions: [
-            auth.GoogleAuthProvider.PROVIDER_ID,
-            auth.EmailAuthProvider.PROVIDER_ID,
-        ],
-        tosUrl: '/terms',
-        privacyPolicyUrl: '/privacy',
-        callbacks: {
-            signInSuccessWithAuthResult: () => {
-                props.onSignIn()
-                return false
-            }
-        }
-    }
-
-    if (!authIsReady()) {
-        return createElement('div', null, 'Authentication not available')
-    }
-    return createElement(StyledFirebaseAuth, {uiConfig, firebaseAuth: getAuth()})
-}
 
 export default function UserLogon() {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
@@ -38,13 +15,10 @@ export default function UserLogon() {
     const buttonRef = useRef(null)
 
     const handleClose = () => setAnchorEl(null)
-    const handleButtonClick = (event: React.MouseEvent) => {setAnchorEl(buttonRef.current)}
+    const handleButtonClick = (_event: React.MouseEvent) => {setAnchorEl(buttonRef.current)}
     const handleLogout = () => {
         signOut()
         handleClose()
-    }
-    const handleSignIn = () => {
-        setTimeout(handleClose, 4000)
     }
 
     if (!isAuthReady) {
@@ -53,14 +27,11 @@ export default function UserLogon() {
 
     const userPanel = isSignedIn() ?
         <Box minWidth={300} margin={2}>
-            <Typography variant='body1'>Logged in as {currentUser()!.displayName}</Typography>
+            <Typography variant='body1'>Logged in as {currentUser()!.name}</Typography>
             <Link underline='hover' sx={{cursor: 'pointer'}} variant='body1' marginTop={1}
                   onClick={handleLogout}>Logout</Link>
         </Box>
-        : <Box minWidth={300} margin={2}>
-            <Typography variant='body1'>Please log in or sign up</Typography>
-            <AuthDialog onSignIn={handleSignIn}/>
-        </Box>
+        : null
 
     return (
         <div ref={buttonRef}>{
@@ -82,7 +53,7 @@ export default function UserLogon() {
                           aria-controls="userMenu"
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
-                          onClick={handleButtonClick}
+                          onClick={openLoginPopup}
                           sx={{px: 1, minWidth: '32px'}}
                 >Login
                 </Button>
@@ -94,8 +65,8 @@ export default function UserLogon() {
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClose}
-                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-                transformOrigin={{vertical: 'top', horizontal: 'right'}}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+                transformOrigin={{vertical: 'top', horizontal: 'left'}}
                 sx={{marginTop: '8px'}}
             >
                 {userPanel}

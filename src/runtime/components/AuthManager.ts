@@ -1,0 +1,119 @@
+// @ts-ignore
+import {Client, createClient} from '@openauthjs/openauth/client'
+import {subjects, User} from '../../shared/subjects'
+
+export class AuthManagerBase {
+
+	protected token: string | undefined
+	protected listeners: (() => void)[] = []
+	protected _loaded: boolean = false
+	protected _loggedIn: boolean = false
+	protected client: Client = createClient({
+		clientID: "elemento-app",
+		issuer: location.origin + '/' + '_auth',
+	})
+
+	// see https://github.com/toolbeam/openauth/issues/238
+	protected verifyClient: Client = createClient({
+		clientID: "elemento-app",
+		issuer: location.origin,
+	})
+
+	protected channel: BroadcastChannel = new BroadcastChannel('elemento_auth')
+
+	protected _user: User | undefined
+
+	get loaded() { return this._loaded }
+	get loggedIn() { return this._loggedIn }
+	get currentUser() { return this._user }
+
+	onStatusChange(listener: () => void) {
+		this.listeners = [...this.listeners, listener]
+		return () => {
+			this.listeners = this.listeners.filter( l => l !== listener )
+		}
+	}
+
+	protected notifyStatusChange() {
+		this.listeners.forEach(l => l())
+	}
+
+	protected async refreshTokens() {
+		const refresh = localStorage.getItem("refresh")
+		if (!refresh) return
+		const next = await this.client.refresh(refresh, {
+			access: this.token,
+		})
+		if (next.err) return
+		if (!next.tokens) return this.token
+
+		localStorage.setItem("refresh", next.tokens.refresh)
+		this.token = next.tokens.access
+
+		return next.tokens.access
+	}
+
+	get userId() {
+		return this._user?.id
+	}
+
+	protected async updateStatus() {
+
+		const token = await this.refreshTokens()
+
+		if (token) {
+			const verified = await this.verifyClient.verify(subjects, token);
+
+			if (!verified.err) {
+				this._user = verified.subject.properties
+				this._loggedIn = true
+			} else {
+				console.error('Token not verified', verified.err)
+			}
+		}
+
+		this._loaded = true
+		this.notifyStatusChange()
+	}
+}
+
+export class AuthManager extends AuthManagerBase {
+
+	async init() {
+		this.channel.onmessage = (event: MessageEvent) => {
+			if (event.origin === location.origin) {
+				if (event.data === 'login') {
+					console.log('Logged in')
+					this.updateStatus()
+				}
+				if (event.data === 'logout') {
+					console.log('Logged out')
+					this.updateForLogout()
+				}
+			}
+		}
+
+		this.updateStatus()
+	}
+
+	logout() {
+		localStorage.removeItem("refresh")
+		this.updateForLogout()
+		this.notifyLogout()
+	}
+
+	async getToken() {
+		return await this.refreshTokens()
+	}
+
+	private notifyLogout() {
+		this.channel.postMessage('logout')
+	}
+
+	private updateForLogout() {
+		this.token = undefined
+		this._user = undefined
+		this._loggedIn = false
+		this.updateStatus()
+	}
+}

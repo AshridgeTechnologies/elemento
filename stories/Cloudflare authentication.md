@@ -11,13 +11,14 @@ Requirements
 
 - Free or nearly free
 - Low risk of hacking
-- User logon component continues to work in a similar way
-- Auth dialogs appear in a popup or iframe without leaving the current app page
+- ✅ User logon component continues to work in a similar way
+- ✅ Auth dialogs appear in a popup or iframe without leaving the current app page
 - Current User continues to work
 - Remove Firebase auth
 
 Later
 -----
+- Use upcoming openauth fix to allow basepath
 
 
 
@@ -31,8 +32,7 @@ Technical
 - ✅ Use Broadcast listener to update status
 - ✅ Check where parts of init() are used
 - ✅ Get auth calls under single root path of /_auth
-- Produce a cloudflare version of the authentication module
-- Move App code to a UserLogin component
-- Work out how to deal with the user call
+- ✅ Work out how to deal with the user call
+- ✅ Produce a cloudflare version of the authentication module
+- ✅ Move App code to a UserLogin component
 - Work out how to send codes by email
-- Work out how to patch the issuer() fn in issuer to include the _auth path (or be the actual issuer url)
