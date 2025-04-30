@@ -198,7 +198,13 @@ export default class ProjectBuilder {
         "nodejs_compat"
     ],
      "vars": { "APPS": "${appNames.join(',')}" },
-    "assets": { "directory": "./client", "binding": "ASSETS" }
+    "assets": { "directory": "./client", "binding": "ASSETS" },
+    "kv_namespaces": [
+    {
+      "binding": "auth",
+      "id": "538c9df498704d8287fdbb4f9d899744"
+    }
+  ]
 }
 `.trimStart()
     }

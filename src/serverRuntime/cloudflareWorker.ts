@@ -1,5 +1,5 @@
 import {AppFactoryMap, handleServerRequest} from './requestHandler'
-import issuer from './issuer'
+import getIssuer from './issuer'
 
 const defaultElementoHost = 'https://elemento.online'
 const localElementoHost = 'http://localhost:8000'
@@ -19,8 +19,8 @@ export const cloudflareFetch = async (request: Request, env: any, ctx: any, serv
 
     const pathnameFirstPart = pathname.slice(1).split(/\//)[0]
     if (pathnameFirstPart.startsWith('_auth') || pathnameFirstPart === '.well-known') {
-        console.log('Delegating to issuer')
-        return issuer.fetch(request)
+        console.log('Delegating to issuer', 'auth kv namespace', env.auth)
+        return getIssuer(env).fetch(request)
     }
 
     if (pathname.startsWith('/capi/')) {

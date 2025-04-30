@@ -9,11 +9,13 @@ Aims
 Requirements
 ------------
 
-- Free or nearly free
-- Low risk of hacking
+- ✅ Free or nearly free
+- ✅ Low risk of hacking
 - ✅ User logon component continues to work in a similar way
 - ✅ Auth dialogs appear in a popup or iframe without leaving the current app page
-- Current User continues to work
+- ✅ Current User continues to work
+- ✅ Password (and other?) users are saved to permanent store
+- Permanent store can be configured in project
 - Remove Firebase auth
 
 Later
