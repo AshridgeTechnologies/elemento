@@ -43,7 +43,7 @@ General client approach - Spike 1
   - deployment
   - local dev server
 - Preview app does dynamic import of generated app module and refreshes when triggered, as now
-- Arrange proxy so that studio and preview come from same host, so studio can talk to preview window
+- Use postmessage, so studio can talk to preview window on different domain
 
 Initial server app approach
 ----------------------------

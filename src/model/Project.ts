@@ -19,12 +19,19 @@ import ComponentFolder from './ComponentFolder'
 import ComponentInstance from './ComponentInstance'
 import InputProperty from './InputProperty'
 
-type Properties = { author?: PropertyValue }
+type Properties = { author?: PropertyValue, configuration?: string }
 
 export const FILES_ID = '_FILES'
 export const TOOLS_ID = '_TOOLS'
 export const COMPONENTS_ID = '_COMPONENTS'
 
+const safeJSONParse = (s: string) => {
+    try {
+        return JSON.parse(s)
+    } catch(error: any) {
+        return {error}
+    }
+}
 class DataTypesContainer extends BaseElement<{}> {
     readonly kind = 'DataTypesContainer' as ElementType
     readonly iconClass = 'an_icon'
@@ -66,6 +73,10 @@ export default class Project extends BaseElement<Properties> implements Element 
     static get parentType() { return null }
     type(): ComponentType { return 'app' }
 
+    get configuration() {
+        const config = this.properties.configuration
+        return config ? safeJSONParse(config) : {}
+    }
     get dataTypes() {return this.findChildElements(DataTypes)}
     get componentsFolder() { return this.findElement(COMPONENTS_ID) as ComponentFolder }
     get userDefinedComponents() { return (this.componentsFolder?.findElementsBy( el => el.kind === 'Component') ?? []) as ComponentDef[] }
@@ -78,6 +89,7 @@ export default class Project extends BaseElement<Properties> implements Element 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('author'),
+            propDef('configuration', 'string', {multilineExpr: true, fixedOnly: true }),
         ]
     }
 

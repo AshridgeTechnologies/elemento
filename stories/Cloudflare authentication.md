@@ -15,7 +15,7 @@ Requirements
 - ✅ Auth dialogs appear in a popup or iframe without leaving the current app page
 - ✅ Current User continues to work
 - ✅ Password (and other?) users are saved to permanent store
-- Permanent store can be configured in project
+- ✅ Permanent store can be configured in project
 - Remove Firebase auth
 
 Later

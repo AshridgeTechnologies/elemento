@@ -133,7 +133,7 @@ export default class ProjectBuilder {
 
     private buildRootFiles() {
         const appNames = this.project.findChildElements(App).map( el => el.codeName)
-        this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, appNames))
+        this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, this.project.configuration, appNames))
         this.generatedRootFiles.storeFile('package.json', this.packageJson(this.project.codeName))
         this.generatedRootFiles.storeFile('index.js', this.indexJs())
         this.generatedRootFiles.storeFile('auth.html', this.authHtml())
@@ -184,7 +184,8 @@ export default class ProjectBuilder {
         }
     }
 
-    private wranglerConfig(projectName: string, appNames: string[]) {
+    private wranglerConfig(projectName: string, projectConfig: {authStoreId: string}, appNames: string[]) {
+        const {authStoreId} = projectConfig
         return `
 {
     "$schema": "node_modules/wrangler/config-schema.json",
@@ -202,7 +203,7 @@ export default class ProjectBuilder {
     "kv_namespaces": [
     {
       "binding": "auth",
-      "id": "538c9df498704d8287fdbb4f9d899744"
+      "id": "${authStoreId}"
     }
   ]
 }
