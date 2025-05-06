@@ -12,6 +12,7 @@ beforeEach(async () => {
 
 describe('shared collections', () => {
     let worker: any
+    const collectionName = 'Widgets'
 
     const callStore = (func: string, ...args: any[]) => {
         return worker.fetch(`http://example.com/store/${func}`, {
@@ -28,7 +29,6 @@ describe('shared collections', () => {
     test('add and retrieve', async () => {
         const id = 'id_' + Date.now()
         const item = {a:10, b:'foo'}
-        const collectionName = 'Widgets'
         await callStore('add', collectionName, id, item)
         const result = await callStore('getById', collectionName, id)
 
@@ -39,34 +39,35 @@ describe('shared collections', () => {
         await worker.dispose();
     });
 
+    test('has initial empty data store', async () => {
+        await expect(callStore('getById', collectionName, 'idxxx')).rejects.toHaveProperty('message', `Object with id 'idxxx' not found in collection 'Widgets'`)
+    })
 
-    // test('has initial empty data store', async () => {
-    //     await expect(store.getById('Widgets', 'wxxx')).rejects.toHaveProperty('message', `Object with id 'wxxx' not found in collection 'Widgets'`)
-    // })
+    test('errors for unknown collection names', async () => {
+        await expect(callStore('getById', 'Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
+    })
 
-    // test('errors for unknown collection names', async () => {
-    //     await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
-    // })
-    //
-    // test('returns null if not found and nullIfNotFound set', async () => {
-    //     await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
-    // })
-    //
-    // test('can add, update and remove', async () => {
-    //     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
-    //     const retrievedObj = await store.getById('Widgets', 'w1')
-    //     expect(retrievedObj).toMatchObject({id: 'w1', a: 10, b: 'Bee1', c: true})
-    //
-    //     // await store.addAll('Widgets', {w2: {a: 50, b: 'Bee50', c: true}, w3: {a: 60, b: 'Bee60', c: false}})
-    //     // expect(await store.getById('Widgets', 'w3')).toMatchObject({id: 'w3', a: 60, b: 'Bee60', c: false})
-    //     //
-    //     // await store.update('Widgets', 'w1', {a: 20, b: 'Bee1', c: true})
-    //     // expect(await store.getById('Widgets', 'w1')).toMatchObject({id: 'w1', a: 20, b: 'Bee1', c: true})
-    //     //
-    //     // await store.remove('Widgets', 'w1')
-    //     // await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
-    // })
-    //
+    test('returns null if not found and nullIfNotFound set', async () => {
+        await expect(callStore('getById', 'Widgets', 'wxxx', true)).resolves.toBe(null)
+    })
+
+    test('can add, update and remove', async () => {
+        const id1 = 'id1_' + Date.now(), id2 = 'id2_' + Date.now(), id3 = 'id3_' + Date.now()
+
+        await callStore('add', 'Widgets', id1, {a: 10, b: 'Bee1', c: true})
+        const retrievedObj = await callStore('getById', 'Widgets', id1)
+        expect(retrievedObj).toMatchObject({id: id1, a: 10, b: 'Bee1', c: true})
+
+        await callStore('addAll', 'Widgets', {[id2]: {a: 50, b: 'Bee50', c: true}, [id3]: {a: 60, b: 'Bee60', c: false}})
+        expect(await callStore('getById', 'Widgets', id3)).toMatchObject({id: id3, a: 60, b: 'Bee60', c: false})
+
+        await callStore('update', 'Widgets', id1, {a: 20})
+        expect(await callStore('getById', 'Widgets', id1)).toMatchObject({id: id1, a: 20, b: 'Bee1', c: true})
+
+        await callStore('remove', 'Widgets', id1)
+        await expect(callStore('getById', 'Widgets', id1)).rejects.toHaveProperty('message', `Object with id '${id1}' not found in collection 'Widgets'`)
+    })
+
     // test('can query with simple field values', async () => {
     //     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     //     await store.add('Widgets', 'w2', {a: 20, b: 'Bee2', c: true})
