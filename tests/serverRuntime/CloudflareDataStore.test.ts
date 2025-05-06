@@ -13,6 +13,13 @@ beforeEach(async () => {
 describe('shared collections', () => {
     let worker: any
 
+    const callStore = (func: string, ...args: any[]) => {
+        return worker.fetch(`http://example.com/store/${func}`, {
+            method: 'POST',
+            body: JSON.stringify(args),
+        }).then( (resp: Response) => resp.json() )
+    }
+
     beforeAll(async () => {
         worker = await unstable_startWorker({ config: 'tests/serverRuntime/wrangler.jsonc',
         dev: {server: {port: 9090}}});
@@ -21,14 +28,9 @@ describe('shared collections', () => {
     test('add and retrieve', async () => {
         const id = 'id_' + Date.now()
         const item = {a:10, b:'foo'}
-        const data = {
-            collectionName: 'Widgets', id, item
-        }
-        await worker.fetch('http://example.com/add', {
-            method: "POST",
-            body: JSON.stringify(data),
-        })
-        const result = await worker.fetch('http://example.com/getById' + '/Widgets/' + id).then( (resp: Response) => resp.json() )
+        const collectionName = 'Widgets'
+        await callStore('add', collectionName, id, item)
+        const result = await callStore('getById', collectionName, id)
 
         expect(result).toStrictEqual({id, ...item})
     })
