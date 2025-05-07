@@ -112,15 +112,21 @@ export const previewPathComponents = (pathname: string): {projectId: string, app
     return baseComponents
 }
 
-const isoDateRegex = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/
-export const isoDateReviver = (key: string, value: any) => {
-    if (typeof value === 'string' && value.match(isoDateRegex)) {
+export const isoDateRegex = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/
+
+export const convertIsoDate = (value: any) => {
         const date = parseISO(value)
         if (!Number.isNaN(date.getTime())) {
             return date
         }
-    }
 
+    return value
+}
+
+export const isoDateReviver = (key: string, value: any) => {
+    if (typeof value === 'string' && value.match(isoDateRegex)) {
+        return convertIsoDate(value)
+    }
     return value
 }
 

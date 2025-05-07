@@ -1,14 +1,20 @@
 // import {components} from '../../src/serverRuntime/index'
-import { unstable_startWorker } from "wrangler"
+import {unstable_startWorker} from "wrangler"
 
 // const {CloudflareDataStore} = components
 import CloudflareDataStore from '../../src/serverRuntime/CloudflareDataStore'
+import BigNumber from 'bignumber.js'
+
 let store: any
 
 beforeEach(async () => {
     const env = {}
     store = new CloudflareDataStore({collections: 'Widgets', env, bindingName: 'DB1'})
 })
+
+function newId() {
+    return 'id_' + Date.now()
+}
 
 describe('shared collections', () => {
     let worker: any
@@ -18,7 +24,14 @@ describe('shared collections', () => {
         return worker.fetch(`http://example.com/store/${func}`, {
             method: 'POST',
             body: JSON.stringify(args),
-        }).then( (resp: Response) => resp.json() )
+        }).then( (resp: Response) => resp.json() ).then( (result: any) => result.data)
+    }
+
+    const callStoreTypes = (func: string, ...args: any[]) => {
+        return worker.fetch(`http://example.com/store/${func}`, {
+            method: 'POST',
+            body: JSON.stringify(args),
+        }).then( (resp: Response) => resp.json() ).then( (result: any) => result.types)
     }
 
     beforeAll(async () => {
@@ -27,7 +40,7 @@ describe('shared collections', () => {
     });
 
     test('add and retrieve', async () => {
-        const id = 'id_' + Date.now()
+        const id = newId()
         const item = {a:10, b:'foo'}
         await callStore('add', collectionName, id, item)
         const result = await callStore('getById', collectionName, id)
@@ -82,33 +95,69 @@ describe('shared collections', () => {
         ])
     })
 
-    // test('can query with complex criteria', async () => {
-    //     await store.add('Widgets', 'q1', {a: 100, b: 'Bee10', c: true})
-    //     await store.add('Widgets', 'q2', {a: 200, b: 'Bee20', c: true})
-    //     await store.add('Widgets', 'q3', {a: 300, b: 'Bee30', c: false})
-    //     await store.add('Widgets', 'q4', {a: 400, b: 'Bee40', c: false})
-    //     const result = await store.query('Widgets', [
-    //         ['a', '>=', 200],
-    //         ['a', '<', 400],
-    //         ])
-    //     expect(result.length).toBe(2)
-    //     expect(result[0]).toMatchObject({id: 'q2', a: 200, b: 'Bee20', c: true})
-    //     expect(result[1]).toMatchObject({id: 'q3', a: 300, b: 'Bee30', c: false})
-    // })
-    //
-    // test('stores dates', async () => {
-    //     const hour = 10
-    //     const theDate = new Date(2022, 6, 2, hour, 11, 12)
-    //     await store.add('Widgets', 'w1', {a: 10, date: theDate})
-    //     const item = await store.getById('Widgets', 'w1')
-    //     expect(item.date.getTime()).toStrictEqual(theDate.getTime())
-    // })
-    //
-    // test('stores nulls', async () => {
-    //     await store.add('Widgets', 'w99', {a: 10, date: null})
-    //     const item = await store.getById('Widgets', 'w99')
-    //     expect(item.date).toBeNull()
-    // })
+    test('can query with complex criteria', async () => {
+        await callStore('test_clear', 'Widgets')
+        await callStore('add', 'Widgets', 'q1', {a: 100, b: 'Bee10', c: true})
+        await callStore('add', 'Widgets', 'q2', {a: 200, b: 'Bee20', c: true})
+        await callStore('add', 'Widgets', 'q3', {a: 300, b: 'Bee30', c: false})
+        await callStore('add', 'Widgets', 'q4', {a: 400, b: 'Bee40', c: false})
+        const result = await callStore('query', 'Widgets', [
+            ['a', '>=', 200],
+            ['a', '<', 400],
+            ])
+        expect(result).toStrictEqual([
+            {id: 'q2', a: 200, b: 'Bee20', c: true},
+            {id: 'q3', a: 300, b: 'Bee30', c: false}
+        ])
+    })
+
+    test('query uses correct data types and allows ==', async () => {
+        await callStore('test_clear', 'Widgets')
+        await callStore('add', 'Widgets', 'q1', {a: 90, b: 'Bee10', c: true})
+        await callStore('add', 'Widgets', 'q2', {a: 100, b: 'Bee20', c: true})
+        await callStore('add', 'Widgets', 'q3', {a: 300, b: 'Bee30', c: false})
+        await callStore('add', 'Widgets', 'q4', {a: 400, b: 'Bee40', c: false})
+        expect(await callStore('query', 'Widgets', [['a', '>=', 200],])).toStrictEqual([
+            {id: 'q3', a: 300, b: 'Bee30', c: false},
+            {id: 'q4', a: 400, b: 'Bee40', c: false}
+        ])
+        expect(await callStore('query', 'Widgets', [['b', '>=', 'Bee30'],])).toStrictEqual([
+            {id: 'q3', a: 300, b: 'Bee30', c: false},
+            {id: 'q4', a: 400, b: 'Bee40', c: false}
+        ])
+        expect(await callStore('query', 'Widgets', [['c', '==', false],])).toStrictEqual([
+            {id: 'q3', a: 300, b: 'Bee30', c: false},
+            {id: 'q4', a: 400, b: 'Bee40', c: false}
+        ])
+        expect(await callStore('query', 'Widgets', [['c', '=', true],])).toStrictEqual([
+            {id: 'q1', a: 90, b: 'Bee10', c: true},
+            {id: 'q2', a: 100, b: 'Bee20', c: true}
+        ])
+    })
+
+    test('stores dates', async () => {
+        const id = newId()
+        const hour = 10
+        const theDate = new Date(2022, 6, 2, hour, 11, 12)
+        await callStore('add', 'Widgets', id, {a: 10, date: theDate})
+        const itemTypes = await callStoreTypes('getById', 'Widgets', id)
+        expect(itemTypes.date).toBe('Date')
+    })
+
+    test('stores Big decimals', async () => {
+        const id = newId()
+        const theNumber = new BigNumber('1122334455667788')
+        await callStore('add', 'Widgets', id, {a: 10, num: '#Dec' + theNumber})
+        const itemTypes = await callStoreTypes('getById', 'Widgets', id)
+        expect(itemTypes.num).toBe('BigNumber')
+    })
+
+    test('stores nulls', async () => {
+        const id = newId()
+        await callStore('add', 'Widgets', id, {a: 10, date: null})
+        const item = await callStore('getById', 'Widgets', id)
+        expect(item.date).toBeNull()
+    })
 
 })
 

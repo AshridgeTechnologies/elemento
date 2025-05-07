@@ -9,12 +9,13 @@ Aims
 Requirements
 ------------
 
-- Conforms to interface expected by Elemento Collections
+- ✅ Conforms to interface expected by Elemento Collections
 - Can set configuration required by Cloudflare Worker
-- Allows free-form data like Firestore
-- Works on server side only
-- Stores dates as ISO string, converts ISO string to Date on read
-- Stores and retrieves BigDecimals
+- ✅ Allows free-form data like Firestore
+- ✅ Works on server side only
+- ✅ Stores dates as ISO string, converts ISO string to Date on read
+- ✅ Stores and retrieves BigDecimals
+- ✅ Stores and retrieves nulls
 
 Further requirements
 --------------------

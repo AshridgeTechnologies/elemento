@@ -3,15 +3,34 @@ import {D1Database, D1PreparedStatement} from "@cloudflare/workers-types/experim
 import {mapObjIndexed} from 'ramda'
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {isArray} from 'radash'
+import {convertIsoDate, isoDateRegex} from '../util/helpers'
+import BigNumber from 'bignumber.js'
+
+const DECIMAL_PREFIX = '#Dec'
+const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PREFIX + value : value
+const convertToDbData = (data: any) => mapObjIndexed(convertToDbValue, data)
 
 
-const convertValue = (value: any) => typeof value?.toDate === 'function' ? value.toDate() : value
-const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
+const convertFromDbValue = (value: any) => {
+    if (typeof value === 'string' && value.match(isoDateRegex)) {
+        return convertIsoDate(value)
+    }
+    if (typeof value === 'string' && value.startsWith(DECIMAL_PREFIX)) {
+        return new BigNumber(value.substring(DECIMAL_PREFIX.length))
+    }
+
+    return value
+}
+const convertFromDbData = (data: any) => mapObjIndexed(convertFromDbValue, data)
 
 type Properties = {env: object, bindingName: string, collections: string}
 
 const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
     return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '=', value])
+}
+
+function asJsonString(changes: object) {
+    return JSON.stringify(convertToDbData(changes))
 }
 
 export default class CloudflareDataStore implements BasicDataStore {
@@ -59,7 +78,7 @@ export default class CloudflareDataStore implements BasicDataStore {
             }
         }
         const data = result.json_data as string
-        return convertDocumentData(JSON.parse(data))
+        return convertFromDbData(JSON.parse(data))
     }
 
     private async insertStmt(db: D1Database, collectionName: CollectionName) {
@@ -68,7 +87,7 @@ export default class CloudflareDataStore implements BasicDataStore {
 
     private bindInsert(stmt: D1PreparedStatement, id: Id, item: DataStoreObject) {
         const itemWithId = {id, ...item}
-        const jsonStr = JSON.stringify(itemWithId)
+        const jsonStr = asJsonString(itemWithId)
         return stmt.bind(id, jsonStr)
     }
 
@@ -90,7 +109,7 @@ export default class CloudflareDataStore implements BasicDataStore {
     async update(collectionName: CollectionName, id: Id, changes: object) {
         this.checkCollection(collectionName)
         const db = await this.getDb()
-        const jsonChanges = JSON.stringify(changes)
+        const jsonChanges = asJsonString(changes)
         await db.prepare(`UPDATE ${collectionName} SET json_data = json_patch(json_data, ?) WHERE id = ?`)
             .bind(jsonChanges, id)
             .run()
@@ -119,7 +138,7 @@ export default class CloudflareDataStore implements BasicDataStore {
             .bind(...constraints.map( constraint => constraint[2]))
             .all()
 
-        return results.results.map( (res: any) => convertDocumentData(JSON.parse(res.json_data)))
+        return results.results.map( (res: any) => convertFromDbData(JSON.parse(res.json_data)))
     }
 
     async test_clear(collectionName: CollectionName) {
