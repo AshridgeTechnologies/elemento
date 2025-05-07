@@ -28,14 +28,14 @@ function responseError(status: number, error: string) {
     return new Response(error, {status})
 }
 
-export function parseQueryParams(req: Request): object {
+function parseQueryParams(req: Request): object {
     const url = new URL(req.url);
     const entries = Array.from(url.searchParams.entries())
     const parsedEntries = entries.map( ([key, value]) => [key, parseParam(value)])
     return Object.fromEntries(parsedEntries)
 }
 
-export const requestHandler = (appFactory: AppFactory) => async (req: Request) => {
+const requestHandler = (appFactory: AppFactory) => async (req: Request) => {
     try {
         const currentUser = null //await getCurrentUser(req)
         // console.log('user id', currentUser?.uid)

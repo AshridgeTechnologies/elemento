@@ -25,6 +25,9 @@ Further requirements
 Technical
 ---------
 
-- Implement on D1
-- Use a JSON data column
-- Check and create tables and columns when start
+- ✅ Implement on D1
+- ✅ Use a JSON data column
+- ✅ Check and create tables and columns when start
+- Bring env through to generated app
+- Generate constructor to dereference env with name
+- Project config can have database bindings

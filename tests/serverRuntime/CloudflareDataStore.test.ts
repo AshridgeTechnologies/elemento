@@ -57,7 +57,7 @@ describe('shared collections', () => {
     })
 
     test('errors for unknown collection names', async () => {
-        await expect(callStore('getById', 'Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
+        await expect(callStore('add', 'Sprockets', 'w1', {a: 10})).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
     })
 
     test('returns null if not found and nullIfNotFound set', async () => {
