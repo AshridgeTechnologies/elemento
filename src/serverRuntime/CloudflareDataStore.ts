@@ -11,7 +11,7 @@ const convertDocumentData = (data: any) => mapObjIndexed(convertValue, data)
 type Properties = {env: object, bindingName: string, collections: string}
 
 const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
-    return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '==', value])
+    return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '=', value])
 }
 
 export default class CloudflareDataStore implements BasicDataStore {
@@ -49,7 +49,7 @@ export default class CloudflareDataStore implements BasicDataStore {
         const db = await this.getDb()
         const result: any = await db.prepare(`SELECT json_data FROM ${collectionName} WHERE id = ?`)
             .bind(id)
-            .first();
+            .first()
 
         if (!result) {
             if (nullIfNotFound) {
@@ -105,7 +105,27 @@ export default class CloudflareDataStore implements BasicDataStore {
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        return []
+        this.checkCollection(collectionName)
+        const db = await this.getDb()
+        const constraints = normalizeCriteria(criteria)
+        const conditionClauses = constraints.map( constraint => {
+            const [name, op] = constraint
+            return `json_data ->> '$.${name}' ${op} ?`
+        }).join(' AND ')
+        const sql = `SELECT json_data FROM ${collectionName} WHERE ${conditionClauses}`
+        const bindValues = constraints.map( constraint => constraint[2])
+        console.log(sql, '\n', bindValues)
+        const results = await db.prepare(sql)
+            .bind(...constraints.map( constraint => constraint[2]))
+            .all()
+
+        return results.results.map( (res: any) => convertDocumentData(JSON.parse(res.json_data)))
+    }
+
+    async test_clear(collectionName: CollectionName) {
+        this.checkCollection(collectionName)
+        const db = await this.getDb()
+        await db.prepare(`DELETE FROM ${collectionName}`).run()
     }
 
 }

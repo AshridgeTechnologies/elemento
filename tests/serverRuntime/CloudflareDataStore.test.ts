@@ -68,16 +68,20 @@ describe('shared collections', () => {
         await expect(callStore('getById', 'Widgets', id1)).rejects.toHaveProperty('message', `Object with id '${id1}' not found in collection 'Widgets'`)
     })
 
-    // test('can query with simple field values', async () => {
-    //     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
-    //     await store.add('Widgets', 'w2', {a: 20, b: 'Bee2', c: true})
-    //     await store.add('Widgets', 'w3', {a: 20, b: 'Bee3', c: false})
-    //     const result = await store.query('Widgets', {a: 20})
-    //     expect(result.length).toBe(2)
-    //     expect(result[0]).toMatchObject({id: 'w2', a: 20, b: 'Bee2', c: true})
-    //     expect(result[1]).toMatchObject({id: 'w3', a: 20, b: 'Bee3', c: false})
-    // })
-    //
+    test('can query with simple field values', async () => {
+        const id1 = 'id1_' + Date.now(), id2 = 'id2_' + Date.now(), id3 = 'id3_' + Date.now()
+        await callStore('test_clear', 'Widgets')
+        await callStore('add', 'Widgets', id1, {a: 10, b: 'Bee1', c: true})
+        await callStore('add', 'Widgets', id2, {a: 20, b: 'Bee2', c: true})
+        await callStore('add', 'Widgets', id3, {a: 20, b: 'Bee3', c: false})
+
+        const result = await callStore('query', 'Widgets', {a: 20})
+        expect(result).toStrictEqual([
+            {id: id2, a: 20, b: 'Bee2', c: true},
+            {id: id3, a: 20, b: 'Bee3', c: false}
+        ])
+    })
+
     // test('can query with complex criteria', async () => {
     //     await store.add('Widgets', 'q1', {a: 100, b: 'Bee10', c: true})
     //     await store.add('Widgets', 'q2', {a: 200, b: 'Bee20', c: true})
