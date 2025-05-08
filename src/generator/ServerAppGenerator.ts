@@ -7,6 +7,7 @@ import {isTruthy} from '../util/helpers'
 import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
+import CloudflareDataStore from '../model/CloudflareDataStore'
 
 const indentLevel1 = '    '
 
@@ -49,7 +50,12 @@ export default class ServerAppGenerator {
             const expr = this.getExpr(element, def.name)
             return [def.name, expr]
         }).filter(([, expr]) => !!expr)
-        const modelProperties =  Object.fromEntries(propertyExprs)
+        const modelProperties = (() => {
+            if (element.kind === 'CloudflareDataStore') {
+                return {collections: `"${(element as CloudflareDataStore).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
+            }
+            return Object.fromEntries(propertyExprs)
+        })()
 
         return `new ${element.kind}(${objectLiteral(modelProperties)})`
     }
@@ -112,10 +118,11 @@ ${indent(functionBody ?? '', indentLevel1)}
         const componentDeclarations = this.generateComponents()
         const functionDeclarations = this.functions().map(generateFunction).join('\n\n')
         const typeDeclarations = typesFiles.map(f => `// ${f.name}\n${f.contents}`).join('\n')
-        const appFactoryDeclaration = `const ${this.app.codeName} = (user) => {
+        const appFactoryDeclaration = `const ${this.app.codeName} = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
+${componentDeclarations}
 ${functionDeclarations}
 
 return {
@@ -127,7 +134,6 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
         const serverAppCode = [
             imports,
             importedDeclarations,
-            componentDeclarations,
             typeDeclarations,
             appFactoryDeclaration,
             exportDeclaration

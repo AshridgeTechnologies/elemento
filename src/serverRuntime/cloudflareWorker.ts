@@ -24,7 +24,7 @@ export const cloudflareFetch = async (request: Request, env: any, ctx: any, serv
     }
 
     if (pathname.startsWith('/capi/')) {
-        return handleServerRequest(request, serverApps)
+        return handleServerRequest(request, env, ctx, serverApps)
     }
 
     const apps = (env.APPS ?? '').split(/ *, */)

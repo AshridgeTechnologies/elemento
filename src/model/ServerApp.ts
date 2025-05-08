@@ -23,7 +23,7 @@ export default class ServerApp extends BaseElement<Properties> implements Elemen
     }
 
     canContain(elementType: ElementType) {
-        return ['Function', 'Collection', 'FirestoreDataStore'].includes(elementType)
+        return ['Function', 'Collection', 'FirestoreDataStore', 'CloudflareDataStore'].includes(elementType)
     }
 
 

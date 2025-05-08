@@ -2,14 +2,12 @@ import Project, {TOOLS_ID} from '../model/Project'
 import {generate} from './Generator'
 import App from '../model/App'
 import {ASSET_DIR} from '../shared/constants'
-import lodash from 'lodash'
 import {AllErrors} from "./Types"
 import Tool from '../model/Tool'
 import {flatten, pickBy} from 'ramda'
 import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
-
-const {debounce} = lodash;
+import CloudflareDataStore from '../model/CloudflareDataStore'
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -132,8 +130,7 @@ export default class ProjectBuilder {
     }
 
     private buildRootFiles() {
-        const appNames = this.project.findChildElements(App).map( el => el.codeName)
-        this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig(this.project.codeName, this.project.configuration, appNames))
+        this.generatedRootFiles.storeFile('wrangler.jsonc', this.wranglerConfig())
         this.generatedRootFiles.storeFile('package.json', this.packageJson(this.project.codeName))
         this.generatedRootFiles.storeFile('index.js', this.indexJs())
         this.generatedRootFiles.storeFile('auth.html', this.authHtml())
@@ -184,8 +181,21 @@ export default class ProjectBuilder {
         }
     }
 
-    private wranglerConfig(projectName: string, projectConfig: {authStoreId: string}, appNames: string[]) {
+    private wranglerConfig() {
+        const appNames = this.project.findChildElements(App).map( el => el.codeName)
+        const projectName = this.project.codeName
+        const projectConfig = this.project.configuration
+
         const {authStoreId} = projectConfig
+        const d1DatabaseBindings = this.project.findElementsBy( el => el.kind === 'CloudflareDataStore').map( el => {
+            const cfds = el as CloudflareDataStore
+            return `
+        {
+            "binding": "${cfds.codeName}",
+            "database_name": "${cfds.databaseName}",
+            "database_id": "${cfds.databaseId}"
+        }`
+        }).join(',\n')
         return `
 {
     "$schema": "node_modules/wrangler/config-schema.json",
@@ -205,7 +215,10 @@ export default class ProjectBuilder {
       "binding": "auth",
       "id": "${authStoreId}"
     }
-  ]
+  ],
+    "d1_databases": [
+${d1DatabaseBindings}
+    ]
 }
 `.trimStart()
     }

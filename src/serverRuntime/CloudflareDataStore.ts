@@ -10,7 +10,6 @@ const DECIMAL_PREFIX = '#Dec'
 const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PREFIX + value : value
 const convertToDbData = (data: any) => mapObjIndexed(convertToDbValue, data)
 
-
 const convertFromDbValue = (value: any) => {
     if (typeof value === 'string' && value.match(isoDateRegex)) {
         return convertIsoDate(value)
@@ -23,7 +22,7 @@ const convertFromDbValue = (value: any) => {
 }
 const convertFromDbData = (data: any) => mapObjIndexed(convertFromDbValue, data)
 
-type Properties = {env: object, bindingName: string, collections: string}
+type Properties = {database: D1Database, collections: string}
 
 const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
     return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '=', value])
@@ -39,7 +38,7 @@ export default class CloudflareDataStore implements BasicDataStore {
 
     constructor(private props: Properties) {
         this.collections = parseCollections(props.collections ?? '')
-        this.db = props.env[props.bindingName as keyof object]
+        this.db = props.database
     }
 
     private async runSql(collectionName: CollectionName, sqlFn: () => Promise<any>) {

@@ -2,7 +2,6 @@ import {ComponentType, ParentType, PropertyDef} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {parseCollections} from '../shared/CollectionConfig'
-import Project from './Project'
 
 type Properties = {
     readonly collections?: string,

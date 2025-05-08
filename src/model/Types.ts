@@ -79,6 +79,7 @@ export type ElementType =
     'Collection' |
     'Block' |
     'FirestoreDataStore' |
+    'CloudflareDataStore' |
     'ServerApp' |
     'ServerAppConnector' |
     'Adapter' |

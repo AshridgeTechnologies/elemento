@@ -5,7 +5,7 @@ import {parseParam} from '../util/helpers'
 export type ServerAppHandler = {
     [key: string]: { func: (...args: Array<any>) => any, update: boolean, argNames: string[] }
 }
-export type AppFactory = (appName: string, user: any | null) => Promise<ServerAppHandler>
+export type AppFactory = (user: any | null, env: any, ctx: any) => Promise<ServerAppHandler>
 
 export type AppFactoryMap = {[name: string]: AppFactory}
 
@@ -35,18 +35,20 @@ function parseQueryParams(req: Request): object {
     return Object.fromEntries(parsedEntries)
 }
 
-const requestHandler = (appFactory: AppFactory) => async (req: Request) => {
+export const handleServerRequest = async (req: Request, env: any, ctx: any, apps: AppFactoryMap) => {
+    const pathname = new URL(req.url).pathname
+    const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
+    if (!match) {
+        return new Response('Not Found: ' + pathname, {status: 404})
+    }
+
+    const [, appName, functionName] = match
+    const appFactory = apps[appName]
+    console.log('appFactory', appFactory)
     try {
         const currentUser = null //await getCurrentUser(req)
         // console.log('user id', currentUser?.uid)
-        const url = new URL(req.url);
-        const pathname = url.pathname
-        const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
-        if (!match) {
-            return responseError(404, 'Not Found: ' + pathname)
-        }
-        const [, appName, functionName] = match
-        const handlerApp = await appFactory(appName, currentUser)
+        const handlerApp = await appFactory(currentUser, env, ctx)
 
         const {func, update, argNames} = handlerApp[functionName] ?? {}
         if (!func) {
@@ -59,26 +61,11 @@ const requestHandler = (appFactory: AppFactory) => async (req: Request) => {
         const params = req.method === 'GET' ? parseQueryParams(req) : convertDataValues(req.body)
         const argValues = argNames.map((n) => params[n])
         const result = await func(...argValues)
-        const options = { headers: { "content-type": 'application/json' } };
+        const options = {headers: {"content-type": 'application/json'}};
         return new Response(JSON.stringify(result), options)
     } catch (err) {
         console.error(err)
         return responseError(500, 'Server error\n' + err)
     }
-}
-
-export const handleServerRequest = async (req: Request, apps: AppFactoryMap) => {
-    const url = new URL(req.url);
-    const pathname = url.pathname
-    const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
-    if (!match) {
-        return new Response('Not Found: ' + pathname, {status: 404})
-    }
-
-    const [, app] = match
-    const appFactory = apps[app]
-    console.log('appFactory', appFactory)
-    const handler = requestHandler(appFactory)
-    return handler(req)
 }
 
