@@ -10,7 +10,7 @@ Requirements
 ------------
 
 - ✅ Conforms to interface expected by Elemento Collections
-- Can set configuration required by Cloudflare Worker
+- ✅ Can set configuration required by Cloudflare Worker
 - ✅ Allows free-form data like Firestore
 - ✅ Works on server side only
 - ✅ Stores dates as ISO string, converts ISO string to Date on read

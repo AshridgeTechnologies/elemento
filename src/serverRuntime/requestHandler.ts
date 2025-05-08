@@ -35,6 +35,11 @@ function parseQueryParams(req: Request): object {
     return Object.fromEntries(parsedEntries)
 }
 
+async function getBodyParams(req: Request): Promise<object> {
+    const data = await req.json()
+    return convertDataValues(data)
+}
+
 export const handleServerRequest = async (req: Request, env: any, ctx: any, apps: AppFactoryMap) => {
     const pathname = new URL(req.url).pathname
     const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
@@ -58,8 +63,8 @@ export const handleServerRequest = async (req: Request, env: any, ctx: any, apps
         if (update && req.method !== 'POST') {
             return responseError(405, 'Method Not Allowed')
         }
-        const params = req.method === 'GET' ? parseQueryParams(req) : convertDataValues(req.body)
-        const argValues = argNames.map((n) => params[n])
+        const params = req.method === 'GET' ? parseQueryParams(req) : await getBodyParams(req)
+        const argValues = argNames.map((n) => params[n as keyof object])
         const result = await func(...argValues)
         const options = {headers: {"content-type": 'application/json'}};
         return new Response(JSON.stringify(result), options)
