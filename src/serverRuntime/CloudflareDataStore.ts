@@ -98,7 +98,7 @@ export default class CloudflareDataStore implements BasicDataStore {
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
         const jsonChanges = asJsonString(changes)
-        await this.runSql(collectionName, () => this.db.prepare(`UPDATE ${collectionName} SET json_data = json_patch(json_data, ?)WHERE id = ?`)
+        await this.runSql(collectionName, () => this.db.prepare(`UPDATE ${collectionName} SET json_data = json_patch(json_data, ?) WHERE id = ?`)
             .bind(jsonChanges, id)
             .run() )
     }

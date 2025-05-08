@@ -26,6 +26,7 @@ import Component from './ComponentDef' // Note: use ElementType name for Compone
 import Collection from './Collection'
 import {DataTypeElementType, ElementType} from './Types'
 import FirestoreDataStore from './FirestoreDataStore'
+import CloudflareDataStore from './CloudflareDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
 import Adapter from './Adapter'
@@ -104,6 +105,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: BrowserDataStore,
         FirestoreDataStore: FirestoreDataStore,
+        CloudflareDataStore: CloudflareDataStore,
         MemoryDataStore: MemoryDataStore,
         Function: Function,
         FunctionImport: FunctionImport,

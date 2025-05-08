@@ -15,7 +15,8 @@ import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
-import {StoreProvider} from '../../../src/runner/AppRunner'
+
+import {StoreProvider} from '../../../src/runner/StoreContext'
 
 jest.mock('../../../src/runtime/components/authentication')
 

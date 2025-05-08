@@ -6,7 +6,8 @@ import {createElement} from 'react'
 import {testContainer} from '../testutil/rtlHelpers'
 import {setObject, useObject} from '../../src/runtime/appStateHooks'
 import {BaseComponentState} from '../../src/runtime/components/ComponentState'
-import {StoreProvider} from '../../src/runner/AppRunner'
+
+import {StoreProvider} from '../../src/runner/StoreContext'
 
 let stateInParent: any = null
 let stateInChild: any = null

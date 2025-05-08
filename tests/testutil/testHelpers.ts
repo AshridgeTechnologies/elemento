@@ -11,8 +11,8 @@ import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
 import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
-import {AppStoreHook, StoreProvider} from '../../src/runner/AppRunner'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
+import {StoreProvider, type AppStoreHook} from '../../src/runner/StoreContext'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 

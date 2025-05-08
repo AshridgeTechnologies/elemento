@@ -1,7 +1,6 @@
 import {useContext, useEffect, useState} from 'react'
 import {StoredState} from './AppStateStore'
-
-import {StoreContext} from '../runner/AppRunner'
+import {StoreContext} from '../runner/StoreContext'
 
 export type GetObjectFn = <T extends StoredState>(path: string) => T
 
