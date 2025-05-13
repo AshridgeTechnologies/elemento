@@ -1,11 +1,10 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {Button} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, valueObj, wait} from '../../testutil/testHelpers'
-import userEvent from '@testing-library/user-event'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {testContainer} from '../../testutil/rtlHelpers'
 
@@ -68,7 +67,7 @@ test('Button does action when clicked', async () => {
         action: () => Log("I'm saved!")
     },))
     const buttonEl = el`button[id="app.page1.save"]`
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    const log = vi.spyOn(console, "log").mockImplementation(() => {})
     try {
         await user.click(buttonEl)
         expect(log).toBeCalledWith("I'm saved!")

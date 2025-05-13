@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import SubscribableStore from '../../src/runtime/SubscribableStore'
 
 let store: SubscribableStore
@@ -33,9 +34,9 @@ test('can subscribe to updates by id with multiple listeners', () => {
     store.set(id1, item1)
     store.set(id2, item2)
 
-    const listener1 = jest.fn()
-    const listener1a = jest.fn()
-    const listener2 = jest.fn()
+    const listener1 = vi.fn()
+    const listener1a = vi.fn()
+    const listener2 = vi.fn()
     store.subscribe(id1, listener1)
     store.subscribe(id1, listener1a)
     store.subscribe(id2, listener2)
@@ -53,8 +54,8 @@ test('can subscribe to updates by id with multiple listeners', () => {
 
 test('can unsubscribe from an individual listener', () => {
     store.set(id1, item1)
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
     const unsubscribe1 = store.subscribe(id1, listener1)
     const unsubscribe2 = store.subscribe(id2, listener2)
     store.set(id1, item1a)
@@ -77,8 +78,8 @@ test('can unsubscribe from an individual listener', () => {
 
 test('can subscribe and unsubscribe to all updates', () => {
     store.set(id1, item1)
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
     const unsubscribe1 = store.subscribeAll(listener1)
     const unsubscribe2 = store.subscribeAll(listener2)
     store.set(id1, item1a)
@@ -104,10 +105,10 @@ test('can subscribe and unsubscribe to all updates', () => {
 })
 
 test('can defer updates and send together', () => {
-    const listener1 = jest.fn()
-    const listener1a = jest.fn()
-    const listener2 = jest.fn()
-    const listenerAll = jest.fn()
+    const listener1 = vi.fn()
+    const listener1a = vi.fn()
+    const listener2 = vi.fn()
+    const listenerAll = vi.fn()
     store.subscribe(id1, listener1)
     store.subscribe(id1, listener1a)
     store.subscribe(id2, listener2)
@@ -135,12 +136,12 @@ test('can defer updates and send together', () => {
 })
 
 test('new updates in a sendNotifications callback are sent separately', () => {
-    const listener1 = jest.fn().mockImplementationOnce( ()=> {
+    const listener1 = vi.fn().mockImplementationOnce( ()=> {
         store.deferNotifications()
         store.set(id2, item2)
     })
-    const listener2 = jest.fn()
-    const listenerAll = jest.fn()
+    const listener2 = vi.fn()
+    const listenerAll = vi.fn()
     store.subscribe(id1, listener1)
     store.subscribe(id2, listener2)
     store.subscribeAll(listenerAll)

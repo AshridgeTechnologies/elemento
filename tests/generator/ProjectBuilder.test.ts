@@ -1,4 +1,5 @@
-import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties} from '../../src/generator/ProjectBuilder'
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties, RuntimeLoader} from '../../src/generator/ProjectBuilder'
 import Project, {TOOLS_ID} from '../../src/model/Project'
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
@@ -15,7 +16,6 @@ import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'
 import {BaseApp} from '../../src/model/BaseApp'
-
 
 const name = new TextType('tt1', 'Name', {required: true})
 const itemAmount = new NumberType('nt1', 'Item Amount', {})
@@ -57,8 +57,8 @@ const toolImport1 = new ToolImport('toolImport', 'Tool Import', {source: 'https:
 
 const plusFn = new FunctionDef('fn1', 'Plus', {input1: 'a', input2: 'b', calculation: ex`Sum(a, b)`})
 const multFn = new FunctionDef('fn2', 'Mult', {input1: 'c', input2: 'd', calculation: ex`c * d`})
-const serverApp1 = new ServerApp('sa1', 'Server App 1', {}, [plusFn])
-const serverApp2 = new ServerApp('sa2', 'Server App 2', {}, [multFn])
+const serverApp1 = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [plusFn])
+const serverApp2 = new ServerApp('sa2', 'Server App 2', {updateTime: new Date()}, [multFn])
 
 const toolFolder = new ToolFolder(TOOLS_ID, 'Tools', {}, [tool1, tool2, toolImport1])
 const project1 = Project.new([app1, app2, serverApp1, serverApp2, dataTypes1, dataTypes2, toolFolder], 'Project 1', 'proj1', {})
@@ -75,25 +75,25 @@ const getProjectLoader = (project: Project):ProjectLoader & {project: Project} =
 })
 
 const clientFileWriter = {
-    writeFile: jest.fn().mockResolvedValue(undefined)
+    writeFile: vi.fn().mockResolvedValue(undefined)
 }
 const toolFileWriter = {
-    writeFile: jest.fn().mockResolvedValue(undefined)
+    writeFile: vi.fn().mockResolvedValue(undefined)
 }
 const rootFileWriter = {
-    writeFile: jest.fn().mockResolvedValue(undefined)
+    writeFile: vi.fn().mockResolvedValue(undefined)
 }
 
 const serverFileWriter = {
-    writeFile: jest.fn().mockResolvedValue(undefined),
-    flush: jest.fn().mockResolvedValue(undefined),
-    clean: jest.fn().mockResolvedValue(undefined)
+    writeFile: vi.fn().mockResolvedValue(undefined),
+    flush: vi.fn().mockResolvedValue(undefined),
+    clean: vi.fn().mockResolvedValue(undefined)
 }
 
 const getFileLoader = (dirContents: object = {}, exists = true) => ({
-    exists: jest.fn().mockResolvedValue(exists),
-    listFiles: jest.fn().mockResolvedValue(Object.keys(dirContents)),
-    readFile: jest.fn().mockImplementation((filepath: string) => Promise.resolve(dirContents[filepath.split('/')[1] as keyof typeof dirContents]))
+    exists: vi.fn().mockResolvedValue(exists),
+    listFiles: vi.fn().mockResolvedValue(Object.keys(dirContents)),
+    readFile: vi.fn().mockImplementation((filepath: string) => Promise.resolve(dirContents[filepath.split('/')[1] as keyof typeof dirContents]))
 })
 
 const clearMocks = () => {
@@ -107,10 +107,14 @@ const clearMocks = () => {
 
 beforeEach(clearMocks)
 
+const runtimeLoader: RuntimeLoader = {
+    clientRuntime(): Promise<string> {return Promise.resolve('client runtime')},
+    serverRuntime(): Promise<string> {return Promise.resolve('server runtime')}
+}
 
 const newProjectBuilder = (props: Partial<PBProperties> = {}, project = project1) => {
     const properties = {projectLoader: getProjectLoader(project), fileLoader: getFileLoader(),
-        rootFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, ...props}
+        rootFileWriter, clientFileWriter, toolFileWriter, serverFileWriter, runtimeLoader, ...props}
     return new ProjectBuilder(properties)
 }
 
@@ -144,19 +148,6 @@ test('skips asset files if dir does not exist', async () => {
     expect(fileLoader.listFiles).not.toHaveBeenCalled()
 })
 
-test('writes server files generated from Project for all apps after clean and flushes immediately', async () => {
-    const builder = newProjectBuilder()
-    await builder.build()
-
-    // const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
-    // const expectedGeneratedCalls = expectedServerFiles.map(({name, contents}) => [name, contents])
-    // expect(serverFileWriter.writeFile.mock.calls).toStrictEqual([
-    //     ...expectedGeneratedCalls,
-    // ])
-    expect(serverFileWriter.clean).toHaveBeenCalledTimes(1)
-    expect(serverFileWriter.flush).toHaveBeenCalledTimes(1)
-})
-
 test('does not clean or flush server files for Project with no server apps', async () => {
     const builder = newProjectBuilder({}, projectClientOnly)
     await builder.build()
@@ -178,13 +169,13 @@ test('writes tool files for all tools to tool build with one copy of asset but n
     ])
 })
 
-test('writes projectInfo file to top level', async () => {
+test('writes expected files to top level', async () => {
     const builder = newProjectBuilder()
     await builder.build()
 
-    expect(rootFileWriter.writeFile.mock.calls).toStrictEqual([
-        ['projectInfo.json', expectedProjectInfo()],
-    ])
+    const calls = rootFileWriter.writeFile.mock.calls
+    const fileNames = calls.map(([name, _]) => name)
+    expect(fileNames).toStrictEqual(['wrangler.jsonc', 'package.json', 'index.js', 'auth.html'])
 })
 
 test('has code generated from Project for all apps', async () => {
@@ -257,12 +248,12 @@ test('updates files generated from project only where changed', async () => {
     }
 
     const clientFileWriter = {
-        writeFile: jest.fn().mockResolvedValue(undefined)
+        writeFile: vi.fn().mockResolvedValue(undefined)
     }
     const serverFileWriter = {
-        writeFile: jest.fn().mockResolvedValue(undefined),
-        flush: jest.fn().mockResolvedValue(undefined),
-        clean: jest.fn().mockResolvedValue(undefined)
+        writeFile: vi.fn().mockResolvedValue(undefined),
+        flush: vi.fn().mockResolvedValue(undefined),
+        clean: vi.fn().mockResolvedValue(undefined)
     }
     const projectLoader = getProjectLoader(project1)
     const builder = newProjectBuilder({projectLoader, fileLoader: getFileLoader(dirContents), clientFileWriter, serverFileWriter})

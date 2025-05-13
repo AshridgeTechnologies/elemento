@@ -1,7 +1,7 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {SelectInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'

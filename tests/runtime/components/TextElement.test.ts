@@ -1,9 +1,9 @@
+import {test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
-import {createElement, ReactNode} from 'react'
-import {TextElement, Button, Icon} from '../../../src/runtime/components/index'
+import {createElement} from 'react'
+import {Button, Icon, TextElement} from '../../../src/runtime/components/index'
 import {snapshot, valueObj} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {ErrorResult} from '../../../src/runtime/DataStore'

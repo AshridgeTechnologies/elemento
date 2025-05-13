@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import File from '../../src/model/File'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'

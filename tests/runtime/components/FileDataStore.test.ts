@@ -1,7 +1,7 @@
+import {beforeEach, describe, expect, MockedFunction, MockedObject, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {FileDataStore, FileDataStoreImpl} from '../../../src/runtime/components/index'
 import {snapshot} from '../../testutil/testHelpers'
 import {createElement} from 'react'
@@ -11,7 +11,7 @@ import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/runtime/DataStore'
 import Observable from 'zen-observable'
 
-jest.mock('../../../src/runtime/appFunctions')
+vi.mock('../../../src/runtime/appFunctions')
 
 let dataStore: FileDataStoreImpl
 let state: any
@@ -24,17 +24,17 @@ beforeEach(() => {
 
 const mockObservable = new Observable(() => {})
 const mockDataStore = (): FileDataStoreImpl => ({
-    Open: jest.fn().mockResolvedValue(undefined),
-    Save: jest.fn().mockResolvedValue(undefined),
-    SaveAs: jest.fn().mockResolvedValue(undefined),
-    New: jest.fn().mockResolvedValue(undefined),
-    getById: jest.fn().mockResolvedValue({a:77}),
-    add: jest.fn().mockResolvedValue(undefined),
-    addAll: jest.fn().mockResolvedValue(undefined),
-    update: jest.fn().mockResolvedValue(undefined),
-    remove: jest.fn().mockResolvedValue(undefined),
-    query: jest.fn().mockResolvedValue([{a:77}]),
-    observable: jest.fn().mockReturnValue(mockObservable),
+    Open: vi.fn().mockResolvedValue(undefined),
+    Save: vi.fn().mockResolvedValue(undefined),
+    SaveAs: vi.fn().mockResolvedValue(undefined),
+    New: vi.fn().mockResolvedValue(undefined),
+    getById: vi.fn().mockResolvedValue({a:77}),
+    add: vi.fn().mockResolvedValue(undefined),
+    addAll: vi.fn().mockResolvedValue(undefined),
+    update: vi.fn().mockResolvedValue(undefined),
+    remove: vi.fn().mockResolvedValue(undefined),
+    query: vi.fn().mockResolvedValue([{a:77}]),
+    observable: vi.fn().mockReturnValue(mockObservable),
 }) as unknown as FileDataStoreImpl
 
 test('produces output with name',
@@ -118,24 +118,24 @@ test('delegates observable to data store', () => {
 })
 
 describe('handles errors', () => {
-    // const NotifyError = jest.fn()
-    const mock_appFunctions = appFunctions as jest.MockedObject<any>
+    // const NotifyError = vi.fn()
+    const mock_appFunctions = appFunctions as MockedObject<any>
     // mock_appFunctions.NotifyError = NotifyError
 
     const errorDataStore = (): FileDataStoreImpl => ({
-        Open: jest.fn().mockRejectedValue(new Error('Bad open')),
-        Save: jest.fn().mockRejectedValue(new Error('Bad save')),
-        SaveAs: jest.fn().mockRejectedValue(new Error('Bad save as')),
-        New: jest.fn().mockRejectedValue(new Error('Bad new')),
-        getById: jest.fn().mockRejectedValue(new Error('Bad getById')),
-        query: jest.fn().mockRejectedValue(new Error('Bad query')),
-        add: jest.fn().mockRejectedValue(new Error('Bad add')),
-        update: jest.fn().mockRejectedValue(new Error('Bad update')),
-        remove: jest.fn().mockRejectedValue(new Error('Bad remove')),
+        Open: vi.fn().mockRejectedValue(new Error('Bad open')),
+        Save: vi.fn().mockRejectedValue(new Error('Bad save')),
+        SaveAs: vi.fn().mockRejectedValue(new Error('Bad save as')),
+        New: vi.fn().mockRejectedValue(new Error('Bad new')),
+        getById: vi.fn().mockRejectedValue(new Error('Bad getById')),
+        query: vi.fn().mockRejectedValue(new Error('Bad query')),
+        add: vi.fn().mockRejectedValue(new Error('Bad add')),
+        update: vi.fn().mockRejectedValue(new Error('Bad update')),
+        remove: vi.fn().mockRejectedValue(new Error('Bad remove')),
     }) as unknown as FileDataStoreImpl
 
     beforeEach(() => {
-        (appFunctions.NotifyError as jest.MockedFunction<any>).mockReset()
+        (appFunctions.NotifyError as MockedFunction<any>).mockReset()
         dataStore = errorDataStore()
         state = new FileDataStore.State()
         state.state.dataStore = dataStore

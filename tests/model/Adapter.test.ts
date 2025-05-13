@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Adapter from '../../src/model/Adapter'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'

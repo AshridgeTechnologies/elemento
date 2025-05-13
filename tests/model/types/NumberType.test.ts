@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import NumberType from '../../../src/model/types/NumberType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

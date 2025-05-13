@@ -8,20 +8,31 @@ export class AuthManagerBase {
 	protected listeners: (() => void)[] = []
 	protected _loaded: boolean = false
 	protected _loggedIn: boolean = false
-	protected client: Client = createClient({
-		clientID: "elemento-app",
-		issuer: location.origin + '/' + '_auth',
-	})
+    protected _client: Client | null = null
+    protected _verifyClient: Client | null = null
+
+	protected get client(): Client {
+        return this._client ??= createClient({
+            clientID: "elemento-app",
+            issuer: this.origin + '/' + '_auth',
+        })
+    }
 
 	// see https://github.com/toolbeam/openauth/issues/238
-	protected verifyClient: Client = createClient({
-		clientID: "elemento-app",
-		issuer: location.origin,
-	})
+	protected get verifyClient(): Client {
+        return this._verifyClient ??= createClient({
+            clientID: "elemento-app",
+            issuer: this.origin,
+        })
+    }
 
 	protected channel: BroadcastChannel = new BroadcastChannel('elemento_auth')
 
 	protected _user: User | undefined
+
+    protected get origin() {
+        return globalThis.location?.origin
+    }
 
 	get loaded() { return this._loaded }
 	get loggedIn() { return this._loggedIn }
@@ -39,7 +50,7 @@ export class AuthManagerBase {
 	}
 
 	protected async refreshTokens() {
-		const refresh = localStorage.getItem("refresh")
+		const refresh = globalThis.localStorage?.getItem("refresh")
 		if (!refresh) return
 		const next = await this.client.refresh(refresh, {
 			access: this.token,
@@ -81,7 +92,7 @@ export class AuthManager extends AuthManagerBase {
 
 	async init() {
 		this.channel.onmessage = (event: MessageEvent) => {
-			if (event.origin === location.origin) {
+			if (event.origin === this.origin) {
 				if (event.data === 'login') {
 					console.log('Logged in')
 					this.updateStatus()

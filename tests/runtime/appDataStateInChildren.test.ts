@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import {createElement} from 'react'

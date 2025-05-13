@@ -1,6 +1,7 @@
+import {expect, test} from "vitest"
 import {asJSON, ex, wait} from '../testutil/testHelpers'
 import ServerApp from '../../src/model/ServerApp'
-import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
+import {loadJSONFromString} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
 import FunctionDef from '../../src/model/FunctionDef'
 import {omit} from 'ramda'
@@ -49,7 +50,7 @@ test('can contain Function Def, DataStore, Collection', () => {
     expect(serverApp.canContain('Text')).toBe(false)
     expect(serverApp.canContain('Function')).toBe(true)
     expect(serverApp.canContain('Collection')).toBe(true)
-    expect(serverApp.canContain('FirestoreDataStore')).toBe(true)
+    expect(serverApp.canContain('CloudflareDataStore')).toBe(true)
 })
 
 test('converts to JSON', ()=> {

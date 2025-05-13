@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `
 [

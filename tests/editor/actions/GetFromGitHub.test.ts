@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import {GetFromGitHubDialog, GetFromGitHubState} from '../../../src/editor/actions/GetFromGitHub'
@@ -7,7 +8,7 @@ import EditorManager from '../../../src/editor/actions/EditorManager'
 import {UIManager} from '../../../src/editor/actions/actionHelpers'
 import {wait} from '../../testutil/testHelpers'
 import {render, screen} from '@testing-library/react'
-import '@testing-library/jest-dom'
+
 
 import {createElement} from 'react'
 import {actWait} from '../../testutil/rtlHelpers'
@@ -25,13 +26,13 @@ let dirNotEmpty = {kind: 'directory', name: 'dir1', keys() { return {next() { re
 
 beforeEach(() => {
     editorManager = {
-        getProjectNames: jest.fn().mockResolvedValue(['Project A', 'Project B']),
-        getFromGitHub: jest.fn().mockResolvedValue(undefined)
+        getProjectNames: vi.fn().mockResolvedValue(['Project A', 'Project B']),
+        getFromGitHub: vi.fn().mockResolvedValue(undefined)
     } as unknown as EditorManager
 
-    uiManager = new UIManager({onClose: jest.fn(), showAlert: jest.fn()})
+    uiManager = new UIManager({onClose: vi.fn(), showAlert: vi.fn()})
 
-    onUpdate = jest.fn().mockImplementation( newState => state = newState)
+    onUpdate = vi.fn().mockImplementation( newState => state = newState)
     state = new GetFromGitHubState({editorManager, uiManager}, onUpdate)
 })
 
@@ -65,8 +66,8 @@ test('calls onGet', async () => {
 
 test('calls onGet and throws if error', async () => {
     editorManager = {
-        getProjectNames: jest.fn().mockResolvedValue([]),
-        getFromGitHub: jest.fn().mockRejectedValue(new Error('Cannot do this'))
+        getProjectNames: vi.fn().mockResolvedValue([]),
+        getFromGitHub: vi.fn().mockRejectedValue(new Error('Cannot do this'))
     } as unknown as EditorManager
     state = new GetFromGitHubState({editorManager, uiManager}, onUpdate)
 
@@ -97,10 +98,10 @@ test.skip('dialog shows alert if error in action', async () => {
     const error = new Error('Cannot do this')
 
     try {
-        console.error = jest.fn()
+        console.error = vi.fn()
         editorManager = {
-            getProjectNames: jest.fn().mockResolvedValue([]),
-            getFromGitHub: jest.fn().mockRejectedValue(error)
+            getProjectNames: vi.fn().mockResolvedValue([]),
+            getFromGitHub: vi.fn().mockRejectedValue(error)
         } as unknown as EditorManager
 
         await actWait(() => ({container} = render(createElement(GetFromGitHubDialog, {editorManager, uiManager}))))

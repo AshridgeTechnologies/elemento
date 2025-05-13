@@ -1,3 +1,4 @@
+import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
 import 'fake-indexeddb/auto'
 import {IdbDataStoreImpl} from '../../../src/runtime/components/index'
 import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
@@ -91,8 +92,8 @@ describe('stores decimals', () => {
 describe('subscribe', () => {
 
     test('sends changes on Add to subscriptions for that collection', async () => {
-        const onNextWidgets = jest.fn()
-        const onNextGadgets = jest.fn()
+        const onNextWidgets = vi.fn()
+        const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -101,8 +102,8 @@ describe('subscribe', () => {
     })
 
     test('sends multiple changes on Add all to subscriptions for that collection', async () => {
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
@@ -111,8 +112,8 @@ describe('subscribe', () => {
     })
 
     test('sends changes on Update to subscriptions for that collection', async () => {
-        const onNextWidgets = jest.fn()
-        const onNextGadgets = jest.fn()
+        const onNextWidgets = vi.fn()
+        const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -123,8 +124,8 @@ describe('subscribe', () => {
     })
 
     test('sends changes on Remove to subscriptions for that collection', async () => {
-        const onNextWidgets = jest.fn()
-        const onNextGadgets = jest.fn()
+        const onNextWidgets = vi.fn()
+        const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})

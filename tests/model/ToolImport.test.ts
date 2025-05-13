@@ -1,5 +1,6 @@
+import {expect, test} from "vitest"
 import ToolImport from '../../src/model/ToolImport'
-import {asJSON, ex} from '../testutil/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
 test('ToolImport has correct properties', ()=> {

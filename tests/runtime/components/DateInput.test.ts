@@ -1,14 +1,13 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {DateInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
-import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {DateInputState} from '../../../src/runtime/components/DateInput'
-import {DateType, TextType} from '../../../src/runtime/types'
+import {DateType} from '../../../src/runtime/types'
 import {act, render, waitFor} from '@testing-library/react'
 
 const [dateInput, appStoreHook] = wrappedTestElement(DateInput, DateInputState)
@@ -136,11 +135,11 @@ test('DateInput shows errors if errorShown is true', async () => {
 
     await actWait( () => stateAt(inputId).ShowErrors(false) )
     expect(el`p.MuiFormHelperText-root.Mui-error`).toBe(null)
-    expect(el`label`).not.toHaveClass('Mui-error')
+    expect(el`label`.className.includes('Mui-error')).toBe(false)
 
     await actWait( () => stateAt(inputId).ShowErrors(true) )
     expect(el`p.MuiFormHelperText-root.Mui-error`.innerHTML).toBe('Earliest 01 Jan 2020')
-    expect(el`label`).toHaveClass('Mui-error')
+    expect(el`label`.className.includes('Mui-error')).toBe(true)
 })
 
 

@@ -24,7 +24,7 @@ import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../../shared/convertData'
 
 const SERVER_SCHEME = 'ws://';
-const SERVER = location.origin + '/do';
+const SERVER = globalThis.location?.origin + '/do';
 
 const createStore = async (pathId: string, persist: boolean, sync: boolean) => {
     const store = createMergeableStore()

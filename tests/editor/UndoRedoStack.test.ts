@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import UndoRedoStack from '../../src/editor/UndoRedoStack'
 
 class A {
@@ -7,7 +8,7 @@ class A {
 const a1 = new A(1), a2 = new A(2), a3 = new A(3), a4 = new A(4), a5 = new A(5)
 let onChange: (val: any) => void
 
-beforeEach( ()=> onChange = jest.fn() )
+beforeEach( ()=> onChange = vi.fn() )
 
 test('if no object passed to constructor current state is undefined', () => {
     const stack = new UndoRedoStack(onChange)

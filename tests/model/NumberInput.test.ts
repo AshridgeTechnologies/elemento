@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import NumberInput from '../../src/model/NumberInput'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'

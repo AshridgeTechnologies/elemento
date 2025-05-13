@@ -1,7 +1,7 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {Menu, MenuItem} from '../../../src/runtime/components/index'
 import {snapshot, wait} from '../../testutil/testHelpers'
@@ -10,8 +10,8 @@ import {testContainer} from '../../testutil/rtlHelpers'
 test('Menu element produces output with properties supplied when closed',
     snapshot(createElement(Menu, {
         path: 'app.page1.fileMenu', label: 'File', filled: true, children: [
-            createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: jest.fn, styles: {color: 'red'} }),
-            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: jest.fn(), show: false})
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: vi.fn(), styles: {color: 'red'} }),
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: vi.fn(), show: false})
         ]
     }))
 )
@@ -19,8 +19,8 @@ test('Menu element produces output with properties supplied when closed',
 test('Menu element produces output with properties supplied when closed and has icon name',
     snapshot(createElement(Menu, {
         path: 'app.page1.fileMenu', label: 'File', iconName: 'menu', children: [
-            createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: jest.fn, styles: {color: 'red'} }),
-            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: jest.fn(), show: false})
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: vi.fn(), styles: {color: 'red'} }),
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: vi.fn(), show: false})
         ]
     }))
 )
@@ -28,8 +28,8 @@ test('Menu element produces output with properties supplied when closed and has 
 test('Menu element produces output with properties supplied when open', async () => {
         const {el, user} = testContainer(createElement(Menu, {
             path: 'app.page1.fileMenu', label: 'File', children: [
-                createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: jest.fn, styles: {color: 'red'} }),
-                createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: jest.fn(), show: false})
+                createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: vi.fn(), styles: {color: 'red'} }),
+                createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: vi.fn(), show: false})
             ]
         }))
         const buttonEl = el`app.page1.fileMenu_button`
@@ -41,11 +41,11 @@ test('Menu element produces output with properties supplied when open', async ()
 )
 
 test('Menu item does action when clicked', async () => {
-    const doOpen = jest.fn()
+    const doOpen = vi.fn()
     const {el, click} = testContainer(createElement(Menu, {
         path: 'app.page1.fileMenu', label: 'File', children: [
             createElement(MenuItem, {path: 'app.page1.fileMenu.Open', label: 'Open', action: doOpen}),
-            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: jest.fn()})
+            createElement(MenuItem, {path: 'app.page1.fileMenu.Close', label: 'Close', action: vi.fn()})
         ]
     }))
     const buttonEl = el`app.page1.fileMenu_button`

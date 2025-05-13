@@ -1,11 +1,11 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {Calculation} from '../../../src/runtime/components/index'
 import {testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
-import '@testing-library/jest-dom'
+
 import {testContainer} from '../../testutil/rtlHelpers'
 import {CalculationState} from '../../../src/runtime/components/Calculation'
 import {act} from '@testing-library/react/pure'
@@ -52,7 +52,7 @@ test('Calculation shows empty value when state value is absent', () => {
 })
 
 test('Calculation asynchronously checks and triggers when action from UI element when value true', async () => {
-    const action = jest.fn()
+    const action = vi.fn()
     testContainer(calculation('app.page1.widget1', {value: true, whenTrueAction: action}))
     expect(action).not.toHaveBeenCalled()
     await act( () => wait(10))
@@ -60,7 +60,7 @@ test('Calculation asynchronously checks and triggers when action from UI element
 })
 
 test('Calculation does not triggers when action from UI element when value false', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     testContainer(calculation('app.page1.widget1', {value: null, whenTrueAction: action}))
     expect(action).not.toHaveBeenCalled()
 })
@@ -79,7 +79,7 @@ test('State class does nothing on trigger if no when true action', () => {
 })
 
 test('State class does nothing on trigger if false and previous value missing but updates previous value', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     const state = new Calculation.State({value: false, whenTrueAction: action})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
@@ -88,7 +88,7 @@ test('State class does nothing on trigger if false and previous value missing bu
 })
 
 test('State class does nothing on trigger if false and does not update previous value if false', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     const state = new Calculation.State({value: false, whenTrueAction: action})._withStateForTest({previousValueTruthy: false})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
@@ -97,7 +97,7 @@ test('State class does nothing on trigger if false and does not update previous 
 })
 
 test('State class runs action on trigger if truthy and previous value false and updates previous value', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     const state = new Calculation.State({value: 1, whenTrueAction: action})._withStateForTest({previousValueTruthy: false})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
@@ -106,7 +106,7 @@ test('State class runs action on trigger if truthy and previous value false and 
 })
 
 test('State class does not run action on trigger if truthy and previous value truthy and does not update previous value', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     const state = new Calculation.State({value: 2, whenTrueAction: action})._withStateForTest({previousValueTruthy: true})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
@@ -115,7 +115,7 @@ test('State class does not run action on trigger if truthy and previous value tr
 })
 
 test('State class does not run action on trigger if falsy and previous value truthy but updates previous value', () => {
-    const action = jest.fn()
+    const action = vi.fn()
     const state = new Calculation.State({value: null, whenTrueAction: action})._withStateForTest({previousValueTruthy: true})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()

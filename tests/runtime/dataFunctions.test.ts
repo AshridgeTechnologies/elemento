@@ -1,11 +1,12 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test, Mock } from "vitest"
 import {valueObj} from '../testutil/testHelpers'
 import dataFunctions from '../../src/runtime/dataFunctions'
 
 const dataStoreResult = "result"
-let mockFn: jest.Mock
+let mockFn: Mock
 const {Update, Add, AddAll, Remove, Get, GetIfExists, Query, GetRandomId} = dataFunctions
 
-beforeEach(()=> mockFn = jest.fn().mockResolvedValue(dataStoreResult))
+beforeEach(()=> mockFn = vi.fn().mockResolvedValue(dataStoreResult))
 
 describe('Update single item', () => {
     test('updates object state value', () => {

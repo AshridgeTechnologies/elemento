@@ -1,8 +1,9 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import CachingFileWriter from '../../src/editor/CachingFileWriter'
 import {FileWriter} from '../../src/generator/ProjectBuilder'
 
 const mockWriter = () => {
-    const writeFile = jest.fn()
+    const writeFile = vi.fn()
     writeFile.mockResolvedValue(undefined)
     return {writeFile} as FileWriter
 }

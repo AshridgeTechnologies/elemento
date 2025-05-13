@@ -1,3 +1,4 @@
+import {describe, expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import {ex} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'

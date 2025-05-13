@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import EditorServiceWorker from '../../src/editor/EditorServiceWorker'
 import {FileSystemTree} from '../../src/editor/Types'
 import {MockFileSystemDirectoryHandle, wait} from '../testutil/testHelpers'
@@ -72,7 +73,7 @@ let worker: EditorServiceWorker
 let swScope: any
 
 const dummySWScope = () => {
-    const aClient = () => ({postMessage: jest.fn()} as unknown as WindowClient)
+    const aClient = () => ({postMessage: vi.fn()} as unknown as WindowClient)
     const theClients = [aClient(), aClient()]
     swScope = {
         theClients,
@@ -140,7 +141,7 @@ test('can get not found response for non-existent app name', async () => {
 
 test('passes through non-preview request', async () => {
     const originalFetch = globalThis.fetch
-    globalThis.fetch = jest.fn()
+    globalThis.fetch = vi.fn()
 
     try {
         const req = request('http://example.com/studio/otherthing/stuff.js')
@@ -193,7 +194,7 @@ test('sends firebaseConfig request to preview server', async () => {
     await wait(10)
 
     const originalFetch = globalThis.fetch
-    globalThis.fetch = jest.fn()
+    globalThis.fetch = vi.fn()
 
     try {
         const req = request('http://example.com/firebaseConfig.json')
@@ -210,7 +211,7 @@ test('stores preview server url and sends capi request to preview server with he
     await wait(10)
 
     const originalFetch = globalThis.fetch
-    globalThis.fetch = jest.fn()
+    globalThis.fetch = vi.fn()
 
     try {
         const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22', {headers: {'Authorization': 'Bearer xyz123'}})
@@ -227,7 +228,7 @@ test('sends capi POST request to preview server', async () => {
     await wait(10)
 
     const originalFetch = globalThis.fetch
-    globalThis.fetch = jest.fn()
+    globalThis.fetch = vi.fn()
 
     try {
         const req = request('http://example.com/capi/preview/SomeApp/SomeFunction?abc=22', {method: 'POST', body: '{"a": 10}', headers: {'Content-Type': 'stuff'}})

@@ -39,7 +39,7 @@ export default class Url {
     }
 
     get pathSections(): string[] {
-        return this.allPathSections.slice(1, this.allPathSections.length)
+        return this.allPathSections.slice(2, this.allPathSections.length)
     }
 
     get query(): object {

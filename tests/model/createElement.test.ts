@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'

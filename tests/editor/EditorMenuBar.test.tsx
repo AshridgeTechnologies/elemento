@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import React, {useState} from 'react'
@@ -18,14 +19,14 @@ let container: any = null, unmount: any
 const project = projectFixture1()
 
 const onChange = ()=> {}
-const onAction = jest.fn()
-const onMove = jest.fn()
-const onSaveToGitHub = jest.fn()
-const onGetFromGitHub = jest.fn()
-const onUpdateFromGitHub = jest.fn()
+const onAction = vi.fn()
+const onMove = vi.fn()
+const onSaveToGitHub = vi.fn()
+const onGetFromGitHub = vi.fn()
+const onUpdateFromGitHub = vi.fn()
 const onInsert = ()=> '123'
-const insertMenuItems = jest.fn().mockImplementation((_, selectedItemId)=> selectedItemId ? ['Text', 'TextInput', 'NumberInput'] : [])
-const toolItems = {'Tool 1': jest.fn(), 'Tool 2': jest.fn(), }
+const insertMenuItems = vi.fn().mockImplementation((_, selectedItemId)=> selectedItemId ? ['Text', 'TextInput', 'NumberInput'] : [])
+const toolItems = {'Tool 1': vi.fn(), 'Tool 2': vi.fn(), }
 
 const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub, insertMenuItems, toolItems}
 
@@ -48,7 +49,7 @@ function EditorMenuTestWrapper(props: any) {
 }
 
 test('notifies copy', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
     const actionsAvailableFn = (id: ElementId) => ['copy']
 
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onAction={onAction}
@@ -81,7 +82,7 @@ test('shows allowed items in menu bar insert menu', async () => {
 })
 
 test('only shows insert menu items if there are items to insert in that position', async () => {
-    const itemsFn = jest.fn().mockImplementation( (position: InsertPosition, _targetItemId: ElementId) => (position === 'after' || position === 'before') ? ['Text'] : [])
+    const itemsFn = vi.fn().mockImplementation( (position: InsertPosition, _targetItemId: ElementId) => (position === 'after' || position === 'before') ? ['Text'] : [])
 
     await actWait(() => ({container, unmount} = render(<EditorMenuTestWrapper project={project} selectedItemIds={['id1']} insertMenuItems={itemsFn}/>)))
     await actWait(() => fireEvent.click(screen.getByText(`Insert`)))
@@ -92,7 +93,7 @@ test('only shows insert menu items if there are items to insert in that position
 
 test.each(['Text', 'TextInput', 'NumberInput'])(`notifies insert of %s with item selected in tree`, async (elementType) => {
     const notionalNewElementId = 'text_1'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+    const onInsert = vi.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onInsert={onInsert} selectedItemIds={['id1']}/>)))
 
@@ -103,7 +104,7 @@ test.each(['Text', 'TextInput', 'NumberInput'])(`notifies insert of %s with item
 })
 
 test('notifies open request and closes menu', async () => {
-    let onOpen = jest.fn()
+    let onOpen = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onOpen={onOpen}/>)))
     await actWait(() => fireEvent.click(screen.getByText('File')) )
     await actWait(() => fireEvent.click(screen.getByText('Open')) )
@@ -113,7 +114,7 @@ test('notifies open request and closes menu', async () => {
 })
 
 test('notifies Get from GitHub request and closes menu', async () => {
-    let onOpenFromGitHub = jest.fn()
+    let onOpenFromGitHub = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onOpenFromGitHub={onOpenFromGitHub}/>)))
     await actWait(() => fireEvent.click(screen.getByText('File')) )
     await actWait(() => fireEvent.click(screen.getByText('Get from GitHub')) )
@@ -123,7 +124,7 @@ test('notifies Get from GitHub request and closes menu', async () => {
 })
 
 test('notifies Update from GitHub request and closes menu', async () => {
-    let onUpdateFromGitHub = jest.fn()
+    let onUpdateFromGitHub = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onUpdateFromGitHub={onUpdateFromGitHub}/>)))
     await actWait(() => fireEvent.click(screen.getByText('File')) )
     await actWait(() => fireEvent.click(screen.getByText('Update from GitHub')) )
@@ -133,7 +134,7 @@ test('notifies Update from GitHub request and closes menu', async () => {
 })
 
 test('notifies new request', async () => {
-    let onNew = jest.fn()
+    let onNew = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorMenuTestWrapper project={project} onNew={onNew}/>)))
     fireEvent.click(screen.getByText('File'))
     fireEvent.click(screen.getByText('New'))

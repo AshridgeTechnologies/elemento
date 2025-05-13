@@ -1,7 +1,7 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {Frame} from '../../../src/runtime/components/index'
 import {componentJSON, inAppContextProvider, snapshot, valueObj, wait} from '../../testutil/testHelpers'

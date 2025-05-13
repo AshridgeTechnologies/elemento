@@ -1,10 +1,11 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import AsyncValue from '../../../src/editor/actions/AsyncValue'
 import {wait} from '../../testutil/testHelpers'
 
 test('gets value once and updates value and notifies', async () => {
     const val = new AsyncValue<string>()
-    const getValue = jest.fn().mockReturnValue(Promise.resolve('Hi!'))
-    const notify = jest.fn()
+    const getValue = vi.fn().mockReturnValue(Promise.resolve('Hi!'))
+    const notify = vi.fn()
 
     expect(val.value).toBeNull()
     val.init(getValue, notify)
@@ -18,9 +19,9 @@ test('gets value once and updates value and notifies', async () => {
 
 test('if init called again, does not get value and uses latest notify', async () => {
     const val = new AsyncValue<string>()
-    const getValue = jest.fn().mockReturnValue(Promise.resolve('Hi!'))
-    const notify = jest.fn()
-    const notify2 = jest.fn()
+    const getValue = vi.fn().mockReturnValue(Promise.resolve('Hi!'))
+    const notify = vi.fn()
+    const notify2 = vi.fn()
 
     val.init(getValue, notify)
     val.init(getValue, notify2)

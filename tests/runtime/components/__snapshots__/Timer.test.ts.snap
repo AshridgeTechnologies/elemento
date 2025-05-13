@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Timer element produces output with default values where properties omitted 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-au20mi-MuiFormControl-root-MuiTextField-root"><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-quhxjy-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" id="app.page1.timer" type="text" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input" value="0.00"><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"><legend class="css-w4cd9x"><span class="notranslate">​</span></legend></fieldset></div></div>"`;
 

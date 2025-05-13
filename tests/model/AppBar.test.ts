@@ -1,10 +1,10 @@
+import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import {asJSON, ex} from '../testutil/testHelpers'
 import AppBar from '../../src/model/AppBar'
 import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import SelectInput from '../../src/model/SelectInput'
 
 test('AppBar has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

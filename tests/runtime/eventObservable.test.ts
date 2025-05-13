@@ -1,11 +1,15 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import eventObservable from '../../src/util/eventObservable'
 import {wait} from '../testutil/testHelpers'
 
 test('can receive events with multiple subscribers and remove event listener when no subscribers', async function () {
     let eventListener: (event: Event) => void
+    function listen(type: string, listener: any) {
+        eventListener = listener
+    }
     const testWindow = {
-        addEventListener: jest.fn().mockImplementation((type: string, listener: any) => eventListener = listener),
-        removeEventListener: jest.fn(),
+        addEventListener: vi.fn().mockImplementation(listen),
+        removeEventListener: vi.fn(),
     } as unknown as Window
     const obs = eventObservable(testWindow, 'testEvent', (evt: Event) => (evt as CustomEvent).detail)
     let s1Val, s2Val
@@ -34,7 +38,7 @@ test('can receive events with multiple subscribers and remove event listener whe
     expect(s2Val).toBe(43)
 
     expect(testWindow.addEventListener).toHaveBeenCalledTimes(1)
-    expect(testWindow.addEventListener).toHaveBeenCalledWith('testEvent', eventListener!)
+    expect(testWindow.addEventListener).toHaveBeenCalledWith('testEvent', eventListener!, false)
     expect(testWindow.removeEventListener).toHaveBeenCalledTimes(1)
     expect(testWindow.removeEventListener).toHaveBeenCalledWith('testEvent', eventListener!)
 })

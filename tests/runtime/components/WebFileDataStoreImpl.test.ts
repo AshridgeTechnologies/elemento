@@ -1,24 +1,26 @@
+import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
 import {WebFileDataStoreImpl} from '../../../src/runtime/components/index'
 import {wait} from '../../testutil/testHelpers'
 
-const mockJsonResponse = (data: any) => ({status: 200, ok: true, headers: {get() { return "application/json"}}, json: jest.fn().mockResolvedValue(data), text: jest.fn().mockResolvedValue(JSON.stringify(data))})
-const mockTextResponse = (data: string) => ({status: 200, ok: true, headers: {get() { return "text/plain"}}, text: jest.fn().mockResolvedValue(data)})
+const mockJsonResponse = (data: any) => ({status: 200, ok: true, headers: {get() { return "application/json"}}, json: vi.fn().mockResolvedValue(data), text: vi.fn().mockResolvedValue(JSON.stringify(data))})
+const mockTextResponse = (data: string) => ({status: 200, ok: true, headers: {get() { return "text/plain"}}, text: vi.fn().mockResolvedValue(data)})
 const mockError = (message: string) => {
     const body = {error: {message}}
     return {
         status: 500, ok: false, headers: {
             get() {return "application/json"}
-        }, json: jest.fn().mockResolvedValue(body), text: jest.fn().mockResolvedValue(JSON.stringify(body))
+        }, json: vi.fn().mockResolvedValue(body), text: vi.fn().mockResolvedValue(JSON.stringify(body))
     }
 }
-let mockFetch: jest.MockedFunction<any>
-beforeEach(()=> mockFetch = jest.fn())
+let mockFetch: MockedFunction<any>
+beforeEach(()=> mockFetch = vi.fn())
 
 test('getById rejects if cannot load data', async () => {
-    mockFetch.mockRejectedValue( new Error('No network') )
+    // mockFetch.mockRejectedValue( new Error('No network') )
+    mockFetch = vi.fn().mockReturnValue(Promise.reject(new Error('No network')))
 
     const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
-    await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `No network`)
+    await expect(store.getById('Widgets', 'w1')).rejects.toThrow(new Error('No network'))
 })
 
 test('getById rejects if error result', async () => {
@@ -129,7 +131,7 @@ test('gets empty observable', async () => {
     const data = {Widgets: [{id: 'id1', a: 10, b: `2022-06-29T15:47:21.968Z`}]}
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data))
     const store = new WebFileDataStoreImpl({url: 'https://example.com/data', fetch: mockFetch})
-    const onNextWidgets = jest.fn()
+    const onNextWidgets = vi.fn()
     store.observable('Widgets').subscribe(onNextWidgets)
     expect(onNextWidgets).not.toHaveBeenCalled()
     await wait()

@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import WebFile from '../../src/model/WebFile'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'

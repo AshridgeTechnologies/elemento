@@ -1,9 +1,10 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DiskProjectStoreFileLoader from '../../src/editor/DiskProjectStoreFileLoader'
 import type {DiskProjectStoreInterface} from '../../src/editor/DiskProjectStore'
 
 test.each([false, true])('returns exists for a directory from a DiskProjectStore', async (existsVal) => {
     const storeWithDir = {
-        exists: jest.fn().mockResolvedValue(existsVal)
+        exists: vi.fn().mockResolvedValue(existsVal)
     } as unknown as DiskProjectStoreInterface
 
     const loader = new DiskProjectStoreFileLoader(storeWithDir)
@@ -14,7 +15,7 @@ test.each([false, true])('returns exists for a directory from a DiskProjectStore
 
 test('lists files in a directory from a DiskProjectStore', async () => {
     const store = {
-        getFileNames: jest.fn().mockResolvedValue(['file1.jpg', 'file2.pdf'])
+        getFileNames: vi.fn().mockResolvedValue(['file1.jpg', 'file2.pdf'])
     } as unknown as DiskProjectStoreInterface
 
     const loader = new DiskProjectStoreFileLoader(store)
@@ -25,7 +26,7 @@ test('lists files in a directory from a DiskProjectStore', async () => {
 
 test('reads files from a DiskProjectStore', async () => {
     const store = {
-        readFile: jest.fn().mockResolvedValue(new Uint8Array([1, 2, 3]))
+        readFile: vi.fn().mockResolvedValue(new Uint8Array([1, 2, 3]))
     } as unknown as DiskProjectStoreInterface
 
     const loader = new DiskProjectStoreFileLoader(store)

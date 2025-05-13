@@ -1,7 +1,7 @@
+import {test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {snapshot} from '../../testutil/testHelpers'
 import {AppBar, TextElement} from '../../../src/runtime/components/index'

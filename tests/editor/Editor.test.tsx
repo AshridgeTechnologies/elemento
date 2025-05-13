@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import React, {useState} from 'react'
@@ -9,8 +10,8 @@ import lodash from 'lodash';
 import {
     ex,
     stopSuppressingRcTreeJSDomError,
-    suppressRcTreeJSDomError, treeItemClassNames,
-    treeItemLabels,
+    suppressRcTreeJSDomError,
+    treeItemLabels, treeItemTitleClassNames,
     wait
 } from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
@@ -31,23 +32,23 @@ import {AppElementAction} from '../../src/editor/Types'
 
 const {startCase} = lodash;
 
-jest.mock('../../src/appsShared/gitHubAuthentication')
+vi.mock('../../src/appsShared/gitHubAuthentication')
 
 let container: any = null, unmount: any
 
 const itemLabels = () => treeItemLabels(container)
-const itemClassNames = () => treeItemClassNames(container)
+const itemClassNames = () => treeItemTitleClassNames(container)
 const clickExpandControl = (...indexes: number[]) => clickExpandControlFn(container)(...indexes)
 
 const project = projectFixture1()
 const [projectWithTools] = project.insert('inside', TOOLS_ID, new Tool('tool_1', 'Tool 1', {}))
 
 const onChange = ()=> {}
-const onAction = jest.fn()
-const onMove = jest.fn()
-const onSaveToGitHub = jest.fn()
-const onGetFromGitHub = jest.fn()
-const onUpdateFromGitHub = jest.fn()
+const onAction = vi.fn()
+const onMove = vi.fn()
+const onSaveToGitHub = vi.fn()
+const onGetFromGitHub = vi.fn()
+const onUpdateFromGitHub = vi.fn()
 const onInsert = ()=> '123'
 
 const onFunctions = {onChange, onAction, onMove, onInsert, onSaveToGitHub, onGetFromGitHub, onUpdateFromGitHub}
@@ -300,7 +301,7 @@ test('notifies upload action from context menu of the files item', async () => {
 
     // using id of Image 1.jpg to simplify the test
     const notionalNewFileId = 'file_1'
-    const onAction = jest.fn().mockImplementation(()=> Promise.resolve(notionalNewFileId))
+    const onAction = vi.fn().mockImplementation(()=> Promise.resolve(notionalNewFileId))
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectFixture2()} onAction={onAction}/>)))
     expect(itemLabels()).toStrictEqual(['Project One', 'App One', 'Main Page', 'Other Page', 'Files', 'Image 1.jpg', 'Tools', 'Components'])
@@ -314,7 +315,7 @@ test('notifies upload action from context menu of the files item', async () => {
 
 test('notifies insert action from context menu of the tools item', async () => {
     const notionalNewElementId = 'tool_1'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+    const onInsert = vi.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
     await clickExpandControl(0, 1, 2)
@@ -330,7 +331,7 @@ test('notifies insert action from context menu of the tools item', async () => {
 test.each([['Text', 'before'], ['TextInput', 'after']])
     (`notifies context menu insert of %s %s item in tree and selects new item`, async (elementType, position) => {
     const notionalNewElementId = 'text_1'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+    const onInsert = vi.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
     await clickExpandControl(0, 1, 2)
@@ -348,7 +349,7 @@ test.each([['Text', 'before'], ['TextInput', 'after']])
 test.each([['NumberInput', 'inside']])
     (`notifies context menu insert of %s %s item in tree and selects new item`, async (elementType, position) => {
     const notionalNewElementId = 'text_1'
-    const onInsert = jest.fn().mockReturnValue(notionalNewElementId)
+    const onInsert = vi.fn().mockReturnValue(notionalNewElementId)
 
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onInsert={onInsert}/>)))
     await clickExpandControl(0, 1, 2)
@@ -364,7 +365,7 @@ test.each([['NumberInput', 'inside']])
 })
 
 test(`notifies show action with item id`, async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={projectWithTools} onAction={onAction} />)))
     await clickExpandControl(1)
 
@@ -375,7 +376,7 @@ test(`notifies show action with item id`, async () => {
 })
 
 test(`notifies tree action with item selected in tree`, async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
     await actWait(() =>  ({container, unmount} = render(<EditorTestWrapper project={project} onAction={onAction}/>)))
     await clickExpandControl(0, 1, 2)
 

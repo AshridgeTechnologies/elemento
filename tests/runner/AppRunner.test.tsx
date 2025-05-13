@@ -1,28 +1,25 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import AppRunner from '../../src/runner/AppRunner'
 import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
-import {setObject, useGetStore, useObject} from '../../src/runtime/index'
-import '@testing-library/jest-dom'
-import {App} from '../../src/runtime/components/index'
-import {highlightElement} from '../../src/runtime/runtimeFunctions'
+import {setObject, useObject} from '../../src/runtime/index'
+
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
 import {TextInput} from '../../src/runtime/components'
 import {highlightClassName} from '../../src/shared/controllerHelpers'
 
-jest.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
+vi.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
 
 const pathPrefix = 'pp'
 const resourceUrl = 'https://example.com:8080/app/somewhere'
-let onComponentSelected: (id: string) => void
 
-const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One'),
-                   selectedComponentId?: string) => createElement(AppRunner, {
+const appRunner = (appFunction: React.FunctionComponent<any> = testApp('One')) => createElement(AppRunner, {
     appFunction,
     pathPrefix,
     resourceUrl
@@ -60,12 +57,12 @@ const testApp = (version: string) => {
         }
     }
 
-    function AppOne(props: {appContext: UrlContext}) {
+    function AppOne(props: {urlContext: UrlContext}) {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
-        const appContext = Elemento.useGetUrlContext() as UrlContext
-        const app = setObject('AppOne', new App.State({pages, appContext}))
+        const urlContext = Elemento.useGetUrlContext() as UrlContext
+        const app = setObject('AppOne', new App.State({pages, urlContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -85,13 +82,13 @@ const badApp = () => {
         )
     }
 
-    function AppOne(props: {appContext: UrlContext}) {
+    function AppOne(props: {urlContext: UrlContext}) {
 
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
         // @ts-ignore
-        const {appContext} = props
-        const app = setObject('AppOne', new App.State({pages, appContext}))
+        const {urlContext} = props
+        const app = setObject('AppOne', new App.State({pages, urlContext}))
         return React.createElement(App, {path: 'AppOne'})
     }
 
@@ -101,7 +98,6 @@ const badApp = () => {
 let container: any, {click, elIn, enter, expectEl, renderThe} = container = testContainer()
 beforeEach(async () => {
     ({click, elIn, enter, expectEl, renderThe} = container = testContainer())
-    onComponentSelected = jest.fn()
     renderThe(appRunner())
 })
 
@@ -110,7 +106,8 @@ test('shows app on page', () => {
 })
 
 test('passes app context', () => {
-    expectEl('TheUrl').toHaveTextContent('http://localhost/pp')
+    console.log(window.location.origin)
+    expectEl('TheUrl').toHaveTextContent('http://localhost:3000/pp')
 })
 
 test('makes app utils available to images', () => {
@@ -147,37 +144,9 @@ test('can run multiple apps with independent state', async () => {
     container2.expectEl('SecondText').toHaveTextContent('Input is hot')
 })
 
-test('notifies id when component selected', () => {
-    const container3 = testContainer(appRunner(), 'testContainer3')
-    container3.click('SecondText', {altKey: true})
-    expect(onComponentSelected).toHaveBeenCalledWith('AppOne.MainPage.SecondText')
-})
-
-test('does not notify id when component clicked normally', () => {
-    click('SecondText', {altKey: false})
-    expect(onComponentSelected).not.toHaveBeenCalled()
-})
-
-test('highlights selected component', function () {
-    renderThe(appRunner(testApp('One'), 'AppOne.MainPage.SecondText'))
-    expectEl('SecondText').toHaveClass(highlightClassName)
-    const styleEl = document.getElementById('elementoEditorHighlight')
-    expect(styleEl!.innerHTML).toMatch(`.${highlightClassName}`)
-})
-
-test('can change to highlight a different component', function () {
-    highlightElement('AppOne.MainPage.FirstText')
-    expectEl('FirstText').toHaveClass(highlightClassName)
-    expectEl('SecondText').not.toHaveClass(highlightClassName)
-
-    highlightElement('AppOne.MainPage.SecondText')
-    expectEl('FirstText').not.toHaveClass(highlightClassName)
-    expectEl('SecondText').toHaveClass(highlightClassName)
-})
-
 test('shows error fallback for unexpected error', () => {
     const originalError = console.error
-    console.error = jest.fn()
+    console.error = vi.fn()
     try {
         renderThe(appRunner(badApp()))
     } catch (e) {

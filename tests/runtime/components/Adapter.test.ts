@@ -1,3 +1,4 @@
+import {beforeEach, describe, expect, test, vi} from "vitest"
 import {Adapter} from '../../../src/runtime/components'
 import {AdapterState} from '../../../src/runtime/components/Adapter'
 import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
@@ -6,8 +7,8 @@ import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'
 import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
-jest.mock('../../../src/runtime/appFunctions')
-jest.mock('../../../src/runtime/appFunctions')
+vi.mock('../../../src/runtime/appFunctions')
+vi.mock('../../../src/runtime/appFunctions')
 
 class TestSendObservable extends SendObservable<any> {
     subscribeCount = 0
@@ -33,9 +34,9 @@ class Target {
     GetError(id: string) { this.getErrorCalls++; throw new Error('No good')}
     UpdateImmediate() { this.updateImmediateCalls++ }
     GetObservable() { return this.observable }
-    UpdateWidget = jest.fn().mockImplementation( (waitTime = 10)=> wait(waitTime).then( ()=> {}))
-    GetSprocket = jest.fn().mockResolvedValue({a: 10})
-    GetErrorPromise = jest.fn().mockRejectedValue({message: 'Bad call'})
+    UpdateWidget = vi.fn().mockImplementation( (waitTime = 10)=> wait(waitTime).then( ()=> {}))
+    GetSprocket = vi.fn().mockResolvedValue({a: 10})
+    GetErrorPromise = vi.fn().mockRejectedValue({message: 'Bad call'})
     equals(other: Target) { return other.size === this.size}
 }
 
@@ -48,7 +49,7 @@ const initAdapter = ():[any, AppStateForObject, any] => {
 }
 
 beforeEach(()=> {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 })
 
 test('does not fail if target object is empty', () => {

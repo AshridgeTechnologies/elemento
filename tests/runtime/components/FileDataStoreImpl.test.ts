@@ -1,3 +1,4 @@
+import {beforeEach, describe, expect, test, vi} from "vitest"
 import {FileDataStoreImpl} from '../../../src/runtime/components/index'
 import {
     filePickerCancelling,
@@ -9,22 +10,22 @@ import {
     saveFilePickerOptions
 } from '../../testutil/testHelpers'
 import {mergeDeepRight} from 'ramda'
-import {InvalidateAll, MultipleChanges, Add, Update, Remove} from '../../../src/runtime/DataStore'
+import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 
 beforeEach(() => resetSaveFileCallData() )
 
 test('has initial empty data store', async () => {
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
 })
 
 test('returns null if not found and nullIfNotFound set', async () => {
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
     await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
 })
 
 test('can add, update and remove before Save', async () => {
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
@@ -39,7 +40,7 @@ test('can add, update and remove before Save', async () => {
 })
 
 test('has empty data store after New', async () => {
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     expect(await store.getById('Widgets', 'w1')).toStrictEqual({a: 10, b: 'Bee1', c: true})
     await store.New()
@@ -49,7 +50,7 @@ test('has empty data store after New', async () => {
 test('has empty data store after Open and New', async () => {
     const data = {Widgets: { w1: {a: 10, b: 'Bee1', c: true}, w2: {a: 11}}}
     const fileName = 'dataFile1.json'
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerReturning(data, fileName)
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
@@ -63,7 +64,7 @@ test('has empty data store after Open and New', async () => {
 test('opens file', async () => {
     const data = {Widgets: { w1: {a: 10, b: 'Bee1', c: true}, w2: {a: 11}}}
     const fileName = 'dataFile1.json'
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerReturning(data, fileName)
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
@@ -74,7 +75,7 @@ test('opens file', async () => {
 })
 
 test('can cancel open file', async () => {
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerCancelling
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
@@ -83,7 +84,7 @@ test('can cancel open file', async () => {
 })
 
 test('notifies error opening file', async () => {
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerErroring
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
@@ -94,7 +95,7 @@ test('saves to new file', async () => {
     const fileName = 'dataFile1.json'
 
     const store = new FileDataStoreImpl({
-        showOpenFilePicker: jest.fn(),
+        showOpenFilePicker: vi.fn(),
         showSaveFilePicker: saveFilePicker(fileName)
     })
 
@@ -116,7 +117,7 @@ test('saves to new file', async () => {
 
 test('can cancel Save As', async () => {
     const store = new FileDataStoreImpl({
-        showOpenFilePicker: jest.fn(),
+        showOpenFilePicker: vi.fn(),
         showSaveFilePicker: filePickerCancelling
     })
 
@@ -128,7 +129,7 @@ test('can cancel Save As', async () => {
 
 test('notifies error in Save As', async () => {
     const store = new FileDataStoreImpl({
-        showOpenFilePicker: jest.fn(),
+        showOpenFilePicker: vi.fn(),
         showSaveFilePicker: filePickerErroring
     })
 
@@ -141,7 +142,7 @@ test('save does save as if not previously saved', async () => {
     const fileName = 'dataFile1.json'
 
     const store = new FileDataStoreImpl({
-        showOpenFilePicker: jest.fn(),
+        showOpenFilePicker: vi.fn(),
         showSaveFilePicker: saveFilePicker(fileName)
     })
 
@@ -154,7 +155,7 @@ test('save does save as if not previously saved', async () => {
 test('can Save after open', async () => {
     const data = {Widgets: { w1: {a: 22, b: 'Bee1', c: false}, w2: {a: 19}}}
     const fileName = 'dataFile1.json'
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerReturning(data, fileName)
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
@@ -169,8 +170,8 @@ test('can Save after open', async () => {
 test('save directly after save as without picking file again', async () => {
     const fileName = 'dataFile1.json'
 
-    const showSaveFilePicker = jest.fn().mockImplementation(saveFilePicker(fileName))
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker})
+    const showSaveFilePicker = vi.fn().mockImplementation(saveFilePicker(fileName))
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker})
 
     await store.SaveAs()
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -183,8 +184,8 @@ test('save directly after save as without picking file again', async () => {
 })
 
 test('can update when file loaded', async () => {
-    const showSaveFilePicker = jest.fn().mockImplementation(saveFilePicker('aFile'))
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker})
+    const showSaveFilePicker = vi.fn().mockImplementation(saveFilePicker('aFile'))
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker})
 
     await store.Save()
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -195,8 +196,8 @@ test('can update when file loaded', async () => {
 })
 
 test('can remove when file loaded', async () => {
-    const showSaveFilePicker = jest.fn().mockImplementation(saveFilePicker('aFile'))
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker})
+    const showSaveFilePicker = vi.fn().mockImplementation(saveFilePicker('aFile'))
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker})
 
     await store.Save()
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -209,7 +210,7 @@ test('can remove when file loaded', async () => {
 })
 
 test('can query', async () => {
-    const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
+    const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     await store.add('Widgets', 'w2', {a: 20, b: 'Bee2', c: true})
     await store.add('Widgets', 'w3', {a: 20, b: 'Bee3', c: false})
@@ -219,7 +220,7 @@ test('can query', async () => {
 
 test('stores dates in ISO format', async () => {
     const store = new FileDataStoreImpl({
-        showOpenFilePicker: jest.fn(),
+        showOpenFilePicker: vi.fn(),
         showSaveFilePicker: saveFilePicker('file.json')
     })
 
@@ -236,7 +237,7 @@ test('stores dates in ISO format', async () => {
 
 test('retrieves dates in ISO format', async () => {
     const data = {Widgets: { w1: {a: 10, b: `2022-06-29T15:47:21.968Z`}}}
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerReturning(data, 'file.json')
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
     await store.Open()
@@ -245,7 +246,7 @@ test('retrieves dates in ISO format', async () => {
 
 test('retrieves invalid dates as strings', async () => {
     const data = {Widgets: { w1: {a: 10, b: '2022-02-29T15:47:21.968Z'}}}
-    const showSaveFilePicker = jest.fn()
+    const showSaveFilePicker = vi.fn()
     const showOpenFilePicker = filePickerReturning(data, 'file.json')
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
     await store.Open()
@@ -255,9 +256,9 @@ test('retrieves invalid dates as strings', async () => {
 
 describe('subscribe', () => {
     test('sends InvalidateAll on New to all subscriptions', async () => {
-        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -270,12 +271,12 @@ describe('subscribe', () => {
     test('sends InvalidateAll on Open to all subscriptions', async () => {
         const data = {Widgets: { w1: {a: 10, b: 'Bee1', c: true}, w2: {a: 11}}}
         const fileName = 'dataFile1.json'
-        const showSaveFilePicker = jest.fn()
+        const showSaveFilePicker = vi.fn()
         const showOpenFilePicker = filePickerReturning(data, fileName)
 
         const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -286,9 +287,9 @@ describe('subscribe', () => {
     })
 
     test('sends changes on Add to subscriptions for that collection', async () => {
-        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
@@ -297,9 +298,9 @@ describe('subscribe', () => {
     })
 
     test('sends multiple changes on Add all to subscriptions for that collection', async () => {
-        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
@@ -308,9 +309,9 @@ describe('subscribe', () => {
     })
 
     test('sends changes on Update to subscriptions for that collection', async () => {
-        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true}) // create the Widgets collection
@@ -321,9 +322,9 @@ describe('subscribe', () => {
     })
 
     test('sends change on Remove to subscriptions for that collection', async () => {
-        const store = new FileDataStoreImpl({showOpenFilePicker: jest.fn(), showSaveFilePicker: jest.fn()})
-        const onNextWidgets = jest.fn()
-        const onNextSprockets = jest.fn()
+        const store = new FileDataStoreImpl({showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn()})
+        const onNextWidgets = vi.fn()
+        const onNextSprockets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Sprockets').subscribe(onNextSprockets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true}) // create the Widgets collection

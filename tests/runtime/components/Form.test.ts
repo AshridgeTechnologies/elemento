@@ -1,7 +1,7 @@
+import {expect, MockedFunction, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import React, {KeyboardEventHandler} from 'react'
 import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
@@ -9,8 +9,7 @@ import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
 import {ErrorResult} from '../../../src/runtime/DataStore'
-import {setObject, useObject} from '../../../src/runtime/appStateHooks'
-import MockedFunction = jest.MockedFunction
+import {useObject} from '../../../src/runtime/appStateHooks'
 
 const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})
 const sizeType = new NumberType('nt1', {min: 1, max: 20})
@@ -159,7 +158,7 @@ test('Form element produces output containing nested form', () => {
 })
 
 test('State class has correct properties and functions', () => {
-    const submitAction = jest.fn()
+    const submitAction = vi.fn()
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
     const appInterface = testAppInterface('formPath', state, {})
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
@@ -271,7 +270,7 @@ test('State of nested form has expected values', async () => {
 })
 
 test('keyAction function is called with key', async () => {
-    const keyAction = jest.fn()
+    const keyAction = vi.fn()
     const {keyDown} = testContainer(form('app.page1.form1', {
         value: {Description: 'Big', BoxSize: 17}
     }, {keyAction}))
@@ -411,11 +410,11 @@ test('State calls ShowErrors on all its component states', async () => {
 })
 
 test('State Submit calls submit action if present and calls Reset after if succeeds', async () => {
-    const submitAction = jest.fn()
+    const submitAction = vi.fn()
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
     const stateNoAction = new TestFormState({value: {Description: 'Big', BoxSize: 17} })
-    state.Reset = jest.fn()
-    stateNoAction.Reset = jest.fn()
+    state.Reset = vi.fn()
+    stateNoAction.Reset = vi.fn()
     const appInterface = testAppInterface('formPath', state, {})
 
     const data = {a: 10}
@@ -431,9 +430,9 @@ test('State Submit calls submit action if present and calls Reset after if succe
 })
 
 test('State Submit calls submit action and adds Error Result to errors and does not call Reset', async () => {
-    const submitAction = jest.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
+    const submitAction = vi.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
-    state.Reset = jest.fn()
+    state.Reset = vi.fn()
     const appInterface = testAppInterface('formPath', state)
 
     await state.Submit(null)

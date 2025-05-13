@@ -1,9 +1,10 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
+import {expect, MockedFunction, test, vi} from "vitest"
 import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
-import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
+import {Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {ChoiceType, DateType, NumberType, RecordType, Rule, TextType, TrueFalseType} from '../../../src/runtime/types'
@@ -12,7 +13,6 @@ import React, {KeyboardEventHandler} from 'react'
 import {useObject} from '../../../src/runtime'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
-import MockedFunction = jest.MockedFunction
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Box Size', {max: 20})
@@ -154,7 +154,7 @@ test('Form element produces output containing nested form', () => {
 })
 
 test('State class has correct properties and functions', () => {
-    const submitAction = jest.fn()
+    const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
     const appInterface = testAppInterface('formPath', state)
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
@@ -242,7 +242,7 @@ test('State of nested form has expected values', async () => {
 })
 
 test('keyAction function is called with key', async () => {
-    const keyAction = jest.fn()
+    const keyAction = vi.fn()
     const {keyDown} = testContainer(form('app.page1.form1', {
         dataType: recordType,
         value: {Description: 'Big', BoxSize: 17}
@@ -358,7 +358,7 @@ test('State calls ShowErrors on all its component states', async () => {
 })
 
 test('State Submit calls submit action if present', async () => {
-    const submitAction = jest.fn()
+    const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
     const appInterface = testAppInterface('formPath', state, {})
 

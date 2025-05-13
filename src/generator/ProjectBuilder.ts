@@ -29,14 +29,8 @@ export interface FileWriter {
     writeFile(filepath: string, contents: FileContents): Promise<void>
 }
 
-export interface ServerFileWriter extends FileWriter {
-    clean(): Promise<void>
-    flush(): Promise<void>
-}
-
 export interface CombinedFileWriter {
     writeFiles(files: {[filepath: string]:FileContents}): Promise<void>
-    clean(): Promise<void>
 }
 
 export type Properties = {
@@ -87,7 +81,6 @@ export default class ProjectBuilder {
 
     async build() {
         await this.buildProjectFiles()
-        const {serverFileWriter} = this.props
         await Promise.all([this.writeProjectFiles(), this.copyAssetFiles()])
     }
 

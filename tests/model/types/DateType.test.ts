@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import DateType from '../../../src/model/types/DateType'
 import {loadJSONFromString} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

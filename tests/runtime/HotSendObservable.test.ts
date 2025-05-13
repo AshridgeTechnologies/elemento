@@ -1,9 +1,10 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import HotSendObservable from '../../src/util/HotSendObservable'
 import {wait} from '../testutil/testHelpers'
 
 test('new subscribers get immediate callback after first value sent', async () => {
     const obs = new HotSendObservable()
-    const nextCallback1 = jest.fn(), nextCallback2 = jest.fn()
+    const nextCallback1 = vi.fn(), nextCallback2 = vi.fn()
     obs.subscribe(nextCallback1)
 
     expect(nextCallback1).not.toHaveBeenCalled()

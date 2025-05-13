@@ -1,16 +1,17 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import ThrottledCombinedFileWriter from '../../src/editor/ThrottledCombinedFileWriter'
 import {CombinedFileWriter} from '../../src/generator/ProjectBuilder'
 import {wait} from '../testutil/testHelpers'
 
 const mockWriter = (delay: number = 0, isError: boolean = false) => {
     if (isError) {
-        globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+        globalThis.console = {error: vi.fn()} as unknown as typeof globalThis.console
     }
     return {
-        writeFiles: jest.fn().mockImplementation(() => wait(delay).then(() => {
+        writeFiles: vi.fn().mockImplementation(() => wait(delay).then(() => {
             if (isError) throw new Error('Cannot do this')
         })),
-        clean: jest.fn().mockImplementation(() => wait(delay).then(() => {
+        clean: vi.fn().mockImplementation(() => wait(delay).then(() => {
             if (isError) throw new Error('Cannot do this')
         }))
     } as CombinedFileWriter
@@ -85,7 +86,7 @@ test('waits for downstream write to complete before writing and includes all upd
 
 test('updates status until downstream write complete', async () => {
     const mockFileWriter = mockWriter(100)
-    const onStatusChange = jest.fn()
+    const onStatusChange = vi.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
     expect(onStatusChange).toHaveBeenLastCalledWith('waiting')
@@ -104,7 +105,7 @@ test('updates status until downstream write complete', async () => {
 
 test('updates status if write fails', async () => {
     const mockFileWriter = mockWriter(100, true)
-    const onStatusChange = jest.fn()
+    const onStatusChange = vi.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.writeFile('file1.txt', contents1)
     expect(onStatusChange).toHaveBeenLastCalledWith('waiting')
@@ -153,16 +154,16 @@ test('waits for downstream write and tries to write even if it fails', async () 
 })
 
 test('keeps files in a failed write and includes in next write unless further updated, until fixed', async () => {
-    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+    globalThis.console = {error: vi.fn()} as unknown as typeof globalThis.console
     let throwError = true
     const mockFileWriter =  {
-        writeFiles: jest.fn().mockImplementation(() => wait(0).then(() => {
+        writeFiles: vi.fn().mockImplementation(() => wait(0).then(() => {
             if (throwError) {
                 originalConsole.log('throwing error')
                 throw new Error('Cannot do this')
             }
         })),
-        clean: jest.fn()
+        clean: vi.fn()
     } as CombinedFileWriter
 
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
@@ -186,12 +187,12 @@ test('keeps files in a failed write and includes in next write unless further up
 })
 
 test('continues to try to writer even after errors', async () => {
-    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+    globalThis.console = {error: vi.fn()} as unknown as typeof globalThis.console
     const mockFileWriter = {
-        writeFiles: jest.fn().mockImplementation(() => wait(0).then(() => {
+        writeFiles: vi.fn().mockImplementation(() => wait(0).then(() => {
             throw new Error('Cannot do this')
         })),
-        clean: jest.fn()
+        clean: vi.fn()
     } as CombinedFileWriter
 
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
@@ -213,10 +214,10 @@ test('passes clean to combined file writer', async () => {
 })
 
 test('updates status if clean fails', async () => {
-    globalThis.console = {error: jest.fn()} as unknown as typeof globalThis.console
+    globalThis.console = {error: vi.fn()} as unknown as typeof globalThis.console
     const mockFileWriter = mockWriter(0, true)
 
-    const onStatusChange = jest.fn()
+    const onStatusChange = vi.fn()
     const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
     await writer.clean()
 

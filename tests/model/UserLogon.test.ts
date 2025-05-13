@@ -1,7 +1,8 @@
+import {expect, test} from "vitest"
 import UserLogon from '../../src/model/UserLogon'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON, ex} from '../testutil/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 
 test('UserLogon has correct properties with default values', ()=> {
     const userLogon1 = new UserLogon('id1', 'UserLogon 1', {})

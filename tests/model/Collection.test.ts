@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Collection from '../../src/model/Collection'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'

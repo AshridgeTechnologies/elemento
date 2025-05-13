@@ -1,14 +1,14 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {Dialog, TextElement} from '../../../src/runtime/components'
 import {wrappedTestElement} from '../../testutil/testHelpers'
 import {DialogState} from '../../../src/runtime/components/Dialog'
 import {actWait} from '../../testutil/rtlHelpers'
-import {fireEvent, render, within} from '@testing-library/react'
-import '@testing-library/jest-dom'
+import {fireEvent, render} from '@testing-library/react'
+
 
 const [dialog, appStoreHook] = wrappedTestElement(Dialog, DialogState)
 

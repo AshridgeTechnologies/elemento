@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import Block from '../../src/model/Block'
 import {asJSON, ex} from '../testutil/testHelpers'

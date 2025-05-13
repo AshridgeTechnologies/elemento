@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test, MockedFunction } from "vitest"
 import {caller, observer} from '../../../src/shared/postmsgRpc/client'
 import {expose, exposeFunctions} from '../../../src/shared/postmsgRpc/server'
 import fakeWindows from './helpers/fake-windows'
@@ -72,7 +73,7 @@ test('should observe data from remote', async () => {
         postMessage: server.postMessage
     })
 
-    const nextCallback = jest.fn()
+    const nextCallback = vi.fn()
     const fruits = getFruits()
     const subscription = fruits.subscribe(nextCallback)
     await wait()
@@ -112,7 +113,7 @@ test('should apply transformFn to observable data from remote', async () => {
         postMessage: server.postMessage
     })
 
-    const nextCallback = jest.fn()
+    const nextCallback = vi.fn()
     const fruits = getFruits()
     const subscription = fruits.subscribe(nextCallback)
     await wait()
@@ -147,8 +148,8 @@ test('client should allow multiple subscriptions to observable and unsubscribe w
         postMessage: server.postMessage
     })
 
-    const nextCallback1 = jest.fn()
-    const nextCallback2 = jest.fn()
+    const nextCallback1 = vi.fn()
+    const nextCallback2 = vi.fn()
     const fruits = getFruits()
 
     const subscription1 = fruits.subscribe(nextCallback1)
@@ -208,8 +209,8 @@ test('server should allow multiple calls to same observable function and keep th
         postMessage: server.postMessage
     })
 
-    const nextCallback1 = jest.fn()
-    const nextCallback2 = jest.fn()
+    const nextCallback1 = vi.fn()
+    const nextCallback2 = vi.fn()
     const fruits1 = getFruits(), fruits2 = getFruits()
 
     const subscription1 = fruits1.subscribe(nextCallback1)
@@ -274,8 +275,8 @@ test('server should remove all subscriptions to  multiple calls to same observab
         postMessage: server.postMessage
     })
 
-    const nextCallback1 = jest.fn()
-    const nextCallback2 = jest.fn()
+    const nextCallback1 = vi.fn()
+    const nextCallback2 = vi.fn()
     const fruits1 = getFruits(), fruits2 = getFruits()
 
     fruits1.subscribe(nextCallback1)

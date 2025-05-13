@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 import React from 'react'
 import PropertyInput from '../../src/editor/PropertyInput'
@@ -11,7 +12,7 @@ import {ElementId, eventAction} from '../../src/model/Types'
 let container: any
 let newValue: any
 const onChange = (elementId: ElementId, name: string, val: any) => newValue = val
-const onNameSelected = jest.fn()
+const onNameSelected = vi.fn()
 
 const kindButton = () => container.querySelector('button')
 const input = () => container.querySelector('input')
@@ -152,7 +153,7 @@ test('shows fixed value control for date property if current value is a Date', (
     expect(input().type).toBe('date')
     expect(input().id).toBe('start')
     expect(input().value).toBe('2023-05-04')
-    expect(input().valueAsDate).toStrictEqual(date1)
+    expect(input().valueAsDate).toEqual(date1)
     expect(label().textContent).toBe('Start')
 })
 
@@ -384,7 +385,7 @@ test('calls onNa with undefined on boolean if started with expression and toggle
 })
 
 test('calls onNameSelected with clicked word if ctrl key or meta key pressed', () => {
-    const onNameSelected = jest.fn();
+    const onNameSelected = vi.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'AnotherElement.something'}}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
     fireEvent.click(textarea(), {ctrlKey: true, offsetX: 60, offsetY: 12})
@@ -392,7 +393,7 @@ test('calls onNameSelected with clicked word if ctrl key or meta key pressed', (
 })
 
 test('calls onNameSelected with clicked word if meta key pressed', () => {
-    const onNameSelected = jest.fn();
+    const onNameSelected = vi.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'AnotherElement.something'}}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
     fireEvent.click(textarea(), {metaKey: true, offsetX: 60, offsetY: 12})
@@ -400,7 +401,7 @@ test('calls onNameSelected with clicked word if meta key pressed', () => {
 })
 
 test('does not call onNameSelected with clicked word if not in a formula', () => {
-    const onNameSelected = jest.fn();
+    const onNameSelected = vi.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={'AnotherElement.something'}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
     fireEvent.click(textarea(), {metaKey: true, offsetX: 60, offsetY: 12})
@@ -408,7 +409,7 @@ test('does not call onNameSelected with clicked word if not in a formula', () =>
 })
 
 test('does not call onNameSelected if control key not pressed', () => {
-    const onNameSelected = jest.fn();
+    const onNameSelected = vi.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: 'AnotherElement.something'}}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
     fireEvent.click(textarea(), {ctrlKey: false, offsetX: 60, offsetY: 12})
@@ -416,7 +417,7 @@ test('does not call onNameSelected if control key not pressed', () => {
 })
 
 test('does not call onNameSelected if click is not in a word', () => {
-    const onNameSelected = jest.fn();
+    const onNameSelected = vi.fn();
     ({container} = render(<PropertyInput elementId='el1' name='length' type='string' value={{expr: '**********.something'}}  onChange={onChange} onNameSelected={onNameSelected}/>))
 
     fireEvent.click(textarea(), {ctrlKey: true, offsetX: 60, offsetY: 12})

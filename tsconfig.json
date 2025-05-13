@@ -20,7 +20,7 @@
     "outDir": "build",
     "jsx": "react",
     "sourceMap": true,
-    "types": ["@cloudflare/workers-types"]
+    "types": ["@cloudflare/workers-types", "@testing-library/jest-dom"]
   },
 
   "include": [

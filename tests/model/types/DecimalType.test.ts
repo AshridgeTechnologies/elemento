@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import DecimalType from '../../../src/model/types/DecimalType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

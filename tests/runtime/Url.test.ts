@@ -1,22 +1,23 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import Url from '../../src/runtime/Url'
 
 describe('page', () => {
-    test('gets page from only path segment', ()=> {
-        const url = new Url('http://example.com', 'MainPage', null, {})
+    test('gets page from only path segment after app name', ()=> {
+        const url = new Url('http://example.com', 'TheApp/MainPage', null, {})
         expect(url.page).toBe('MainPage')
     })
 
-    test('gets page from only path segment with path prefix', ()=> {
-        const url = new Url('http://example.com', '/MainPage', '/somewhere', {})
+    test('gets page from only path segment after app name with path prefix', ()=> {
+        const url = new Url('http://example.com', 'TheApp/MainPage', '/somewhere', {})
         expect(url.page).toBe('MainPage')
     })
 
-    test('gets page from first path segment', ()=> {
-        const url = new Url('http://example.com', '/MainPage/Tab1/12345', null, {})
+    test('gets page from first path segment after app name', ()=> {
+        const url = new Url('http://example.com', 'TheApp/MainPage/Tab1/12345', null, {})
         expect(url.page).toBe('MainPage')
     })
 
-    test('gets null page from first path segment', ()=> {
+    test('gets null page from empty path segment after app name', ()=> {
         const url = new Url('http://example.com', '/', null, {})
         expect(url.page).toBe(null)
     })
@@ -34,12 +35,12 @@ describe('path segments', () => {
     })
 
     test('gets path segments after page', ()=> {
-        const url = new Url('http://example.com', '/MainPage/Tab1/12345', null, {})
+        const url = new Url('http://example.com', 'TheApp/MainPage/Tab1/12345', null, {})
         expect(url.pathSections).toStrictEqual(['Tab1', '12345'])
     })
 
     test('gets empty path segments if no path', ()=> {
-        const url = new Url('http://example.com', '/somewhere', 'somewhere', {})
+        const url = new Url('http://example.com', '/somewhere/TheApp', 'somewhere', {})
         expect(url.pathSections).toStrictEqual([])
     })
 })

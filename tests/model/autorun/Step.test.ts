@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Step from '../../../src/model/autorun/Step'
 
 test('has correct properties', () => {

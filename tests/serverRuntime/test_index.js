@@ -27,7 +27,7 @@ const bigDecReviver = (key, value) => {
 export default {
   async fetch(request, env, ctx) {
     const testSubjects = {
-      store: new CloudflareDataStore({collections: 'Widgets', env, bindingName: 'DB'})
+      store: new CloudflareDataStore({collections: 'Widgets', database: env.DB})
     }
 
     const url = new URL(request.url);

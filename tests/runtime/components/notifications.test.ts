@@ -1,10 +1,11 @@
+import {beforeEach, expect, test, vi} from "vitest"
 import * as notifications from '../../../src/runtime/components/notifications'
 import {wait} from '../../testutil/testHelpers'
 
 beforeEach( notifications.test_resetManager)
 
 test('can subscribe and get notifications and unsubscribe', () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     const unsubscribe = notifications.subscribeToNotifications(callback)
     const result = notifications.addNotification('success', 'Add New User')
     expect(result).toBe(true)
@@ -20,7 +21,7 @@ test('can subscribe and get notifications and unsubscribe', () => {
 })
 
 test('can throttle repeated notifications with same message even if details different', async () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     const unsubscribe = notifications.subscribeToNotifications(callback)
     let result = notifications.addNotification('error', 'Add New User', 'No good user 1', 20)
     expect(result).toBe(true)

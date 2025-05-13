@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

@@ -1,3 +1,4 @@
+import {afterEach, beforeEach, expect, test, vi} from "vitest"
 import GitProjectStore from '../../src/editor/GitProjectStore'
 import fs from 'fs'
 import * as os from 'os'
@@ -9,7 +10,8 @@ import {wait, waitUntil} from '../testutil/testHelpers'
 import {Octokit} from 'octokit'
 import {projectFileName} from '../../src/shared/constants'
 
-jest.setTimeout(25000)
+vi.setConfig({ testTimeout: 25_000 })
+
 
 const {username, repo} = JSON.parse(fs.readFileSync('./private/githubTestRepo.json', 'utf8'))
 const accessToken = fs.readFileSync('./private/githubTestRepoAccessToken.txt', 'utf8')

@@ -1,11 +1,11 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {Timer} from '../../../src/runtime/components/index'
 import {testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
-import '@testing-library/jest-dom'
+
 import {testContainer} from '../../testutil/rtlHelpers'
 import {TimerState} from '../../../src/runtime/components/Timer'
 
@@ -97,7 +97,7 @@ test('Has correct output properties immediately after started', () => {
 })
 
 test('Has correct output properties immediately after started without fixed period', () => {
-    const state = new Timer.State({ interval: 0.05, intervalAction: jest.fn(), endAction: jest.fn() })
+    const state = new Timer.State({ interval: 0.05, intervalAction: vi.fn(), endAction: vi.fn() })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
     state.Start()
@@ -113,7 +113,7 @@ test('Has correct output properties immediately after started without fixed peri
 })
 
 test('Calls interval action while running', async () => {
-    const intervalAction = jest.fn()
+    const intervalAction = vi.fn()
     const state = new Timer.State({period: 2, interval: 0.03, intervalAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -133,7 +133,7 @@ test('Calls interval action while running', async () => {
 })
 
 test('Has correct output properties if start called while running', async () => {
-    const intervalAction = jest.fn()
+    const intervalAction = vi.fn()
     const state = new Timer.State({period: 2, interval: 0.03, intervalAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -156,7 +156,7 @@ test('Has correct output properties if start called while running', async () => 
 })
 
 test('Has correct output properties while running without fixed period ', async () => {
-    const state = new Timer.State({interval: 0.03, intervalAction: jest.fn(), endAction: jest.fn() })
+    const state = new Timer.State({interval: 0.03, intervalAction: vi.fn(), endAction: vi.fn() })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
     state.Start()
@@ -173,8 +173,8 @@ test('Has correct output properties while running without fixed period ', async 
 })
 
 test('Has correct output properties while running without fixed interval or period', async () => {
-    const intervalAction = jest.fn()
-    const state = new Timer.State({intervalAction, endAction: jest.fn() })
+    const intervalAction = vi.fn()
+    const state = new Timer.State({intervalAction, endAction: vi.fn() })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
     state.Start()
@@ -192,8 +192,8 @@ test('Has correct output properties while running without fixed interval or peri
 })
 
 test('Has correct output properties while running with period but no fixed interval', async () => {
-    const intervalAction = jest.fn()
-    const state = new Timer.State({period: 3, intervalAction, endAction: jest.fn() })
+    const intervalAction = vi.fn()
+    const state = new Timer.State({period: 3, intervalAction, endAction: vi.fn() })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
     state.Start()
@@ -211,7 +211,7 @@ test('Has correct output properties while running with period but no fixed inter
 })
 
 test('Has correct output properties and calls to actions when finished', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({period: 0.09, interval: 0.03, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -235,7 +235,7 @@ test('Has correct output properties and calls to actions when finished', async (
 })
 
 test('Has correct output properties and calls to actions when finished with incomplete interval', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({period: 0.075, interval: 0.03, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -259,7 +259,7 @@ test('Has correct output properties and calls to actions when finished with inco
 })
 
 test('Has correct output properties and calls to actions when finished with no fixed interval', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({period: 0.06, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -281,7 +281,7 @@ test('Has correct output properties and calls to actions when finished with no f
 })
 
 test('Has correct output properties and calls after Stop', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({interval: 0.03, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -310,7 +310,7 @@ test('Has correct output properties and calls after Stop', async () => {
 })
 
 test('Stop, Stop again and Start without Reset', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({interval: 0.05, period: 1.0, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -342,7 +342,7 @@ test('Stop, Stop again and Start without Reset', async () => {
 })
 
 test('Stop, Start again without Reset', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({interval: 0.05, period: 1.0, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     const startTime = new Date()
@@ -373,7 +373,7 @@ test('Stop, Start again without Reset', async () => {
 })
 
 test('Stop, Reset, Start', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({interval: 0.03, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     state.Start()
@@ -405,7 +405,7 @@ test('Stop, Reset, Start', async () => {
 })
 
 test('Reset while running', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({interval: 0.03, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     state.Start()
@@ -428,7 +428,7 @@ test('Reset while running', async () => {
 })
 
 test('Has correct output properties and calls to actions when finished after Stop and re-Start', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({period: 0.15, interval: 0.06, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     state.Start()
@@ -455,7 +455,7 @@ test('Has correct output properties and calls to actions when finished after Sto
 })
 
 test('Has correct output properties and calls to actions after Start, finish, Start again', async () => {
-    const intervalAction = jest.fn(), endAction = jest.fn()
+    const intervalAction = vi.fn(), endAction = vi.fn()
     const state = new Timer.State({period: 0.15, interval: 0.06, intervalAction, endAction })
     const appInterface = testAppInterface('testPath', state)
     state.Start()

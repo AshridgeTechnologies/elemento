@@ -1,27 +1,26 @@
+import {afterEach, beforeEach, expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import * as Elemento from '../../../src/runtime/index'
+import {elProps, stateProps, wrapFn} from '../../../src/runtime/index'
 
 import React, {createElement} from 'react'
 import {wait} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
 import {lastTrace} from '../../../src/runtime/debug'
-import {elProps, stateProps, wrapFn} from '../../../src/runtime/index'
 
 import * as notifications from '../../../src/runtime/components/notifications'
 
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
-jest.mock('../../../src/runtime/components/notifications')
+vi.mock('../../../src/runtime/components/notifications')
 
 let originalConsoleError: any
 let mockConsoleError: any
 beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     originalConsoleError = console.error
-    console.error = mockConsoleError = jest.fn()
-    jest.spyOn(notifications, 'addNotification').mockReturnValue(true)
+    console.error = mockConsoleError = vi.fn()
+    vi.spyOn(notifications, 'addNotification').mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -134,7 +133,7 @@ test('wrapFn returns function that does not log to console if not notified ', ()
     const doStuff = (length: number) => {
         throw new Error('Bad result: ' + length)
     }
-    jest.spyOn(notifications, 'addNotification').mockReturnValue(false)
+    vi.spyOn(notifications, 'addNotification').mockReturnValue(false)
 
     const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
     wrappedFn(99)

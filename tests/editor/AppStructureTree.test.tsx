@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import React from 'react'
@@ -10,7 +11,6 @@ import {treeExpandControlSelector, treeItemTitleSelector, treeNodeSelector, tree
 import {
     stopSuppressingRcTreeJSDomError,
     suppressRcTreeJSDomError,
-    treeItemClassNames,
     treeItemLabels,
     treeItemTitleClassNames
 } from '../testutil/testHelpers'
@@ -41,7 +41,7 @@ const selectedItemLabel = () => {
     return [...treeNodesSelected.values()].map( (it: any) => it.textContent)[0]
 }
 
-const noOp = jest.fn()
+const noOp = vi.fn()
 
 const standardActionsAvailable = () => [
     'insert',
@@ -245,7 +245,7 @@ test("always shows Project and App expanded",  async () => {
 })
 
 test('notifies new selected item id in array', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={[]} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -254,7 +254,7 @@ test('notifies new selected item id in array', async () => {
 })
 
 test('notifies replacement selected item id in array', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -263,7 +263,7 @@ test('notifies replacement selected item id in array', async () => {
 })
 
 test('notifies replacement selected item id in array when already selected', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -272,7 +272,7 @@ test('notifies replacement selected item id in array when already selected', asy
 })
 
 test('notifies replacement selected item id when multiple already selected', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['app1', 'page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -281,7 +281,7 @@ test('notifies replacement selected item id when multiple already selected', asy
 })
 
 test('notifies replacement selected item id when multiple already selected including one clicked', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -290,7 +290,7 @@ test('notifies replacement selected item id when multiple already selected inclu
 })
 
 test.each(['metaKey', 'ctrlKey'])('notifies new selected item id in array with %s', async (keyName) => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={[]} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -299,7 +299,7 @@ test.each(['metaKey', 'ctrlKey'])('notifies new selected item id in array with %
 })
 
 test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array with %s', async (keyName) => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -308,7 +308,7 @@ test.each(['metaKey', 'ctrlKey'])('notifies additional selected item id in array
 })
 
 test('unselects already selected item id in array with ctrl key', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -317,7 +317,7 @@ test('unselects already selected item id in array with ctrl key', async () => {
 })
 
 test('unselects already selected item id when multiple selected', async () => {
-    const storeSelectedIds = jest.fn()
+    const storeSelectedIds = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'textInput1_2']} onSelect={storeSelectedIds} {...defaultFunctions}/>)))
     await clickExpandControl(0, 1, 2)
@@ -338,7 +338,7 @@ test('expands to show selected item highlighted', async () => {
 })
 
 test('selects collapsed item if it contained the selected item', async () => {
-    const onSelect = jest.fn()
+    const onSelect = vi.fn()
     await actWait(() => {
         return ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['textInput1_2']}
                                                        onSelect={onSelect} {...defaultFunctions}/>))
@@ -350,10 +350,10 @@ test('selects collapsed item if it contained the selected item', async () => {
 })
 
 test.each(['before', 'after', 'inside'])('notifies insert %s with position, item id, element type then closes menu', async (position) => {
-    const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
+    const onInsert = vi.fn()
+    const itemsFn = vi.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
 
-    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={jest.fn()} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn}/>)))
+    await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} onSelect={vi.fn()} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn}/>)))
     await clickExpandControl(0, 1, 2)
     await actWait(() => fireEvent.contextMenu(screen.getByText('The Text Input')))
     await actWait(() => fireEvent.click(screen.getByText(`Insert`)))
@@ -366,8 +366,8 @@ test.each(['before', 'after', 'inside'])('notifies insert %s with position, item
 })
 
 test('only shows insert menu items if there are items to insert in that position', async () => {
-    const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockImplementation( (position: InsertPosition) => (position === 'after' || position === 'before') ? ['Text'] : [])
+    const onInsert = vi.fn()
+    const itemsFn = vi.fn().mockImplementation( (position: InsertPosition) => (position === 'after' || position === 'before') ? ['Text'] : [])
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
                                                                          insertMenuItemFn={itemsFn}/>)))
@@ -380,8 +380,8 @@ test('only shows insert menu items if there are items to insert in that position
 })
 
 test('notifies insert Tool', async () => {
-    const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockReturnValue(['Tool'])
+    const onInsert = vi.fn()
+    const itemsFn = vi.fn().mockReturnValue(['Tool'])
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions} onInsert={onInsert}
                                                                          insertMenuItemFn={itemsFn}/>)))
@@ -397,7 +397,7 @@ test('notifies insert Tool', async () => {
 })
 
 test('notifies show Tool', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}{...defaultFunctions}
                                                                          actionsAvailableFn={toolActionsAvailable} onAction={onAction} />)))
     await clickExpandControl(1)
@@ -407,7 +407,7 @@ test('notifies show Tool', async () => {
 })
 
 test('notifies copy with clicked item id if not selected', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']}
                                                                          {...defaultFunctions} onAction={onAction} />)))
@@ -421,7 +421,7 @@ test('notifies copy with clicked item id if not selected', async () => {
 })
 
 test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item ids', async (action) => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1', 'page_2']}
                                                                          {...defaultFunctions} onAction={onAction} />)))
@@ -435,7 +435,7 @@ test.each(['copy', 'cut', 'duplicate'])('notifies %s with multiple selected item
 
 test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['pasteInside', 'Paste Inside'],])
         ('notifies %s with id of clicked item', async (action, actionLabel) => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
@@ -448,7 +448,7 @@ test.each([['pasteAfter', 'Paste After'],['pasteBefore', 'Paste Before'],['paste
 })
 
 test('notifies delete with clicked item id', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction}/>)))
     await clickExpandControl(0, 1)
@@ -465,7 +465,7 @@ test('notifies delete with clicked item id', async () => {
 })
 
 test('notifies delete with all selected item ids if one is clicked', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree}  selectedItemIds={['textInput1_2', 'numberInput1_2']} {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
@@ -484,7 +484,7 @@ test('notifies delete with all selected item ids if one is clicked', async () =>
 })
 
 test('abandons delete if do not confirm', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onAction={onAction} />)))
     await clickExpandControl(0, 1)
@@ -501,8 +501,8 @@ test('abandons delete if do not confirm', async () => {
 })
 
 test('abandons insert if do not select an item', async () => {
-    const onInsert = jest.fn()
-    const itemsFn = jest.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
+    const onInsert = vi.fn()
+    const itemsFn = vi.fn().mockReturnValue(['Text', 'Text Input', 'Number Input'])
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} {...defaultFunctions} onInsert={onInsert} insertMenuItemFn={itemsFn} />)))
     await clickExpandControl(0, 1)
@@ -521,7 +521,7 @@ test('abandons insert if do not select an item', async () => {
 })
 
 test('notifies upload for files folder with clicked item id if not selected', async () => {
-    const onAction = jest.fn()
+    const onAction = vi.fn()
 
     await actWait(() => ({container, unmount} = render(<AppStructureTree treeData={modelTree} selectedItemIds={['page_1']}
                                                                          {...defaultFunctions} actionsAvailableFn={fileActionsAvailable} onAction={onAction} />)))

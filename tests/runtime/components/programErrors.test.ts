@@ -1,9 +1,10 @@
+import {beforeEach, expect, test, vi} from "vitest"
 import * as programErrors from '../../../src/runtime/components/programErrors'
 
 beforeEach( programErrors.test_resetManager)
 
 test('can subscribe and get notifications and unsubscribe', () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     const unsubscribe = programErrors.subscribeToProgramErrors(callback)
     programErrors.addError('error', 'page1.NameList', 'items', 'Expected List')
     expect(callback).toHaveBeenCalledWith({level: 'error', path: 'page1.NameList', property: 'items', message: 'Expected List'})

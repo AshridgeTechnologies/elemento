@@ -1,5 +1,5 @@
 // @ts-ignore
-jest.mock("nanoid", () => { return {
+vi.mock("nanoid", () => { return {
     customAlphabet : () => ()=> 'xyz1'
 } })
 

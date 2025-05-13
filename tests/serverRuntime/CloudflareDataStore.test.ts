@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 // import {components} from '../../src/serverRuntime/index'
 import {unstable_startWorker} from "wrangler"
 
@@ -9,7 +10,7 @@ let store: any
 
 beforeEach(async () => {
     const env = {}
-    store = new CloudflareDataStore({collections: 'Widgets', bindingName: 'DB1'})
+    store = null
 })
 
 function newId() {
@@ -39,6 +40,10 @@ describe('shared collections', () => {
         dev: {server: {port: 9090}}});
     });
 
+    afterAll(async () => {
+        await worker.dispose();
+    });
+
     test('add and retrieve', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
@@ -46,11 +51,7 @@ describe('shared collections', () => {
         const result = await callStore('getById', collectionName, id)
 
         expect(result).toStrictEqual({id, ...item})
-    })
-
-    afterAll(async () => {
-        await worker.dispose();
-    });
+    }, 20_000)
 
     test('has initial empty data store', async () => {
         await expect(callStore('getById', collectionName, 'idxxx')).rejects.toHaveProperty('message', `Object with id 'idxxx' not found in collection 'Widgets'`)

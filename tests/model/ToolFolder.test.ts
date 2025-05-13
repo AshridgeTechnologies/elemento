@@ -1,6 +1,7 @@
+import {expect, test} from "vitest"
 import ToolFolder from '../../src/model/ToolFolder'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON, ex} from '../testutil/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
 
 test('ToolFolder has expected properties', () => {

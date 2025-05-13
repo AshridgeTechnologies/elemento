@@ -1,3 +1,4 @@
+import {vi, expect, test, MockedFunction} from 'vitest'
 import renderer from 'react-test-renderer'
 import React, {ComponentState, createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
@@ -13,6 +14,15 @@ import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {StoreProvider, type AppStoreHook} from '../../src/runner/StoreContext'
+// import Dexie from 'dexie'
+// import Promise = Dexie.Promise
+// import {Error} from '@mui/icons-material'
+// import Promise = Dexie.Promise
+// import Promise = Dexie.Promise
+// import Promise = Dexie.Promise
+// import {TextEncoder} from 'util'
+// import Promise = Dexie.Promise
+// import {undefined} from 'valibot'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -28,8 +38,8 @@ export const componentProps = (domElement: any) => {
 }
 
 export const inAppContextProvider = (prefix: string | undefined, el: any) => {
-    const appContext = new DefaultUrlContext(null, prefix)
-    return createElement(UrlContextContext.Provider, {value: appContext}, el)
+    const urlContext = new DefaultUrlContext(null, prefix)
+    return createElement(UrlContextContext.Provider, {value: urlContext}, el)
 }
 
 let suppressionReported = false
@@ -37,7 +47,7 @@ const originalConsoleError = console.error
 
 export const suppressRcTreeJSDomError = () => {
     if (console.error === originalConsoleError) {
-        jest.spyOn(console, 'error').mockImplementation( (...args: any[]) => {
+        vi.spyOn(console, 'error').mockImplementation( (...args: any[]) => {
             const message = args[0].message ?? args[0]
             if (message.match(/Cannot read properties of null \(reading 'removeEventListener'\)|The above error occurred in/)) {
                 !suppressionReported && console.log('Suppressed JSDOM removeEventListener error')
@@ -50,12 +60,12 @@ export const suppressRcTreeJSDomError = () => {
 }
 export const stopSuppressingRcTreeJSDomError = () => {
     console.error = originalConsoleError
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     suppressionReported = false
 }
 
 export const timeoutForDebugging = () => {
-    jest.setTimeout(1000000)
+    vi.setConfig({ testTimeout: 1000000 })
     console.log('timeoutForDebugging')
 }
 
@@ -76,11 +86,6 @@ export function trimText([s]: TemplateStringsArray) {
 export const treeItemLabels = (container: any) => {
     const treeNodesShown = container.querySelectorAll(treeItemTitleSelector)
     return [...treeNodesShown.values()].map((it: any) => it.textContent)
-}
-
-export const treeItemClassNames = (container: any) => {
-    const treeNodesShown = container.querySelectorAll(treeNodeSelector)
-    return [...treeNodesShown.values()].map( (it: any) => it.className )
 }
 
 export const treeItemTitleClassNames = (container: any) => {
@@ -171,7 +176,7 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
         latest() {
             return _latest
         },
-        updateVersion: jest.fn().mockImplementation((changes: object) => {
+        updateVersion: vi.fn().mockImplementation((changes: object) => {
             _latest = _latest.withMergedState(changes)
             _latest.init(appInterface, path)
         }),
@@ -193,7 +198,7 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
     return appInterface
 }
 
-export function testAppStoreHook() {
+function testAppStoreHook() {
     const hook = {
         store: null as (null | AppStateStore),
         setAppStore(sa: AppStateStore) {
@@ -246,17 +251,17 @@ class ValueObj<T> {
 export const valueObj = <T>(val: T) => new ValueObj<T>(val)
 
 export function mockReturn(fn: any, value: any) {
-    const mock_fn = fn as jest.MockedFunction<any>
+    const mock_fn = fn as MockedFunction<any>
     mock_fn.mockReturnValue(value)
 }
 
 export function mockClear(fn: any) {
-    const mock_fn = fn as jest.MockedFunction<any>
+    const mock_fn = fn as MockedFunction<any>
     mock_fn.mockClear()
 }
 
 export function mockImplementation(fn: any, impl: any) {
-    const mock_fn = fn as jest.MockedFunction<any>
+    const mock_fn = fn as MockedFunction<any>
     mock_fn.mockImplementation(impl)
 }
 
@@ -335,6 +340,10 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
     }
 
     createWritable(): any {
+        throw new Error('Not implemented')
+    }
+
+    createSyncAccessHandle(): Promise<FileSystemSyncAccessHandle> {
         throw new Error('Not implemented')
     }
 }

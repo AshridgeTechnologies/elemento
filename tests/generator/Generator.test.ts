@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';

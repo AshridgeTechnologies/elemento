@@ -9,9 +9,6 @@ export const clientConfig = {
     entryPoints: [
         { in: 'src/runtime/index.ts', out: 'lib/runtime'},
         { in: 'src/editor/runEditor.ts', out: 'studio/runEditor'},
-        { in: 'src/editor/runLocalApp.ts', out: 'run/runLocalApp'},
-        { in: 'src/appswebsite/sw.ts', out: 'sw' },
-        { in: 'src/appswebsite/runnerSw.ts', out: 'runnerSw' },
         { in: 'src/appswebsite/index.ts', out: 'index' },
     ],
     bundle: true,

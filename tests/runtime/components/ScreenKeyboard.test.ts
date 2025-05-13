@@ -1,7 +1,7 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {ScreenKeyboard} from '../../../src/runtime/components/index'
 import {valueObj, wrappedTestElement} from '../../testutil/testHelpers'
@@ -43,7 +43,7 @@ test('ScreenKeyboard element produces output with properties supplied as state v
 test('ScreenKeyboard does key action when clicked and translates keys', async () => {
     let {element, user} = testContainer(screenKeyboard('app.page1.keyboard', {}, {keyAction: ($key: string) => Log("Pressed", $key)}))
     const keyEl = (key: string) => element(`div[data-skbtn="${key}"]`)
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    const log = vi.spyOn(console, "log").mockImplementation(() => {})
     try {
         await user.click(keyEl('g'))
         expect(log).toHaveBeenLastCalledWith("Pressed", 'g')
@@ -76,7 +76,7 @@ test('ScreenKeyboard uses real keyboard', async () => {
     )
     const pageEl = element(`div.ElPage`)
     pageEl.focus()
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    const log = vi.spyOn(console, "log").mockImplementation(() => {})
     try {
         await user.keyboard('a')
         await user.keyboard('b')

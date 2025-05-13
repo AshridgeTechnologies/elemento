@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import PropertyBuilder from '../../src/runtime/PropertyBuilder'
 
 test('builds properties from plain values or functions', () => {

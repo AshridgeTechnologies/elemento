@@ -1,10 +1,10 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
-import '@testing-library/jest-dom'
+
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'

@@ -1,12 +1,13 @@
+import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
 import {isPending} from '../../../src/runtime/DataStore'
 import {testAppInterface, wait} from '../../testutil/testHelpers'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
 import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
-const mockTextResponse = (data: string) => ({status: 200, ok: true, text: jest.fn().mockResolvedValue(data)})
+const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn().mockResolvedValue(data)})
 let originalFetch = globalThis.fetch
 
-let mockFetch: jest.MockedFunction<any>
+let mockFetch: MockedFunction<any>
 const initWebFile = (url: string):[any, AppStateForObject] => {
     const state = new WebFileState({url, fetch: mockFetch})
     const appInterface = testAppInterface('testPath', state)
@@ -14,7 +15,7 @@ const initWebFile = (url: string):[any, AppStateForObject] => {
 }
 
 beforeEach(() => {
-    mockFetch = jest.fn()
+    mockFetch = vi.fn()
 })
 
 test('gets pending then text of a file', async () => {

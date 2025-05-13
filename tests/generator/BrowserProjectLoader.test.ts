@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import BrowserProjectLoader from '../../src/generator/BrowserProjectLoader'
 import Project1 from '../../src/model/Project'
 

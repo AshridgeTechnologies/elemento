@@ -1,10 +1,11 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import 'fake-indexeddb/auto'
 import React, {createElement} from 'react'
-import '@testing-library/jest-dom'
+
 import {projectFixture1} from '../testutil/projectFixtures'
 import userEvent from '@testing-library/user-event'
 import {actWait} from '../testutil/rtlHelpers'
@@ -14,7 +15,7 @@ import {treeExpandControlSelector, treeItemTitleSelector} from './Selectors'
 import {stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels} from '../testutil/testHelpers'
 import {act, render} from '@testing-library/react/pure'
 
-jest.setTimeout(20000)
+vi.setConfig({ testTimeout: 20_000 })
 beforeAll(suppressRcTreeJSDomError)
 afterAll(stopSuppressingRcTreeJSDomError)
 

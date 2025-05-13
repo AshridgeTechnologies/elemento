@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DirectoryFileWriter from '../../src/generator/DirectoryFileWriter'
 import os from 'os'
 import fs from 'fs'

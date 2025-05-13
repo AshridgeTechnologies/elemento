@@ -1,7 +1,7 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement} from 'react'
 import {componentJSON} from '../../testutil/testHelpers'
 import TextElement from '../../../src/runtime/components/TextElement'

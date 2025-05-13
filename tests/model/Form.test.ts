@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import App from '../../src/model/App'
 import Text from '../../src/model/Text'
 import Form from '../../src/model/Form'

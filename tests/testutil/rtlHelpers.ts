@@ -1,3 +1,4 @@
+import {expect} from 'vitest'
 import {act, fireEvent, render, RenderResult, screen} from '@testing-library/react/pure'
 import userEvent from '@testing-library/user-event'
 import {treeExpandControlSelector} from '../editor/Selectors'

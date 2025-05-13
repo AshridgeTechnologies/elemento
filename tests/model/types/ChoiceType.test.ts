@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import ChoiceType from '../../../src/model/types/ChoiceType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

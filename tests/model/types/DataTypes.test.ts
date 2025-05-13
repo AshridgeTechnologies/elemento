@@ -1,8 +1,9 @@
+import {expect, test} from "vitest"
 import DataTypes from '../../../src/model/types/DataTypes'
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
 import Page from '../../../src/model/Page'
 import {loadJSON} from '../../../src/model/loadJSON'
-import {asJSON, ex} from '../../testutil/testHelpers'
+import {asJSON} from '../../testutil/testHelpers'
 
 const bool1 = new TrueFalseType('b1', 'Bool 1', {description: 'One'})
 const bool2 = new TrueFalseType('b2', 'Bool 2', {description: 'Two'})

@@ -1,5 +1,6 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 import React from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
@@ -38,10 +39,10 @@ let changedValue: any
 beforeEach( ()=> changedValue = undefined )
 
 const render = (element: React.ReactElement) => ({container} = tlRender(element))
-const onChange = jest.fn().mockImplementation( (_id: string, _propName: string, value: any) => {
+const onChange = vi.fn().mockImplementation( (_id: string, _propName: string, value: any) => {
     changedValue = value
 })
-const onNameSelected = jest.fn()
+const onNameSelected = vi.fn()
 
 const idField = () => (screen.getByTestId('elementId') as HTMLElement)
 const typeField = () => (screen.getByTestId('elementType') as HTMLElement)
@@ -195,7 +196,7 @@ test('shows advanced style properties if check box', () => {
 })
 
 test('selects name with Cmd/Ctrl-Click', () => {
-    const onNameSelected = jest.fn()
+    const onNameSelected = vi.fn()
     const element = new TextInput('id1', 'Text 1', {label: 'Some Text', initialValue: ex`AnotherElement.size`})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Initial Value')).toBe('AnotherElement.size')
@@ -204,7 +205,7 @@ test('selects name with Cmd/Ctrl-Click', () => {
 })
 
 test('selects name in styles with Cmd/Ctrl-Click', () => {
-    const onNameSelected = jest.fn()
+    const onNameSelected = vi.fn()
     const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: ex`ColorOf(AnotherElement)`}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Color')).toBe('ColorOf(AnotherElement)')
@@ -258,7 +259,7 @@ test('shows controlled component for optional fields', () => {
 })
 
 test('searches for element codename', () => {
-    const onSearch = jest.fn()
+    const onSearch = vi.fn()
     const element = new Button('id1', 'Button 1', {content: ''})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={onSearch}/>)
     fireEvent.click(screen.getByTitle('search for this element'))

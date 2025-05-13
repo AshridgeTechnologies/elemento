@@ -1,15 +1,16 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import React, {createElement} from 'react'
 import AppMain from '../../src/runner/AppMain'
-import '@testing-library/jest-dom'
+
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import {wait} from '../testutil/testHelpers'
 
-jest.mock('../../src/runner/loadModuleHttp', ()=> ({
-    loadModuleHttp: jest.fn().mockImplementation( async (url) => ({
+vi.mock('../../src/runner/loadModuleHttp', ()=> ({
+    loadModuleHttp: vi.fn().mockImplementation( async (url) => ({
         default: () => {
             return React.createElement('h1', {id: 'appone.mainpage.FirstText'},
                 'App from GitHub with current url ' + window.location.origin + window.location.pathname)
@@ -37,7 +38,7 @@ const appMain = (pathname: string, origin = 'https://example.com') => createElem
 let container: any, {domContainer, click, elIn, enter, expectEl, renderThe, el} = container = {} as any
 
 function mockFetchForGitHub() {
-    return jest.fn((urlArg: RequestInfo | URL) => {
+    return vi.fn().mockImplementation((urlArg: RequestInfo | URL) => {
         const url = urlArg.toString()
         if (url.startsWith('https://api.github.com')) {
             return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})

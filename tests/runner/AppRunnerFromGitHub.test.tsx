@@ -1,17 +1,18 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import React, {createElement} from 'react'
 import AppRunnerFromGitHub from '../../src/runner/AppRunnerFromGitHub'
 import {act} from '@testing-library/react'
-import '@testing-library/jest-dom'
+
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import {wait} from '../testutil/testHelpers'
 import {loadModuleHttp} from '../../src/runner/loadModuleHttp'
 
-jest.mock('../../src/runner/loadModuleHttp', ()=> ({
-    loadModuleHttp: jest.fn().mockResolvedValue({
+vi.mock('../../src/runner/loadModuleHttp', ()=> ({
+    loadModuleHttp: vi.fn().mockResolvedValue({
         default: () => {
             return React.createElement('h1', {id: 'appone.mainpage.FirstText'}, 'App from GitHub')
         }
@@ -19,7 +20,7 @@ jest.mock('../../src/runner/loadModuleHttp', ()=> ({
 }))
 
 function mockFetchForGitHub() {
-    return jest.fn((urlArg: RequestInfo | URL) => {
+    return vi.fn((urlArg: RequestInfo | URL) => {
         const url = urlArg.toString()
         if (url.startsWith('https://api.github.com')) {
             return Promise.resolve({json: () => wait(10).then(() => ([{sha: 'abc123'},]))})
@@ -28,7 +29,7 @@ function mockFetchForGitHub() {
     })
 }
 beforeEach(() => {
-    (loadModuleHttp as jest.MockedFunction<any>).mockClear()
+    (loadModuleHttp as MockedFunction<any>).mockClear()
     // @ts-ignore
     global.fetch = mockFetchForGitHub()
 })

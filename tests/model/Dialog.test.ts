@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import Dialog from '../../src/model/Dialog'
 import {asJSON, ex} from '../testutil/testHelpers'

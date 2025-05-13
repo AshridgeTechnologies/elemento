@@ -1,24 +1,25 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import appFunctions, {appFunctionsNames} from '../../src/runtime/appFunctions'
 import {mockReturn, valueObj} from '../testutil/testHelpers'
 import * as authentication from '../../src/runtime/components/authentication'
 import * as notifications from '../../src/runtime/components/notifications'
 
-jest.mock('../../src/runtime/components/authentication')
-jest.mock('../../src/runtime/components/notifications')
+vi.mock('../../src/runtime/components/authentication')
+vi.mock('../../src/runtime/components/notifications')
 
-const mockFn = jest.fn()
+const mockFn = vi.fn()
 const {Reset, Set, SetWithUpdates, CurrentUser, Notify, NotifyError} = appFunctions
 
-beforeEach( ()=> jest.resetAllMocks() )
+beforeEach( ()=> vi.resetAllMocks() )
 
 test('can get app functions names', () => {
     expect(appFunctionsNames()).toStrictEqual(['Reset', 'Set', 'SetWithUpdates', 'NotifyError', 'Notify', 'CurrentUser', 'Update', 'Add', 'AddAll', 'Remove', 'Get', 'GetIfExists', 'Query', 'GetRandomId'])
 })
 
 test('Reset calls Reset on the target state of all arguments', () => {
-    const elementState1 = {value: 42, Reset: jest.fn()}
-    const elementState2 = {value: 43, Reset: jest.fn()}
-    const elementState3 = {value: 44, Reset: jest.fn()}
+    const elementState1 = {value: 42, Reset: vi.fn()}
+    const elementState2 = {value: 43, Reset: vi.fn()}
+    const elementState3 = {value: 44, Reset: vi.fn()}
     Reset(elementState1, elementState2, elementState3)
     expect(elementState1.Reset).toBeCalledWith()
     expect(elementState2.Reset).toBeCalledWith()

@@ -1,7 +1,8 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
+import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import {BrowserDataStore, IdbDataStoreImpl} from '../../../src/runtime/components/index'
 import {createElement} from 'react'
 import {render} from '@testing-library/react'
@@ -10,7 +11,7 @@ import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/runtime/DataStore'
 import Observable from 'zen-observable'
 
-jest.mock('../../../src/runtime/appFunctions')
+vi.mock('../../../src/runtime/appFunctions')
 
 let dataStore: IdbDataStoreImpl
 let state: any
@@ -23,13 +24,13 @@ beforeEach(() => {
 
 const mockObservable = new Observable(() => {})
 const mockDataStore = (): IdbDataStoreImpl => ({
-    getById: jest.fn().mockResolvedValue({a:77}),
-    add: jest.fn().mockResolvedValue(undefined),
-    addAll: jest.fn().mockResolvedValue(undefined),
-    update: jest.fn().mockResolvedValue(undefined),
-    remove: jest.fn().mockResolvedValue(undefined),
-    query: jest.fn().mockResolvedValue([{a:77}]),
-    observable: jest.fn().mockReturnValue(mockObservable),
+    getById: vi.fn().mockResolvedValue({a:77}),
+    add: vi.fn().mockResolvedValue(undefined),
+    addAll: vi.fn().mockResolvedValue(undefined),
+    update: vi.fn().mockResolvedValue(undefined),
+    remove: vi.fn().mockResolvedValue(undefined),
+    query: vi.fn().mockResolvedValue([{a:77}]),
+    observable: vi.fn().mockReturnValue(mockObservable),
 }) as unknown as IdbDataStoreImpl
 
 test('produces empty output', () => {
@@ -93,15 +94,15 @@ test('delegates observable to data store', () => {
 describe('handles errors', () => {
 
     const errorDataStore = (): IdbDataStoreImpl => ({
-        getById: jest.fn().mockRejectedValue(new Error('Bad getById')),
-        query: jest.fn().mockRejectedValue(new Error('Bad query')),
-        add: jest.fn().mockRejectedValue(new Error('Bad add')),
-        update: jest.fn().mockRejectedValue(new Error('Bad update')),
-        remove: jest.fn().mockRejectedValue(new Error('Bad remove')),
+        getById: vi.fn().mockRejectedValue(new Error('Bad getById')),
+        query: vi.fn().mockRejectedValue(new Error('Bad query')),
+        add: vi.fn().mockRejectedValue(new Error('Bad add')),
+        update: vi.fn().mockRejectedValue(new Error('Bad update')),
+        remove: vi.fn().mockRejectedValue(new Error('Bad remove')),
     }) as unknown as IdbDataStoreImpl
 
     beforeEach(() => {
-        (appFunctions.NotifyError as jest.MockedFunction<any>).mockReset()
+        (appFunctions.NotifyError as MockedFunction<any>).mockReset()
         dataStore = errorDataStore()
         state = new BrowserDataStore.State()
         state.state.dataStore = dataStore

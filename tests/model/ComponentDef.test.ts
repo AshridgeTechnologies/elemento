@@ -1,8 +1,8 @@
+import {expect, test} from "vitest"
 import ComponentDef from '../../src/model/ComponentDef'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import DateInput from '../../src/model/DateInput'
 
 test('ComponentDef has correct properties with default values', ()=> {
     const component1 = new ComponentDef('id1', 'Component 1', {})

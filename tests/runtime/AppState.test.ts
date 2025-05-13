@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import AppState from '../../src/runtime/AppState'
 
 test('get initial app state', ()=> {

@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import TextType from '../../../src/model/types/TextType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'

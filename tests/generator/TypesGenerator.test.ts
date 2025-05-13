@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'

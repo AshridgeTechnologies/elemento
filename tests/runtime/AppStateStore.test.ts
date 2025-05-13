@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import AppStateStore from '../../src/runtime/AppStateStore'
 import SubscribableStore from '../../src/runtime/SubscribableStore'
 import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
@@ -71,7 +72,7 @@ test('updateIfChanged does nothing if items equal', () => {
 })
 
 test('updateIfChanged sets and defers notifications if item not present', async () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     store.subscribe(id1, callback)
     store.updateIfChanged(id1, item1)
     expect(store.get(id1)).toBe(item1)
@@ -80,7 +81,7 @@ test('updateIfChanged sets and defers notifications if item not present', async 
     expect(callback).toHaveBeenCalled()})
 
 test('updateIfChanged replaces if items change and defers notifications', async () => {
-    const callback = jest.fn()
+    const callback = vi.fn()
     store.set(id1, item1)
     store.subscribe(id1, callback)
     store.updateIfChanged(id1, item1changed)
@@ -93,7 +94,7 @@ test('updateIfChanged replaces if items change and defers notifications', async 
 test('notifies parent items on changes', () => {
     store.set(id1, item1)
     store.set(id1_2, item1_2)
-    item1.onChildStateChange = jest.fn()
+    item1.onChildStateChange = vi.fn()
     store.set(id1_2, item1_2changed)
     expect(item1.onChildStateChange).toHaveBeenCalled()
 })

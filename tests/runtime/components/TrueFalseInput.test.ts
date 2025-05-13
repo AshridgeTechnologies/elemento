@@ -1,7 +1,7 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {TrueFalseInput} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
@@ -65,9 +65,9 @@ test('TrueFalseInput stores updated values in the app store section for its path
 } )
 
 test('TrueFalseInput does not change if readonly', async () => {
-    const {el, user} = testContainer(trueFalseInput('app.page1.sprocket', {value: false, readOnly: true}))
+    const {el, user} = testContainer(trueFalseInput('app.page1.sprocket', {value: false}, {readOnly: true}))
     const inputEl = el`app.page1.sprocket`
-    await user.click(inputEl)
+    await expect(user.click(inputEl)).rejects.toThrow(/Unable to perform pointer interaction/)
     expect(stateAt('app.page1.sprocket').value).toBe(false)
 } )
 

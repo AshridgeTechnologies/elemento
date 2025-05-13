@@ -3,24 +3,32 @@ import {AuthManager} from './AuthManager'
 
 type SignedInCallback = () => void
 
-let authManager = new AuthManager()
-authManager.init()
+let authManager: AuthManager | null = null
+
+const getAuthManager = () => {
+    if (!authManager) {
+        authManager = new AuthManager()
+        authManager.init()
+    }
+
+    return authManager
+}
 
 export const useSignedInState = () => {
     const [, setIsSignedIn] = useState(false)
     useEffect(() => {
-		return authManager.onStatusChange( ()=> setIsSignedIn(authManager.loggedIn))
+		return getAuthManager().onStatusChange( ()=> setIsSignedIn(getAuthManager().loggedIn))
     }, [])
 }
 
-export const authIsReady = () => authManager.loaded
-export const onAuthChange = (callback: SignedInCallback) => authManager.onStatusChange(callback)
-export const signOut = () => authManager.logout()
-export const currentUser = () => authManager.currentUser
-export const isSignedIn = () => authManager.loggedIn
-export const getIdToken = () => authManager.getToken()
+export const authIsReady = () => getAuthManager().loaded
+export const onAuthChange = (callback: SignedInCallback) => getAuthManager().onStatusChange(callback)
+export const signOut = () => getAuthManager().logout()
+export const currentUser = () => getAuthManager().currentUser
+export const isSignedIn = () => getAuthManager().loggedIn
+export const getIdToken = () => getAuthManager().getToken()
 
-export const test_resetAuthManager = () => authManager = new AuthManager()
+export const test_resetAuthManager = () => authManager = null
 export const test_signInWithEmailAndPassword = async (name: string, password: string) => {
     // return auth.signInWithEmailAndPassword(authManager.getAuth()!, name, password)
 }

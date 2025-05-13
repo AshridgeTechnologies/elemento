@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import {pending} from '../../src/runtime/DataStore'
 import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
@@ -365,7 +366,7 @@ describe('NotNull', () => {
 
 describe('Log', () => {
     test('writes all arguments to console', () => {
-        const log = jest.spyOn(console, "log").mockImplementation(() => {})
+        const log = vi.spyOn(console, "log").mockImplementation(() => {})
         const anObj = valueObj(10)
         try {
             Log('This is what I did', 'today', anObj)
@@ -395,16 +396,16 @@ describe('If', () => {
     })
     test('does not call argument functions that are not needed', () => {
         {
-            const arg1 = jest.fn()
-            const arg2 = jest.fn()
+            const arg1 = vi.fn()
+            const arg2 = vi.fn()
             If(true, arg1, arg2)
             expect(arg1).toHaveBeenCalled()
             expect(arg2).not.toHaveBeenCalled()
         }
 
         {
-            const arg1 = jest.fn()
-            const arg2 = jest.fn()
+            const arg1 = vi.fn()
+            const arg2 = vi.fn()
             If(false, arg1, arg2)
             expect(arg1).not.toHaveBeenCalled()
             expect(arg2).toHaveBeenCalled()

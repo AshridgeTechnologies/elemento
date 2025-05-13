@@ -1,11 +1,11 @@
+import {expect, test} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement, Fragment} from 'react'
 import {ItemSet, ListElement, TextElement} from '../../../src/runtime/components/index'
 import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
-import '@testing-library/jest-dom'
+
 import {ListElementState} from '../../../src/runtime/components/ListElement'
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 

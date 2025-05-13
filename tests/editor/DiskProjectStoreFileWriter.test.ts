@@ -1,9 +1,10 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DiskProjectStoreFileWriter from '../../src/editor/DiskProjectStoreFileWriter'
 import type {DiskProjectStoreInterface} from '../../src/editor/DiskProjectStore'
 
 test('writes text file to a DiskProjectStore at the given path', async () => {
     const store = {
-        writeTextFile: jest.fn().mockResolvedValue(undefined)
+        writeTextFile: vi.fn().mockResolvedValue(undefined)
     } as unknown as DiskProjectStoreInterface
 
     const writer = new DiskProjectStoreFileWriter(store, 'dir1/dir2')
@@ -13,7 +14,7 @@ test('writes text file to a DiskProjectStore at the given path', async () => {
 
 test('writes binary file to a DiskProjectStore at the given path', async () => {
     const store = {
-        writeFile: jest.fn().mockResolvedValue(undefined),
+        writeFile: vi.fn().mockResolvedValue(undefined),
     } as unknown as DiskProjectStoreInterface
 
     const fileContents = new Uint8Array([1,2,3])

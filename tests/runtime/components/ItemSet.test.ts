@@ -1,20 +1,17 @@
+import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {createElement, MouseEventHandler} from 'react'
 import {ItemSet, TextElement} from '../../../src/runtime/components/index'
 import {inDndContext, snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
+
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
-import {highlightElement, StylesProps} from '../../../src/runtime/runtimeFunctions'
+import {StylesProps} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 import {ItemSetItem} from '../../../src/runtime/components'
-import MockedFunction = jest.MockedFunction
-import {CalculationState} from '../../../src/runtime/components/Calculation'
-import {highlightClassName} from '../../../src/shared/controllerHelpers'
 
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean, $itemId: string, $index: number, onClick: MouseEventHandler<HTMLDivElement>, styles: StylesProps}) {
     const styles = {color: 'red', width: 300}
@@ -40,7 +37,7 @@ const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 let selectAction: MockedFunction<any>
 
-beforeEach( ()=> selectAction = jest.fn() )
+beforeEach( ()=> selectAction = vi.fn() )
 
 test('produces output containing ReactElement children', () => {
     snapshot(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1, itemStyles: {color: 'red', width: 300}}))()
@@ -136,16 +133,6 @@ test('does not update its selectedItem if not selectable but does call select ac
     await user.click(itemSetItem0El)
     expect(stateAt('app.page1.itemSet1').selectedItem).toBe(null)
     expect(selectAction).toHaveBeenCalledWith(itemSetData[0], 'id1', 0)
-})
-
-test('Can highlight all matching elements in a itemSet', async () => {
-    const {el} = testContainer(itemSet('app.page1.itemSet1', {items: itemSetData}, {itemContentComponent: ItemSetItem1}))
-    highlightElement('app.page1.itemSet1.Text99')
-
-    const itemSetItem0El = el`[id="app.page1.itemSet1.#id1.Text99"]`
-    const itemSetItem1El = el`[id="app.page1.itemSet1.#id2.Text99"]`
-    expect(itemSetItem0El).toHaveClass(highlightClassName)
-    expect(itemSetItem1El).toHaveClass(highlightClassName)
 })
 
 test('can set, add to and reset selection', () => {

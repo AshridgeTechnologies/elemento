@@ -1,3 +1,4 @@
+import {expect, test} from "vitest"
 import ScreenKeyboard from '../../src/model/ScreenKeyboard'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'

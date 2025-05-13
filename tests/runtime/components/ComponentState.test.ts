@@ -1,7 +1,7 @@
+import {expect, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
 import {wait} from '../../testutil/testHelpers'
 import {appFunctions, globalFunctions, stateProps, wrapFn} from '../../../src/runtime'
 import {DataState} from '../../../src/runtime/components/Data'
@@ -72,7 +72,7 @@ class NameInput_State extends BaseComponentState<any> {
 
 test('State class has correct properties and functions', async () => {
     const store = new AppStateStore(new SubscribableStore())
-    const saveAction = jest.fn()
+    const saveAction = vi.fn()
     const state = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
     store.set('nameInput1', state)
     await wait()
@@ -87,7 +87,7 @@ test('State class has correct properties and functions', async () => {
 })
 
 test('State class updates from an object with new props', () => {
-    const saveAction = jest.fn()
+    const saveAction = vi.fn()
     const state1 = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
     const state2 = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
     const state3 = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Black' })

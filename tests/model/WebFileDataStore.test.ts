@@ -1,7 +1,8 @@
+import {expect, test} from "vitest"
 import WebFileDataStore from '../../src/model/WebFileDataStore'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
-import {asJSON, ex} from '../testutil/testHelpers'
+import {asJSON} from '../testutil/testHelpers'
 
 test('WebFileDataStore has correct properties with default values', ()=> {
     const store1 = new WebFileDataStore('id1', 'WebFileDataStore 1', {})

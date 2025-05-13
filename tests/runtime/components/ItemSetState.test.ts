@@ -1,3 +1,4 @@
+import {beforeEach, expect, Mock, test, vi} from "vitest"
 import {testAppInterface, valueObj} from '../../testutil/testHelpers'
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 
@@ -6,8 +7,8 @@ const idItem1 = {id: 'x1', a: 1}, idItem2 = {id: 'x2', a: 2}, idItem3 = {id: 'x3
 const textItem1 = 'a', textItem2 = 'b', textItem3 = 'c', textItem4 = 'd'
 const numberItem1 = 11, numberItem2 = 22, numberItem3 = 33, numberItem4 = 44
 
-let selectAction: jest.Mock
-beforeEach( ()=> selectAction = jest.fn() )
+let selectAction: Mock
+beforeEach( ()=> selectAction = vi.fn() )
 
 test('Has correct properties', () => {
     const selectAction = () => {

@@ -1,10 +1,12 @@
+import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import MultiFileWriter from '../../src/generator/MultiFileWriter'
-import { FileWriter } from '../../src/generator/ProjectBuilder'
+import {FileWriter} from '../../src/generator/ProjectBuilder'
+import {expect, test, vi} from 'vitest'
 
 test('writes file to all the given writers', async () => {
-    const writer1: FileWriter = {writeFile: jest.fn().mockResolvedValue(undefined)}
-    const writer2: FileWriter = {writeFile: jest.fn().mockResolvedValue(undefined)}
-    const writer3: FileWriter = {writeFile: jest.fn().mockResolvedValue(undefined)}
+    const writer1: FileWriter = {writeFile: vi.fn().mockResolvedValue(undefined)}
+    const writer2: FileWriter = {writeFile: vi.fn().mockResolvedValue(undefined)}
+    const writer3: FileWriter = {writeFile: vi.fn().mockResolvedValue(undefined)}
 
     const writer = new MultiFileWriter(writer1, writer2, writer3)
     await writer.writeFile('dir1/File1.txt', 'File contents')

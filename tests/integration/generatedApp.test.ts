@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import Text from '../../src/model/Text'
@@ -8,7 +8,7 @@ import {generate} from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
 import {ex, wait} from '../testutil/testHelpers'
 import {runAppFromWindowUrl} from '../../src/runner/AppMain'
-import '@testing-library/jest-dom'
+
 import {act} from '@testing-library/react'
 import {containerFunctions} from '../testutil/rtlHelpers'
 import Project1 from '../../src/model/Project'
@@ -34,7 +34,7 @@ test.skip('generated app can be shown in runner page', async ()=> {
     const project = Project2.new([app], 'Project 1', 'proj1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
-    global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
+    global.fetch = vi.fn().mockImplementation(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
     await act( () => runAppFromWindowUrl({origin: 'http://example.com', pathname: '/web/some.funky.app'}, 'main1'))
     await act( () => wait(20) )
@@ -59,7 +59,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     const project = Project1.new([app, dataTypes], 'Project 1', 'proj1', {})
     const theAppCode = generate(app, project).code
     // @ts-ignore
-    global.fetch = jest.fn(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
+    global.fetch = vi.fn().mockImplementation(() => Promise.resolve( {text: () => wait(10).then( () => theAppCode )}))
 
     await act( () => runAppFromWindowUrl({origin: 'http://example.com', pathname: '/web/some.funky.app'}, 'main2'))
     await act( () => wait(20) )

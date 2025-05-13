@@ -1,10 +1,10 @@
+import {afterEach, beforeEach, expect, test, vi} from "vitest"
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
 import Button from '../../src/model/Button'
 import {AppElementActionName} from '../../src/editor/Types'
 import {resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
-import UnsupportedOperationError from '../../src/util/UnsupportedOperationError'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
 import TextInput from '../../src/model/TextInput'
 import Text from '../../src/model/Text'
@@ -19,11 +19,11 @@ const mockSettingsHandler = {
     get settings() {
         return {area1: {serverName: 'foo', remote: true}, area2: {delay: 1000}}
     },
-    setSettings: jest.fn()
+    setSettings: vi.fn()
 } as unknown as SettingsHandler
 
 beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     handler = new ProjectHandler()
     handler.setProject(project, 'project 1', mockSettingsHandler)
 })
@@ -33,29 +33,32 @@ beforeEach(() => {
 })
 
 let clipboardData: string
-beforeEach(() => {
+const mockClipboard = () => {
     // mock clipboard
-    clipboardData = ''
-    global['navigator'] = {
-        clipboard: {
+    clipboardData = '';
+    // @ts-ignore
+    (globalThis.navigator as any).clipboard = {
             writeText(data: string) {
                 clipboardData = data
                 return Promise.resolve()
             },
-            write(data: any) {return Promise.resolve()},
+            write(_data: any) {return Promise.resolve()},
             readText() {return Promise.resolve(clipboardData)},
             read() {return Promise.resolve({} as ClipboardItems)},
-        } as Clipboard,
-        permissions: {
+        } as Clipboard
+    // @ts-ignore
+    globalThis.navigator.permissions = {
             query() { return Promise.resolve({state: 'granted'} as PermissionStatus)}
         } as Permissions
-    } as Navigator
-})
+}
 
 afterEach(() => {
     // @ts-ignore
-    global['navigator'] = undefined
+    (globalThis.navigator as any).clipboard = undefined
+    // @ts-ignore
+    globalThis.navigator.permissions = undefined
 })
+
 test('has no default project', () => {
     expect(new ProjectHandler().current).toBe(null)
 })
@@ -137,12 +140,14 @@ test('can do delete action on the project with all ids', async () => {
 })
 
 test('can do copy action on the project with single id', async () => {
+    mockClipboard()
     await handler.elementAction(['text_3'], 'copy')
     const expectedText = elementToJSON(handler.current?.findElement('text_3')!)
     expect(clipboardData).toBe(expectedText)
 })
 
 test('can do copy action on the project with multiple ids', async () => {
+    mockClipboard()
     await handler.elementAction(['text_3', 'text_1'], 'copy')
     const expectedText = elementToJSON([handler.current?.findElement('text_3')!,
         handler.current?.findElement('text_1')!])
@@ -152,6 +157,7 @@ test('can do copy action on the project with multiple ids', async () => {
 })
 
 test('can do cut action on the project with multiple ids', async () => {
+    mockClipboard()
     const expectedText = elementToJSON([handler.current?.findElement('text_3')!,
         handler.current?.findElement('text_1')!])
     await handler.elementAction(['text_3', 'text_1'], 'cut')
@@ -161,6 +167,7 @@ test('can do cut action on the project with multiple ids', async () => {
 })
 
 test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the project after the first id with single item', async (action) => {
+    mockClipboard()
     const elementToPaste = new Button('xyz', 'Big button', {})
     clipboardData = elementToJSON(elementToPaste)
     const actionResult = await handler.elementAction(['layout_1', 'text_1'], action as AppElementActionName)
@@ -170,6 +177,7 @@ test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the
 })
 
 test('can do pasteAfter action on the project after the first id with multiple items in correct order', async () => {
+    mockClipboard()
     const elementToPaste1 = new Button('xyz', 'Big button', {})
     const elementToPaste2 = new TextInput('pqr', 'Big Text Input', {})
     clipboardData = elementToJSON([elementToPaste1, elementToPaste2])
@@ -196,9 +204,10 @@ test('can do duplicate action on the project with multiple ids', async () => {
 })
 
 test('illegal action leaves the project unchanged and throws error', async () => {
+    mockClipboard()
     const originalErrorFn = console.error
     try {
-        console.error = jest.fn()
+        console.error = vi.fn()
         const elementToPaste = new Page('pqr', 'A Page', {})
         clipboardData = elementToJSON(elementToPaste)
         let error: any
@@ -218,7 +227,7 @@ test('illegal action leaves the project unchanged and throws error', async () =>
 test('unknown action leaves the project unchanged', async () => {
     const originalErrorFn = console.error
     try {
-        console.error = jest.fn()
+        console.error = vi.fn()
         let error: any
         try {
             await handler.elementAction(['text_3'], 'doSomething' as AppElementActionName)
@@ -228,14 +237,14 @@ test('unknown action leaves the project unchanged', async () => {
 
         expect(handler.current).toBe(project)
         expect(error).toBeInstanceOf(UnsupportedValueError)
-        expect(console.error).toHaveBeenCalledWith("Could not do doSomething on element(s) text_3", new UnsupportedOperationError('doSomething'))
+        expect(console.error).toHaveBeenCalledWith("Could not do doSomething on element(s) text_3", new UnsupportedValueError('doSomething' as never))
     } finally {
         console.error = originalErrorFn
     }
 })
 
 test('can observe changes to project', async () => {
-    const nextCallback = jest.fn()
+    const nextCallback = vi.fn()
     handler.changes.subscribe(nextCallback)
     await wait()
     expect(nextCallback).toHaveBeenCalledWith(handler.current)
@@ -248,7 +257,7 @@ test('can observe changes to project', async () => {
 
 test('can start a new project', async () => {
     const handler = new ProjectHandler(welcomeProject())
-    const nextCallback = jest.fn()
+    const nextCallback = vi.fn()
     handler.changes.subscribe(nextCallback)
     await wait()
     expect(nextCallback).toHaveBeenLastCalledWith(handler.current)

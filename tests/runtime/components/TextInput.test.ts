@@ -1,16 +1,14 @@
+import {expect, MockedFunction, test, vi} from "vitest"
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-
-import {Data, DateInput, TextInput} from '../../../src/runtime/components/index'
+import {TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
-import '@testing-library/jest-dom'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 import {TextType} from '../../../src/runtime/types'
-import MockedFunction = jest.MockedFunction
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput, TextInputState)
 
@@ -48,7 +46,7 @@ test('TextInput element produces output with description info', () => {
 })
 
 test('keyAction function is called with key event', async () => {
-    const keyAction = jest.fn()
+    const keyAction = vi.fn()
     const {keyDown} = testContainer(textInput('app.page1.widget1', {value: 'Hello!'}, {
         label: 'Item Description',
         readOnly: false,
@@ -56,7 +54,8 @@ test('keyAction function is called with key event', async () => {
     }))
     await actWait( () => keyDown('app.page1.widget1', 'Enter'))
     expect(keyAction).toHaveBeenCalled()
-    expect((keyAction as MockedFunction<any>).mock.calls[0][0].key).toBe('Enter')
+    const callFirstArg: any = (keyAction as MockedFunction<any>).mock.calls[0][0]
+    expect(callFirstArg.key).toBe('Enter')
 })
 
 
