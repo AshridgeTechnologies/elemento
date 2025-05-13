@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {AuthManager} from './AuthManager.js'
+import {AuthManager} from './AuthManager'
 
 type SignedInCallback = () => void
 

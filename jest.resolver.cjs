@@ -2,6 +2,11 @@
 
 module.exports = (path, options) => {
     // Call the defaultResolver, so we leverage its cache, error handling, etc.
+    if (path.includes('@openauth')) {
+        console.log(path)
+        console.log(options)
+        return `${options.moduleDirectory[0]}/@openauthjs/openauth/dist/esm/client.js`
+    }
     return options.defaultResolver(path, {
         ...options,
         // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
@@ -30,5 +35,11 @@ module.exports = (path, options) => {
 
             return pkg;
         },
+        // pathFilter: (pkg, path, relativePath) => {
+        //     if (path.includes('@openauth')) {
+        //         console.log(path)
+        //     }
+        //     return path
+        // }
     });
 };

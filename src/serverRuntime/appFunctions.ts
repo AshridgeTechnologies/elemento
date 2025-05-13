@@ -1,5 +1,4 @@
 import dataFunctions from '../runtime/dataFunctions'
-// import {getAuth} from 'firebase-admin/auth'
 
 type UserDetails = Partial<{email: string, displayName: string, password: string}>
 

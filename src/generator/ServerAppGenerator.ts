@@ -100,7 +100,7 @@ ${indent(functionBody ?? '', indentLevel1)}
         const hasTypes = !!typesFiles.length
 
         const imports = [
-            `import * as serverRuntime from './serverRuntime.cjs'`,
+            `import * as serverRuntime from './serverRuntime.mjs'`,
             `const {runtimeFunctions} = serverRuntime`,
             hasGlobalFunctions && `const {globalFunctions} = serverRuntime`,
             hasAppFunctions && `const {appFunctions} = serverRuntime`,

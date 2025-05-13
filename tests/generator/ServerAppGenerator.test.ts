@@ -35,7 +35,7 @@ describe('generates files for app and exposes public functions and includes data
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('ServerApp1.mjs')
-        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.mjs'
 const {runtimeFunctions} = serverRuntime
 const {globalFunctions} = serverRuntime
 const {types} = serverRuntime
@@ -115,7 +115,7 @@ describe('generates files using data components in dependency order', () => {
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.mjs')
-        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.mjs'
 const {runtimeFunctions} = serverRuntime
 const {appFunctions} = serverRuntime
 const {components} = serverRuntime
@@ -187,7 +187,7 @@ Sum = 1`})
 
     test('app file', () => {
         expect(serverAppFile.name).toBe('WidgetApp.mjs')
-        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+        expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.mjs'
 const {runtimeFunctions} = serverRuntime
 const {globalFunctions} = serverRuntime
 const {components} = serverRuntime
@@ -313,7 +313,7 @@ for (let i = 1; i < y; i++) {
     const {files} = gen.output()
     const [serverAppFile] = files
 
-    expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.cjs'
+    expect(serverAppFile.contents).toBe(`import * as serverRuntime from './serverRuntime.mjs'
 const {runtimeFunctions} = serverRuntime
 const {globalFunctions} = serverRuntime
 const {appFunctions} = serverRuntime

@@ -93,7 +93,7 @@ export class AuthManager extends AuthManagerBase {
 			}
 		}
 
-		this.updateStatus()
+		await this.updateStatus()
 	}
 
 	logout() {

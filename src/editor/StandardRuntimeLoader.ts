@@ -9,7 +9,7 @@ export class StandardRuntimeLoader implements RuntimeLoader {
     }
 
     async serverRuntime(): Promise<string> {
-        return this.serverText ??= await this.downloadFile('/lib/serverRuntime.cjs')
+        return this.serverText ??= await this.downloadFile('/lib/serverRuntime.mjs')
     }
 
     private downloadFile(path: string) {

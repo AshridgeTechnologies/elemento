@@ -9,7 +9,7 @@
       "webworker"
     ],
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "es2020",
 
     "strict": true,
@@ -19,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "build",
     "jsx": "react",
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["@cloudflare/workers-types"]
   },
 
   "include": [

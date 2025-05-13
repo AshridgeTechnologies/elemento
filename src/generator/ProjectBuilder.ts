@@ -162,7 +162,7 @@ export default class ProjectBuilder {
 
         files.forEach( ({name, contents}) => this.generatedServerCode.storeFile(name, contents) )
         Object.assign(this.generatedErrors, errors)
-        this.generatedServerCode.storeFile('serverRuntime.cjs', await this.runtimeLoader.serverRuntime())
+        this.generatedServerCode.storeFile('serverRuntime.mjs', await this.runtimeLoader.serverRuntime())
         this.generatedServerCode.storeFile('status.mjs', this.statusJs())
     }
 
@@ -219,6 +219,21 @@ export default class ProjectBuilder {
     "d1_databases": [
 ${d1DatabaseBindings}
     ]
+    
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TinyBaseDurableObjects",
+        "class_name": "TinyBaseDurableObject"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1", "new_classes": ["TinyBaseDurableObject"]
+    }
+  ]
 }
 `.trimStart()
     }
@@ -246,10 +261,12 @@ ${d1DatabaseBindings}
         const serverImports = serverAppNames.map( name => `import ${name} from './server/${name}.mjs'`).join('\n')
         const serverList = serverAppNames.join(', ')
         return `
-import {cloudflareFetch} from './server/serverRuntime.cjs'
+import {cloudflareFetch, TinyBaseDurableObject} from './server/serverRuntime.mjs'
 import status from './server/status.mjs'
 ${serverImports}
 const serverApps = {status, ${serverList}}
+
+export {TinyBaseDurableObject}
 
 export default {
   async fetch(request, env, ctx) {

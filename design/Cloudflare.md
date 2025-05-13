@@ -62,7 +62,7 @@ Later server app approach
 - Can you make the connector extend Function so it is callable?
 - Can Refresh server functions, multiple args
 
-Tasks
+Ta
 -----
 
 - Set up Cloudflare worker project
@@ -71,6 +71,7 @@ Tasks
 - Cloudflare KV datastore
 - Cloudflare Durable object datastore
 - Alternative authentication
+- Make CreateUser, UpdateUser, GetUser work again - or find a better alternative
 - Remove Firebase
 - Remove preview server
 

@@ -1,26 +1,8 @@
 import {BasicDataStore, CollectionName, ComplexCriteria, Criteria, DataStoreObject, Id} from '../runtime/DataStore'
 import {D1Database, D1PreparedStatement} from "@cloudflare/workers-types/experimental"
-import {mapObjIndexed} from 'ramda'
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {isArray} from 'radash'
-import {convertIsoDate, isoDateRegex} from '../util/helpers'
-import BigNumber from 'bignumber.js'
-
-const DECIMAL_PREFIX = '#Dec'
-const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PREFIX + value : value
-const convertToDbData = (data: any) => mapObjIndexed(convertToDbValue, data)
-
-const convertFromDbValue = (value: any) => {
-    if (typeof value === 'string' && value.match(isoDateRegex)) {
-        return convertIsoDate(value)
-    }
-    if (typeof value === 'string' && value.startsWith(DECIMAL_PREFIX)) {
-        return new BigNumber(value.substring(DECIMAL_PREFIX.length))
-    }
-
-    return value
-}
-const convertFromDbData = (data: any) => mapObjIndexed(convertFromDbValue, data)
+import {convertFromDbData, convertToDbData} from '../shared/convertData'
 
 type Properties = {database: D1Database, collections: string}
 

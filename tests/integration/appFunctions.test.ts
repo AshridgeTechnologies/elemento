@@ -1,12 +1,10 @@
 import appFunctions from '../../src/serverRuntime/appFunctions'
 import fs from 'fs'
-import admin from 'firebase-admin'
 import {appFunctionsNames} from '../../src/serverRuntime/names'
 
 const {CreateUser, GetUser, UpdateUser, GetRandomId} = appFunctions
 
 const serviceAccount = JSON.parse(fs.readFileSync('private/service-account-key.json', 'utf8'))
-admin.initializeApp({credential: admin.credential.cert(serviceAccount)})
 
 test('creates and updates user', async () => {
     const userId = GetRandomId()

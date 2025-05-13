@@ -9,7 +9,7 @@ let store: any
 
 beforeEach(async () => {
     const env = {}
-    store = new CloudflareDataStore({collections: 'Widgets', env, bindingName: 'DB1'})
+    store = new CloudflareDataStore({collections: 'Widgets', bindingName: 'DB1'})
 })
 
 function newId() {

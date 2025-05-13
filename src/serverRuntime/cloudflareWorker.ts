@@ -1,3 +1,6 @@
+import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
+import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
+import {getWsServerDurableObjectFetch, WsServerDurableObject,} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {AppFactoryMap, handleServerRequest} from './requestHandler'
 import getIssuer from './issuer'
 
@@ -6,6 +9,37 @@ const localElementoHost = 'http://localhost:8000'
 
 const isPassThrough = (pathname: string) => {
     return pathname.startsWith('/lib/')
+}
+
+export class TinyBaseDurableObject extends WsServerDurableObject {
+    onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {
+        console.info((addedOrRemoved ? 'Added' : 'Removed') + ` path ${pathId}`)
+    }
+
+    onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved) {
+        console.info((addedOrRemoved ? 'Added' : 'Removed') + ` client ${clientId} on path ${pathId}`)
+    }
+
+    createPersister() {
+        return createDurableObjectStoragePersister(createMergeableStore(), this.ctx.storage)
+    }
+}
+
+const durableObjectFetch = getWsServerDurableObjectFetch('TinyBaseDurableObjects')
+
+const handleDurableObjectRequest = async (request: Request, env: any): Promise<Response> => {
+    const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
+    const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
+    if (authToken !== 'auth-token-1') {
+        return new Response('Unauthorized', {status: 401})
+    }
+    const doServerUrl = request.url.replace(/\/do/, '')
+    const doServerRequest = new Request(doServerUrl, request)
+
+    const response = await durableObjectFetch(doServerRequest, env)
+    const finalResponse = new Response(response.body, response)
+    finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
+    return finalResponse
 }
 
 export const cloudflareFetch = async (request: Request, env: any, ctx: any, serverApps: AppFactoryMap) => {
@@ -21,6 +55,10 @@ export const cloudflareFetch = async (request: Request, env: any, ctx: any, serv
     if (pathnameFirstPart.startsWith('_auth') || pathnameFirstPart === '.well-known') {
         console.log('Delegating to issuer', 'auth kv namespace', env.auth)
         return getIssuer(env).fetch(request)
+    }
+
+    if (url.pathname.startsWith('/do/')) {
+        return handleDurableObjectRequest(request, env)
     }
 
     if (pathname.startsWith('/capi/')) {

@@ -39,10 +39,10 @@ export const serverConfig = {
     entryPoints: [
         { in: 'src/serverRuntime/index.ts', out: 'lib/serverRuntime'},
     ],
-    outExtension: { '.js': '.cjs' },
+    outExtension: { '.js': '.mjs' },
     bundle: true,
     sourcemap: false,
-    format: 'cjs',
+    format: 'esm',
     minify: true,
     platform: 'node',
     conditions: ['worker'], // to get correct jose package for openauth in Cloudflare workers
@@ -52,7 +52,8 @@ export const serverConfig = {
     define: {
         "process.env.NODE_ENV": `"production"`,
         "process.env.NODE_DEBUG": `""`,
-    }
+    },
+    external: ['cloudflare:workers']
 }
 
 const output = await Promise.all([
