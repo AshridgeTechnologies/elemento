@@ -1,6 +1,4 @@
-import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
-import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
-import {getWsServerDurableObjectFetch, WsServerDurableObject,} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
+import {getWsServerDurableObjectFetch,} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {AppFactoryMap, handleServerRequest} from './requestHandler'
 import getIssuer from './issuer'
 
@@ -11,23 +9,9 @@ const isPassThrough = (pathname: string) => {
     return pathname.startsWith('/lib/')
 }
 
-export class TinyBaseDurableObject extends WsServerDurableObject {
-    onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {
-        console.info((addedOrRemoved ? 'Added' : 'Removed') + ` path ${pathId}`)
-    }
-
-    onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved) {
-        console.info((addedOrRemoved ? 'Added' : 'Removed') + ` client ${clientId} on path ${pathId}`)
-    }
-
-    createPersister() {
-        return createDurableObjectStoragePersister(createMergeableStore(), this.ctx.storage)
-    }
-}
-
 const durableObjectFetch = getWsServerDurableObjectFetch('TinyBaseDurableObjects')
 
-const handleDurableObjectRequest = async (request: Request, env: any): Promise<Response> => {
+export const handleDurableObjectRequest = async (request: Request, env: any): Promise<Response> => {
     const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
     const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
     if (authToken !== 'auth-token-1') {

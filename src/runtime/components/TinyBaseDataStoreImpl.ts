@@ -5,7 +5,7 @@ import DataStore, {
     DataStoreObject,
     Id,
     InvalidateAll,
-    MultipleChanges,
+    MultipleChanges, queryMatcher,
     Remove,
     Update,
     UpdateNotification,
@@ -22,21 +22,20 @@ import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-clien
 import {mapObjIndexed, mergeDeepRight} from 'ramda'
 import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../../shared/convertData'
+import {mapValues} from 'radash'
 
 const SERVER_SCHEME = 'ws://';
-const SERVER = globalThis.location?.origin + '/do';
 
-const createStore = async (pathId: string, persist: boolean, sync: boolean) => {
+const createStore = async (pathId: string, persist: boolean, sync: boolean, syncServer: string) => {
     const store = createMergeableStore()
     if (persist) {
-        const persister = createLocalPersister(store, 'local://' + SERVER + pathId)
-        // await persister.startAutoLoad([]);
-        await persister.startAutoSave();
+        const persister = createLocalPersister(store, 'local://' + syncServer + pathId)
+        await persister.startAutoPersisting();
     }
 
     if (sync) {
-        const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + SERVER + pathId, ['auth-token-1', 'tb']) as unknown as WebSocket
-        // Auth token passed in protocal header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
+        const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + syncServer + pathId, ['auth-token-1', 'tb']) as unknown as WebSocket
+        // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const synchronizer = await createWsSynchronizer(
             store,
             webSocket,
@@ -53,7 +52,7 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean) => {
     return store
 }
 
-type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean}
+type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean, syncServer?: string}
 
 export default class TinyBaseDataStoreImpl implements DataStore {
     private initialised = false
@@ -74,15 +73,14 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async init(collectionName: CollectionName) {
         if (!this.initialised) {
-            const {databaseName, persist = false, sync = false} = this.props
-            this.theDb = await createStore(databaseName, persist, sync)
+            const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/'} = this.props
+            this.theDb = await createStore(databaseName, persist, sync, syncServer)
             this.initialised = true
         }
 
         if (!this.collections.some( coll => coll.name === collectionName)) {
             throw new Error(`Collection '${collectionName}' not found`)
         }
-
     }
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
@@ -130,7 +128,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             if (cell === undefined) {
                 throw new Error(`Object with id '${id}' not found in collection '${collectionName}'`)
             }
-            const existingItem = convertFromDbData(cell as string)
+            const existingItem = convertFromDbData(JSON.parse(cell as string))
             const updatedItem = mergeDeepRight(existingItem, changes)
             return JSON.stringify(convertToDbData(updatedItem))
         }
@@ -145,18 +143,9 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        // await this.init()
-        // if (!this.db) return []
-        // const collectionConfig = this.findCollectionConfig(collectionName)
-        // if (!this.getCurrentUser() && (collectionConfig.isSignedIn() || collectionConfig.isUserPrivate())) {
-        //     return []
-        // }
-        // const asConstraint = ([name, value]: [name: string, value: any]) => where(name, '==', value)
-        // const constraints = Object.entries(criteria).map(asConstraint)
-        // const q = query(this.collectionRef(collectionName), ...constraints)
-        //
-        // return (await getDocs(q)).docs.map(d => convertDocumentData(d.data()))
-        return []
+        await this.init(collectionName)
+        const collection = mapValues(this.db.getTable(collectionName), row => convertFromDbData(JSON.parse(row.json_data as string)))
+        return Object.values(collection).filter( queryMatcher(criteria))
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {

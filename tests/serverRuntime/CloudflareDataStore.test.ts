@@ -1,12 +1,19 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
-// import {components} from '../../src/serverRuntime/index'
+import {afterAll, beforeAll, beforeEach, describe, expect, test} from "vitest"
 import {unstable_startWorker} from "wrangler"
 
-// const {CloudflareDataStore} = components
-import CloudflareDataStore from '../../src/serverRuntime/CloudflareDataStore'
 import BigNumber from 'bignumber.js'
 
 let store: any
+let worker: any
+
+beforeAll(async () => {
+    worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc',
+        dev: {server: {port: 9090}}});
+})
+
+afterAll(async () => {
+    await worker.dispose();
+})
 
 beforeEach(async () => {
     const env = {}
@@ -18,7 +25,6 @@ function newId() {
 }
 
 describe('shared collections', () => {
-    let worker: any
     const collectionName = 'Widgets'
 
     const callStore = (func: string, ...args: any[]) => {
@@ -34,15 +40,6 @@ describe('shared collections', () => {
             body: JSON.stringify(args),
         }).then( (resp: Response) => resp.json() ).then( (result: any) => result.types)
     }
-
-    beforeAll(async () => {
-        worker = await unstable_startWorker({ config: 'tests/serverRuntime/wrangler.jsonc',
-        dev: {server: {port: 9090}}});
-    });
-
-    afterAll(async () => {
-        await worker.dispose();
-    });
 
     test('add and retrieve', async () => {
         const id = newId()

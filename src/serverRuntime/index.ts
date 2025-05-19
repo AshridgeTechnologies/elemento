@@ -1,4 +1,5 @@
-export {cloudflareFetch, TinyBaseDurableObject}  from './cloudflareWorker'
+export {TinyBaseDurableObject} from './TinyBaseDurableObject'
+export {cloudflareFetch}  from './cloudflareWorker'
 export {handleServerRequest}  from './requestHandler'
 export {globalFunctions} from './globalFunctions'
 export {default as appFunctions} from './appFunctions'

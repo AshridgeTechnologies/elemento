@@ -10,6 +10,6 @@ const parseLine = (line: string) => {
     return new CollectionConfig(name, roles)
 }
 export const parseCollections = (config: string) => {
-    const lines = config.split(/\n+/)
+    const lines = config.split(/[\n;]+/)
     return lines.map(parseLine)
 }

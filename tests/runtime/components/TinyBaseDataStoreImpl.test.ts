@@ -1,31 +1,35 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
-import {TinyBaseDataStoreImpl} from '../../../src/runtime/components/index'
-import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
+import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
+import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import BigNumber from 'bignumber.js'
 
 let store: TinyBaseDataStoreImpl
+let worker: any
 
 beforeEach(() => {
-    store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets,Gadgets'})
+    store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
 })
 
 afterEach(async () =>  {
 })
 
-test.skip('has initial empty data store', async () => {
+test('has initial empty data store', async () => {
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
 })
 
-test.skip('returns null if not found and nullIfNotFound set', async () => {
+test('returns null if not found and nullIfNotFound set', async () => {
     await expect(store.getById('Widgets', 'wxxx', true)).resolves.toBe(null)
 })
 
-test.skip('errors for unknown collection names', async () => {
-    // const store = new TinyBaseDataStoreImpl({dbName: 'db2', collectionNames: ['Gadgets']})
+test('errors for unknown collection names', async () => {
     await expect(store.getById('Sprockets', 'w1')).rejects.toHaveProperty('message', `Collection 'Sprockets' not found`)
 })
 
-test.skip('can add, update and remove', async () => {
+test('can add, update and remove', async () => {
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     const retrievedObj = await store.getById('Widgets', 'w1')
     expect(retrievedObj).toMatchObject({id: 'w1', a: 10, b: 'Bee1', c: true})
@@ -40,7 +44,7 @@ test.skip('can add, update and remove', async () => {
     await expect(store.getById('Widgets', 'w1')).rejects.toHaveProperty('message', `Object with id 'w1' not found in collection 'Widgets'`)
 })
 
-test.skip('can query', async () => {
+test('can query', async () => {
     await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
     await store.add('Widgets', 'w2', {a: 20, b: 'Bee2', c: true})
     await store.add('Widgets', 'w3', {a: 20, b: 'Bee3', c: false})
@@ -51,7 +55,7 @@ test.skip('can query', async () => {
 
 })
 
-test.skip('stores dates', async () => {
+test('stores dates', async () => {
     const hour = 10
     const theDate = new Date(2022, 6, 2, hour, 11, 12)
     await store.add('Widgets', 'w1', {a: 10, date: theDate})
@@ -60,7 +64,7 @@ test.skip('stores dates', async () => {
 })
 
 describe('stores decimals', () => {
-    test.skip('in add and get', async () => {
+    test('in add and get', async () => {
         const theNumber = new BigNumber('1234.56')
         await store.add('Widgets', 'w1', {a: 10, amount: theNumber})
         const item = await store.getById('Widgets', 'w1')
@@ -68,7 +72,7 @@ describe('stores decimals', () => {
         expect(item!.amount).toStrictEqual(theNumber)
     })
 
-    test.skip('in addAll and query', async () => {
+    test('in addAll and query', async () => {
         const theNumber = new BigNumber('1234.56')
         await store.addAll('Widgets', {'id1': {a: 10, amount: theNumber}})
         const item = (await store.query('Widgets', {}))[0] as any
@@ -76,7 +80,7 @@ describe('stores decimals', () => {
         expect(item.amount).toStrictEqual(theNumber)
     })
 
-    test.skip('in update', async () => {
+    test('in update', async () => {
         const theNumber = new BigNumber('1234.56')
         await store.add('Widgets', 'w1', {a: 10})
         await store.update('Widgets', 'w1', {amount: theNumber})
@@ -86,30 +90,31 @@ describe('stores decimals', () => {
     })
 })
 
-
 describe('subscribe', () => {
 
-    test.skip('sends changes on Add to subscriptions for that collection', async () => {
+    test('sends changes on Add to subscriptions for that collection', async () => {
         const onNextWidgets = vi.fn()
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAll})
         expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {a: 10, b: 'Bee1', c: true}})
+        expect(onNextGadgets).toHaveBeenCalledWith({collection: 'Gadgets', type: InvalidateAll})
+        expect(onNextGadgets).toHaveBeenCalledTimes(1)
+    })
+
+    test('sends multiple changes on Add all to subscriptions for that collection', async () => {
+        const onNextWidgets = vi.fn()
+        const onNextGadgets = vi.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Gadgets').subscribe(onNextGadgets)
+        await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: MultipleChanges, })
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
-    test.skip('sends multiple changes on Add all to subscriptions for that collection', async () => {
-        const onNextWidgets = vi.fn()
-        const onNextSprockets = vi.fn()
-        store.observable('Widgets').subscribe(onNextWidgets)
-        store.observable('Sprockets').subscribe(onNextSprockets)
-        await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: MultipleChanges, })
-        expect(onNextSprockets).not.toHaveBeenCalled()
-    })
-
-    test.skip('sends changes on Update to subscriptions for that collection', async () => {
+    test('sends changes on Update to subscriptions for that collection', async () => {
         const onNextWidgets = vi.fn()
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
@@ -121,7 +126,7 @@ describe('subscribe', () => {
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
-    test.skip('sends changes on Remove to subscriptions for that collection', async () => {
+    test('sends changes on Remove to subscriptions for that collection', async () => {
         const onNextWidgets = vi.fn()
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
@@ -132,6 +137,16 @@ describe('subscribe', () => {
         expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Remove, id: 'w1'})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
-
 })
 
+describe('persistence', () => {
+    test('saves and loads changes from local storage if persist true', async () => {
+        localStorage.clear()
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
+        await store1.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
+        const store2 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
+
+        const retrievedObj = await store2.getById('Widgets', 'w1')
+        expect(retrievedObj).toMatchObject({id: 'w1', a: 47, b: 'Bee87', c: true})
+    })
+})

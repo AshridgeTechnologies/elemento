@@ -1,5 +1,8 @@
-import CloudflareDataStore from "../../src/serverRuntime/CloudflareDataStore.js";
-import BigNumber from "bignumber.js";
+import CloudflareDataStore from "../src/serverRuntime/CloudflareDataStore.ts";
+import BigNumber from "bignumber.js"
+import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js";
+
+export {TinyBaseDurableObject} from "../src/serverRuntime/TinyBaseDurableObject.ts";
 
 const typesOf = (obj) => {
   const typeName = (value) => {
@@ -26,11 +29,16 @@ const bigDecReviver = (key, value) => {
 
 export default {
   async fetch(request, env, ctx) {
+
+    const url = new URL(request.url)
+    if (url.pathname.startsWith('/do/')) {
+      return handleDurableObjectRequest(request, env)
+    }
+
     const testSubjects = {
       store: new CloudflareDataStore({collections: 'Widgets', database: env.DB})
     }
 
-    const url = new URL(request.url);
     const pathname = url.pathname
     const [objName, func] = pathname.split('/').slice(1, 3)
     const body = await request.text()
