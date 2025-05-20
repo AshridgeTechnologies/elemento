@@ -178,7 +178,7 @@ Stories
 - Database and data sync review - consider RxDB, CRDTs, etc
 - Tools can do deployment - parameters, access to project, GitHub, etc
 - Tools can use data read from Editor and Preview
-- runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/, https://advancedweb.hu/modern-javascript-library-starter/, https://www.totaltypescript.com/how-to-create-an-npm-package
+- runtime published and documented - see https://hexagon.56k.guru/posts/dual-mode-cross-runtime-packages/, https://advancedweb.hu/modern-javascript-library-starter/, https://www.totaltypescript.com/how-to-create-an-npm-package, https://snyk.io/blog/best-practices-create-modern-npm-package/, https://nodejs.org/en/learn/modules/publishing-a-package
 - Scheduled jobs
 - Readonly elements - for all types and styled clearly
 - Form improvements - buttons enabled, validation, mods shown, form rules shown in position

@@ -71,14 +71,14 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         return this.theDb
     }
 
-    async init(collectionName: CollectionName) {
+    async init(collectionName?: CollectionName) {
         if (!this.initialised) {
             const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/'} = this.props
             this.theDb = await createStore(databaseName, persist, sync, syncServer)
             this.initialised = true
         }
 
-        if (!this.collections.some( coll => coll.name === collectionName)) {
+        if (collectionName && !this.collections.some( coll => coll.name === collectionName)) {
             throw new Error(`Collection '${collectionName}' not found`)
         }
     }
@@ -169,5 +169,10 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     private notifyAll(type: UpdateType) {
         this.collectionObservables.forEach( (observable, collection) => observable.send({collection, type}))
+    }
+
+    async test_clear() {
+        await this.init()
+        this.db.delTables()
     }
 }

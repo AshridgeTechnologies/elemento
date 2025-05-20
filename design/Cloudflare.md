@@ -62,7 +62,7 @@ Later server app approach
 - Can you make the connector extend Function so it is callable?
 - Can Refresh server functions, multiple args
 
-Ta
+Tasks
 -----
 
 - Set up Cloudflare worker project

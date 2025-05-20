@@ -28,7 +28,7 @@ Tasks
 - ✅ Spike moving client into a datastore object
 - ✅ Assess need for unsubscribe on destroy etc - prob ok without
 - ✅ DO and routing in cloudflareWorker
-- Client datastore that connects to DO
+- ✅ Client datastore that connects to DO
 - Server side datastore that acts directly on DO
 - Server side current user and authorization
 - Authorization for read and write on client

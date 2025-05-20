@@ -8,7 +8,6 @@ import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/
 import BigNumber from 'bignumber.js'
 
 let store: TinyBaseDataStoreImpl
-let worker: any
 
 beforeEach(() => {
     store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})

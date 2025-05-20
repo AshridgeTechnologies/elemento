@@ -1,8 +1,12 @@
 import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
+import {CollectionName, Id as DataStoreId} from '../runtime/DataStore'
 
 export class TinyBaseDurableObject extends WsServerDurableObject {
+
+    private store = createMergeableStore()
+
     onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {
         console.info((addedOrRemoved ? 'Added' : 'Removed') + ` path ${pathId}`)
     }
@@ -12,6 +16,18 @@ export class TinyBaseDurableObject extends WsServerDurableObject {
     }
 
     createPersister() {
-        return createDurableObjectStoragePersister(createMergeableStore(), this.ctx.storage)
+        return createDurableObjectStoragePersister(this.store, this.ctx.storage)
+    }
+
+    getJsonData(collectionName: CollectionName, id: DataStoreId): string | null {
+        return this.store.getCell(collectionName, id.toString(), 'json_data') as string ?? null
+    }
+
+    setJsonData(collectionName: CollectionName, id: DataStoreId, data: string): void {
+        this.store.setCell(collectionName, id.toString(), 'json_data', data)
+    }
+
+    removeJsonData(collectionName: CollectionName, id: DataStoreId) {
+        this.store.delRow(collectionName, id.toString())
     }
 }

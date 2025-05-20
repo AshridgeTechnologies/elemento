@@ -1,6 +1,7 @@
 import CloudflareDataStore from "../src/serverRuntime/CloudflareDataStore.ts";
 import BigNumber from "bignumber.js"
 import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js";
+import TinyBaseDataStore from "../src/serverRuntime/TinyBaseDataStore.js";
 
 export {TinyBaseDurableObject} from "../src/serverRuntime/TinyBaseDurableObject.ts";
 
@@ -31,24 +32,34 @@ export default {
   async fetch(request, env, ctx) {
 
     const url = new URL(request.url)
-    if (url.pathname.startsWith('/do/')) {
+    const pathname = url.pathname
+    if (pathname.startsWith('/do/')) {
       return handleDurableObjectRequest(request, env)
     }
 
-    const testSubjects = {
-      store: new CloudflareDataStore({collections: 'Widgets', database: env.DB})
+    const testObject = (objName) => {
+      switch(objName) {
+        case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env.DB})
+        case 'tinybase_store': return new TinyBaseDataStore({databaseName: 'db1', collections: 'Widgets', durableObject: env.TinyBaseDurableObjects})
+        default: return null
+      }
     }
 
-    const pathname = url.pathname
-    const [objName, func] = pathname.split('/').slice(1, 3)
-    const body = await request.text()
-    const args = JSON.parse(body, bigDecReviver)
-    const obj = testSubjects[objName]
-    const data = await obj[func].apply(obj, args)
-    const types = typesOf(data)
-    const result = {data, types}
-    // console.log('In fetch', objName, func, args)
-    return Response.json(result ?? null)
+    if (pathname.startsWith('/call/')) {
+      const [objName, func] = pathname.split('/').slice(2, 4)
+      const body = await request.text()
+      const args = JSON.parse(body, bigDecReviver)
+      const obj = testObject(objName)
+      if (!obj) {
+        return Response.json({error:`Object not found: ${objName}`}, {status: 500})
+      }
+      const data = await obj[func].apply(obj, args)
+      const types = typesOf(data)
+      const result = {data, types}
+      // console.log('In fetch', objName, func, args)
+      return Response.json(result ?? null)
+    }
+
 
   }
 }
