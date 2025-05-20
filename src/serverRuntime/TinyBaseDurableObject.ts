@@ -2,6 +2,8 @@ import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-serv
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {CollectionName, Id as DataStoreId} from '../runtime/DataStore'
+import {mapValues} from 'radash'
+import {convertFromDbData} from '../shared/convertData'
 
 export class TinyBaseDurableObject extends WsServerDurableObject {
 
@@ -23,11 +25,19 @@ export class TinyBaseDurableObject extends WsServerDurableObject {
         return this.store.getCell(collectionName, id.toString(), 'json_data') as string ?? null
     }
 
+    getAllJsonData(collectionName: CollectionName): string[] {
+        return Object.values(this.store.getTable(collectionName)).map( row => row.json_data as string)
+    }
+
     setJsonData(collectionName: CollectionName, id: DataStoreId, data: string): void {
         this.store.setCell(collectionName, id.toString(), 'json_data', data)
     }
 
     removeJsonData(collectionName: CollectionName, id: DataStoreId) {
         this.store.delRow(collectionName, id.toString())
+    }
+
+    test_clear(collectionName: CollectionName) {
+        this.store.delTable(collectionName)
     }
 }

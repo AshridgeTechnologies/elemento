@@ -1,20 +1,11 @@
-import {BasicDataStore, CollectionName, ComplexCriteria, Criteria, DataStoreObject, Id} from '../runtime/DataStore'
-import {D1PreparedStatement, DurableObjectNamespace, DurableObjectStub} from "@cloudflare/workers-types/experimental"
+import {BasicDataStore, CollectionName, Criteria, DataStoreObject, Id, queryMatcher} from '../runtime/DataStore'
+import {DurableObjectNamespace, DurableObjectStub} from "@cloudflare/workers-types/experimental"
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
-import {isArray} from 'radash'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../shared/convertData'
 import {TinyBaseDurableObject} from './TinyBaseDurableObject'
 import {mergeDeepRight} from 'ramda'
 
 type Properties = {collections: string, durableObject: DurableObjectNamespace, databaseName: string}
-
-const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
-    return isArray(criteria) ? criteria : Object.entries(criteria).map(([name, value]) => [name, '=', value])
-}
-
-function asJsonString(changes: object) {
-    return JSON.stringify(convertToDbData(changes))
-}
 
 export default class TinyBaseDataStore implements BasicDataStore {
     private readonly collections: CollectionConfig[]
@@ -26,26 +17,13 @@ export default class TinyBaseDataStore implements BasicDataStore {
         this.durableObjectStub = props.durableObject.get(id) as DurableObjectStub<TinyBaseDurableObject>
     }
 
-    private async runSql(collectionName: CollectionName, sqlFn: () => Promise<any>) {
+    private checkCollection(collectionName: string) {
         if (!this.collections.some( coll => coll.name === collectionName)) {
             throw new Error(`Collection '${collectionName}' not found`)
         }
-        try {
-            return await sqlFn()
-        } catch (e: any) {
-            if (e.cause.message.startsWith('no such table: ' + collectionName)) {
-                const tableDdl = `CREATE TABLE IF NOT EXISTS "${collectionName}" ( "id" VARCHAR(256) PRIMARY KEY, "json_data" VARCHAR );`
-                await this.db.exec(tableDdl)
-                console.info('Created table', collectionName)
-                return await sqlFn()
-            }
-            throw e
-        }
     }
-
-
-
     async getById(collectionName: CollectionName, id: Id, nullIfNotFound = false) {
+        this.checkCollection(collectionName)
         const data: string | null = await this.durableObjectStub.getJsonData(collectionName, id)
 
         if (!data) {
@@ -57,18 +35,8 @@ export default class TinyBaseDataStore implements BasicDataStore {
         }
         return convertFromDbData(JSON.parse(data))
     }
-
-    private insertStmt(collectionName: CollectionName) {
-        return this.db.prepare(`INSERT INTO ${collectionName} (id, json_data) VALUES (?, ?)`)
-    }
-
-    private bindInsert(stmt: D1PreparedStatement, id: Id, item: DataStoreObject) {
-        const itemWithId = {id, ...item}
-        const jsonStr = asJsonString(itemWithId)
-        return stmt.bind(id, jsonStr)
-    }
-
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
+        this.checkCollection(collectionName)
         const dbItem = convertToDbData(addIdToItem(item, id))
         await this.durableObjectStub.setJsonData(collectionName, id, JSON.stringify(dbItem))
     }
@@ -79,6 +47,7 @@ export default class TinyBaseDataStore implements BasicDataStore {
     }
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
+        this.checkCollection(collectionName)
         const existingItem = await this.getById(collectionName, id) as object
         const updatedItem = mergeDeepRight(existingItem, changes)
         const dbItem = convertToDbData(updatedItem)
@@ -86,24 +55,18 @@ export default class TinyBaseDataStore implements BasicDataStore {
     }
 
     async remove(collectionName: CollectionName, id: Id) {
+        this.checkCollection(collectionName)
         await this.durableObjectStub.removeJsonData(collectionName, id)
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
-        const constraints = normalizeCriteria(criteria)
-        const conditionClauses = constraints.map( constraint => {
-            const [name, op] = constraint
-            return `json_data ->> '$.${name}' ${op} ?`
-        }).join(' AND ')
-        const sql = `SELECT json_data FROM ${collectionName} WHERE ${conditionClauses}`
-        const results = await this.runSql(collectionName, () => this.db.prepare(sql)
-            .bind(...constraints.map( constraint => constraint[2]))
-            .all())
-
-        return results.results.map( (res: any) => convertFromDbData(JSON.parse(res.json_data)))
+        this.checkCollection(collectionName)
+        const collectionJson = await this.durableObjectStub.getAllJsonData(collectionName)
+        const collection = collectionJson.map(data => convertFromDbData(JSON.parse(data)))
+        return Object.values(collection).filter( queryMatcher(criteria))
     }
 
     async test_clear(collectionName: CollectionName) {
-        await this.runSql(collectionName, () => this.db.prepare(`DELETE FROM ${collectionName}`).run())
+        await this.durableObjectStub.test_clear(collectionName)
     }
 }

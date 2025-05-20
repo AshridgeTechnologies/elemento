@@ -1,9 +1,11 @@
 import Observable from 'zen-observable'
-import lodash from 'lodash'; const {matches} = lodash
+import lodash, {isPlainObject} from 'lodash';
+const {matches} = lodash
 
 const pendingFlag = Symbol('pending')
 export type SimpleCriteria = object
-export type CriteriaCondition = [fieldName: string, operator: string, value: any]
+export type Operator = '=' | '==' | '>' | '>=' | '<' | '<=' | '!='
+export type CriteriaCondition = [fieldName: string, operator: Operator, value: any]
 export type ComplexCriteria = CriteriaCondition[]
 export type Criteria = SimpleCriteria | ComplexCriteria
 
@@ -38,8 +40,28 @@ export class ErrorResult {
     valueOf() { return null }
 }
 
+const isSimpleCriteria = (criteria: Criteria) => isPlainObject((criteria))
+
 export function queryMatcher(criteria: Criteria) {
-    return matches(criteria)
+    const complexCriteria: ComplexCriteria = isSimpleCriteria(criteria) ? Object.entries(criteria).map(([name, value]) => [name, '=', value]) :  criteria as ComplexCriteria
+    return (obj: DataStoreObject): boolean => {
+        const conditionFn = (crit: CriteriaCondition) => (obj: DataStoreObject): boolean => {
+            const  [fieldName, operator, value] = crit
+            const fieldValue = obj[fieldName as keyof object]
+            switch(operator) {
+                case '=':
+                case '==' : return fieldValue === value
+                case '>': return fieldValue > value
+                case '>=': return fieldValue >= value
+                case '<': return fieldValue < value
+                case '<=': return fieldValue <= value
+                case '!=': return fieldValue != value
+                default: return false
+            }
+        }
+        const conditionFns = complexCriteria.map( conditionFn )
+        return conditionFns.every( fn => fn(obj))
+    }
 }
 
 export interface BasicDataStore {
