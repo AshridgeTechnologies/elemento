@@ -2,8 +2,6 @@ import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-serv
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {CollectionName, Id as DataStoreId} from '../runtime/DataStore'
-import {mapValues} from 'radash'
-import {convertFromDbData} from '../shared/convertData'
 
 export class TinyBaseDurableObject extends WsServerDurableObject {
 

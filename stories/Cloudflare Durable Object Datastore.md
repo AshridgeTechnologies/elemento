@@ -29,6 +29,7 @@ Tasks
 - ✅ Assess need for unsubscribe on destroy etc - prob ok without
 - ✅ DO and routing in cloudflareWorker
 - ✅ Client datastore that connects to DO
-- Server side datastore that acts directly on DO
+- ✅ Server side datastore that acts directly on DO
+- Model objects and generation
 - Server side current user and authorization
 - Authorization for read and write on client

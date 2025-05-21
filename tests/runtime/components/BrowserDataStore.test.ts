@@ -39,8 +39,8 @@ test('produces empty output', () => {
 })
 
 test('compares state props correctly', () => {
-    const state = new BrowserDataStore.State({databaseName: 'db1', collectionNames:['Gadgets', 'Widgets']})
-    const newState = new BrowserDataStore.State({databaseName: 'db1', collectionNames:['Gadgets', 'Widgets']})
+    const state = new BrowserDataStore.State({databaseName: 'db1', collections:'Gadgets;Widgets'})
+    const newState = new BrowserDataStore.State({databaseName: 'db1', collections:'Gadgets;Widgets'})
     expect(state.updateFrom(newState)).toBe(state)
 })
 
