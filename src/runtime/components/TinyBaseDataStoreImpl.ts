@@ -26,7 +26,7 @@ import {mapValues} from 'radash'
 
 const SERVER_SCHEME = 'ws://';
 
-const createStore = async (pathId: string, persist: boolean, sync: boolean, syncServer: string) => {
+const createStore = async (pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean) => {
     const store = createMergeableStore()
     if (persist) {
         const persister = createLocalPersister(store, 'local://' + syncServer + pathId)
@@ -35,11 +35,17 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
 
     if (sync) {
         const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + syncServer + pathId, ['auth-token-1', 'tb']) as unknown as WebSocket
+        const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
+            console.log('receive', fromClientId, requestId, message)
+            console.dir(body, {depth: 7})
+        } : undefined
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const synchronizer = await createWsSynchronizer(
             store,
             webSocket,
-            1
+            1,
+            undefined,
+            receive
         );
         await synchronizer.startSync()
 
@@ -52,7 +58,7 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
     return store
 }
 
-type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean, syncServer?: string}
+type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
 
 export default class TinyBaseDataStoreImpl implements DataStore {
     private initialised = false
@@ -73,14 +79,54 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async init(collectionName?: CollectionName) {
         if (!this.initialised) {
-            const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/'} = this.props
-            this.theDb = await createStore(databaseName, persist, sync, syncServer)
+            const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props
+            this.theDb = await createStore(databaseName, persist, sync, syncServer, debugSync)
+            this.listenForChanges(this.theDb)
             this.initialised = true
         }
 
-        if (collectionName && !this.collections.some( coll => coll.name === collectionName)) {
+        if (collectionName) {
+            this.checkCollectionName(collectionName)
+        }
+
+        return this
+    }
+
+    private checkCollectionName(collectionName: CollectionName) {
+        if (!this.collections.some(coll => coll.name === collectionName)) {
             throw new Error(`Collection '${collectionName}' not found`)
         }
+    }
+
+    private listenForChanges(store: Store) {
+        type Change = [collectionName: string, changeType: UpdateType, id: Id, changes?: DataStoreObject]
+        let changes: Change[] = []
+        store.addCellListener(null, null, 'json_data', (store, tableId, rowId, cellId, newCell, oldCell, getCellChange) => {
+            const changeType = oldCell === undefined ? Add : newCell === undefined ? Remove : Update
+            //console.log(`Cell ${cellId} of ${rowId} row in ${tableId} ${changeType}`, oldCell, newCell)
+            const change = (): Change => {
+                switch (changeType) {
+                    case Add:
+                        return [tableId, Add, rowId, convertFromDbData(JSON.parse(newCell.toString()))]
+                    case Update:
+                        return [tableId, Update, rowId, convertFromDbData(JSON.parse(newCell.toString()))]
+                    case Remove:
+                        return [tableId, Remove, rowId]
+                }
+            }
+            changes.push(change())
+        })
+
+        store.addDidFinishTransactionListener(() => {
+            //console.log('Transaction did finish')
+            if (changes.length === 1) {
+                this.notify.apply(this, changes[0] as any)
+            } else {
+                const updatedCollections = new Set(changes.map(([tableId]) => tableId))
+                updatedCollections.forEach((coll: string) => this.notify(coll, MultipleChanges))
+            }
+            changes = []
+        })
     }
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
@@ -106,7 +152,6 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         await this.init(collectionName)
         const dbItem = convertToDbData(addIdToItem(item, id))
         this.db.setCell(collectionName, id.toString(), 'json_data', JSON.stringify(dbItem))
-        this.notify(collectionName, Add, id, item)
     }
 
     async addAll(collectionName: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
@@ -118,7 +163,6 @@ export default class TinyBaseDataStoreImpl implements DataStore {
                 this.db.setCell(collectionName, item.id, 'json_data', JSON.stringify(item))
             })
         })
-        this.notify(collectionName, MultipleChanges)
     }
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
@@ -133,13 +177,11 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             return JSON.stringify(convertToDbData(updatedItem))
         }
         this.db.setCell(collectionName, id.toString(), 'json_data', updateCell)
-        this.notify(collectionName, Update, id, changes)
     }
 
     async remove(collectionName: CollectionName, id: Id) {
         await this.init(collectionName)
         this.db.delRow(collectionName, id.toString())
-        this.notify(collectionName, Remove, id)
     }
 
     async query(collectionName: CollectionName, criteria: Criteria): Promise<Array<DataStoreObject>> {
@@ -149,6 +191,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     }
 
     observable(collection: CollectionName): Observable<UpdateNotification> {
+        this.checkCollectionName(collection)
         let observable = this.collectionObservables.get(collection)
         if (!observable) {
             observable = new SendObservable()
@@ -169,10 +212,5 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     private notifyAll(type: UpdateType) {
         this.collectionObservables.forEach( (observable, collection) => observable.send({collection, type}))
-    }
-
-    async test_clear() {
-        await this.init()
-        this.db.delTables()
     }
 }

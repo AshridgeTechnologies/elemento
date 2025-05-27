@@ -2,8 +2,9 @@ import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-serv
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {CollectionName, Id as DataStoreId} from '../runtime/DataStore'
+import {TBServerDO} from './TBServerDO'
 
-export class TinyBaseDurableObject extends WsServerDurableObject {
+export class TinyBaseDurableObject extends TBServerDO {
 
     private store = createMergeableStore()
 

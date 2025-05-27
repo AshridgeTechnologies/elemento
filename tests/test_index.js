@@ -37,19 +37,19 @@ export default {
       return handleDurableObjectRequest(request, env)
     }
 
-    const testObject = (objName) => {
+    const testObject = (objName, dbName) => {
       switch(objName) {
         case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env.DB})
-        case 'tinybase_store': return new TinyBaseDataStore({databaseName: 'db1', collections: 'Widgets', durableObject: env.TinyBaseDurableObjects})
+        case 'tinybase_store': return new TinyBaseDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env.TinyBaseDurableObjects})
         default: return null
       }
     }
 
     if (pathname.startsWith('/call/')) {
-      const [objName, func] = pathname.split('/').slice(2, 4)
+      const [objName, dbName, func] = pathname.split('/').slice(2, 5)
       const body = await request.text()
       const args = JSON.parse(body, bigDecReviver)
-      const obj = testObject(objName)
+      const obj = testObject(objName, dbName)
       if (!obj) {
         return Response.json({error:`Object not found: ${objName}`}, {status: 500})
       }

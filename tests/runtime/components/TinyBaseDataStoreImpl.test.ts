@@ -2,10 +2,11 @@
  * @vitest-environment jsdom
  */
 
-import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
+import {afterEach, beforeEach, beforeAll, describe, expect, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
 import BigNumber from 'bignumber.js'
+import {wait} from '../../testutil/testHelpers'
 
 let store: TinyBaseDataStoreImpl
 
@@ -90,6 +91,17 @@ describe('stores decimals', () => {
 })
 
 describe('subscribe', () => {
+    //expect InvalidateAll when auth changes on startup
+    beforeAll(async () => {
+        const store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
+        const onNextWidgets = vi.fn()
+        const onNextGadgets = vi.fn()
+        store.observable('Widgets').subscribe(onNextWidgets)
+        store.observable('Gadgets').subscribe(onNextGadgets)
+        await wait(10)
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAll})
+        expect(onNextGadgets).toHaveBeenCalledWith({collection: 'Gadgets', type: InvalidateAll})
+    })
 
     test('sends changes on Add to subscriptions for that collection', async () => {
         const onNextWidgets = vi.fn()
@@ -97,10 +109,9 @@ describe('subscribe', () => {
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAll})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {a: 10, b: 'Bee1', c: true}})
-        expect(onNextGadgets).toHaveBeenCalledWith({collection: 'Gadgets', type: InvalidateAll})
-        expect(onNextGadgets).toHaveBeenCalledTimes(1)
+        await wait(10)
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {id: 'w1', a: 10, b: 'Bee1', c: true}})
+        expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
     test('sends multiple changes on Add all to subscriptions for that collection', async () => {
@@ -108,8 +119,10 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
-        await store.addAll('Widgets', {'w1': {a: 10, b: 'Bee1', c: true}})
+        await store.addAll('Widgets', {'w2': {a: 10, b: 'Bee1', c: true}, 'w2a': {a: 20, b: 'Bee2', c: false}})
+        await wait()
         expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: MultipleChanges, })
+        expect(onNextWidgets).toHaveBeenCalledTimes(1)
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
@@ -118,10 +131,10 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
-        await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
+        await store.add('Widgets', 'w3', {a: 10, b: 'Bee1', c: false})
         onNextWidgets.mockReset()
-        await store.update('Widgets', 'w1', {c: true})
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Update, id: 'w1', changes: {c: true}})
+        await store.update('Widgets', 'w3', {c: true})
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Update, id: 'w3', changes: {id: 'w3', a: 10, b: 'Bee1',c: true}})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 
@@ -130,10 +143,10 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
-        await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
+        await store.add('Widgets', 'w4', {a: 10, b: 'Bee1', c: true})
         onNextWidgets.mockReset()
-        await store.remove('Widgets', 'w1')
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Remove, id: 'w1'})
+        await store.remove('Widgets', 'w4')
+        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Remove, id: 'w4'})
         expect(onNextGadgets).not.toHaveBeenCalled()
     })
 })
