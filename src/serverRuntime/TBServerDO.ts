@@ -84,11 +84,6 @@ export class TBServerDO<Env = unknown>
                                         message: Message,
                                         body: any,
                                     ]
-                                    (jsonParseWithUndefined(remainder) as [
-                                        requestId: IdOrNull,
-                                        message: Message,
-                                        body: any,
-                                    ])
                                     const messageName = messageType(message) as string
                                     console.log('receive', clientId, requestId, messageName, JSON.stringify(body))
                                     receivePayload(payload, receive)

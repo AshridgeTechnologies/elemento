@@ -3,7 +3,7 @@ import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataS
 import {unstable_startWorker} from 'wrangler'
 import {wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
-import {Add, InvalidateAll} from '../../../src/runtime/DataStore'
+import DataStore, {Add, InvalidateAll} from '../../../src/runtime/DataStore'
 
 const syncServer = 'localhost:9090/do/'
 
@@ -104,13 +104,16 @@ describe('sync via server', () => {
         const item = {a:10, b:'foo'}
         const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync}).init()
         const store2 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync}).init()
-        const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id)), 100, 2000)
+        const checkWidget = (store: DataStore, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await wait(2000)
+        console.log('add about to send')
         await callStore('db1', 'add', collectionName, id, item)
+        console.log('add done')
+        await wait(2000)
         await checkWidget(store1, {id, ...item})
         await checkWidget(store2, {id, ...item})
         await wait(2000)
-    })
+    }, 20000)
 
 })

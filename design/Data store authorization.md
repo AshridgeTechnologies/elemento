@@ -148,6 +148,7 @@ Forces
 - Snag: Note that SQLite- Persisters can currently only persist MergeableStore data in DpcJson mode, so no subset loading.
 - Durable Objects now recommend sqlite storage, but current TB implementation is KV
 - Just as easy to use the DO storage API direct as it is to go via the store
+- Having public, private and user-private would be useful, even if can't do fully flexible conditions
 
 
 Possibilities
@@ -159,3 +160,37 @@ Possibilities
 - Use only auto loading, not saving, for the client stores
 - Maybe: Use sqlite storage in Durable object persister OR use sqlite persister
 - Could trigger updates in client stores from the server db updates, as all in same DO
+- May be able to use json_xxx functions to pick things out of 
+
+Spike 1
+-------
+
+- Can get TinyBase to work with DO sqlite storage, but only in json mode - whole db in a blob in one col of one table
+
+Spike 2
+-------
+
+- ✅ Each client connects with a token that gives their user id
+- ✅ Hold map of client id to user id
+- Each client has a separate in-memory store, synchronized to client via ws
+- Each store has an authorization rule attached to it (table name, data) => boolean
+- Each store has a data update function, takes chunk of data, checks rule, add/updates if ok, all in one transaction
+- For new store, get all data, apply to data update function
+- On updates to main db, offer the update to each store
+- Start with sync from store, move to updates copied to clients
+
+Client Handler
+--------------
+
+- ✅ Has a TinyBase store, in-memory
+- Has a rule about whether a particular table/row is included in the store
+- Can be bulk-loaded with all the data from the main store
+- Can be notified of updates
+- Selects whether to include each record in the initial load or updates
+- Synchronizes all it's data with a client's store over a single websocket connection
+- Ignores updates arriving from the client (should not happen)
+- Parent DO class:
+  - Creates a Client handler for each connection
+  - Loads the whole database into it
+  - Sends database updates to it
+  - Routes incoming messages to it

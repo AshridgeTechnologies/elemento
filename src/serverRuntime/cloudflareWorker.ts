@@ -12,18 +12,10 @@ const isPassThrough = (pathname: string) => {
 const durableObjectFetch = getWsServerDurableObjectFetch('TinyBaseDurableObjects')
 
 export const handleDurableObjectRequest = async (request: Request, env: any): Promise<Response> => {
-    const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
-    const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
-    if (authToken !== 'auth-token-1') {
-        return new Response('Unauthorized', {status: 401})
-    }
     const doServerUrl = request.url.replace(/\/do/, '')
     const doServerRequest = new Request(doServerUrl, request)
 
-    const response = await durableObjectFetch(doServerRequest, env)
-    const finalResponse = new Response(response.body, response)
-    finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
-    return finalResponse
+    return durableObjectFetch(doServerRequest, env)
 }
 
 export const cloudflareFetch = async (request: Request, env: any, ctx: any, serverApps: AppFactoryMap) => {
