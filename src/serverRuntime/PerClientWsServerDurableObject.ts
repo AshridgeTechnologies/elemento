@@ -54,7 +54,7 @@ const createResponse = (
 const createUpgradeRequiredResponse = (): Response =>
     createResponse(426, null, 'Upgrade required');
 
-function logPayload(payload: string) {
+const checkPayload = (payload: string): boolean => {
     const [clientId, remainder] = payload.split('\n');
     const [requestId, message, body] = jsonParseWithUndefined(remainder) as [
         requestId: IdOrNull,
@@ -63,6 +63,7 @@ function logPayload(payload: string) {
     ]
     const messageName = messageType(message) as string
     console.log('receive', clientId, requestId, messageName, JSON.stringify(body))
+    return (message !== 2 && message !== 3)  // do not allow incoming updates
 }
 
 class ClientHandler {
@@ -83,18 +84,14 @@ class ClientHandler {
     private createSynchronizer() {
         return createCustomSynchronizer(
             this.store,
-            (toClientId, requestId, message, body) => {
-                const messageName = messageType(message) as string
-                console.log('send', toClientId, typeof toClientId, requestId, messageName, JSON.stringify(body))
-                if(toClientId !== null && toClientId !== '' && toClientId !== SERVER_CLIENT_ID && toClientId !== this.clientId) {
-                    console.warn(`sync send mismatch: to Client Id "${toClientId}" expected ${this.clientId}`)
-                }
-                this.sendMessage(toClientId, requestId, message, body)
-            },
+            this.sendMessage,
             (receive: Receive) =>
                 (this.serverClientSend = (payload: string) => {
-                    logPayload(payload)
-                    receivePayload(payload, receive)
+                    if (checkPayload(payload)) {
+                        receivePayload(payload, receive)
+                    } else {
+                        console.warn('Incoming update ignored')
+                    }
                 }),
             noop,
             1,
@@ -115,7 +112,7 @@ class ClientHandler {
         }
     }
 
-    private sendMessage(toClientId: IdOrNull, requestId: IdOrNull, message: Message, body: any) {
+    private sendMessage = (toClientId: IdOrNull, requestId: IdOrNull, message: Message, body: any)=> {
         console.log('send', toClientId, typeof toClientId, requestId, messageType(message) as string, JSON.stringify(body))
         if(toClientId !== null && toClientId !== '' && toClientId !== SERVER_CLIENT_ID && toClientId !== this.clientId) {
             console.warn(`sync send mismatch: to Client Id "${toClientId}" expected ${this.clientId}`)

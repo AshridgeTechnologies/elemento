@@ -36,7 +36,7 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
     if (sync) {
         const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + syncServer + pathId, ['authtoken.user99', 'tb']) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
-            console.log('receive', fromClientId, requestId, message)
+            console.log('Client receive', fromClientId, requestId, message)
             console.dir(body, {depth: 7})
         } : undefined
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api

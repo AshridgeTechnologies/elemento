@@ -65,6 +65,25 @@ describe('sync via server', () => {
         await checkWidget({id, ...item, b: 'bar'})
     })
 
+    test('server ignores illegal changes on client', async () => {
+        const id = newId()
+        const item = {a:10, b:'foo'}
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+
+        await callStore('db1', 'add', collectionName, id, item)
+        await checkWidget({id, ...item})
+
+        // @ts-ignore
+        store1.theDb.setCell(collectionName, id, 'json_data', JSON.stringify({id, ...item, b: 'bar'}))
+        await expect(await store1.getById(collectionName, id)).toStrictEqual({id, ...item, b: 'bar'})  // will be updated on client
+        console.log('Client update done')
+        await wait(200)
+
+        const itemOnServer = await callStore('db1', 'getById', collectionName, id)
+        expect(itemOnServer).toStrictEqual({id, ...item})  // not updated on server
+    })
+
     test('can subscribe to changes', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
