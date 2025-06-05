@@ -1,4 +1,4 @@
-import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../DataStore'
+import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {shallow} from 'zustand/shallow'

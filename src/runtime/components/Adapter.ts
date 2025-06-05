@@ -1,5 +1,5 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {ErrorResult, pending} from '../DataStore'
+import {ErrorResult, pending} from '../../shared/DataStore'
 import {equals, mergeRight, without} from 'ramda'
 import lodash from 'lodash'
 import {valuesOf} from '../runtimeFunctions'

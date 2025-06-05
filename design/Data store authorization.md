@@ -23,8 +23,16 @@ Needs
 - Support all the use cases below
 - Ideally have just one datastore with different rules per collection
 
-Use cases
----------
+App Use cases
+-------------
+
+### Single shared 
+- large db
+- single dataset
+- many users
+- no need for real-time updates or offline
+- little user-private data
+- Dataset creation: app deployment
 
 ### Personal app
 - Examples: task list
@@ -36,6 +44,8 @@ Use cases
 - No need for real-time sync
 - User can see and update any data as desired
 - App may have validation, but no reason to avoid the rules
+- Dataset creation: on user signup
+- 
 
 ### Collaborative app, trusted users
 - Examples: project planning with chat, whiteboard
@@ -46,6 +56,8 @@ Use cases
 - Offline not necessary
 - Users can see and update any data as desired
 - App may have validation, but no reason to avoid the rules
+- Dataset creation: ad-hoc, by any user
+
 
 ### Multi-user app, untrusted users
 - Examples: calendar, department admin
@@ -55,6 +67,8 @@ Use cases
 - Immediate sync - maybe
 - Offline - maybe
 - Users can see all data, but updates only if authorised and validated
+- Dataset creation: on tenant signup
+- 
 
 ### Multi-user app with private data
 - Examples: calendar, department admin with private sections
@@ -67,6 +81,7 @@ Use cases
 - Per-user private data is synchronised only to their device
 - Private data is not synchronised to other users' devices
 - Users can update data only if authorised and validated
+- Dataset creation: on tenant signup
  
 ### Real-time app with private data
 - Examples: multi-player game with hidden info for each player and for the game (like the players' hands and the remaining deck)
@@ -81,6 +96,9 @@ Use cases
 - Server-only data is not sent to any device
 - Users can update data only if authorised and validated
 - Some actions can only be processed by the game server eg guessing a hidden answer
+- Dataset creation: ad-hoc, when needed by user, with limits
+- Dataset deletion: at some point after no longer being used, probably auto process
+
 
 Forces
 ------
@@ -99,6 +117,14 @@ Forces
 - Probably ok for offline working to be only available with direct client updates across whole store
 - Initial sync would need careful filtering according to rules
 - BUT !!! - the TinyBase CRDT protocol is designed to sync the entire database by using hashes - it just won't work if not all data is sent
+
+
+Issues
+------
+
+- How do you create app instances?
+- How do you control app instance creation?
+- Do you need to clean up unused or no longer needed app instances?
 
 Possibilities
 -------------
@@ -137,6 +163,7 @@ Needs
 - Partial view of the datastore synced to each client
 - Immediate updates to clients after a change on the server
 - Prevent direct updates from clients
+- Each TinyBaseDataStore can have its own rules
 
 Forces
 ------
@@ -149,6 +176,11 @@ Forces
 - Durable Objects now recommend sqlite storage, but current TB implementation is KV
 - Just as easy to use the DO storage API direct as it is to go via the store
 - Having public, private and user-private would be useful, even if can't do fully flexible conditions
+- Snag: Durable object is accessed via a stub, cannot serialize functions, so can't send a function to the DO from TinyBaseDataStore for full flexibility
+- May multiple TinyBaseDataStores in an app - ideally just want to have one TBDO instance for all of them
+- Only want to have one TBDO per app
+- Really looking at app instance name rather than database name as the DO id
+- Which leads to the next problem of how you manage app instances
 
 
 Possibilities
@@ -160,7 +192,9 @@ Possibilities
 - Use only auto loading, not saving, for the client stores
 - Maybe: Use sqlite storage in Durable object persister OR use sqlite persister
 - Could trigger updates in client stores from the server db updates, as all in same DO
-- May be able to use json_xxx functions to pick things out of 
+- May be able to use json_xxx functions to pick things out of
+- Pass query criteria for authorization - BUT could start syncing before server data store is instantiated
+- Create a subclass of TBDO for each app, with authorizeUpdate override
 
 Spike 1
 -------
@@ -173,11 +207,14 @@ Spike 2
 - ✅ Each client connects with a token that gives their user id
 - ✅ Hold map of client id to user id
 - ✅ Each client has a separate in-memory store, synchronized to client via ws
-- Each store has an authorization rule attached to it (table name, data) => boolean
-- Each store has a data update function, takes chunk of data, checks rule, add/updates if ok, all in one transaction
+- ✅ Each store has an authorization rule attached to it (table name, data) => boolean
+- ✅ Each store has a data update function, takes chunk of data, checks rule, add/updates if ok, all in one transaction
 - ✅ For new store, get all data, apply to data update function
 - ✅ On updates to main db, offer the update to each store
 - Start with sync from store, move to updates copied to clients
+- Decide on how to make authentication flexible
+- Decide on how to use sqlite, json and pass data to authorize function
+- Gets user Id from proper JWT token
 
 Client Handler
 --------------
@@ -185,8 +222,8 @@ Client Handler
 - ✅ Has a TinyBase store, in-memory
 - ✅ Can be bulk-loaded with all the data from the main store
 - ✅ Can be notified of updates
-- Has a rule about whether a particular table/row is included in the store
-- Selects whether to include each record in the initial load or updates
+- ✅ Has a rule about whether a particular table/row is included in the store
+- ✅ Selects whether to include each record in the initial load or updates
 - ✅ Synchronizes all it's data with a client's store over a single websocket connection
 - ✅ Ignores updates arriving from the client (should not happen)
 - Parent DO class:
@@ -194,3 +231,26 @@ Client Handler
   - ✅ Loads the whole database into it
   - ✅ Sends database updates to it
   - ✅ Routes incoming messages to it
+
+Authorization mechanism - approach 1
+------------------------------------
+
+- ✅ Server TinyBaseDataStore can have a set of query criteria for each table
+- Can use $currentUserId in the criteria
+- Table with no entry means all rows available
+- Can have a condition that is always false to make a table private to the server
+- TinyBaseDataStore sets the criteria in its instance of the TinyBaseDurableObject
+- TinyBaseDurableObject.authorizeUpdate uses the criteria
+- Use queryMatcher function
+- Upgrade queryMatcher to accept substitutions like $currentUserId
+- BUT probably won't work as the DO may start syncing local datastores before the criteria in the DO are initialised
+
+
+Authorization mechanism - approach 2
+------------------------------------
+
+- Server TinyBaseDataStore has an authorization function, give collectionName, rowId, changes, currentUserId
+- In generated index.js, have subclass of TBDO with authorizeUpdate override
+- Different function for each TinyBaseDataStore in the app
+- Generated TBDO subclass looks up the auth function based on the TBDO component name
+- Does _not_ use the databaseName as this can be variable and may be many instances

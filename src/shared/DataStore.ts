@@ -1,6 +1,5 @@
 import Observable from 'zen-observable'
 import lodash, {isPlainObject} from 'lodash';
-const {matches} = lodash
 
 const pendingFlag = Symbol('pending')
 export type SimpleCriteria = object

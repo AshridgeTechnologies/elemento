@@ -1,7 +1,7 @@
 import InputComponentState from './InputComponentState'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import {equals, mergeDeepRight} from 'ramda'
-import {ErrorResult} from '../DataStore'
+import {ErrorResult} from '../../shared/DataStore'
 import BaseType from '../types/BaseType'
 import {PropVal} from '../runtimeFunctions'
 import {TextInputState} from './TextInput'

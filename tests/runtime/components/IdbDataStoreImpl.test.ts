@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
 import 'fake-indexeddb/auto'
 import {IdbDataStoreImpl} from '../../../src/runtime/components/index'
-import {Add, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
+import {Add, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 import BigNumber from 'bignumber.js'
 
 let store: IdbDataStoreImpl

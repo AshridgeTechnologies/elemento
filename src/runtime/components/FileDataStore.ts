@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import FileDataStoreImpl from './FileDataStoreImpl'
-import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../DataStore'
+import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
 

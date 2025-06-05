@@ -10,7 +10,7 @@ import DataStore, {
     Update,
     UpdateNotification,
     UpdateType
-} from '../DataStore'
+} from '../../shared/DataStore'
 import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where, writeBatch} from 'firebase/firestore'
 import {currentUser, onAuthChange} from './authentication'
 

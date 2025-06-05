@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js";
 import TinyBaseDataStore from "../src/serverRuntime/TinyBaseDataStore.js";
 
-export {TinyBaseDurableObject} from "../src/serverRuntime/TinyBaseDurableObject.ts";
+import {TinyBaseDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseDurableObject.ts";
 
 const typesOf = (obj) => {
   const typeName = (value) => {
@@ -27,6 +27,12 @@ const bigDecReviver = (key, value) => {
   return value
 }
 
+export class TinyBaseDurableObject extends StandardTinyBaseDurableObject {
+
+  authorizeUpdateData(userId, tableId, rowId, changes) {
+    return changes.userId === undefined || changes.userId === userId
+  }
+}
 
 export default {
   async fetch(request, env, ctx) {

@@ -1,5 +1,5 @@
 import IdbDataStoreImpl from './IdbDataStoreImpl'
-import DataStore from '../DataStore'
+import DataStore from '../../shared/DataStore'
 import {DataStoreState} from './DataStoreState'
 import {parseCollections} from '../../shared/CollectionConfig'
 

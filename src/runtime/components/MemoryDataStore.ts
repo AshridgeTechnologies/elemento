@@ -1,4 +1,4 @@
-import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, UpdateNotification} from '../DataStore'
+import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, UpdateNotification} from '../../shared/DataStore'
 import lodash from 'lodash'; const {clone} = lodash
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'

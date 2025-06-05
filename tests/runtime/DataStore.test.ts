@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
-import {pending, isPending} from '../../src/runtime/DataStore'
+import {pending, isPending} from '../../src/shared/DataStore'
 import {valueOf} from '../../src/runtime/runtimeFunctions'
 
 test('pending returns a decorated Promise', () => {

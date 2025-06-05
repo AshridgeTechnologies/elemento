@@ -1,7 +1,7 @@
 import {mapObjIndexed} from 'ramda'
 import BigNumber from 'bignumber.js'
 import {convertIsoDate, isoDateRegex} from '../util/helpers'
-import {DataStoreObject, Id} from '../runtime/DataStore'
+import {DataStoreObject, Id} from './DataStore'
 
 const DECIMAL_PREFIX = '#Dec'
 const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PREFIX + value : value

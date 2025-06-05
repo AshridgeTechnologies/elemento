@@ -10,7 +10,7 @@ import {
     saveFilePickerOptions
 } from '../../testutil/testHelpers'
 import {mergeDeepRight} from 'ramda'
-import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
+import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 
 beforeEach(() => resetSaveFileCallData() )
 

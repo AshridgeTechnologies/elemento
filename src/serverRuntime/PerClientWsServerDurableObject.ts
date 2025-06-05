@@ -63,7 +63,7 @@ const checkPayload = (payload: string): boolean => {
     ]
     const messageName = messageType(message) as string
     console.log('receive', clientId, requestId, messageName, JSON.stringify(body))
-    return (message !== 2 && message !== 3)  // do not allow incoming updates
+    return message !== 3  // do not allow incoming updates
 }
 
 class ClientHandler {
@@ -71,7 +71,7 @@ class ClientHandler {
     private readonly synchronizer
     private serverClientSend!: (payload: string) => void;
 
-    constructor(public clientId: Id, private sendWebsocket: WebSocket) {
+    constructor(private clientId: Id, private sendWebsocket: WebSocket, private authorize: (tableId: Id, rowId: Id, changes: object) => boolean) {
         this.store = createMergeableStore()
         this.synchronizer = this.createSynchronizer()
         startTimeout(this.synchronizer.startSync)
@@ -103,13 +103,17 @@ class ClientHandler {
     }
 
     updateData(data: Tables) {
-        for (const tableId in data) {
-            const table = data[tableId]
-            for (const rowId in table) {
-                const row = table[rowId]
-                this.store.setRow(tableId, rowId, row)
+        this.store.transaction(() => {
+            for (const tableId in data) {
+                const table = data[tableId]
+                for (const rowId in table) {
+                    const row = table[rowId]
+                    if (this.authorize(tableId, rowId, row)) {
+                        this.store.setRow(tableId, rowId, row)
+                    }
+                }
             }
-        }
+        })
     }
 
     private sendMessage = (toClientId: IdOrNull, requestId: IdOrNull, message: Message, body: any)=> {
@@ -155,8 +159,9 @@ export class PerClientWsServerDurableObject<Env = unknown>
                     this.onPathId(pathId, 1)
                 }
                 this.ctx.acceptWebSocket(client, [clientId, pathId]);
-                this.onClientId(pathId, clientId, 1);
-                const clientHandler = new ClientHandler(clientId, client)
+                this.onClientId(pathId, clientId, 1)
+                const clientAuth = (tableId: Id, rowId: Id, changes: object) => this.authorizeUpdate(clientId, tableId, rowId, changes)
+                const clientHandler = new ClientHandler(clientId, client, clientAuth)
                 this.clientHandlers.set(clientId, clientHandler)
                 clientHandler.sendInitialMessage()
                 startTimeout(()=> this.loadClientData(clientHandler))
@@ -188,6 +193,10 @@ export class PerClientWsServerDurableObject<Env = unknown>
         | Promise<Persister<Persists.MergeableStoreOnly>>
         | undefined {
         return undefined;
+    }
+
+    authorizeUpdate(clientId: Id, tableId: Id, rowId: Id, changes: object) {
+        return true
     }
 
     getPathId(): Id {

@@ -14,7 +14,7 @@ import DataStore, {
     Remove,
     Update,
     UpdateNotification
-} from '../DataStore'
+} from '../../shared/DataStore'
 import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'

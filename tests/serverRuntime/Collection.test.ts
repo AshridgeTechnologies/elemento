@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test, MockedFunction } from "vitest"  
 import Collection from '../../src/serverRuntime/Collection'
-import {BasicDataStore} from '../../src/runtime/DataStore'
+import {BasicDataStore} from '../../src/shared/DataStore'
 
 let dataStore: BasicDataStore
 let collection: Collection

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
-import {pending} from '../../src/runtime/DataStore'
+import {pending} from '../../src/shared/DataStore'
 import {DecimalType, globalFunctions, ValidationError} from '../../src/runtime/globalFunctions'
 import {valueObj} from '../testutil/testHelpers'
 import {Value} from '../../src/runtime/runtimeFunctions'

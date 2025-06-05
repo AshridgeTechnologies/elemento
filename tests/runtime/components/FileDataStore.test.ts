@@ -8,7 +8,7 @@ import {createElement} from 'react'
 import {render} from '@testing-library/react'
 
 import appFunctions from '../../../src/runtime/appFunctions'
-import {ErrorResult} from '../../../src/runtime/DataStore'
+import {ErrorResult} from '../../../src/shared/DataStore'
 import Observable from 'zen-observable'
 
 vi.mock('../../../src/runtime/appFunctions')

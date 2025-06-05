@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
-import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
+import {ErrorResult, isPending} from '../../../src/shared/DataStore'
 import {mockClear, mockImplementation, testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import * as authentication from '../../../src/runtime/components/authentication'

@@ -1,4 +1,4 @@
-import DataStore, {CollectionName, Criteria, DataStoreObject, Id, UpdateNotification} from '../DataStore'
+import DataStore, {CollectionName, Criteria, DataStoreObject, Id, UpdateNotification} from '../../shared/DataStore'
 import Observable from 'zen-observable'
 import MemoryDataStore from './MemoryDataStore'
 import {mapValues} from 'radash'

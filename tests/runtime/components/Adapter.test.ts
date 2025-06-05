@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, test, vi} from "vitest"
 import {Adapter} from '../../../src/runtime/components'
 import {AdapterState} from '../../../src/runtime/components/Adapter'
-import {ErrorResult, isPending} from '../../../src/runtime/DataStore'
+import {ErrorResult, isPending} from '../../../src/shared/DataStore'
 import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'

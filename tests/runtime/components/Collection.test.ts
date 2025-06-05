@@ -16,7 +16,7 @@ import DataStore, {
     Remove,
     Update,
     UpdateNotification
-} from '../../../src/runtime/DataStore'
+} from '../../../src/shared/DataStore'
 import SendObservable from '../../../src/util/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'

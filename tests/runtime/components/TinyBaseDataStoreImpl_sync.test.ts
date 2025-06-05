@@ -3,15 +3,16 @@ import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataS
 import {unstable_startWorker} from 'wrangler'
 import {wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
-import DataStore, {Add, InvalidateAll} from '../../../src/runtime/DataStore'
+import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 
+const tokenFor = (userId: string) => `authtoken.${userId}`
 const syncServer = 'localhost:9090/do/'
+const authToken = tokenFor('user99')
 
 let worker: any
 
-function newId() {
-    return 'id_' + Date.now()
-}
+let idSeq = 1000
+const newId = () => 'id_' + (++idSeq)
 
 const callStore = (dbName: string, func: string, ...args: any[]) => {
     return worker.fetch(`http://example.com/call/tinybase_store/${dbName}/${func}`, {
@@ -44,7 +45,7 @@ describe('sync via server', () => {
         const item = {a:10, b:'foo'}
         await callStore('db1', 'add', collectionName, id, item)
 
-        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync})
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
         await checkWidget({id, ...item})
 
@@ -55,7 +56,7 @@ describe('sync via server', () => {
     test('local receives update when change on server', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
-        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync})
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore('db1', 'add', collectionName, id, item)
@@ -68,7 +69,7 @@ describe('sync via server', () => {
     test('server ignores illegal changes on client', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
-        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync})
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore('db1', 'add', collectionName, id, item)
@@ -87,7 +88,7 @@ describe('sync via server', () => {
     test('can subscribe to changes', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
-        const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync}).init()
+        const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync}).init()
         const onNextWidgets = vi.fn()
         store1.observable('Widgets').subscribe(onNextWidgets)
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
@@ -107,8 +108,8 @@ describe('sync via server', () => {
     test('only synchronizes with stores with correct database name', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
-        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
-        const store2 = new TinyBaseDataStoreImpl({databaseName: 'db2', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
+        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync})
+        const store2 = new TinyBaseDataStoreImpl({databaseName: 'db2', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, authToken, debugSync})
         const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id)), 100, 2000)
 
         await callStore('db1', 'add', collectionName, id, item)
@@ -121,18 +122,42 @@ describe('sync via server', () => {
         const id = newId()
         console.log('id', id)
         const item = {a:10, b:'foo'}
-        const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync}).init()
-        const store2 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync}).init()
+        const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, authToken, syncServer, debugSync}).init()
+        const store2 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, authToken, syncServer, debugSync}).init()
         const checkWidget = (store: DataStore, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
-        await wait(2000)
+        await wait(200)
         console.log('add about to send')
         await callStore('db1', 'add', collectionName, id, item)
         console.log('add done')
-        await wait(2000)
+        await wait(200)
         await checkWidget(store1, {id, ...item})
         await checkWidget(store2, {id, ...item})
-        await wait(2000)
-    }, 20000)
+        await wait(200)
+    })
+
+    test('synchronizes with two stores with same database name but different userIds', async () => {
+        const id1 = newId()
+        const id2 = newId()
+        const userId1 = 'user1'
+        const userId2 = 'user2'
+        const authToken1 = tokenFor('user1')
+        const authToken2 = tokenFor('user2')
+        console.log('id1', id1, 'id2', id2)
+        const item1 = {id: id1, userId: userId1, a:10, b:'foo'}
+        const item2 = {id: id2, userId: userId2, a:20, b:'bar'}
+        const store1 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, authToken: authToken1, syncServer, debugSync}).init()
+        const store2 = await new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, authToken: authToken2, syncServer, debugSync}).init()
+        const checkWidget = (store: DataStore, id: string, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
+
+        await wait(200)
+        await callStore('db1', 'addAll', collectionName, {[id1]: item1, [id2]: item2})
+        await wait(200)
+        console.log('item1 retrieved', await store1.getById('Widgets', id1, true))
+        await checkWidget(store1, id1, item1)
+        await checkWidget(store2, id2, item2)
+        await expect(store1.getById('Widgets', id2, true)).resolves.toBeNull()
+        await expect(store2.getById('Widgets', id1, true)).resolves.toBeNull()
+    })
 
 })

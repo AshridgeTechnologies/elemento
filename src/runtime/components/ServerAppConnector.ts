@@ -1,5 +1,5 @@
 import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
-import {ErrorResult, pending} from '../DataStore'
+import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'

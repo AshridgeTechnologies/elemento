@@ -1,4 +1,4 @@
-import {BasicDataStore, CollectionName, Criteria, DataStoreObject, Id, queryMatcher} from '../runtime/DataStore'
+import {BasicDataStore, CollectionName, Criteria, DataStoreObject, Id, queryMatcher} from '../shared/DataStore'
 import {DurableObjectNamespace, DurableObjectStub} from "@cloudflare/workers-types/experimental"
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../shared/convertData'

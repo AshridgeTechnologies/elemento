@@ -10,7 +10,7 @@ import DataStore, {
     Remove,
     UpdateNotification,
     UpdateType
-} from '../DataStore'
+} from '../../shared/DataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'

@@ -4,7 +4,7 @@
 
 import {afterEach, beforeEach, beforeAll, describe, expect, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
-import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/runtime/DataStore'
+import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 import BigNumber from 'bignumber.js'
 import {wait} from '../../testutil/testHelpers'
 

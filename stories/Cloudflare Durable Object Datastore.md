@@ -38,7 +38,22 @@ Tasks
 - ✅ DO and routing in cloudflareWorker
 - ✅ Client datastore that connects to DO
 - ✅ Server side datastore that acts directly on DO
-- Use individual table fields instead of JSON lump
 - Model objects and generation
+- Auth token available on client
+- Auth token sent to server by TBDSImpl
+- Auth token JWT decoded to get user id by Durable object
+- Auth token sent to server by server app connector
 - Server side current user and authorization
-- Authorization for read and write on client
+- Generate auth function for multiple datastores
+- (Authorization for read and write on client)
+- Full two-way sync on personal apps
+- Server only Durable object store
+- Decide on how to make authentication flexible
+- Use individual table fields instead of JSON lump
+- Decide on how to use sqlite, json and pass data to authorize function
+
+Further
+-------
+
+- Start with sync from store, move to updates copied to clients
+

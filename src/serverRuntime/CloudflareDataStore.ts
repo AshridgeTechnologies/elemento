@@ -1,4 +1,4 @@
-import {BasicDataStore, CollectionName, ComplexCriteria, Criteria, DataStoreObject, Id} from '../runtime/DataStore'
+import {BasicDataStore, CollectionName, ComplexCriteria, Criteria, DataStoreObject, Id} from '../shared/DataStore'
 import {D1Database, D1PreparedStatement} from "@cloudflare/workers-types/experimental"
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {isArray} from 'radash'

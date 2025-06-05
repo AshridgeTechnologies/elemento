@@ -6,7 +6,7 @@ import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import {WebFileDataStore, WebFileDataStoreImpl} from '../../../src/runtime/components/index'
 
 import appFunctions from '../../../src/runtime/appFunctions'
-import {ErrorResult} from '../../../src/runtime/DataStore'
+import {ErrorResult} from '../../../src/shared/DataStore'
 import Observable from 'zen-observable'
 
 vi.mock('../../../src/runtime/appFunctions')

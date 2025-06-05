@@ -1,6 +1,6 @@
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
-import {CollectionName, Id as DataStoreId} from '../runtime/DataStore'
+import {CollectionName, Id as DataStoreId} from '../shared/DataStore'
 import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
 
 const getClientId = (request: Request): Id | null =>
@@ -44,6 +44,17 @@ export class TinyBaseDurableObject extends PerClientWsServerDurableObject {
         }
 
         return response
+    }
+
+    authorizeUpdate(clientId: Id, tableId: Id, rowId: Id, changes: object): boolean {
+        const jsonData = changes['json_data' as keyof object] as string
+        const unpackedChanges = JSON.parse(jsonData) ?? {}
+        const userId = this.clientUsers.get(clientId)
+        return this.authorizeUpdateData(userId, tableId, rowId, unpackedChanges);
+    }
+
+    protected authorizeUpdateData(userId: Id | undefined, tableId: Id, rowId: Id, changes: object): boolean {
+        return true
     }
 
     getJsonData(collectionName: CollectionName, id: DataStoreId): string | null {

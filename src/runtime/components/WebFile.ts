@@ -1,6 +1,6 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import appFunctions from '../appFunctions'
-import {ErrorResult, pending} from '../DataStore'
+import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
 import {globalFetch} from './ComponentHelpers'

@@ -1,5 +1,5 @@
 import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
-import {isPending} from '../../../src/runtime/DataStore'
+import {isPending} from '../../../src/shared/DataStore'
 import {testAppInterface, wait} from '../../testutil/testHelpers'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
 import {AppStateForObject} from '../../../src/runtime/components/ComponentState'

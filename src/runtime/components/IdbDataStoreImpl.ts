@@ -9,7 +9,7 @@ import DataStore, {
     Update,
     UpdateNotification,
     UpdateType
-} from '../DataStore'
+} from '../../shared/DataStore'
 import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'

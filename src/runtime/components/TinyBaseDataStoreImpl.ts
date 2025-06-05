@@ -10,7 +10,7 @@ import DataStore, {
     Update,
     UpdateNotification,
     UpdateType
-} from '../DataStore'
+} from '../../shared/DataStore'
 import {currentUser, onAuthChange} from './authentication'
 
 import Observable from 'zen-observable'
@@ -26,7 +26,7 @@ import {mapValues} from 'radash'
 
 const SERVER_SCHEME = 'ws://';
 
-const createStore = async (pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean) => {
+const createStore = async (pathId: string, persist: boolean, sync: boolean, syncServer: string, authToken: string, debug: boolean) => {
     const store = createMergeableStore()
     if (persist) {
         const persister = createLocalPersister(store, 'local://' + syncServer + pathId)
@@ -34,12 +34,12 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
     }
 
     if (sync) {
-        const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + syncServer + pathId, ['authtoken.user99', 'tb']) as unknown as WebSocket
+        // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
+        const webSocket = new ReconnectingWebSocket(SERVER_SCHEME + syncServer + pathId, [authToken, 'tb']) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
             console.log('Client receive', fromClientId, requestId, message)
             console.dir(body, {depth: 7})
         } : undefined
-        // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const synchronizer = await createWsSynchronizer(
             store,
             webSocket,
@@ -58,7 +58,7 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
     return store
 }
 
-type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
+type Properties = {collections: string, databaseName: string, persist?: boolean, sync?: boolean, syncServer?: string, authToken?: string, debugSync?: boolean}
 
 export default class TinyBaseDataStoreImpl implements DataStore {
     private initialised = false
@@ -79,8 +79,8 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async init(collectionName?: CollectionName) {
         if (!this.initialised) {
-            const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props
-            this.theDb = await createStore(databaseName, persist, sync, syncServer, debugSync)
+            const {databaseName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', authToken = '', debugSync = false} = this.props
+            this.theDb = await createStore(databaseName, persist, sync, syncServer, authToken, debugSync)
             this.listenForChanges(this.theDb)
             this.initialised = true
         }

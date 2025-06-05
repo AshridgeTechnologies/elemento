@@ -8,7 +8,7 @@ import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../..
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
-import {ErrorResult} from '../../../src/runtime/DataStore'
+import {ErrorResult} from '../../../src/shared/DataStore'
 import {useObject} from '../../../src/runtime/appStateHooks'
 
 const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})
