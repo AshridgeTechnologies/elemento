@@ -10,6 +10,7 @@ export class AuthManagerBase {
 	protected _loggedIn: boolean = false
     protected _client: Client | null = null
     protected _verifyClient: Client | null = null
+    protected _user: User | undefined
 
 	protected get client(): Client {
         return this._client ??= createClient({
@@ -17,8 +18,8 @@ export class AuthManagerBase {
             issuer: this.origin + '/' + '_auth',
         })
     }
+    // see https://github.com/toolbeam/openauth/issues/238
 
-	// see https://github.com/toolbeam/openauth/issues/238
 	protected get verifyClient(): Client {
         return this._verifyClient ??= createClient({
             clientID: "elemento-app",
@@ -27,8 +28,6 @@ export class AuthManagerBase {
     }
 
 	protected channel: BroadcastChannel = new BroadcastChannel('elemento_auth')
-
-	protected _user: User | undefined
 
     protected get origin() {
         return globalThis.location?.origin
@@ -56,13 +55,13 @@ export class AuthManagerBase {
 			access: this.token,
 		})
 		if (next.err) return
-		if (!next.tokens) return this.token
+        if (next.tokens) {
+            globalThis.localStorage.setItem("refresh", next.tokens.refresh)
+            this.token = next.tokens.access
+        }
 
-		localStorage.setItem("refresh", next.tokens.refresh)
-		this.token = next.tokens.access
-
-		return next.tokens.access
-	}
+        return this.token
+    }
 
 	get userId() {
 		return this._user?.id
@@ -113,7 +112,7 @@ export class AuthManager extends AuthManagerBase {
 		this.notifyLogout()
 	}
 
-	async getToken() {
+	async getToken(): Promise<string | undefined> {
 		return await this.refreshTokens()
 	}
 

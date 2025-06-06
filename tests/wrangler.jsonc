@@ -9,6 +9,9 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "vars": {
+    "NO_VERIFY_AUTH_TOKEN": "true"
+  },
   "d1_databases": [
     {
       "binding": "DB",

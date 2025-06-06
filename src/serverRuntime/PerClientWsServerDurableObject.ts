@@ -149,7 +149,7 @@ export class PerClientWsServerDurableObject<Env = unknown>
         );
     }
 
-    fetch(request: Request): Response {
+    fetch(request: Request): Response | Promise<Response> {
         const pathId = getPathId(request);
         return ifNotUndefined(
             getClientId(request),

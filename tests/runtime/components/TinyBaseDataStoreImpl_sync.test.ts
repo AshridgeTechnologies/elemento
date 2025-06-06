@@ -4,8 +4,18 @@ import {unstable_startWorker} from 'wrangler'
 import {wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
 import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
+import jwtEncode from 'jwt-encode'
 
-const tokenFor = (userId: string) => `authtoken.${userId}`
+const tokenFor = (userId: string) => jwtEncode({
+    type: 'user',
+    properties: {
+        id: userId,
+        email: "a@b.com",
+        name: ""
+    },
+    sub: 'user:' + userId,
+    iat: 1516239022
+}, 'our-secret')
 const syncServer = 'localhost:9090/do/'
 const authToken = tokenFor('user99')
 
@@ -141,6 +151,8 @@ describe('sync via server', () => {
         const id2 = newId()
         const userId1 = 'user1'
         const userId2 = 'user2'
+        // const authToken1 = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjMwMGE4N2E4LWZmMTEtNDJiMS1iMDYzLWM1ZmFlNzRjYTA0MCIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYWNjZXNzIiwidHlwZSI6InVzZXIiLCJwcm9wZXJ0aWVzIjp7ImlkIjoiYUBiLmNvbSIsImVtYWlsIjoiYUBiLmNvbSIsIm5hbWUiOiIifSwiYXVkIjoiZWxlbWVudG8tYXBwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4Nzg3Iiwic3ViIjoidXNlcjo5YWM5ZmNiYzQwNDAwNzY1IiwiZXhwIjoxNzUxNzk1MDkyfQ.nchcru6F1xCQ-C4lOBZmpLVyKvjZfPXwX8e3OLwaeQ7qSboFiY41_fd8bMKl5jHuuUPHUifk84uULkmT7YdplA'
+        // const authToken2 = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjMwMGE4N2E4LWZmMTEtNDJiMS1iMDYzLWM1ZmFlNzRjYTA0MCIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYWNjZXNzIiwidHlwZSI6InVzZXIiLCJwcm9wZXJ0aWVzIjp7ImlkIjoiYUBiLmNvbSIsImVtYWlsIjoiYUBiLmNvbSIsIm5hbWUiOiIifSwiYXVkIjoiZWxlbWVudG8tYXBwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4Nzg3Iiwic3ViIjoidXNlcjo5YWM5ZmNiYzQwNDAwNzY1IiwiZXhwIjoxNzUxNzk1MDkyfQ.nchcru6F1xCQ-C4lOBZmpLVyKvjZfPXwX8e3OLwaeQ7qSboFiY41_fd8bMKl5jHuuUPHUifk84uULkmT7YdplA'
         const authToken1 = tokenFor('user1')
         const authToken2 = tokenFor('user2')
         console.log('id1', id1, 'id2', id2)
