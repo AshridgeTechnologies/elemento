@@ -1,6 +1,8 @@
 import {isObject, isString, mapValues} from 'radash'
 import {parseISO} from 'date-fns'
 import {parseParam} from '../util/helpers'
+import {subjects, User} from '../shared/subjects'
+import { createClient } from '@openauthjs/openauth/client'
 
 export type ServerAppHandler = {
     [key: string]: { func: (...args: Array<any>) => any, update: boolean, argNames: string[] }
@@ -40,6 +42,31 @@ async function getBodyParams(req: Request): Promise<object> {
     return convertDataValues(data)
 }
 
+async function getCurrentUser(req: Request): Promise<User | undefined> {
+    const authHeader = req.headers.get('Authorization') ?? ''
+    const authToken = authHeader.replace(/^Bearer */, '')
+    if (!authToken) {
+        return undefined
+    }
+    return await verifyToken(req, authToken)
+}
+
+export async function verifyToken(request: Request, token: string) {
+    const requestOrigin = new URL(request.url).origin
+    const authClient = createClient({
+        clientID: "elemento-app",
+        issuer: requestOrigin,
+    })
+    try {
+        const verifyResult = await authClient.verify(subjects, token)
+        console.log('verifyResult', verifyResult)
+        return verifyResult.err ? undefined : verifyResult.subject.properties
+    } catch (e) {
+        console.error('verify error', e)
+        return undefined
+    }
+}
+
 export const handleServerRequest = async (req: Request, env: any, ctx: any, apps: AppFactoryMap) => {
     const pathname = new URL(req.url).pathname
     const match = pathname.match(/^\/capi\/(\w+)\/(\w+)$/)
@@ -51,8 +78,8 @@ export const handleServerRequest = async (req: Request, env: any, ctx: any, apps
     const appFactory = apps[appName]
     console.log('appFactory', appFactory)
     try {
-        const currentUser = null //await getCurrentUser(req)
-        // console.log('user id', currentUser?.uid)
+        const currentUser = await getCurrentUser(req)
+        console.log('user id', currentUser?.id)
         const handlerApp = await appFactory(currentUser, env, ctx)
 
         const {func, update, argNames} = handlerApp[functionName] ?? {}
@@ -73,4 +100,3 @@ export const handleServerRequest = async (req: Request, env: any, ctx: any, apps
         return responseError(500, 'Server error\n' + err)
     }
 }
-

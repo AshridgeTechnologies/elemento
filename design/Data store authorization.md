@@ -254,3 +254,70 @@ Authorization mechanism - approach 2
 - Different function for each TinyBaseDataStore in the app
 - Generated TBDO subclass looks up the auth function based on the TBDO component name
 - Does _not_ use the databaseName as this can be variable and may be many instances
+
+
+Part 3 - Full sync and offline operation with Personal app datastores
+=====================================================================
+
+Similarities to multi-user one-way sync
+---------------------------------------
+
+- Need immediate inbound synchronization
+- Must be logged in to synchronize
+- May want to check user authorized to sync
+- Server has a merged copy of the data
+
+Differences to multi-user one-way sync
+--------------------------------------
+
+- Outbound sync
+- Offline local updates, sync when connected
+- All devices and users have the same data
+- Don't need a server-side datastore element (although may still want one to do some server side ops)
+
+Forces
+------
+
+- One user for each datastore is normal
+- Multiple devices for each user is normal
+- Stopping client->server sync has to be enforced at server, client stops it just for convenience
+- Client TBDSI will have few differences between full and partial sync, apart from blocking update ops
+- Each datastore is a separate DO instance
+- May have a full sync and a multi-user sync datastore in the same app, or even multiple of each
+- Having a separate datastore for each user could be a big overhead in some apps
+- Server side datastore bypasses all the auth anyway
+- In app just want to specify a single datastore, with or without an auth rule
+- New situation: Need to specify a datastore on server side and on client side
+- Need to link the client and server datastores
+- Need to give client and server datastores the same database id
+- With the Firestore datastore, that was a bit confused between client and server side stuff
+- Having separate client and server apps confuses things, as have to link them up
+- Merged client and server apps would be better here - but not part of this effort
+
+Possibilities
+-------------
+
+- One DO class, with settings to work in different ways
+- Separate DO classes for full sync and multi-user-sync
+- Every datastore is a different DO
+- Datastore component must have same name in client and server
+  - Still need to know which server app to look at
+- Client datastore explicitly links to server app and datastore
+- Or just link to serverApp (as ServerAppConnector) and datastore has to have same name
+- Could default to the single server app if only one
+- Server side datastore component generates both the access object in the server app and the specific DO class
+
+Decisions
+---------
+
+- Have a noUpdates property on client TBDSI, throw excp if try to do update ops
+- Link up client and server datastores by name, use first/only server app
+- One TinyBase DataStore model component on server side
+- One TinyBase DataStore runtime component in the server app
+- If no auth rule specified, use the full sync TinyBaseDurableObject
+- If it has an auth rule specified, use the multi-sync TinyBaseDO as base for a generated class
+- Generate DO bindings needed
+- Cloudflare worker routing needs to include Datastore component name as well as the database id
+- Route to the getWsServerDurableObjectFetch using correct binding
+
+

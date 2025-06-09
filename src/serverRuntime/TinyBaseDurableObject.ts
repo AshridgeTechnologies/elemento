@@ -2,9 +2,9 @@ import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {CollectionName, Id as DataStoreId} from '../shared/DataStore'
 import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
-import {subjects, User} from '../shared/subjects'
-import {createClient} from '@openauthjs/openauth/client'
+import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
+import {verifyToken} from './requestHandler'
 
 const getClientId = (request: Request): Id | null =>
     request.headers.get('upgrade')?.toLowerCase() == 'websocket'
@@ -87,19 +87,6 @@ export class TinyBaseDurableObject extends PerClientWsServerDurableObject<any> {
             console.log('jwtPayload', jwtPayload)
             return jwtPayload.properties
         }
-
-        const requestOrigin = new URL(request.url).origin
-        const authClient = createClient({
-            clientID: "elemento-app",
-            issuer: requestOrigin,
-        })
-        try {
-            const verifyResult = await authClient.verify(subjects, token)
-            console.log('verifyResult', verifyResult)
-            return verifyResult.err ? undefined : verifyResult.subject.properties
-        } catch (e) {
-            console.error('verify error', e)
-            return undefined
-        }
+        return await verifyToken(request, token)
     }
 }

@@ -38,13 +38,14 @@ Tasks
 - ✅ DO and routing in cloudflareWorker
 - ✅ Client datastore that connects to DO
 - ✅ Server side datastore that acts directly on DO
-- Model objects and generation
+- Model objects
 - ✅ Auth token available on client
 - ✅ Auth token sent to server by TBDSImpl
 - ✅ Auth token JWT decoded to get user id by Durable object
-- Auth token sent to server by server app connector
-- Server side current user and authorization
-- Generate auth function for multiple datastores
+- ✅ Auth token sent to server by server app connector
+- ✅ Server side current user and authorization
+- Generate datastore classes with auth functions
+- Generate bindings for the datastore classes
 - (Authorization for read and write on client)
 - TBDSImpl clears data, notifies InvalidateAll and reconnects/disconnects when the auth changes
 - TBDSImpl can function in two different sync modes - or two different classes?
