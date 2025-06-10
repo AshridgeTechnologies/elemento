@@ -131,7 +131,7 @@ export class PerClientWsServerDurableObject<Env = unknown>
     implements DurableObject<Env>
 {
     private readonly clientHandlers = new Map<string, ClientHandler>()
-    protected store!: MergeableStore
+    private store!: MergeableStore
 
     constructor(ctx: DurableObjectState, env: Env) {
         console.log('PerClientxx constructor')

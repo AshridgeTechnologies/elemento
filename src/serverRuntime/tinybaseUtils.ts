@@ -100,3 +100,8 @@ export const createPayload = (
 
 export const createRawPayload = (clientId: Id, remainder: string): string =>
     clientId + MESSAGE_SEPARATOR + remainder;
+
+export const getClientId = (request: Request): Id | null =>
+    request.headers.get('upgrade')?.toLowerCase() == 'websocket'
+        ? request.headers.get('sec-websocket-key')
+        : null;

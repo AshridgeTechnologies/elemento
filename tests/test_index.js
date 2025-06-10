@@ -2,7 +2,8 @@ import CloudflareDataStore from "../src/serverRuntime/CloudflareDataStore.ts"
 import BigNumber from "bignumber.js"
 import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js"
 import TinyBaseDataStore from "../src/serverRuntime/TinyBaseDataStore.js"
-import {TinyBaseDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseDurableObject.ts"
+// import {TinyBaseAuthSyncDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseAuthSyncDurableObject.ts"
+import {TinyBaseFullSyncDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseFullSyncDurableObject.ts"
 
 const typesOf = (obj) => {
   const typeName = (value) => {
@@ -26,8 +27,9 @@ const bigDecReviver = (key, value) => {
   return value
 }
 
+let seq = 2000
 export class TinyBaseDurableObject extends StandardTinyBaseDurableObject {
-
+  instanceId = ++seq
   authorizeUpdateData(userId, tableId, rowId, changes) {
     return changes.userId === undefined || changes.userId === userId
   }

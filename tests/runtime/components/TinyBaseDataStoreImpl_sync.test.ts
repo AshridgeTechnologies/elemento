@@ -56,13 +56,21 @@ describe('sync via server', () => {
     const collectionName = 'Widgets'
     const debugSync = false
 
+    test('call store works', async () => {
+        const id = newId()
+        const item = {a:10, b:'foo'}
+        await callStore('db1', 'add', collectionName, id, item)
+        const storedItem = await callStore('db1', 'getById', collectionName, id)
+        expect(storedItem).toEqual({id, ...item})
+    })
+
     test('sync local with existing data', async () => {
         const id = newId()
         const item = {a:10, b:'foo'}
         await callStore('db1', 'add', collectionName, id, item)
 
         const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
-        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
         await checkWidget({id, ...item})
 
         await callStore('db1', 'update', collectionName, id, {b: 'bar'})
@@ -127,7 +135,7 @@ describe('sync via server', () => {
         const item = {a:10, b:'foo'}
         const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
         const store2 = new TinyBaseDataStoreImpl({databaseName: 'db2', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, debugSync})
-        const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id)), 100, 2000)
+        const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await callStore('db1', 'add', collectionName, id, item)
         await checkWidget(store1, {id, ...item})

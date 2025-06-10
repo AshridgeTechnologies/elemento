@@ -41,11 +41,15 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
             console.log('Client receive', fromClientId, requestId, message)
             console.dir(body, {depth: 7})
         } : undefined
+        const send = debug ? (toClientId: any, requestId: any, message: any, body: any) => {
+            console.log('Client send', toClientId, requestId, message)
+            console.dir(body, {depth: 7})
+        } : undefined
         const synchronizer = await createWsSynchronizer(
             store,
             webSocket,
             1,
-            undefined,
+            send,
             receive
         );
         await synchronizer.startSync()
@@ -53,6 +57,9 @@ const createStore = async (pathId: string, persist: boolean, sync: boolean, sync
         // If the websocket reconnects in the future, do another explicit sync.
         synchronizer.getWebSocket().addEventListener('open', () => {
             synchronizer.load().then(() => synchronizer.save());
+        })
+        synchronizer.getWebSocket().addEventListener('close', () => {
+            console.info('websocket closed')
         })
     }
 
