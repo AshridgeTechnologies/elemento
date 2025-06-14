@@ -13,7 +13,7 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
     private clientUsers = new Map<string, string>()
     private _store = createMergeableStore()
     private get storage(): DurableObjectStorage { return this.ctx.storage }
-    private doImpl = new TinyBaseDurableObjectImpl(this._store, this.storage)
+    private doImpl = new TinyBaseDurableObjectImpl(this._store)
 
     createPersister() {
         return createDurableObjectStoragePersister(this._store, this.storage)

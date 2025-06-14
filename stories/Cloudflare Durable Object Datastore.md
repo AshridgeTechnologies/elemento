@@ -45,20 +45,31 @@ Tasks
 - ✅ Auth token sent to server by server app connector
 - ✅ Server side current user and authorization
 - ✅ Two server DO classes
-- Use databaseId, not name
 - Generate datastore classes with auth functions
 - Generate bindings for the datastore classes
 - (Authorization for read and write on client)
 - TBDSImpl clears data, notifies InvalidateAll and reconnects/disconnects when the auth changes
-- NEXT: TBDSImpl can function in two different sync modes - or two different classes?
+- NEXT: TBDSImpl can function in two different sync modes - or two different classes? At least warn if do illegal update on client
 - Full two-way sync on personal apps
 - Server only Durable object store
 - Decide on how to make authentication flexible
 - Use individual table fields instead of JSON lump
 - Decide on how to use sqlite, json and pass data to authorize function
+- Use databaseId, not name?
 
 Further
 -------
 
-- Start with sync from store, move to updates copied to clients
+- ~~Start with sync from store, move to updates copied to clients~~
+
+Multi-user game scenario
+------------------------
+
+- Match owner goes to game app site
+- Match owner logs in - how? with main game site?
+- Match owner creates a match
+- New DO datastore for the match
+- Match owner adds other users to the match
+- Other users accept 
+- Match owner starts the match
 

@@ -1,16 +1,5 @@
-import {createMergeableStore, Id, IdAddedOrRemoved, MergeableStore} from 'tinybase'
-import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
+import {MergeableStore} from 'tinybase'
 import {CollectionName, Id as DataStoreId} from '../shared/DataStore'
-import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
-import {User} from '../shared/subjects'
-import {jwtDecode} from 'jwt-decode'
-import {verifyToken} from './requestHandler'
-
-const getClientId = (request: Request): Id | null =>
-    request.headers.get('upgrade')?.toLowerCase() == 'websocket'
-        ? request.headers.get('sec-websocket-key')
-        : null;
-
 
 export interface TinyBaseDurableObject {
     getJsonData(collectionName: CollectionName, id: DataStoreId): string | null
@@ -24,9 +13,9 @@ export interface TinyBaseDurableObject {
     test_clear(collectionName: CollectionName): void
 }
 
-export class TinyBaseDurableObjectImpl implements TinyBaseDurableObject  {
+export class TinyBaseDurableObjectImpl  {
 
-    constructor(private store: MergeableStore, private storage: DurableObjectStorage) {}
+    constructor(private store: MergeableStore) {}
 
     getJsonData(collectionName: CollectionName, id: DataStoreId): string | null {
         return this.store.getCell(collectionName, id.toString(), 'json_data') as string ?? null

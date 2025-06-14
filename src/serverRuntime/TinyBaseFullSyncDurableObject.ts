@@ -12,7 +12,7 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
 
     protected store = createMergeableStore()
     protected get storage(): DurableObjectStorage { return this.ctx.storage }
-    private doImpl = new TinyBaseDurableObjectImpl(this.store, this.storage)
+    private doImpl = new TinyBaseDurableObjectImpl(this.store)
 
     onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {
         console.info((addedOrRemoved > 0 ? 'Added' : 'Removed') + ` path ${pathId}`)

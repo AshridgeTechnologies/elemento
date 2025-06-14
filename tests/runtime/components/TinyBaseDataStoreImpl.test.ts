@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import {afterEach, beforeEach, beforeAll, describe, expect, test, vi} from "vitest"
+import {afterEach, beforeAll, beforeEach, describe, expect, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 import BigNumber from 'bignumber.js'
@@ -11,7 +11,7 @@ import {wait} from '../../testutil/testHelpers'
 let store: TinyBaseDataStoreImpl
 
 beforeEach(() => {
-    store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
+    store = new TinyBaseDataStoreImpl({ databaseTypeName: 'N_A',  databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
 })
 
 afterEach(async () =>  {
@@ -93,7 +93,6 @@ describe('stores decimals', () => {
 describe('subscribe', () => {
     //expect InvalidateAll when auth changes on startup
     beforeAll(async () => {
-        const store = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
         const onNextWidgets = vi.fn()
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
@@ -154,9 +153,8 @@ describe('subscribe', () => {
 describe('persistence', () => {
     test('saves and loads changes from local storage if persist true', async () => {
         localStorage.clear()
-        const store1 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
-        await store1.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
-        const store2 = new TinyBaseDataStoreImpl({databaseName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
+        await store.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
+        const store2 = new TinyBaseDataStoreImpl({databaseTypeName: 'N_A', databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
 
         const retrievedObj = await store2.getById('Widgets', 'w1')
         expect(retrievedObj).toMatchObject({id: 'w1', a: 47, b: 'Bee87', c: true})

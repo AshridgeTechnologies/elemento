@@ -23,15 +23,19 @@
   "durable_objects": {
     "bindings": [
       {
-        "name": "TinyBaseDurableObjects",
-        "class_name": "TinyBaseDurableObject"
+        "name": "TinyBaseFullSyncDurableObject",
+        "class_name": "TinyBaseFullSyncDurableObject"
+      },
+      {
+        "name": "TinyBaseDurableObject_A",
+        "class_name": "TinyBaseDurableObject_A"
       }
     ]
   },
 
   "migrations": [
     {
-      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject"]
+      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject_A", "TinyBaseFullSyncDurableObject"]
     }
   ]
 }

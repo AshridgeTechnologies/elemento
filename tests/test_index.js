@@ -2,8 +2,8 @@ import CloudflareDataStore from "../src/serverRuntime/CloudflareDataStore.ts"
 import BigNumber from "bignumber.js"
 import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js"
 import TinyBaseDataStore from "../src/serverRuntime/TinyBaseDataStore.js"
-// import {TinyBaseAuthSyncDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseAuthSyncDurableObject.ts"
-import {TinyBaseFullSyncDurableObject as StandardTinyBaseDurableObject} from "../src/serverRuntime/TinyBaseFullSyncDurableObject.ts"
+import {TinyBaseAuthSyncDurableObject} from "../src/serverRuntime/TinyBaseAuthSyncDurableObject.ts"
+export {TinyBaseFullSyncDurableObject} from "../src/serverRuntime/TinyBaseFullSyncDurableObject.ts"
 
 const typesOf = (obj) => {
   const typeName = (value) => {
@@ -27,9 +27,7 @@ const bigDecReviver = (key, value) => {
   return value
 }
 
-let seq = 2000
-export class TinyBaseDurableObject extends StandardTinyBaseDurableObject {
-  instanceId = ++seq
+export class TinyBaseDurableObject_A extends TinyBaseAuthSyncDurableObject {
   authorizeUpdateData(userId, tableId, rowId, changes) {
     return changes.userId === undefined || changes.userId === userId
   }
@@ -44,21 +42,20 @@ export default {
       return handleDurableObjectRequest(request, env)
     }
 
-    const testObject = (objName, dbName) => {
-      switch(objName) {
+    const testObject = (dbTypeName, dbName) => {
+      switch(dbTypeName) {
         case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env.DB})
-        case 'tinybase_store': return new TinyBaseDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env.TinyBaseDurableObjects})
-        default: return null
+        default: return new TinyBaseDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env[dbTypeName]})
       }
     }
 
     if (pathname.startsWith('/call/')) {
-      const [objName, dbName, func] = pathname.split('/').slice(2, 5)
+      const [dbTypeName, dbName, func] = pathname.split('/').slice(2, 5)
       const body = await request.text()
       const args = JSON.parse(body, bigDecReviver)
-      const obj = testObject(objName, dbName)
+      const obj = testObject(dbTypeName, dbName)
       if (!obj) {
-        return Response.json({error:`Object not found: ${objName}`}, {status: 500})
+        return Response.json({error:`Object not found: ${dbTypeName}`}, {status: 500})
       }
       const data = await obj[func].apply(obj, args)
       const types = typesOf(data)

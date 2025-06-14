@@ -9,13 +9,17 @@ const isPassThrough = (pathname: string) => {
     return pathname.startsWith('/lib/')
 }
 
-const durableObjectFetch = getWsServerDurableObjectFetch('TinyBaseDurableObjects')
+const durableObjectFetch = (doNamespace: string) => getWsServerDurableObjectFetch(doNamespace)
 
 export const handleDurableObjectRequest = async (request: Request, env: any): Promise<Response> => {
-    const doServerUrl = request.url.replace(/\/do/, '')
+    const url = new URL(request.url);
+    const pathname = url.pathname
+    const doRegex = /\/do\/(\w+)/
+    const doNamespace = pathname.match(doRegex)?.[1]
+    const doServerUrl = request.url.replace(doRegex, '')
     const doServerRequest = new Request(doServerUrl, request)
 
-    return durableObjectFetch(doServerRequest, env)
+    return durableObjectFetch(doNamespace!)(doServerRequest, env)
 }
 
 export const cloudflareFetch = async (request: Request, env: any, ctx: any, serverApps: AppFactoryMap) => {

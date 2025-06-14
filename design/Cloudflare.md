@@ -81,3 +81,15 @@ Issues
 - How to handle client runtime - dynamic import from elemento site, import from deployed site, bundle before deploy, get from elemento, get from npm
 - How to handle server runtime - get from elemento, get from npm? where to do it?
 - How to set up a cloudflare project from scratch
+
+Cloudflare project scenario
+---------------------------
+
+- Create new project in Studio
+- Write wrangler.jsonc, index.js etc to project dir
+- Start wrangler dev in the project dir
+- Develop project
+- Save to GitHub
+- Deploy to Cloudflare from PC
+
+

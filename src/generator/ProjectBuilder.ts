@@ -216,7 +216,7 @@ ${d1DatabaseBindings}
   "durable_objects": {
     "bindings": [
       {
-        "name": "TinyBaseDurableObjects",
+        "name": "TinyBaseDurableObjectsXXX",
         "class_name": "TinyBaseDurableObject"
       }
     ]
