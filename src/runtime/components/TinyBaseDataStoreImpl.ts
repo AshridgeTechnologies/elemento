@@ -40,7 +40,8 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
         const authToken = await getIdToken() ?? ''
         const wsUrl = SERVER_SCHEME + syncServer + doNamespace + '/' + pathId
         console.log('wsUrl', wsUrl)
-        const webSocket = new ReconnectingWebSocket(wsUrl, [authToken, 'tb']) as unknown as WebSocket
+        const protocols = authToken ? [authToken, 'tb'] : undefined
+        const webSocket = new ReconnectingWebSocket(wsUrl, protocols) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
             console.log('Client receive', fromClientId, requestId, message)
             console.dir(body, {depth: 7})

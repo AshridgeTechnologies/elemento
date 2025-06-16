@@ -8,9 +8,11 @@ import {verifyToken} from './requestHandler'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
 import {getClientId} from './tinybaseUtils'
 
+type AuthStatus = 'limited' | null
+
 export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObject<any> implements TinyBaseDurableObject {
 
-    private clientUsers = new Map<string, string>()
+    private clientUsers = new Map<string, string | undefined>()
     private _store = createMergeableStore()
     private get storage(): DurableObjectStorage { return this.ctx.storage }
     private doImpl = new TinyBaseDurableObjectImpl(this._store)
@@ -33,20 +35,27 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
         if (clientId) {
             const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
             const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
-            const user = await this.verifyToken(request, authToken)
-            if (!user) {
+            const user = authToken ? await this.verifyToken(request, authToken) : null
+            const authStatus = await this.authorizeUser(user?.id)
+            if (!authStatus) {
                 return new Response('Unauthorized', {status: 401})
             }
 
-            console.log('Client/User', clientId, user.id)
-            this.clientUsers.set(clientId, user.id)
+            console.log('Client/User', clientId, user?.id)
+            this.clientUsers.set(clientId, user?.id)
 
-            const finalResponse = new Response(response.body, response)
-            finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
-            return finalResponse
+            if (dummyProtocol) {
+                const finalResponse = new Response(response.body, response)
+                finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
+                return finalResponse
+            }
         }
 
         return response
+    }
+
+    async authorizeUser(_userId: string | undefined) : Promise<AuthStatus> {
+        return null
     }
 
     authorizeUpdate(clientId: Id, tableId: Id, rowId: Id, changes: object): boolean {

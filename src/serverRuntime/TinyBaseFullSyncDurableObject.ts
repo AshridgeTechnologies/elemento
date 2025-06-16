@@ -8,6 +8,8 @@ import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
 import { verifyToken } from './requestHandler'
 
+type AuthStatus = 'full' | 'readonly' | null
+
 export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> implements TinyBaseDurableObject {
 
     protected store = createMergeableStore()
@@ -39,19 +41,25 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
         if (clientId) {
             const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
             const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
-            const user = await this.verifyToken(request, authToken)
-            if (!user) {
+            const user = authToken ? await this.verifyToken(request, authToken) : null
+            const authStatus = await this.authorizeUser(user?.id)
+            if (!authStatus) {
                 return new Response('Unauthorized', {status: 401})
             }
 
-            const finalResponse = new Response(response.body, response)
-            finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
-            return finalResponse
+            if (dummyProtocol) {
+                const finalResponse = new Response(response.body, response)
+                finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
+                return finalResponse
+            }
         }
 
         return response
     }
 
+    async authorizeUser(_userId: string | undefined) : Promise<AuthStatus> {
+        return null
+    }
 
     getJsonData(collectionName: CollectionName, id: DataStoreId): string | null {
         return this.doImpl.getJsonData(collectionName, id)

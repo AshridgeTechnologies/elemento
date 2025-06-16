@@ -24,7 +24,7 @@
     "bindings": [
       {
         "name": "TinyBaseFullSyncDurableObject",
-        "class_name": "TinyBaseFullSyncDurableObject"
+        "class_name": "TinyBaseDurableObject_Full"
       },
       {
         "name": "TinyBaseDurableObject_A",

@@ -45,19 +45,32 @@ App Use cases
 - User can see and update any data as desired
 - App may have validation, but no reason to avoid the rules
 - Dataset creation: on user signup
-- 
+
+### Personal app, multiple datastores
+- As above but multiple datastores per user, to organise work
 
 ### Collaborative app, trusted users
-- Examples: project planning with chat, whiteboard
+- Examples: department resource booking
 - Multiple users for datastore
-- Datastore per tenant
+- Single Datastore per tenant
 - Permanent
 - Immediate sync
 - Offline not necessary
 - Users can see and update any data as desired
 - App may have validation, but no reason to avoid the rules
-- Dataset creation: ad-hoc, by any user
+- Dataset creation: on tenant signup
 
+### Collaborative app, document-based
+- Examples: project planning with chat, whiteboard
+- Multiple users for datastore
+- Multiple datastores per user
+- Permanent
+- Immediate sync
+- Offline may be useful
+- Users can see and update datstores to which they have access
+- Access can be full or read-only
+- App may have validation, but no reason to avoid the rules
+- Dataset creation: ad-hoc, by any user
 
 ### Multi-user app, untrusted users
 - Examples: calendar, department admin
@@ -100,6 +113,26 @@ App Use cases
 - Dataset deletion: at some point after no longer being used, probably auto process
 
 
+Aspects of authorization
+------------------------
+
+- User-datastore relationship - if assume many-many covers all apps
+- Datastore creation
+- Granting datastore permissions
+- For whole datastore or individual tables
+- No access, readonly, full access
+
+Possible combinations of aspects
+--------------------------------
+
+- Personal app: Single datastore per user, created by system on signup, full access
+- Personal app with multiple datastores or documents: Multiple datastores per user, created by user, full access
+- Collaborative app: Single datastore per tenant, created by system, full access
+- Collaborative document app: Multiple datastores, created by users, docs-users many-many, access full/read-only/none
+- Multi-user app, untrusted users: Single datastore per tenant, created by system, access full/read-only, all tables
+- Multi-user app with private data: Single datastore per tenant, created by system, access full/read-only/none, differs by table
+- Real-time app with private data: Multiple datastores, created by users, docs-users many-many, access full/read-only/none, differs by table
+
 Forces
 ------
 
@@ -117,6 +150,8 @@ Forces
 - Probably ok for offline working to be only available with direct client updates across whole store
 - Initial sync would need careful filtering according to rules
 - BUT !!! - the TinyBase CRDT protocol is designed to sync the entire database by using hashes - it just won't work if not all data is sent
+- Could block all updates from clients, or some clients
+- If any data is hidden, need to have per-user datastores, cannot accept updates from client
 
 
 Issues
@@ -151,6 +186,23 @@ Possible approach
   - Sync rule is a function given table name, row id and user id, maybe cell id
   - If sync rule returns true, the update is sent to that client
 - Would require authenticating users when connect via websocket, and holding table of clientId vs user id
+
+Configurations needed
+---------------------
+
+- Whether a user has access to a datastore
+- Whether a user can send updates to a datastore
+- Whether the user access varies to different parts of the datastore
+
+Decisions
+---------
+
+- Full sync datastore can accept or reject sync requests based on user id
+- Later - can reject incoming updates to give read-only access
+- Configure the authorization in a userAuthorization property, given $userId
+- Authorized sync datastore can also accept or reject sync requests based on user id
+- Configure the detailed per-item rules in a dataAuthorization property, given $userId, $tableId, $itemId
+
 
 Part 2 - Partial Syncing datastores based on authorization
 ==========================================================

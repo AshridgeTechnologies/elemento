@@ -164,8 +164,6 @@ describe('sync via server - authorized sync', () => {
         const id2 = newId()
         const userId1 = 'user1'
         const userId2 = 'user2'
-        // const authToken1 = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjMwMGE4N2E4LWZmMTEtNDJiMS1iMDYzLWM1ZmFlNzRjYTA0MCIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYWNjZXNzIiwidHlwZSI6InVzZXIiLCJwcm9wZXJ0aWVzIjp7ImlkIjoiYUBiLmNvbSIsImVtYWlsIjoiYUBiLmNvbSIsIm5hbWUiOiIifSwiYXVkIjoiZWxlbWVudG8tYXBwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4Nzg3Iiwic3ViIjoidXNlcjo5YWM5ZmNiYzQwNDAwNzY1IiwiZXhwIjoxNzUxNzk1MDkyfQ.nchcru6F1xCQ-C4lOBZmpLVyKvjZfPXwX8e3OLwaeQ7qSboFiY41_fd8bMKl5jHuuUPHUifk84uULkmT7YdplA'
-        // const authToken2 = 'eyJhbGciOiJFUzI1NiIsImtpZCI6IjMwMGE4N2E4LWZmMTEtNDJiMS1iMDYzLWM1ZmFlNzRjYTA0MCIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYWNjZXNzIiwidHlwZSI6InVzZXIiLCJwcm9wZXJ0aWVzIjp7ImlkIjoiYUBiLmNvbSIsImVtYWlsIjoiYUBiLmNvbSIsIm5hbWUiOiIifSwiYXVkIjoiZWxlbWVudG8tYXBwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4Nzg3Iiwic3ViIjoidXNlcjo5YWM5ZmNiYzQwNDAwNzY1IiwiZXhwIjoxNzUxNzk1MDkyfQ.nchcru6F1xCQ-C4lOBZmpLVyKvjZfPXwX8e3OLwaeQ7qSboFiY41_fd8bMKl5jHuuUPHUifk84uULkmT7YdplA'
         const authToken1 = tokenFor('user1')
         const authToken2 = tokenFor('user2')
         mock_getIdToken.mockResolvedValueOnce(authToken1)
@@ -188,6 +186,24 @@ describe('sync via server - authorized sync', () => {
         await expect(store2.getById('Widgets', id1, true)).resolves.toBeNull()
     })
 
+
+    test('rejects sync if not logged in', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        const store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+    })
+
+    test('rejects sync if not authorized', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('bad_user'))
+        const store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+    })
 })
 
 describe('sync via server - full sync', () => {
@@ -332,6 +348,24 @@ describe('sync via server - full sync', () => {
         await checkWidget(store1, id2, item2)
         await checkWidget(store2, id1, item1)
         await checkWidget(store2, id2, item2)
+    })
+
+    test('rejects sync if not logged in', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        const store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+    })
+
+    test('rejects sync if not authorized', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('bad_user'))
+        const store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
     })
 
 })
