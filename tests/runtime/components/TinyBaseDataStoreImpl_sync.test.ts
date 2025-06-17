@@ -1,4 +1,4 @@
-import {afterAll, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
+import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
 import {wait, waitUntil} from '../../testutil/testHelpers'
@@ -57,6 +57,7 @@ describe('sync via server - authorized sync', () => {
     const createStore = (databaseName = 'db1')=> new TinyBaseDataStoreImpl({ databaseTypeName: dbType,  databaseInstanceName: databaseName, collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer})
 
     let worker: any
+    let store1: TinyBaseDataStoreImpl, store2: TinyBaseDataStoreImpl
     let callStore: any
 
     beforeAll(async () => {
@@ -68,6 +69,13 @@ describe('sync via server - authorized sync', () => {
         await worker.dispose();
     })
 
+    afterEach(async ()=> {
+        await store1?.close()
+        await store2?.close()
+        // @ts-ignore
+        store1 = store2 = undefined
+    })
+
     test('call store works', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
         const storedItem = await callStore(dbType, 'db1', 'getById', collectionName, id)
@@ -77,7 +85,7 @@ describe('sync via server - authorized sync', () => {
     test('sync local with existing data', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
         await checkWidget({id, ...item})
 
@@ -86,7 +94,7 @@ describe('sync via server - authorized sync', () => {
     })
 
     test('local receives update when change on server', async () => {
-        const store1 = createStore()
+        store1 = createStore()
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -97,7 +105,7 @@ describe('sync via server - authorized sync', () => {
     })
 
     test('server ignores illegal changes on client', async () => {
-        const store1 = createStore()
+        store1 = createStore()
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -114,7 +122,7 @@ describe('sync via server - authorized sync', () => {
     })
 
     test('can subscribe to changes', async () => {
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(100)
         const onNextWidgets = vi.fn()
         store1.observable('Widgets').subscribe(onNextWidgets)
@@ -133,8 +141,8 @@ describe('sync via server - authorized sync', () => {
     })
 
     test('only synchronizes with stores with correct database name', async () => {
-        const store1 = createStore()
-        const store2 = createStore('db2')
+        store1 = createStore()
+        store2 = createStore('db2')
         const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -145,8 +153,8 @@ describe('sync via server - authorized sync', () => {
 
     test('synchronizes with two stores with same database name', async () => {
         console.log('id', id)
-        const store1 = await createStore().init()
-        const store2 = await createStore().init()
+        store1 = await createStore().init()
+        store2 = await createStore().init()
         const checkWidget = (store: DataStore, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await wait(200)
@@ -172,8 +180,8 @@ describe('sync via server - authorized sync', () => {
         console.log('id1', id1, 'id2', id2)
         const item1 = {id: id1, userId: userId1, a:10, b:'foo'}
         const item2 = {id: id2, userId: userId2, a:20, b:'bar'}
-        const store1 = await createStore().init()
-        const store2 = await createStore().init()
+        store1 = await createStore().init()
+        store2 = await createStore().init()
         const checkWidget = (store: DataStore, id: string, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await wait(200)
@@ -191,7 +199,7 @@ describe('sync via server - authorized sync', () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
         mock_getIdToken.mockResolvedValueOnce(null)
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(500)
         expect(await store1.getById('Widgets', id, true)).toBe(null)
     })
@@ -200,7 +208,7 @@ describe('sync via server - authorized sync', () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
         mock_getIdToken.mockResolvedValueOnce(tokenFor('bad_user'))
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(500)
         expect(await store1.getById('Widgets', id, true)).toBe(null)
     })
@@ -214,6 +222,7 @@ describe('sync via server - full sync', () => {
     const createStore = (databaseName = 'db1')=> new TinyBaseDataStoreImpl({ databaseTypeName: dbType,  databaseInstanceName: databaseName, collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer})
 
     let worker: any
+    let store1: TinyBaseDataStoreImpl, store2: TinyBaseDataStoreImpl
     let callStore: any
 
     beforeAll(async () => {
@@ -228,6 +237,13 @@ describe('sync via server - full sync', () => {
             console.error('Error in worker.dispose',e)
         }
     })
+    
+    afterEach(async ()=> {
+        await store1?.close()
+        await store2?.close()
+        // @ts-ignore
+        store1 = store2 = undefined
+    })
 
     test('call store works', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -238,7 +254,21 @@ describe('sync via server - full sync', () => {
     test('sync local with existing data', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
+        expect(store1.isReadWrite).toBe(true)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
+        await checkWidget({id, ...item})
+
+        await callStore(dbType, 'db1', 'update', collectionName, id, {b: 'bar'})
+        await checkWidget({id, ...item, b: 'bar'})
+    })
+
+    test('sync local with existing data if readonly', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        store1 = await createStore().init()
+        expect(store1.isReadWrite).toBe(false)
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
         await checkWidget({id, ...item})
 
@@ -247,7 +277,7 @@ describe('sync via server - full sync', () => {
     })
 
     test('local receives update when change on server', async () => {
-        const store1 = createStore()
+        store1 = createStore()
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -258,7 +288,7 @@ describe('sync via server - full sync', () => {
     })
 
     test('server syncs changes on client', async () => {
-        const store1 = createStore()
+        store1 = createStore()
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -278,7 +308,7 @@ describe('sync via server - full sync', () => {
     })
 
     test('can subscribe to changes', async () => {
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(100)
         const onNextWidgets = vi.fn()
         store1.observable('Widgets').subscribe(onNextWidgets)
@@ -297,8 +327,8 @@ describe('sync via server - full sync', () => {
     })
 
     test('only synchronizes with stores with correct database name', async () => {
-        const store1 = createStore()
-        const store2 = createStore('db2')
+        store1 = createStore()
+        store2 = createStore('db2')
         const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -309,8 +339,8 @@ describe('sync via server - full sync', () => {
 
     test('synchronizes with two stores with same database name', async () => {
         console.log('id', id)
-        const store1 = await createStore().init()
-        const store2 = await createStore().init()
+        store1 = await createStore().init()
+        store2 = await createStore().init()
         const checkWidget = (store: DataStore, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await wait(200)
@@ -336,8 +366,8 @@ describe('sync via server - full sync', () => {
         console.log('id1', id1, 'id2', id2)
         const item1 = {id: id1, userId: userId1, a:10, b:'foo'}
         const item2 = {id: id2, userId: userId2, a:20, b:'bar'}
-        const store1 = await createStore().init()
-        const store2 = await createStore().init()
+        store1 = await createStore().init()
+        store2 = await createStore().init()
         const checkWidget = (store: DataStore, id: string, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await wait(200)
@@ -354,7 +384,7 @@ describe('sync via server - full sync', () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
         mock_getIdToken.mockResolvedValueOnce(null)
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(500)
         expect(await store1.getById('Widgets', id, true)).toBe(null)
     })
@@ -363,9 +393,45 @@ describe('sync via server - full sync', () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
         mock_getIdToken.mockResolvedValueOnce(tokenFor('bad_user'))
-        const store1 = await createStore().init()
+        store1 = await createStore().init()
         await wait(500)
         expect(await store1.getById('Widgets', id, true)).toBe(null)
+    })
+
+    test('server ignores illegal changes on client if readonly', async () => {
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        store1 = await createStore().init()
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        await wait(1000)
+        await checkWidget({id, ...item})
+
+        // @ts-ignore
+        store1.theDb.setCell(collectionName, id, 'json_data', JSON.stringify({id, ...item, b: 'bar'}))
+        await expect(await store1.getById(collectionName, id)).toStrictEqual({id, ...item, b: 'bar'})  // will be updated on client
+        console.log('Client update done')
+        await wait(200)
+
+        const itemOnServer = await callStore(dbType, 'db1', 'getById', collectionName, id)
+        expect(itemOnServer).toStrictEqual({id, ...item})  // not updated on server
+    })
+
+    test('client warns for illegal changes', async () => {
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        store1 = await createStore().init()
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        await wait(1000)
+        await checkWidget({id, ...item})
+
+        await expect(store1.update(collectionName, id, {b: 'bar'})).rejects.toHaveProperty('message', `Read only access`)
+        await expect(await store1.getById(collectionName, id)).toStrictEqual({id, ...item, b: 'foo'})  // will not be updated on client
+        await wait(200)
+
+        const itemOnServer = await callStore(dbType, 'db1', 'getById', collectionName, id)
+        expect(itemOnServer).toStrictEqual({id, ...item})  // not updated on server
     })
 
 })

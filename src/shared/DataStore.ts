@@ -1,5 +1,5 @@
 import Observable from 'zen-observable'
-import lodash, {isPlainObject} from 'lodash';
+import {isPlainObject} from 'lodash';
 
 const pendingFlag = Symbol('pending')
 export type SimpleCriteria = object
@@ -76,3 +76,6 @@ export interface BasicDataStore {
 export default interface DataStore extends BasicDataStore {
     observable(collection: CollectionName): Observable<UpdateNotification>
 }
+
+export const AuthStatusValues = ['readwrite', 'readonly'] as const
+export type AuthStatus = typeof AuthStatusValues[number] | null

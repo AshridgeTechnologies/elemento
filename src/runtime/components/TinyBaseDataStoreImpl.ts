@@ -1,5 +1,5 @@
 import DataStore, {
-    Add,
+    Add, AuthStatus, AuthStatusValues,
     CollectionName,
     Criteria,
     DataStoreObject,
@@ -18,7 +18,7 @@ import SendObservable from '../../util/SendObservable'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import {CellOrUndefined, createMergeableStore, MapCell, Store} from 'tinybase'
 import {createLocalPersister} from 'tinybase/persisters/persister-browser'
-import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client'
+import {createWsSynchronizer, WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client'
 import {mapObjIndexed, mergeDeepRight} from 'ramda'
 import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../../shared/convertData'
@@ -26,21 +26,23 @@ import {mapValues} from 'radash'
 
 const SERVER_SCHEME = 'ws://';
 
-type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
+type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, readonly?: boolean, debugSync?: boolean}
 
-const createStore = async (doNamespace: string, pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean) => {
+type NullableSynchronizer = WsSynchronizer<WebSocket> | null
+const createStore = async (doNamespace: string, pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean): Promise<[Store, NullableSynchronizer]> => {
     const store = createMergeableStore()
     if (persist) {
         const persister = createLocalPersister(store, 'local://' + syncServer + doNamespace + '/' + pathId)
         await persister.startAutoPersisting();
     }
 
+    let synchronizer: NullableSynchronizer = null
     if (sync) {
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const authToken = await getIdToken() ?? ''
         const wsUrl = SERVER_SCHEME + syncServer + doNamespace + '/' + pathId
         console.log('wsUrl', wsUrl)
-        const protocols = authToken ? [authToken, 'tb'] : undefined
+        const protocols = authToken ? [authToken, ...AuthStatusValues] : undefined
         const webSocket = new ReconnectingWebSocket(wsUrl, protocols) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
             console.log('Client receive', fromClientId, requestId, message)
@@ -50,7 +52,7 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
             console.log('Client send', toClientId, requestId, message)
             console.dir(body, {depth: 7})
         } : undefined
-        const synchronizer = await createWsSynchronizer(
+        synchronizer = await createWsSynchronizer(
             store,
             webSocket,
             1,
@@ -61,19 +63,20 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
 
         // If the websocket reconnects in the future, do another explicit sync.
         synchronizer.getWebSocket().addEventListener('open', () => {
-            synchronizer.load().then(() => synchronizer.save());
+            synchronizer?.load().then(() => synchronizer?.save());
         })
         synchronizer.getWebSocket().addEventListener('close', () => {
             console.info('websocket closed')
         })
     }
 
-    return store
+    return [store, synchronizer]
 }
 
 export default class TinyBaseDataStoreImpl implements DataStore {
     private initialised = false
     private theDb: Store | null = null
+    private synchronizer: NullableSynchronizer = null
     private readonly collections: CollectionConfig[]
     private authObserver: any = null
 
@@ -88,10 +91,12 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         return this.theDb
     }
 
+    get isReadWrite() { return this.synchronizer?.getWebSocket()?.protocol === 'readwrite' }
+
     async init(collectionName?: CollectionName) {
         if (!this.initialised) {
-            const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props
-            this.theDb = await createStore(databaseTypeName, databaseInstanceName, persist, sync, syncServer, debugSync)
+            const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props;
+            [this.theDb, this.synchronizer] = await createStore(databaseTypeName, databaseInstanceName, persist, sync, syncServer, debugSync)
             this.listenForChanges(this.theDb)
             this.initialised = true
         }
@@ -101,6 +106,11 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         }
 
         return this
+    }
+
+    async close() {
+        await this.synchronizer?.stopSync()
+        this.synchronizer?.getWebSocket().close()
     }
 
     private checkCollectionName(collectionName: CollectionName) {
@@ -145,6 +155,13 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     private getCurrentUser() {
         return currentUser()
     }
+
+    private checkIsReadWrite() {
+        if (!this.isReadWrite) {
+            throw new Error('Read only access')
+        }
+    }
+
     async getById(collectionName: CollectionName, id: Id, nullIfNotFound = false) {
         await this.init(collectionName)
         const jsonText = this.db.getCell(collectionName, id.toString(), 'json_data') as string | undefined
@@ -161,12 +178,14 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async add(collectionName: CollectionName, id: Id, item: DataStoreObject) {
         await this.init(collectionName)
+        this.checkIsReadWrite()
         const dbItem = convertToDbData(addIdToItem(item, id))
         this.db.setCell(collectionName, id.toString(), 'json_data', JSON.stringify(dbItem))
     }
 
     async addAll(collectionName: CollectionName, items: { [p: Id]: DataStoreObject }): Promise<void> {
         await this.init(collectionName)
+        this.checkIsReadWrite()
         const toDbItem = (item: DataStoreObject, id: Id) => convertToDbData(addIdToItem(item, id))
         const dbItems = Object.values(mapObjIndexed( toDbItem, items))
         this.db.transaction(() => {
@@ -178,6 +197,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async update(collectionName: CollectionName, id: Id, changes: object) {
         await this.init(collectionName)
+        this.checkIsReadWrite()
 
         const updateCell: MapCell = (cell: CellOrUndefined) => {
             if (cell === undefined) {
@@ -192,6 +212,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async remove(collectionName: CollectionName, id: Id) {
         await this.init(collectionName)
+        this.checkIsReadWrite()
         this.db.delRow(collectionName, id.toString())
     }
 

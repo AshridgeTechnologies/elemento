@@ -48,8 +48,8 @@ Tasks
 - ✅ Authorization for client connection
 - ✅ TBDSImpl can function in two different sync modes
 - ✅ Full two-way sync on personal apps
-- Readonly authorization
-- Warn if do illegal update on client with one-way sync
+- ✅ Readonly authorization
+- ✅ Warn if do illegal update on client with readonly sync
 - TBDSImpl clears data, notifies InvalidateAll and reconnects/disconnects when the auth changes
 - Generate datastore classes with auth functions
 - Generate bindings for the datastore classes

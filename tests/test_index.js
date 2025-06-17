@@ -29,7 +29,7 @@ const bigDecReviver = (key, value) => {
 
 export class TinyBaseDurableObject_A extends TinyBaseAuthSyncDurableObject {
   async authorizeUser(userId) {
-    return ['user99', 'user1', 'user2'].includes(userId)
+    return ['user99', 'user1', 'user2'].includes(userId) ? 'readonly' : null
   }
 
   authorizeUpdateData(userId, tableId, rowId, changes) {
@@ -40,7 +40,9 @@ export class TinyBaseDurableObject_A extends TinyBaseAuthSyncDurableObject {
 export class TinyBaseDurableObject_Full extends TinyBaseFullSyncDurableObject {
 
   async authorizeUser(userId) {
-    return ['user99', 'user1', 'user2'].includes(userId)
+    const rw_users = ['user99', 'user1', 'user2']
+    const ro_users = ['readonly_user']
+    return rw_users.includes(userId) ? 'readwrite' : ro_users.includes(userId) ? 'readonly' : null
   }
 }
 

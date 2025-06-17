@@ -1,6 +1,6 @@
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
-import {CollectionName, Id as DataStoreId} from '../shared/DataStore'
+import {AuthStatus, CollectionName, Id as DataStoreId} from '../shared/DataStore'
 import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
 import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
@@ -8,7 +8,6 @@ import {verifyToken} from './requestHandler'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
 import {getClientId} from './tinybaseUtils'
 
-type AuthStatus = 'limited' | null
 
 export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObject<any> implements TinyBaseDurableObject {
 
