@@ -77,5 +77,6 @@ export default interface DataStore extends BasicDataStore {
     observable(collection: CollectionName): Observable<UpdateNotification>
 }
 
+export const NullToken = 'nulltoken'
 export const AuthStatusValues = ['readwrite', 'readonly'] as const
 export type AuthStatus = typeof AuthStatusValues[number] | null

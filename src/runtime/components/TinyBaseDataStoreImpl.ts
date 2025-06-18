@@ -5,7 +5,7 @@ import DataStore, {
     DataStoreObject,
     Id,
     InvalidateAll,
-    MultipleChanges, queryMatcher,
+    MultipleChanges, NullToken, queryMatcher,
     Remove,
     Update,
     UpdateNotification,
@@ -39,10 +39,10 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
     let synchronizer: NullableSynchronizer = null
     if (sync) {
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
-        const authToken = await getIdToken() ?? ''
+        const authToken = await getIdToken() ?? NullToken
         const wsUrl = SERVER_SCHEME + syncServer + doNamespace + '/' + pathId
         console.log('wsUrl', wsUrl)
-        const protocols = authToken ? [authToken, ...AuthStatusValues] : undefined
+        const protocols = [authToken, ...AuthStatusValues]
         const webSocket = new ReconnectingWebSocket(wsUrl, protocols) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
             console.log('Client receive', fromClientId, requestId, message)
@@ -95,9 +95,13 @@ export default class TinyBaseDataStoreImpl implements DataStore {
 
     async init(collectionName?: CollectionName) {
         if (!this.initialised) {
-            const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props;
-            [this.theDb, this.synchronizer] = await createStore(databaseTypeName, databaseInstanceName, persist, sync, syncServer, debugSync)
-            this.listenForChanges(this.theDb)
+            await this.initStore()
+            this.authObserver = onAuthChange(async () => {
+                this.notifyAll(InvalidateAll)
+                await this.close()
+                await this.initStore()
+            })
+
             this.initialised = true
         }
 
@@ -106,6 +110,12 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         }
 
         return this
+    }
+
+    private async initStore() {
+        const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props;
+        [this.theDb, this.synchronizer] = await createStore(databaseTypeName, databaseInstanceName, persist, sync, syncServer, debugSync)
+        this.listenForChanges(this.theDb)
     }
 
     async close() {

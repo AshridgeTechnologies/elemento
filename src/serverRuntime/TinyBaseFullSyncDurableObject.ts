@@ -1,7 +1,7 @@
 import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
-import {AuthStatus, CollectionName, Id as DataStoreId} from '../shared/DataStore'
+import {AuthStatus, CollectionName, Id as DataStoreId, NullToken} from '../shared/DataStore'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
 import {getClientId} from './tinybaseUtils'
 import {User} from '../shared/subjects'
@@ -41,7 +41,7 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
         if (clientId) {
             const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
             const [authToken] = protocolHeader.split(/ *, */)
-            const user = authToken ? await this.verifyToken(request, authToken) : null
+            const user = authToken !== NullToken ? await this.verifyToken(request, authToken) : null
             const authStatus = await this.authorizeUser(user?.id)
             if (!authStatus) {
                 console.info('Unauthorized sync connect rejected', user, clientId)

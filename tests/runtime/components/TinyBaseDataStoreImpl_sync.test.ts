@@ -9,6 +9,7 @@ import * as authentication from '../../../src/runtime/components/authentication'
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
+const mock_onAuthChange = authentication.onAuthChange as MockedFunction<any>
 
 const tokenFor = (userId: string) => jwtEncode({
     type: 'user',
@@ -39,8 +40,7 @@ const callStoreFn = (worker: any) => (dbTypeName: string, dbName: string, func: 
     })
 }
 const startWorker = async (port: number, dbType: string) => {
-    const worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc',
-    dev: {server: {port}}});
+    const worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc', dev: {server: {port}}});
     await Promise.all(['db1', 'db2', 'db3'].map(dbName => callStoreFn(worker)(dbType, dbName, 'test_clear', 'Widgets') ))
     console.log('Cleared databases')
     await wait(200)
@@ -194,7 +194,6 @@ describe('sync via server - authorized sync', () => {
         await expect(store2.getById('Widgets', id1, true)).resolves.toBeNull()
     })
 
-
     test('rejects sync if not logged in', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
@@ -217,7 +216,7 @@ describe('sync via server - authorized sync', () => {
 describe('sync via server - full sync', () => {
     const port = 9502
     const syncServer = `localhost:${port}/do/`
-    const dbType = 'TinyBaseFullSyncDurableObject'
+    const dbType = 'TinyBaseDurableObject_Full'
     const debugSync = false
     const createStore = (databaseName = 'db1')=> new TinyBaseDataStoreImpl({ databaseTypeName: dbType,  databaseInstanceName: databaseName, collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer})
 
@@ -256,7 +255,7 @@ describe('sync via server - full sync', () => {
 
         store1 = await createStore().init()
         expect(store1.isReadWrite).toBe(true)
-        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById(collectionName, id, true)), 100, 2000)
         await checkWidget({id, ...item})
 
         await callStore(dbType, 'db1', 'update', collectionName, id, {b: 'bar'})
@@ -398,6 +397,71 @@ describe('sync via server - full sync', () => {
         expect(await store1.getById('Widgets', id, true)).toBe(null)
     })
 
+    test('does sync without login if authorized', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('bad_user'))
+        store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+    })
+
+    test('updates data and notifies when login without observers', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        let onAuthChangeCallback: any
+        mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        onAuthChangeCallback()
+
+        await wait(500)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+        await checkWidget({id, ...item})
+    })
+
+    test('updates data and notifies observers when login', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        let onAuthChangeCallback: any
+        mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+
+        const onChange = vi.fn()
+        store1.observable('Widgets').subscribe(onChange)
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        onAuthChangeCallback()
+
+        await wait(500)
+        expect(onChange).toHaveBeenCalledWith({collection: 'Widgets', type: 'InvalidateAll'})
+    })
+
+    test('updates data and notifies observers when logout', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        let onAuthChangeCallback: any
+        mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
+
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        store1 = await createStore().init()
+        const onChange = vi.fn()
+        store1.observable('Widgets').subscribe(onChange)
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toEqual({id, ...item})
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        onAuthChangeCallback()
+
+        expect(onChange).toHaveBeenCalledWith({collection: 'Widgets', type: 'InvalidateAll'})
+        await waitUntil(async ()=> (await store1.getById('Widgets', id, true)) === null, 100, 2000)
+    })
+
     test('server ignores illegal changes on client if readonly', async () => {
         mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
         store1 = await createStore().init()
@@ -433,5 +497,58 @@ describe('sync via server - full sync', () => {
         const itemOnServer = await callStore(dbType, 'db1', 'getById', collectionName, id)
         expect(itemOnServer).toStrictEqual({id, ...item})  // not updated on server
     })
+
+})
+
+describe('sync via server - full sync without login', () => {
+    const port = 9504
+    const syncServer = `localhost:${port}/do/`
+    const dbType = 'TinyBaseDurableObject_NoAuth'
+    const debugSync = false
+    const createStore = (databaseName = 'db1') => new TinyBaseDataStoreImpl({
+        databaseTypeName: dbType,
+        databaseInstanceName: databaseName,
+        collections: 'Widgets;Gadgets',
+        persist: false,
+        sync: true,
+        syncServer
+    })
+
+    let worker: any
+    let store1: TinyBaseDataStoreImpl
+    let callStore: any
+
+    beforeAll(async () => {
+        worker = await startWorker(port, dbType)
+        callStore = callStoreFn(worker)
+        mock_getIdToken.mockResolvedValue(null)
+    })
+
+    afterAll(async () => {
+        try {
+            await worker.dispose();
+        } catch (e) {
+            console.error('Error in worker.dispose', e)
+        }
+    })
+
+    afterEach(async () => {
+        await store1?.close()
+        // @ts-ignore
+        store1 = undefined
+    })
+
+    test('sync local with existing data', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        store1 = await createStore().init()
+        expect(store1.isReadWrite).toBe(false)
+        await wait(3000)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById(collectionName, id)), 100, 1500)
+        await checkWidget({id, ...item})
+
+        await callStore(dbType, 'db1', 'update', collectionName, id, {b: 'bar'})
+        await checkWidget({id, ...item, b: 'bar'})
+    }, 10000)
 
 })
