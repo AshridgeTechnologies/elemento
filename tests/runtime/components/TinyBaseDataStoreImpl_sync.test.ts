@@ -86,6 +86,7 @@ describe('sync via server - authorized sync', () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
         store1 = await createStore().init()
+        expect(store1.isReadWrite).toBe(false)
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id, true)), 100, 2000)
         await checkWidget({id, ...item})
 
@@ -500,6 +501,58 @@ describe('sync via server - full sync', () => {
 
 })
 
+describe('sync via server - auth sync without login', () => {
+    const port = 9505
+    const syncServer = `localhost:${port}/do/`
+    const dbType = 'TinyBaseDurableObject_B'
+    const debugSync = false
+    const createStore = (databaseName = 'db1') => new TinyBaseDataStoreImpl({
+        databaseTypeName: dbType,
+        databaseInstanceName: databaseName,
+        collections: 'Widgets;Gadgets',
+        persist: false,
+        sync: true,
+        syncServer
+    })
+
+    let worker: any
+    let store1: TinyBaseDataStoreImpl
+    let callStore: any
+
+    beforeAll(async () => {
+        worker = await startWorker(port, dbType)
+        callStore = callStoreFn(worker)
+        mock_getIdToken.mockResolvedValue(null)
+    })
+
+    afterAll(async () => {
+        try {
+            await worker.dispose();
+        } catch (e) {
+            console.error('Error in worker.dispose', e)
+        }
+    })
+
+    afterEach(async () => {
+        await store1?.close()
+        // @ts-ignore
+        store1 = undefined
+    })
+
+    test('sync local with existing data', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+
+        store1 = await createStore().init()
+        expect(store1.isReadWrite).toBe(false)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById(collectionName, id)), 100, 1500)
+        await checkWidget({id, ...item})
+
+        await callStore(dbType, 'db1', 'update', collectionName, id, {b: 'bar'})
+        await checkWidget({id, ...item, b: 'bar'})
+    }, 10000)
+
+})
+
 describe('sync via server - full sync without login', () => {
     const port = 9504
     const syncServer = `localhost:${port}/do/`
@@ -543,7 +596,6 @@ describe('sync via server - full sync without login', () => {
 
         store1 = await createStore().init()
         expect(store1.isReadWrite).toBe(false)
-        await wait(3000)
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById(collectionName, id)), 100, 1500)
         await checkWidget({id, ...item})
 

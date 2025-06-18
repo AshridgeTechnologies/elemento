@@ -15,3 +15,4 @@ coverage
 /playwright/.cache/
 /playwright/report
 /tests/serverRuntime/.wrangler/
+/tests/.wrangler/

@@ -182,6 +182,7 @@ export class PerClientWsServerDurableObject<Env = unknown>
         if (size(this.#getClients()) == 1) {
             this.onPathId(pathId, -1);
         }
+        this.clientHandlers.delete(clientId)
     }
 
     #getClients(tag?: Id) {

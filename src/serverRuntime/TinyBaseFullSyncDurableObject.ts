@@ -48,11 +48,8 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
                 return new Response('Unauthorized', {status: 401})
             }
 
+            response.headers.append('sec-websocket-protocol', authStatus)
             this.clientAuthStatus.set(clientId, authStatus)
-
-            const finalResponse = new Response(response.body, response)
-            finalResponse.headers.append('sec-websocket-protocol', authStatus)
-            return finalResponse
         }
 
         return response

@@ -33,6 +33,10 @@
       {
         "name": "TinyBaseDurableObject_A",
         "class_name": "TinyBaseDurableObject_A"
+      },
+      {
+        "name": "TinyBaseDurableObject_B",
+        "class_name": "TinyBaseDurableObject_B"
       }
     ]
   },

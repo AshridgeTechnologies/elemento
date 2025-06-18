@@ -1,6 +1,6 @@
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
-import {AuthStatus, CollectionName, Id as DataStoreId} from '../shared/DataStore'
+import {AuthStatus, CollectionName, Id as DataStoreId, NullToken} from '../shared/DataStore'
 import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
 import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
@@ -33,21 +33,18 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
         const clientId = getClientId(request)
         if (clientId) {
             const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
-            const [authToken, dummyProtocol] = protocolHeader.split(/ *, */)
-            const user = authToken ? await this.verifyToken(request, authToken) : null
+            const [authToken] = protocolHeader.split(/ *, */)
+            const user = authToken !== NullToken ? await this.verifyToken(request, authToken) : null
             const authStatus = await this.authorizeUser(user?.id)
             if (!authStatus) {
+                console.info('Unauthorized sync connect rejected', user, clientId)
                 return new Response('Unauthorized', {status: 401})
             }
 
+            response.headers.append('sec-websocket-protocol', authStatus)
+
             console.log('Client/User', clientId, user?.id)
             this.clientUsers.set(clientId, user?.id)
-
-            if (dummyProtocol) {
-                const finalResponse = new Response(response.body, response)
-                finalResponse.headers.append('sec-websocket-protocol', dummyProtocol)
-                return finalResponse
-            }
         }
 
         return response

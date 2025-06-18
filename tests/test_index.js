@@ -37,6 +37,16 @@ export class TinyBaseDurableObject_A extends TinyBaseAuthSyncDurableObject {
   }
 }
 
+export class TinyBaseDurableObject_B extends TinyBaseAuthSyncDurableObject {
+  async authorizeUser(userId) {
+    return 'readonly'
+  }
+
+  authorizeUpdateData(userId, tableId, rowId, changes) {
+    return tableId = 'Widgets'
+  }
+}
+
 export class TinyBaseDurableObject_Full extends TinyBaseFullSyncDurableObject {
 
   async authorizeUser(userId) {

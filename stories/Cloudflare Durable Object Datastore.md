@@ -52,7 +52,7 @@ Tasks
 - ✅ Warn if do illegal update on client with readonly sync
 - ✅ TBDSImpl clears data, notifies InvalidateAll and reconnects/disconnects when the auth changes
 - ✅ FullSync can work readonly without login if auth allows
-- AuthSync authorization aligned with full sync - including without login
+- ✅ AuthSync authorization aligned with full sync - including without login
 - TBDS wrapper notifies errors
 - TBDS wrapper disconnects when unmounted
 - Generate datastore classes with auth functions
