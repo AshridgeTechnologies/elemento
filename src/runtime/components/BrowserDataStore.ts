@@ -1,22 +1,23 @@
-import IdbDataStoreImpl from './IdbDataStoreImpl'
+import IdbDataStoreImpl, {Properties as DataStoreProperties} from './IdbDataStoreImpl'
 import DataStore from '../../shared/DataStore'
 import {DataStoreState} from './DataStoreState'
-import {parseCollections} from '../../shared/CollectionConfig'
+import {equals} from 'ramda'
 
 type Properties = {path: string}
 
-export default function BrowserDataStore({path}: Properties) {
+export default function BrowserDataStore(_props: Properties) {
     return null
 }
 
-export class BrowserDataStoreState extends DataStoreState {
+export class BrowserDataStoreState extends DataStoreState<DataStoreProperties> {
 
     protected createDataStore(): DataStore {
-        const collectionNames = parseCollections(this.props.collections).map( conf => conf.name )
-        const {databaseName} = this.props
-        return new IdbDataStoreImpl({collectionNames, databaseName})
+        return new IdbDataStoreImpl(this.props)
+    }
+
+    protected isEqualTo(newObj: this): boolean {
+        return equals(newObj.props, this.props)
     }
 }
 
 BrowserDataStore.State = BrowserDataStoreState
-

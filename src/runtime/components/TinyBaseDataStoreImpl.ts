@@ -26,9 +26,10 @@ import {mapValues} from 'radash'
 
 const SERVER_SCHEME = 'ws://';
 
-type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, readonly?: boolean, debugSync?: boolean}
+export type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
 
 type NullableSynchronizer = WsSynchronizer<WebSocket> | null
+
 const createStore = async (doNamespace: string, pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean): Promise<[Store, NullableSynchronizer]> => {
     const store = createMergeableStore()
     if (persist) {

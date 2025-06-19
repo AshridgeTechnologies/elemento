@@ -15,10 +15,11 @@ vi.mock('../../../src/runtime/appFunctions')
 
 let dataStore: IdbDataStoreImpl
 let state: any
+const dataStoreProps = {databaseName: 'db1', collectionNames:['Gadgets','Widgets']}
 
 beforeEach(() => {
     dataStore = mockDataStore()
-    state = new BrowserDataStore.State()
+    state = new BrowserDataStore.State(dataStoreProps)
     state.state.dataStore = dataStore
 } )
 
@@ -39,13 +40,13 @@ test('produces empty output', () => {
 })
 
 test('compares state props correctly', () => {
-    const state = new BrowserDataStore.State({databaseName: 'db1', collections:'Gadgets;Widgets'})
-    const newState = new BrowserDataStore.State({databaseName: 'db1', collections:'Gadgets;Widgets'})
+    const state = new BrowserDataStore.State(dataStoreProps)
+    const newState = new BrowserDataStore.State({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})
     expect(state.updateFrom(newState)).toBe(state)
 })
 
 test('creates its own data store if not supplied', async () => {
-    const state = new BrowserDataStore.State()
+    const state = new BrowserDataStore.State(dataStoreProps)
     const result = state.add('Widgets', 'w1', {a: 99})
     await expect(result).resolves.toBeUndefined()
 })
@@ -104,7 +105,7 @@ describe('handles errors', () => {
     beforeEach(() => {
         (appFunctions.NotifyError as MockedFunction<any>).mockReset()
         dataStore = errorDataStore()
-        state = new BrowserDataStore.State()
+        state = new BrowserDataStore.State(dataStoreProps)
         state.state.dataStore = dataStore
     } )
 

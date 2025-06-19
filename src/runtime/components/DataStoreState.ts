@@ -1,17 +1,15 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {shallow} from 'zustand/shallow'
 
-type ExternalProperties = {databaseName: string, collections: string}
 type StateProperties = {dataStore?: DataStore}
 
 const {NotifyError} = appFunctions
 
-export abstract class DataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements DataStore, ComponentState<DataStoreState> {
+export abstract class DataStoreState<PropsType extends object> extends BaseComponentState<PropsType, StateProperties>
+    implements DataStore, ComponentState<DataStoreState<PropsType>> {
 
-    constructor(props: ExternalProperties = {databaseName: 'AppDatabase', collections: ''}) {
+    constructor(props: PropsType) {
         super(props)
     }
 

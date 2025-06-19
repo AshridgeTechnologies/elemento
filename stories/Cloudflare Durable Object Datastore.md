@@ -53,7 +53,7 @@ Tasks
 - ✅ TBDSImpl clears data, notifies InvalidateAll and reconnects/disconnects when the auth changes
 - ✅ FullSync can work readonly without login if auth allows
 - ✅ AuthSync authorization aligned with full sync - including without login
-- TBDS wrapper notifies errors
+- ✅ TBDS wrapper notifies errors
 - TBDS wrapper disconnects when unmounted
 - Generate datastore classes with auth functions
 - Generate bindings for the datastore classes

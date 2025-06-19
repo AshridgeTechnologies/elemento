@@ -24,7 +24,8 @@ const convertToDbValue = (value: any) => value instanceof BigNumber ? DECIMAL_PR
 const convertToDbData = (data: any) => mapObjIndexed(convertToDbValue, data)
 const addIdToItem = (item: DataStoreObject, id: Id) => ({...item, id})
 
-type Properties = {databaseName: string, collectionNames: string[]}
+export type Properties = {databaseName: string, collectionNames: string[]}
+
 export default class IdbDataStoreImpl implements DataStore {
     private db: Dexie
     constructor(private props: Properties) {
