@@ -1,5 +1,5 @@
 import Project, {TOOLS_ID} from '../model/Project'
-import {generate} from './Generator'
+import Generator, {generate} from './Generator'
 import App from '../model/App'
 import {ASSET_DIR} from '../shared/constants'
 import {AllErrors} from "./Types"
@@ -9,6 +9,7 @@ import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
 import CloudflareDataStore from '../model/CloudflareDataStore'
 import TinyBaseDataStore from '../model/TinyBaseDataStore'
+import {flatMap} from 'lodash'
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -254,23 +255,16 @@ ${durableObjectBindings}
 `.trimStart()
     }
 
-    private durableObjectClass(el: TinyBaseDataStore) {
-        const authUser = !!el.authorizeUser
-        const authSync = !!el.authorizeData
-        const baseClass = authSync ? 'TinyBaseAuthSyncDurableObject' : 'TinyBaseFullSyncDurableObject'
-        const authUserFn = authUser ? `authorizeUser(\$userId) { ${el.authorizeUser?.expr} }` : ''
-        const authDataFn = authSync ? `authorizeData(\$userId, \$tableId, \$rowId, \$changes) { ${el.authorizeData.expr} }` : ''
-        return `export class ${el.codeName} extends ${baseClass} {
-            ${authUserFn}
-            ${authDataFn}
-        }`
+    private allDurableObjectClasses() {
+        const apps = this.project.findChildElements(App)
+        return flatMap(apps.map( app => new Generator(app, this.project).generateDurableObjectClasses()))
     }
 
     private indexJs() {
         const serverAppNames = this.project.findElementsBy( el => el.kind === 'ServerApp').map( el => el.codeName )
         const serverImports = serverAppNames.map( name => `import ${name} from './server/${name}.mjs'`).join('\n')
         const serverList = serverAppNames.join(', ')
-        const doClasses = this.syncedTinyBaseStores.map( el => this.durableObjectClass(el)).join('\n\n')
+        const doClasses = this.allDurableObjectClasses().join('\n\n')
 
         return `
 import {cloudflareFetch, TinyBaseFullSyncDurableObject, TinyBaseAuthSyncDurableObject} from './server/serverRuntime.mjs'

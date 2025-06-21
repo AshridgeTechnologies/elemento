@@ -128,6 +128,23 @@ export default class Generator {
         }
     }
 
+    generateDurableObjectClasses(): string[] {
+        const durableObjectClass = (el: TinyBaseDataStore) => {
+            const authUser = !!el.authorizeUser
+            const authSync = !!el.authorizeData
+            const baseClass = authSync ? 'TinyBaseAuthSyncDurableObject' : 'TinyBaseFullSyncDurableObject'
+            const authUserFn = authUser ? `authorizeUser = ${this.getExpr(el, 'authorizeUser', 'multilineExpression', ['$userId'])} }` : ''
+            const authDataFn = authSync ? `authorizeData = ${this.getExpr(el, 'authorizeData', 'multilineExpression', ['$userId', '$tableId', '$rowId', '$changes'])} }` : ''
+            return `export class ${el.codeName} extends ${baseClass} {
+    ${authUserFn}
+    ${authDataFn}
+}`
+        }
+
+        const syncedTinyBaseStores = this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer) as TinyBaseDataStore[]
+        return syncedTinyBaseStores.map(el => durableObjectClass(el))
+    }
+
     private generateFunctionImports(app: BaseApp) {
         const generateImport = ({source, codeName, exportName}: FunctionImport) => {
             const isHttp = source?.match(/^https?:\/\//)
