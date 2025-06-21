@@ -32,7 +32,7 @@ export class TinyBaseDurableObject_A extends TinyBaseAuthSyncDurableObject {
     return ['user99', 'user1', 'user2'].includes(userId) ? 'readonly' : null
   }
 
-  authorizeUpdateData(userId, tableId, rowId, changes) {
+  authorizeData(userId, tableId, rowId, changes) {
     return changes.userId === undefined || changes.userId === userId
   }
 }
@@ -42,7 +42,7 @@ export class TinyBaseDurableObject_B extends TinyBaseAuthSyncDurableObject {
     return 'readonly'
   }
 
-  authorizeUpdateData(userId, tableId, rowId, changes) {
+  authorizeData(userId, tableId, rowId, changes) {
     return tableId = 'Widgets'
   }
 }

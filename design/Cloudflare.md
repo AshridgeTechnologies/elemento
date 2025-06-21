@@ -81,6 +81,7 @@ Issues
 - How to handle client runtime - dynamic import from elemento site, import from deployed site, bundle before deploy, get from elemento, get from npm
 - How to handle server runtime - get from elemento, get from npm? where to do it?
 - How to set up a cloudflare project from scratch
+  - Need KV datastore for auth, with id in settings
 
 Cloudflare project scenario
 ---------------------------

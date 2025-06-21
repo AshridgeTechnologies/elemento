@@ -7,7 +7,7 @@ import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote} fro
 import Element from '../model/Element'
 import {without} from 'ramda'
 import Parser from './Parser'
-import {CombinedPropertyValue, EventActionPropertyDef, PropertyValue} from '../model/Types'
+import {EventActionPropertyDef, PropertyValue} from '../model/Types'
 import {dataTypeElementTypes} from '../model/elements'
 
 const indentLevel1 = '    '

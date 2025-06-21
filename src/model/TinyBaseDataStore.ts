@@ -1,12 +1,18 @@
-import {ComponentType, ParentType, PropertyDef, PropertyExpr} from './Types'
+import {ComponentType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValue, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {parseCollections} from '../shared/CollectionConfig'
+import {Id} from 'tinybase'
 
-type Properties = {
-    readonly collections?: string,
-    readonly serverApp?: PropertyExpr,
-}
+type Properties = Partial<Readonly<{
+    collections: string,
+    storeOnDevice: boolean,
+    syncWithServer: boolean,
+    databaseName: PropertyValueType<string>,
+    authorizeUser: PropertyExpr,
+    authorizeData: PropertyExpr,
+    serverUrl: PropertyValueType<string>,
+}>>
+
 export default class TinyBaseDataStore extends BaseElement<Properties> implements Element {
 
     readonly kind = 'TinyBaseDataStore'
@@ -15,13 +21,22 @@ export default class TinyBaseDataStore extends BaseElement<Properties> implement
     type(): ComponentType { return 'statefulUI' }
 
     get collections() {return this.properties.collections}
-    get serverApp() {return this.properties.serverApp}
+    get storeOnDevice() {return this.properties.storeOnDevice ?? false}
+    get syncWithServer() {return this.properties.syncWithServer ?? false}
+    get databaseName() {return this.properties.databaseName}
+    get authorizeUser() {return this.properties.authorizeUser}
+    get authorizeData() {return this.properties.authorizeData}
+    get serverUrl() {return this.properties.serverUrl}
 
     get propertyDefs(): PropertyDef[] {
         return [
             propDef('collections', 'string multiline', {state: true, fixedOnly: true}),
-            propDef('serverApp', 'expr', {state: true}),
+            propDef('storeOnDevice', 'boolean', {state: true, fixedOnly: true}),
+            propDef('syncWithServer', 'boolean', {state: true, fixedOnly: true}),
+            propDef('databaseName', 'string', {state: true}),
+            propDef('authorizeUser', eventAction('$userId'), {state: true}),
+            propDef('authorizeData', eventAction('$userId', '$tableId', '$rowId', '$changes'), {state: true}),
+            propDef('serverUrl', 'string', {state: true}),
         ]
     }
 }
-

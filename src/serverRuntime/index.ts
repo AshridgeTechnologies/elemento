@@ -1,4 +1,5 @@
-export {TinyBaseDurableObject} from './TinyBaseDurableObject'
+export {TinyBaseFullSyncDurableObject} from './TinyBaseFullSyncDurableObject'
+export {TinyBaseAuthSyncDurableObject} from './TinyBaseAuthSyncDurableObject'
 export {cloudflareFetch}  from './cloudflareWorker'
 export {handleServerRequest}  from './requestHandler'
 export {globalFunctions} from './globalFunctions'

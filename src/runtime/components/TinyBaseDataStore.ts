@@ -1,15 +1,24 @@
 import DataStore from '../../shared/DataStore'
 import {DataStoreState} from './DataStoreState'
-import TinyBaseDataStoreImpl from './TinyBaseDataStoreImpl'
+import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from './TinyBaseDataStoreImpl'
+import {useEffect} from 'react'
+import {useObject} from '../appStateHooks'
 
 type Properties = {path: string}
-import {type Properties as DataStoreProperties} from './TinyBaseDataStoreImpl'
 
-export default function TinyBaseDataStore(_props: Properties) {
+export default function TinyBaseDataStore({path}: Properties) {
+    const state: TinyBaseDataStoreState = useObject(path)
+
+    useEffect(() => () => state.close(), [])
     return null
 }
 
 export class TinyBaseDataStoreState extends DataStoreState<DataStoreProperties> {
+
+    close() {
+        const store = this.state.dataStore as TinyBaseDataStoreImpl | undefined
+        store?.close()
+    }
 
     protected createDataStore(): DataStore {
         return new TinyBaseDataStoreImpl(this.props)

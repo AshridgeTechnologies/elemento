@@ -8,6 +8,7 @@ import {flatten, pickBy} from 'ramda'
 import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
 import CloudflareDataStore from '../model/CloudflareDataStore'
+import TinyBaseDataStore from '../model/TinyBaseDataStore'
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -92,6 +93,7 @@ export default class ProjectBuilder {
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
+    private get syncedTinyBaseStores() { return this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer ) as TinyBaseDataStore[] }
     private get runtimeLoader() { return this.props.runtimeLoader }
 
     async writeProjectFiles() {
@@ -117,9 +119,7 @@ export default class ProjectBuilder {
         apps.forEach(app => this.buildClientAppFiles(app))
         const tools: Tool[] = project.findElement(TOOLS_ID)?.elements?.filter( el => el.kind === 'Tool' ) as Tool[] ?? []
         tools.forEach(tool => this.buildToolAppFiles(tool))
-        if (this.project.hasServerApps) {
-            await this.buildServerAppFiles()
-        }
+        await this.buildServerAppFiles()
     }
 
     private buildRootFiles() {
@@ -189,6 +189,14 @@ export default class ProjectBuilder {
             "database_id": "${cfds.databaseId}"
         }`
         }).join(',\n')
+
+        const durableObjectBindings = this.syncedTinyBaseStores.map(el => `
+        {
+            "name": "${el.codeName}",
+            "class_name": "${el.codeName}"
+        }`).join(',\n')
+        const migrationClasses = this.syncedTinyBaseStores.map( el => `"${el.codeName}"`).join(', ')
+
         return `
 {
     "$schema": "node_modules/wrangler/config-schema.json",
@@ -211,20 +219,17 @@ export default class ProjectBuilder {
   ],
     "d1_databases": [
 ${d1DatabaseBindings}
-    ]
+    ],
     
   "durable_objects": {
     "bindings": [
-      {
-        "name": "TinyBaseDurableObjectsXXX",
-        "class_name": "TinyBaseDurableObject"
-      }
+${durableObjectBindings}    
     ]
   },
 
   "migrations": [
     {
-      "tag": "v1", "new_classes": ["TinyBaseDurableObject"]
+      "tag": "v1", "new_sqlite_classes": [${migrationClasses}]
     }
   ]
 }
@@ -249,17 +254,31 @@ ${d1DatabaseBindings}
 `.trimStart()
     }
 
+    private durableObjectClass(el: TinyBaseDataStore) {
+        const authUser = !!el.authorizeUser
+        const authSync = !!el.authorizeData
+        const baseClass = authSync ? 'TinyBaseAuthSyncDurableObject' : 'TinyBaseFullSyncDurableObject'
+        const authUserFn = authUser ? `authorizeUser(\$userId) { ${el.authorizeUser?.expr} }` : ''
+        const authDataFn = authSync ? `authorizeData(\$userId, \$tableId, \$rowId, \$changes) { ${el.authorizeData.expr} }` : ''
+        return `export class ${el.codeName} extends ${baseClass} {
+            ${authUserFn}
+            ${authDataFn}
+        }`
+    }
+
     private indexJs() {
         const serverAppNames = this.project.findElementsBy( el => el.kind === 'ServerApp').map( el => el.codeName )
         const serverImports = serverAppNames.map( name => `import ${name} from './server/${name}.mjs'`).join('\n')
         const serverList = serverAppNames.join(', ')
+        const doClasses = this.syncedTinyBaseStores.map( el => this.durableObjectClass(el)).join('\n\n')
+
         return `
-import {cloudflareFetch, TinyBaseDurableObject} from './server/serverRuntime.mjs'
+import {cloudflareFetch, TinyBaseFullSyncDurableObject, TinyBaseAuthSyncDurableObject} from './server/serverRuntime.mjs'
 import status from './server/status.mjs'
 ${serverImports}
 const serverApps = {status, ${serverList}}
 
-export {TinyBaseDurableObject}
+${doClasses}
 
 export default {
   async fetch(request, env, ctx) {

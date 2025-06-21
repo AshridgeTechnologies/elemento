@@ -58,6 +58,7 @@ import ScreenKeyboard from './ScreenKeyboard'
 import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
+import TinyBaseDataStore from './TinyBaseDataStore'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -106,6 +107,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         BrowserDataStore: BrowserDataStore,
         FirestoreDataStore: FirestoreDataStore,
         CloudflareDataStore: CloudflareDataStore,
+        TinyBaseDataStore: TinyBaseDataStore,
         MemoryDataStore: MemoryDataStore,
         Function: Function,
         FunctionImport: FunctionImport,

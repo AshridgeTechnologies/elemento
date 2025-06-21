@@ -58,10 +58,10 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
         const jsonData = changes['json_data' as keyof object] as string
         const unpackedChanges = JSON.parse(jsonData) ?? {}
         const userId = this.clientUsers.get(clientId)
-        return this.authorizeUpdateData(userId, tableId, rowId, unpackedChanges);
+        return this.authorizeData(userId, tableId, rowId, unpackedChanges);
     }
 
-    protected authorizeUpdateData(userId: Id | undefined, tableId: Id, rowId: Id, changes: object): boolean {
+    protected authorizeData(_userId: Id | undefined, _tableId: Id, _rowId: Id, _changes: object): boolean {
         return true
     }
 

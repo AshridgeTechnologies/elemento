@@ -80,6 +80,7 @@ export type ElementType =
     'Block' |
     'FirestoreDataStore' |
     'CloudflareDataStore' |
+    'TinyBaseDataStore' |
     'ServerApp' |
     'ServerAppConnector' |
     'Adapter' |

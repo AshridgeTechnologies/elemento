@@ -373,3 +373,18 @@ Decisions
 - Route to the getWsServerDurableObjectFetch using correct binding
 
 
+Part 4 - Generating Durable Object class
+========================================
+
+Forces
+------
+
+- Need to parse expressions in authorizeUser and authorizeData
+- May have client only, server only or both
+- Parsing lives in the Generator classes
+- Only the client side needs authorizeUser and authorizeData - server can access anything
+
+Decision
+--------
+
+- Extra type of file in client Generator

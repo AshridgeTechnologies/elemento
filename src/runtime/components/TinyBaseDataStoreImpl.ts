@@ -1,5 +1,5 @@
 import DataStore, {
-    Add, AuthStatus, AuthStatusValues,
+    Add, AuthStatusValues,
     CollectionName,
     Criteria,
     DataStoreObject,
@@ -11,7 +11,7 @@ import DataStore, {
     UpdateNotification,
     UpdateType
 } from '../../shared/DataStore'
-import {currentUser, getIdToken, onAuthChange} from './authentication'
+import {getIdToken, onAuthChange} from './authentication'
 
 import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
@@ -133,9 +133,8 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     private listenForChanges(store: Store) {
         type Change = [collectionName: string, changeType: UpdateType, id: Id, changes?: DataStoreObject]
         let changes: Change[] = []
-        store.addCellListener(null, null, 'json_data', (store, tableId, rowId, cellId, newCell, oldCell, getCellChange) => {
+        store.addCellListener(null, null, 'json_data', (_store, tableId, rowId, _cellId, newCell, oldCell, _getCellChange) => {
             const changeType = oldCell === undefined ? Add : newCell === undefined ? Remove : Update
-            //console.log(`Cell ${cellId} of ${rowId} row in ${tableId} ${changeType}`, oldCell, newCell)
             const change = (): Change => {
                 switch (changeType) {
                     case Add:
@@ -162,10 +161,6 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     }
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()
-
-    private getCurrentUser() {
-        return currentUser()
-    }
 
     private checkIsReadWrite() {
         if (!this.isReadWrite) {

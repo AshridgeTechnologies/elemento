@@ -40,6 +40,7 @@ import ComponentInstance from '../model/ComponentInstance'
 import OutputProperty from '../model/OutputProperty'
 import BaseElement from '../model/BaseElement'
 import InputProperty from '../model/InputProperty'
+import TinyBaseDataStore from '../model/TinyBaseDataStore'
 
 export type DebugErrors = {[name: string]: string}
 
@@ -677,6 +678,20 @@ ${generateChildren(form, indentLevel2, form)}
         if (element.kind === 'Form') {
             const formName = this.functionNamePrefix(containingElement) + element.codeName
             return `new ${formName}.State(${objectBuilder(element.codeName, modelProperties(), true)})`
+        }
+
+        if (element.kind === 'TinyBaseDataStore') {
+            const store = element as TinyBaseDataStore
+            const modelProps = modelProperties()
+            const generatedProps = {
+                collections: modelProps.collections,
+                databaseTypeName: quote(store.codeName),
+                databaseInstanceName: modelProps.databaseName,
+                persist: modelProps.storeOnDevice,
+                sync: modelProps.syncWithServer,
+                serverUrl: modelProps.serverUrl
+            }
+            return `new ${runtimeElementName(element)}.State(${objectBuilder(element.codeName, generatedProps, true)})`
         }
 
         if (this.project.componentTypeIs(element, 'statefulUI', 'background')) {
