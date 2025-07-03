@@ -11,7 +11,7 @@ import DataStore, {
     UpdateNotification,
     UpdateType
 } from '../../shared/DataStore'
-import {getIdToken, onAuthChange} from './authentication'
+import {currentUser, getIdToken, onAuthChange} from './authentication'
 
 import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
@@ -29,6 +29,8 @@ const SERVER_SCHEME = 'ws://';
 export type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
 
 type NullableSynchronizer = WsSynchronizer<WebSocket> | null
+
+const defaultSyncServer = globalThis.location?.host + '/do/'
 
 const createStore = async (doNamespace: string, pathId: string, persist: boolean, sync: boolean, syncServer: string, debug: boolean): Promise<[Store, NullableSynchronizer]> => {
     const store = createMergeableStore()
@@ -67,7 +69,7 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
             synchronizer?.load().then(() => synchronizer?.save());
         })
         synchronizer.getWebSocket().addEventListener('close', () => {
-            console.info('websocket closed')
+            // console.info('websocket closed', new Date())
         })
     }
 
@@ -75,9 +77,11 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
 }
 
 export default class TinyBaseDataStoreImpl implements DataStore {
-    private initialised = false
+    private initialising: Promise<void> | null = null
+    private closing: Promise<void> = Promise.resolve()
     private theDb: Store | null = null
     private synchronizer: NullableSynchronizer = null
+    private removeChangeListeners: VoidFunction | null = null
     private readonly collections: CollectionConfig[]
     private authObserver: any = null
 
@@ -95,31 +99,36 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     get isReadWrite() { return this.synchronizer?.getWebSocket()?.protocol === 'readwrite' }
 
     async init(collectionName?: CollectionName) {
-        if (!this.initialised) {
-            await this.initStore()
-            this.authObserver = onAuthChange(async () => {
-                this.notifyAll(InvalidateAll)
-                await this.close()
-                await this.initStore()
-            })
-
-            this.initialised = true
-        }
-
         if (collectionName) {
             this.checkCollectionName(collectionName)
         }
+
+        await this.closing
+
+        if (this.initialising === null) {
+            this.initialising = this.initStore()
+            await this.initialising
+            this.authObserver = onAuthChange(async () => {
+                console.log('auth change', 'current user', currentUser())
+                this.notifyAll(InvalidateAll)
+                this.closing = this.close()
+                await this.closing
+                this.initialising = this.initStore()
+            })
+        }
+        await this.initialising
 
         return this
     }
 
     private async initStore() {
-        const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = globalThis.location?.origin + '/do/', debugSync = false} = this.props;
+        const {databaseTypeName, databaseInstanceName, persist = false, sync = false, syncServer = defaultSyncServer, debugSync = false} = this.props;
         [this.theDb, this.synchronizer] = await createStore(databaseTypeName, databaseInstanceName, persist, sync, syncServer, debugSync)
-        this.listenForChanges(this.theDb)
+        this.removeChangeListeners = this.listenForChanges(this.theDb)
     }
 
     async close() {
+        this.removeChangeListeners?.()
         await this.synchronizer?.stopSync()
         this.synchronizer?.getWebSocket().close()
     }
@@ -133,7 +142,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     private listenForChanges(store: Store) {
         type Change = [collectionName: string, changeType: UpdateType, id: Id, changes?: DataStoreObject]
         let changes: Change[] = []
-        store.addCellListener(null, null, 'json_data', (_store, tableId, rowId, _cellId, newCell, oldCell, _getCellChange) => {
+        const listenerId1 = store.addCellListener(null, null, 'json_data', (_store, tableId, rowId, _cellId, newCell, oldCell, _getCellChange) => {
             const changeType = oldCell === undefined ? Add : newCell === undefined ? Remove : Update
             const change = (): Change => {
                 switch (changeType) {
@@ -148,8 +157,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             changes.push(change())
         })
 
-        store.addDidFinishTransactionListener(() => {
-            //console.log('Transaction did finish')
+        const listenerId2 = store.addDidFinishTransactionListener(() => {
             if (changes.length === 1) {
                 this.notify.apply(this, changes[0] as any)
             } else {
@@ -158,6 +166,11 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             }
             changes = []
         })
+
+        return () => {
+            store.delListener(listenerId1)
+            store.delListener(listenerId2)
+        }
     }
 
     private collectionObservables = new Map<CollectionName, SendObservable<UpdateNotification>>()

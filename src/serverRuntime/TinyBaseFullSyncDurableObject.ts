@@ -16,7 +16,6 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
     protected store = createMergeableStore()
     protected get storage(): DurableObjectStorage { return this.ctx.storage }
     private doImpl = new TinyBaseDurableObjectImpl(this.store)
-    private clientAuthStatus = new Map<string, AuthStatus>()
 
     onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {
         console.info((addedOrRemoved > 0 ? 'Added' : 'Removed') + ` path ${pathId}`)
@@ -43,13 +42,14 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
             const [authToken] = protocolHeader.split(/ *, */)
             const user = authToken !== NullToken ? await this.verifyToken(request, authToken) : null
             const authStatus = await this.authorizeUser(user?.id)
+            console.log('authStatus', authStatus, 'client id', clientId, 'user', user)
             if (!authStatus) {
                 console.info('Unauthorized sync connect rejected', user, clientId)
                 return new Response('Unauthorized', {status: 401})
             }
 
             response.headers.append('sec-websocket-protocol', authStatus)
-            this.clientAuthStatus.set(clientId, authStatus)
+            this.getClientSocket(clientId)?.serializeAttachment({authStatus})
         }
 
         return response
@@ -59,9 +59,10 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
         const messageType = message.toString().match(/,(\d),/)?.[1]
         if (messageType && updateMessageTypes.includes(messageType)) {
             const fromClientId = this.ctx.getTags(client)[0]
-            const authStatus = this.clientAuthStatus.get(fromClientId)
+            const {authStatus} = client.deserializeAttachment()
+
             if (authStatus !== 'readwrite') {
-                console.warn('Illegal update from readonly client', fromClientId, message)
+                console.warn('Illegal update from a readonly client', fromClientId, `status: '${authStatus}'`, message)
                 return
             }
         }
@@ -70,8 +71,6 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
     }
 
     webSocketClose(client: WebSocket): void | Promise<void> {
-        const [clientId] = this.ctx.getTags(client)
-        this.clientAuthStatus.delete(clientId)
         // @ts-ignore
         return super.webSocketClose(client)
     }
@@ -110,4 +109,7 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
         return await verifyToken(request, token)
     }
 
+    private getClientSocket(tag: Id) {
+        return this.ctx.getWebSockets(tag)[0]
+    }
 }

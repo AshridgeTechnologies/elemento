@@ -133,8 +133,8 @@ export default class Generator {
             const authUser = !!el.authorizeUser
             const authSync = !!el.authorizeData
             const baseClass = authSync ? 'TinyBaseAuthSyncDurableObject' : 'TinyBaseFullSyncDurableObject'
-            const authUserFn = authUser ? `authorizeUser = ${this.getExpr(el, 'authorizeUser', 'multilineExpression', ['$userId'])} }` : ''
-            const authDataFn = authSync ? `authorizeData = ${this.getExpr(el, 'authorizeData', 'multilineExpression', ['$userId', '$tableId', '$rowId', '$changes'])} }` : ''
+            const authUserFn = authUser ? `authorizeUser = ${this.getExpr(el, 'authorizeUser', 'multilineExpression', ['$userId'])} ` : ''
+            const authDataFn = authSync ? `authorizeData = ${this.getExpr(el, 'authorizeData', 'multilineExpression', ['$userId', '$tableId', '$rowId', '$changes'])}` : ''
             return `export class ${el.codeName} extends ${baseClass} {
     ${authUserFn}
     ${authDataFn}
@@ -338,7 +338,7 @@ export default class Generator {
             : `    const pathTo = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
         const inputProperties = inputPropertyElements.length ? `    const {${inputPropertyElements.map( el => el.codeName).join(', ')}} = props` : ''
-        const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $index, $selected, onClick} = props' : ''
+        const extraDeclarations = componentIsListItem ? '    const {$item, $itemId, $index, $selected, $container, onClick} = props' : ''
         const dragFunctionIdentifiers = this.parser.dragFunctionIdentifiers(component.id)
         const dragFunctionDeclarations =
             dragFunctionIdentifiers.length ? `    const {${dragFunctionIdentifiers.join(', ')}} = Elemento.dragFunctions()` : ''
@@ -366,7 +366,7 @@ ${declarations}${debugHook}
 `.trimStart()
 
 
-        const appFeatures = identifiers.filter(isAppElement)
+        const appFeatures = component !== app ? identifiers.filter(isAppElement) : []
         const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = this.app` : ''
         const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
 

@@ -3,13 +3,37 @@ import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataS
 import {unstable_startWorker} from 'wrangler'
 import {wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
-import DataStore, {Add} from '../../../src/shared/DataStore'
+import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
 import * as authentication from '../../../src/runtime/components/authentication'
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
 const mock_onAuthChange = authentication.onAuthChange as MockedFunction<any>
+
+const mockLocalStorage = () => {
+    let store = {} as Storage;
+
+    return {
+        getItem(key: string) {
+            return store[key];
+        },
+
+        setItem(key: string, value: string) {
+            store[key] = value;
+        },
+
+        removeItem(key: string) {
+            delete store[key];
+        },
+
+        clear() {
+            store = {} as Storage;
+        },
+    };
+}
+
+globalThis.localStorage = mockLocalStorage() as Storage
 
 const tokenFor = (userId: string) => jwtEncode({
     type: 'user',
@@ -54,7 +78,7 @@ describe('sync via server - authorized sync', () => {
     const syncServer = `localhost:${port}/do/`
     const dbType = 'TinyBaseDurableObject_A'
     const debugSync = false
-    const createStore = (databaseName = 'db1')=> new TinyBaseDataStoreImpl({ databaseTypeName: dbType,  databaseInstanceName: databaseName, collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer})
+    const createStore = (props: object = {})=> new TinyBaseDataStoreImpl({ databaseTypeName: dbType,  databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: true, syncServer, ...props})
 
     let worker: any
     let store1: TinyBaseDataStoreImpl, store2: TinyBaseDataStoreImpl
@@ -130,8 +154,6 @@ describe('sync via server - authorized sync', () => {
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
 
         await wait(500)
-        // expect(onNextWidgets).toHaveBeenLastCalledWith({collection: 'Widgets', type: InvalidateAll})
-        // expect(onNextWidgets).toHaveBeenCalledTimes(1)
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
         await wait(500)
         await checkWidget({id, ...item})
@@ -141,9 +163,30 @@ describe('sync via server - authorized sync', () => {
         await checkWidget({id, ...item, b: 'bar'})
     })
 
+    // Note: this test checks for some incorrect update behaviour, but does not detect others that only show in a real browser
+    test('does not send multiple change notifications after auth change', async () => {
+        let onAuthChangeCallback: any
+        mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
+
+        store1 = await createStore({persist: true}).init()
+        await wait(100)
+        const onNextWidgets = vi.fn()
+        store1.observable('Widgets').subscribe(onNextWidgets)
+
+        onAuthChangeCallback()
+        await wait(1000)
+        expect(onNextWidgets).toHaveBeenCalledTimes(1)
+        expect(onNextWidgets).toHaveBeenLastCalledWith({collection: 'Widgets', type: InvalidateAll})
+
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        await wait(1000)
+        expect(onNextWidgets).toHaveBeenCalledTimes(2)
+        expect(onNextWidgets).toHaveBeenLastCalledWith({collection: 'Widgets', type: Add, id, changes: {id, ...item}})
+    }, 10000)
+
     test('only synchronizes with stores with correct database name', async () => {
         store1 = createStore()
-        store2 = createStore('db2')
+        store2 = createStore({databaseInstanceName: 'db2'})
         const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
@@ -251,6 +294,23 @@ describe('sync via server - full sync', () => {
         expect(storedItem).toEqual({id, ...item})
     })
 
+    test('init is not called more than once', async () => {
+        mock_onAuthChange.mockClear()
+        store1 = createStore()
+        store1.init()
+        store1.init()
+        await wait(100)
+
+        expect(mock_onAuthChange).toHaveBeenCalledTimes(1)
+    })
+
+    test('init returns promise that resolves when store is ready', async () => {
+        store1 = createStore()
+        store1.getById(collectionName, '123', true)
+        store1.getById(collectionName, '567', true)
+        await wait(100)
+    })
+
     test('sync local with existing data', async () => {
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
 
@@ -305,6 +365,20 @@ describe('sync via server - full sync', () => {
         await expect(await store1.getById(collectionName, id)).toStrictEqual(updatedItem)  // will (still) be updated on client
         const itemOnServer = await callStore(dbType, 'db1', 'getById', collectionName, id)
         expect(itemOnServer).toStrictEqual(updatedItem)  // updated on server
+    })
+
+    test('server syncs changes between two clients if init after create store', async () => {
+        store1 = createStore()
+        store2 = createStore()
+        await store1.init()
+        await store2.init()
+        const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
+
+        await store1.add('Widgets', id, item)
+        await checkWidget(store2, {id, ...item})
+
+        await store2.update('Widgets', id, {b: 'bar'})
+        await checkWidget(store1, {id, ...item, b: 'bar'})
     })
 
     test('can subscribe to changes', async () => {

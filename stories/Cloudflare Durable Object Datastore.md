@@ -55,8 +55,8 @@ Tasks
 - ✅ AuthSync authorization aligned with full sync - including without login
 - ✅ TBDS wrapper notifies errors
 - TBDS wrapper disconnects when unmounted
-- Generate datastore classes with auth functions
-- Generate bindings for the datastore classes
+- ✅ Generate datastore classes with auth functions
+- ✅ Generate bindings for the datastore classes
 - Server only Durable object store
 - Decide on how to make authentication flexible
 - Use individual table fields instead of JSON lump

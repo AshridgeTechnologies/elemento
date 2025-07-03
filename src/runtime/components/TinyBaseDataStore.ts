@@ -21,7 +21,9 @@ export class TinyBaseDataStoreState extends DataStoreState<DataStoreProperties> 
     }
 
     protected createDataStore(): DataStore {
-        return new TinyBaseDataStoreImpl(this.props)
+        const store = new TinyBaseDataStoreImpl(this.props)
+        store.init()
+        return store
     }
 }
 

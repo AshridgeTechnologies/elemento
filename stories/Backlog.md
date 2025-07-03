@@ -4,6 +4,7 @@ Elemento Backlog
 
 Bugs
 ----
+- Collection at app level does not cause updates to show reliably in an ItemSet - initial display, some Adds
 - Using If in a mapping function makes the mapping function async which leads to using unresolved promises in calculations
 - ServerAppConnector should send dates in get and post as ISO string
 - DateVal should take argument values
