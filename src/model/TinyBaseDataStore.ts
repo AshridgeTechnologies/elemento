@@ -1,7 +1,6 @@
-import {ComponentType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValue, PropertyValueType} from './Types'
+import {ComponentType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
-import {Id} from 'tinybase'
 
 type Properties = Partial<Readonly<{
     collections: string,

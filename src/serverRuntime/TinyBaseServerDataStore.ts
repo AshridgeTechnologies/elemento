@@ -9,7 +9,7 @@ import {TinyBaseFullSyncDurableObject} from './TinyBaseFullSyncDurableObject'
 type Properties = {collections: string, durableObject: DurableObjectNamespace, databaseName: string}
 type TBDO = TinyBaseAuthSyncDurableObject | TinyBaseFullSyncDurableObject
 
-export default class TinyBaseDataStore implements BasicDataStore {
+export default class TinyBaseServerDataStore implements BasicDataStore {
     private readonly collections: CollectionConfig[]
     private readonly durableObjectStub: DurableObjectStub<TBDO>
 

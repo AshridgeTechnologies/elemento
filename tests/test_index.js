@@ -1,7 +1,7 @@
 import CloudflareDataStore from "../src/serverRuntime/CloudflareDataStore.ts"
 import BigNumber from "bignumber.js"
 import {handleDurableObjectRequest} from "../src/serverRuntime/cloudflareWorker.js"
-import TinyBaseDataStore from "../src/serverRuntime/TinyBaseDataStore.js"
+import TinyBaseServerDataStore from "../src/serverRuntime/TinyBaseServerDataStore.ts"
 import {TinyBaseAuthSyncDurableObject} from "../src/serverRuntime/TinyBaseAuthSyncDurableObject.ts"
 import {TinyBaseFullSyncDurableObject} from "../src/serverRuntime/TinyBaseFullSyncDurableObject.ts"
 
@@ -76,7 +76,7 @@ export default {
     const testObject = (dbTypeName, dbName) => {
       switch(dbTypeName) {
         case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env.DB})
-        default: return new TinyBaseDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env[dbTypeName]})
+        default: return new TinyBaseServerDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env[dbTypeName]})
       }
     }
 

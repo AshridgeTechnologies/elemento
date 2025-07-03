@@ -81,6 +81,7 @@ export type ElementType =
     'FirestoreDataStore' |
     'CloudflareDataStore' |
     'TinyBaseDataStore' |
+    'TinyBaseServerDataStore' |
     'ServerApp' |
     'ServerAppConnector' |
     'Adapter' |

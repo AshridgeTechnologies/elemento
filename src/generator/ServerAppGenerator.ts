@@ -8,6 +8,7 @@ import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, Sta
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
 import CloudflareDataStore from '../model/CloudflareDataStore'
+import TinyBaseServerDataStore from '../model/TinyBaseServerDataStore'
 
 const indentLevel1 = '    '
 
@@ -42,19 +43,25 @@ export default class ServerAppGenerator {
     }
 
     private components() {
-        return this.app.elementArray().filter( el => this.parser.allComponentIdentifiers().includes(el.kind)) as FunctionDef[]
+        return this.app.elementArray().filter( el => this.parser.allComponentIdentifiers().includes(el.kind))
     }
 
     private componentExpression(element: Element): string {
-        const propertyExprs = this.project.propertyDefsOf(element).filter( ({state}) => state ).map(def => {
+        const propertyExprEntries = this.project.propertyDefsOf(element).filter( ({state}) => state ).map(def => {
             const expr = this.getExpr(element, def.name)
             return [def.name, expr]
         }).filter(([, expr]) => !!expr)
+        const propertyExprs = Object.fromEntries(propertyExprEntries)
         const modelProperties = (() => {
             if (element.kind === 'CloudflareDataStore') {
                 return {collections: `"${(element as CloudflareDataStore).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
             }
-            return Object.fromEntries(propertyExprs)
+            if (element.kind === 'TinyBaseServerDataStore') {
+                const store = element as TinyBaseServerDataStore
+                const databaseName = propertyExprs['databaseName']
+                return {collections: `"${store.collections?.replace(/\n/g, '\\n')}"`, durableObject: `env.${element.codeName}`, databaseName}
+            }
+            return propertyExprs
         })()
 
         return `new ${element.kind}(${objectLiteral(modelProperties)})`

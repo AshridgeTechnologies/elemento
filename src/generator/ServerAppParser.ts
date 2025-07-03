@@ -17,12 +17,12 @@ type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
 
-const appStateFunctions = Object.keys(new AppData({pages:{}, urlContext: dummyUrlContext})).filter(fnName => !['props', 'state'].includes(fnName))
+const appStateFunctions = Object.keys(new AppData({pages:{}, urlContext: dummyUrlContext, themeOptions: {}})).filter(fnName => !['props', 'state'].includes(fnName))
 const isGlobalFunction = (name: string) => name in globalFunctions
 const isAppFunction = (name: string) => appFunctionsNames().includes(name)
 const isAppStateFunction = (name: string) => appStateFunctions.includes(name)
 const isComponentType = (name: string) => componentNames().includes(name)
-const isBuiltIn = (name: string) => ['undefined', 'null'].includes(name)
+const isBuiltIn = (name: string) => ['undefined', 'null', 'Date', 'Math', 'JSON'].includes(name)
 const isItemVar = (name: string) => name === '$item'
 
 export default class ServerAppParser {

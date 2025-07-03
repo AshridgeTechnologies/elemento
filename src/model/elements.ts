@@ -59,6 +59,7 @@ import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
+import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -108,6 +109,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         FirestoreDataStore: FirestoreDataStore,
         CloudflareDataStore: CloudflareDataStore,
         TinyBaseDataStore: TinyBaseDataStore,
+        TinyBaseServerDataStore: TinyBaseServerDataStore,
         MemoryDataStore: MemoryDataStore,
         Function: Function,
         FunctionImport: FunctionImport,
