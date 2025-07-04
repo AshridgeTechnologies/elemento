@@ -3,20 +3,18 @@ import {DurableObjectNamespace, DurableObjectStub} from "@cloudflare/workers-typ
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../shared/convertData'
 import {mergeDeepRight} from 'ramda'
-import {TinyBaseAuthSyncDurableObject} from './TinyBaseAuthSyncDurableObject'
-import {TinyBaseFullSyncDurableObject} from './TinyBaseFullSyncDurableObject'
+import {TinyBaseDurableObject} from './TinyBaseDurableObject'
 
 type Properties = {collections: string, durableObject: DurableObjectNamespace, databaseName: string}
-type TBDO = TinyBaseAuthSyncDurableObject | TinyBaseFullSyncDurableObject
 
 export default class TinyBaseServerDataStore implements BasicDataStore {
     private readonly collections: CollectionConfig[]
-    private readonly durableObjectStub: DurableObjectStub<TBDO>
+    private readonly durableObjectStub: DurableObjectStub<TinyBaseDurableObject>
 
     constructor(private props: Properties) {
         this.collections = parseCollections(props.collections ?? '')
         const id = props.durableObject.idFromName(props.databaseName);
-        this.durableObjectStub = props.durableObject.get(id) as DurableObjectStub<TBDO>
+        this.durableObjectStub = props.durableObject.get(id) as DurableObjectStub<TinyBaseDurableObject>
     }
 
     private checkCollection(collectionName: string) {

@@ -1,13 +1,13 @@
-import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
+import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
+import {Message} from 'tinybase/synchronizers'
 import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {AuthStatus, CollectionName, Id as DataStoreId, NullToken} from '../shared/DataStore'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
 import {getClientId} from './tinybaseUtils'
 import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
-import { verifyToken } from './requestHandler'
-import {Message} from 'tinybase/synchronizers'
+import {verifyToken} from './requestHandler'
 
 const updateMessageTypes = [Message.ContentDiff.toString()]
 
@@ -68,11 +68,6 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
         }
         // @ts-ignore
         super.webSocketMessage(client, message)
-    }
-
-    webSocketClose(client: WebSocket): void | Promise<void> {
-        // @ts-ignore
-        return super.webSocketClose(client)
     }
 
     async authorizeUser(_userId: string | undefined) : Promise<AuthStatus> {

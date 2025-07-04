@@ -1,19 +1,18 @@
 import {DurableObject} from 'cloudflare:workers';
 import type {IdAddedOrRemoved} from 'tinybase'
-import {createMergeableStore, Id, Ids, MergeableStore, Store, Tables} from 'tinybase'
+import {createMergeableStore, Id, MergeableStore, Store, Tables} from 'tinybase'
 import type {Persister, Persists} from 'tinybase/persisters'
 import type {Receive} from 'tinybase/synchronizers'
 import {createCustomSynchronizer, Message} from 'tinybase/synchronizers'
 import {
     arrayIsEmpty,
-    arrayMap,
     createPayload,
-    EMPTY_STRING,
+    EMPTY_STRING, getClientId,
     IdOrNull,
     ifNotUndefined,
     jsonParseWithUndefined,
     noop,
-    objValues,
+    objValues, parsePayload,
     receivePayload,
     size,
     startTimeout,
@@ -40,11 +39,6 @@ const messageType = (message: Message) => {
 const getPathId = (request: Request): Id =>
     strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;
 
-const getClientId = (request: Request): Id | null =>
-    request.headers.get('upgrade')?.toLowerCase() == 'websocket'
-        ? request.headers.get('sec-websocket-key')
-        : null;
-
 const createResponse = (
     status: number,
     webSocket: WebSocket | null = null,
@@ -55,7 +49,7 @@ const createUpgradeRequiredResponse = (): Response =>
     createResponse(426, null, 'Upgrade required');
 
 const checkPayload = (payload: string): boolean => {
-    const [clientId, remainder] = payload.split('\n');
+    const [clientId, remainder] = parsePayload(payload)
     const [requestId, message, body] = jsonParseWithUndefined(remainder) as [
         requestId: IdOrNull,
         message: Message,
@@ -71,7 +65,9 @@ class ClientHandler {
     private readonly synchronizer
     private serverClientSend!: (payload: string) => void;
 
-    constructor(private clientId: Id, private sendWebsocket: WebSocket, private authorize: (tableId: Id, rowId: Id, changes: object) => boolean) {
+    constructor(private clientId: Id, private sendWebsocket: WebSocket,
+                private authorize: (tableId: Id, rowId: Id, changes: object) => boolean,
+                private onMessage: (fromClientId: Id, toClientId: Id, remainder: string) => void) {
         this.store = createMergeableStore()
         this.synchronizer = this.createSynchronizer()
         startTimeout(this.synchronizer.startSync)
@@ -87,6 +83,8 @@ class ClientHandler {
             this.sendMessage,
             (receive: Receive) =>
                 (this.serverClientSend = (payload: string) => {
+                    const [toClientId, remainder] = parsePayload(payload)
+                    this.onMessage(this.clientId, String(toClientId), remainder)
                     if (checkPayload(payload)) {
                         receivePayload(payload, receive)
                     } else {
@@ -126,25 +124,21 @@ class ClientHandler {
     }
 }
 
-export class PerClientWsServerDurableObject<Env = unknown>
-    extends DurableObject<Env>
-    implements DurableObject<Env>
-{
+export class PerClientWsServerDurableObject<Env = unknown> extends DurableObject<Env> {
     private readonly clientHandlers = new Map<string, ClientHandler>()
     private store!: MergeableStore
 
     constructor(ctx: DurableObjectState, env: Env) {
-        console.log('PerClientxx constructor')
-        super(ctx, env);
+        super(ctx, env)
         this.ctx.blockConcurrencyWhile(
             async () =>
                 await ifNotUndefined(
                     await this.createPersister(),
                     async (persister) => {
                         this.store = persister.getStore()
-                        await persister.load();
-                        await persister.startAutoSave();
-                    },
+                        await persister.load()
+                        await persister.startAutoSave()
+                    }
                 ),
         );
     }
@@ -161,7 +155,8 @@ export class PerClientWsServerDurableObject<Env = unknown>
                 this.ctx.acceptWebSocket(client, [clientId, pathId]);
                 this.onClientId(pathId, clientId, 1)
                 const clientAuth = (tableId: Id, rowId: Id, changes: object) => this.authorizeUpdate(clientId, tableId, rowId, changes)
-                const clientHandler = new ClientHandler(clientId, client, clientAuth)
+                const onMessageFn = (fromClientId: Id, toClientId: Id, remainder: string) => this.onMessage(fromClientId, toClientId, remainder)
+                const clientHandler = new ClientHandler(clientId, client, clientAuth, onMessageFn)
                 this.clientHandlers.set(clientId, clientHandler)
                 clientHandler.sendInitialMessage()
                 startTimeout(()=> this.loadClientData(clientHandler))
@@ -198,17 +193,6 @@ export class PerClientWsServerDurableObject<Env = unknown>
 
     authorizeUpdate(clientId: Id, tableId: Id, rowId: Id, changes: object) {
         return true
-    }
-
-    getPathId(): Id {
-        return this.ctx.getTags(this.#getClients()[0])?.[1];
-    }
-
-    getClientIds(): Ids {
-        return arrayMap(
-            this.#getClients(),
-            (client) => this.ctx.getTags(client)[0],
-        );
     }
 
     onPathId(_pathId: Id, _addedOrRemoved: IdAddedOrRemoved) {}

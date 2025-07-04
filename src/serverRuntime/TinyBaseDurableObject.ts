@@ -1,7 +1,7 @@
 import {MergeableStore} from 'tinybase'
 import {CollectionName, Id as DataStoreId} from '../shared/DataStore'
 
-export interface TinyBaseDurableObject {
+export interface TinyBaseDurableObject extends Rpc.DurableObjectBranded {
     getJsonData(collectionName: CollectionName, id: DataStoreId): string | null
 
     getAllJsonData(collectionName: CollectionName): string[]

@@ -8,12 +8,6 @@ export const EMPTY_STRING = '';
 const MESSAGE_SEPARATOR = '\n';
 export const UNDEFINED = '\uFFFC';
 export const object = Object;
-
-export const isInstanceOf = (
-    thing: unknown,
-    cls: MapConstructor | SetConstructor | ObjectConstructor,
-): boolean => thing instanceof cls;
-
 export const noop = () => {};
 
 export const startTimeout = (callback: () => void, sec: number = 0) =>
@@ -39,27 +33,22 @@ export const slice = <ArrayOrString extends string | any[]>(
     end?: number,
 ): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
 
-export const arrayForEach = <Value>(
-    array: {forEach: (cb: (value: Value, index: number) => void) => void},
-    cb: (value: Value, index: number) => void,
-): void => array.forEach(cb);
-
-export const arrayMap = <Value, Return>(
-    array: Value[],
-    cb: (value: Value, index: number, array: Value[]) => Return,
-): Return[] => array.map(cb);
-
 export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
 
 export const ifPayloadValid = (
     payload: string,
     then: (clientId: string, remainder: string) => void,
 ) => {
-    const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-    if (splitAt !== -1) {
-        then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
+    const [clientId, remainder] = parsePayload(payload)
+    if (clientId !== null) {
+        then(clientId, remainder);
     }
-};
+}
+
+export const parsePayload = (payload: string): [string | null, string] => {
+    const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
+    return splitAt !== -1 ? [slice(payload, 0, splitAt), slice(payload, splitAt + 1)] : [null, UNDEFINED]
+}
 
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
     object.values(obj);
@@ -69,17 +58,12 @@ export const strMatch = (str: string | undefined, regex: RegExp) =>
 
 export const jsonString = JSON.stringify;
 export const jsonParse = JSON.parse;
-
-export const jsonStringWithMap = (obj: unknown): string =>
-    jsonString(obj, (_key, value) =>
-        isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
-    );
-
 export const jsonStringWithUndefined = (obj: unknown): string =>
     jsonString(obj, (_key, value) => (value === undefined ? UNDEFINED : value));
 
 export const jsonParseWithUndefined = (str: string): any =>
-    jsonParse(str, (_key, value) => (value === UNDEFINED ? undefined : value));
+    jsonParse(str, (_key, value) => (value === UNDEFINED ? undefined : value))
+
 export const receivePayload = (payload: string, receive: Receive) =>
     ifPayloadValid(payload, (fromClientId, remainder) =>
         receive(
