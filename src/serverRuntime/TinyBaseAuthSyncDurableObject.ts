@@ -6,8 +6,6 @@ import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
 import {verifyToken} from './requestHandler'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
-import {getClientId} from './tinybaseUtils'
-
 
 export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObject<any> implements TinyBaseDurableObject {
 
@@ -28,26 +26,20 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
         console.info((addedOrRemoved > 0 ? 'Added' : 'Removed') + ` client ${clientId} on path ${pathId}`)
     }
 
-    async fetch(request: Request): Promise<Response> {
-        const response = await super.fetch(request)
-        const clientId = getClientId(request)
-        if (clientId) {
-            const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
-            const [authToken] = protocolHeader.split(/ *, */)
-            const user = authToken !== NullToken ? await this.verifyToken(request, authToken) : null
-            const authStatus = await this.authorizeUser(user?.id)
-            if (!authStatus) {
-                console.info('Unauthorized sync connect rejected', user, clientId)
-                return new Response('Unauthorized', {status: 401})
-            }
+    protected async authorizeRequest(request: Request, clientId: string): Promise<boolean | ((response: Response) => void)> {
+        const protocolHeader = request.headers.get('sec-websocket-protocol') ?? ''
+        const [authToken] = protocolHeader.split(/ *, */)
+        const user = authToken !== NullToken ? await this.verifyToken(request, authToken) : null
+        const authStatus = await this.authorizeUser(user?.id)
 
-            response.headers.append('sec-websocket-protocol', authStatus)
-
+        if (authStatus) {
             console.log('Client/User', clientId, user?.id)
             this.clientUsers.set(clientId, user?.id)
+            return (response: Response) => response.headers.append('sec-websocket-protocol', authStatus)
+        } else {
+            console.info('Unauthorized sync connect rejected', user, clientId)
+            return false
         }
-
-        return response
     }
 
     async authorizeUser(_userId: string | undefined) : Promise<AuthStatus> {

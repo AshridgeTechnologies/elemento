@@ -58,7 +58,7 @@ Tasks
 - ✅ Generate datastore classes with auth functions
 - ✅ Generate bindings for the datastore classes
 - ✅ Server app Durable object store
-- Decide on how to make authentication flexible
+- ✅ Decide on how to make authentication flexible
 - Use individual table fields instead of JSON lump
 - Decide on how to use sqlite, json and pass data to authorize function
 - Use databaseId, not name?

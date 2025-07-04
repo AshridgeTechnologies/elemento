@@ -18,6 +18,7 @@ import {
     startTimeout,
     strMatch
 } from './tinybaseUtils'
+import {User} from '../shared/subjects'
 
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_CLIENT_ID = 'S';
@@ -139,31 +140,44 @@ export class PerClientWsServerDurableObject<Env = unknown> extends DurableObject
                         await persister.load()
                         await persister.startAutoSave()
                     }
-                ),
-        );
+                )
+        )
     }
 
-    fetch(request: Request): Response | Promise<Response> {
-        const pathId = getPathId(request);
-        return ifNotUndefined(
+    async fetch(request: Request): Promise<Response> {
+        const pathId = getPathId(request)
+        return ifNotUndefined<string, Response | Promise<Response>>(
             getClientId(request),
-            (clientId) => {
+            async (clientId) => {
+                const authResult = await this.authorizeRequest(request, clientId)
+                if (!authResult) {
+                    return new Response('Unauthorized', {status: 401})
+                }
+
                 const [webSocket, client] = objValues(new WebSocketPair());
                 if (arrayIsEmpty(this.#getClients())) {
                     this.onPathId(pathId, 1)
                 }
                 this.ctx.acceptWebSocket(client, [clientId, pathId]);
                 this.onClientId(pathId, clientId, 1)
-                const clientAuth = (tableId: Id, rowId: Id, changes: object) => this.authorizeUpdate(clientId, tableId, rowId, changes)
-                const onMessageFn = (fromClientId: Id, toClientId: Id, remainder: string) => this.onMessage(fromClientId, toClientId, remainder)
-                const clientHandler = new ClientHandler(clientId, client, clientAuth, onMessageFn)
-                this.clientHandlers.set(clientId, clientHandler)
-                clientHandler.sendInitialMessage()
-                startTimeout(()=> this.loadClientData(clientHandler))
-                return createResponse(101, webSocket);
+                this.createClientHandler(client, clientId)
+                const response = createResponse(101, webSocket)
+                if (typeof authResult === 'function') {
+                    authResult(response)
+                }
+                return response
             },
             createUpgradeRequiredResponse,
-        ) as Response;
+        ) as Response | Promise<Response>
+    }
+
+    private createClientHandler(client: WebSocket, clientId: string) {
+        const clientAuthFn = (tableId: Id, rowId: Id, changes: object) => this.authorizeUpdate(clientId, tableId, rowId, changes)
+        const onMessageFn = (fromClientId: Id, toClientId: Id, remainder: string) => this.onMessage(fromClientId, toClientId, remainder)
+        const clientHandler = new ClientHandler(clientId, client, clientAuthFn, onMessageFn)
+        this.clientHandlers.set(clientId, clientHandler)
+        clientHandler.sendInitialMessage()
+        startTimeout(() => this.loadClientData(clientHandler))
     }
 
     webSocketMessage(client: WebSocket, message: ArrayBuffer | string) {
@@ -191,7 +205,11 @@ export class PerClientWsServerDurableObject<Env = unknown> extends DurableObject
         return undefined;
     }
 
-    authorizeUpdate(clientId: Id, tableId: Id, rowId: Id, changes: object) {
+    protected authorizeRequest(_request: Request, _clientId: string): boolean | Promise<boolean | ((response: Response) => void)> {
+        return true
+    }
+
+    authorizeUpdate(_clientId: Id, _tableId: Id, _rowId: Id, _changes: object): boolean {
         return true
     }
 
