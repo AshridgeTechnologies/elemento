@@ -10,17 +10,17 @@ Aims
 Requirements
 ------------
 
-- Conform to the standard Elemento data store interface
-- Allow a dynamic id for the database name
-- Server-side store
-- Client-side store with sync
-- Support two-way sync
-- Support server-to-client only sync
-- Fine-grained sync for individual record fields
-- Provide an observable for updates
-- Authorization for read and write on client
-- Immediate multi-user sync for apps like games
-- Offline working and sync when connect
+- ✅ Conform to the standard Elemento data store interface
+- ✅ Allow a dynamic id for the database name
+- ✅ Server-side store
+- ✅ Client-side store with sync
+- ✅ Support two-way sync
+- ✅ Support server-to-client only sync
+- ✅ Fine-grained sync for individual record fields
+- ✅ Provide an observable for updates
+- ✅ Authorization for read and write on client
+- ✅ Immediate multi-user sync for apps like games
+- ✅ Offline working and sync when connect
 
 Technical
 ---------
@@ -59,14 +59,14 @@ Tasks
 - ✅ Generate bindings for the datastore classes
 - ✅ Server app Durable object store
 - ✅ Decide on how to make authentication flexible
-- Use individual table fields instead of JSON lump
-- Decide on how to use sqlite, json and pass data to authorize function
-- Use databaseId, not name?
+- ✅ Decide on how to use sqlite, json and pass data to authorize function
 
 Further
 -------
 
 - ~~Start with sync from store, move to updates copied to clients~~
+- Use individual table fields instead of JSON lump
+- Use databaseId, not name?
 
 Multi-user game scenario
 ------------------------

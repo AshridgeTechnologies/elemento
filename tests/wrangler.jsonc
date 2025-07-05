@@ -43,7 +43,7 @@
 
   "migrations": [
     {
-      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject_A", "TinyBaseDurableObject_Full", "TinyBaseDurableObject_NoAuth"]
+      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject_A", "TinyBaseDurableObject_B", "TinyBaseDurableObject_NoAuth", "TinyBaseDurableObject_Full"]
     }
   ]
 }

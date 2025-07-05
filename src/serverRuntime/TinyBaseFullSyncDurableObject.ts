@@ -8,6 +8,7 @@ import {getClientId} from './tinybaseUtils'
 import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
 import {verifyToken} from './requestHandler'
+import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage'
 
 const updateMessageTypes = [Message.ContentDiff.toString()]
 
@@ -30,7 +31,14 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
     }
 
     createPersister() {
-        return createDurableObjectStoragePersister(this.store, this.storage)
+        return createDurableObjectSqlStoragePersister(
+            this.store,
+            this.storage.sql,
+            {
+                mode: 'fragmented',
+                storagePrefix: 'elemento_',
+            }
+        )
     }
 
     async fetch(request: Request): Promise<Response> {

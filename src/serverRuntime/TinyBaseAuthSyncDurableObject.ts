@@ -6,6 +6,7 @@ import {User} from '../shared/subjects'
 import {jwtDecode} from 'jwt-decode'
 import {verifyToken} from './requestHandler'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
+import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage'
 
 export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObject<any> implements TinyBaseDurableObject {
 
@@ -15,7 +16,15 @@ export class TinyBaseAuthSyncDurableObject extends PerClientWsServerDurableObjec
     private doImpl = new TinyBaseDurableObjectImpl(this._store)
 
     createPersister() {
-        return createDurableObjectStoragePersister(this._store, this.storage)
+        return createDurableObjectSqlStoragePersister(
+            this._store,
+            this.storage.sql,
+            {
+                mode: 'fragmented',
+                storagePrefix: 'elemento_',
+            }
+        )
+
     }
 
     onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {

@@ -65,13 +65,13 @@ Later server app approach
 Tasks
 -----
 
-- Set up Cloudflare worker project
-- Preview from wrangler dev server
-- Cloudflare D1 datastore
-- Cloudflare KV datastore
-- Cloudflare Durable object datastore
-- Alternative authentication
-- Make CreateUser, UpdateUser, GetUser work again - or find a better alternative
+- ✅ Set up Cloudflare worker project
+- ✅ Preview from wrangler dev server
+- ✅ Cloudflare D1 datastore
+- ~~Cloudflare KV datastore~~
+- ✅ Cloudflare Durable object datastore
+- ✅ Alternative authentication
+- ~~Make CreateUser, UpdateUser, GetUser work again - or~~ find a better alternative
 - Remove Firebase
 - Remove preview server
 
