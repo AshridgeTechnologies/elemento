@@ -17,7 +17,7 @@ import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useGitHubSignInSt
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
-import {wait, waitUntil} from '../util/helpers'
+import {noop, wait, waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash, {startCase} from 'lodash'
@@ -97,7 +97,6 @@ const debouncedSaveAndBuild = debounce(saveAndBuild, 100)
 const helpToolImport = new ToolImport('helpTool', 'Help', {source: '/help/?header=0'})
 const tutorialsToolImport = new ToolImport('tutorialsTool', 'Tutorials', {source: '/help/tutorials/?header=0'})
 const inspectorImport = new ToolImport('inspectorTool', 'Inspector', {source: '/inspector'})
-const firebaseToolImport = new ToolImport('firebaseTool', 'Firebase', {source: '/firebaseDeploy'})
 
 function ServerUpdateStatus({status, projectBuilder}: {status: "waiting" | "updating" | "complete" | Error, projectBuilder?: ProjectBuilder}) {
     const isErrorStatus = status instanceof Error
@@ -156,16 +155,9 @@ export default function EditorRunner() {
         debouncedSaveAndBuild(updatedProject, projectStore(), projectBuilderRef.current!, updateUI, projectIdRef.current!, previewFrameRef.current, previewController!)
     }
 
-    const getPreviewFirebaseProject = ()=> (projectHandler.getSettings('firebase') as any).previewFirebaseProject
-    const getPreviewPassword = ()=> (projectHandler.getSettings('firebase') as any).previewPassword
-    const getElementoServerUrl = ()=> `https://${getPreviewFirebaseProject()}.web.app`
-    const previewUploadUrl = () => `${getElementoServerUrl()}/preview`
-    const updatePreviewUrlFromSettings = () => setPreviewServerUrl(previewUploadUrl())
-
     const updateProjectHandlerFromStore = async (proj: Project, name: string, projectStore: DiskProjectStore) => {
-        const settingsHandler = await SettingsHandler.new(projectStore, updatePreviewUrlFromSettings)
+        const settingsHandler = await SettingsHandler.new(projectStore, noop)
         projectHandler.setProject(proj, name, settingsHandler)
-        updatePreviewUrlFromSettings()
         await projectBuilderRef.current?.build()
         console.log('Project build complete')
         updateUI()
@@ -459,7 +451,6 @@ export default function EditorRunner() {
     const onTutorials = () => showTool(tutorialsToolImport)
     const onOpenTool = (url: string) => showTool(toolImportFromUrl(url))
     const onReload = ()=> openOrUpdateProjectFromStore(projectHandler.name!, projectStore())
-    const onFirebase = () => showTool(firebaseToolImport)
     const onInspector = () => showTool(inspectorImport)
 
     const onGetFromGitHub = () => setDialog(<GetFromGitHubDialog
@@ -631,7 +622,6 @@ export default function EditorRunner() {
                 .map( el => [el.name, ()=> showTool(el as Tool | ToolImport)]))
             const toolItems = {
                 'Inspector': onInspector,
-                'Firebase': onFirebase,
                 ...projectTools
             }
             const updatePreviewUrl = (path: string) => {

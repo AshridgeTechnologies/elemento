@@ -71,11 +71,6 @@ export default class EditorServiceWorker {
             return fetch(`${this.previewServerUrl}${url.pathname}${url.search}`, options)
         }
 
-        if (pathname === '/firebaseConfig.json') {
-            if (!this.previewServerUrl) console.warn('EditorServiceWorker - previewServerUrl is', this.previewServerUrl)
-            return fetch(`${this.previewServerUrl}/preview${url.pathname}`)
-        }
-
         if (pathname.startsWith('/studio/preview/')) {
             const pathComponents = previewPathComponents(pathname)
             if (pathComponents) {

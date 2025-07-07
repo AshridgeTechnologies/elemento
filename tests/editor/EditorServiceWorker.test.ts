@@ -188,23 +188,6 @@ test('serves version file with commitId of preview', async () => {
     expect(jsonResult).toHaveProperty('commitId', 'preview')
 })
 
-test('sends firebaseConfig request to preview server', async () => {
-    const event = {data: {type: 'previewServer', url: 'https://preview.example.com/preview-function'}} as ExtendableMessageEvent
-    worker.message(event)
-    await wait(10)
-
-    const originalFetch = globalThis.fetch
-    globalThis.fetch = vi.fn()
-
-    try {
-        const req = request('http://example.com/firebaseConfig.json')
-        await worker.handleRequest(req)
-        expect(globalThis.fetch).toHaveBeenCalledWith('https://preview.example.com/preview-function/preview/firebaseConfig.json')
-    } finally {
-        globalThis.fetch = originalFetch
-    }
-})
-
 test('stores preview server url and sends capi request to preview server with headers supplied', async () => {
     const event = {data: {type: 'previewServer', url: 'https://preview.example.com/preview-function'}} as ExtendableMessageEvent
     worker.message(event)

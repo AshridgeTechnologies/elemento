@@ -621,7 +621,6 @@ ${generateChildren(form, indentLevel2, form)}
             case 'MemoryDataStore':
             case 'FileDataStore':
             case 'BrowserDataStore':
-            case 'FirestoreDataStore':
             case 'Function':
             case 'FunctionImport':
             case 'Component':

@@ -34,7 +34,7 @@ export default () =>
                     Designing apps with Elemento is totally free, and always will be.  So is running them for your own use, or a small number of users.
                     If you want to run a site that has thousands of users and lots of data, you will have to pay,
                     simply because no-one will give you the resources to do that for free.
-                    But Elemento enables you to use low-cost cloud services such as Google Firebase with generous free allowances,
+                    But Elemento enables you to use low-cost cloud services such as Cloudflare with generous free allowances,
                     rather than being tied-in to an expensive subscription.
                 </NLItem>
 

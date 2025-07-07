@@ -76,7 +76,6 @@
     "react-cookie-consent": "^9.0.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
-    "react-firebaseui": "^6.0.0",
     "react-simple-keyboard": "^3.7.144",
     "react18-json-view": "^0.2.8",
     "recast": "^0.23.4",

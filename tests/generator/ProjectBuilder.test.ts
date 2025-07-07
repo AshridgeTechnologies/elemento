@@ -188,10 +188,6 @@ test('has code generated from Project for all apps', async () => {
         ['App2/App2.js', expectedClientCode(app2)],
         ['App2/index.html', expectedIndexFile(app2)]
     ]
-    // const expectedServerFiles = new ServerFirebaseGenerator(project1).output().files
-    // const expectedServerEntries = expectedServerFiles.map(({name, contents}) => [name, contents])
-    // const expectedCode = Object.fromEntries([...expectedClientEntries, ...expectedServerEntries])
-    // expect(builder.code).toStrictEqual(expectedCode)
 })
 
 test('has errors generated from Project for all apps', async () => {

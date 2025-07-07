@@ -168,26 +168,6 @@ export default () =>
                 </li>
             </BulletList>
 
-            <MinorHeading id='firestore-data-store'><HelpLink id='firestoreDataStore'/></MinorHeading>
-            <Para>This stores data in Google Firestore, a database that is part of Google's Cloud services. This means
-                that:</Para>
-            <BulletList>
-                <li>The data is available permanently, with automatic secure backups</li>
-                <li>The data is available to any user you allow to have access to it</li>
-                <li>The data is available on any computer that is online</li>
-                <li>You can store large amounts (several GB) of complex data in collections, and access one record at a
-                    time or do queries
-                </li>
-                <li>You need a Google account (simple and free to set up, many people have one already)</li>
-                <li>You may need to pay if the amount of data and/or the number of times it is accessed is above the
-                    free allowance
-                </li>
-                <li>Setting it up correctly is a little more difficult, and you may need an experienced developer to
-                    help
-                </li>
-                <li>More information at the <Link href='https://firebase.google.com/products/firestore'>Google Firebase
-                    website</Link></li>
-            </BulletList>
         </SubSection>
 
         <SubSection id='using-data-stores-collections'>

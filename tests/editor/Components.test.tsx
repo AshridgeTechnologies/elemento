@@ -9,14 +9,6 @@ import MenuBar from '../../src/editor/MenuBar'
 import InsertMenuWithButton from '../../src/editor/InsertMenuWithButton'
 import {snapshotTest} from '../testutil/testHelpers'
 
-// vi.mock("firebase/auth", () => ({
-//     getAuth: vi.fn().mockImplementation( ()=> ({currentUser() { return {name: 'Jo'}} })),
-//     onAuthStateChanged: vi.fn()
-// }))
-// vi.mock("firebase/app", () => ({
-//     initializeApp: vi.fn(),
-// }))
-//
 describe('Components', () => {
     snapshotTest(<AppBar title='The title'/>)
     snapshotTest(<MenuBar/>)

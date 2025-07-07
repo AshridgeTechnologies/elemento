@@ -25,7 +25,6 @@ import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import Collection from './Collection'
 import {DataTypeElementType, ElementType} from './Types'
-import FirestoreDataStore from './FirestoreDataStore'
 import CloudflareDataStore from './CloudflareDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
@@ -106,7 +105,6 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         FileDataStore: FileDataStore,
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: BrowserDataStore,
-        FirestoreDataStore: FirestoreDataStore,
         CloudflareDataStore: CloudflareDataStore,
         TinyBaseDataStore: TinyBaseDataStore,
         TinyBaseServerDataStore: TinyBaseServerDataStore,

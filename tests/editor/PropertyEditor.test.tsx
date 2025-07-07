@@ -26,7 +26,6 @@ import FunctionDef from '../../src/model/FunctionDef'
 import FileDataStore from '../../src/model/FileDataStore'
 import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
-import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
@@ -495,25 +494,6 @@ test('has fields for FileDataStore', () => {
     const element = new FileDataStore('id1', 'File Data Store 1', {})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(nameInputValue()).toBe('File Data Store 1')
-})
-
-test('has fields and actions for FirestoreDataStore', () => {
-    const expectedSecurityRules = `rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    match /users/{userId}/Things/{record} {
-      allow read: if request.auth.uid == userId;
-      allow write: if request.auth.uid == userId;
-    } 
-  }       
-}`
-    const element = new FirestoreDataStore('id1', 'Firestore Data Store 1', {collections: 'Things: user-private'})
-    render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
-    expect(nameInputValue()).toBe('Firestore Data Store 1')
-    expect(inputValue('Collections')).toBe('Things: user-private')
-    expect(inputValue('Security Rules')).toBe(expectedSecurityRules)
-    expect(input('Security Rules').readOnly).toBe(true)
 })
 
 test('shows errors for element', () => {

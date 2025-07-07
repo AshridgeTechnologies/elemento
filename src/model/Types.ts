@@ -78,7 +78,6 @@ export type ElementType =
     'OutputProperty' |
     'Collection' |
     'Block' |
-    'FirestoreDataStore' |
     'CloudflareDataStore' |
     'TinyBaseDataStore' |
     'TinyBaseServerDataStore' |

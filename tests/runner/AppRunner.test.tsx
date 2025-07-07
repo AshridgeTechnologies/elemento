@@ -1,8 +1,7 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {beforeEach, expect, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
-
 import AppRunner from '../../src/runner/AppRunner'
 import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
@@ -12,9 +11,8 @@ import {actWait, testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
 import {TextInput} from '../../src/runtime/components'
-import {highlightClassName} from '../../src/shared/controllerHelpers'
 
-vi.mock('../../src/runtime/components/authentication')   // prevent error when firebaseApp tries to call global fetch to load config
+vi.mock('../../src/runtime/components/authentication')   // prevent errors
 
 const pathPrefix = 'pp'
 const resourceUrl = 'https://example.com:8080/app/somewhere'

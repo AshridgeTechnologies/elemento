@@ -4,13 +4,13 @@ import ServerAppGenerator from '../../src/generator/ServerAppGenerator'
 import FunctionDef from '../../src/model/FunctionDef'
 import {ex} from '../testutil/testHelpers'
 import Collection from '../../src/model/Collection'
-import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
 import Project1 from '../../src/model/Project'
 import Project2 from '../../src/model/Project'
 import Project3 from '../../src/model/Project'
+import CloudflareDataStore from '../../src/model/CloudflareDataStore'
 
 describe('generates files for app and exposes public functions and includes data types', () => {
     const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})
@@ -103,7 +103,7 @@ describe('generates files using data components in dependency order', () => {
     const getSprocketFn = new FunctionDef('fn3', 'GetSprocket', {input1: 'id', calculation: ex`Get(Sprockets, id)`})
     const sprocketCollection = new Collection('coll1', 'Sprockets', {dataStore: ex`DataStore1`, collectionName: 'Sprockets'})
     const widgetCollection = new Collection('coll2', 'Widgets', {dataStore: ex`DataStore1`, collectionName: 'Widgets'})
-    const dataStore = new FirestoreDataStore('ds1', 'DataStore1', {collections: 'Widgets,Sprockets'})
+    const dataStore = new CloudflareDataStore('ds1', 'DataStore1', {collections: 'Widgets,Sprockets'})
     const app = new ServerApp('sa1', 'Widget App', {}, [
         getWidgetFn, updateWidgetFn, getSprocketFn,
         sprocketCollection, widgetCollection, dataStore
@@ -122,9 +122,9 @@ const {appFunctions} = serverRuntime
 const {components} = serverRuntime
 
 const {Get, Update} = appFunctions
-const {Collection, FirestoreDataStore} = components
+const {Collection, CloudflareDataStore} = components
 
-const DataStore1 = new FirestoreDataStore({collections: 'Widgets,Sprockets'})
+const DataStore1 = new CloudflareDataStore({collections: 'Widgets,Sprockets'})
 const Sprockets = new Collection({dataStore: DataStore1, collectionName: 'Sprockets'})
 const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
 
@@ -174,7 +174,7 @@ Sum = 1`})
     const propertyShorthandFn = new FunctionDef('fn107', 'PropShorthand', {calculation: ex`{a: 10, xxx}`, private: true})
     const unexpectedNumberFn = new FunctionDef('fn108', 'UnexpectedNumber', {calculation: ex`If(Sum(1)    1, Log(10), Log(20))`, private: true})
     const widgetCollection = new Collection('coll2', 'Widgets', {dataStore: ex`DataStore1`, collectionName: 'Widgets'})
-    const dataStore = new FirestoreDataStore('ds1', 'DataStore1', {collections: 'Widgets'})
+    const dataStore = new CloudflareDataStore('ds1', 'DataStore1', {collections: 'Widgets'})
     const app = new ServerApp('sa1', 'Widget App', {}, [
         emptyFn, syntaxErrorFn, unknownNameErrorFn,statementErrorFn, returnErrorFn,
         selectFunction, ifFunction, multipleStatementQuery, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
@@ -194,9 +194,9 @@ const {globalFunctions} = serverRuntime
 const {components} = serverRuntime
 
 const {Log, Select, If, Sum, Check} = globalFunctions
-const {Collection, FirestoreDataStore} = components
+const {Collection, CloudflareDataStore} = components
 
-const DataStore1 = new FirestoreDataStore({collections: 'Widgets'})
+const DataStore1 = new CloudflareDataStore({collections: 'Widgets'})
 const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
 
 const WidgetApp = (user) => {

@@ -26,8 +26,7 @@ export default () =>
                 because you only have to think about calculating the answers - there are no visible elements to worry about.
             </Para>
             <Para>
-                Elemento provides an easy way for you to make a Server App available on the internet, using the Google Firebase cloud service.
-                But if you are an experienced developer, it is also easy to set up your own deployment arrangements for hosting the generated code anywhere you like.
+                If you are an experienced developer, it is also easy to set up your own deployment arrangements for hosting the generated code anywhere you like.
             </Para>
         </SubSection>
 
@@ -93,14 +92,11 @@ export default () =>
             <Para>
                 A Server App needs to run on a server connected to the internet.
                 There are many ways to do this, and if you are an experienced developer you can choose any way you like to
-                run the Server App code that Elemento generates.  But for those without the knowledge to do that,
-                Elemento provides easy-to-use tools which let you
-                set up the Google Firebase cloud service to host your Project and run your Server Apps.
-                See the Firebase Hosting guide for details.
+                run the Server App code that Elemento generates.
             </Para>
             <Para>
                 Once you have developed and tested your Project with Server Apps, and each time you have changes that you want to release,
-                you will need to deploy your Project to Firebase Hosting.  See the Firebase Hosting guide, Deployment section.
+                you will need to deploy your Project to a hosting service.
             </Para>
         </SubSection>
 

@@ -235,23 +235,6 @@ export default () =>
                         </>}
         />
 
-        <ElementSection name='Firestore Data Store' id='firestoreDataStore'
-                        description='A datastore that uses Google Firestore, a cloud datastore where data is held on Google servers.
-                        The data will be available indefinitely, and can be accessed from any computer or device connected to the internet,
-                        either by you alone or by other people, depending on how you set up the datastore.
-                        You will need to have a Google account, and set up a Firebase project.
-                        You will also need to provide payment details, but there is a generous free allowance.
-                        This type of data store is best for applications where you need to access the data from different computers, and/or allow access by multiple people.'
-                        properties={<>
-                            <PropertyEntry name='Collection Names' type='list of text names' id='firestoreDataStore-collectionNames'>
-                                A list of the names of the Collections that use this data store.
-                                If you create a Collection and set its <code>Data Store</code> property to this data store, you must also add
-                                its <code>Collection
-                                Name</code> to this list.</PropertyEntry>
-                        </>
-                        }
-        />
-
         <ElementSection name='Form' id='form'
                         description={<><Para>Organises a group of elements within a page that show and update the data for the items in a Record.
                             It has a label that is shown above the Form to tell the user what the details shown relate to.
@@ -512,7 +495,7 @@ export default () =>
                         It is used where actions and data access need to validated or controlled according to the permissions of the user.
                         It can contain only Functions, Collections and Firestore Data Stores.
                         Each Function can be accessed from browser formulas and actions via a Server App Connector.
-                        Server Apps are intended for advanced users and require setting up an account with a cloud service such as Google Firebase'
+                        Server Apps are intended for advanced users and require setting up an account with a cloud service such as Cloudflare.'
                         properties={<>
                             <Para>There are no properties to set for a Page</Para>
                         </>
@@ -639,8 +622,7 @@ export default () =>
         />
 
         <ElementSection name='User Logon' id='userLogon'
-                        description='A button that displays a window so that the user can log on with Google Firebase authentication.
-            This is needed to use a Firestore Data Store and possibly other Google facilities in the future.'
+                        description='A button that displays a window so that the user can log on.'
                         properties={<>
                             <Para>There are no properties to set.</Para>
                         </>}

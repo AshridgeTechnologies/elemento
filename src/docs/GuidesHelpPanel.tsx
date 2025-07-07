@@ -2,7 +2,6 @@ import HelpPanel from './HelpPanel'
 import React from 'react'
 import DataTypes from './overview/DataTypes'
 import {Para} from './HelpComponents'
-import FirebaseHosting from './guides/FirebaseHosting'
 import ServerApps from './guides/ServerApps'
 import {Link} from '@mui/material'
 
@@ -18,7 +17,6 @@ const GuidesHelpPanel = (props: { showTitleBar?: boolean }) =>
     <HelpPanel title='Elemento Guides' showTitleBar={props.showTitleBar}>
         <GuidesIntro/>
         <DataTypes/>
-        <FirebaseHosting/>
         <ServerApps/>
     </HelpPanel>
 export default GuidesHelpPanel

@@ -72,12 +72,14 @@ Tasks
 - ✅ Cloudflare Durable object datastore
 - ✅ Alternative authentication
 - ~~Make CreateUser, UpdateUser, GetUser work again - or~~ find a better alternative
-- Remove Firebase
+- ✅ Remove Firebase except Elemento hosting
 - Remove preview server
+- Move to Cloudflare hosting
 
 Issues
 ------
 
+- Multiple tabs sync'ed to same durable object store cause local corruption
 - How to handle client runtime - dynamic import from elemento site, import from deployed site, bundle before deploy, get from elemento, get from npm
 - How to handle server runtime - get from elemento, get from npm? where to do it?
 - How to set up a cloudflare project from scratch

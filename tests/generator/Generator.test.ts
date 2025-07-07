@@ -22,7 +22,6 @@ import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
-import FirestoreDataStore from '../../src/model/FirestoreDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
@@ -1520,7 +1519,6 @@ test('generates elements under App used in Page', ()=> {
         new MemoryDataStore('mds1', 'Store 1', {initialValue: ex`{ Widgets: { x1: {a: 10}}}`}),
         new FileDataStore('fds1', 'Store 2', {}),
         new BrowserDataStore('bds1', 'Store 3', {databaseName: 'Accounts', collectionNames: ['Cheques', 'Postings']}),
-        new FirestoreDataStore('fsds1', 'Store 4', {collections: 'Cheques: userPrivate\nPostings: creator, techs'}),
     ])
 
     const output = new Generator(app, project(app)).output()
@@ -1576,7 +1574,7 @@ App1.State = class App1_State extends App.State {
         const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(Store1).collectionName('Widgets').props))
         const Store2 = this.getOrCreateChildState('Store2', new FileDataStore.State(stateProps('App1.Store2').props))
         const Store3 = this.getOrCreateChildState('Store3', new BrowserDataStore.State(stateProps('App1.Store3').databaseName('Accounts').collectionNames(['Cheques', 'Postings']).props))
-        const Store4 = this.getOrCreateChildState('Store4', new FirestoreDataStore.State(stateProps('App1.Store4').collections(\`Cheques: userPrivate
+        const Store4 = this.getOrCreateChildState('Store4', new CloudflareDataStore.State(stateProps('App1.Store4').collections(\`Cheques: userPrivate
 Postings: creator, techs\`).props))
         return {Widgets, Store2, Store3, Store4}
     }
