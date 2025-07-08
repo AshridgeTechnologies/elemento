@@ -36,7 +36,7 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
         return this.state.errorsShown ?? false
     }
 
-    get dataValue() {
+    get dataValue(): T | null {
         return this.propsOrStateValue ?? null
     }
 

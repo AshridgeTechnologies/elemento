@@ -11,7 +11,7 @@ const getLatestCommitId = (username: string, repo: string): Promise<string> => {
     const gitCommitUrl = `${GITHUB_API_HOST}/repos/${username}/${repo}/commits`
     return fetch(gitCommitUrl)
         .then(resp => resp.json())
-        .then(commits => commits[0].sha)
+        .then(commits => (commits as any)[0].sha)
 }
 export default function AppRunnerFromGitHub({username, repo, appName, subPath, pathPrefix}: Properties) {
     const [usernameRepoFetched, setUsernameRepoFetched] = useState<string | null>(null)

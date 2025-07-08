@@ -64,7 +64,7 @@ export default class PreviewControllerClient {
         return this.getTextContent(selector)
     }
 
-    Debug(debugExpr: string) {
+    Debug(debugExpr: string | null) {
         return this.debug(debugExpr)
     }
 

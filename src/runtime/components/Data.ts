@@ -13,7 +13,7 @@ type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}
 
 export default function Data({path, display = false}: Properties) {
-    const state = useObject(path)
+    const state = useObject<DataState>(path)
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null

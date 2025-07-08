@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import ChoiceType from '../../../src/runtime/types/ChoiceType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 
 test('has expected properties', () => {
     const type = new ChoiceType('Colour', {description: 'Outer paint shade', required: true, values: ['r', 'g', 'b'], valueNames: ['Red', 'Green', 'Blue']}, [])

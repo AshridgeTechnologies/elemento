@@ -19,6 +19,8 @@ export interface ComponentState<T> {
     latest(): T
 
     onChildStateChange(): void
+
+    get _stateForTest(): any
 }
 
 export type StateMap = { [key: string]: StoredState }
@@ -112,6 +114,8 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         newVersion._path = this._path
         return newVersion
     }
+
+    get _stateForTest() { return this.state }
 
     protected updateState(changes: Partial<typeof this.state>) {
         this._appStateInterface!.updateVersion(changes)

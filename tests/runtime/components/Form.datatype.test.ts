@@ -3,7 +3,7 @@
  */
 
 import {expect, MockedFunction, test, vi} from "vitest"
-import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, getCallArg, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
@@ -57,7 +57,7 @@ class TestFormState extends DataTypeFormState {
     childNames = ['Description', 'BoxSize', 'Count']
 
     createChildStates() {
-        const Count = this.getOrCreateChildState('Count', new NumberInput.State({value: this.originalValue?.Count, dataType: sizeType}))
+        const Count = this.getOrCreateChildState('Count', new NumberInput.State({value: (this.originalValue as any)?.Count, dataType: sizeType}))
         return {Count}
     }
 
@@ -250,7 +250,7 @@ test('keyAction function is called with key', async () => {
     await wait()
     await keyDown('app.page1.form1', 'Enter')
     expect(keyAction).toHaveBeenCalled()
-    expect((keyAction as MockedFunction<any>).mock.calls[0][0].key).toBe('Enter')
+    expect(getCallArg(keyAction, 0).key).toBe('Enter')
 })
 
 test('State Resets all its component states and modified', async () => {

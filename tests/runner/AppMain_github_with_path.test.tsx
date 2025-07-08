@@ -27,6 +27,7 @@ afterEach(async () => {
     // @ts-ignore
     global.fetch = undefined
     if (originalLocation) {
+        // @ts-ignore
         window.location = originalLocation
         originalLocation = null
     }
@@ -53,6 +54,7 @@ test('runs app from GitHub with path', async () => {
     originalLocation = window.location
     // @ts-ignore
     delete window.location
+    // @ts-ignore
     window.location = {
         origin: 'http://localhost',
         pathname: '/runner/gh/mongo/peewit/Page1/path2/1234',

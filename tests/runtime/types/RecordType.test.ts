@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import TextType from '../../../src/runtime/types/TextType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 import RecordType from '../../../src/runtime/types/RecordType'
 import {isNil} from 'ramda'
 import {NumberType} from '../../../src/runtime/types'

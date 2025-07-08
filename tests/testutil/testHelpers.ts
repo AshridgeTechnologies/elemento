@@ -1,7 +1,7 @@
-import {vi, expect, test, MockedFunction} from 'vitest'
+import {expect, MockedFunction, test, vi} from 'vitest'
 import renderer from 'react-test-renderer'
-import React, {ComponentState, createElement, FunctionComponent} from 'react'
-import {treeItemTitleSelector, treeNodeSelector} from '../editor/Selectors'
+import React, {createElement, FunctionComponent} from 'react'
+import {treeItemTitleSelector} from '../editor/Selectors'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import {enGB} from 'date-fns/locale/en-GB'
@@ -13,7 +13,7 @@ import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext
 import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
-import {StoreProvider, type AppStoreHook} from '../../src/runner/StoreContext'
+import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
 // import Dexie from 'dexie'
 // import Promise = Dexie.Promise
 // import {Error} from '@mui/icons-material'
@@ -349,3 +349,4 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
 }
 
 export const inDndContext = (itemSet: any) => createElement(DndWrapper, {elementToWrap: itemSet})
+export const getCallArg = (fn: (...args: any[]) => any, position: number): any => (fn as MockedFunction<any>).mock.calls[0][position]

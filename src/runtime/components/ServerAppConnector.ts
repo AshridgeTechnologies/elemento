@@ -101,7 +101,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                             if (resp.ok) {
                                 return resp.text().then( jsonText => JSON.parse(jsonText, isoDateReviver) )
                             } else {
-                                return resp.json().then(data => this.handleError(name, data.error))
+                                return resp.json().then((data: any) => this.handleError(name, data.error))
                             }
                         })
                         .catch(err => {
@@ -143,7 +143,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                     this.Refresh()
                     return resp.text()
                 } else {
-                    return resp.json().then(data => this.handleError(name, data.error))
+                    return resp.json().then((data: any) => this.handleError(name, data.error))
                 }
             })
             .catch(err => this.handleError(name, err))

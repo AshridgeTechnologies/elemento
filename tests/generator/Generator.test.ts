@@ -1070,7 +1070,7 @@ test('generates ServerAppConnector elements with correct configuration', () => {
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
     const updateWidgetFn = new FunctionDef('fn2', 'UpdateWidget', {input1: 'id', input2: 'changes', action: true, calculation: ex`Update(Widgets, id, changes)`})
     const getSprocketFn = new FunctionDef('fn3', 'GetSprocket', {input1: 'id', input2: 'direct', calculation: ex`Get(Sprockets, id)`})
-    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
+    const serverApp = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [
         getWidgetFn, updateWidgetFn, getSprocketFn,
     ])
     const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
@@ -1158,7 +1158,7 @@ test('generates ServerAppConnector elements with correct configuration if has sa
     ])
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
-    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [
+    const serverApp = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [
         getWidgetFn,
     ])
     const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
@@ -1213,7 +1213,7 @@ test('generates ServerAppConnector elements with specified URL', () => {
     ])
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
-    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
+    const serverApp = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [getWidgetFn])
     const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
@@ -1268,7 +1268,7 @@ test('generates ServerAppConnector with code generation error if ServerApp not f
     ])
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
-    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
+    const serverApp = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [getWidgetFn])
     const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()
@@ -1313,7 +1313,7 @@ test('generates ServerAppConnector with empty config if ServerApp not specified'
     ])
 
     const getWidgetFn = new FunctionDef('fn1', 'Get Widget', {input1: 'id', calculation: ex`Get(Widgets, id)`})
-    const serverApp = new ServerApp('sa1', 'Server App 1', {}, [getWidgetFn])
+    const serverApp = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [getWidgetFn])
     const project = Project.new([app, serverApp], 'The Project', 'proj1', {})
 
     const output = new Generator(app, project).output()

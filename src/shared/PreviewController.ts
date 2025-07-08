@@ -131,7 +131,7 @@ export default class PreviewController {
         return element?.textContent
     }
 
-    Debug(debugExpr: string) {
+    Debug(debugExpr: string | null) {
         const windowAny = this.window as any
         windowAny.elementoDebugExpr = debugExpr
         this.window.dispatchEvent(new CustomEvent('debugExpr', {detail: debugExpr}))

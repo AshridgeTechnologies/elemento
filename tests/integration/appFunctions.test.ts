@@ -1,22 +1,19 @@
 import appFunctions from '../../src/serverRuntime/appFunctions'
-import fs from 'fs'
 import {appFunctionsNames} from '../../src/serverRuntime/names'
 
 const {CreateUser, GetUser, UpdateUser, GetRandomId} = appFunctions
-
-const serviceAccount = JSON.parse(fs.readFileSync('private/service-account-key.json', 'utf8'))
 
 test('creates and updates user', async () => {
     const userId = GetRandomId()
     const email = 'user'+ userId + '@example.com'
     //console.log('userId', userId)
 
-    await CreateUser(userId, {email, displayName: 'Jo Doe'})
+    await CreateUser(userId, {email, name: 'Jo Doe'})
 
     const user = await GetUser(userId)
-    expect(user.uid).toBe(userId)
+    expect(user.id).toBe(userId)
     expect(user.email).toBe(email)
-    expect(user.displayName).toBe('Jo Doe')
+    expect(user.name).toBe('Jo Doe')
 
     const password = 'pass' + GetRandomId()
     const newEmail = 'dodo' + userId + '@example.com'
@@ -24,9 +21,9 @@ test('creates and updates user', async () => {
 
     {
         const user = await GetUser(userId)
-        expect(user.uid).toBe(userId)
+        expect(user.id).toBe(userId)
         expect(user.email).toBe(newEmail)
-        expect(user.displayName).toBe('Jo Doe')
+        expect(user.name).toBe('Jo Doe')
     }
 })
 

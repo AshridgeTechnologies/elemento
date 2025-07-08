@@ -205,28 +205,3 @@ test('continues to try to writer even after errors', async () => {
     await wait(120)
     expect(mockFileWriter.writeFiles).toHaveBeenNthCalledWith(2, {'file1.txt': contents1 + 1})
 })
-
-test('passes clean to combined file writer', async () => {
-    const mockFileWriter = mockWriter()
-    const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100)
-    await writer.clean()
-    expect(mockFileWriter.clean).toHaveBeenCalled()
-})
-
-test('updates status if clean fails', async () => {
-    globalThis.console = {error: vi.fn()} as unknown as typeof globalThis.console
-    const mockFileWriter = mockWriter(0, true)
-
-    const onStatusChange = vi.fn()
-    const writer = new ThrottledCombinedFileWriter(mockFileWriter, 100, onStatusChange)
-    await writer.clean()
-
-    expect(onStatusChange).toHaveBeenCalledTimes(1)
-    expect(onStatusChange).toHaveBeenLastCalledWith(new Error('Cannot do this'))
-    expect(console.error).toHaveBeenCalledWith('Failed to clean files', new Error('Cannot do this'))
-
-})
-
-
-
-

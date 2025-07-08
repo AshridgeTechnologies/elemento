@@ -116,7 +116,7 @@ export default class TypesGenerator {
             return undefined
         }
 
-        convertAstToValidJavaScript(ast, exprType, [])
+        convertAstToValidJavaScript(ast, exprType, [], () => false)
 
         const exprCode = printAst(ast)
         switch (exprType) {

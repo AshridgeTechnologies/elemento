@@ -8,8 +8,8 @@ import { subjects } from '../shared/subjects'
 import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare"
 import { Hono } from 'hono'
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'unknown'
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'unknown'
 const AUTH_NAMESPACE = process.env.AUTH_NAMESPACE || 'auth'
 
 let theIssuer
@@ -59,7 +59,7 @@ function createIssuer(env: any) {
                 email = value.email
             }
             if (value.provider === "_auth/google") {
-                const userInfo = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${value.tokenset.access}`)
+                const userInfo: any = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${value.tokenset.access}`)
                     .then( resp => resp.json() )
                 userId = userInfo.id
                 email = userInfo.email

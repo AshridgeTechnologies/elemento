@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {expect, test} from "vitest"
 import TrueFalseType from '../../../src/runtime/types/TrueFalseType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 
 test('has expected properties', () => {
     const type = new TrueFalseType('Approved', {description: 'Whether we like it'}, [])

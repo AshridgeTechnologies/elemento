@@ -30,7 +30,7 @@ type StateProperties = {value?: object, queries?: object, subscription?: any, au
 let lastGeneratedId = 1
 
 export default function Collection({path, display = false}: Properties) {
-    const state = useObject(path)
+    const state = useObject<CollectionState>(path)
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null
@@ -243,8 +243,8 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
 
         if (update.type === Add) {
-            const {id, changes: newItem} = update
-            const {value, queries} = this.latest()
+            const {changes: newItem = {}} = update
+            const {queries} = this.latest()
 
             const addToQueryResults = (results: object[], queryKey: string) => {
                 const criteria = JSON.parse(queryKey) as Criteria

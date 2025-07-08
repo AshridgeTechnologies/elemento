@@ -62,7 +62,7 @@ test('adds functions to itself from configuration', () => {
 })
 
 test('does not fail with empty configuration', () => {
-    const conn = new ServerAppConnector.State({configuration: {} as Configuration})
+    new ServerAppConnector.State({configuration: {} as Configuration})
 })
 
 test('returns self as update result for equivalent configuration', () => {
@@ -79,7 +79,7 @@ test('calls get functions, returns pending and then cached result', async () => 
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-    expect(isPending(appInterface.latest().state.resultCache['GetWidget#["id1",true]'])).toBe(true)
+    expect(isPending(appInterface.latest()._stateForTest.resultCache['GetWidget#["id1",true]'])).toBe(true)
 
     await wait(10)
     const resultData = conn.GetWidget('id1', true)
@@ -89,13 +89,13 @@ test('calls get functions, returns pending and then cached result', async () => 
     expect(mockFetch).toHaveBeenCalledTimes(1)
     expect(mockFetch).toHaveBeenCalledWith(`${urlWithVersion}/GetWidget?id=id1&full=true`, {})
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
-    expect(appInterface.latest().state.resultCache).toStrictEqual({
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({
         'GetWidget#["id1",true]': resultData,
     })
 })
 
 test('translates ISO dates in received data', async () => {
-    const [conn, appInterface] = initConnector()
+    const [conn] = initConnector()
     const date1 = new Date()
     const data1 = {date: date1.toISOString()}
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data1))
@@ -176,7 +176,7 @@ test('refreshes individual cached result for each call', async () => {
 
     conn.Refresh('GetWidget', 'id1', true)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': undefined,
             'GetWidget#["id1",false]': data2,
@@ -192,7 +192,7 @@ test('refreshes individual cached result for each call', async () => {
     expect(mockFetch).toHaveBeenCalledTimes(4)
 
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(9)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': data1a,
             'GetWidget#["id1",false]': data2,
@@ -224,7 +224,7 @@ test('refreshes all cached results for one function', async () => {
 
     conn.Refresh('GetWidget')
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': undefined,
             'GetWidget#["id1",false]': undefined,
@@ -270,7 +270,7 @@ test('refreshes all cached results', async () => {
 
     conn.Refresh()
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
-    expect(appInterface.latest().state.resultCache).toStrictEqual({})
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({})
 
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data2a))
@@ -286,7 +286,7 @@ test('refreshes all cached results', async () => {
     expect(conn.GetSprocket('id1', false)).toStrictEqual(data3a)
     expect(mockFetch).toHaveBeenCalledTimes(6)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(13)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': data1a,
             'GetWidget#["id1",false]': data2a,
@@ -321,7 +321,7 @@ test('refreshes all cached results after action function call', async () => {
     expect(mockFetch).toHaveBeenCalledTimes(4)
 
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
-    expect(appInterface.latest().state.resultCache).toStrictEqual({})
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({})
 
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data1a))
     mockFetch.mockResolvedValueOnce(mockJsonResponse(data2a))
@@ -337,7 +337,7 @@ test('refreshes all cached results after action function call', async () => {
     expect(conn.GetSprocket('id1', false)).toStrictEqual(data3a)
     expect(mockFetch).toHaveBeenCalledTimes(7)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(13)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': data1a,
             'GetWidget#["id1",false]': data2a,
@@ -451,7 +451,7 @@ test('handles error returned from server in get call', async () => {
     mockFetch.mockResolvedValue(mockError(message))
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
-    expect(isPending(appInterface.latest().state.resultCache['GetWidget#["id1",true]'])).toBe(true)
+    expect(isPending(appInterface.latest()._stateForTest.resultCache['GetWidget#["id1",true]'])).toBe(true)
 
     await wait(10)
     const resultData = conn.GetWidget('id1', true)
@@ -460,7 +460,7 @@ test('handles error returned from server in get call', async () => {
     const resultData2 = conn.GetWidget('id1', true)
     expect(resultData2).toBe(resultData)
     expect(mockFetch).toHaveBeenCalledTimes(1)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': resultData
         })
@@ -481,7 +481,7 @@ test('handles error in making get call', async () => {
     const resultData2 = conn.GetWidget('id1', true)
     expect(resultData2).toBe(resultData)
     expect(mockFetch).toHaveBeenCalledTimes(1)
-    expect(appInterface.latest().state.resultCache).toStrictEqual(
+    expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': resultData
         })
@@ -499,7 +499,7 @@ test('handles error in making post call', async () => {
 })
 
 test('handles error returned from server in post call', async () => {
-    const [conn, appInterface] = initConnector()
+    const [conn] = initConnector()
     const changes = {c: 'foo'}
     const message = 'That is wrong'
     
@@ -514,14 +514,14 @@ describe('subscribe to auth changes', () => {
     beforeEach(()=> mockClear(authentication.onAuthChange))
 
     test('subscribes to onAuthChange when not in the state', () => {
-        const [state, appInterface] = initConnector();
+        const [, appInterface] = initConnector();
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
         expect(authentication.onAuthChange).toHaveBeenCalled()
     })
 
     test('uses same onAuthChange subscription when already in the state', () => {
         const authSubscription = noop
-        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}, versionId: '1', versionFetch: Promise.resolve('')})
+        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}})
         const appInterface = testAppInterface('testPath', state)
 
         expect(authentication.onAuthChange).not.toHaveBeenCalled()
@@ -533,10 +533,10 @@ describe('subscribe to auth changes', () => {
         mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
         const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({resultCache: {
                 'GetWidget#["id1",true]': 'xyz',
-            }, versionId: '1', versionFetch: Promise.resolve('')})
+            }})
         const appInterface = testAppInterface('testPath', state)
 
         authCallback!()
-        expect(appInterface.latest().state.resultCache).toStrictEqual({})
+        expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({})
     })
 })

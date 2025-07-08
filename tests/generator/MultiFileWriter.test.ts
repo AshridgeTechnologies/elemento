@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {expect, test, vi} from 'vitest'
 import MultiFileWriter from '../../src/generator/MultiFileWriter'
 import {FileWriter} from '../../src/generator/ProjectBuilder'
-import {expect, test, vi} from 'vitest'
 
 test('writes file to all the given writers', async () => {
     const writer1: FileWriter = {writeFile: vi.fn().mockResolvedValue(undefined)}

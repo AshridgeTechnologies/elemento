@@ -29,7 +29,7 @@ const appFunctions = {
 
     CurrentUser() {
         const user = currentUser()
-        return user ? {...user, Name: user.displayName, Email: user.email} : null
+        return user ? {...user, Name: user.name, Email: user.email} : null
     },
 
     ...dataFunctions

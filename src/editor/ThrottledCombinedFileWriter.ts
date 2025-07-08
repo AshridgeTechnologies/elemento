@@ -25,13 +25,6 @@ export default class ThrottledCombinedFileWriter implements FileWriter {
         this.updateStatus('waiting')
     }
 
-    clean(): Promise<void> {
-        return this.combinedWriter.clean().catch( (err: Error)=> {
-            this.updateStatus(err)
-            console.error('Failed to clean files', err)
-        })
-    }
-
     private scheduleNextWrite() {
         // ensure a write promise will just do nothing if more file changes have come in or has been flushed
         const updateCountWhenScheduled = this.updateCount

@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {expect, test} from "vitest"
 import TextType from '../../../src/runtime/types/TextType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 
 test('has expected properties', () => {
     const type = new TextType('Internal Email', {minLength: 10, maxLength: 20, format: 'email', description: 'Email address of Acme staff member'}, [

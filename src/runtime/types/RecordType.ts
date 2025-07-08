@@ -7,7 +7,7 @@ import {isPlainObject} from 'lodash'
 type Properties = BaseProperties
 type FieldsType = BaseType<any, any>[]
 
-export default class RecordType extends BaseStructuredType<object, Properties> {
+export default class RecordType<T extends object = object> extends BaseStructuredType<T, Properties> {
     private _fields: FieldsType
 
     constructor(name: string, properties: Properties = {}, rules: Rule[] = [], fields: FieldsType = [] ) {

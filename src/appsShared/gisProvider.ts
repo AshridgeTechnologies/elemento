@@ -19,7 +19,7 @@ const loadScriptElement = (scriptUrl: string) => new Promise((resolve) => {
     scriptEl.defer = true
     scriptEl.src = scriptUrl
     scriptEl.onload = resolve
-    document.body.append(scriptEl)
+    document.body.appendChild(scriptEl)
 })
 
 const gsiScriptLoaded = loadScriptElement('https://accounts.google.com/gsi/client')

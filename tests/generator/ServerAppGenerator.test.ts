@@ -21,7 +21,7 @@ describe('generates files for app and exposes public functions and includes data
     const timesFn = new FunctionDef('fn2', 'Times', {input1: 'c', input2: 'd', calculation: ex`c * d`})
     const totalFn = new FunctionDef('fn3', 'Total', {input1: 'x', input2: 'y', input3: 'z', calculation: ex`Times(y, Plus(x, z))`})
     const privateFn = new FunctionDef('fn4', 'HideMe', {input1: 'where', calculation: ex`where + ' - there'`, private: true})
-    const app = new ServerApp('sa1', 'Server App 1', {}, [
+    const app = new ServerApp('sa1', 'Server App 1', {updateTime: new Date()}, [
         plusFn, timesFn, totalFn, privateFn
     ])
     const project = Project3.new([dataTypes1, dataTypes2, app], 'Project 1', 'proj1', {})
@@ -104,7 +104,7 @@ describe('generates files using data components in dependency order', () => {
     const sprocketCollection = new Collection('coll1', 'Sprockets', {dataStore: ex`DataStore1`, collectionName: 'Sprockets'})
     const widgetCollection = new Collection('coll2', 'Widgets', {dataStore: ex`DataStore1`, collectionName: 'Widgets'})
     const dataStore = new CloudflareDataStore('ds1', 'DataStore1', {collections: 'Widgets,Sprockets'})
-    const app = new ServerApp('sa1', 'Widget App', {}, [
+    const app = new ServerApp('sa1', 'Widget App', {updateTime: new Date()}, [
         getWidgetFn, updateWidgetFn, getSprocketFn,
         sprocketCollection, widgetCollection, dataStore
     ])
@@ -175,7 +175,7 @@ Sum = 1`})
     const unexpectedNumberFn = new FunctionDef('fn108', 'UnexpectedNumber', {calculation: ex`If(Sum(1)    1, Log(10), Log(20))`, private: true})
     const widgetCollection = new Collection('coll2', 'Widgets', {dataStore: ex`DataStore1`, collectionName: 'Widgets'})
     const dataStore = new CloudflareDataStore('ds1', 'DataStore1', {collections: 'Widgets'})
-    const app = new ServerApp('sa1', 'Widget App', {}, [
+    const app = new ServerApp('sa1', 'Widget App', {updateTime: new Date()}, [
         emptyFn, syntaxErrorFn, unknownNameErrorFn,statementErrorFn, returnErrorFn,
         selectFunction, ifFunction, multipleStatementQuery, multipleStatementAction, assignmentFunction, propertyShorthandFn, unexpectedNumberFn,
         widgetCollection, dataStore
@@ -307,7 +307,7 @@ for (let i = 1; i < y; i++) {
     const javaScriptActionFn = new FunctionDef('fn2', 'DoUpdate', {input1: 'widget', calculation: {expr: javascriptActionCode}, action: true, javascript: true})
     const thingsCollection = new Collection('coll2', 'Things', {})
 
-    const app = new ServerApp('sa1', 'Widget App', {}, [javaScriptFn, javaScriptActionFn, thingsCollection])
+    const app = new ServerApp('sa1', 'Widget App', {updateTime: new Date()}, [javaScriptFn, javaScriptActionFn, thingsCollection])
     const project = Project1.new([app], 'Project 1', 'proj1', {})
 
     const gen = new ServerAppGenerator(app, project)

@@ -23,7 +23,7 @@ const installMockFilePickers = (app: any) => {
                     div.id = '_testFile'
                     div.textContent = this.text
                     document.getElementById('_testFile')?.remove()
-                    document.body.append(div)
+                    document.body.appendChild(div)
                 }
             }
         }

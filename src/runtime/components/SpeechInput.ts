@@ -1,16 +1,19 @@
 import {createElement} from 'react'
 import {BaseComponentState, ComponentState} from './ComponentState'
 
-const SpeechRecognition  = globalThis.SpeechRecognition || globalThis.webkitSpeechRecognition
-const SpeechGrammarList = globalThis.SpeechGrammarList || globalThis.webkitSpeechGrammarList
+const SpeechRecognition  = (globalThis as any).SpeechRecognition || (globalThis as any).webkitSpeechRecognition
+const SpeechGrammarList = (globalThis as any).SpeechGrammarList || (globalThis as any).webkitSpeechGrammarList
 
 type Properties = {path: string}
 type ExternalProperties = {language?: string, expectedPhrases?: string[]}
 type StateProperties = {speechRecognition: any, recording: boolean, value: string, confidence: number | null}
 
 type RecognitionStatus = 'ready' | 'started' | 'stopping' | 'stopping_startRequested'
-type SpeechRecognitionExt = SpeechRecognition
+type SpeechRecognitionExt = typeof SpeechRecognition
     & {onaudiostart: any, onaudioend: any, onstart: any, onend: any, onsoundstart: any, onsoundend: any, onspeechstart: any, onspeechend: any, status: RecognitionStatus}
+
+type SpeechRecognitionEvent = any
+type SpeechRecognitionErrorEvent = any
 
 export default function SpeechInput({path}: Properties) {
     return createElement('div', {id: path})

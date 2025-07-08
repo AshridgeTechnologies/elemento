@@ -55,7 +55,8 @@ export default class EditorController {
         console.log('Show', selector, text)
         return this.queueAction(null, null, async () => {
             const elements = selector ? selectElements(selector, this.container, text) : []
-            highlightElements(elements, this.container)
+            const elementIds = elements.map( el => el.id )
+            highlightElements(elementIds, this.container)
             if (elements.length === 1) {
                 await ensureVisible(elements[0])
                 if (this.options.showWithPointer) {

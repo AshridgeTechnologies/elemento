@@ -19,7 +19,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
     const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state = useObject(path)
+    const state = useObject<TrueFalseInputState>(path)
     const {dataValue, dataType} = state
     const value = dataValue ?? false
     const labelWithRequired = getLabelWithRequired(dataType, label)

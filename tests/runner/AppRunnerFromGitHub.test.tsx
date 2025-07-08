@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test, MockedFunction} from "vitest"
 /**
  * @vitest-environment jsdom
  */

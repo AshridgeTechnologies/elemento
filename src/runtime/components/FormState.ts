@@ -45,8 +45,8 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): St
     return {} as StoredState
 }
 
-export default abstract class BaseFormState extends InputComponentState<object, RecordType, {submitAction?: SubmitActionFn}> {
-    defaultValue = {}
+export default abstract class BaseFormState<T extends object = object> extends InputComponentState<T, RecordType<T>, {submitAction?: SubmitActionFn}> {
+    defaultValue = {} as T
 
     protected abstract readonly ownFieldNames: string[]
 
@@ -64,8 +64,8 @@ export default abstract class BaseFormState extends InputComponentState<object, 
         this.state.childStates = {...dataTypeChildStates, ...ownChildStates}
     }
 
-    get dataValue() {
-        return this.valueFromChildren()
+    get dataValue(): T {
+        return this.valueFromChildren() as T
     }
 
     get originalValue() {

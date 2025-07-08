@@ -20,7 +20,7 @@ type StateProperties = {scrollTop?: number}
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0, flexShrink: 0}
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
-    const state = useObject(path)
+    const state = useObject<ListElementState>(path)
     const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)

@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DecimalType from '../../../src/runtime/types/DecimalType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 import BigNumber from 'bignumber.js'
 
 const type = new DecimalType('Product size', {required: true, min: 10.5, max: new BigNumber('20.005'), decimalPlaces: 4, description: 'Size of a product'}, [

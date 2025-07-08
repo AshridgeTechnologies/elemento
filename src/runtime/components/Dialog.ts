@@ -34,7 +34,7 @@ function CloseButton(props: { onClose: () => void }) {
 
 export default function Dialog({children = [], path,  layout, showCloseButton, styles: styleProps = {}}: Properties) {
     const styles = valueOfProps(styleProps)
-    const state = useObject(path)
+    const state = useObject<DialogState>(path)
     const handleClose = ()=> { state.Close() }
     return React.createElement(MuiDialog, {open: state.isOpen, onClose: handleClose, slotProps: dialogSlotProps},
         (showCloseButton ? React.createElement(CloseButton, {onClose: handleClose}) : null),

@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {expect, test} from "vitest"
 import NumberType from '../../../src/runtime/types/NumberType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 
 const type = new NumberType('Product price', {required: true, min: 10, max: 20000, format: 'integer', description: 'Price of a product'}, [
     new Rule('Multiple of 10', (item: any) => item % 10 === 0, {description: 'Must be a multiple of 10'})

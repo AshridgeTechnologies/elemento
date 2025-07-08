@@ -18,7 +18,7 @@ export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useObject(path)
+    const state = useObject<TimerState>(path)
     const optionalProps = definedPropertiesOf({label})
     const inputComponentProps = propsForInputComponent(undefined, styles)
     const inputProps = inputElementProps(styles, false, {})

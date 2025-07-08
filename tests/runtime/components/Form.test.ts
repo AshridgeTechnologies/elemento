@@ -3,7 +3,7 @@ import {expect, MockedFunction, test, vi} from "vitest"
  * @vitest-environment jsdom
  */
 import React, {KeyboardEventHandler} from 'react'
-import {componentJSON, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, getCallArg, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
@@ -22,7 +22,13 @@ const recordType = new RecordType('rt1', {}, [
     descriptionType, sizeType
 ])
 
-class TestFormState extends BaseFormState {
+type OneElementFormContents = {
+    Description: string
+}
+type FormContents = OneElementFormContents & { BoxSize: number }
+type NestedFormContents = FormContents & {Extra: OneElementFormContents}
+
+class TestFormState extends BaseFormState<FormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize']
     childNames = ['Description', 'BoxSize']
 
@@ -50,7 +56,7 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
     )
 }
 
-class TestOneElementFormState extends BaseFormState {
+class TestOneElementFormState extends BaseFormState<{Description: string}> {
     protected readonly ownFieldNames = ['Description']
     childNames = ['Description']
 
@@ -72,7 +78,7 @@ function TestOneElementForm(props: {path: string}) {
     )
 }
 
-class TestNestedFormState extends BaseFormState {
+class TestNestedFormState extends BaseFormState<NestedFormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize', 'Extra']
     childNames = ['Description', 'BoxSize', 'Extra']
 
@@ -196,8 +202,8 @@ test('State class compares data types as objects', () => {
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
-    state._updateValue()
+    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'});
+    (state as any)._updateValue()
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
 })
 
@@ -277,7 +283,7 @@ test('keyAction function is called with key', async () => {
     await wait()
     await keyDown('app.page1.form1', 'Enter')
     expect(keyAction).toHaveBeenCalled()
-    expect((keyAction as MockedFunction<any>).mock.calls[0][0].key).toBe('Enter')
+    expect(getCallArg(keyAction, 0).key).toBe('Enter')
 })
 
 test('State Resets all its component states and modified', async () => {

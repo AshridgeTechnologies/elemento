@@ -22,7 +22,7 @@ export default class WebFileDataStoreImpl implements DataStore {
             const contentType = response.headers.get('Content-Type')
             const isJson = contentType?.startsWith('application/json')
             if (!response.ok) {
-                const jsonError = isJson ? (await response.json()).error?.message ?? '' : ''
+                const jsonError = isJson ? (await response.json() as any).error?.message ?? '' : ''
                 throw new Error(`Error getting data: ${response.status} ${jsonError}`)
             }
             if (!isJson) {

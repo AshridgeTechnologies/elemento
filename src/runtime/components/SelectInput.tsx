@@ -18,7 +18,7 @@ export default function SelectInput({path, ...props}: Properties) {
     const {label, values: valuesFromProps = [], readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
-    const state = useObject(path)
+    const state = useObject<SelectInputState>(path)
     const {value, dataType} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)

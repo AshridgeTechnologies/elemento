@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 import DateType from '../../../src/runtime/types/DateType'
 import Rule from '../../../src/runtime/types/Rule'
-import {expect} from 'expect'
 
 const date1 = new Date('2020-04-06')
 const date2 = new Date('2020-04-21')

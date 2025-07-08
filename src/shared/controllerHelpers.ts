@@ -201,7 +201,7 @@ export const highlightElements = (elementIds: string[], container: HTMLElement) 
         const styleEl = document.createElement('style')
         styleEl.id = highlightStyleId
         styleEl.innerHTML = `.${highlightClassName} { outline: 2px dashed orangered !important; outline-offset: 2px}`
-        document.head.append(styleEl)
+        document.head.appendChild(styleEl)
     }
     const oldHighlightedElements = container.querySelectorAll('.' + highlightClassName)
     oldHighlightedElements.forEach(el => el.classList.remove(highlightClassName))
@@ -234,7 +234,7 @@ export const setElementValue = async (element: HTMLElement, container: HTMLEleme
 
     const select = isSelectElement(element) ? element : element.querySelector('.MuiSelect-select')
     if (select) {
-        (select as HTMLSelectElement).focus()
+        (select as unknown as HTMLSelectElement).focus()
         await userEvent.click(select)
         await wait(700)
         const itemToSelect = Array.from(container.querySelector('[role=listbox]')?.querySelectorAll(`[role=option]`) ?? []).find(el => textMatch(el, value.toString()))

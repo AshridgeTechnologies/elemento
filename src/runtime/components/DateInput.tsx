@@ -15,7 +15,7 @@ export default function DateInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useObject(path)
+    const state = useObject<DateInputState>(path)
     const {value, dataType} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const optionalProps = definedPropertiesOf({label: labelWithRequired})

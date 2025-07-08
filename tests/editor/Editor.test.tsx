@@ -219,11 +219,11 @@ test('shows errors for properties of all client apps', async () => {
 })
 
 test('shows errors for properties of all server apps', async () => {
-    const serverApp1 = new ServerApp('serverApp1', 'Server App One', {}, [
+    const serverApp1 = new ServerApp('serverApp1', 'Server App One', {updateTime: new Date()}, [
         new FunctionDef('func1', 'Add What', {calculation: ex`22 + `}),
     ])
 
-    const serverApp2 = new ServerApp('serverApp2', 'Server App Two', {}, [
+    const serverApp2 = new ServerApp('serverApp2', 'Server App Two', {updateTime: new Date()}, [
         new FunctionDef('func2', 'Add Bad', {calculation: ex`BadName + 22`}),
     ])
     const projectWithErrors = Project.new([serverApp1, serverApp2], 'Project Bad', 'pr1', {})

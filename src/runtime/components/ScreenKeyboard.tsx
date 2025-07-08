@@ -72,7 +72,7 @@ const translateKey = (key: string) => {
 export default function ScreenKeyboard({path, ...props}: Properties) {
     const {keyAction, useRealKeyboard, show = true, styles = {}} = valueOfProps(props)
     const [layoutName, setLayoutName] = useState("lettersOnly")
-    const state = useObject(path)
+    const state = useObject<ScreenKeyboardState>(path)
     useEffect(() => insertStyleElement('ScreenKeyboardCss', css), [])
     useEffect(() => {
         if (useRealKeyboard) {
