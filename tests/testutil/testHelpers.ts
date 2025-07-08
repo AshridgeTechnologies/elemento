@@ -349,4 +349,4 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
 }
 
 export const inDndContext = (itemSet: any) => createElement(DndWrapper, {elementToWrap: itemSet})
-export const getCallArg = (fn: (...args: any[]) => any, position: number): any => (fn as MockedFunction<any>).mock.calls[0][position]
+export const getCallArg = (fn: (...args: any[]) => any, position: number): any => (fn as MockedFunction<any>).mock.calls[0]?.[position]

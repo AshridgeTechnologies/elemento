@@ -96,7 +96,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         return this.theDb
     }
 
-    get isReadWrite() { return this.synchronizer?.getWebSocket()?.protocol === 'readwrite' }
+    get isReadWrite() { return !this.synchronizer || this.synchronizer?.getWebSocket()?.protocol === 'readwrite' }
 
     async init(collectionName?: CollectionName) {
         if (collectionName) {

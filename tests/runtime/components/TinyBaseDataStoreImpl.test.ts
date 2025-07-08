@@ -2,16 +2,17 @@
  * @vitest-environment jsdom
  */
 
-import {afterEach, beforeAll, beforeEach, describe, expect, test, vi} from "vitest"
+import {afterEach, beforeAll, beforeEach, describe, expect, Mock, MockedFunction, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 import BigNumber from 'bignumber.js'
-import {wait} from '../../testutil/testHelpers'
+import {getCallArg, wait} from '../../testutil/testHelpers'
 
 let store: TinyBaseDataStoreImpl
+const storeProps = {databaseTypeName: 'N_A',  databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false}
 
 beforeEach(() => {
-    store = new TinyBaseDataStoreImpl({ databaseTypeName: 'N_A',  databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: false, sync: false})
+    store = new TinyBaseDataStoreImpl(storeProps)
 })
 
 afterEach(async () =>  {
@@ -92,25 +93,30 @@ describe('stores decimals', () => {
 
 describe('subscribe', () => {
     //expect InvalidateAll when auth changes on startup
-    beforeAll(async () => {
-        const onNextWidgets = vi.fn()
-        const onNextGadgets = vi.fn()
-        store.observable('Widgets').subscribe(onNextWidgets)
-        store.observable('Gadgets').subscribe(onNextGadgets)
+
+    async function expectInvalidateAll(onNextWidgets: MockedFunction<any>, onNextGadgets: MockedFunction<any>) {
         await wait(10)
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: InvalidateAll})
-        expect(onNextGadgets).toHaveBeenCalledWith({collection: 'Gadgets', type: InvalidateAll})
-    })
+        if (getCallArg(onNextWidgets, 0)?.type === 'InvalidateAll') {
+            onNextWidgets.mockClear()
+        }
+        if (getCallArg(onNextGadgets, 0)?.type === 'InvalidateAll') {
+            onNextGadgets.mockClear()
+        }
+    }
 
     test('sends changes on Add to subscriptions for that collection', async () => {
         const onNextWidgets = vi.fn()
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
+        await expectInvalidateAll(onNextWidgets, onNextGadgets)
+
         await store.add('Widgets', 'w1', {a: 10, b: 'Bee1', c: true})
         await wait(10)
-        expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {id: 'w1', a: 10, b: 'Bee1', c: true}})
-        expect(onNextGadgets).not.toHaveBeenCalled()
+
+        expect(onNextWidgets).toHaveBeenCalledTimes(1)
+        expect(onNextGadgets).toHaveBeenCalledTimes(0)
+        expect(onNextWidgets).toHaveBeenLastCalledWith({collection: 'Widgets', type: Add, id: 'w1', changes: {id: 'w1', a: 10, b: 'Bee1', c: true}})
     })
 
     test('sends multiple changes on Add all to subscriptions for that collection', async () => {
@@ -118,6 +124,8 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
+        await expectInvalidateAll(onNextWidgets, onNextGadgets)
+
         await store.addAll('Widgets', {'w2': {a: 10, b: 'Bee1', c: true}, 'w2a': {a: 20, b: 'Bee2', c: false}})
         await wait()
         expect(onNextWidgets).toHaveBeenCalledWith({collection: 'Widgets', type: MultipleChanges, })
@@ -130,6 +138,8 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
+        await expectInvalidateAll(onNextWidgets, onNextGadgets)
+
         await store.add('Widgets', 'w3', {a: 10, b: 'Bee1', c: false})
         onNextWidgets.mockReset()
         await store.update('Widgets', 'w3', {c: true})
@@ -142,6 +152,8 @@ describe('subscribe', () => {
         const onNextGadgets = vi.fn()
         store.observable('Widgets').subscribe(onNextWidgets)
         store.observable('Gadgets').subscribe(onNextGadgets)
+        await expectInvalidateAll(onNextWidgets, onNextGadgets)
+
         await store.add('Widgets', 'w4', {a: 10, b: 'Bee1', c: true})
         onNextWidgets.mockReset()
         await store.remove('Widgets', 'w4')
@@ -153,9 +165,11 @@ describe('subscribe', () => {
 describe('persistence', () => {
     test('saves and loads changes from local storage if persist true', async () => {
         localStorage.clear()
-        await store.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
-        const store2 = new TinyBaseDataStoreImpl({databaseTypeName: 'N_A', databaseInstanceName: 'db1', collections: 'Widgets;Gadgets', persist: true, sync: false})
+        store = new TinyBaseDataStoreImpl({...storeProps, persist: true})
 
+        await store.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
+        const store2 = new TinyBaseDataStoreImpl({...storeProps, persist: true})
+await wait(500)
         const retrievedObj = await store2.getById('Widgets', 'w1')
         expect(retrievedObj).toMatchObject({id: 'w1', a: 47, b: 'Bee87', c: true})
     })

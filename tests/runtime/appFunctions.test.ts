@@ -70,7 +70,7 @@ describe('SetWithUpdates', () => {
 describe('CurrentUser', () => {
 
     test('returns current user if logged on', () => {
-        mockReturn(authentication.currentUser, { displayName: 'Franko', email: 'franko@fr.com'})
+        mockReturn(authentication.currentUser, { name: 'Franko', email: 'franko@fr.com'})
         expect(CurrentUser()!.Name).toBe('Franko')
         expect(CurrentUser()!.Email).toBe('franko@fr.com')
     })
