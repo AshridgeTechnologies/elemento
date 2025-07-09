@@ -103,9 +103,9 @@ Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
     expect(gen.output().files[2].contents).toBe(`export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1, Page2}
-    const appContext = Elemento.useGetAppContext()
+    const urlContext = Elemento.useGetUrlContext()
     const themeOptions = ({primary: 'blue'})
-    const _state = setObject('App1', new App1.State({pages, appContext, themeOptions}))
+    const _state = setObject('App1', new App1.State({pages, urlContext, themeOptions}))
 
     return React.createElement(App, {...elProps('App1').maxWidth('60%').fonts(['Crazy Font', 'Weird Font']).props},)
 }
@@ -158,8 +158,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     const pathTo = name => 'Tool1' + '.' + name
     const {Editor, Preview} = Elemento
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Tool1', new Tool1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Tool1', new Tool1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('Tool1').maxWidth('60%').props},)
 }
@@ -227,8 +227,8 @@ Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1, Page2}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('App1').props},)
 }
@@ -315,8 +315,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('App1').props},)
 }
@@ -382,8 +382,8 @@ test('generates App Bar elements with contents', ()=> {
     expect(gen.output().files[1].contents).toBe(`export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Test1', new Test1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
             React.createElement(TextElement, elProps(pathTo('Text0')).styles(elProps(pathTo('Text0.Styles')).width(200).props).content('Welcome!').props)
@@ -409,8 +409,8 @@ test('generates startup action for App', ()=> {
     expect(gen.output().files[1].contents).toBe(`export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Test1', new Test1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('Test1').startupAction(_state.Test1_startupAction).props},)
 }
@@ -1124,8 +1124,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const {Connector1} = _state
 
     return React.createElement(App, {...elProps('App1').props},)
@@ -1180,8 +1180,8 @@ test('generates ServerAppConnector elements with correct configuration if has sa
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const {ServerApp1} = _state
 
     return React.createElement(App, {...elProps('App1').props},)
@@ -1193,7 +1193,7 @@ App1.State = class App1_State extends App.State {
 
     createChildStates() {
         const pathTo = name => this._path + '.' + name
-        const {ServerApp1} = this.app
+
         const ServerApp1 = this.getOrCreateChildState('ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
         return {ServerApp1}
     }
@@ -1234,8 +1234,8 @@ test('generates ServerAppConnector elements with specified URL', () => {
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const {Connector1} = _state
 
     return React.createElement(App, {...elProps('App1').props},)
@@ -1280,8 +1280,8 @@ test('generates ServerAppConnector with code generation error if ServerApp not f
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const {Connector1} = _state
 
     return React.createElement(App, {...elProps('App1').props},)
@@ -1325,8 +1325,8 @@ test('generates ServerAppConnector with empty config if ServerApp not specified'
 export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const {Connector1} = _state
 
     return React.createElement(App, {...elProps('App1').props},)
@@ -1367,7 +1367,7 @@ test('sorts state entries into dependency order', () => {
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
     const canDragItem = undefined
     const styles = undefined
@@ -1445,7 +1445,7 @@ test('sorts state entries into dependency order when nested inside a layout elem
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
     const canDragItem = undefined
     const styles = undefined
@@ -1554,10 +1554,10 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     expect(output.files[1].contents).toBe(`export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).value(({ Widgets: { x1: {a: 10}}})).props))
-    const {Widgets, Store2, Store3, Store4} = _state
+    const {Widgets, Store2, Store3} = _state
 
     return React.createElement(App, {...elProps('App1').props},
         React.createElement(Collection, elProps(pathTo('Widgets')).display(false).props)
@@ -1566,23 +1566,20 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Widgets', 'Store2', 'Store3', 'Store4']
+    childNames = ['Widgets', 'Store2', 'Store3']
 
     createChildStates() {
         const pathTo = name => this._path + '.' + name
-        const {Store1} = this.app
+
         const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(Store1).collectionName('Widgets').props))
         const Store2 = this.getOrCreateChildState('Store2', new FileDataStore.State(stateProps('App1.Store2').props))
         const Store3 = this.getOrCreateChildState('Store3', new BrowserDataStore.State(stateProps('App1.Store3').databaseName('Accounts').collectionNames(['Cheques', 'Postings']).props))
-        const Store4 = this.getOrCreateChildState('Store4', new CloudflareDataStore.State(stateProps('App1.Store4').collections(\`Cheques: userPrivate
-Postings: creator, techs\`).props))
-        return {Widgets, Store2, Store3, Store4}
+        return {Widgets, Store2, Store3}
     }
 
     get Widgets() { return this.childStates.Widgets }
     get Store2() { return this.childStates.Store2 }
     get Store3() { return this.childStates.Store3 }
-    get Store4() { return this.childStates.Store4 }
 }
 `)
 
@@ -1633,8 +1630,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     expect(output.files[1].contents).toBe(`export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
     const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).value(({ Widgets: { x1: {a: 10}}})).props))
     const {Widgets} = _state
 
@@ -1688,7 +1685,7 @@ test('generates ItemSet element with separate child component and global functio
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const $container = useObject(Elemento.parentPath(props.path))
     const {ItemColor, Data1, TextInput1} = $container
     const _state = setObject(props.path, new Page1_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
@@ -1789,7 +1786,7 @@ test('generates ItemSet element inside List', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const $container = useObject(Elemento.parentPath(props.path))
     const {TextInput1} = $container
     const _state = setObject(props.path, new Page1_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
@@ -1880,7 +1877,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page2_ItemSet1Item = React.memo(function Page2_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const _state = setObject(props.path, new Page2_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
     const canDragItem = undefined
     const styles = undefined
@@ -2397,8 +2394,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     expect(gen.output().files[2].contents).toBe(`export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('App1', new App1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('App1', new App1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('App1').maxWidth('60%').props},)
 }
@@ -2695,8 +2692,8 @@ test('generates local user defined functions in the app', () => {
     expect(gen.output().files[1].contents).toBe(`export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Test1', new Test1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
     const {AppBarText} = _state
 
     return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
@@ -2734,7 +2731,7 @@ test('generates local user defined functions in a list item that use a page item
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, onClick} = props
+    const {$item, $itemId, $index, $selected, $container, onClick} = props
     const $container = useObject(Elemento.parentPath(props.path))
     const {MinHeight} = $container
     const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
@@ -2841,8 +2838,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Test1', new Test1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('Test1').props},)
 }
@@ -2892,8 +2889,8 @@ export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const {Editor, Preview} = Elemento
     const pages = {Page1}
-    const appContext = Elemento.useGetAppContext()
-    const _state = setObject('Test1', new Test1.State({pages, appContext}))
+    const urlContext = Elemento.useGetUrlContext()
+    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
 
     return React.createElement(App, {...elProps('Test1').props},)
 }
@@ -3085,6 +3082,7 @@ test('app state functions and Page names available in expression', ()=> {
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const app = useObject('test1')
+    const {ShowPage} = app
     const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 

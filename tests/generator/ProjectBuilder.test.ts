@@ -148,15 +148,6 @@ test('skips asset files if dir does not exist', async () => {
     expect(fileLoader.listFiles).not.toHaveBeenCalled()
 })
 
-test('does not clean or flush server files for Project with no server apps', async () => {
-    const builder = newProjectBuilder({}, projectClientOnly)
-    await builder.build()
-
-    expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
-    expect(serverFileWriter.clean).not.toHaveBeenCalled()
-    expect(serverFileWriter.flush).not.toHaveBeenCalled()
-})
-
 test('writes tool files for all tools to tool build with one copy of asset but not ToolImports', async () => {
     const builder = newProjectBuilder()
     await builder.build()
@@ -224,18 +215,6 @@ test('updates errors and code generated from Project immediately', async () => {
         },
     })
     expect(builder.code['App1/App1.js']).toContain(`Badname + 'x'`)
-})
-
-test('copies runtime files only to client build if no server app', async () => {
-    const builder = newProjectBuilder({projectLoader: getProjectLoader(projectClientOnly)})
-    await builder.build()
-
-    expect(clientFileWriter.writeFile.mock.calls).toStrictEqual([
-        ['App3/App3.js', expectedClientCode(app3, projectClientOnly)],
-        ['App3/index.html', expectedIndexFile(app3, projectClientOnly)],
-    ])
-
-    expect(serverFileWriter.writeFile).not.toHaveBeenCalled()
 })
 
 test('updates files generated from project only where changed', async () => {

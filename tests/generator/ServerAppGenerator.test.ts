@@ -65,9 +65,10 @@ const Types2 = (() => {
 })()
 
 
-const ServerApp1 = (user) => {
+const ServerApp1 = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
+
 
 async function Plus(a, b) {
     return Sum(a, b)
@@ -124,14 +125,13 @@ const {components} = serverRuntime
 const {Get, Update} = appFunctions
 const {Collection, CloudflareDataStore} = components
 
-const DataStore1 = new CloudflareDataStore({collections: 'Widgets,Sprockets'})
-const Sprockets = new Collection({dataStore: DataStore1, collectionName: 'Sprockets'})
-const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
-
-const WidgetApp = (user) => {
+const WidgetApp = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
+const DataStore1 = new CloudflareDataStore({collections: "Widgets,Sprockets", database: env.DataStore1})
+const Sprockets = new Collection({dataStore: DataStore1, collectionName: 'Sprockets'})
+const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
 async function GetWidget(id) {
     return await Get(Widgets, id)
 }
@@ -196,13 +196,12 @@ const {components} = serverRuntime
 const {Log, Select, If, Sum, Check} = globalFunctions
 const {Collection, CloudflareDataStore} = components
 
-const DataStore1 = new CloudflareDataStore({collections: 'Widgets'})
-const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
-
-const WidgetApp = (user) => {
+const WidgetApp = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
+const DataStore1 = new CloudflareDataStore({collections: "Widgets", database: env.DataStore1})
+const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
 async function SayNothing(id) {
     return undefined
 }
@@ -324,12 +323,11 @@ const {Sum} = globalFunctions
 const {Update} = appFunctions
 const {Collection} = components
 
-const Things = new Collection({collectionName: 'Things'})
-
-const WidgetApp = (user) => {
+const WidgetApp = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
+const Things = new Collection({collectionName: 'Things'})
 async function DoSum(widget) {
     let y = 10
     for (let i = 1; i < 10; i++) {

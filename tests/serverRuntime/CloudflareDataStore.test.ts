@@ -28,7 +28,7 @@ describe('shared collections', () => {
     const collectionName = 'Widgets'
 
     const callStore = (func: string, ...args: any[]) => {
-        return worker.fetch(`http://example.com/call/store/${func}`, {
+        return worker.fetch(`http://example.com/call/store/DB/${func}`, {
             method: 'POST',
             body: JSON.stringify(args),
         }).then( (resp: Response) => resp.json() ).then( (result: any) => {
@@ -38,7 +38,7 @@ describe('shared collections', () => {
     }
 
     const callStoreTypes = (func: string, ...args: any[]) => {
-        return worker.fetch(`http://example.com/call/store/${func}`, {
+        return worker.fetch(`http://example.com/call/store/DB/${func}`, {
             method: 'POST',
             body: JSON.stringify(args),
         }).then( (resp: Response) => resp.json() ).then( (result: any) => result.types)

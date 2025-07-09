@@ -75,7 +75,7 @@ export default {
 
     const testObject = (dbTypeName, dbName) => {
       switch(dbTypeName) {
-        case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env.DB})
+        case 'store': return new CloudflareDataStore({collections: 'Widgets', database: env[dbName]})
         default: return new TinyBaseServerDataStore({databaseName: dbName, collections: 'Widgets', durableObject: env[dbTypeName]})
       }
     }

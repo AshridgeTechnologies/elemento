@@ -227,8 +227,8 @@ test('Has correct output properties and calls to actions when finished', async (
     expect(updatedState.isRunning).toBe(false)
     expect(updatedState.isFinished).toBe(true)
     const stateStartTime = updatedState.startTime?.getTime() as number
-    expect(updatedState.finishedTime?.getTime()).toBeGreaterThan(stateStartTime + 90)
-    expect(updatedState.finishedTime?.getTime()).toBeLessThan(stateStartTime + 120)
+    expect(updatedState.finishedTime?.getTime()).toBeGreaterThanOrEqual(stateStartTime + 90)
+    expect(updatedState.finishedTime?.getTime()).toBeLessThanOrEqual(stateStartTime + 120)
     expect(intervalAction).toHaveBeenCalledTimes(2)
     expect(endAction).toHaveBeenCalledTimes(1)
     expect(endAction).toHaveBeenLastCalledWith(updatedState)

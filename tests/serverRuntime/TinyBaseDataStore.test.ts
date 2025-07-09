@@ -8,7 +8,7 @@ let worker: any
 
 beforeAll(async () => {
     worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc',
-        dev: {server: {port: 9090}}});
+        dev: {server: {port: 9091}}});
 })
 
 afterAll(async () => {
@@ -28,7 +28,7 @@ describe('shared collections', () => {
     const collectionName = 'Widgets'
 
     const callStore = (func: string, ...args: any[]) => {
-        return worker.fetch(`http://example.com/call/tinybase_store/${func}`, {
+        return worker.fetch(`http://example.com/call/TinyBaseDurableObject_Full/DB1/${func}`, {
             method: 'POST',
             body: JSON.stringify(args),
         }).then( (resp: Response) => resp.json() ).then( (result: any) => {
@@ -38,7 +38,7 @@ describe('shared collections', () => {
     }
 
     const callStoreTypes = (func: string, ...args: any[]) => {
-        return worker.fetch(`http://example.com/call/tinybase_store/${func}`, {
+        return worker.fetch(`http://example.com/call/TinyBaseDurableObject_Full/DB1/${func}`, {
             method: 'POST',
             body: JSON.stringify(args),
         }).then( (resp: Response) => resp.json() ).then( (result: any) => result.types)
