@@ -1,7 +1,6 @@
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
 import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object'
 import {Message} from 'tinybase/synchronizers'
-import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {AuthStatus, CollectionName, Id as DataStoreId, NullToken} from '../shared/DataStore'
 import {TinyBaseDurableObject, TinyBaseDurableObjectImpl} from './TinyBaseDurableObject'
 import {getClientId} from './tinybaseUtils'

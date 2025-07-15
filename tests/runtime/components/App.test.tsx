@@ -238,13 +238,13 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const theDateStr = '2023-10-22T12:34:56.123Z'
     const theDate = new Date(theDateStr)
 
-    ShowPage('Page2', 'tab1', 'sorted', {a: 123, date: theDate}, 'id123')
+    ShowPage('Page2', 'tab1', 'sorted', 99, {a: 123, date: theDate}, 'id123')
     expect(state.latest().currentPage).toBe(Page2)
 
     ShowPage(Page1, valueObj('tab2'), valueObj(null), valueObj('id123'))
     expect(state.latest().currentPage).toBe(Page1)
     expect(updateUrlSpy).toHaveBeenCalledTimes(3)
-    expect(updateUrlSpy).toHaveBeenNthCalledWith(2, '/testPath/Page2/tab1/sorted', {a: '123', date: theDateStr}, 'id123')
+    expect(updateUrlSpy).toHaveBeenNthCalledWith(2, '/testPath/Page2/tab1/sorted/99', {a: '123', date: theDateStr}, 'id123')
     expect(updateUrlSpy).toHaveBeenNthCalledWith(3, '/testPath/Page1/tab2', null, 'id123')
 })
 

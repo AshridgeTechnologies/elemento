@@ -31,7 +31,9 @@ await serverCtx.watch()
 
 let { host, port } = await clientCtx.serve({
     servedir: outdir,
-    fallback: `${outdir}/run/index.html`  // to let the Run app from GitHub link work
-})
+    fallback: `${outdir}/run/index.html`,  // to let the Run app from GitHub link work
+    cors: {
+        origin: 'http://localhost:8787',
+    }})
 
 console.log('Server running on port', port)

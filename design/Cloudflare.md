@@ -74,7 +74,7 @@ Tasks
 - ~~Make CreateUser, UpdateUser, GetUser work again - or~~ find a better alternative
 - ✅ Remove Firebase except Elemento hosting
 - Remove preview server
-- Move to Cloudflare hosting
+
 
 Issues
 ------

@@ -2677,12 +2677,12 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 `)
 })
 
-test('generates local user defined functions in the app', () => {
+test('generates local user defined functions in the app that can use built-in app functions', () => {
     const app = new App('app1', 'Test1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            new Text('id0', 'Text 0', {content: ex`AppBarText('Welcome to ')`})
+            new Text('id0', 'Text 0', {content: ex`AppBarText('Welcome to ' + CurrentUrl())`})
         ]),
-        new FunctionDef('f1', 'AppBarText', {input1: 'greeting', calculation: ex`greeting + 'our new app'`}),
+        new FunctionDef('f1', 'AppBarText', {input1: 'greeting', calculation: ex`greeting + 'our new app' + ' at ' + CurrentUrl()`}),
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 't1', {content: 'Hi there!'}),
             ]
@@ -2694,10 +2694,11 @@ test('generates local user defined functions in the app', () => {
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
     const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const {CurrentUrl} = _state
     const {AppBarText} = _state
 
     return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
-            React.createElement(TextElement, elProps(pathTo('Text0')).content(AppBarText('Welcome to ')).props)
+            React.createElement(TextElement, elProps(pathTo('Text0')).content(AppBarText('Welcome to ' + CurrentUrl())).props)
     ))
     },)
 }
@@ -2705,8 +2706,58 @@ test('generates local user defined functions in the app', () => {
 
 Test1.State = class Test1_State extends App.State {
     AppBarText = wrapFn('Test1.AppBarText', 'calculation', (greeting) => {
-        
-        return greeting + 'our new app'
+        const {CurrentUrl} = this
+        return greeting + 'our new app' + ' at ' + CurrentUrl()
+    })
+}
+`)
+})
+
+test('generates page elements that can use user-defined and built-in app functions', () => {
+    const app = new App('app1', 'Test1', {}, [
+        new FunctionDef('f1', 'Greeting', {input1: 'greeting', calculation: ex`greeting + 'our new app' + ' at ' + CurrentUrl()`}),
+        new Page('p1', 'Page 1', {}, [
+                new Text('id1', 't1', {content: ex`'Hi there!' + Greeting() + Calc1` }),
+                new Text('id2', 't2', {content: ex`'This is page' + CurrentUrl()` }),
+                new Button('id3', 'b1', {content: ex`'Show page' + CurrentUrl()`, action: ex`Log(CurrentUrl()); ShowPage(Page1)` }),
+                new Calculation('id4', 'Calc 1', {calculation: ex`'This is page' + CurrentUrl() + ' Hi ' + Greeting()` }),
+            ]
+        )])
+
+    const gen = new Generator(app, project(app))
+    expect(gen.output().files[0].contents).toBe(`function Page1(props) {
+    const pathTo = name => props.path + '.' + name
+    const app = useObject('Test1')
+    const {CurrentUrl, ShowPage} = app
+    const Greeting = app.Greeting
+    const _state = setObject(props.path, new Page1.State({}))
+    const {Calc1} = _state
+    Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
+
+    return React.createElement(Page, elProps(props.path).props,
+        React.createElement(TextElement, elProps(pathTo('t1')).content('Hi there!' + Greeting() + Calc1).props),
+        React.createElement(TextElement, elProps(pathTo('t2')).content('This is page' + CurrentUrl()).props),
+        React.createElement(Button, elProps(pathTo('b1')).content('Show page' + CurrentUrl()).appearance('outline').action(_state.b1_action).props),
+        React.createElement(Calculation, elProps(pathTo('Calc1')).props)
+    )
+}
+
+
+Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+    childNames = ['Calc1']
+
+    createChildStates() {
+        const pathTo = name => this._path + '.' + name
+        const {CurrentUrl, ShowPage, Greeting} = this.app
+        const Calc1 = this.getOrCreateChildState('Calc1', new Calculation.State(stateProps(pathTo('Calc1')).value('This is page' + CurrentUrl() + ' Hi ' + Greeting()).props))
+        return {Calc1}
+    }
+
+    get Calc1() { return this.childStates.Calc1 }
+
+    b1_action = wrapFn('Page1.b1', 'action', async () => {
+        const {CurrentUrl, ShowPage} = this.app
+        Log(await CurrentUrl()); await ShowPage(Page1)
     })
 }
 `)

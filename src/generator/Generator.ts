@@ -190,7 +190,7 @@ export default class Generator {
         const appStateDeclaration = componentIsApp
             ? `    const _state = setObject('${app.codeName}', new ${component.codeName}.State({pages, urlContext${themeOptions ? ', themeOptions' : ''}}))`
             : usesApp ? `    const app = useObject('${app.codeName}')` : ''
-        const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = app` : ''
+        const appStateFunctionDeclarations = appStateFunctionIdentifiers.length ? `    const {${appStateFunctionIdentifiers.join(', ')}} = ${componentIsApp ? '_state' : 'app'}` : ''
         const componentIdentifiersFound = this.parser.identifiersOfTypeComponent(component.id).map( comp => comp === 'Tool' ? 'App' : comp)
         const itemSetItemIdentifier = componentIsListItem ? ['ItemSetItem'] : []
         const componentIdentifiers = [...itemSetItemIdentifier, ...componentIdentifiersFound]
@@ -366,7 +366,7 @@ ${declarations}${debugHook}
 `.trimStart()
 
 
-        const appFeatures = component !== app ? identifiers.filter(isAppElement) : []
+        const appFeatures = component !== app ? [...appStateFunctionIdentifiers, ...appLevelIdentifiers] : []
         const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = this.app` : ''
         const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
 

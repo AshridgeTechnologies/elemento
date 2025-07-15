@@ -75,10 +75,10 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
             goBack()
         } else {
             const pageName = typeof page === 'string' ? page : page.name
-            const isString = (arg: any) => typeof arg === 'string'
-            const pathSegments = takeWhile(isString, argValues)
+            const isSegment = (arg: any) => typeof arg === 'string' || typeof arg === 'number'
+            const pathSegments = takeWhile(isSegment, argValues)
             const path = '/' + [this._path, pageName, ...pathSegments].join('/')
-            const remainingArgs = dropWhile(isString, argValues)
+            const remainingArgs = dropWhile(isSegment, argValues)
             const [query, anchor] = [...remainingArgs, null, null]
             this.urlContext.updateUrl(path, asQueryObject(query as (object | null)), anchor as string)  // subscription to onUrlChange updates state
         }
