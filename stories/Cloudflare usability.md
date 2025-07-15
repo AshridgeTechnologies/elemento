@@ -20,7 +20,8 @@ Requirements
 Bugs
 ----
 
-- Changing db id all the time (even undefined to an id) confuses everything
+- ✅ When app re-renders due to url change, it still sees the old url
+- ✅ Changing db id all the time (even undefined to an id) confuses everything
 - ✅ In generated app, base App functions come from "app" instead of the state eg const {CurrentUrl} = app
 - Preview app loses contact with data store after changes
 - ✅ Show Page(Start, Date.now()) leads to Start??0=undefined

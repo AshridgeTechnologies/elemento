@@ -13,7 +13,7 @@ let urlChangeObservable: Observable<any>
 const navigationApiAvailable = (globalThis as any).navigation !== undefined
 const createUrlChangeObservable = () => {
     if (navigationApiAvailable) {
-        return eventObservable((window as any).navigation, 'navigate', (event: any) => event.destination.url)
+        return eventObservable((window as any).navigation, 'navigatesuccess', (event: any) => event.target.currentEntry.url)
     } else {
         return eventObservable(window, 'popstate', (_event: any) => window.location.href)
     }

@@ -40,7 +40,7 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
     }
 
     let synchronizer: NullableSynchronizer = null
-    if (sync) {
+    if (sync && doNamespace && pathId) {
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const authToken = await getIdToken() ?? NullToken
         const wsUrl = SERVER_SCHEME + syncServer + doNamespace + '/' + pathId
