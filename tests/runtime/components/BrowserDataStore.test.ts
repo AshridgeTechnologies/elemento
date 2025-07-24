@@ -10,16 +10,22 @@ import {render} from '@testing-library/react'
 import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/shared/DataStore'
 import Observable from 'zen-observable'
+import {testAppInterface} from '../../testutil/testHelpers'
 
 vi.mock('../../../src/runtime/appFunctions')
 
 let dataStore: IdbDataStoreImpl
 let state: any
 const dataStoreProps = {databaseName: 'db1', collectionNames:['Gadgets','Widgets']}
+const createStore = () => {
+    const state = new BrowserDataStore.State(dataStoreProps)
+    const appInterface = testAppInterface('path1', state)
+    return state
+}
 
 beforeEach(() => {
     dataStore = mockDataStore()
-    state = new BrowserDataStore.State(dataStoreProps)
+    state = createStore()
     state.state.dataStore = dataStore
 } )
 
@@ -46,7 +52,7 @@ test('compares state props correctly', () => {
 })
 
 test('creates its own data store if not supplied', async () => {
-    const state = new BrowserDataStore.State(dataStoreProps)
+    const state = createStore()
     const result = state.add('Widgets', 'w1', {a: 99})
     await expect(result).resolves.toBeUndefined()
 })
@@ -105,7 +111,7 @@ describe('handles errors', () => {
     beforeEach(() => {
         (appFunctions.NotifyError as MockedFunction<any>).mockReset()
         dataStore = errorDataStore()
-        state = new BrowserDataStore.State(dataStoreProps)
+        state = createStore()
         state.state.dataStore = dataStore
     } )
 

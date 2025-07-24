@@ -1,5 +1,4 @@
 import {createMergeableStore, Id, IdAddedOrRemoved} from 'tinybase'
-import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage'
 import {AuthStatus, CollectionName, Id as DataStoreId, NullToken} from '../shared/DataStore'
 import {PerClientWsServerDurableObject} from './PerClientWsServerDurableObject'
 import {User} from '../shared/subjects'

@@ -31,6 +31,10 @@
         "class_name": "TinyBaseDurableObject_NoAuth"
       },
       {
+        "name": "TinyBaseDurableObject_ReadWrite",
+        "class_name": "TinyBaseDurableObject_ReadWrite"
+      },
+      {
         "name": "TinyBaseDurableObject_A",
         "class_name": "TinyBaseDurableObject_A"
       },
@@ -43,7 +47,7 @@
 
   "migrations": [
     {
-      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject_A", "TinyBaseDurableObject_B", "TinyBaseDurableObject_NoAuth", "TinyBaseDurableObject_Full"]
+      "tag": "v1", "new_sqlite_classes": ["TinyBaseDurableObject_A", "TinyBaseDurableObject_B", "TinyBaseDurableObject_NoAuth", "TinyBaseDurableObject_Full", "TinyBaseDurableObject_ReadWrite"]
     }
   ]
 }

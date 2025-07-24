@@ -64,6 +64,14 @@ export class TinyBaseDurableObject_NoAuth extends TinyBaseFullSyncDurableObject 
   }
 }
 
+export class TinyBaseDurableObject_ReadWrite extends TinyBaseFullSyncDurableObject {
+
+  async authorizeUser(userId) {
+    console.log('authorizeUser - userId', userId)
+    return 'readwrite'
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
 

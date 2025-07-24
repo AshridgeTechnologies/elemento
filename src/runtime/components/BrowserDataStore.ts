@@ -18,6 +18,14 @@ export class BrowserDataStoreState extends DataStoreState<DataStoreProperties> {
     protected isEqualTo(newObj: this): boolean {
         return equals(newObj.props, this.props)
     }
+
+    protected async initDataStore() {
+        return this.state.dataStore as IdbDataStoreImpl
+    }
+
+    protected async closeDataStore() {
+    }
+
 }
 
 BrowserDataStore.State = BrowserDataStoreState

@@ -85,7 +85,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     protected withState(state: StateProps): this {
         const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>
-        newVersion.state = state
+        newVersion.state = {...state}
         return newVersion as this
     }
 

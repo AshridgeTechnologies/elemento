@@ -1,11 +1,12 @@
 import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
-import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
+import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
-import {wait, waitUntil} from '../../testutil/testHelpers'
+import {testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
 import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
 import * as authentication from '../../../src/runtime/components/authentication'
+import {TinyBaseDataStoreState} from '../../../src/runtime/components/TinyBaseDataStore'
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
@@ -64,10 +65,10 @@ const callStoreFn = (worker: any) => (dbTypeName: string, dbName: string, func: 
     })
 }
 const startWorker = async (port: number, dbType: string) => {
-    const worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc', dev: {server: {port}}});
+    const worker = await unstable_startWorker({ config: 'tests/wrangler.jsonc', dev: {server: {port}, logLevel: 'log'}});
     await Promise.all(['db1', 'db2', 'db3'].map(dbName => callStoreFn(worker)(dbType, dbName, 'test_clear', 'Widgets') ))
     console.log('Cleared databases')
-    await wait(200)
+    await wait(1000)
     return worker
 }
 
@@ -353,7 +354,7 @@ describe('sync via server - full sync', () => {
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
         await checkWidget({id, ...item})
-        await wait(1000)  // ensure synchroniszation gets changes in correct time sequence
+        await wait(1000)  // ensure synchronization gets changes in correct time sequence
 
         const updatedItem = {id, ...item, b: 'bar'}
         console.log('Client update starting')
@@ -379,6 +380,19 @@ describe('sync via server - full sync', () => {
 
         await store2.update('Widgets', id, {b: 'bar'})
         await checkWidget(store1, {id, ...item, b: 'bar'})
+    })
+
+    test('add on client is synced to server database', async () => {
+        store1 = createStore()
+        await store1.init()
+        const checkWidget = (store: any, expected: object) => waitUntil(async ()=> matches(expected)(await store.getById('Widgets', id, true)), 100, 2000)
+
+        await store1.add('Widgets', id, item)
+        await checkWidget(store1, {id, ...item})
+
+        await wait(500)
+        const itemOnServer = await callStore(dbType, 'db1', 'getById', collectionName, id, true)
+        expect(itemOnServer).toStrictEqual({id, ...item})  // added on server
     })
 
     test('can subscribe to changes', async () => {
@@ -677,4 +691,95 @@ describe('sync via server - full sync without login', () => {
         await checkWidget({id, ...item, b: 'bar'})
     }, 10000)
 
+})
+
+describe('through TinyBaseDataStoreState', () => {
+    const port = 9507
+    const syncServer = `localhost:${port}/do/`
+    const dbType = 'TinyBaseDurableObject_ReadWrite'
+
+    let worker: any
+    let callStore: any
+    let store1: TinyBaseDataStoreImpl
+
+    beforeAll(async () => {
+        worker = await startWorker(port, dbType)
+        callStore = callStoreFn(worker)
+        mock_getIdToken.mockResolvedValue(null)
+    })
+
+    afterAll(async () => {
+        try {
+            await worker.dispose();
+        } catch (e) {
+            console.error('Error in worker.dispose', e)
+        }
+    })
+
+    afterEach(async () => {
+        await store1?.close()
+        // @ts-ignore
+        store1 = undefined
+    })
+
+    test('saves and retrieves', async () => {
+        const storeProps: DataStoreProperties = {
+            collections: 'Widgets',
+            databaseTypeName: dbType,
+            databaseInstanceName: 'db1',
+            syncServer,
+            sync: true,
+        }
+        const storeState = new TinyBaseDataStoreState(storeProps)
+        const appInterface = testAppInterface('path1', storeState)
+        // @ts-ignore
+        const dataStore = await(storeState.state.initialisedDataStore)
+        expect(dataStore!.isReadWrite).toBe(true)
+
+
+        await storeState.add('Widgets', id, item)
+        await wait(500)
+        const retrievedItem = await storeState.getById(collectionName, id, false)
+        expect(retrievedItem).toStrictEqual({id, ...item})
+    })
+
+    test('saves and retrieves to new database when instance name changes', async () => {
+        const storeProps: DataStoreProperties = {
+            collections: 'Widgets',
+            databaseTypeName: dbType,
+            databaseInstanceName: 'db1',
+            syncServer,
+            sync: true,
+        }
+
+        const localItem = (store: TinyBaseDataStoreState, id: string) => store.getById(collectionName, id, true)
+        const serverItem = (dbName: string, id: string) => callStore(dbType, dbName, 'getById', collectionName, id, true)
+
+        const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
+        const storeState = new TinyBaseDataStoreState(storeProps)
+        const appInterface = testAppInterface('path1', storeState)
+        // @ts-ignore
+        const dataStore = await(storeState.state.initialisedDataStore)
+        expect(dataStore!.isReadWrite).toBe(true)
+
+        await storeState.add(collectionName, id, item)
+        expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
+        expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
+
+        const storeState2 = storeState.updateFrom(new TinyBaseDataStoreState(storePropsDb2))
+        const appInterface2 = testAppInterface('path1', storeState2)
+        // @ts-ignore
+        await(storeState2.state.initialisedDataStore)
+        expect(await localItem(storeState2, id)).toBe(null)
+        expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
+        expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
+        expect(await serverItem(storePropsDb2.databaseInstanceName, id)).toBe(null)
+
+        const id2 = newId()
+        await storeState2.add(collectionName, id2, item)
+        expect(await localItem(storeState2, id2)).toStrictEqual({id: id2, ...item})
+        expect(await localItem(storeState, id2)).toBe(null)
+        expect(await serverItem(storePropsDb2.databaseInstanceName, id2)).toStrictEqual({id: id2, ...item})
+        expect(await serverItem(storeProps.databaseInstanceName, id2)).toBe(null)
+    })
 })
