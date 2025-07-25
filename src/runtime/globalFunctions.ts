@@ -31,6 +31,7 @@ type DecimalValOrArrayOrNull = DecimalValOrNull | DecimalValOrNull[] | null
 type ComparisonValOrNull = DecimalValOrNull | boolean
 type OpType = 'plus' | 'minus' | 'times' | 'div'
 type ComparisonOpType = 'gt' | 'gte' | 'lt' | 'lte' | 'eq'
+type ForEachArrayCondition = (it: any, index: number) => boolean
 type ForEachArrayTransform = (it: any, index: number) => any
 type ForEachObjectTransform = (it: any, key: string) => any
 type ForEachTransform = ForEachArrayTransform | ForEachObjectTransform
@@ -384,6 +385,18 @@ export const globalFunctions = {
         return (list as any[]).map(transform as ForEachArrayTransform)
     },
 
+    ForEvery(listVal: Value<any[] | object> | null, condition: ForEachArrayCondition) {
+        const list = valueOf(listVal) ?? []
+        if (condition === undefined) throw new Error('Wrong number of arguments to ForEvery. Expected list, expression.')
+        return (list as any[]).every(condition)
+    },
+
+    ForAny(listVal: Value<any[] | object> | null, condition: ForEachArrayCondition) {
+        const list = valueOf(listVal) ?? []
+        if (condition === undefined) throw new Error('Wrong number of arguments to ForAny. Expected list, expression.')
+        return (list as any[]).some(condition)
+    },
+
     First(listVal: Value<any[]> | null, condition: (item: any) => boolean = () => true) {
         if (listVal === undefined) throw new Error('Wrong number of arguments to First. Expected list, optional expression.')
         const list = valueOf(listVal) ?? []
@@ -622,6 +635,8 @@ export const functionArgs = {
     SelectFirst: {1: ['$item', '$index']},
     Count: {1: ['$item', '$index']},
     ForEach: {1: ['$item', '$index']},
+    ForEvery: {1: ['$item', '$index']},
+    ForAny: {1: ['$item', '$index']},
     First: {1: ['$item']},
     Last: {1: ['$item']},
     Sort: {1: ['$item']},

@@ -734,7 +734,7 @@ describe('through TinyBaseDataStoreState', () => {
         const appInterface = testAppInterface('path1', storeState)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
-        expect(dataStore!.isReadWrite).toBe(true)
+        expect((dataStore as any).isReadWrite).toBe(true)
 
 
         await storeState.add('Widgets', id, item)
@@ -760,7 +760,7 @@ describe('through TinyBaseDataStoreState', () => {
         const appInterface = testAppInterface('path1', storeState)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
-        expect(dataStore!.isReadWrite).toBe(true)
+        expect((dataStore as any).isReadWrite).toBe(true)
 
         await storeState.add(collectionName, id, item)
         expect(await localItem(storeState, id)).toStrictEqual({id, ...item})

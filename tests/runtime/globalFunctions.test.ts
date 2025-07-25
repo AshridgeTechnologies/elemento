@@ -11,7 +11,8 @@ const {Decimal, D, Sub, Mult, Sum, Div,
     Log, IsNull, NotNull, If, Left, Mid, Right, Lowercase, Uppercase, Trim, Split, Join, Contains, Len,
     And, Or, Not, Substitute, Max, Min, Average,
     Round, Ceiling, Floor,
-    Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count, ForEach, GroupBy, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
+    Record, WithUpdates, Pick, List, Range, Select, SelectFirst, FirstNotNull, Count,
+    ForEach, ForEvery, ForAny, GroupBy, First, Last, Sort, ItemAt, ItemAfter, ItemBefore, FindIndex, Reverse,
     CommonItems, HasSameItems, WithoutItems, ListContains, FlatList,
     Timestamp, Now, Today, DateVal, TimeBetween, DaysBetween, DateFormat, DateAdd,
     Random, RandomFrom, RandomListFrom, Shuffle, Check,
@@ -795,6 +796,28 @@ describe('ForEach', () => {
         test('returns the transformed items using the values and keys', () => expect(ForEach({a: 10, b: 20, c: 2}, (it: any, key: string) => it + key)).toStrictEqual(['10a', '20b', '2c']))
         test('Gets value of object for the list', ()=> expect(ForEach(valueObj({a: 10, b: 20}), (it: any, key: string) => it + key)).toStrictEqual(['10a', '20b']))
     })
+})
+
+describe('ForEvery', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ForEvery()).toThrow('Wrong number of arguments to ForEvery. Expected list, expression.'))
+    test('returns true if condition true for all items', () => expect(ForEvery([3, -1, 4, 0], (it: any) => it >= -1)).toBe(true))
+    test('returns false if condition false for one item', () => expect(ForEvery([3, -1, 4, 0], (it: any) => it > -1)).toBe(false))
+    test('Gets value of object for the list', ()=> expect(ForEvery(valueObj([3, 1]), (it: any) => it > 0)).toBe(true))
+    // @ts-ignore
+    test('Pending value gives true', ()=> expect(ForEvery(pendingValue, (it: any) => it > 10)).toBe(true))
+    test('Null value gives true', ()=> expect(ForEvery(null, (it: any) => it > 10)).toBe(true))
+})
+
+describe('ForAny', () => {
+    // @ts-ignore
+    test('errors for no arguments', () => expect(() => ForAny()).toThrow('Wrong number of arguments to ForAny. Expected list, expression.'))
+    test('returns true if condition true for one items', () => expect(ForAny([3, -1, 4, 0], (it: any) => it < 0)).toBe(true))
+    test('returns false if condition false for no items', () => expect(ForAny([3, 1, 4, 0], (it: any) => it < 0)).toBe(false))
+    test('Gets value of object for the list', ()=> expect(ForAny(valueObj([3, -1]), (it: any) => it > 0)).toBe(true))
+    // @ts-ignore
+    test('Pending value gives true', ()=> expect(ForAny(pendingValue, (it: any) => it > 10)).toBe(false))
+    test('Null value gives true', ()=> expect(ForAny(null, (it: any) => it > 10)).toBe(false))
 })
 
 describe('First', () => {
