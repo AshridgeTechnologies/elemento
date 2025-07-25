@@ -32,6 +32,21 @@ Possibilities
 - Ditch all the service worker and other stuff for preview, just use wrangler
 - Have a public dev/preview server available on CF
 - Run wrangler in a server, write files to local disk for it to process
+- Schema for Elemento JSON file
+- Generate docs from schema
+- Generate model lib from schema
+- Separate modules for:
+  - Elemento studio
+  - Model lib
+  - Project validator
+  - Code generator
+  - Server lib
+  - Client lib
+  - Elemento CLI
+- CLI can generate code, set up projects, run wrangler, deploy
+- CLI can run standalone as part of a toolchain
+- CLI can run as a local server for the studio
+- CLI runner downloads latest or a specified module
 
 General client approach - Spike 1
 --------------------------
