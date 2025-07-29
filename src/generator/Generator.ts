@@ -366,8 +366,9 @@ ${declarations}${debugHook}
 `.trimStart()
 
 
-        const appFeatures = component !== app ? [...appStateFunctionIdentifiers, ...appLevelIdentifiers] : []
-        const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = this.app` : ''
+        const appFeatures = component === app ? appStateFunctionIdentifiers : [...appStateFunctionIdentifiers, ...appLevelIdentifiers]
+        const appRef = component === app ? 'this' : 'this.app'
+        const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = ${appRef}` : ''
         const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
 
         const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {

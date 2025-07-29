@@ -81,7 +81,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     protected appCanContain(elementType: ElementType, parentType: ParentType) {
         const canBeChild = (type: ParentType) => type === 'App' || type === this.kind
         return canBeChild(parentType) || isArray(parentType) && parentType.some(canBeChild) ||
-            ['Collection', 'Function', 'FunctionImport', 'Component'].includes(elementType)
+            ['Collection', 'Function', 'FunctionImport', 'Component', 'Calculation'].includes(elementType)
     }
 
     static get parentType(): ParentType { return 'Project' }

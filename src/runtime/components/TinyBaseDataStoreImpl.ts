@@ -131,6 +131,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         this.removeChangeListeners?.()
         await this.synchronizer?.stopSync()
         this.synchronizer?.getWebSocket().close()
+        this.notifyAll(InvalidateAll)
     }
 
     private checkCollectionName(collectionName: CollectionName) {
