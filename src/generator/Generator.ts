@@ -218,7 +218,7 @@ export default class Generator {
 
         let stateObjectDeclaration = ''
         if (componentIsPage) {
-            stateObjectDeclaration = `    const _state = setObject(props.path, new ${functionName}.State({}))`
+            stateObjectDeclaration = `    const _state = setObject(props.path, new ${functionName}.State({app}))`
         }
         if (componentIsComponentDef && (component as ComponentDef).isStateful(this.project)) {
             stateObjectDeclaration = `    const _state = useObject(props.path)`
