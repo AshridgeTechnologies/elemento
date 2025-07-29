@@ -690,11 +690,21 @@ describe('subscribe with external data store', () => {
     })
 
     test('uses same subscription when already in the state', () => {
-        const subscription = {}
-        const dataStore = mockDataStore()
-        const state = new Collection.State({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({subscription})
+        const subscription = {unsubscribe: vi.fn() }
+        const state = new Collection.State({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({subscription, subscribedDataStore: dataStore})
         const appInterface = testAppInterface('testPath', state)
         expect(dataStore.observable).not.toHaveBeenCalled()
+        expect(subscription.unsubscribe).not.toHaveBeenCalled()
+        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    })
+
+    test('changes subscription when data store changes', () => {
+        const newDataStore = mockDataStore()
+        const subscription = {unsubscribe: vi.fn() }
+        const state = new Collection.State({value: {}, dataStore: newDataStore, collectionName: 'Widgets'})._withStateForTest({subscription, subscribedDataStore: dataStore})
+        const appInterface = testAppInterface('testPath', state)
+        expect(newDataStore.observable).toHaveBeenCalledWith('Widgets')
+        expect(subscription.unsubscribe).toHaveBeenCalled()
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
     })
 

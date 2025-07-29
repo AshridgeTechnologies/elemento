@@ -110,7 +110,6 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             await this.initialising
             this.authObserver = onAuthChange(async () => {
                 console.log('auth change', 'current user', currentUser())
-                this.notifyAll(InvalidateAll)
                 this.closing = this.close()
                 await this.closing
                 this.initialising = this.initStore()
@@ -248,11 +247,6 @@ export default class TinyBaseDataStoreImpl implements DataStore {
         if (!observable) {
             observable = new SendObservable()
             this.collectionObservables.set(collection, observable)
-            if (!this.authObserver) {
-                this.authObserver = onAuthChange(() => {
-                    this.notifyAll(InvalidateAll)
-                })
-            }
         }
         return observable
     }

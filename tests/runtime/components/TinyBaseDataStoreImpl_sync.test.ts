@@ -173,6 +173,8 @@ describe('sync via server - authorized sync', () => {
         await wait(100)
         const onNextWidgets = vi.fn()
         store1.observable('Widgets').subscribe(onNextWidgets)
+        await wait(100)
+        expect(onNextWidgets).toHaveBeenCalledTimes(0)
 
         onAuthChangeCallback()
         await wait(1000)
@@ -546,6 +548,7 @@ describe('sync via server - full sync', () => {
 
         mock_getIdToken.mockResolvedValueOnce(null)
         onAuthChangeCallback()
+        await wait(500)
 
         expect(onChange).toHaveBeenCalledWith({collection: 'Widgets', type: 'InvalidateAll'})
         await waitUntil(async ()=> (await store1.getById('Widgets', id, true)) === null, 100, 2000)
