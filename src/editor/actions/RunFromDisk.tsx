@@ -3,7 +3,8 @@ import {Button, List, ListItemButton, ListItemText} from '@mui/material'
 import {EditorActionDialog} from './ActionComponents'
 import {chooseDirectory, doAction, loadAppNames, UIManager, validateDirectoryForOpen} from './actionHelpers'
 import {ASSET_DIR} from '../../shared/constants'
-import {RunAppFn} from '../runLocalApp'
+
+import {RunAppFn} from '../Types'
 
 type ProjectApp = [project: string, app: string]
 

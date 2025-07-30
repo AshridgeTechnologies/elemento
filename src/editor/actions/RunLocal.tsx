@@ -2,7 +2,8 @@ import React, {useState} from 'react'
 import {List, ListItemButton, ListItemText} from '@mui/material'
 import {EditorActionDialog} from './ActionComponents'
 import {doAction, internalProjectsDir, loadAppNames, UIManager} from './actionHelpers'
-import {RunAppFn} from '../runLocalApp'
+
+import {RunAppFn} from '../Types'
 
 type ProjectApp = [project: string, app: string, dirHandle: FileSystemDirectoryHandle]
 

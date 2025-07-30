@@ -214,16 +214,6 @@ export default function EditorRunner() {
         previewController?.Highlight(idsWithinApp)
     }
 
-    function setPreviewServerUrl(url: string) {
-        console.log('setPreviewServerUrl', url)
-        //navigator.serviceWorker.controller!.postMessage({type: 'previewServer', url})
-    }
-
-    function setDirHandleInServiceWorker(projectId: string, dirHandle: FileSystemDirectoryHandle) {
-        console.log('setDirHandleInServiceWorker', dirHandle)
-        //navigator.serviceWorker.controller!.postMessage({type: 'projectStore', projectId, dirHandle})
-    }
-
     function getMessageDataAndAuthorize(event: any) {
         const toolIframes = Array.from(document.querySelectorAll('iframe[data-toolid]')) as HTMLIFrameElement[]
         const sourceIframe = toolIframes.find( f => f.contentWindow === event.source )

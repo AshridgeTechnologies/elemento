@@ -2,8 +2,8 @@ import React from 'react'
 import {Button} from '@mui/material'
 import {EditorActionDialog} from './ActionComponents'
 import {UIManager} from './actionHelpers'
-import {RunAppFn} from '../runLocalApp'
 import {Para} from '../../docs/HelpComponents'
+import {RunAppFn} from '../Types'
 
 const goToStudio =  () => window.location.assign(window.location.origin + '/studio')
 

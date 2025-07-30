@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {VoidFn} from './Types'
+import {RunAppFn, VoidFn} from './Types'
 import AppBar from '../appsShared/AppBar'
 
 import {AlertColor, Box, Grid, Icon, List, ListItem, ListItemIcon, Typography, useTheme} from '@mui/material'
@@ -11,7 +11,6 @@ import {RunFromDiskDialog} from './actions/RunFromDisk'
 import {AlertMessage, UIManager} from './actions/actionHelpers'
 import {theme} from '../appsShared/styling'
 import {ThemeProvider} from '@mui/material/styles'
-import {RunAppFn} from './runLocalApp'
 import {RunGitHubDialog} from './actions/RunGitHub'
 
 

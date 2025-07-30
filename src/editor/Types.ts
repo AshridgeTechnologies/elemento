@@ -47,3 +47,4 @@ export interface FileNode {
 export type ActionsAvailableFn = (targetElementIds: ElementId[]) => AppElementAction[]
 
 export type ProjectSettings = {[key: string]: object}
+export type RunAppFn = (area: RunArea, projectName: string, appName: string, dirHandle: FileSystemDirectoryHandle) => void

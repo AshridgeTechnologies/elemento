@@ -47,6 +47,8 @@ Possibilities
 - CLI can run standalone as part of a toolchain
 - CLI can run as a local server for the studio
 - CLI runner downloads latest or a specified module
+- Use Vite for HMR
+- Use Wrangler bundling, don't need whole runtime in either server or client
 
 General client approach - Spike 1
 --------------------------
@@ -88,7 +90,7 @@ Tasks
 - ✅ Alternative authentication
 - ~~Make CreateUser, UpdateUser, GetUser work again - or~~ find a better alternative
 - ✅ Remove Firebase except Elemento hosting
-- Remove preview server
+- ✅ Remove preview server
 
 
 Issues
