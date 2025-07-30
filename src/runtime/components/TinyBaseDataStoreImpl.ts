@@ -24,8 +24,6 @@ import CollectionConfig, {parseCollections} from '../../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../../shared/convertData'
 import {mapValues} from 'radash'
 
-const SERVER_SCHEME = 'ws://';
-
 export type Properties = {collections: string, databaseTypeName: string, databaseInstanceName: string, persist?: boolean, sync?: boolean, syncServer?: string, debugSync?: boolean}
 
 type NullableSynchronizer = WsSynchronizer<WebSocket> | null
@@ -43,6 +41,7 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
     if (sync && doNamespace && pathId) {
         // Auth token passed in protocol header - see discussion at https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
         const authToken = await getIdToken() ?? NullToken
+        const SERVER_SCHEME = globalThis.location?.protocol === 'https:' ? 'wss://' : 'ws://';
         const wsUrl = SERVER_SCHEME + syncServer + doNamespace + '/' + pathId
         console.log('wsUrl', wsUrl)
         const protocols = [authToken, ...AuthStatusValues]

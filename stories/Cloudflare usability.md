@@ -35,3 +35,9 @@ Bugs
 - If change app name, the preview doesn't pick up the name
 - Corruption of text in Text when creating <a> element with HTML
 
+
+To set up project
+-----------------
+
+- Need to create KV namespacewith: `wrangler kv namespace create auth`
+- Need to put its id in project config: {"authStoreId": "generatedId"}
