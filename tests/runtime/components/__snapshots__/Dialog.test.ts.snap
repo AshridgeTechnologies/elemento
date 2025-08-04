@@ -14,7 +14,7 @@ exports[`Dialog element shows dialog when initially open 1`] = `
     aria-hidden="true"
   />
   <div
-    class="MuiDialog-root MuiModal-root css-1nd8npc-MuiModal-root-MuiDialog-root"
+    class="MuiDialog-root MuiModal-root css-1u7a867-MuiModal-root-MuiDialog-root"
     role="presentation"
   >
     <div

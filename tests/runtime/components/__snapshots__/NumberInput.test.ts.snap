@@ -24,12 +24,13 @@ exports[`NumberInput element produces output with default values where propertie
     />
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-w4cd9x"
+        className="css-1nf2c5d-MuiNotchedOutlined-root"
       >
         <span
+          aria-hidden={true}
           className="notranslate"
         >
           ​
@@ -40,7 +41,7 @@ exports[`NumberInput element produces output with default values where propertie
 </div>
 `;
 
-exports[`NumberInput element produces output with description info 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.description" id="app.page1.description-label">Width</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" id="app.page1.description" type="number" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input" value="27"><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-hr18t1-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1jg1csc-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A number input for entering numbers" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></div><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"><legend class="css-w1u3ce"><span>Width</span></legend></fieldset></div></div>"`;
+exports[`NumberInput element produces output with description info 1`] = `"<div class="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.description" id="app.page1.description-label">Width</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" id="app.page1.description" type="number" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input" value="27"><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-hr18t1-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1gce8x6-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="A number input for entering numbers" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></div><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"><legend class="css-ex8a5f-MuiNotchedOutlined-root"><span>Width</span></legend></fieldset></div></div>"`;
 
 exports[`NumberInput element produces output with properties supplied 1`] = `
 <div
@@ -74,10 +75,10 @@ exports[`NumberInput element produces output with properties supplied 1`] = `
     />
     <fieldset
       aria-hidden={true}
-      className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+      className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        className="css-w1u3ce"
+        className="css-ex8a5f-MuiNotchedOutlined-root"
       >
         <span>
           Width

@@ -76,7 +76,7 @@ export default function AppChooser({runAppFn}: {runAppFn: RunAppFn}) {
         {OverallAppBar}
         <Box flex='1' minHeight={0}>
             <Grid container columns={20} spacing={0} height='100%'>
-                <Grid item xs={20} height='100%'>
+                <Grid height='100%' size={20}>
                     <Box display='flex' flexDirection='column' height='100%' width='100%'>
                         <Box flex='1' maxHeight='100%'>
                             {WelcomeText}

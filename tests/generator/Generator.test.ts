@@ -67,7 +67,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[0].name).toBe('Page1.js')
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -84,7 +84,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     expect(gen.output().files[1].name).toBe('Page2.js')
     expect(gen.output().files[1].contents).toBe(`function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({app}))
+    const _state = setObject(props.path, new Page2.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -135,7 +135,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {Editor, Preview} = Elemento
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -194,7 +194,7 @@ const {Page, TextElement, App} = Elemento.components
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -210,7 +210,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 // Page2.js
 function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({app}))
+    const _state = setObject(props.path, new Page2.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -298,7 +298,7 @@ const Types2 = (() => {
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -437,7 +437,7 @@ test('generates TextInput elements with initial value and styles including expre
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -479,7 +479,7 @@ test('generates Text elements with multiline content', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -511,7 +511,7 @@ test('generates Text elements with placeholders', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {Comp1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -550,7 +550,7 @@ test('generates Text elements with escaped quotes', ()=> {
     const output = gen.output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -577,7 +577,7 @@ test('generates NumberInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -620,7 +620,7 @@ test('generates DateInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -661,7 +661,7 @@ test('generates SpeechInput elements with language and phrases', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -698,7 +698,7 @@ test('generates SelectInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {Select1, Select2, Select3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -741,7 +741,7 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -827,7 +827,7 @@ test('generates Button element action functions that depend on stateful componen
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {Description, DoStuff} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -873,7 +873,7 @@ test('generates User Logon elements with properties', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -901,7 +901,7 @@ test('generates Menu element with items', () => {
     const output = generate(app, project(app))
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -934,7 +934,7 @@ test('generates Data elements with initial value and no errors on object express
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -978,7 +978,7 @@ test('generates Calculation elements with initial value and no errors on object 
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -1723,7 +1723,7 @@ Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.compo
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {TextInput1, ItemColor, Data1, Layout1, ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -1824,7 +1824,7 @@ Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.compo
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {TextInput1, List1, ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -1895,7 +1895,7 @@ Page2_ItemSet1Item.State = class Page2_ItemSet1Item_State extends Elemento.compo
 
 function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({app}))
+    const _state = setObject(props.path, new Page2.State({}))
     const {ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -1939,7 +1939,7 @@ test('generates Block element with properties and children and includes drag fun
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {DragIsOver, DraggedItemId} = Elemento.dragFunctions()
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {WidgetCount, Layout1, NameInput, Colour} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -1990,7 +1990,7 @@ test('generates Dialog element with properties and children', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {Dialog1, NameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2073,7 +2073,7 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2179,7 +2179,7 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2266,7 +2266,7 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {TextInput1, TFInput1, DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2365,7 +2365,7 @@ MyComponent.State = class MyComponent_State extends Elemento.components.BaseComp
     expect(gen.output().files[1].name).toBe('Page1.js')
     expect(gen.output().files[1].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {AComponent} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2555,7 +2555,7 @@ test('Function can be recursive and does not depend on itself', ()=> {
     expect(output.errors).toStrictEqual({})
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {GetStuff, Val2} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2605,7 +2605,7 @@ return y
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {WidgetHeight, DoNothing} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2652,7 +2652,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
 
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {WidgetHeight} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2872,7 +2872,7 @@ const {Page, TextElement, App} = Elemento.components
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2922,7 +2922,7 @@ const {Page, TextElement, App} = Elemento.components
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {Editor, Preview} = Elemento
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2963,7 +2963,7 @@ test('generates error for syntax error in expression', ()=> {
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3003,7 +3003,7 @@ test('generates errors for styles sub-property expressions', ()=> {
 
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {t1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3038,7 +3038,7 @@ test('generates error on correct line for syntax error in multiline content expr
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3070,7 +3070,7 @@ test('global functions available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3099,7 +3099,7 @@ test('built-in names available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3164,7 +3164,7 @@ test('page elements available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {ForenameInput, SurnameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3204,7 +3204,7 @@ test('unknown global functions generate error', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3236,7 +3236,7 @@ test('return statement in expression generates error', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3268,7 +3268,7 @@ test('syntax error statement in initialValue generates error into state defaults
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {NameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3367,7 +3367,7 @@ test('assignment at top level is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3395,7 +3395,7 @@ test('assignment in function argument is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     const {Input} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3433,7 +3433,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3462,7 +3462,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3494,7 +3494,7 @@ test('property shorthand to name of property reports error and generates an erro
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = setObject(props.path, new Page1.State({}))
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,

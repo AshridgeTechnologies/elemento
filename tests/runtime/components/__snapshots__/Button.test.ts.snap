@@ -2,8 +2,8 @@
 
 exports[`Button element produces output with default values where properties omitted 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onContextMenu={[Function]}
@@ -26,7 +26,7 @@ exports[`Button element produces output with default values where properties omi
 
 exports[`Button element produces output with enabled false 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
   disabled={true}
   id="app.page1.save"
   onBlur={[Function]}
@@ -51,8 +51,8 @@ exports[`Button element produces output with enabled false 1`] = `
 
 exports[`Button element produces output with enabled true 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-axpitj-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1e7m22e-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -76,8 +76,8 @@ exports[`Button element produces output with enabled true 1`] = `
 
 exports[`Button element produces output with icon 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -96,7 +96,7 @@ exports[`Button element produces output with icon 1`] = `
   type="button"
 >
   <span
-    className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeSmall css-1tjwu2m-MuiButton-startIcon"
+    className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeSmall css-d8i980-MuiButton-startIcon"
   >
     <span
       aria-hidden={true}
@@ -147,8 +147,8 @@ exports[`Button element produces output with link style and styles 1`] = `
 
 exports[`Button element produces output with properties supplied 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -172,8 +172,8 @@ exports[`Button element produces output with properties supplied 1`] = `
 
 exports[`Button element produces output with properties supplied as state values 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-uj8ugd-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-a8wme6-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -197,8 +197,8 @@ exports[`Button element produces output with properties supplied as state values
 
 exports[`Button element produces output with show false 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-uj8ugd-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-a8wme6-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -222,8 +222,8 @@ exports[`Button element produces output with show false 1`] = `
 
 exports[`Button element produces output with show true 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-axpitj-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1e7m22e-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}
@@ -247,8 +247,8 @@ exports[`Button element produces output with show true 1`] = `
 
 exports[`Button element produces output with styles supplied 1`] = `
 <button
-  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1h19fhx-MuiButtonBase-root-MuiButton-root"
-  disabled={false}
+  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1204lij-MuiButtonBase-root-MuiButton-root"
+  disabled={null}
   id="app.page1.save"
   onBlur={[Function]}
   onClick={[Function]}

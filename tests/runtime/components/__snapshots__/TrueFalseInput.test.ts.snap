@@ -9,7 +9,7 @@ exports[`TrueFalseInput element produces output with default values where proper
     htmlFor="app.page1.height"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-imrjgg-MuiButtonBase-root-MuiCheckbox-root"
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-vuhw6e-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
       onBlur={[Function]}
       onContextMenu={[Function]}
       onDragLeave={[Function]}
@@ -26,7 +26,7 @@ exports[`TrueFalseInput element produces output with default values where proper
     >
       <input
         checked={false}
-        className="PrivateSwitchBase-input css-j8yymo"
+        className="PrivateSwitchBase-input css-12xagqm-MuiSwitchBase-root"
         data-indeterminate={false}
         disabled={false}
         id="app.page1.height"
@@ -67,8 +67,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
     htmlFor="app.page1.width"
   >
     <span
-      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-18vjyi6-MuiButtonBase-root-MuiCheckbox-root"
-      endAdornment={null}
+      className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-135xnp2-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
       onBlur={[Function]}
       onContextMenu={[Function]}
       onDragLeave={[Function]}
@@ -85,7 +84,7 @@ exports[`TrueFalseInput element produces output with properties supplied 1`] = `
     >
       <input
         checked={true}
-        className="PrivateSwitchBase-input css-j8yymo"
+        className="PrivateSwitchBase-input css-12xagqm-MuiSwitchBase-root"
         data-indeterminate={false}
         disabled={false}
         id="app.page1.width"

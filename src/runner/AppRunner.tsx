@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react'
 import {LocalizationProvider} from '@mui/x-date-pickers'
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {enGB} from 'date-fns/locale/en-GB'
 import {ErrorBoundary} from 'react-error-boundary'
 import ErrorFallback from './ErrorFallback'

@@ -12,6 +12,7 @@ import {
 } from './ComponentHelpers'
 import {noop} from 'lodash'
 import {useObject} from '../appStateHooks'
+import {omit} from 'ramda'
 
 type Properties = BaseInputComponentProperties
 
@@ -24,6 +25,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
     const value = dataValue ?? false
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)
+    const inputComponentPropsForCheckbox = omit(['endAdornment'], inputComponentProps.InputProps)
     const inputProps = inputElementProps(styles, false, {})
 
     const error = state.errorsShown && !state.valid
@@ -45,7 +47,7 @@ export default function TrueFalseInput({path, ...props}: Properties) {
         disabled: readOnly,
         onBlur,
         ...inputProps,
-        ...inputComponentProps.InputProps,
+        ...inputComponentPropsForCheckbox,
     })
     return <FormControl error={error} variant="standard">
         <FormControlLabel label={labelWithRequired}

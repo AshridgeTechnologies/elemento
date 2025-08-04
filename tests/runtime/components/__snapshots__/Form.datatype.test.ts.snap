@@ -46,10 +46,10 @@ exports[`Form element produces output containing children 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -90,10 +90,10 @@ exports[`Form element produces output containing children 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Box Size
@@ -152,10 +152,10 @@ exports[`Form element produces output containing nested form 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -196,10 +196,10 @@ exports[`Form element produces output containing nested form 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Box Size
@@ -253,10 +253,10 @@ exports[`Form element produces output containing nested form 1`] = `
             />
             <fieldset
               aria-hidden={true}
-              className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+              className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                className="css-w1u3ce"
+                className="css-ex8a5f-MuiNotchedOutlined-root"
               >
                 <span>
                   Description
@@ -317,10 +317,10 @@ exports[`Form element produces output from data type with extra and override chi
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Description of the thing
@@ -361,10 +361,10 @@ exports[`Form element produces output from data type with extra and override chi
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Box Size
@@ -405,10 +405,10 @@ exports[`Form element produces output from data type with extra and override chi
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-81qg8w"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Count
@@ -428,338 +428,7 @@ exports[`Form element produces output from data type with extra and override chi
 </div>
 `;
 
-exports[`Form element produces output with all types of children and description 1`] = `
-<div
-  className="MuiBox-root css-0"
-  id="app.page1.form1"
->
-  <h6
-    className="MuiTypography-root MuiTypography-h6 css-1miy0lu-MuiTypography-root"
-    style={{}}
-  >
-    Test Form 1
-    <button
-      aria-label="The record type with them all"
-      aria-labelledby={null}
-      className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1jg1csc-MuiButtonBase-root-MuiIconButton-root"
-      data-mui-internal-clone-element={true}
-      disabled={false}
-      onBlur={[Function]}
-      onContextMenu={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseOver={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
-    >
-      <span
-        aria-hidden={true}
-        aria-label="Help"
-        className="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root"
-      >
-        info_outlined
-      </span>
-    </button>
-  </h6>
-  <div
-    className="MuiStack-root css-121a6wt-MuiStack-root"
-  >
-    <div
-      className="MuiFormControl-root MuiTextField-root css-lc5wk3-MuiFormControl-root-MuiTextField-root"
-      onClick={[Function]}
-    >
-      <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
-        htmlFor="app.page1.form1.StartDate"
-        id="app.page1.form1.StartDate-label"
-      >
-        Start Date
-      </label>
-      <div
-        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"
-        onClick={[Function]}
-      >
-        <input
-          aria-invalid={false}
-          autoComplete="off"
-          autoFocus={false}
-          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
-          disabled={false}
-          id="app.page1.form1.StartDate"
-          inputMode="text"
-          onAnimationStart={[Function]}
-          onBlur={[Function]}
-          onChange={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onPaste={[Function]}
-          placeholder="DD MMMM YYYY"
-          readOnly={false}
-          required={false}
-          type="text"
-          value="13 Feb 2015"
-        />
-        <div
-          className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-elo8k2-MuiInputAdornment-root"
-        >
-          <button
-            aria-label="Choose date, selected date is 13 Feb 2015"
-            className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-oeq6yz-MuiButtonBase-root-MuiIconButton-root"
-            disabled={false}
-            onBlur={[Function]}
-            onClick={[Function]}
-            onContextMenu={[Function]}
-            onDragLeave={[Function]}
-            onFocus={[Function]}
-            onKeyDown={[Function]}
-            onKeyUp={[Function]}
-            onMouseDown={[Function]}
-            onMouseLeave={[Function]}
-            onMouseUp={[Function]}
-            onTouchEnd={[Function]}
-            onTouchMove={[Function]}
-            onTouchStart={[Function]}
-            tabIndex={0}
-            type="button"
-          >
-            <svg
-              aria-hidden={true}
-              className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
-              data-testid="CalendarIcon"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
-              />
-            </svg>
-          </button>
-        </div>
-        <fieldset
-          aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
-        >
-          <legend
-            className="css-w1u3ce"
-          >
-            <span>
-              Start Date
-            </span>
-          </legend>
-        </fieldset>
-      </div>
-    </div>
-    <div
-      className="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"
-    >
-      <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
-        htmlFor="app.page1.form1.Income"
-        id="app.page1.form1.Income-label"
-      >
-        Income
-      </label>
-      <div
-        className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-quhxjy-MuiInputBase-root-MuiOutlinedInput-root"
-        onClick={[Function]}
-      >
-        <input
-          aria-invalid={false}
-          autoFocus={false}
-          className="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input"
-          disabled={false}
-          id="app.page1.form1.Income"
-          max={"100000"}
-          min={"0"}
-          onAnimationStart={[Function]}
-          onBlur={[Function]}
-          onChange={[Function]}
-          onFocus={[Function]}
-          required={false}
-          type="number"
-          value="223344.55"
-        />
-        <fieldset
-          aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
-        >
-          <legend
-            className="css-w1u3ce"
-          >
-            <span>
-              Income
-            </span>
-          </legend>
-        </fieldset>
-      </div>
-    </div>
-    <div
-      className="MuiFormControl-root css-1p5ajek-MuiFormControl-root"
-    >
-      <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-1dj2ypp-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
-        id="app.page1.form1.Region_label"
-      >
-        Region
-      </label>
-      <div
-        className="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall  css-6khn8x-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"
-        onClick={[Function]}
-      >
-        <div
-          aria-controls=":r6:"
-          aria-expanded="false"
-          aria-haspopup="listbox"
-          aria-labelledby="app.page1.form1.Region_label app.page1.form1.Region"
-          className="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-idivhk-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input"
-          id="app.page1.form1.Region"
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onMouseDown={[Function]}
-          role="combobox"
-          tabIndex={0}
-        >
-          Central
-        </div>
-        <input
-          aria-hidden={true}
-          aria-invalid={false}
-          className="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
-          disabled={false}
-          onAnimationStart={[Function]}
-          onChange={[Function]}
-          required={false}
-          tabIndex={-1}
-          value="Central"
-        />
-        <svg
-          aria-hidden={true}
-          className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-lohd6h-MuiSvgIcon-root-MuiSelect-icon"
-          data-testid="ArrowDropDownIcon"
-          focusable="false"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M7 10l5 5 5-5z"
-          />
-        </svg>
-      </div>
-      <p
-        className="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-2s8ubb-MuiFormHelperText-root"
-      />
-    </div>
-    <div
-      className="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
-    >
-      <label
-        className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1intw90-MuiFormControlLabel-root"
-        htmlFor="app.page1.form1.Internal"
-      >
-        <span
-          className="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-imrjgg-MuiButtonBase-root-MuiCheckbox-root"
-          endAdornment={
-            <ForwardRef(InputAdornment)
-              position="end"
-              sx={
-                {
-                  "marginLeft": 0,
-                }
-              }
-            >
-              <ForwardRef(Tooltip)
-                placement="top-end"
-                title="Internal sign up"
-              >
-                <ForwardRef(IconButton)
-                  edge="end"
-                  sx={
-                    {
-                      "marginRight": "-16px",
-                      "px": 0.15,
-                    }
-                  }
-                >
-                  <ForwardRef(Icon)
-                    aria-label="Help"
-                    sx={
-                      {
-                        "color": "action.active",
-                        "fontSize": "0.8em",
-                        "ml": 0.5,
-                        "mr": 1,
-                        "mt": 0.25,
-                      }
-                    }
-                  >
-                    info_outlined
-                  </ForwardRef(Icon)>
-                </ForwardRef(IconButton)>
-              </ForwardRef(Tooltip)>
-            </ForwardRef(InputAdornment)>
-          }
-          onBlur={[Function]}
-          onContextMenu={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={null}
-        >
-          <input
-            checked={true}
-            className="PrivateSwitchBase-input css-j8yymo"
-            data-indeterminate={false}
-            disabled={false}
-            id="app.page1.form1.Internal"
-            onChange={[Function]}
-            readOnly={false}
-            required={false}
-            type="checkbox"
-          />
-          <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
-            data-testid="CheckBoxIcon"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-            />
-          </svg>
-        </span>
-        <span
-          className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
-          style={{}}
-        >
-          Internal
-        </span>
-      </label>
-      <p
-        className="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-18y2hez-MuiFormHelperText-root"
-      />
-    </div>
-  </div>
-</div>
-`;
+exports[`Form element produces output with all types of children and description 1`] = `"<div class="MuiBox-root css-0" id="app.page1.form1"><h6 class="MuiTypography-root MuiTypography-h6 css-1miy0lu-MuiTypography-root">Test Form 1<button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1gce8x6-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="The record type with them all" data-mui-internal-clone-element="true"><span class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium css-1hhvfje-MuiIcon-root" aria-hidden="true" aria-label="Help">info_outlined</span></button></h6><div class="MuiStack-root css-121a6wt-MuiStack-root"><div class="MuiFormControl-root MuiPickersTextField-root css-nm13u7-MuiFormControl-root-MuiPickersTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.form1.StartDate" id="app.page1.form1.StartDate-label">Start Date</label><div aria-invalid="false" role="group" aria-labelledby="app.page1.form1.StartDate-label" class="MuiPickersInputBase-root MuiPickersOutlinedInput-root MuiPickersInputBase-colorPrimary MuiPickersInputBase-inputSizeSmall MuiPickersInputBase-adornedEnd css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root"><div contenteditable="false" tabindex="0" class="MuiPickersSectionList-root MuiPickersInputBase-sectionsContainer css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer"><span data-sectionindex="0" class="MuiPickersSectionList-section css-joz0rk-MuiPickersSectionList-section-MuiPickersInputBase-section"><span class="MuiPickersInputBase-sectionBefore css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"></span><span aria-labelledby=":r3:-day" aria-readonly="false" aria-valuenow="13" aria-valuemin="1" aria-valuemax="28" aria-valuetext="13th" aria-label="Day" aria-disabled="false" tabindex="0" contenteditable="true" role="spinbutton" id=":r3:-day" spellcheck="false" autocapitalize="off" autocorrect="off" inputmode="numeric" class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent">13</span><span class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"> </span></span><span data-sectionindex="1" class="MuiPickersSectionList-section css-joz0rk-MuiPickersSectionList-section-MuiPickersInputBase-section"><span class="MuiPickersInputBase-sectionBefore css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"></span><span aria-labelledby=":r3:-month" aria-readonly="false" aria-valuenow="2" aria-valuemin="1" aria-valuemax="12" aria-valuetext="February" aria-label="Month" aria-disabled="false" tabindex="-1" contenteditable="true" role="spinbutton" id=":r3:-month" spellcheck="false" autocapitalize="off" autocorrect="off" inputmode="text" class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent">Feb</span><span class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"> </span></span><span data-sectionindex="2" class="MuiPickersSectionList-section css-joz0rk-MuiPickersSectionList-section-MuiPickersInputBase-section"><span class="MuiPickersInputBase-sectionBefore css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"></span><span aria-labelledby=":r3:-year" aria-readonly="false" aria-valuenow="2015" aria-valuemin="0" aria-valuemax="9999" aria-label="Year" aria-disabled="false" tabindex="-1" contenteditable="true" role="spinbutton" id=":r3:-year" spellcheck="false" autocapitalize="off" autocorrect="off" inputmode="numeric" class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent">2015</span><span class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"></span></span></div><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeSmall css-elo8k2-MuiInputAdornment-root"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1ysp02-MuiButtonBase-root-MuiIconButton-root" tabindex="0" type="button" aria-label="Choose date, selected date is 13 Feb 2015"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CalendarIcon"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"></path></svg></button></div><fieldset aria-hidden="true" class="MuiPickersOutlinedInput-notchedOutline css-lqwr9g-MuiPickersOutlinedInput-notchedOutline"><legend class="css-kg5swy"><span class="css-w48gsk">Start Date</span></legend></fieldset><input class="MuiPickersInputBase-input MuiPickersOutlinedInput-input css-31lcvl-MuiPickersInputBase-input" id="app.page1.form1.StartDate" aria-hidden="true" tabindex="-1" value="13 Feb 2015"></div></div><div class="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" for="app.page1.form1.Income" id="app.page1.form1.Income-label">Income</label><div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-quhxjy-MuiInputBase-root-MuiOutlinedInput-root"><input aria-invalid="false" id="app.page1.form1.Income" type="number" max="100000" min="0" class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input" value="223344.55"><fieldset aria-hidden="true" class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"><legend class="css-ex8a5f-MuiNotchedOutlined-root"><span>Income</span></legend></fieldset></div></div><div class="MuiFormControl-root css-1p5ajek-MuiFormControl-root"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-filled css-1dj2ypp-MuiFormLabel-root-MuiInputLabel-root" data-shrink="true" id="app.page1.form1.Region_label">Region</label><div class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiSelect-root css-6khn8x-MuiInputBase-root-MuiFilledInput-root-MuiSelect-root"><div tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="app.page1.form1.Region_label app.page1.form1.Region" id="app.page1.form1.Region" class="MuiSelect-select MuiSelect-filled MuiInputBase-input MuiFilledInput-input MuiInputBase-inputSizeSmall css-8d1es9-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiFilledInput-input">Central</div><input aria-invalid="false" aria-hidden="true" tabindex="-1" class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput" value="Central"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconFilled css-1rfqz7c-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon"><path d="M7 10l5 5 5-5z"></path></svg></div><p class="MuiFormHelperText-root MuiFormHelperText-sizeSmall MuiFormHelperText-contained MuiFormHelperText-filled css-2s8ubb-MuiFormHelperText-root"></p></div><div class="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"><label class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart css-1intw90-MuiFormControlLabel-root" for="app.page1.form1.Internal"><span class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeSmall css-vuhw6e-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"><input id="app.page1.form1.Internal" type="checkbox" data-indeterminate="false" class="PrivateSwitchBase-input css-12xagqm-MuiSwitchBase-root" checked=""><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxIcon"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg></span><span class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root">Internal</span></label><p class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-18y2hez-MuiFormHelperText-root"></p></div></div></div>"`;
 
 exports[`Form element produces output with no children 1`] = `
 <div
@@ -824,10 +493,10 @@ exports[`Form element produces output with one child 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-81qg8w"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Description

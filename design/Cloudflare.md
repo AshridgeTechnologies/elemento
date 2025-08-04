@@ -49,6 +49,7 @@ Possibilities
 - CLI runner downloads latest or a specified module
 - Use Vite for HMR
 - Use Wrangler bundling, don't need whole runtime in either server or client
+- Elemento is just a tool in a project, mixed with other js, html, files
 
 General client approach - Spike 1
 --------------------------

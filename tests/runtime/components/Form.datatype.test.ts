@@ -13,6 +13,7 @@ import React, {KeyboardEventHandler} from 'react'
 import {useObject} from '../../../src/runtime'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
+import {render} from '@testing-library/react'
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Box Size', {max: 20})
@@ -108,7 +109,8 @@ test('Form element produces output with all types of children and description', 
             ]
         }
     }, {label: 'Test Form 1'})
-    expect(componentJSON(component)).toMatchSnapshot()
+    const {container} = render(component)
+    expect(container.innerHTML).toMatchSnapshot()
 })
 
 test('Form element produces output from data type with extra and override children', () => {

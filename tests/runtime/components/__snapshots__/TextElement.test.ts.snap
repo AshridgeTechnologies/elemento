@@ -83,8 +83,8 @@ exports[`Can show html text with child elements and placeholders 1`] = `
     some_icon
   </span>
   <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
-    disabled={false}
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
+    disabled={null}
     id="page1.para1.Comp3"
     onBlur={[Function]}
     onContextMenu={[Function]}
@@ -130,8 +130,8 @@ exports[`Can show plain text with child elements and placeholders 1`] = `
   </span>
    but not Comp3
   <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1xp33i0-MuiButtonBase-root-MuiButton-root"
-    disabled={false}
+    className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-colorPrimary MuiButton-disableElevation css-1ftnl4i-MuiButtonBase-root-MuiButton-root"
+    disabled={null}
     id="page1.para1.Comp3"
     onBlur={[Function]}
     onContextMenu={[Function]}

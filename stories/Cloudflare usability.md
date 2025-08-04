@@ -26,6 +26,7 @@ Bugs
 - !!! Intermittent failure to sync
 - !! In create child states, if a Calculation value calls a function that uses another component, that component will not exist yet, as all assigned to childStates at the end
 - Even if it did - are dependencies calculated recursively
+- Runaway connections to db from client when first create and use the datastore
 - ✅ When app re-renders due to url change, it still sees the old url
 - ✅ Changing db id all the time (even undefined to an id) confuses everything
 - ✅ In generated app, base App functions come from "app" instead of the state eg const {CurrentUrl} = app
@@ -39,5 +40,8 @@ Bugs
 To set up project
 -----------------
 
-- Need to create KV namespacewith: `wrangler kv namespace create auth`
+- Open project in studio to write initial files
+- npm install
+- Need to create KV namespacewith: `npx wrangler kv namespace create auth`
 - Need to put its id in project config: {"authStoreId": "generatedId"}
+- npx wrangler dev

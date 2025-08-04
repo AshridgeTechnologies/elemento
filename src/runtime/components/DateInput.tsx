@@ -21,7 +21,7 @@ export default function DateInput({path, ...props}: Properties) {
     const optionalProps = definedPropertiesOf({label: labelWithRequired})
     const inputComponentProps = propsForInputComponent(dataType, styles)
     const inputProps = inputElementProps(styles, readOnly, {})
-    if (inputProps.inputProps) inputProps.inputProps.style = {'z-index': 1}
+    if (inputProps.inputProps) inputProps.inputProps.style = {'zIndex': 1}
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors ? (state.errors as string[]).join('.  ') : undefined
 

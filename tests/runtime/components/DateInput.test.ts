@@ -1,9 +1,10 @@
-import {expect, test} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+
+import {expect, test} from "vitest"
 import {DateInput} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {htmlSnapshot, snapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {DateInputState} from '../../../src/runtime/components/DateInput'
@@ -17,19 +18,23 @@ const stateAt = (path: string) => appStoreHook.stateAt(path)
 const dateType1 = new DateType('startDate', {min: new Date('2020-01-01'), max: new Date('2021-12-31')})
 
 test('DateInput element produces output with properties supplied',
-    snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', styles: {color: 'red'}}))
+    htmlSnapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', styles: {color: 'red'}}))
 )
 
 test('DateInput element produces readonly output with properties supplied',
-    snapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', readOnly: true}))
+    htmlSnapshot(dateInput('app.page1.start', {value: new Date('2021-11-12')}, {label: 'Starting Date', readOnly: true}))
 )
 
 test('DateInput element produces output with DataType supplied',
-    snapshot(dateInput('app.page1.start1', {value: new Date('2021-11-12'), dataType: dateType1}, {label: 'Starting Date'}))
+    htmlSnapshot(dateInput('app.page1.start1', {value: new Date('2021-11-12'), dataType: dateType1}, {label: 'Starting Date'}))
+)
+
+test('DateInput element produces output with default values where properties omittedxx',
+    htmlSnapshot(dateInput('app.page1.finish'))
 )
 
 test('DateInput element produces output with default values where properties omitted',
-    snapshot(dateInput('app.page1.finish'))
+    htmlSnapshot(dateInput('app.page1.finish'))
 )
 
 test('DateInput element produces output with description info', () => {
@@ -77,7 +82,7 @@ test('DateInput stores updated values in the app store section for its path', as
 
 test('DateInput stores null value in the app store when cleared', async () => {
     const {el, user} = testContainer(dateInput('app.page1.termDate', {value: new Date('2021-11-12')}))
-    const inputEl = el`app.page1.termDate`
+    const inputEl = el`[role=spinbutton]`
     await user.clear(inputEl)
     expect(stateAt('app.page1.termDate').dataValue).toBe(null)
 })

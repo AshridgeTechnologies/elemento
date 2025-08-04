@@ -2,7 +2,7 @@ import {expect, MockedFunction, test, vi} from 'vitest'
 import renderer from 'react-test-renderer'
 import React, {createElement, FunctionComponent} from 'react'
 import {treeItemTitleSelector} from '../editor/Selectors'
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3'
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
 import {enGB} from 'date-fns/locale/en-GB'
 import {isArray} from 'lodash'
@@ -14,21 +14,18 @@ import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
-// import Dexie from 'dexie'
-// import Promise = Dexie.Promise
-// import {Error} from '@mui/icons-material'
-// import Promise = Dexie.Promise
-// import Promise = Dexie.Promise
-// import Promise = Dexie.Promise
-// import {TextEncoder} from 'util'
-// import Promise = Dexie.Promise
-// import {undefined} from 'valibot'
+import {render} from '@testing-library/react'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
 export const componentJSON = (component: JSX.Element) => renderer.create(component).toJSON()
 
 export const snapshot = (element: React.ReactElement) => () => expect(componentJSON(element)).toMatchSnapshot()
+
+export const htmlSnapshot = (element: React.ReactElement) => () => {
+    const {container} = render(element)
+    expect(container.innerHTML).toMatchSnapshot()
+}
 
 export const snapshotTest = (element: JSX.Element) => test(`${element.type.name} has expected structure`, snapshot(element))
 

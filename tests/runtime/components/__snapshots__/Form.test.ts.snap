@@ -47,10 +47,10 @@ exports[`Form element produces output containing children 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -92,10 +92,10 @@ exports[`Form element produces output containing children 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Size
@@ -162,10 +162,10 @@ exports[`Form element produces output containing nested form 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -207,10 +207,10 @@ exports[`Form element produces output containing nested form 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-w1u3ce"
+            className="css-ex8a5f-MuiNotchedOutlined-root"
           >
             <span>
               Size
@@ -263,10 +263,10 @@ exports[`Form element produces output containing nested form 1`] = `
             />
             <fieldset
               aria-hidden={true}
-              className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+              className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                className="css-w1u3ce"
+                className="css-ex8a5f-MuiNotchedOutlined-root"
               >
                 <span>
                   Description
@@ -348,10 +348,10 @@ exports[`Form element produces output with one child 1`] = `
         />
         <fieldset
           aria-hidden={true}
-          className="MuiOutlinedInput-notchedOutline css-1ll44ll-MuiOutlinedInput-notchedOutline"
+          className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-81qg8w"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Description
