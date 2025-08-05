@@ -25,8 +25,10 @@ export interface ComponentState<T> {
 
 export type StateMap = { [key: string]: StoredState }
 
+type WithChildStates<SP> = SP & {childStates: StateMap}
+
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
-    protected state: StateProps & {childStates?: StateMap} = {} as StateProps
+    protected state: WithChildStates<StateProps> = {childStates: {}} as WithChildStates<StateProps>
     protected _appStateInterface?: AppStateForObject
     protected _path?: string
 
@@ -41,15 +43,17 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     protected setupChildStates() {
-        this.state.childStates = this.createChildStates()
+        this.state.childStates ??= {}
+        this.createChildStates()
     }
 
-    protected createChildStates(): StateMap {
-        return {}
+    protected createChildStates(): void {
     }
 
     protected getOrCreateChildState(path: string, item: StoredState) {
-        return this._appStateInterface!.getOrCreateChildState(path, item)
+        const childState = this._appStateInterface!.getOrCreateChildState(path, item)
+        this.state.childStates[path] = childState
+        return childState
     }
 
     updateFrom(newObj: this): this {
@@ -83,15 +87,16 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return shallow(this.props, newObj.props)
     }
 
-    protected withState(state: StateProps): this {
+    protected withState(state: WithChildStates<StateProps>): this {
         const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>
         newVersion.state = {...state}
         return newVersion as this
     }
 
     withMergedState(changes: Partial<StateProps>): this {
-        const newState = Object.assign({}, this.state, changes) as StateProps
+        const newState = Object.assign({}, this.state, changes) as WithChildStates<StateProps>
         for (const p in newState) {
+            // @ts-ignore
             if (newState[p] === undefined) delete newState[p]
         }
 
@@ -129,10 +134,4 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return (this._appStateInterface?.getChildState(name) as ComponentState<any>)
     }
 
-    protected updateChildStates(childStates: StateMap) {
-        if (!shallow(this.childStates, childStates)) {
-            // @ts-ignore
-            this.updateState({childStates})
-        }
-    }
 }

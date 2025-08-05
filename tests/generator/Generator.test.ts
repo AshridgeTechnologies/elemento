@@ -458,7 +458,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new TextInput.State(stateProps(pathTo('t1')).value('Hi there!').props))
         const t2 = this.getOrCreateChildState('t2', new TextInput.State(stateProps(pathTo('t2')).value('Some' + ' things').props))
         const t3 = this.getOrCreateChildState('t3', new TextInput.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -531,7 +530,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const Comp1 = this.getOrCreateChildState('Comp1', new TextInput.State(stateProps(pathTo('Comp1')).props))
-        return {Comp1}
     }
 
     get Comp1() { return this.childStates.Comp1 }
@@ -598,7 +596,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new NumberInput.State(stateProps(pathTo('t1')).value(44).props))
         const t2 = this.getOrCreateChildState('t2', new NumberInput.State(stateProps(pathTo('t2')).value(22 + 33).props))
         const t3 = this.getOrCreateChildState('t3', new NumberInput.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -641,7 +638,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new DateInput.State(stateProps(pathTo('t1')).value(new Date('2022-04-05T00:00:00.000Z')).props))
         const t2 = this.getOrCreateChildState('t2', new DateInput.State(stateProps(pathTo('t2')).value(DateVal('2022-02-03')).props))
         const t3 = this.getOrCreateChildState('t3', new DateInput.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -678,7 +674,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const t1 = this.getOrCreateChildState('t1', new SpeechInput.State(stateProps(pathTo('t1')).language('fr').expectedPhrases(['One', 'Two']).props))
-        return {t1}
     }
 
     get t1() { return this.childStates.t1 }
@@ -719,7 +714,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const Select1 = this.getOrCreateChildState('Select1', new SelectInput.State(stateProps(pathTo('Select1')).value('44').props))
         const Select2 = this.getOrCreateChildState('Select2', new SelectInput.State(stateProps(pathTo('Select2')).value(4+'4').props))
         const Select3 = this.getOrCreateChildState('Select3', new SelectInput.State(stateProps(pathTo('Select3')).props))
-        return {Select1, Select2, Select3}
     }
 
     get Select1() { return this.childStates.Select1 }
@@ -762,7 +756,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new TrueFalseInput.State(stateProps(pathTo('t1')).value(true).props))
         const t2 = this.getOrCreateChildState('t2', new TrueFalseInput.State(stateProps(pathTo('t2')).value(true || false).props))
         const t3 = this.getOrCreateChildState('t3', new TrueFalseInput.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -845,7 +838,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
         const {DoStuff} = this
         const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).props))
-        return {Description}
     }
 
     get Description() { return this.childStates.Description }
@@ -955,7 +947,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new Data.State(stateProps(pathTo('t1')).value(44).props))
         const t2 = this.getOrCreateChildState('t2', new Data.State(stateProps(pathTo('t2')).value(({a:10, b: 'Bee'})).props))
         const t3 = this.getOrCreateChildState('t3', new Data.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -999,7 +990,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new Calculation.State(stateProps(pathTo('t1')).value(44 + 7).props))
         const t2 = this.getOrCreateChildState('t2', new Calculation.State(stateProps(pathTo('t2')).value(({a:10, b: 'Bee'})).props))
         const t3 = this.getOrCreateChildState('t3', new Calculation.State(stateProps(pathTo('t3')).props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -1047,7 +1037,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const t1 = this.getOrCreateChildState('t1', new Collection.State(stateProps(pathTo('t1')).dataStore(Store1).collectionName('Widgets').props))
         const t2 = this.getOrCreateChildState('t2', new Collection.State(stateProps(pathTo('t2')).value(['red', 'yellow']).collectionName('t2').props))
         const t3 = this.getOrCreateChildState('t3', new Collection.State(stateProps(pathTo('t3')).collectionName('t3').props))
-        return {t1, t2, t3}
     }
 
     get t1() { return this.childStates.t1 }
@@ -1139,7 +1128,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
-        return {Connector1}
     }
 
     get Connector1() { return this.childStates.Connector1 }
@@ -1195,7 +1183,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const ServerApp1 = this.getOrCreateChildState('ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
-        return {ServerApp1}
     }
 
     get ServerApp1() { return this.childStates.ServerApp1 }
@@ -1249,7 +1236,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
-        return {Connector1}
     }
 
     get Connector1() { return this.childStates.Connector1 }
@@ -1295,7 +1281,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
-        return {Connector1}
     }
 
     get Connector1() { return this.childStates.Connector1 }
@@ -1340,7 +1325,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
-        return {Connector1}
     }
 
     get Connector1() { return this.childStates.Connector1 }
@@ -1412,7 +1396,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const WidgetId = this.getOrCreateChildState('WidgetId', new Data.State(stateProps(pathTo('WidgetId')).value(WidgetSet.selectedItem && WidgetSet.selectedItem.id).props))
         const TheWidget = this.getOrCreateChildState('TheWidget', new Data.State(stateProps(pathTo('TheWidget')).value(WidgetId.value && Get(Widgets, WidgetId.value)).props))
         const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(TheWidget.Description).props))
-        return {Description, TheWidget, WidgetId, Widgets, WidgetSet}
     }
 
     get Description() { return this.childStates.Description }
@@ -1493,7 +1476,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const WidgetId = this.getOrCreateChildState('WidgetId', new Data.State(stateProps(pathTo('WidgetId')).value(WidgetSet.selectedItem && WidgetSet.selectedItem.id).props))
         const TheWidget = this.getOrCreateChildState('TheWidget', new Data.State(stateProps(pathTo('TheWidget')).value(WidgetId.value && Get(Widgets, WidgetId.value)).props))
         const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(TheWidget.Description).props))
-        return {Description, TheWidget, WidgetId, Widgets, List1, WidgetSet}
     }
 
     get Description() { return this.childStates.Description }
@@ -1544,7 +1526,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
         const {Widgets} = this.app
         const WidgetValue = this.getOrCreateChildState('WidgetValue', new NumberInput.State(stateProps(pathTo('WidgetValue')).value(Get(Widgets, 'x1').a).props))
-        return {WidgetValue}
     }
 
     get WidgetValue() { return this.childStates.WidgetValue }
@@ -1574,7 +1555,6 @@ App1.State = class App1_State extends App.State {
         const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(Store1).collectionName('Widgets').props))
         const Store2 = this.getOrCreateChildState('Store2', new FileDataStore.State(stateProps('App1.Store2').props))
         const Store3 = this.getOrCreateChildState('Store3', new BrowserDataStore.State(stateProps('App1.Store3').databaseName('Accounts').collectionNames(['Cheques', 'Postings']).props))
-        return {Widgets, Store2, Store3}
     }
 
     get Widgets() { return this.childStates.Widgets }
@@ -1620,7 +1600,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
         const {Widgets} = this.app
         const WidgetValue = this.getOrCreateChildState('WidgetValue', new NumberInput.State(stateProps(pathTo('WidgetValue')).value(Get(Widgets, 'x1').a).props))
-        return {WidgetValue}
     }
 
     get WidgetValue() { return this.childStates.WidgetValue }
@@ -1648,7 +1627,6 @@ App1.State = class App1_State extends App.State {
         const pathTo = name => this._path + '.' + name
 
         const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(codeGenerationError(\`StoreX\`, 'Unknown names: StoreX')).collectionName('Widgets').props))
-        return {Widgets}
     }
 
     get Widgets() { return this.childStates.Widgets }
@@ -1709,7 +1687,6 @@ Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.compo
         const {$item, $itemId, $index, $selected, $container} = this.props
         const {ItemColor, Data1, TextInput1} = $container
         const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value('from ' + Left($item, 3)).props))
-        return {TextInput2}
     }
 
     get TextInput2() { return this.childStates.TextInput2 }
@@ -1749,7 +1726,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const Data1 = this.getOrCreateChildState('Data1', new Data.State(stateProps(pathTo('Data1')).value(10).props))
         const Layout1 = this.getOrCreateChildState('Layout1', new Block.State(stateProps(pathTo('Layout1')).props))
         const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).items([{a: 10}, {a: 20}]).selectAction(this.ItemSet1_selectAction).props))
-        return {TextInput1, ItemColor, Data1, Layout1, ItemSet1}
     }
 
     get TextInput1() { return this.childStates.TextInput1 }
@@ -1810,7 +1786,6 @@ Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.compo
         const {$item, $itemId, $index, $selected, $container} = this.props
         const {TextInput1} = $container
         const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value('from ' + Left($item, 3)).props))
-        return {TextInput2}
     }
 
     get TextInput2() { return this.childStates.TextInput2 }
@@ -1846,7 +1821,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const TextInput1 = this.getOrCreateChildState('TextInput1', new TextInput.State(stateProps(pathTo('TextInput1')).props))
         const List1 = this.getOrCreateChildState('List1', new ListElement.State(stateProps(pathTo('List1')).props))
         const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).items([{a: 10}, {a: 20}]).selectAction(this.ItemSet1_selectAction).props))
-        return {TextInput1, List1, ItemSet1}
     }
 
     get TextInput1() { return this.childStates.TextInput1 }
@@ -1912,7 +1886,6 @@ Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).selectable(false).props))
-        return {ItemSet1}
     }
 
     get ItemSet1() { return this.childStates.ItemSet1 }
@@ -1966,7 +1939,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const Layout1 = this.getOrCreateChildState('Layout1', new Block.State(stateProps(pathTo('Layout1')).props))
         const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).props))
         const Colour = this.getOrCreateChildState('Colour', new SelectInput.State(stateProps(pathTo('Colour')).props))
-        return {WidgetCount, Layout1, NameInput, Colour}
     }
 
     get WidgetCount() { return this.childStates.WidgetCount }
@@ -2011,7 +1983,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 
         const Dialog1 = this.getOrCreateChildState('Dialog1', new Dialog.State(stateProps(pathTo('Dialog1')).initiallyOpen(true).props))
         const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).props))
-        return {Dialog1, NameInput}
     }
 
     get Dialog1() { return this.childStates.Dialog1 }
@@ -2061,7 +2032,6 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
         const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
         const Calculation1 = this.getOrCreateChildState('Calculation1', new Calculation.State(stateProps(pathTo('Calculation1')).value(1 + 2).props))
         const Data1 = this.getOrCreateChildState('Data1', new Data.State(stateProps(pathTo('Data1')).value(1 + 2).props))
-        return {TextInput2, NumberInput1, Calculation1, Data1}
     }
 
     get TextInput2() { return this.childStates.TextInput2 }
@@ -2090,7 +2060,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27})).props))
-        return {DetailsForm}
     }
 
     get DetailsForm() { return this.childStates.DetailsForm }
@@ -2137,7 +2106,6 @@ DetailsForm_FurtherDetails.State = class DetailsForm_FurtherDetails_State extend
 
         const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(this.originalValue?.Description).props))
         const Size = this.getOrCreateChildState('Size', new NumberInput.State(stateProps(pathTo('Size')).value(this.originalValue?.Size).props))
-        return {Description, Size}
     }
 
     get Description() { return this.childStates.Description }
@@ -2168,7 +2136,6 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
         const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value(this.originalValue?.TextInput2).props))
         const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
         const FurtherDetails = this.getOrCreateChildState('FurtherDetails', new DetailsForm_FurtherDetails.State(stateProps(pathTo('FurtherDetails')).value(this.originalValue?.FurtherDetails).props))
-        return {TextInput2, NumberInput1, FurtherDetails}
     }
 
     get TextInput2() { return this.childStates.TextInput2 }
@@ -2196,7 +2163,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}})).props))
-        return {DetailsForm}
     }
 
     get DetailsForm() { return this.childStates.DetailsForm }
@@ -2251,7 +2217,6 @@ Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.compone
 
         const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value(this.originalValue?.TextInput2).props))
         const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
-        return {TextInput2, NumberInput1}
     }
 
     get TextInput2() { return this.childStates.TextInput2 }
@@ -2287,7 +2252,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const TextInput1 = this.getOrCreateChildState('TextInput1', new TextInput.State(stateProps(pathTo('TextInput1')).props))
         const TFInput1 = this.getOrCreateChildState('TFInput1', new TrueFalseInput.State(stateProps(pathTo('TFInput1')).props))
         const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27})).submitAction(this.DetailsForm_submitAction).props))
-        return {TextInput1, TFInput1, DetailsForm}
     }
 
     get TextInput1() { return this.childStates.TextInput1 }
@@ -2383,7 +2347,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const AComponent = this.getOrCreateChildState('AComponent', new MyComponent.State(stateProps(pathTo('AComponent')).source('Here').destination('There').props))
-        return {AComponent}
     }
 
     get AComponent() { return this.childStates.AComponent }
@@ -2461,7 +2424,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const IfPlainValues = this.getOrCreateChildState('IfPlainValues', new Data.State(stateProps(pathTo('IfPlainValues')).value(If(true, 1, Date)).props))
         const IfOneArg = this.getOrCreateChildState('IfOneArg', new Data.State(stateProps(pathTo('IfOneArg')).value(If(false, () => Sum(10, 20))).props))
         const IfTwoArgs = this.getOrCreateChildState('IfTwoArgs', new Data.State(stateProps(pathTo('IfTwoArgs')).value(If(false, 2, () => Sum(10, 20))).props))
-        return {TallWidgets, TallerWidgets, FixedWidgets, NoWidgets, CountNoCondition, IfPlainValues, IfOneArg, IfTwoArgs}
     }
 
     get TallWidgets() { return this.childStates.TallWidgets }
@@ -2517,7 +2479,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const {EmptyFunction, IsTallWidget} = this
         const TallWidgets = this.getOrCreateChildState('TallWidgets', new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).props))
         const MinHeight = this.getOrCreateChildState('MinHeight', new NumberInput.State(stateProps(pathTo('MinHeight')).props))
-        return {TallWidgets, MinHeight}
     }
 
     get TallWidgets() { return this.childStates.TallWidgets }
@@ -2572,7 +2533,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
         const {GetStuff} = this
         const Val2 = this.getOrCreateChildState('Val2', new TextInput.State(stateProps(pathTo('Val2')).value(GetStuff()).props))
-        return {Val2}
     }
 
     get Val2() { return this.childStates.Val2 }
@@ -2750,7 +2710,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
         const {CurrentUrl, ShowPage, Greeting} = this.app
         const Calc1 = this.getOrCreateChildState('Calc1', new Calculation.State(stateProps(pathTo('Calc1')).value('This is page' + CurrentUrl() + ' Hi ' + Greeting()).props))
-        return {Calc1}
     }
 
     get Calc1() { return this.childStates.Calc1 }
@@ -2830,7 +2789,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const TallWidgets = this.getOrCreateChildState('TallWidgets', new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).props))
         const MinHeight = this.getOrCreateChildState('MinHeight', new NumberInput.State(stateProps(pathTo('MinHeight')).props))
         const WidgetSet = this.getOrCreateChildState('WidgetSet', new ItemSet.State(stateProps(pathTo('WidgetSet')).items(Widgets.Query({})).props))
-        return {TallWidgets, MinHeight, WidgetSet}
     }
 
     get TallWidgets() { return this.childStates.TallWidgets }
@@ -3020,7 +2978,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const t1 = this.getOrCreateChildState('t1', new TextInput.State(stateProps(pathTo('t1')).props))
-        return {t1}
     }
 
     get t1() { return this.childStates.t1 }
@@ -3184,7 +3141,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 
         const ForenameInput = this.getOrCreateChildState('ForenameInput', new TextInput.State(stateProps(pathTo('ForenameInput')).props))
         const SurnameInput = this.getOrCreateChildState('SurnameInput', new TextInput.State(stateProps(pathTo('SurnameInput')).props))
-        return {ForenameInput, SurnameInput}
     }
 
     get ForenameInput() { return this.childStates.ForenameInput }
@@ -3285,7 +3241,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).value(codeGenerationError(\`{a: 10,\`, 'Error: Unexpected character(s) (Line 1 Position 8)')).props))
-        return {NameInput}
     }
 
     get NameInput() { return this.childStates.NameInput }
@@ -3413,7 +3368,6 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
         const pathTo = name => this._path + '.' + name
 
         const Input = this.getOrCreateChildState('Input', new TextInput.State(stateProps(pathTo('Input')).props))
-        return {Input}
     }
 
     get Input() { return this.childStates.Input }

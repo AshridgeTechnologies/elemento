@@ -54,14 +54,12 @@ export default abstract class BaseFormState<T extends object = object> extends I
 
     protected setupChildStates() {
         const dataTypeFields = this.dataType?.fields ?? []
-        const dataTypeChildStates = Object.fromEntries( dataTypeFields.map( type => {
+        dataTypeFields.forEach( type => {
             const {codeName} = type
-            const childState = this.getOrCreateChildState(codeName, formState(type, this.originalValue?.[codeName as keyof object]))
-            return [codeName, childState]
-        })) as StateMap
+            this.getOrCreateChildState(codeName, formState(type, this.originalValue?.[codeName as keyof object]))
+        })
 
-        const ownChildStates = this.createChildStates()
-        this.state.childStates = {...dataTypeChildStates, ...ownChildStates}
+        this.createChildStates()
     }
 
     get dataValue(): T {

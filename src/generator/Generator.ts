@@ -393,7 +393,6 @@ ${declarations}${debugHook}
         const pathTo = name => this._path + '.' + name
 ${[appFeatureDeclarations, itemSetItemDeclarations, stateContainerDeclarations, statePropertyDeclarations, stateFunctionNameDeclarations].filter(identity).join('\n')}
 ${pageStateBlock()}
-        return {${childStateNames.join(', ')}}
     }` : ''
 
         const childStateNames = nonFunctionComponents.map( el => el.codeName )
