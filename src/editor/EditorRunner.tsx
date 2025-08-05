@@ -683,6 +683,7 @@ export default function EditorRunner() {
                                         preview={
                                             <iframe name='appFrame' src={previewUrl} ref={previewFrameRef}
                                                     onLoad={() => createPreviewController()}
+                                                    allow='microphone'
                                                     style={{
                                                         width: '100%',
                                                         height: '100%',
