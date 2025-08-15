@@ -25,7 +25,7 @@ export interface ComponentState<T> {
 
 export type StateMap = { [key: string]: StoredState }
 
-type WithChildStates<SP> = SP & {childStates: StateMap}
+export type WithChildStates<SP> = SP & {childStates: StateMap}
 
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
     protected state: WithChildStates<StateProps> = {childStates: {}} as WithChildStates<StateProps>

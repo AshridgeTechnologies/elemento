@@ -3,7 +3,7 @@ import {PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
 
 export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
-type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
+export type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
     extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
     implements ComponentState<InputComponentState<T, DT, Props>> {

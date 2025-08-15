@@ -123,7 +123,8 @@ export class DirectoryFS  {
         const fileHandle = await this.getFileHandle(filepath, {create: true}, createDirs)
         // @ts-ignore
         const writable = await fileHandle.createWritable()
-        await writable.write(data)
+        const writeData = typeof data === 'string' ? data : data.buffer as ArrayBuffer
+        await writable.write(writeData)
         await writable.close()
     }
 

@@ -3,6 +3,7 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
+import type {InputComponentExternalProps} from './InputComponentState'
 import {TextType} from '../types'
 import {pick} from 'ramda'
 import BaseType from '../types/BaseType'
@@ -16,6 +17,8 @@ import {
 import {useObject} from '../appStateHooks'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
+type StateProperties = InputComponentExternalProps<string, TextType, {}>
+export type SchemaProperties = Properties & StateProperties
 
 const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     const props = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))

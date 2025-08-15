@@ -15,7 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {shallow} from 'zustand/shallow'
@@ -89,7 +89,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     _withStateChanges(changes: StateProperties): CollectionState {
         const newVersion = new CollectionState(this.props)
-        newVersion.state = Object.assign({}, this.state, changes) as StateProperties
+        newVersion.state = Object.assign({}, this.state, changes) as WithChildStates<StateProperties>
         newVersion._appStateInterface = this._appStateInterface
         newVersion._path = this._path
         return newVersion

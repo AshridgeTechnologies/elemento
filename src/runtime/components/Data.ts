@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
 import {clone} from 'radash'
 import lodash from 'lodash'
 import {shallow} from 'zustand/shallow'
@@ -32,7 +32,7 @@ export class DataState extends BaseComponentState<StateProperties>
         this.updateState({value})
     }
 
-    protected withState(state: StateProperties) {
+    protected withState(state: WithChildStates<StateProperties>) {
         const newVersion = new DataState(this.props, false)
         newVersion.state = state
         newVersion.exposeValueProperties()
