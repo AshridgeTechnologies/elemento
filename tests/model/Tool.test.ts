@@ -1,13 +1,9 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
-import Page from '../../src/model/Page'
 import Tool from '../../src/model/Tool'
-import AppBar from '../../src/model/AppBar'
-import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
+import {Page, Text, TextInput, AppBar, Collection} from '../testutil/modelHelpers'
 
 test('Tool has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])

@@ -15,11 +15,13 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {shallow} from 'zustand/shallow'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
@@ -28,6 +30,56 @@ type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?
 type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction, subscribedDataStore: DataStore}>
 
 let lastGeneratedId = 1
+
+export const CollectionSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Collection",
+    "description": "Description of Collection",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Collection",
+    "icon": "auto_awesome_motion",
+    "elementType": "statefulUI",
+    "parentType": [
+        "App",
+        "Page"
+    ],
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "initialValue": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Expression"
+                },
+                "dataStore": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Expression"
+                },
+                "collectionName": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression",
+                    "default": "=codeName"
+                },
+                "display": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    "default": false
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+export const CollectionMetadata: ElementMetadata = {
+    stateProps: ['initialValue', 'dataStore', 'collectionName']
+}
 
 export default function Collection({path, display = false}: Properties) {
     const state = useObject<CollectionState>(path)
@@ -89,7 +141,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     _withStateChanges(changes: StateProperties): CollectionState {
         const newVersion = new CollectionState(this.props)
-        newVersion.state = Object.assign({}, this.state, changes) as StateProperties
+        newVersion.state = Object.assign({}, this.state, changes) as WithChildStates<StateProperties>
         newVersion._appStateInterface = this._appStateInterface
         newVersion._path = this._path
         return newVersion
@@ -322,3 +374,5 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 }
 
 Collection.State = CollectionState
+Collection.Schema = CollectionSchema
+Collection.Metadata = CollectionMetadata

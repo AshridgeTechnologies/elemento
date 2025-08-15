@@ -1,11 +1,10 @@
 import {expect, test} from "vitest"
-import MenuItem from '../../src/model/MenuItem'
-import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
+import {Page, MenuItem} from '../testutil/modelHelpers'
 
 test('MenuItem has correct properties with default values', ()=> {
-    const menuItem1 = new MenuItem('id1', 'MenuItem 1', {})
+    const menuItem1: any = new MenuItem('id1', 'MenuItem 1', {})
     expect(menuItem1.id).toBe('id1')
     expect(menuItem1.name).toBe('MenuItem 1')
     expect(menuItem1.type()).toBe('statelessUI')
@@ -16,13 +15,17 @@ test('MenuItem has correct properties with default values', ()=> {
 })
 
 test('MenuItem has correct properties with specified values', ()=> {
-    const menuItem1 = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: false, styles: {color: 'red'}})
+    const menuItem1: any = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: false, styles: {color: 'red'}})
     expect(menuItem1.id).toBe('id1')
     expect(menuItem1.name).toBe('MenuItem 1')
     expect(menuItem1.label).toStrictEqual(ex`"Some menuItem"`)
     expect(menuItem1.action).toStrictEqual(ex`doIt()`)
     expect(menuItem1.show).toBe(false)
     expect(menuItem1.styles).toStrictEqual({color: 'red'})
+})
+
+test('has correct parent type', () => {
+    expect((MenuItem as any).parentType).toBe('Menu')
 })
 
 test('tests if an object is this type', ()=> {
@@ -34,8 +37,8 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const menuItem = new MenuItem('id1', 'MenuItem 1', {label: 'Some menuItem', action: ex`doIt()`})
-    const updatedMenuItem1 = menuItem.set('id1', 'name', 'MenuItem 1A')
+    const menuItem: any = new MenuItem('id1', 'MenuItem 1', {label: 'Some menuItem', action: ex`doIt()`})
+    const updatedMenuItem1: any = menuItem.set('id1', 'name', 'MenuItem 1A')
     expect(updatedMenuItem1.name).toBe('MenuItem 1A')
     expect(updatedMenuItem1.label).toBe('Some menuItem')
     expect(menuItem.name).toBe('MenuItem 1')
@@ -78,10 +81,10 @@ test('converts from plain object', ()=> {
     const menuItem = new MenuItem('id1', 'MenuItem 1', {label: ex`"Some menuItem"`, action: ex`doIt()`, show: ex`false && true`, styles: {color: 'red'}})
     const plainObj = asJSON(menuItem)
     const newMenuItem = loadJSON(plainObj)
-    expect(newMenuItem).toStrictEqual<MenuItem>(menuItem)
+    expect(newMenuItem).toStrictEqual(menuItem)
 
     const menuItem2 = new MenuItem('id1', 'MenuItem 2', {label: `Some menuItem`, show: false})
     const plainObj2 = asJSON(menuItem2)
     const newMenuItem2 = loadJSON(plainObj2)
-    expect(newMenuItem2).toStrictEqual<MenuItem>(menuItem2)
+    expect(newMenuItem2).toStrictEqual(menuItem2)
 })

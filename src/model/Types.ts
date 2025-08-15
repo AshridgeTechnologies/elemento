@@ -9,6 +9,7 @@ export type PropertyValue = string | number | boolean | string[] | Date | Proper
 export type MultiplePropertyValue = {[p: string]: PropertyValue}
 export type CombinedPropertyValue = PropertyValue | MultiplePropertyValue
 export type PropertyValueType<T> = T | PropertyExpr
+export type CanContain = 'elementsWithThisParentType' | ElementType[]
 
 export const InsertPositions = ['before', 'after', 'inside'] as const
 export type InsertPosition = typeof InsertPositions[number]
@@ -20,7 +21,7 @@ export interface EventActionPropertyDef {
 
 export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
 
-export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean, readOnly?: boolean }
+export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean }
 
 export type PropertyDef = {
     name: string,

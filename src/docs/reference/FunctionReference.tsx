@@ -11,7 +11,7 @@ import {
     SubHeading,
     SubSection
 } from '../HelpComponents'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 export default () =>
     <Section id='function-reference'>

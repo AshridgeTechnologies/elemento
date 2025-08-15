@@ -1,6 +1,6 @@
 import React from 'react'
 import {BulletList, Heading, HelpLink, Para, Section, SubHeading} from '../HelpComponents'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 export default () =>
     <Section id='getting-started'>

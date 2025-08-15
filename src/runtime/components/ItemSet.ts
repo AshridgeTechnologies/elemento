@@ -6,6 +6,8 @@ import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
 import {shallow} from 'zustand/shallow'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
 type Selectable = typeof selectableChoices[number]
@@ -31,6 +33,71 @@ type StateUpdatableProperties = Partial<Readonly<{
     selectedItemIds: (string|number)[]
 }
 >>
+
+export const ItemSetSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ItemSet",
+    "description": "Shows a set of similar items.  The user can select one of the items, and the app can use the selected item to control something else.\n" +
+        "A common use of this is to show a list of names of items on one side of a page, and show full details of the item selected in the other side.\n" +
+        "The ItemSet needs a list of items to show.  This could be just a fixed list like [\"red\", \"green\", \"blue\"], but it is usually a Collection.\n" +
+        "The elements contained by the ItemSet element determine what is shown for each item - they are repeated for each item.\n" +
+        "The ItemSet needs to contain at least one other element in order to display anything, but you can display anything you want for each item.\n" +
+        "In order for the elements within the ItemSet to get the data for the current item, they can use a special name $item in their formulas.",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "ItemSet",
+    "icon": "list_alt",
+    "elementType": "statefulUI",
+    "canContain": 'elementsWithThisParentType',
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "items": {
+                    "description": "The items that are shown",
+                    "$ref": "#/definitions/Expression",
+                },
+                "selectedItems": {
+                    "description": "The item that is initially selected, until the user selects another",
+                    "$ref": "#/definitions/Expression",
+                },
+                "selectable": {
+                    "description": "Whether items in the list can be selected",
+                    "enum": ['none', 'single', 'multiple', 'multipleAuto'],
+                },
+                "selectAction": {
+                    "description": "The action formula that is run when an item is selected.\n" +
+                        "The formula can use the special name <code>$item</code> for the item that has just been selected.\n",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": ['$item', '$itemId', '$index']
+                },
+                "canDragItem": {
+                    "description": "Whether items can be dragged",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "itemStyles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
+
+export const ItemSetMetadata: ElementMetadata = {
+    stateProps: ['items', 'selectedItems', 'selectable', 'selectAction']
+}
 
 const ItemSet = function ItemSet({path, itemContentComponent}: Properties) {
     const state: ItemSetState = useObject(path)
@@ -203,4 +270,6 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     }
 }
 
-(ItemSet as any).State = ItemSetState
+(ItemSet as any).State = ItemSetState;
+(ItemSet as any).Schema = ItemSetSchema;
+(ItemSet as any).Metadata = ItemSetMetadata;

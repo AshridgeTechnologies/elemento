@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import BrowserDataStore from '../../src/model/BrowserDataStore'
-import Page from '../../src/model/Page'
+import {Page, BrowserDataStore} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
 
@@ -24,5 +23,5 @@ test('converts to JSON and back', ()=> {
     const store = new BrowserDataStore('id1', 'BrowserDataStore 1', {})
     const plainObj = asJSON(store)
     const newInBrowserDataStore = loadJSON(plainObj)
-    expect(newInBrowserDataStore).toStrictEqual<BrowserDataStore>(store)
+    expect(newInBrowserDataStore).toStrictEqual<typeof BrowserDataStore>(store)
 })

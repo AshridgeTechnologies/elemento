@@ -1,49 +1,25 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {expect, test} from "vitest"
 import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';
-import Text from '../../src/model/Text';
-import Button from '../../src/model/Button'
-import Menu from '../../src/model/Menu'
-import MenuItem from '../../src/model/MenuItem'
-import Page from '../../src/model/Page'
-import TextInput from '../../src/model/TextInput'
-import NumberInput from '../../src/model/NumberInput'
-import TrueFalseInput from '../../src/model/TrueFalseInput'
-import SelectInput from '../../src/model/SelectInput'
-import List from '../../src/model/List'
-import Data from '../../src/model/Data'
+import {Page, Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
+    BrowserDataStore, Calculation, DateInput, SelectInput, TrueFalseInput, Collection, Data, FileDataStore,
+    Form, List, MemoryDataStore, SpeechInput, UserLogon, WebFileDataStore, FunctionDef, FunctionImport} from '../testutil/modelHelpers'
 import {ex} from '../testutil/testHelpers'
-import Collection from '../../src/model/Collection'
-import FunctionDef from '../../src/model/FunctionDef'
-import MemoryDataStore from '../../src/model/MemoryDataStore'
-import FileDataStore from '../../src/model/FileDataStore'
-import Block from '../../src/model/Block'
-import AppBar from '../../src/model/AppBar'
-import UserLogon from '../../src/model/UserLogon'
-import BrowserDataStore from '../../src/model/BrowserDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
-import SpeechInput from '../../src/model/SpeechInput';
-import FunctionImport from "../../src/model/FunctionImport";
-import DateInput from '../../src/model/DateInput'
-import Form from '../../src/model/Form';
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
-import Calculation from '../../src/model/Calculation'
 import ToolImport from '../../src/model/ToolImport'
 import Rule from '../../src/model/types/Rule';
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
-import ItemSet from '../../src/model/ItemSet'
 import {knownSync} from '../../src/generator/generatorHelpers'
-import Dialog from '../../src/model/Dialog'
-import WebFileDataStore from '../../src/model/WebFileDataStore'
 import InputProperty from '../../src/model/InputProperty'
 import OutputProperty from '../../src/model/OutputProperty'
 
@@ -787,7 +763,7 @@ test('generates Button elements with properties including await in action', ()=>
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Button, elProps(pathTo('b1')).content('Click here!').appearance(22 && 'filled').show(false).action(_state.b1_action).props),
+        React.createElement(Button, elProps(pathTo('b1')).content('Click here!').appearance(22 && 'filled').action(_state.b1_action).show(false).props),
         React.createElement(Button, elProps(pathTo('b2')).content('Do it all!').appearance('outline').action(_state.b2_action).props)
     )
 }
@@ -3535,7 +3511,7 @@ test('generates standalone expressions block for selected element and includes a
     }
     const updatesAllowed = ['t3.update']
     const selectedElement = project1.findElement('id1')
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block] = gen.generateStandaloneBlock(selectedElement, exprs, page, updatesAllowed)
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3568,7 +3544,6 @@ test('generates standalone expressions block for app level selected element and 
         'selectedElement': `Puzzles`,
     }
     const selectedElement = project1.findElement('c1')
-    const page = app.findElement('p1') as Page
     const [block] = gen.generateStandaloneBlock(selectedElement, exprs, app, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3597,7 +3572,7 @@ test('generates standalone expressions block without selected element', ()=> {
     const exprs = {
         't1.value': `t1.value`
     }
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block] = gen.generateStandaloneBlock(null, exprs, page, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3624,7 +3599,7 @@ test('generates standalone expressions block and errors and clears errors', ()=>
         'expr 1': `t1.`,
         'expr 2': `XX1.value`,
     }
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block, errors] = gen.generateStandaloneBlock(null, exprs, page, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name;

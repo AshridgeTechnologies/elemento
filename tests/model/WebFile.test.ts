@@ -1,10 +1,9 @@
 import {expect, test} from "vitest"
-import WebFile from '../../src/model/WebFile'
-import Page from '../../src/model/Page'
+import {Page, WebFile} from '../testutil/modelHelpers'
 import App from '../../src/model/App'
-import Text from '../../src/model/Text'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
+import {Text} from '../testutil/modelHelpers'
 
 test('WebFile has correct properties with default values', ()=> {
     const file1 = new WebFile('id1', 'WebFile 1', {})
@@ -57,5 +56,5 @@ test('converts from plain object', ()=> {
     const file = new WebFile('id1', 'WebFile 1', {url: 'https://example.com/data'})
     const plainObj = asJSON(file)
     const newFile = loadJSON(plainObj)
-    expect(newFile).toStrictEqual<WebFile>(file)
+    expect(newFile).toStrictEqual<typeof WebFile>(file)
 })

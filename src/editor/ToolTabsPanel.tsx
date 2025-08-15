@@ -5,8 +5,10 @@ import Box from '@mui/material/Box'
 import Tool from '../model/Tool'
 import ToolImport from '../model/ToolImport'
 import {ToolWindow} from './ToolWindow'
-import {IconButton} from '@mui/material'
-import {Close, KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material'
+import IconButton from '@mui/material/IconButton'
+import Close from '@mui/icons-material/Close'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
 
 interface TabProps {
     tool: Tool | ToolImport

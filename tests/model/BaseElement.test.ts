@@ -1,10 +1,9 @@
 import {describe, expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import {ex} from '../testutil/testHelpers'
-import Page from '../../src/model/Page'
 import App from '../../src/model/App'
 import Project1 from '../../src/model/Project'
 import {newIdTransformer} from '../../src/model/BaseElement'
+import {Page, Text} from '../testutil/modelHelpers'
 
 test('keeps notes when updating another property', () => {
     const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`, notes: 'Some notes'})
@@ -63,12 +62,12 @@ describe('Insert element with new ids', () => {
         const insertedElement = new Text('originalId', 'Text 99', {content: 'Hi!'})
         const [updatedProject, newElements] = project.insert('before', text1.id, insertedElement)
         const newElement = newElements[0]
-        expect((updatedProject.elements![0] as App).pages[0].elements!.map(el => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map((el: any) => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
         expect(newElement).not.toBe(insertedElement)
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement.id).toBe('text_8')
         expect(newElement.name).toBe('Text 99')
-        expect((newElement as Text).content).toBe('Hi!')
+        expect((newElement as any).content).toBe('Hi!')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 })

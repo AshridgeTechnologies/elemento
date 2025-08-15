@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {GitHub} from '@mui/icons-material'
+import GitHub from '@mui/icons-material/GitHub'
 import {currentUser, signIn, signOut, useGitHubSignInState} from './gitHubAuthentication'
 import ServiceConnection from './ServiceConnection'
 

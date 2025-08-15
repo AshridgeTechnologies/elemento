@@ -1,10 +1,9 @@
 import Element from '../model/Element'
 import {ElementId, ElementType} from '../model/Types'
-import ItemSet from '../model/ItemSet'
-import {Class} from '../model/BaseElement'
+import BaseElement, {Class} from '../model/BaseElement'
 
 export class ListItem {
-    constructor(public itemSet: ItemSet) {
+    constructor(public itemSet: BaseElement<any>) {
     }
 
     kind = 'ListItem'

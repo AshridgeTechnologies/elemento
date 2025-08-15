@@ -1,32 +1,16 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
  * @vitest-environment jsdom
  */
 import React from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
+import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
-import Page from '../../src/model/Page'
-import Text from '../../src/model/Text'
-import TextInput from '../../src/model/TextInput'
-import Button from '../../src/model/Button'
-import Menu from '../../src/model/Menu'
-import MenuItem from '../../src/model/MenuItem'
+import {Page, Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
+            FileFolder, FileDataStore, List, MemoryDataStore, FunctionDef} from '../testutil/modelHelpers'
 import {componentProps, ex} from '../testutil/testHelpers'
-import NumberInput from '../../src/model/NumberInput'
-import TrueFalseInput from '../../src/model/TrueFalseInput'
-import List from '../../src/model/List'
-import SelectInput from '../../src/model/SelectInput'
-import Data from '../../src/model/Data'
 import App from '../../src/model/App'
 import Project2, {FILES_ID, TOOLS_ID} from '../../src/model/Project'
-import MemoryDataStore from '../../src/model/MemoryDataStore'
-import Collection from '../../src/model/Collection'
-import FunctionDef from '../../src/model/FunctionDef'
-import FileDataStore from '../../src/model/FileDataStore'
-import Block from '../../src/model/Block'
-import AppBar from '../../src/model/AppBar'
-import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
 import {presetPositionStyles} from '../../src/editor/StylesPropertyEditor'
@@ -46,7 +30,6 @@ const onNameSelected = vi.fn()
 const idField = () => (screen.getByTestId('elementId') as HTMLElement)
 const typeField = () => (screen.getByTestId('elementType') as HTMLElement)
 const input = (label: string) => (screen.getByLabelText(label) as HTMLInputElement)
-const textarea = (label: string) => (screen.getByLabelText(label) as HTMLTextAreaElement)
 const select = (label: string) => (screen.getByLabelText(label).nextSibling as HTMLInputElement)
 const inputValue = (label: string) => {
     const el = input(label)
@@ -404,8 +387,8 @@ test('has fields for Button', () => {
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
     expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(5).textContent).toBe('fx=')
-    expect(kindButton(5).disabled).toBe(true)
+    expect(kindButton(4).textContent).toBe('fx=')
+    expect(kindButton(4).disabled).toBe(true)
     expect(selectValue('Show')).toBe('false')
 })
 

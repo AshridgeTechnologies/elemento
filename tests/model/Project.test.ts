@@ -1,16 +1,8 @@
 import {describe, expect, test} from "vitest"
-import Text from '../../src/model/Text'
-import Button from '../../src/model/Button'
-import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import AppBar from '../../src/model/AppBar'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
-import Block from '../../src/model/Block'
-import FileFolder from '../../src/model/FileFolder'
-import File from '../../src/model/File'
 import {ConfirmAction} from '../../src/editor/Types'
 import ToolFolder from '../../src/model/ToolFolder'
 import Tool from '../../src/model/Tool'
@@ -19,9 +11,8 @@ import ServerApp from '../../src/model/ServerApp'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
-import NumberInput from '../../src/model/NumberInput'
-import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
+import {Page, Block, Text, TextInput, Button, AppBar, NumberInput, SelectInput, File, FileFolder} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -179,17 +170,17 @@ test('knows if has server apps', () => {
 
 test('can find elements under project by selector function', () => {
     const {project, text2, text5} = testProject()
-    expect(project.findElementsBy( el => el.name === 'Text 3')).toStrictEqual([text2, text5])
+    expect(project.findElementsBy( (el: any) => el.name === 'Text 3')).toStrictEqual([text2, text5])
 })
 
 test('can find elements under page by selector function', () => {
     const {page1, text2} = testProject()
-    expect(page1.findElementsBy( el => el.name === 'Text 3')).toStrictEqual([text2])
+    expect(page1.findElementsBy( (el: any) => el.name === 'Text 3')).toStrictEqual([text2])
 })
 
 test('can find elements including page by selector function', () => {
     const {page1, text2} = testProject()
-    expect(page1.findElementsBy( el => el.name === 'Text 3' || el.kind === 'Page')).toStrictEqual([page1, text2])
+    expect(page1.findElementsBy( (el: any) => el.name === 'Text 3' || el.kind === 'Page')).toStrictEqual([page1, text2])
 })
 
 test('can find property definitions of built-in and user-defined elements', () => {
@@ -246,7 +237,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedProject.elements?.length).toBe(4)
     expect(updatedProject.elements![0]).toBe(app)
     expect(updatedProject.elements![1]).not.toBe(app2)
-    expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as Text).content).toBe('"Further text"')
+    expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as any).content).toBe('"Further text"')
     expect((updatedProject.elements![1] as App).pages[0].elementArray()[0]).toBe(text3)
 })
 
@@ -271,39 +262,39 @@ describe('Insert new element', () => {
     test('creates an updated object on insert before element in a page and preserves unchanged objects', ()=> {
 
         const [updatedProject, newElement] = project.insertNew('before', text1.id, 'Text', {})
-        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( (el: any) => el.name)).toStrictEqual(['Text 8', 'Text 1', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
     test('creates an updated object on insert element in a page and preserves unchanged objects', ()=> {
 
         const [updatedProject, newElement] = project.insertNew('after', text1.id, 'Text', {})
-        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( (el: any) => el.name)).toStrictEqual(['Text 1', 'Text 8', 'Text 2'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
     test('creates an updated object on insert element inside a page and preserves unchanged objects', ()=> {
         const [updatedProject, newElement] = project.insertNew('inside', page1.id, 'Text', {})
-        expect((updatedProject.elements![0] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map( (el: any) => el.name)).toStrictEqual(['Text 1', 'Text 2', 'Text 8', ])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![2])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[0]).not.toBe(app.pages[0])
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
     test('creates an updated object on insert page and preserves unchanged objects', () => {
         const [updatedProject, newElement] = project.insertNew('after', page1.id, 'Page', {})
-        expect((updatedProject.elements![0] as App).pages.map( el => el.name)).toStrictEqual(['Page 1', 'Page 3'])
+        expect((updatedProject.elements![0] as App).pages.map( (el: any) => el.name)).toStrictEqual(['Page 1', 'Page 3'])
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[1])
         expect(newElement!.id).toBe('page_3')
         expect(newElement!.name).toBe('Page 3')
@@ -332,12 +323,12 @@ describe('Insert element', () => {
         const insertedElement = new Text('originalId', 'Text 99', {content: 'Hi!'})
         const [updatedProject, newElements] = project.insert('before', text1.id, insertedElement)
         const newElement = newElements[0]
-        expect((updatedProject.elements![0] as App).pages[0].elements!.map(el => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
+        expect((updatedProject.elements![0] as App).pages[0].elements!.map((el: any) => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
         expect(newElement).not.toBe(insertedElement)
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement.id).toBe('text_8')
         expect(newElement.name).toBe('Text 99')
-        expect((newElement as Text).content).toBe('Hi!')
+        expect((newElement as any).content).toBe('Hi!')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 })
@@ -403,7 +394,7 @@ test('creates an updated object on delete element on a page and preserves unchan
     const project = Project.new([app, app2])
 
     const updatedProject = project.delete(text3.id)
-    expect((updatedProject.elements![1] as App).pages[0].elements!.map( el => el.name)).toStrictEqual(['Text 4'])
+    expect((updatedProject.elements![1] as App).pages[0].elements!.map( (el: any) => el.name)).toStrictEqual(['Text 4'])
     expect((updatedProject.elements![0] as App).pages[0]).toBe(app.pages[0])
 })
 

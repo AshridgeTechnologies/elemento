@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Data from '../../src/model/Data'
-import Page from '../../src/model/Page'
+import {Page, Data} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -75,10 +74,10 @@ test('converts from plain object', ()=> {
     const data = new Data('id1', 'Data 1', {initialValue: ex`"Some data"`, display: ex`false && true`})
     const plainObj = asJSON(data)
     const newData = loadJSON(plainObj)
-    expect(newData).toStrictEqual<Data>(data)
+    expect(newData).toStrictEqual<typeof Data>(data)
 
-    const data2 = new Data('id1', 'Data 2', {initialValue: `Some data`, display: false})
+    const data2 = new Data('id1', 'Data 2', {initialValue: ex`"Some data"`, display: false})
     const plainObj2 = asJSON(data2)
     const newData2 = loadJSON(plainObj2)
-    expect(newData2).toStrictEqual<Data>(data2)
+    expect(newData2).toStrictEqual<typeof Data>(data2)
 })

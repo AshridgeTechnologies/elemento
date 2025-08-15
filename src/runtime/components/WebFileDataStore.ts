@@ -2,12 +2,48 @@ import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} f
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import WebFileDataStoreImpl from './WebFileDataStoreImpl'
+import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
 type ExternalProperties = {url: string}
 type StateProperties = {dataStore?: WebFileDataStoreImpl}
 
 const {NotifyError} = appFunctions
+
+export const WebFileDataStoreSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Webfiledatastore",
+    "description": "Description of WebFileDataStore",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "WebFileDataStore",
+    "icon": "archive",
+    "elementType": "background",
+    "parentType": "App",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "url": {
+                    "description": "The ",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const WebFileDataStoreMetadata = {
+    stateProps: ['url']
+}
 
 export default function WebFileDataStore({path}: Properties) {
     return null
@@ -64,4 +100,6 @@ export class WebFileDataStoreState extends BaseComponentState<ExternalProperties
 }
 
 WebFileDataStore.State = WebFileDataStoreState
+WebFileDataStore.Schema = WebFileDataStoreSchema
+WebFileDataStore.Metadata = WebFileDataStoreMetadata
 

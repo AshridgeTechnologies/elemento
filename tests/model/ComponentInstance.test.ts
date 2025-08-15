@@ -1,6 +1,6 @@
 import {expect, test} from "vitest"
 import ComponentInstance from '../../src/model/ComponentInstance'
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 import ComponentDef from '../../src/model/ComponentDef'
@@ -91,7 +91,6 @@ test('converts to JSON with optional properties', ()=> {
         properties: component.properties
     })
 })
-
 
 test('converts from plain object', ()=> {
     const styles = {fontSize: ex`44`, fontFamily: 'Dog', color: ex`'red'`, backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40}

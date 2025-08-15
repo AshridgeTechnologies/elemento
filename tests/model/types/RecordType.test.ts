@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import RecordType from '../../../src/model/types/RecordType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
-import Page from '../../../src/model/Page'
+import {Page} from '../../testutil/modelHelpers'
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
 import TextType from '../../../src/model/types/TextType'
 import Rule, {BuiltInRule} from '../../../src/model/types/Rule'

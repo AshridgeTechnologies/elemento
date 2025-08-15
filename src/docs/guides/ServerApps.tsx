@@ -1,6 +1,6 @@
 import {BulletList, Heading, MinorHeading, NamedList, NLItem, Para, Section, SubHeading, SubSection} from '../HelpComponents'
 import React from 'react'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 export default () =>
     <Section id='server-apps-guide'>

@@ -1,21 +1,21 @@
 import React, {createElement, Fragment, KeyboardEventHandler} from 'react'
-import {PropVal, valueOfProps} from '../runtimeFunctions'
+import {valueOfProps} from '../runtimeFunctions'
 import {Box, FormHelperText, Stack, SxProps, Typography} from '@mui/material'
-import BaseFormState, {DataTypeFormState} from './FormState'
+import BaseFormState from './FormState'
 import {isArray} from 'lodash'
-import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import BaseType from '../types/BaseType'
-import TextInput, {TextInputState} from './TextInput'
-import NumberInput, {NumberInputState} from './NumberInput'
+import TextInput from './TextInput'
+import NumberInput from './NumberInput'
 import {withDots} from '../../util/helpers'
-import SelectInput, {SelectInputState} from './SelectInput'
-import TrueFalseInput, {TrueFalseInputState} from './TrueFalseInput'
-import DateInput, {DateInputState} from './DateInput'
+import SelectInput from './SelectInput'
+import TrueFalseInput from './TrueFalseInput'
+import DateInput from './DateInput'
 import {isNil, last, without} from 'ramda'
-import DecimalType from '../types/DecimalType'
-import BigNumber from 'bignumber.js'
 import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
+import {InputComponentMetadata} from './InputComponentState'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -59,6 +59,68 @@ const formField = (parentPath: string, type: BaseType<any, any>) => {
     return <div>{`unknown type ${type}`}</div>
 }
 
+
+export const FormSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Form",
+    "description": "Description of Form",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Form",
+    "icon": "dns",
+    "elementType": "statefulUI",
+    "canContain": "elementsWithThisParentType",
+    "parentType": ["Page", "Form", "Block"],
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+                "initialValue": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Expression"
+                },
+                "horizontal": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    "default": false
+                },
+                "wrap": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    "default": false
+                },
+                "keyAction": {
+                    "description": "The ",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": ["$event"]
+                },
+                "submitAction": {
+                    "description": "The ",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": ["$form", "$data"]
+                },
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const FormMetadata: ElementMetadata = {
+    stateProps: ['submitAction', 'initialValue', ...(InputComponentMetadata.stateProps ?? [])]
+}
 export default function Form({children, path, ...props}: Properties) {
     const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
@@ -110,3 +172,5 @@ export default function Form({children, path, ...props}: Properties) {
     </Box>
 }
 
+Form.Schema = FormSchema
+Form.Metadata = FormMetadata

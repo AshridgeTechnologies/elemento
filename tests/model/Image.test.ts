@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Image from '../../src/model/Image'
-import Page from '../../src/model/Page'
+import {Page, Image} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -32,7 +31,7 @@ test('Image has correct properties with specified values', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Image('im1', 'Image 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['source', 'description', 'show', 'styles'])
+    expect(new Image('im1', 'Image 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['source', 'description', 'show', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -90,12 +89,12 @@ test('converts from plain object', ()=> {
     const image = new Image('im1', 'Image 1', {source: ex`Some_image`})
     const plainObj = asJSON(image)
     const newImage = loadJSON(plainObj)
-    expect(newImage).toStrictEqual<Image>(image)
+    expect(newImage).toStrictEqual<typeof Image>(image)
 
     const image2 = new Image('im1', 'Image 2', {show: false,
         source: 'http://example.com/img1.jpg',
         styles: {width: 100, height: 200, marginBottom: 20}, description: 'A mountain'})
     const plainObj2 = asJSON(image2)
     const newImage2 = loadJSON(plainObj2)
-    expect(newImage2).toStrictEqual<Image>(image2)
+    expect(newImage2).toStrictEqual<typeof Image>(image2)
 })

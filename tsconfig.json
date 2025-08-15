@@ -4,13 +4,13 @@
 
   "compilerOptions": {
     "lib": [
-      "es2020",
+      "es2022",
       "dom",
       "webworker"
     ],
-    "module": "es2020",
+    "module": "es2022",
     "moduleResolution": "bundler",
-    "target": "es2020",
+    "target": "es2022",
 
     "strict": true,
     "esModuleInterop": true,
@@ -20,7 +20,7 @@
     "outDir": "build",
     "jsx": "react",
     "sourceMap": true,
-    "types": ["@cloudflare/workers-types", "@testing-library/jest-dom"]
+    "types": ["@cloudflare/workers-types", "@testing-library/jest-dom", "node"]
   },
 
   "include": [

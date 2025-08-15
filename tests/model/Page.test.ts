@@ -1,9 +1,7 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
-import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
+import {Page, Text, TextInput} from '../testutil/modelHelpers'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -15,7 +13,7 @@ test('Page has correct properties', ()=> {
     expect(page.codeName).toBe('PagetheFirst')
     expect(page.styles).toStrictEqual({backgroundColor: 'red'})
     expect(page.notLoggedInPage).toStrictEqual(ex`OtherPage`)
-    expect(page.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(page.elementArray().map( (el: any) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('Page has default properties', ()=> {
@@ -30,7 +28,7 @@ test('Page has default properties', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['notLoggedInPage', 'styles'])
+    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['notLoggedInPage', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -116,8 +114,8 @@ test('converts from plain object with correct types for elements', ()=> {
     let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text, textInput])
     const newPage = loadJSON(asJSON(page))
-    expect(newPage).toStrictEqual<Page>(page)
+    expect(newPage).toStrictEqual<typeof Page>(page)
     const page2 = new Page('p1', 'Page 2', {notLoggedInPage: ex`OtherPage`, styles: {backgroundColor: ex`'red'`}}, [text, textInput])
     const newPage2 = loadJSON(asJSON(page2))
-    expect(newPage2).toStrictEqual<Page>(page2)
+    expect(newPage2).toStrictEqual<typeof Page>(page2)
 })

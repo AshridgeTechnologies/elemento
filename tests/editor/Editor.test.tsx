@@ -1,21 +1,13 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {afterAll, afterEach, beforeAll, beforeEach, expect, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
-
 import React, {useState} from 'react'
 import Editor from '../../src/editor/Editor'
 import {act, fireEvent, render, screen, within} from '@testing-library/react/pure'
 import lodash from 'lodash';
-import {
-    ex,
-    stopSuppressingRcTreeJSDomError,
-    suppressRcTreeJSDomError,
-    treeItemLabels, treeItemTitleClassNames,
-    wait
-} from '../testutil/testHelpers'
-import Page from '../../src/model/Page'
-import TextInput from '../../src/model/TextInput'
+import {ex, stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels, treeItemTitleClassNames, wait} from '../testutil/testHelpers'
+import {TextInput, Page} from '../testutil/modelHelpers'
 import App from '../../src/model/App'
 import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project, {TOOLS_ID} from '../../src/model/Project'
@@ -23,9 +15,8 @@ import {treeExpandControlSelector} from './Selectors'
 import {actWait} from '../testutil/rtlHelpers'
 import DataTypes from '../../src/model/types/DataTypes'
 import NumberType from '../../src/model/types/NumberType'
-import NumberInput from '../../src/model/NumberInput'
+import {FunctionDef, NumberInput} from '../testutil/modelHelpers'
 import ServerApp from '../../src/model/ServerApp'
-import FunctionDef from '../../src/model/FunctionDef'
 import Tool from '../../src/model/Tool'
 import {ElementId} from '../../src/model/Types'
 import {AppElementAction} from '../../src/editor/Types'

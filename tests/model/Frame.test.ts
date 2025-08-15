@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Frame from '../../src/model/Frame'
-import Page from '../../src/model/Page'
+import {Page, Frame} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -30,7 +29,7 @@ test('Frame has correct properties with specified values', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Frame('fr1', 'Frame 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['source', 'show', 'styles'])
+    expect(new Frame('fr1', 'Frame 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['source', 'show', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -88,14 +87,14 @@ test('converts from plain object', ()=> {
     const frame = new Frame('fr1', 'Frame 1', {source: ex`Some_frame`})
     const plainObj = asJSON(frame)
     const newFrame = loadJSON(plainObj)
-    expect(newFrame).toStrictEqual<Frame>(frame)
+    expect(newFrame).toStrictEqual<typeof Frame>(frame)
 
     const frame2 = new Frame('fr1', 'Frame 2', {show: false,
         source: 'http://example.com/img1.jpg',
         styles: {width: 100, height: 200, marginBottom: 20}})
     const plainObj2 = asJSON(frame2)
     const newFrame2 = loadJSON(plainObj2)
-    expect(newFrame2).toStrictEqual<Frame>(frame2)
+    expect(newFrame2).toStrictEqual<typeof Frame>(frame2)
 })
 
 test('cannot contain other elements', () => {

@@ -1,7 +1,7 @@
 import ProjectHandler from './ProjectHandler'
 import React, {useEffect, useRef, useState} from 'react'
 //@ts-ignore
-import {ElementId, ElementType, InsertPosition} from '../model/Types'
+import {Element, ElementId, ElementType, InsertPosition} from '../model/Types'
 import {ThemeProvider} from '@mui/material/styles'
 import Editor from './Editor'
 import {ActionsAvailableFn, AppElementAction, AppElementActionName, VoidFn} from './Types'
@@ -17,7 +17,7 @@ import {gitHubAccessToken, gitHubUsername, isSignedIn, signIn, useGitHubSignInSt
 import {GetFromGitHubDialog} from './actions/GetFromGitHub'
 import {AlertMessage, openFromGitHub, UIManager} from './actions/actionHelpers'
 import {ASSET_DIR} from '../shared/constants'
-import {noop, wait, waitUntil} from '../util/helpers'
+import {noop, waitUntil} from '../util/helpers'
 import ProjectOpener from './ProjectOpener'
 import EditorManager from './actions/EditorManager'
 import lodash, {startCase} from 'lodash'
@@ -27,7 +27,6 @@ import BrowserProjectLoader from '../generator/BrowserProjectLoader'
 import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
-import App from '../model/App'
 import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../appsShared/AppBar'
@@ -49,7 +48,6 @@ import {Status} from './ThrottledCombinedFileWriter'
 import {PanelTitle} from './PanelTitle'
 import PreviewControllerClient, {Preview} from '../shared/PreviewControllerClient'
 import ConfirmOnEnterTextField from './ConfirmOnEnterTextField'
-import Page from '../model/Page'
 import {StandardRuntimeLoader} from './StandardRuntimeLoader'
 
 const {debounce} = lodash
@@ -535,7 +533,7 @@ export default function EditorRunner() {
             showTool(element as (Tool | ToolImport))
         }
         if (element?.kind === 'Page') {
-            showPageInPreview(element as Page)
+            showPageInPreview(element)
         }
     }
 
@@ -548,8 +546,8 @@ export default function EditorRunner() {
         setShowTools(true)
     }
 
-    const showPageInPreview = (page: Page) => {
-        const app = getOpenProject().findParent(page.id) as App
+    const showPageInPreview = (page: Element) => {
+        const app = getOpenProject().findParent(page.id)!
         Preview.SetUrl('/' + app.codeName + '/' + page.codeName)
     }
 
@@ -598,7 +596,7 @@ export default function EditorRunner() {
         if (projectHandler.current) {
             const project = getOpenProject()
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-            const appName = () => project.findChildElements(App)[0]?.codeName
+            const appName = () => project.findChildElements('App')[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
             const previewUrlPrefix = ''
             const previewUrl = projectIdRef.current ? `${devServerUrl}/${previewUrlPrefix}/${appName()}/` : ''

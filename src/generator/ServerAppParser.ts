@@ -3,16 +3,20 @@ import {appFunctionsNames, componentNames} from '../serverRuntime/names'
 import {globalFunctions} from '../serverRuntime/globalFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, EventActionPropertyDef, PropertyValue} from '../model/Types'
-import FunctionDef from '../model/FunctionDef'
 import {flatten, uniq} from 'ramda'
 import {ExprType} from './Types'
 import ServerApp from '../model/ServerApp'
-import {valueLiteral} from './generatorHelpers'
+import {functionInputs, valueLiteral} from './generatorHelpers'
 import {dummyUrlContext} from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentInstance from '../model/ComponentInstance'
 import assert from 'assert'
+import {elementOfType} from '../model/elements'
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
+
 type ElementErrors = {[propertyName: string]: string}
 type AllErrors = {[elementId: ElementId]: ElementErrors}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -99,7 +103,7 @@ export default class ServerAppParser {
     private parseElement(element: Element) {
         const identifierSet = new Set<string>()
         const isAppElement = (name: string) => this.app.elementArray().some(el => el.codeName === name)
-        const isParam = (name: string) => element instanceof FunctionDef && element.inputs.includes(name)
+        const isParam = (name: string) => element.kind === 'Function' && functionInputs(element as FunctionDef).includes(name)
         const isKnown = (name: string) => isGlobalFunction(name)
             || isAppFunction(name)
             || isAppStateFunction(name)
@@ -110,7 +114,7 @@ export default class ServerAppParser {
 
             assert(!(element instanceof ComponentInstance))
             element.propertyDefs.forEach(def => {
-                const isActionCalculation = element instanceof FunctionDef && def.name === 'calculation' && element.action
+                const isActionCalculation = element.kind === 'Function' && def.name === 'calculation' && (element as FunctionDef).action
                 const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
                 const exprType: ExprType = (isActionCalculation || isEventAction) ? 'action': 'multilineExpression'
                 const onError = (err: string) => this.addError(element.id, def.name, err)

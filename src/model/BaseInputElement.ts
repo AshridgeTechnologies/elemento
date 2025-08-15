@@ -22,13 +22,14 @@ export default abstract class BaseInputElement<PropertiesType extends BaseInputP
     get styles() { return this.properties.styles }
 
     get propertyDefs(): PropertyDef[] {
+        const initialValueDef = this.ownPropertyDefs().find(def => def.name === 'initialValue') ?? propDef('initialValue', this.valueType, {state: true})
         return [
-            propDef('initialValue', this.valueType, {state: true}),
+            initialValueDef,
             propDef('label', 'string'),
             propDef('readOnly', 'boolean'),
             propDef('dataType', 'expr', {state: true}),
             propDef('show', 'boolean'),
-            ...this.ownPropertyDefs(),
+            ...this.ownPropertyDefs().filter(def => def.name !== 'initialValue'),
             propDef('styles', 'styles')
         ]
     }

@@ -1,15 +1,12 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import {asJSON, ex} from '../testutil/testHelpers'
-import AppBar from '../../src/model/AppBar'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
+import {Page, Text, TextInput, AppBar} from '../testutil/modelHelpers'
 
 test('AppBar has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
-    const appBar = new AppBar('ab1', 'AppBar the First', {title: 'My App', show: ex`1 && 1`, styles: {color: 'red'}}, [text1, text2])
+    const appBar: any = new AppBar('ab1', 'AppBar the First', {title: 'My App', show: ex`1 && 1`, styles: {color: 'red'}}, [text1, text2])
 
     expect(appBar.id).toBe('ab1')
     expect(appBar.name).toBe('AppBar the First')
@@ -17,11 +14,11 @@ test('AppBar has correct properties', ()=> {
     expect(appBar.title).toBe('My App')
     expect(appBar.show).toStrictEqual(ex`1 && 1`)
     expect(appBar.styles).toStrictEqual({color: 'red'})
-    expect(appBar.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(appBar.elementArray().map( (el: Element) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('has correct property names', () => {
-    expect(new AppBar('ab1', 'Bar 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['title', 'show', 'styles'])
+    expect(new AppBar('ab1', 'Bar 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['title', 'show', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -69,6 +66,6 @@ test('converts from plain object with correct types for elements', ()=> {
     let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`70`}})
     const appBar = new AppBar('p1', 'AppBar 1', {title: 'An App', styles: {color: 'red'}}, [text, textInput])
     const newAppBar = loadJSON(asJSON(appBar))
-    expect(newAppBar).toStrictEqual<AppBar>(appBar)
+    expect(newAppBar).toStrictEqual(appBar)
 })
 

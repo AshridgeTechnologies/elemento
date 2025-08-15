@@ -1,6 +1,6 @@
 import {expect, test} from "vitest"
 import ServerAppConnector from '../../src/model/ServerAppConnector'
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 

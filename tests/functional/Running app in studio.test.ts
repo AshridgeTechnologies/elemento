@@ -1,6 +1,5 @@
 import {expect, Frame, Page, test} from '@playwright/test';
-import {loadProject, treeExpand, treeItem, treeItemText, wait} from './playwrightHelpers.js'
-import {waitUntil} from './playwrightHelpers.js'
+import {loadProject, treeExpand, treeItem, treeItemText, wait, waitUntil} from './playwrightHelpers.js'
 import {projectFixtureWithList} from './functionalTestFixtures.js'
 
 const pageUrl = '/studio'

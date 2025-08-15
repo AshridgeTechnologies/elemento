@@ -1,5 +1,5 @@
 import React from 'react'
-import {Typography} from '@mui/material'
+import Typography from '@mui/material/Typography'
 import DOMPurify from 'dompurify'
 import parse, {DOMNode} from 'html-react-parser'
 import {asArray, PropVal, StylesPropVals, valueLiteral, valueOfProps} from '../runtimeFunctions'
@@ -7,6 +7,9 @@ import {sxProps} from './ComponentHelpers'
 import {flatten} from 'ramda'
 
 import lodash from 'lodash'
+import {type ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
+import TextInput, {TextInputMetadata, TextInputSchema} from './TextInput'
 
 const {isFunction, isPlainObject, isObject} = lodash
 
@@ -17,6 +20,54 @@ type Properties = React.PropsWithChildren<Readonly<{
     show?: PropVal<boolean>,
     styles?: StylesPropVals
 }>>
+
+export const TextElementSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Text",
+    "description": "A text item on the page",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Text",
+    "icon": "subject",
+    "elementType": "statelessUI",
+    "isLayoutOnly": true,
+    "initialProperties": {"content": "Your text here"},
+    "canContain": "elementsWithThisParentType",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "content": {
+                    "description": "The text shown in the element",
+                    "$ref": "#/definitions/StringMultilineOrExpression"
+                },
+                "allowHtml": {
+                    "description": "Whether HTML tags are allowed in the content",
+                    "type": "boolean"
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
 
 const asText = (content: any) => {
     if (React.isValidElement(content)) return content.toString()
@@ -85,3 +136,5 @@ export default function TextElement({children, path, content, allowHtml = false,
     const reactChildren = findReactChildren(text, allowHtml, children)
     return React.createElement(Typography, typographyProps, ...reactChildren)
 }
+
+TextElement.Schema = TextElementSchema

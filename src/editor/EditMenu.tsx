@@ -2,7 +2,7 @@ import {Action, ActionsAvailableFn, AppElementAction, ConfirmAction, InsertMenuI
 import {ElementId, ElementType, InsertPosition} from '../model/Types'
 import React, {useState} from 'react'
 import {ListItemText, Menu, MenuItem, PopoverOrigin} from '@mui/material'
-import {ArrowRight} from '@mui/icons-material'
+import ArrowRight from '@mui/icons-material/ArrowRight'
 import {editorDialogContainer} from './EditorElement'
 import {editorMenuPositionProps} from './Editor'
 import {InsertMenu} from './InsertMenu'

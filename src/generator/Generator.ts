@@ -1,17 +1,14 @@
 import {parse, prettyPrint} from 'recast'
 
 import App from '../model/App'
-import Page from '../model/Page'
-import Text from '../model/Text'
 import Element from '../model/Element'
-import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
 import Parser, {isAppStateFunction, PropertyError} from './Parser'
 import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
-    convertAstToValidJavaScript,
+    convertAstToValidJavaScript, functionInputs,
     generateDestructures,
     GeneratedFile,
     indent,
@@ -30,17 +27,29 @@ import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
-import FunctionImport from "../model/FunctionImport"
 import {ASSET_DIR} from "../shared/constants"
-import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
-import ItemSet from '../model/ItemSet'
 import ComponentInstance from '../model/ComponentInstance'
 import OutputProperty from '../model/OutputProperty'
 import BaseElement from '../model/BaseElement'
 import InputProperty from '../model/InputProperty'
-import TinyBaseDataStore from '../model/TinyBaseDataStore'
+import {elementOfType} from '../model/elements'
+
+const FormClass = elementOfType('Form')
+type Form = typeof FormClass
+
+const PageClass = elementOfType('Page')
+type Page = typeof PageClass
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
+
+const FunctionImportClass = elementOfType('FunctionImport')
+type FunctionImport = typeof FunctionImportClass
+
+const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
+type TinyBaseDataStore = typeof TinyBaseDataStoreClass
 
 export type DebugErrors = {[name: string]: string}
 
@@ -141,7 +150,7 @@ export default class Generator {
 }`
         }
 
-        const syncedTinyBaseStores = this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer) as TinyBaseDataStore[]
+        const syncedTinyBaseStores = this.project.findElementsBy(el => el.kind === 'TinyBaseDataStore' && (el as TinyBaseDataStore).syncWithServer) as TinyBaseDataStore[]
         return syncedTinyBaseStores.map(el => durableObjectClass(el))
     }
 
@@ -159,7 +168,7 @@ export default class Generator {
             }
         }
 
-        const functionImports = app.findChildElements(FunctionImport)
+        const functionImports = app.findChildElements('FunctionImport') as FunctionImport[]
         return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 
@@ -167,8 +176,8 @@ export default class Generator {
         const requiredImports = new ImportsCollector()
         const componentIsApp = isAppLike(component)
         const componentIsListItem = component instanceof ListItem
-        const componentIsForm = component instanceof Form
-        const componentIsPage = component instanceof Page
+        const componentIsForm = component instanceof FormClass
+        const componentIsPage = component instanceof PageClass
         const componentIsComponentDef = component instanceof ComponentDef
         const canUseContainerElements = componentIsListItem && containingComponent
         const topLevelFunctions = new Set<string>()
@@ -177,7 +186,6 @@ export default class Generator {
         const allContainerElements = canUseContainerElements ? allElements(containingComponent, true) : []
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
-        const isStateProperty = (name: string) => this.project.propertyDefsOf(component as Element).some( def => def.name === name && def.state)
         const uiElementCode = this.generateComponentCode(component, app, topLevelFunctions, requiredImports)
         const identifiers = this.parser.componentIdentifiers(component.id)
         const appLevelIdentifiers = identifiers.filter(isAppElement)
@@ -260,7 +268,8 @@ export default class Generator {
         const functionDeclaration = (el: FunctionDef) => {
             const exprType = el.action ? 'action' : 'multilineExpression'
             const bodyPrefix = dependencyDeclarations(el, 'calculation') + '\n'
-            const functionExpr = this.getExpr(el, 'calculation', exprType, el.inputs, bodyPrefix) ?? '() => {}'
+            const inputs = functionInputs(el)
+            const functionExpr = this.getExpr(el, 'calculation', exprType, inputs, bodyPrefix) ?? '() => {}'
             const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
             const wrappedFunctionCode = `wrapFn('${component.codeName}.${el.codeName}', 'calculation', ${functionCode})`
             const functionName = `${el.codeName}`
@@ -374,7 +383,7 @@ ${declarations}${debugHook}
 
         const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {
             const name = el.codeName
-            if (initState instanceof FunctionDef) {
+            if ((initState as FunctionDef).kind === 'Function') {
                 return ''// `    const ${name} = this.getOrCreateChildState('${name}', ${functionDeclaration(initState)})`
             } else {
                 const stateObjectDeclaration = `        const ${name} = this.getOrCreateChildState('${name}', ${initState})`
@@ -582,8 +591,7 @@ ${generateChildren(form, indentLevel2, form)}
                 return `React.createElement(${runtimeElementName(element)}, ${objectBuilder(element.codeName, this.modelProperties(element))})`
 
             case 'Text': {
-                const text = element as Text
-                const content = this.getExpr(text, 'content')
+                const content = this.getExpr(element, 'content')
                 // generate content at end as it may be long
                 const reactProperties = {...omit(['content'], this.modelProperties(element)), content}
                 return `React.createElement(TextElement, ${objectBuilder(element.codeName, reactProperties)}${generateChildren(element, indentLevel3, containingComponent)})`
@@ -598,11 +606,10 @@ ${generateChildren(form, indentLevel2, form)}
             }
 
             case 'ItemSet': {
-                const itemSet = element as ItemSet
-                const itemCode = this.generateComponent(app, new ListItem(itemSet), containingComponent)
+                const itemCode = this.generateComponent(app, new ListItem(element as BaseElement<any>), containingComponent)
                 requiredImports.add(itemCode.requiredImports)
                 topLevelFunctions.add(itemCode.contents)
-                const itemContentComponent = containingComponent!.codeName + '_' + itemSet.codeName + 'Item'
+                const itemContentComponent = containingComponent!.codeName + '_' + element.codeName + 'Item'
 
                 const modelProperties = omit(['canDragItem', 'itemStyles'], this.modelProperties(element))  // used in the item content component
                 const reactProperties = {itemContentComponent, ...modelProperties}
@@ -734,9 +741,9 @@ ${generateChildren(form, indentLevel2, form)}
             configFunctionName = serverApp ? `config${serverApp.codeName}` : `configServerApp`
             if (serverApp) {
                 const functionInfo = (fn: FunctionDef) => fn.action ? {
-                    params: fn.inputs,
+                    params: functionInputs(fn),
                     action: true
-                } : {params: fn.inputs}
+                } : {params: functionInputs(fn)}
 
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{

@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import FileDataStore from '../../src/model/FileDataStore'
-import Page from '../../src/model/Page'
+import {Page, FileDataStore} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -56,10 +55,10 @@ test('converts from plain object', ()=> {
     const store = new FileDataStore('id1', 'FileDataStore 1', {})
     const plainObj = asJSON(store)
     const newInFileDataStore = loadJSON(plainObj)
-    expect(newInFileDataStore).toStrictEqual<FileDataStore>(store)
+    expect(newInFileDataStore).toStrictEqual<typeof FileDataStore>(store)
 
     const store2 = new FileDataStore('id1', 'FileDataStore 2', {})
     const plainObj2 = asJSON(store2)
     const newInFileDataStore2 = loadJSON(plainObj2)
-    expect(newInFileDataStore2).toStrictEqual<FileDataStore>(store2)
+    expect(newInFileDataStore2).toStrictEqual<typeof FileDataStore>(store2)
 })

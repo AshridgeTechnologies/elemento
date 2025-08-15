@@ -19,7 +19,7 @@ import React, {ChangeEvent, FormEvent, FormEventHandler, useCallback, useState} 
 import {pick} from 'radash'
 import {equals} from 'ramda'
 import {startCase} from 'lodash'
-import {CancelOutlined} from '@mui/icons-material'
+import CancelOutlined from '@mui/icons-material/CancelOutlined'
 
 type PresetPositionStyles = {
     position: string | undefined,

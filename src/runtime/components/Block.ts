@@ -5,6 +5,8 @@ import {sxProps} from './ComponentHelpers'
 import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {useObject} from '../appStateHooks'
+import type {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const layoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
 export type BlockLayout = typeof layoutChoices[number]
@@ -19,6 +21,57 @@ type StateUpdatableProperties = Partial<Readonly<{
     isOver: boolean
 }
 >>
+
+export const BlockSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Block",
+    "description": "Organises a group of elements within a page.  The elements contained in the layout can be arranged vertically, as normal, or horizontally.\n" +
+        "Layouts can also contain other Layouts; one use of this is to split a Page into two columns, and display a group of elements on each side.\n" +
+        "When doing this, it can be useful to set the Width property to allocate the right amount of the total width to each column",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Block",
+    "icon": "widgets",
+    "elementType": "statefulUI",
+    "isLayoutOnly": true,
+    "canContain": "elementsWithThisParentType",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "layout": {
+                    "description": "How the elements in the Block are arranged",
+                    "enum": ["vertical", "horizontal", "horizontal wrapped", "positioned", "none"],
+                    "default": "vertical"
+                },
+                "dropAction": {
+                    "description": "The action to carry out when an element is dragged and dropped on this one",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": ['$droppedItem', '$droppedItemId', '$droppedOnItem', '$droppedOnItemId']
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
 
 export function BlockContent({path, layout, styles = {}, show, dragElementRef, children}: BlockContentProperties) {
     if (['horizontal', 'horizontal wrapped', 'vertical'].includes(layout)) {
@@ -107,3 +160,4 @@ export class BlockState extends BaseComponentState<StateProperties, StateUpdatab
 }
 
 Block.State = BlockState
+Block.Schema = BlockSchema

@@ -11,7 +11,7 @@ import {
     TextField,
     TextFieldProps
 } from '@mui/material'
-import {Close} from '@mui/icons-material'
+import Close from '@mui/icons-material/Close'
 import React from 'react'
 import {chooseDirectory} from './actionHelpers'
 import {editorDialogContainer} from '../EditorElement'

@@ -25,7 +25,8 @@ export function UploadDialog({onClose, onUploaded}: {
 
     const onUpload = async (file: File | undefined) => {
         if (file) {
-            const data = await file.arrayBuffer() as Uint8Array
+            const dataBuffer = await file.arrayBuffer()
+            const data = new Uint8Array(dataBuffer)
             onUploaded(file.name, data)
         }
     }

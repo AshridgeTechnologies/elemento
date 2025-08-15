@@ -1,7 +1,9 @@
 import * as React from 'react'
 import {useState} from 'react'
 import {Box, Button, Link, Popover, Typography} from '@mui/material'
-import {SvgIconComponent} from '@mui/icons-material'
+import SvgIcon from '@mui/material/SvgIcon'
+
+type SvgIconComponent = typeof SvgIcon
 
 export default function ServiceConnection({serviceName, icon: Icon, signIn, signOut, signedInInfo}: {
     serviceName: string,

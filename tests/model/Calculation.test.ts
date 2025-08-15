@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Calculation from '../../src/model/Calculation'
-import Page from '../../src/model/Page'
+import {Page, Calculation} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -43,7 +42,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Calculation('id1', 'Calculation 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['calculation', 'label', 'whenTrueAction', 'show', 'styles'])
+    expect(new Calculation('id1', 'Calculation 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['calculation', 'label', 'whenTrueAction', 'show', 'styles'])
 })
 
 test('converts to JSON without optional properties', ()=> {
@@ -70,10 +69,10 @@ test('converts from plain object', ()=> {
     const calculation = new Calculation('id1', 'Calculation 1', {calculation: ex`"Some calculation"`, show: ex`false && true`, whenTrueAction: ex`Log('Yes!')`, styles: {width: ex`3+4`}, label: 'A Calculation'})
     const plainObj = asJSON(calculation)
     const newCalculation = loadJSON(plainObj)
-    expect(newCalculation).toStrictEqual<Calculation>(calculation)
+    expect(newCalculation).toStrictEqual<typeof Calculation>(calculation)
 
     const calculation2 = new Calculation('id1', 'Calculation 2', {calculation: ex`"Some calculation"`, show: false})
     const plainObj2 = asJSON(calculation2)
     const newCalculation2 = loadJSON(plainObj2)
-    expect(newCalculation2).toStrictEqual<Calculation>(calculation2)
+    expect(newCalculation2).toStrictEqual<typeof Calculation>(calculation2)
 })

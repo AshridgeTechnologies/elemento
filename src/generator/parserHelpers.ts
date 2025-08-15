@@ -1,11 +1,9 @@
 import * as acorn from 'acorn'
 import {parse} from 'recast'
-import Element from '../model/Element'
 import {ExprType, IdentifierCollector} from './Types'
-import {EventActionPropertyDef, PropertyValue} from '../model/Types'
+import {PropertyValue} from '../model/Types'
 import {last, without} from 'ramda'
 import {isExpr} from '../util/helpers'
-import FunctionDef from '../model/FunctionDef'
 import {visit} from 'ast-types'
 
 export function parseExpr(expr: string) {

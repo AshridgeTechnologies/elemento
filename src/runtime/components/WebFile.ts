@@ -4,10 +4,49 @@ import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
 import {globalFetch} from './ComponentHelpers'
+import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
 type ExternalProperties = {url: string, fetch?: typeof globalThis.fetch}
 type StateProperties = {resultCache: object}
+
+export const WebFileSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Webfile",
+    "description": "Description of WebFile",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "WebFile",
+    "icon": "insert_drive_file",
+    "elementType": "background",
+    "parentType": [
+    "App",
+    "Page"
+],
+    "properties": {
+    "properties": {
+        "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+            "url": {
+                "description": "The ",
+                    "type": "string"
+            }
+        }
+    }
+},
+    "required": [
+    "kind",
+    "properties"
+],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const WebFileMetadata = {
+    stateProps: ['url']
+}
 
 export default function WebFile(_props: Properties) {
     return null
@@ -76,3 +115,5 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 }
 
 WebFile.State = WebFileState
+WebFile.Schema = WebFileSchema
+WebFile.Metadata = WebFileMetadata

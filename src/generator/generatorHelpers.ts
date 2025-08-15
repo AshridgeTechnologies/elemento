@@ -3,15 +3,16 @@ import lodash, {startCase} from 'lodash'
 import Element from '../model/Element'
 import {flatten, identity, last} from 'ramda'
 import {ExprType, ListItem} from './Types'
-import Form from '../model/Form'
 import {BaseApp} from '../model/BaseApp'
 import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
-import FunctionDef from '../model/FunctionDef'
-import ItemSet from '../model/ItemSet'
 import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
 import {ElementId} from '../model/Types'
+import {elementOfType} from '../model/elements'
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 export type RequiredImports = {
     components: Set<string>,
@@ -117,11 +118,11 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
         const childElements = component.itemSet.elements || []
         return flatten(childElements.map(el => [el, allElements(el)]))
     }
-    if (component instanceof ItemSet) {
+    if (component.kind === 'ItemSet') {
         return []
     }
 
-    if (component instanceof Form && !isTopLevel) {
+    if (component.kind === 'Form' && !isTopLevel) {
         return []
     }
 
@@ -224,4 +225,9 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
     if (exprType === 'multilineExpression') {
         addReturnStatement(ast)
     }
+}
+
+type FuncDef = { input1?: string, input2?: string, input3?: string, input4?: string, input5?: string }
+export const functionInputs = (functionDef: FuncDef) => {
+    return [functionDef.input1, functionDef.input2, functionDef.input3, functionDef.input4, functionDef.input5].filter(inp => inp !== undefined)
 }

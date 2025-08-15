@@ -1,7 +1,15 @@
 import {ElementId, PropertyDef, PropertyExpr, StylingProps} from '../model/Types'
 import React, {ChangeEvent, ReactNode, useEffect, useState} from 'react'
-import {Box, IconButton, Stack, TextField, Tooltip, Typography} from '@mui/material'
-import {Delete, HorizontalRule, PlayCircleOutline, SaveAlt} from '@mui/icons-material'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import Delete from '@mui/icons-material/Delete'
+import HorizontalRule from '@mui/icons-material/HorizontalRule'
+import PlayCircleOutline from '@mui/icons-material/PlayCircleOutline'
+import SaveAlt from '@mui/icons-material/SaveAlt'
 import {Editor} from '../editorToolApis/EditorControllerClient'
 import Project from '../model/Project'
 import {isEventAction, isExpr, notBlank} from '../util/helpers'
@@ -9,10 +17,9 @@ import {Preview} from '../shared/PreviewControllerClient'
 import {pickBy} from 'ramda'
 import {DebugData} from '../runtime/debug'
 import Generator from '../generator/Generator'
-import App from '../model/App'
-import Page from '../model/Page'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
+import App from '../model/App'
 
 const tooltipSlotProps = {
     popper: {
@@ -38,7 +45,7 @@ const displayValue = (val: any): string | ReactNode => {
 const watchName = (index: number) => `Watch ${index + 1}`
 const indexFromWatchName = (name: string) => parseInt(name.split(/ /)[1]) - 1
 
-export default function Inspector(props: any) {
+export default function Inspector(_props: any) {
     const [selectedItemId, setSelectedItemId] = useState<ElementId | null>(null)
     const [project, setProject] = useState<Project | null>(null)
     const [generator, setGenerator] = useState<Generator | null>(null)
@@ -49,7 +56,7 @@ export default function Inspector(props: any) {
     const [updatesInProgress, setUpdatesInProgress] = useState<string[]>([])
 
     const projectUpdated = (project: Project) => {
-        const app = project.findChildElements(App)[0]
+        const app = project.findChildElements('App')[0] as App
         setGenerator(new Generator(app, project))
         setProject(project)
     }
@@ -101,21 +108,21 @@ export default function Inspector(props: any) {
         return [prop.name, expr]
     })
     const styles: StylingProps = (element as any).styles ?? {}
-    const dynamicStyles = pickBy((value, key) => isExpr(value), styles) as StylingProps
+    const dynamicStyles = pickBy((value) => isExpr(value), styles) as StylingProps
     const dynamicStyleEntries = Object.entries(dynamicStyles).map( ([name, expr]) => [`styles.${name}`, (expr as PropertyExpr).expr])
     const statePropertyEntries = stateProperties.map( prop => [prop, `_selectedElement.${prop}`])
-    const watchEntries = watchExprs.map( (expr, index) => [watchName(index), expr]).filter(([name, expr]) => notBlank(expr))
+    const watchEntries = watchExprs.map( (expr, index) => [watchName(index), expr]).filter(([_name, expr]) => notBlank(expr))
     const allEntries = [currentPageEntry, stateEntry, ...selectedEntry, ...propertyDefEntries, ...dynamicStyleEntries, ...statePropertyEntries, ...watchEntries]
     const elementDebugExprs = Object.fromEntries(allEntries)
     const containerToEvaluateExprs = () => {
         const currentPageName = debugData?.['Current Page']
         if (currentPageName) {
-            return project!.findElementsBy( el => el.kind === 'Page' && el.codeName === currentPageName)[0] as Page
+            return project!.findElementsBy( el => el.kind === 'Page' && el.codeName === currentPageName)[0] as any
         }
-        const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as Page
+        const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as any
         if (pageOfElement) return pageOfElement
 
-        return project!.findChildElements(App)[0]
+        return project!.findChildElements('App')[0] as App
     }
     const [latestDebugExpr = null, errors = {}] = generator?.generateStandaloneBlock(element, elementDebugExprs, containerToEvaluateExprs(), updatesInProgress) ?? []
     if (latestDebugExpr !== debugExpr) setDebugExpr(latestDebugExpr)

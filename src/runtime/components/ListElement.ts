@@ -5,6 +5,8 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const {debounce} = lodash
 
@@ -18,6 +20,47 @@ type Properties = Readonly<{
 type StateProperties = {scrollTop?: number}
 
 const fixedSx = {overflow: 'scroll', maxHeight: '100%', py: 0, flexShrink: 0}
+
+export const ListElementSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "List",
+    "description": "Description of List",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "List",
+    "icon": "list",
+    "elementType": "statefulUI",
+    "isLayoutOnly": true,
+    "canContain": "elementsWithThisParentType",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "show": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
     const state = useObject<ListElementState>(path)
@@ -38,8 +81,6 @@ const ListElement = React.memo( function ListElement({path, children, ...props}:
     return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
-export default ListElement
-
 export class ListElementState extends BaseComponentState<StateProperties>
     implements ComponentState<ListElementState>{
 
@@ -52,4 +93,8 @@ export class ListElementState extends BaseComponentState<StateProperties>
     }
 }
 
-(ListElement as any).State = ListElementState
+;(ListElement as any).State = ListElementState
+;(ListElement as any).Schema = ListElementSchema
+
+export default ListElement
+

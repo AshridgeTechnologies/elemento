@@ -1,22 +1,24 @@
-import Page from '../model/Page'
 import Element from '../model/Element'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
-import ItemSet from '../model/ItemSet'
-import FunctionDef from '../model/FunctionDef'
 import {AllErrors, ElementErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
-import {allElements, valueLiteral} from './generatorHelpers'
+import {allElements, functionInputs, valueLiteral} from './generatorHelpers'
 import type UrlContext from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
-import {elementTypeNames} from '../model/elements'
-import Form from '../model/Form'
+import {elementOfType, elementTypeNames} from '../model/elements'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
 import {mapValues} from 'radash'
-import App from '../model/App'
+import BaseElement from '../model/BaseElement'
+
+const PageClass = elementOfType('Page')
+type Page = typeof PageClass
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -126,7 +128,7 @@ export default class Parser {
         this.errors[elementId][propertyName] = err
     }
 
-    parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Page | App) {
+    parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Element) {
         const identifierSet = new Set<string>()
         this.errors[exprId] = {}
         const onError = (name: string) => (err: string) => this.addError(exprId, name, err)
@@ -154,7 +156,7 @@ export default class Parser {
 
     parseComponent(component: Element | ListItem, containingComponent?: Page) {
         const identifierSet = new Set<string>()
-        const componentIsForm = component instanceof Form
+        const componentIsForm = component.kind === 'Form'
         const componentIsCompDef = component instanceof ComponentDef
         const topLevelFunctions = new Set<string>()
         const allComponentElements = allElements(component, true)
@@ -213,7 +215,7 @@ export default class Parser {
         const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
         const isFunctionCalculation = element.kind === 'Function' && def.name === 'calculation'
         const isArgument = (id: string) => (isAction && eventActionDef.argumentNames.includes(id))
-            || (isFunctionCalculation && (element as FunctionDef).inputs.includes(id))
+            || (isFunctionCalculation && functionInputs(element as FunctionDef).includes(id))
         const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
         const isJavaScript = (isFunctionCalculation && (element as FunctionDef).javascript) ?? false
 
@@ -249,7 +251,7 @@ export default class Parser {
         switch (element.kind) {
             case 'Function': {
                 const functionDef = element as FunctionDef
-                const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
+                const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionInputs(functionDef).includes(identifier)
                 const onError = (err: string) => this.addError(element.id, 'calculation', err)
                 parseExprAndIdentifiers(functionDef.calculation, elementIdentifiers, isKnownOrParam, 'multilineExpression', onError, true)
                 break
@@ -307,7 +309,7 @@ export default class Parser {
         } else if (element.kind === 'Component') {
             this.parseComponent(element)
         } else if (element.kind === 'ItemSet') {
-            this.parseComponent(new ListItem(element as ItemSet), containingComponent)
+            this.parseComponent(new ListItem(element as BaseElement<any>), containingComponent)
         } else if (element.kind === 'DataTypes') {
             this.parseComponent(element)
         } else if (includeChildren) {

@@ -1,13 +1,9 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
-import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import AppBar from '../../src/model/AppBar'
-import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
+import {Page, Text, TextInput, AppBar, Collection} from '../testutil/modelHelpers'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -148,7 +144,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedApp.pages.length).toBe(2)
     expect(updatedApp.pages[0]).toBe(page1)
     expect(updatedApp.pages[1]).not.toBe(page2)
-    expect(((updatedApp.pages[1].elementArray()[1]) as Text).content).toBe('"Further text"')
+    expect(((updatedApp.pages[1].elementArray()[1]) as any).content).toBe('"Further text"')
     expect(updatedApp.pages[1].elementArray()[0]).toBe(text3)
 })
 
@@ -162,7 +158,7 @@ test('creates an updated object on delete element on a page and preserves unchan
     const app = new App('app', 'App 1', {}, [page1, page2])
 
     const updatedApp = app.delete(text3.id)
-    expect(updatedApp.pages[1].elements!.map( el => el.name)).toStrictEqual(['Text 4'])
+    expect(updatedApp.pages[1].elements!.map( (el: any) => el.name)).toStrictEqual(['Text 4'])
     expect(updatedApp.pages[0]).toBe(app.pages[0])
 })
 
@@ -189,7 +185,7 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('has correct property names', () => {
-    expect(new App('app1', 'App 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'messageAction', 'cookieMessage', 'faviconUrl', 'themeOptions'])
+    expect(new App('app1', 'App 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['author', 'maxWidth', 'fonts', 'startupAction', 'messageAction', 'cookieMessage', 'faviconUrl', 'themeOptions'])
 })
 
 test('converts to JSON', ()=> {

@@ -3,13 +3,66 @@ import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Dialog as MuiDialog, IconButton} from '@mui/material'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {BlockContent, BlockLayout} from './Block'
-import {Close} from '@mui/icons-material'
+import Close from '@mui/icons-material/Close'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
+import {InputComponentMetadata} from './InputComponentState'
 
 type Properties = { path: string, layout: BlockLayout, showCloseButton?: boolean, styles?: StylesPropVals, children?: React.ReactElement[] }
 type StateProperties = Partial<Readonly<{initiallyOpen: boolean}>>
 
 type StateUpdatableProperties = Partial<Readonly<{ isOpen: boolean }>>
+
+const DialogSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Dialog",
+    "description": "A dialog box that can be opened and closed.  It can contain any elements, and can be given a title. ",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Dialog",
+    "icon": "table_view",
+    "elementType": "statefulUI",
+    "canContain": "elementsWithThisParentType",
+    "parentType": "Page",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "layout": {
+                    "description": "The ",
+                    "enum": ["vertical", "horizontal", "horizontal wrapped", "positioned", "none"]
+                },
+                "initiallyOpen": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "showCloseButton": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const DialogMetadata: ElementMetadata = {
+    stateProps: ['initiallyOpen']
+}
 
 const dialogSlotProps = {
     root: {
@@ -61,4 +114,6 @@ export class DialogState extends BaseComponentState<StateProperties, StateUpdata
     }
 }
 
-(Dialog as any).State = DialogState
+Dialog.State = DialogState
+Dialog.Schema = DialogSchema
+Dialog.Metadata = DialogMetadata

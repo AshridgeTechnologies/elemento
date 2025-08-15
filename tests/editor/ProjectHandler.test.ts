@@ -1,16 +1,13 @@
 import {afterEach, beforeEach, expect, test, vi} from "vitest"
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
-import Button from '../../src/model/Button'
 import {AppElementActionName} from '../../src/editor/Types'
-import {resetSaveFileCallData, wait} from '../testutil/testHelpers'
+import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import TextInput from '../../src/model/TextInput'
-import Text from '../../src/model/Text'
+import {Page, Text, TextInput, Button} from '../testutil/modelHelpers'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
-import Page from '../../src/model/Page'
 
 const project = projectFixture1()
 
@@ -74,62 +71,62 @@ test('can set and get a project', () => {
 test('can set a property on the project', () => {
     handler.setProperty('text_3', 'content', 'New content')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can undo and redo actions on the project', () => {
-    const originalContent = (project.findElement('text_3') as Text).content
+    const originalContent = (project.findElement('text_3') as any).content
     handler.setProperty('text_3', 'content', 'New content')
     const projectUpdated = handler.current
     expect(projectUpdated).not.toBe(project)
-    expect((projectUpdated?.findElement('text_3') as Text).content).toBe('New content')
+    expect((projectUpdated?.findElement('text_3') as any).content).toBe('New content')
 
     handler.undo()
     expect(handler.current).toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe(originalContent)
+    expect((handler.current?.findElement('text_3') as any).content).toBe(originalContent)
 
     handler.redo()
     expect(handler.current).toBe(projectUpdated)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can undo and redo actions on the project with an action', async () => {
-    const originalContent = (project.findElement('text_3') as Text).content
+    const originalContent = (project.findElement('text_3') as any).content
     handler.setProperty('text_3', 'content', 'New content')
     const projectUpdated = handler.current
     expect(projectUpdated).not.toBe(project)
-    expect((projectUpdated?.findElement('text_3') as Text).content).toBe('New content')
+    expect((projectUpdated?.findElement('text_3') as any).content).toBe('New content')
 
     await handler.elementAction(['text_1'], 'undo')
     expect(handler.current).toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe(originalContent)
+    expect((handler.current?.findElement('text_3') as any).content).toBe(originalContent)
 
     await handler.elementAction([], 'redo')
     expect(handler.current).toBe(projectUpdated)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can create a new element in the project', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'Text')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement(newId) as TextInput).id).toBe(newId)
+    expect(handler.current?.findElement(newId)?.id).toBe(newId)
     expect((handler.current?.findElement('page_2')?.elements as any)[2].id).toBe(newId)
 })
 
 test('can create a new element in the project and set name and properties', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'TextInput', {name: 'The Stuff', styles:{width: '100%'}})
     expect(handler.current).not.toBe(project)
-    const newElement = handler.current?.findElement(newId) as TextInput
+    const newElement = handler.current?.findElement(newId)!
     expect(newElement.id).toBe(newId)
     expect(newElement.name).toBe('The Stuff')
-    expect(newElement.styles?.width).toBe('100%')
+    expect(asAny(newElement).styles?.width).toBe('100%')
 })
 
 test('can insert an element into the project', () => {
     const newElement = new Text('originalId', 'Text 1', {content: 'Hi!'})
     const newId = handler.insertElement('inside', 'page_2', newElement)
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement(newId) as TextInput).id).toBe(newId)
+    expect(handler.current?.findElement(newId)?.id).toBe(newId)
     expect((handler.current?.findElement('page_2')?.elements as any)[2].id).toBe('text_5')
 })
 
@@ -250,7 +247,7 @@ test('can observe changes to project', async () => {
     expect(nextCallback).toHaveBeenCalledWith(handler.current)
     handler.setProperty('text_3', 'content', 'New content')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
     await wait()
     expect(nextCallback).toHaveBeenLastCalledWith(handler.current)
 })

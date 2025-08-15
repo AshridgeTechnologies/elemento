@@ -4,6 +4,8 @@ import MuiImage from 'mui-image'
 import {omit, pick} from 'ramda'
 import {sxProps} from './ComponentHelpers'
 import UrlContext, {UrlContextContext} from '../UrlContext'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = Readonly<{
     path: string,
@@ -23,6 +25,46 @@ const wrapperStyles = [
     'height'
 ]
 
+export const ImageSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Image",
+    "description": "Description of Image",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Image",
+    "icon": "image",
+    "elementType": "statelessUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "source": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
+                "description": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
+                "show": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
 export default function Image({path, ...props}: Properties) {
     const urlContext = useContext(UrlContextContext) as UrlContext
 
@@ -40,3 +82,5 @@ export default function Image({path, ...props}: Properties) {
         wrapperStyle: wrapperStylesProps
         })
 }
+
+Image.Schema = ImageSchema

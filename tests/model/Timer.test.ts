@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Timer from '../../src/model/Timer'
-import Page from '../../src/model/Page'
+import {Page, Timer} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -48,7 +47,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Timer('id1', 'Timer 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['period', 'interval', 'intervalAction', 'endAction', 'label', 'show', 'styles'])
+    expect(new Timer('id1', 'Timer 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['period', 'interval', 'intervalAction', 'endAction', 'label', 'show', 'styles'])
 })
 
 test('converts to JSON without optional properties', ()=> {
@@ -77,5 +76,5 @@ test('converts from plain object', ()=> {
     const timer = new Timer('id1', 'Timer 1', {interval: ex`2`, show: ex`false && true`, styles: {width: ex`3+4`}, label: 'A Timer'})
     const plainObj = asJSON(timer)
     const newTimer = loadJSON(plainObj)
-    expect(newTimer).toStrictEqual<Timer>(timer)
+    expect(newTimer).toStrictEqual<typeof Timer>(timer)
 })

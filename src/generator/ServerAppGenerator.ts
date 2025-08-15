@@ -1,14 +1,18 @@
 import ServerApp from '../model/ServerApp'
-import FunctionDef from '../model/FunctionDef'
 import ServerAppParser from './ServerAppParser'
 import Element from '../model/Element'
 import {ExprType} from './Types'
 import {isTruthy} from '../util/helpers'
-import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
+import {convertAstToValidJavaScript, functionInputs, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
-import CloudflareDataStore from '../model/CloudflareDataStore'
-import TinyBaseServerDataStore from '../model/TinyBaseServerDataStore'
+import {elementOfType} from '../model/elements'
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
+
+const TinyBaseServerDataStoreClass = elementOfType('TinyBaseServerDataStore')
+type TinyBaseServerDataStore = typeof TinyBaseServerDataStoreClass
 
 const indentLevel1 = '    '
 
@@ -54,7 +58,7 @@ export default class ServerAppGenerator {
         const propertyExprs = Object.fromEntries(propertyExprEntries)
         const modelProperties = (() => {
             if (element.kind === 'CloudflareDataStore') {
-                return {collections: `"${(element as CloudflareDataStore).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
+                return {collections: `"${(element as any).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
             }
             if (element.kind === 'TinyBaseServerDataStore') {
                 const store = element as TinyBaseServerDataStore
@@ -83,7 +87,7 @@ export default class ServerAppGenerator {
 
     public serverApp() {
         const generateFunction = (fn: FunctionDef) => {
-            const paramList = fn.inputs.join(', ')
+            const paramList = functionInputs(fn).join(', ')
             const exprType = fn.action ? 'action' : 'multilineExpression'//'singleExpression'
             const expr = this.getExpr(fn, 'calculation', exprType)
             const functionBody = fn.action || fn.javascript ? expr : `${expr}`
@@ -93,7 +97,8 @@ ${indent(functionBody ?? '', indentLevel1)}
         }
 
         const generateFunctionMetadata = (fn: FunctionDef) => {
-            return `{func: ${fn.codeName}, update: ${!!fn.action}, argNames: [${fn.inputs.map(quote).join(', ')}]}`
+            const inputs = functionInputs(fn)
+            return `{func: ${fn.codeName}, update: ${!!fn.action}, argNames: [${inputs.map(quote).join(', ')}]}`
         }
 
         const globalFunctionNames = this.parser.allGlobalFunctionIdentifiers()
@@ -150,7 +155,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
-        const isKnownSyncUserFunction = (fnName: string) => false
+        const isKnownSyncUserFunction = (_fnName: string) => false
 
         const isSingleExpr = exprType === 'singleExpression'
         const errorMessage = this.parser.propertyError(element.id, propertyName)

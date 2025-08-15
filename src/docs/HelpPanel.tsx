@@ -3,7 +3,10 @@ import {Box, IconButton, Typography} from '@mui/material'
 import Mui_AppBar from '@mui/material/AppBar'
 
 import {SimpleTreeView, TreeItem} from '@mui/x-tree-view'
-import {ChevronRight, ExpandMore, NavigateBefore, NavigateNext} from '@mui/icons-material'
+import ChevronRight from '@mui/icons-material/ChevronRight'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import NavigateBefore from '@mui/icons-material/NavigateBefore'
+import NavigateNext from '@mui/icons-material/NavigateNext'
 import React, {useEffect, useRef, useState} from 'react'
 import Toolbar from '@mui/material/Toolbar'
 

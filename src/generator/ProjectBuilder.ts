@@ -7,9 +7,11 @@ import Tool from '../model/Tool'
 import {flatten, pickBy} from 'ramda'
 import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
-import CloudflareDataStore from '../model/CloudflareDataStore'
-import TinyBaseDataStore from '../model/TinyBaseDataStore'
 import {flatMap} from 'lodash'
+import {elementOfType} from '../model/elements'
+
+const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
+type TinyBaseDataStore = typeof TinyBaseDataStoreClass
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -94,7 +96,7 @@ export default class ProjectBuilder {
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
-    private get syncedTinyBaseStores() { return this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer ) as TinyBaseDataStore[] }
+    private get syncedTinyBaseStores() { return this.project.findElementsBy(el => el.kind === 'TinyBaseDataStore' && (el as TinyBaseDataStore).syncWithServer ) as TinyBaseDataStore[] }
     private get runtimeLoader() { return this.props.runtimeLoader }
 
     async writeProjectFiles() {
@@ -176,18 +178,18 @@ export default class ProjectBuilder {
     }
 
     private wranglerConfig() {
-        const appNames = this.project.findChildElements(App).map( el => el.codeName)
+        const appNames = this.project.findChildElements('App').map( el => el.codeName)
         const projectName = this.project.codeName
         const projectConfig = this.project.configuration
 
         const {authStoreId} = projectConfig
         const d1DatabaseBindings = this.project.findElementsBy( el => el.kind === 'CloudflareDataStore').map( el => {
-            const cfds = el as CloudflareDataStore
+            const cfds = el
             return `
         {
             "binding": "${cfds.codeName}",
-            "database_name": "${cfds.databaseName}",
-            "database_id": "${cfds.databaseId}"
+            "database_name": "${(cfds as any).databaseName}",
+            "database_id": "${(cfds as any).databaseId}"
         }`
         }).join(',\n')
 

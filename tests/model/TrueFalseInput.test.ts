@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import TrueFalseInput from '../../src/model/TrueFalseInput'
-import Page from '../../src/model/Page'
+import {Page, TrueFalseInput} from '../testutil/modelHelpers'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 
@@ -37,7 +36,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new TrueFalseInput('t1', 'True False Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
+    expect(new TrueFalseInput('t1', 'True False Input 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -83,10 +82,10 @@ test('converts from plain object', ()=> {
     const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`})
     const plainObj = asJSON(trueFalseInput)
     const newObj = loadJSON(plainObj)
-    expect(newObj).toStrictEqual<TrueFalseInput>(trueFalseInput)
+    expect(newObj).toStrictEqual(trueFalseInput)
 
     const trueFalseInput2 = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: true, label: 'The True-False', dataType: ex`dataType1`})
     const plainObj2 = asJSON(trueFalseInput2)
     const newObj2 = loadJSON(plainObj2)
-    expect(newObj2).toStrictEqual<TrueFalseInput>(trueFalseInput2)
+    expect(newObj2).toStrictEqual(trueFalseInput2)
 })

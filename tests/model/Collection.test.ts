@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import Collection from '../../src/model/Collection'
-import Page from '../../src/model/Page'
+import {Page, Collection} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -79,10 +78,10 @@ test('converts from plain object', ()=> {
     const collection = new Collection('id1', 'Collection 1', {initialValue: ex`['green', 'blue']`, dataStore: ex`dataStore_1`, collectionName: 'Stuffz', display: ex`false && true`})
     const plainObj = asJSON(collection)
     const newCollection = loadJSON(plainObj)
-    expect(newCollection).toStrictEqual<Collection>(collection)
+    expect(newCollection).toStrictEqual<typeof Collection>(collection)
 
-    const collection2 = new Collection('id1', 'Collection 2', {initialValue: [], display: false})
+    const collection2 = new Collection('id1', 'Collection 2', {initialValue: ex`[]`, display: false})
     const plainObj2 = asJSON(collection2)
     const newCollection2 = loadJSON(plainObj2)
-    expect(newCollection2).toStrictEqual<Collection>(collection2)
+    expect(newCollection2).toStrictEqual<typeof Collection>(collection2)
 })

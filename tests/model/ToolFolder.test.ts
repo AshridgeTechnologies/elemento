@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import ToolFolder from '../../src/model/ToolFolder'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 
 test('ToolFolder has expected properties', () => {
     const folder1 = new ToolFolder('id1', 'Folder 1', {})

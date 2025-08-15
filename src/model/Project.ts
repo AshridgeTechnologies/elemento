@@ -1,16 +1,12 @@
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
 import BaseElement, {newIdTransformer, propDef, visualPropertyDefs} from './BaseElement'
 import Element from './Element'
-import File from './File'
 import {createNewElement} from './createElement'
 import {toArray} from '../util/helpers'
-import {elementTypeNames, parentTypeOf} from './elements'
-import FileFolder from './FileFolder'
+import {elementOfType, elementTypeNames, parentTypeOf} from './elements'
 import {AppElementAction, ConfirmAction} from '../editor/Types'
-import Page from './Page'
 import DataTypes from './types/DataTypes'
 import App from './App'
-import Text from './Text'
 import ToolFolder from './ToolFolder'
 import {intersection} from 'ramda'
 import ServerApp from './ServerApp'
@@ -18,6 +14,9 @@ import ComponentDef from './ComponentDef'
 import ComponentFolder from './ComponentFolder'
 import ComponentInstance from './ComponentInstance'
 import InputProperty from './InputProperty'
+import {modelElementClass} from './ModelElement'
+import {TextElementSchema} from '../runtime/components/TextElement'
+import {PageSchema} from '../runtime/components/Page'
 
 type Properties = { author?: PropertyValue, configuration?: string }
 
@@ -205,6 +204,8 @@ export default class Project extends BaseElement<Properties> implements Element 
         let fileIdSeq = this.findMaxId('File') + 1
         const newId = () => `file_${fileIdSeq++}`
 
+        const File = elementOfType('File')
+        const FileFolder = elementOfType('FileFolder')
         const files = fileNames.map( name => new File(newId(), name, {}))
         const fileFolder = new FileFolder(FILES_ID, 'Files', {}, files)
         const elementsWithFiles = [...this.elementArray(), fileFolder]
@@ -237,9 +238,11 @@ export default class Project extends BaseElement<Properties> implements Element 
 }
 
 export function editorEmptyProject(name = 'New Project') {
+    const textClass = modelElementClass(TextElementSchema)
+    const Page = modelElementClass(PageSchema)
     return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new Text('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})
+            new textClass('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})
         ])
     ])], name)
 }

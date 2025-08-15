@@ -3,7 +3,32 @@ import {useEffect, useRef, useState} from 'react'
 import {Box, Button, Icon, IconButton, Link, Popover, Typography} from '@mui/material'
 import {authIsReady, onAuthChange, currentUser, signOut, useSignedInState, isSignedIn} from './authentication.js'
 import {openLoginPopup} from './LoginManager.js'
+import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
+export const UserLogonSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Userlogon",
+    "description": "Description of UserLogon",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "UserLogon",
+    "icon": "account_circle",
+    "elementType": "statelessUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {}
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
 
 export default function UserLogon() {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
@@ -74,3 +99,5 @@ export default function UserLogon() {
         </div>
     )
 }
+
+UserLogon.Schema = UserLogonSchema

@@ -1,11 +1,11 @@
-import {Menu as MenuIcon} from '@mui/icons-material'
+import {default as MenuIcon} from '@mui/icons-material/Menu'
 import IconButton from '@mui/material/IconButton'
 import * as React from 'react'
 import Menu from '@mui/material/Menu'
 import {editorDialogContainer} from '../editor/EditorElement'
 import {editorMenuPositionProps} from '../editor/Editor'
 import MenuItem from '@mui/material/MenuItem'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 export default function AppBarMenu(props: object) {
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null)
