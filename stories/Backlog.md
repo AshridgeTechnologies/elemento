@@ -243,6 +243,7 @@ Tech debt
 
 _ !!! Try Cloudflare Cap'n Web
 - Use es-toolkit instead of lodash amd ramda
+- Consider vi.spyOn:  https://laconicwit.com/vi-mock-is-a-footgun-why-vi-spyon-should-be-your-default/
 - Cloudflare: if using Wrangler, could also run local esbuild and generate specific client and server bundles, forget the big libraries - good idea?
 - Check on vulnerabilities in https://kibty.town/blog/todesktop/?ck_subscriber_id=1691077560
 - Review libraries in https://www.robinwieruch.de/react-libraries/

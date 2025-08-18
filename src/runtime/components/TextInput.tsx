@@ -30,6 +30,149 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     return props
 }
 
+export const Schema = {
+    "$ref": "#/definitions/TextInput",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "definitions": {
+        "BaseElement": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "The unique identifier of this element",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of this element",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "The type of this element eg TextInput",
+                    "type": "string"
+                },
+                "notes": {
+                    "description": "Additional information about this element for use by the developer",
+                    "type": "string"
+                }
+            },
+            "required": ["id", "name", "kind"]
+        },
+        "TextInput": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "title": "Text Input",
+            "description": "An input box to enter text data, single or multiline",
+            "type": "object",
+            "$ref": "#/definitions/BaseElement",
+            "properties": {
+                "kind": {
+                    "const": "TextInput"
+                },
+                "icon": {
+                    "const": "crop_16_9"
+                },
+                "props": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "label": {
+                            "description": "The label shown for the input box. The name is used if not specified.",
+                            "$ref": "#/definitions/StringOrExpression"
+                        },
+                        "dataType": {
+                            "description": "A Data Type for this input box",
+                            "$ref": "#/definitions/Expression"
+                        },
+                        "keyAction": {
+                            "description": "An action to carry out when a key is pressed",
+                            "$ref": "#/definitions/Expression"
+                        },
+                        "multiline": {
+                            "description": "Whether the value entered can be multiple lines of text",
+                            "$ref": "#/definitions/BooleanOrExpression"
+                        },
+                        "readOnly": {
+                            "description": "If true, the initial value shown cannot be changed by the user",
+                            "$ref": "#/definitions/BooleanOrExpression"
+                        },
+                        "show": {
+                            "description": "Whether this element is displayed",
+                            "$ref": "#/definitions/BooleanOrExpression"
+                        },
+                        "styles": {
+                            "description": "The specific CSS styles applied to this element",
+                            "$ref": "#/definitions/Styles"
+                        },
+                        "initialValue": {
+                            "description": "The initial value shown in the input box.",
+                            "$ref": "#/definitions/StringOrExpression"
+                        }
+                    }
+                }
+            },
+            "required": ["kind", "props"],
+            "unevaluatedProperties": false,
+        },
+        "Expression": {
+            "description": "A formula used to calculate a value or perform an action",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "expr": {
+                    "description": "The formula",
+                    "type": "string"
+                }
+            }
+        },
+        "StringOrExpression": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/Expression"
+                }
+            ]
+        },
+        "StringOrNumberOrExpression": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "number"
+                },
+                {
+                    "$ref": "#/definitions/Expression"
+                }
+            ]
+        },
+        "BooleanOrExpression": {
+            "anyOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "$ref": "#/definitions/Expression"
+                }
+            ]
+        },
+        "Styles": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "backgroundColor": {
+                    "$ref": "#/definitions/StringOrExpression"
+
+                },
+                "width": {
+                    "$ref": "#/definitions/StringOrNumberOrExpression"
+                },
+            }
+        }
+    }
+}
+
+
 export default function TextInput({path, ...props}: Properties) {
     const {label, multiline: multilineProp, readOnly, show, keyAction, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
