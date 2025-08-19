@@ -30,6 +30,7 @@
     "src/appswebsite/terms/index.html"
   ],
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^14.2.0",
     "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -98,6 +99,7 @@
     "@types/cors": "^2.8.13",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/js-yaml": "^4.0.5",
+    "@types/json-schema": "^7.0.15",
     "@types/jwt-encode": "^1.0.3",
     "@types/lodash": "^4.14.189",
     "@types/mime-types": "^2.1.1",

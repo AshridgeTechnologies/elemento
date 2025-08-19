@@ -15,6 +15,7 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {type JSONSchema} from '@apidevtools/json-schema-ref-parser'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
 type StateProperties = InputComponentExternalProps<string, TextType, {}>
@@ -30,9 +31,37 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     return props
 }
 
-export const Schema = {
-    "$ref": "#/definitions/TextInput",
+export const Schema: JSONSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Text Input",
+    "description": "An input box to enter text data, single or multiline",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "TextInput",
+    "icon": "crop_16_9",
+    "elementType": "statefulUI",
+    "valueType": "string",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+                "multiline": {
+                    "description": "Whether the value entered can be multiple lines of text",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "keyAction": {
+                    "description": "An action to carry out when a key is pressed",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": ['$event']
+                }
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
     "definitions": {
         "BaseElement": {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -57,63 +86,52 @@ export const Schema = {
             },
             "required": ["id", "name", "kind"]
         },
-        "TextInput": {
+        "BaseInputProperties": {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "title": "Text Input",
-            "description": "An input box to enter text data, single or multiline",
             "type": "object",
-            "$ref": "#/definitions/BaseElement",
             "properties": {
-                "kind": {
-                    "const": "TextInput"
+                "label": {
+                    "description": "The label shown for the input box. The name is used if not specified.",
+                    "$ref": "#/definitions/StringOrExpression"
                 },
-                "icon": {
-                    "const": "crop_16_9"
+                "dataType": {
+                    "description": "A Data Type for this input box",
+                    "$ref": "#/definitions/Expression"
                 },
-                "props": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "label": {
-                            "description": "The label shown for the input box. The name is used if not specified.",
-                            "$ref": "#/definitions/StringOrExpression"
-                        },
-                        "dataType": {
-                            "description": "A Data Type for this input box",
-                            "$ref": "#/definitions/Expression"
-                        },
-                        "keyAction": {
-                            "description": "An action to carry out when a key is pressed",
-                            "$ref": "#/definitions/Expression"
-                        },
-                        "multiline": {
-                            "description": "Whether the value entered can be multiple lines of text",
-                            "$ref": "#/definitions/BooleanOrExpression"
-                        },
-                        "readOnly": {
-                            "description": "If true, the initial value shown cannot be changed by the user",
-                            "$ref": "#/definitions/BooleanOrExpression"
-                        },
-                        "show": {
-                            "description": "Whether this element is displayed",
-                            "$ref": "#/definitions/BooleanOrExpression"
-                        },
-                        "styles": {
-                            "description": "The specific CSS styles applied to this element",
-                            "$ref": "#/definitions/Styles"
-                        },
-                        "initialValue": {
-                            "description": "The initial value shown in the input box.",
-                            "$ref": "#/definitions/StringOrExpression"
-                        }
-                    }
+                "readOnly": {
+                    "description": "If true, the initial value shown cannot be changed by the user",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                },
+                "initialValue": {
+                    "description": "The initial value shown in the input box.",
+                    "$ref": "#/definitions/StringOrNumberOrExpression"
                 }
+
             },
-            "required": ["kind", "props"],
-            "unevaluatedProperties": false,
+            "required": []
         },
+        // "TextInput": ,
         "Expression": {
-            "description": "A formula used to calculate a value or perform an action",
+            "description": "A formula used to calculate a value",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "expr": {
+                    "description": "The formula",
+                    "type": "string"
+                }
+            }
+        },
+        "ActionExpression": {
+            "description": "A formula used to perform an action",
             "type": "object",
             "additionalProperties": false,
             "properties": {

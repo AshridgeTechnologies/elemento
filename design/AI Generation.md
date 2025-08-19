@@ -78,4 +78,18 @@ Tasks
 - Documentation generator
 - Schema generator
 
+Generic model object
+====================
 
+Possible approaches
+-------------------
+
+- Proxy
+- Adds own properties
+- Generates and caches a class from the schema
+
+Decision
+--------
+
+- Spike with adding own properties
+- Evolve to generating a class - can name class, properties and functions, most efficient
