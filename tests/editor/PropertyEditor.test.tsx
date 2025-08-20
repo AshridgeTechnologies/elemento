@@ -7,8 +7,7 @@ import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
-import Text from '../../src/model/Text'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
@@ -145,7 +144,7 @@ test('cannot change name of Tools element', async () => {
 })
 
 test('updates other properties', () => {
-    const element = new Text('id1', 'Text 1', {content: 'x', show: ex`funky`})
+    const element = newText('id1', 'Text 1', {content: 'x', show: ex`funky`})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Show')).toBe('funky')
     fireEvent.input(input('Show'), {target: {value: 'cool'}})
@@ -242,7 +241,7 @@ test('has fields for Page', () => {
 })
 
 test('has fields for Text with literal value', () => {
-    const element = new Text('id1', 'Text 1', {content: 'Some content'})
+    const element = newText('id1', 'Text 1', {content: 'Some content'})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(nameInputValue()).toBe('Text 1')
     expect(inputValue('Content')).toBe('Some content')
@@ -265,7 +264,7 @@ test('searches for element codename', () => {
 })
 
 test('has fields for Text', () => {
-    const element = new Text('id1', 'Text 1', {
+    const element = newText('id1', 'Text 1', {
         content: 'Hi!\nGood morning',
         show: true,
         styles: {
@@ -496,7 +495,7 @@ test('has fields for FileDataStore', () => {
 })
 
 test('shows errors for element', () => {
-    const element = new Text('id1', 'Text 1', {content: 'abc'})
+    const element = newText('id1', 'Text 1', {content: 'abc'})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop} errors={{
         element: 'Unknown condition',
     }}/>)
@@ -506,7 +505,7 @@ test('shows errors for element', () => {
 })
 
 test('shows errors for a normal property', () => {
-    const element = new Text('id1', 'Text 1', {
+    const element = newText('id1', 'Text 1', {
         content: ex`Splurge`,
     })
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop} errors={{
@@ -553,25 +552,25 @@ describe('Preset position styles', () => {
     const centerPresetWithRight = {...centerPreset, right: '0'}
 
     test('shows empty preset if styles do not match a preset', () => {
-        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetModified})
+        const element = newText('id1', 'Text 1', {content: 'x', styles: centerPresetModified})
         render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
         expect(selectValue('Preset Position')).toBe('')
     })
 
     test('shows empty preset if styles match a preset but have extra positioning styles', () => {
-        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPresetWithRight})
+        const element = newText('id1', 'Text 1', {content: 'x', styles: centerPresetWithRight})
         render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
         expect(selectValue('Preset Position')).toBe('')
     })
 
     test('shows preset name if styles match a preset', () => {
-        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
+        const element = newText('id1', 'Text 1', {content: 'x', styles: centerPreset})
         render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
         expect(selectValue('Preset Position')).toBe('center')
     })
 
     test('updates styles to match a preset', () => {
-        const element = new Text('id1', 'Text 1', {content: 'x', styles: centerPreset})
+        const element = newText('id1', 'Text 1', {content: 'x', styles: centerPreset})
         render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
         expect(selectValue('Preset Position')).toBe('center')
         fireEvent.input(select('Preset Position'), {target: {value: 'topLeft'}})
@@ -580,7 +579,7 @@ describe('Preset position styles', () => {
     })
 
     test('updates styles to clear a preset', () => {
-        const element = new Text('id1', 'Text 1', {content: 'x', styles: {...centerPreset, color: 'blue'}})
+        const element = newText('id1', 'Text 1', {content: 'x', styles: {...centerPreset, color: 'blue'}})
         render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
         expect(selectValue('Preset Position')).toBe('center')
         fireEvent.input(select('Preset Position'), {target: {value: ''}})

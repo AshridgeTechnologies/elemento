@@ -2,7 +2,6 @@
  * @vitest-environment jsdom
  */
 
-import Text from '../../src/model/Text'
 import App from '../../src/model/App'
 import {generate} from '../../src/generator/Generator'
 import Page from '../../src/model/Page'
@@ -15,7 +14,7 @@ import Project1 from '../../src/model/Project'
 import Project2 from '../../src/model/Project'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 
 afterEach(() => {
     // @ts-ignore
@@ -27,8 +26,8 @@ test.skip('generated app can be shown in runner page', async ()=> {
 
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('text1', 'Text 1', {content: ex`"Hi there!"`}),
-            new Text('text2', 'Text 2', {content: ex`2 + 2`}),
+            newText('text1', 'Text 1', {content: ex`"Hi there!"`}),
+            newText('text2', 'Text 2', {content: ex`2 + 2`}),
         ])])
 
     const project = Project2.new([app], 'Project 1', 'proj1', {})
@@ -49,7 +48,7 @@ test.skip('generated code includes types which can be referenced in the app', as
 
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            new Text('text1', 'Text 1', {content: ex`"Enter up to " + MyTypes.Text1.maxLength + " characters"`}),
+            newText('text1', 'Text 1', {content: ex`"Enter up to " + MyTypes.Text1.maxLength + " characters"`}),
             newTextInput('textInput2', 'Text Input', {styles: {width: ex`MyTypes.Text1.maxLength`}}),
         ])])
 

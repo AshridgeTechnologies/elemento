@@ -10,7 +10,6 @@ import {AppElementAction, ConfirmAction} from '../editor/Types'
 import Page from './Page'
 import DataTypes from './types/DataTypes'
 import App from './App'
-import Text from './Text'
 import ToolFolder from './ToolFolder'
 import {intersection} from 'ramda'
 import ServerApp from './ServerApp'
@@ -18,6 +17,8 @@ import ComponentDef from './ComponentDef'
 import ComponentFolder from './ComponentFolder'
 import ComponentInstance from './ComponentInstance'
 import InputProperty from './InputProperty'
+import {modelElementClass} from './ModelElement'
+import {Schema as Text_Schema} from '../runtime/components/TextElement'
 
 type Properties = { author?: PropertyValue, configuration?: string }
 
@@ -237,9 +238,10 @@ export default class Project extends BaseElement<Properties> implements Element 
 }
 
 export function editorEmptyProject(name = 'New Project') {
+    const textClass = modelElementClass(Text_Schema)
     return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
-            new Text('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})
+            new textClass('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})
         ])
     ])], name)
 }

@@ -2,7 +2,6 @@ import {parse, prettyPrint} from 'recast'
 
 import App from '../model/App'
 import Page from '../model/Page'
-import Text from '../model/Text'
 import Element from '../model/Element'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
@@ -582,8 +581,7 @@ ${generateChildren(form, indentLevel2, form)}
                 return `React.createElement(${runtimeElementName(element)}, ${objectBuilder(element.codeName, this.modelProperties(element))})`
 
             case 'Text': {
-                const text = element as Text
-                const content = this.getExpr(text, 'content')
+                const content = this.getExpr(element, 'content')
                 // generate content at end as it may be long
                 const reactProperties = {...omit(['content'], this.modelProperties(element)), content}
                 return `React.createElement(TextElement, ${objectBuilder(element.codeName, reactProperties)}${generateChildren(element, indentLevel3, containingComponent)})`

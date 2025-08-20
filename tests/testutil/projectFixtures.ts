@@ -1,6 +1,6 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 import Image from '../../src/model/Image'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
@@ -8,22 +8,21 @@ import {ex} from './testHelpers'
 import List from '../../src/model/List'
 import Block from '../../src/model/Block'
 import NumberInput from '../../src/model/NumberInput'
-import Text from '../../src/model/Text'
 import File from '../../src/model/File'
 import FileFolder from '../../src/model/FileFolder'
 
 export function projectFixture1() {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
-        new Text('text_1', 'First Text', {content: ex`"The first bit of text"`}),
-        new Text('text_2', 'Second Text', {content: ex`"The second bit of text"`}),
+        newText('text_1', 'First Text', {content: ex`"The first bit of text"`}),
+        newText('text_2', 'Second Text', {content: ex`"The second bit of text"`}),
         new Block('layout_1', 'A Layout', {}, [
             new NumberInput('numberInput_15', 'Nested Text', {}),
         ])
     ])
     const page2 = new Page('page_2', 'Other Page', {}, [
-        new Text('text_3', 'Some Text', {content: ex`"Some text here"`}),
-        new Text('text_4', 'More Text', {content: ex`"...and more text"`}),
+        newText('text_3', 'Some Text', {content: ex`"Some text here"`}),
+        newText('text_4', 'More Text', {content: ex`"...and more text"`}),
     ])
     const app = new App('app1', 'App One', {}, [
         page1,
@@ -35,12 +34,12 @@ export function projectFixture1() {
 export function projectFixture2() {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
-        new Text('text_1', 'First Text', {content: ex`"Page One"`}),
+        newText('text_1', 'First Text', {content: ex`"Page One"`}),
         newTextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value"`, label: ex`'A' + 'label'`}),
         new Button('button_1', 'Button 1', {content: 'Go to Page 2', action: ex`ShowPage(OtherPage)`}),
     ])
     const page2 = new Page('page_2', 'Other Page', {}, [
-        new Text('text_3', 'Some Text', {content: ex`"Page Two"`}),
+        newText('text_3', 'Some Text', {content: ex`"Page Two"`}),
         newTextInput('textInput_2', 'Another Text Input', {initialValue: ex`"Type the text"`, label: ex`'B' + 'label'`}),
         new Button('button_2', 'Button 2', {content: 'Back to Page 1', action: ex`ShowPage(MainPage)`}),
     ])
@@ -56,10 +55,10 @@ export function projectFixture2() {
 export function projectFixture3(url: string) {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
-        new Text('text_1', 'First Text', {content: 'From ' + url}),
-        new Text('text_2', 'Page', {content: ex`CurrentUrl().page`}),
-        new Text('text_3', 'Path Sections', {content: ex`CurrentUrl().pathSections.join(',')`}),
-        new Text('text_4', 'Current Url', {content: ex`CurrentUrl().text`}),
+        newText('text_1', 'First Text', {content: 'From ' + url}),
+        newText('text_2', 'Page', {content: ex`CurrentUrl().page`}),
+        newText('text_3', 'Path Sections', {content: ex`CurrentUrl().pathSections.join(',')`}),
+        newText('text_4', 'Current Url', {content: ex`CurrentUrl().text`}),
         new Image('image_4', 'Hero Image', {source: 'Hero.jpg'}),
     ])
     const app = new App('app1', 'App One', {}, [
@@ -71,7 +70,7 @@ export function projectFixture3(url: string) {
 export function projectFixtureWithError() {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
-        new Text('text_1', 'First Text', {content: ex`'From ' + nowhere`}),
+        newText('text_1', 'First Text', {content: ex`'From ' + nowhere`}),
     ])
     const app = new App('app1', 'App One', {}, [
         page1,
@@ -82,8 +81,8 @@ export function projectFixtureWithError() {
 export function projectFixtureWithList() {
     const page1 = new Page('p1', 'Page 1', {}, [
             new List('l1', 'List 1', {items: [{color: 'green'}, {color: 'red'}, {color: 'blue'}]}, [
-                new Text('id1', 'Text 1', {content: 'Hi there!'}),
-                new Text('id2', 'Text 2', {content: ex`"This is " + Left($item.color, 3)`}),
+                newText('id1', 'Text 1', {content: 'Hi there!'}),
+                newText('id2', 'Text 2', {content: ex`"This is " + Left($item.color, 3)`}),
             ])
         ]
     )
@@ -98,8 +97,8 @@ export function welcomeProject() {
     return Project.new([
         new App('app1', 'Welcome App', {}, [
             new Page('page_1', 'Main Page', {}, [
-                new Text('text1_1', 'First Text', {content: {'expr': '"Welcome to Elemento!"'}}),
-                new Text('text1_2', 'Second Text', {content: {'expr': '"The future of low code programming"'}}),
+                newText('text1_1', 'First Text', {content: {'expr': '"Welcome to Elemento!"'}}),
+                newText('text1_2', 'Second Text', {content: {'expr': '"The future of low code programming"'}}),
             ])
         ])], 'Welcome to Elemento', 'project_1', {})
 

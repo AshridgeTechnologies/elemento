@@ -1,14 +1,13 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import {asJSON, ex} from '../testutil/testHelpers'
 import List from '../../src/model/List'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 
 test('List has correct properties', ()=> {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const list = new List('l1', 'List the First', {show: false, styles: {color: ex`blue`}}, [text1, text2])
 
     expect(list.id).toBe('l1')
@@ -46,8 +45,8 @@ test('can contain types apart from Project, App, Page, DataStore', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const list = new List('l1', 'List 1', {items: [{a: 10}], styles: {color: ex`blue`}}, [text1, text2])
 
     expect(asJSON(list)).toStrictEqual({
@@ -60,7 +59,7 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
     let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const list = new List('p1', 'List 1', {items: [{a: 10}], styles: {color: ex`blue`}, selectAction: ex`Log(\$item.id)`}, [text, textInput])
     const newList = loadJSON(asJSON(list))

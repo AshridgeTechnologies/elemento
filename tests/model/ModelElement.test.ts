@@ -9,7 +9,7 @@ test('Model element has correct properties', async ()=> {
     const modelClass = modelElementClass(TextInput_Schema as ElementSchema)
     expect(modelClass.name).toBe('TextInput')
 
-    const element = new modelClass('textInput_1', 'Text Input 1', {multiline: true, keyAction: {expr: 'DoSomething()'}})
+    const element = new modelClass('textInput_1', 'Text Input 1', {multiline: true, keyAction: {expr: 'DoSomething()'}}) as BaseInputElement<any>
     expect(element.kind).toBe('TextInput')
     expect(element.iconClass).toBe('crop_16_9')
     expect(element.valueType).toBe('string')

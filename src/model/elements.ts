@@ -3,7 +3,6 @@ import App from './App'
 import AppBar from './AppBar'
 import Page from './Page'
 import Dialog from './Dialog'
-import Text from './Text'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
@@ -61,6 +60,7 @@ import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {ElementSchema, modelElementClass} from './ModelElement'
 
 import {Schema as TextInput_Schema} from '../runtime/components/TextInput'
+import {Schema as Text_Schema} from '../runtime/components/TextElement'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -84,8 +84,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Tool: Tool,
         AppBar: AppBar,
         Page: Page,
-        Text: Text,
-        TextInput: modelElementClass(<ElementSchema>TextInput_Schema),
+        Text: modelElementClass(Text_Schema),
+        TextInput: modelElementClass(TextInput_Schema),
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,

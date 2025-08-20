@@ -6,8 +6,7 @@ import {AppElementActionName} from '../../src/editor/Types'
 import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import {newTextInput} from '../testutil/modelHelpers'
-import Text from '../../src/model/Text'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
 import Page from '../../src/model/Page'
@@ -74,39 +73,39 @@ test('can set and get a project', () => {
 test('can set a property on the project', () => {
     handler.setProperty('text_3', 'content', 'New content')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can undo and redo actions on the project', () => {
-    const originalContent = (project.findElement('text_3') as Text).content
+    const originalContent = (project.findElement('text_3') as any).content
     handler.setProperty('text_3', 'content', 'New content')
     const projectUpdated = handler.current
     expect(projectUpdated).not.toBe(project)
-    expect((projectUpdated?.findElement('text_3') as Text).content).toBe('New content')
+    expect((projectUpdated?.findElement('text_3') as any).content).toBe('New content')
 
     handler.undo()
     expect(handler.current).toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe(originalContent)
+    expect((handler.current?.findElement('text_3') as any).content).toBe(originalContent)
 
     handler.redo()
     expect(handler.current).toBe(projectUpdated)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can undo and redo actions on the project with an action', async () => {
-    const originalContent = (project.findElement('text_3') as Text).content
+    const originalContent = (project.findElement('text_3') as any).content
     handler.setProperty('text_3', 'content', 'New content')
     const projectUpdated = handler.current
     expect(projectUpdated).not.toBe(project)
-    expect((projectUpdated?.findElement('text_3') as Text).content).toBe('New content')
+    expect((projectUpdated?.findElement('text_3') as any).content).toBe('New content')
 
     await handler.elementAction(['text_1'], 'undo')
     expect(handler.current).toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe(originalContent)
+    expect((handler.current?.findElement('text_3') as any).content).toBe(originalContent)
 
     await handler.elementAction([], 'redo')
     expect(handler.current).toBe(projectUpdated)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
 })
 
 test('can create a new element in the project', () => {
@@ -126,7 +125,7 @@ test('can create a new element in the project and set name and properties', () =
 })
 
 test('can insert an element into the project', () => {
-    const newElement = new Text('originalId', 'Text 1', {content: 'Hi!'})
+    const newElement = newText('originalId', 'Text 1', {content: 'Hi!'})
     const newId = handler.insertElement('inside', 'page_2', newElement)
     expect(handler.current).not.toBe(project)
     expect(handler.current?.findElement(newId)?.id).toBe(newId)
@@ -250,7 +249,7 @@ test('can observe changes to project', async () => {
     expect(nextCallback).toHaveBeenCalledWith(handler.current)
     handler.setProperty('text_3', 'content', 'New content')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement('text_3') as Text).content).toBe('New content')
+    expect((handler.current?.findElement('text_3') as any).content).toBe('New content')
     await wait()
     expect(nextCallback).toHaveBeenLastCalledWith(handler.current)
 })

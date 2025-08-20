@@ -1,11 +1,20 @@
 import {ElementId} from '../../src/model/Types'
 import Element from '../../src/model/Element'
-import {ElementSchema, modelElementClass} from '../../src/model/ModelElement'
+import {type ElementSchema, modelElementClass} from '../../src/model/ModelElement'
+import {Schema as Text_Schema} from '../../src/runtime/components/TextElement'
 import {Schema as TextInput_Schema} from '../../src/runtime/components/TextInput'
+import BaseInputElement from '../../src/model/BaseInputElement'
 
 export const textInputClass = modelElementClass(<ElementSchema>TextInput_Schema)
 export const newTextInput = (id: ElementId,
                       name: string,
                       properties: object,
                       elements: ReadonlyArray<Element> | undefined = undefined,
-) => new textInputClass(id, name, properties, elements)
+) => new textInputClass(id, name, properties, elements) as BaseInputElement<any>
+
+export const textClass = modelElementClass(Text_Schema)
+export const newText = (id: ElementId,
+                      name: string,
+                      properties: object,
+                      elements: ReadonlyArray<Element> | undefined = undefined,
+) => new textClass(id, name, properties, elements)

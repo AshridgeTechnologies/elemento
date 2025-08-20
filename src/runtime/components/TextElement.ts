@@ -7,6 +7,7 @@ import {sxProps} from './ComponentHelpers'
 import {flatten} from 'ramda'
 
 import lodash from 'lodash'
+import {Definitions, type ElementSchema} from '../../model/ModelElement'
 
 const {isFunction, isPlainObject, isObject} = lodash
 
@@ -17,6 +18,48 @@ type Properties = React.PropsWithChildren<Readonly<{
     show?: PropVal<boolean>,
     styles?: StylesPropVals
 }>>
+
+export const Schema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Text",
+    "description": "A text item on the page",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Text",
+    "icon": "subject",
+    "elementType": "statelessUI",
+    "isLayoutOnly": true,
+    "initialProperties": {"content": "Your text here"},
+    "canContainElementsWithThisParentType": true,
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "content": {
+                    "description": "The text shown in the element",
+                    "$ref": "#/definitions/StringMultilineOrExpression"
+                },
+                "allowHtml": {
+                    "description": "Whether HTML tags are allowed in the content",
+                    "type": "boolean"
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
 
 const asText = (content: any) => {
     if (React.isValidElement(content)) return content.toString()

@@ -1,16 +1,15 @@
 import {expect, test} from "vitest"
 import App from '../../src/model/App'
-import Text from '../../src/model/Text'
 import Form from '../../src/model/Form'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
 import Block from '../../src/model/Block'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 
 test('Form has correct defaults', ()=> {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const form = new Form('form1', 'Form the First', {}, [text1, text2])
 
     expect(form.id).toBe('form1')
@@ -25,8 +24,8 @@ test('Form has correct defaults', ()=> {
 })
 
 test('Form has correct properties', ()=> {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const form = new Form('form1', 'Form the First', {initialValue: ex`{a: 'foo', b: 42}`, horizontal: ex`1 === 2`, styles: {width: 500},
         wrap: true, label: ex`Text One`, readOnly: true, dataType: ex`recordType1`,
     keyAction: ex`Log('You pressed ' + \$key)`, submitAction: ex`Log('You submitted ' + \$data)`}, [text1, text2])
@@ -55,8 +54,8 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('t2', 'Text 2', {content: ex`"Some text"`})
     const form = new Form('form1', 'Form 1', {horizontal: true}, [text1])
     const updatedForm1 = form.set('form1', 'name', 'Form 1A')
     expect(updatedForm1.name).toBe('Form 1A')
@@ -72,7 +71,7 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const form1 = new Form('form1', 'Form 1', {}, [text1])
     const updatedForm = form1.set('x1', 'name', 'Form 1A')
     expect(updatedForm).toBe(form1)
@@ -98,7 +97,7 @@ test('can be contained by Form, Block and Page', () => {
     const app = new App('app1', 'App1', {}, [])
     const page = new Page('page1', 'Page 1', {}, [])
     const block = new Block('lay1', 'Layout 1', {}, [])
-    const text = new Text('text1', 'Text 1', {}, [])
+    const text = newText('text1', 'Text 1', {}, [])
     expect(form.canContain('Form')).toBe(true)
     expect(app.canContain('Form')).toBe(false)
     expect(page.canContain('Form')).toBe(true)
@@ -108,8 +107,8 @@ test('can be contained by Form, Block and Page', () => {
 
 
 test('finds itself and children in a page', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const innerForm = new Form('form2', 'Form 2', {}, [text2])
     const form = new Form('form1', 'Form 1', {}, [text1, innerForm])
     const page = new Page('p1', 'Page 1', {}, [form])
@@ -120,8 +119,8 @@ test('finds itself and children in a page', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const form = new Form('form1', 'Form 1', {horizontal: ex`1 == 2`, styles: {width: '50%'}}, [text1, text2])
 
     expect(asJSON(form)).toStrictEqual({
@@ -145,7 +144,7 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
     let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const form = new Form('form1', 'Form 1', {horizontal: ex`false`}, [text, textInput])
     const newForm = loadJSON(asJSON(form))

@@ -2,9 +2,9 @@ import {expect, test} from "vitest"
 import WebFile from '../../src/model/WebFile'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import Text from '../../src/model/Text'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
+import {newText} from '../testutil/modelHelpers'
 
 test('WebFile has correct properties with default values', ()=> {
     const file1 = new WebFile('id1', 'WebFile 1', {})
@@ -37,7 +37,7 @@ test('creates an updated object with a property set to a new value', ()=> {
 test('can be contained in correct types', () => {
     const app = new App('id', 'App 1', {})
     const page = new Page('p1', 'Page 1', {})
-    const text = new Text('id1', 'Text 1', {})
+    const text = newText('id1', 'Text 1', {})
     expect(page.canContain('WebFile')).toBe(true)
     expect(app.canContain('WebFile')).toBe(true)
     expect(text.canContain('WebFile')).toBe(false)

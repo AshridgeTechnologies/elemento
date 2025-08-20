@@ -1,5 +1,4 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
@@ -19,13 +18,14 @@ import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import BaseInputElement from '../../src/model/BaseInputElement'
 import {asAny} from '../testutil/testHelpers'
+import BaseElement from '../../src/model/BaseElement'
 
 test('creates elements of correct type', () => {
     expect(createNewElement('App', 2)).toBeInstanceOf(App)
     expect(createNewElement('Page', 2)).toBeInstanceOf(Page)
     expect(createNewElement('Block', 2)).toBeInstanceOf(Block)
     expect(createNewElement('AppBar', 2)).toBeInstanceOf(AppBar)
-    expect(createNewElement('Text', 2)).toBeInstanceOf(Text)
+    expect(createNewElement('Text', 2)).toBeInstanceOf(BaseElement)
     expect(createNewElement('TextInput', 2)).toBeInstanceOf(BaseInputElement)
     expect(createNewElement('NumberInput', 2)).toBeInstanceOf(NumberInput)
     expect(createNewElement('SelectInput', 2)).toBeInstanceOf(SelectInput)

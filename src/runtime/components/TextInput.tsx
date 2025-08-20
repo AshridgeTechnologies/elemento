@@ -3,7 +3,6 @@ import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState from './InputComponentState'
-import type {InputComponentExternalProps} from './InputComponentState'
 import {TextType} from '../types'
 import {pick} from 'ramda'
 import BaseType from '../types/BaseType'
@@ -15,11 +14,9 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
-import {type JSONSchema} from '@apidevtools/json-schema-ref-parser'
+import {Definitions, type ElementSchema} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
-type StateProperties = InputComponentExternalProps<string, TextType, {}>
-export type SchemaProperties = Properties & StateProperties
 
 const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     const props = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))
@@ -31,7 +28,7 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     return props
 }
 
-export const Schema: JSONSchema = {
+export const Schema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Text Input",
     "description": "An input box to enter text data, single or multiline",
@@ -62,132 +59,7 @@ export const Schema: JSONSchema = {
     "required": ["kind", "properties"],
     "unevaluatedProperties": false,
 
-    "definitions": {
-        "BaseElement": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "The unique identifier of this element",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "The name of this element",
-                    "type": "string"
-                },
-                "kind": {
-                    "description": "The type of this element eg TextInput",
-                    "type": "string"
-                },
-                "notes": {
-                    "description": "Additional information about this element for use by the developer",
-                    "type": "string"
-                }
-            },
-            "required": ["id", "name", "kind"]
-        },
-        "BaseInputProperties": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-                "label": {
-                    "description": "The label shown for the input box. The name is used if not specified.",
-                    "$ref": "#/definitions/StringOrExpression"
-                },
-                "dataType": {
-                    "description": "A Data Type for this input box",
-                    "$ref": "#/definitions/Expression"
-                },
-                "readOnly": {
-                    "description": "If true, the initial value shown cannot be changed by the user",
-                    "$ref": "#/definitions/BooleanOrExpression"
-                },
-                "show": {
-                    "description": "Whether this element is displayed",
-                    "$ref": "#/definitions/BooleanOrExpression"
-                },
-                "styles": {
-                    "description": "The specific CSS styles applied to this element",
-                    "$ref": "#/definitions/Styles"
-                },
-                "initialValue": {
-                    "description": "The initial value shown in the input box.",
-                    "$ref": "#/definitions/StringOrNumberOrExpression"
-                }
-
-            },
-            "required": []
-        },
-        // "TextInput": ,
-        "Expression": {
-            "description": "A formula used to calculate a value",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "expr": {
-                    "description": "The formula",
-                    "type": "string"
-                }
-            }
-        },
-        "ActionExpression": {
-            "description": "A formula used to perform an action",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "expr": {
-                    "description": "The formula",
-                    "type": "string"
-                }
-            }
-        },
-        "StringOrExpression": {
-            "anyOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "$ref": "#/definitions/Expression"
-                }
-            ]
-        },
-        "StringOrNumberOrExpression": {
-            "anyOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "number"
-                },
-                {
-                    "$ref": "#/definitions/Expression"
-                }
-            ]
-        },
-        "BooleanOrExpression": {
-            "anyOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "$ref": "#/definitions/Expression"
-                }
-            ]
-        },
-        "Styles": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "backgroundColor": {
-                    "$ref": "#/definitions/StringOrExpression"
-
-                },
-                "width": {
-                    "$ref": "#/definitions/StringOrNumberOrExpression"
-                },
-            }
-        }
-    }
+    "definitions": Definitions
 }
 
 

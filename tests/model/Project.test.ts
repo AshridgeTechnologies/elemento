@@ -1,5 +1,4 @@
 import {describe, expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
@@ -21,7 +20,7 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import NumberInput from '../../src/model/NumberInput'
 import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -70,15 +69,15 @@ test('can find page by id', ()=> {
 })
 
 let testProject = function () {
-    const text1 = new Text('t1', 'Text 1', {content: ex``})
-    const text2 = new Text('t2', 'Text 3', {content: ex``})
+    const text1 = newText('t1', 'Text 1', {content: ex``})
+    const text2 = newText('t2', 'Text 3', {content: ex``})
     const layout1 = new Block('lay1', 'Layout 1', {}, [text2])
     const page1 = new Page('p1', 'Page 1', {}, [
         text1, layout1,
     ])
-    const text3 = new Text('t3', 'Text 1', {content: ex``})
-    const text4 = new Text('t4', 'Text 4', {content: ex``})
-    const text5 = new Text('t5', 'Text 3', {content: ex`Same name as text2`})
+    const text3 = newText('t3', 'Text 1', {content: ex``})
+    const text4 = newText('t4', 'Text 4', {content: ex``})
+    const text5 = newText('t5', 'Text 3', {content: ex`Same name as text2`})
     const comp1 = new ComponentInstance('ci1', 'Comp 1', {componentType: 'CompType1'})
     const page2 = new Page('p2', 'Page 2', {}, [
         text3, text4, text5, comp1
@@ -131,8 +130,8 @@ test('can find path of element on a page by id', ()=> {
 })
 
 test('can find path of element in a layout by id', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const innerBlock = new Block('lay2', 'Layout 2', {}, [text2])
     const block = new Block('lay1', 'Layout 1', {}, [text1, innerBlock])
     const page = new Page('p1', 'Page 1', {}, [block])
@@ -154,7 +153,7 @@ test('can find element by path where two elements have the same name', () => {
 })
 
 test('can find child elements by type', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const text1 = newText('t1', 'Text 1', {content: ex``})
     const page1 = new Page('p1', 'Page 1', {}, [text1,])
 
     const app = new App('app1', 'App 1', {}, [page1])
@@ -165,7 +164,7 @@ test('can find child elements by type', () => {
 })
 
 test('knows if has server apps', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const text1 = newText('t1', 'Text 1', {content: ex``})
     const page1 = new Page('p1', 'Page 1', {}, [text1,])
 
     const app = new App('app1', 'App 1', {}, [page1])
@@ -199,10 +198,10 @@ test('can find property definitions of built-in and user-defined elements', () =
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const app = new App('a1', 'App 1', {}, [page1])
@@ -222,7 +221,7 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const app = new App('a1', 'App 1', {}, [page1])
     const project = Project.new([app])
@@ -231,10 +230,10 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('creates an updated object if a property in a contained object is changed and keeps unchanged objects', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const app = new App('a1', 'App 1', {}, [page1])
@@ -246,7 +245,7 @@ test('creates an updated object if a property in a contained object is changed a
     expect(updatedProject.elements?.length).toBe(4)
     expect(updatedProject.elements![0]).toBe(app)
     expect(updatedProject.elements![1]).not.toBe(app2)
-    expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as Text).content).toBe('"Further text"')
+    expect((((updatedProject.elements![1] as App).pages[0].elementArray()[1]) as any).content).toBe('"Further text"')
     expect((updatedProject.elements![1] as App).pages[0].elementArray()[0]).toBe(text3)
 })
 
@@ -258,11 +257,11 @@ test('insert menu items includes built-in and user-defined components', () => {
 })
 
 describe('Insert new element', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('text_7', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -275,7 +274,7 @@ describe('Insert new element', () => {
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
@@ -286,7 +285,7 @@ describe('Insert new element', () => {
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![1])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 
@@ -296,7 +295,7 @@ describe('Insert new element', () => {
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![2])
         expect(newElement!.id).toBe('text_8')
         expect(newElement!.name).toBe('Text 8')
-        expect((newElement as Text).content).toBe('Your text here')
+        expect((newElement as any).content).toBe('Your text here')
         expect((updatedProject.elements![0] as App).pages[0]).not.toBe(app.pages[0])
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
@@ -317,11 +316,11 @@ describe('Insert new element', () => {
 })
 
 describe('Insert element', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('text_7', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -329,7 +328,7 @@ describe('Insert element', () => {
 
     test('creates an updated object on insert before element in a page and preserves unchanged objects', () => {
 
-        const insertedElement = new Text('originalId', 'Text 99', {content: 'Hi!'})
+        const insertedElement = newText('originalId', 'Text 99', {content: 'Hi!'})
         const [updatedProject, newElements] = project.insert('before', text1.id, insertedElement)
         const newElement = newElements[0]
         expect((updatedProject.elements![0] as App).pages[0].elements!.map(el => el.name)).toStrictEqual(['Text 99', 'Text 1', 'Text 2'])
@@ -337,17 +336,17 @@ describe('Insert element', () => {
         expect(newElement).toBe((updatedProject.elements![0] as App).pages[0].elements![0])
         expect(newElement.id).toBe('text_8')
         expect(newElement.name).toBe('Text 99')
-        expect((newElement as Text).content).toBe('Hi!')
+        expect((newElement as any).content).toBe('Hi!')
         expect((updatedProject.elements![0] as App).pages[1]).toBe(app.pages[1])
     })
 })
 
 describe('Move element', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('text_4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -392,11 +391,11 @@ describe('Move element', () => {
 })
 
 test('creates an updated object on delete element on a page and preserves unchanged objects', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: '"Some text"'})
-    const text2 = new Text('text_2', 'Text 2', {content: '"Some text"'})
+    const text1 = newText('text_1', 'Text 1', {content: '"Some text"'})
+    const text2 = newText('text_2', 'Text 2', {content: '"Some text"'})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: '"Some text 3"'})
-    const text4 = new Text('text_7', 'Text 4', {content: '"Some text 4"'})
+    const text3 = newText('text_3', 'Text 3', {content: '"Some text 3"'})
+    const text4 = newText('text_7', 'Text 4', {content: '"Some text 4"'})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -408,11 +407,11 @@ test('creates an updated object on delete element on a page and preserves unchan
 })
 
 test('finds max id for element type', ()=> {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_7', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('TEXT_8', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('text_7', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('TEXT_8', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -436,11 +435,11 @@ test('can contain App, not other types', () => {
 })
 
 test('finds element types that can insert for a position and target element', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = new Text('text_3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('text_7', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('text_3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('text_7', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -463,10 +462,10 @@ test('finds element types that can insert for a position and target element', ()
 })
 
 test('gets actions available for a single item', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
@@ -497,7 +496,7 @@ test('gets actions available for a single item', () => {
 })
 
 test('cannot delete a Component that is in use', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const comp1 = new ComponentInstance('ci1', 'Comp 1', {componentType: 'CompType1'})
     const page1 = new Page('p1', 'Page 1', {}, [text1, comp1])
 
@@ -513,7 +512,7 @@ test('cannot delete a Component that is in use', () => {
 })
 
 test('gets actions available for multiple items', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
@@ -537,9 +536,9 @@ test('gets actions available for multiple items', () => {
 })
 
 test('adds Files element', () => {
-    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1])
-    const text3 = new Text('text_7', 'Text 3', {content: ex`"Some text 3"`})
+    const text3 = newText('text_7', 'Text 3', {content: ex`"Some text 3"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3])
     const app = new App('app', 'App 1', {}, [page1])
     const app2 = new App('a2', 'App 2', {}, [page2])
@@ -553,10 +552,10 @@ test('adds Files element', () => {
 })
 
 test('converts to JSON, excludes Files', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = newText('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
@@ -575,9 +574,9 @@ test('converts to JSON, excludes Files', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
     const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
@@ -594,7 +593,7 @@ test('new project has ToolFolder and ComponentFolder', () => {
 })
 
 test('if no ToolFolder or ComponentFolder in the elements of existing, adds one', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
     const project = Project.new([app])
@@ -605,15 +604,15 @@ test('if no ToolFolder or ComponentFolder in the elements of existing, adds one'
 })
 
 test('findClosestElementByCodeName finds in Page or App', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1, text2])
-    const text1a = new Text('t11', 'Text 1', {content: ex`"Some stuff"`})
-    const text3 = new Text('t3', 'Text 3', {content: ex`"More stuff"`})
+    const text1a = newText('t11', 'Text 1', {content: ex`"Some stuff"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"More stuff"`})
     const page2 = new Page('p2', 'Page 2', {}, [text1a, text3])
 
-    const text2a = new Text('t2a', 'Text 2', {content: ex`"Top stuff"`})
-    const text3a = new Text('t3a', 'Text 3', {content: ex`"Other stuff"`})
+    const text2a = newText('t2a', 'Text 2', {content: ex`"Top stuff"`})
+    const text3a = newText('t3a', 'Text 3', {content: ex`"Other stuff"`})
     const appBar = new AppBar('ab1', 'The App Bar', {}, [text2a, text3a]  )
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2, appBar])
     const project = Project.new([app])
@@ -630,19 +629,19 @@ test('findClosestElementByCodeName finds in Page or App', () => {
 })
 
 test('searchElements finds elements matching the regexp', () => {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`, notes: 'Important text'})
-    const text2 = new Text('t2', 'Text 2', {content: "More text"})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`, notes: 'Important text'})
+    const text2 = newText('t2', 'Text 2', {content: "More text"})
     const textInput1 = newTextInput('ti1', 'Text Input 1', {initialValue: 'Starting with...'})
     const numberInput1 = new NumberInput('ni1', 'Number Input 1', {initialValue: 77})
     const numberInput2 = new NumberInput('ni2', 'Number Input 2', {initialValue: ex`0`})
     const selectInput1 = new SelectInput('si1', 'Select Input 1', {initialValue: undefined})
     const page1 = new Page('p1', 'Page 1', {}, [text1, text2, textInput1, numberInput1, numberInput2, selectInput1])
-    const text1a = new Text('t11', 'Text 1', {content: ex`"Some stuff"`})
-    const text3 = new Text('t3', 'Text 3', {content: ex`"More stuff"`})
+    const text1a = newText('t11', 'Text 1', {content: ex`"Some stuff"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"More stuff"`})
     const page2 = new Page('p2', 'Page 2', {}, [text1a, text3])
 
-    const text2a = new Text('t2a', 'Text 2', {content: ex`"Top stuff"`})
-    const text3a = new Text('t3a', 'Text 3', {content: "Other stuff"})
+    const text2a = newText('t2a', 'Text 2', {content: ex`"Top stuff"`})
+    const text3a = newText('t3a', 'Text 3', {content: "Other stuff"})
     const appBar = new AppBar('ab1', 'The App Bar', {}, [text2a, text3a]  )
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2, appBar])
     const project = Project.new([app], 'Project 1', 'proj1', {author: 'Joseph'})

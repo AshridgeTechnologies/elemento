@@ -1,19 +1,19 @@
 import {expect, test} from "vitest"
-import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
 import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 import DateType from '../../src/model/types/DateType'
 import Block from '../../src/model/Block'
-import {newTextInput} from '../testutil/modelHelpers'
+import {newText, newTextInput} from '../testutil/modelHelpers'
+import BaseElement from '../../src/model/BaseElement'
 
 // tests for loadJSON are in the test for each model class
 
 test('converts single element from JSON string', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
     const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
@@ -23,9 +23,9 @@ test('converts single element from JSON string', ()=> {
 })
 
 test('converts array of elements from JSON string', ()=> {
-    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
     const elements = [text1, page1, text3]
     const newElements = loadJSONFromString(JSON.stringify(elements))
     expect(newElements).toStrictEqual(elements)
@@ -45,8 +45,8 @@ test('does not convert numeric string to Date', () => {
 })
 
 test('converts Layout to Block', () => {
-    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
     const layout1 = {
         kind: 'Layout',
         id: 'lay1',
@@ -79,5 +79,5 @@ test('converts Layout to Block', () => {
     expect((loadJSON(layout2) as Block).layout).toBe('horizontal wrapped')
     expect((loadJSON(layout3) as Block).layout).toBe('vertical')
     expect((loadJSON(layout4) as Block).layout).toBe('horizontal')
-    expect((loadJSON(layout1) as Block).elementArray()[0]).toBeInstanceOf(Text)
+    expect((loadJSON(layout1) as Block).elementArray()[0]).toBeInstanceOf(BaseElement)
 })
