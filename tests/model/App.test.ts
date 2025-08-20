@@ -5,9 +5,9 @@ import App from '../../src/model/App'
 import AppBar from '../../src/model/AppBar'
 import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
+import {newTextInput} from '../testutil/modelHelpers'
 
 test('App has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -214,7 +214,7 @@ test('converts from plain object', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
+    const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1, page2])

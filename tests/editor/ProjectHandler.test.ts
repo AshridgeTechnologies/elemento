@@ -3,10 +3,10 @@ import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
 import Button from '../../src/model/Button'
 import {AppElementActionName} from '../../src/editor/Types'
-import {resetSaveFileCallData, wait} from '../testutil/testHelpers'
+import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import TextInput from '../../src/model/TextInput'
+import {newTextInput} from '../testutil/modelHelpers'
 import Text from '../../src/model/Text'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
@@ -112,24 +112,24 @@ test('can undo and redo actions on the project with an action', async () => {
 test('can create a new element in the project', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'Text')
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement(newId) as TextInput).id).toBe(newId)
+    expect(handler.current?.findElement(newId)?.id).toBe(newId)
     expect((handler.current?.findElement('page_2')?.elements as any)[2].id).toBe(newId)
 })
 
 test('can create a new element in the project and set name and properties', () => {
     const newId = handler.insertNewElement('inside', 'page_2', 'TextInput', {name: 'The Stuff', styles:{width: '100%'}})
     expect(handler.current).not.toBe(project)
-    const newElement = handler.current?.findElement(newId) as TextInput
+    const newElement = handler.current?.findElement(newId)!
     expect(newElement.id).toBe(newId)
     expect(newElement.name).toBe('The Stuff')
-    expect(newElement.styles?.width).toBe('100%')
+    expect(asAny(newElement).styles?.width).toBe('100%')
 })
 
 test('can insert an element into the project', () => {
     const newElement = new Text('originalId', 'Text 1', {content: 'Hi!'})
     const newId = handler.insertElement('inside', 'page_2', newElement)
     expect(handler.current).not.toBe(project)
-    expect((handler.current?.findElement(newId) as TextInput).id).toBe(newId)
+    expect(handler.current?.findElement(newId)?.id).toBe(newId)
     expect((handler.current?.findElement('page_2')?.elements as any)[2].id).toBe('text_5')
 })
 
@@ -179,7 +179,7 @@ test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the
 test('can do pasteAfter action on the project after the first id with multiple items in correct order', async () => {
     mockClipboard()
     const elementToPaste1 = new Button('xyz', 'Big button', {})
-    const elementToPaste2 = new TextInput('pqr', 'Big Text Input', {})
+    const elementToPaste2 = newTextInput('pqr', 'Big Text Input', {})
     clipboardData = elementToJSON([elementToPaste1, elementToPaste2])
     const actionResult = await handler.elementAction(['text_3', 'text_1'], 'pasteAfter')
     const page2 = handler.current?.findElement('page_2')

@@ -1,4 +1,4 @@
-import {test, expect, TestInfo} from '@playwright/test'
+import {expect, test, TestInfo} from '@playwright/test'
 import {pageFunctions} from './playwrightHelpers.js'
 import fs from 'fs'
 

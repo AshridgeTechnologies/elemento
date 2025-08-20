@@ -2,8 +2,8 @@ import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
+import {newTextInput} from '../testutil/modelHelpers'
 
 test('Page has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -113,7 +113,7 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text, textInput])
     const newPage = loadJSON(asJSON(page))
     expect(newPage).toStrictEqual<Page>(page)

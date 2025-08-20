@@ -5,7 +5,6 @@ import Page from '../../src/model/Page'
 import App from '../../src/model/App'
 import AppBar from '../../src/model/AppBar'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import Block from '../../src/model/Block'
@@ -22,6 +21,7 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import NumberInput from '../../src/model/NumberInput'
 import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
+import {newTextInput} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -578,7 +578,7 @@ test('converts from plain object', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
+    const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
     const app = new App('a1', 'App 1', {author: `Jo`}, [page1])
@@ -632,7 +632,7 @@ test('findClosestElementByCodeName finds in Page or App', () => {
 test('searchElements finds elements matching the regexp', () => {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`, notes: 'Important text'})
     const text2 = new Text('t2', 'Text 2', {content: "More text"})
-    const textInput1 = new TextInput('ti1', 'Text Input 1', {initialValue: 'Starting with...'})
+    const textInput1 = newTextInput('ti1', 'Text Input 1', {initialValue: 'Starting with...'})
     const numberInput1 = new NumberInput('ni1', 'Number Input 1', {initialValue: 77})
     const numberInput2 = new NumberInput('ni2', 'Number Input 2', {initialValue: ex`0`})
     const selectInput1 = new SelectInput('si1', 'Select Input 1', {initialValue: undefined})

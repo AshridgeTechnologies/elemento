@@ -1,14 +1,14 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
 /**
  * @vitest-environment jsdom
  */
 import React from 'react'
 import PropertyEditor from '../../src/editor/PropertyEditor'
+import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
 import Text from '../../src/model/Text'
-import TextInput from '../../src/model/TextInput'
+import {newTextInput} from '../testutil/modelHelpers'
 import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
@@ -46,7 +46,6 @@ const onNameSelected = vi.fn()
 const idField = () => (screen.getByTestId('elementId') as HTMLElement)
 const typeField = () => (screen.getByTestId('elementType') as HTMLElement)
 const input = (label: string) => (screen.getByLabelText(label) as HTMLInputElement)
-const textarea = (label: string) => (screen.getByLabelText(label) as HTMLTextAreaElement)
 const select = (label: string) => (screen.getByLabelText(label).nextSibling as HTMLInputElement)
 const inputValue = (label: string) => {
     const el = input(label)
@@ -154,7 +153,7 @@ test('updates other properties', () => {
 })
 
 test('updates style properties', () => {
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: 'red'}})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: 'red'}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Color')).toBe('red')
     fireEvent.input(input('Color'), {target: {value: 'blue'}})
@@ -163,7 +162,7 @@ test('updates style properties', () => {
 })
 
 test('shows common style properties when search', () => {
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(screen.queryByLabelText('Color')).toBe(null)
     fireEvent.input(input('Search'), {target: {value: 'col'}})
@@ -174,7 +173,7 @@ test('shows common style properties when search', () => {
 })
 
 test('icon clears search box', () => {
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     fireEvent.input(input('Search'), {target: {value: 'col'}})
     expect(inputValue('Color')).toBe('')
@@ -183,7 +182,7 @@ test('icon clears search box', () => {
 })
 
 test('shows advanced style properties if check box', () => {
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', styles: {}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(screen.queryByLabelText('Accent Color')).toBe(null)
     fireEvent.click(screen.getByLabelText('Show advanced properties'))
@@ -196,7 +195,7 @@ test('shows advanced style properties if check box', () => {
 
 test('selects name with Cmd/Ctrl-Click', () => {
     const onNameSelected = vi.fn()
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', initialValue: ex`AnotherElement.size`})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', initialValue: ex`AnotherElement.size`})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Initial Value')).toBe('AnotherElement.size')
     fireEvent.click(input('Initial Value'), {ctrlKey: true, offsetX: 60, offsetY: 12})
@@ -205,7 +204,7 @@ test('selects name with Cmd/Ctrl-Click', () => {
 
 test('selects name in styles with Cmd/Ctrl-Click', () => {
     const onNameSelected = vi.fn()
-    const element = new TextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: ex`ColorOf(AnotherElement)`}})
+    const element = newTextInput('id1', 'Text 1', {label: 'Some Text', styles: {color: ex`ColorOf(AnotherElement)`}})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(inputValue('Color')).toBe('ColorOf(AnotherElement)')
     fireEvent.click(input('Color'), {ctrlKey: true, offsetX: 0, offsetY: 12})
@@ -326,7 +325,7 @@ test('has fields for AppBar', () => {
 })
 
 test('has fields for TextInput', () => {
-    const element = new TextInput('id1', 'Text Input 1', {
+    const element = newTextInput('id1', 'Text Input 1', {
         initialValue: ex`"Hi!"`,
         multiline: ex`true || false`,
         label: ex`"Text One"`,
@@ -342,7 +341,7 @@ test('has fields for TextInput', () => {
 })
 
 test('has fields for TextInput with default values', () => {
-    const element = new TextInput('id1', 'Text Input 1', {})
+    const element = newTextInput('id1', 'Text Input 1', {})
     render( <PropertyEditor element={element} propertyDefs={element.propertyDefs} onChange={onChange} onNameSelected={onNameSelected} onSearch={noop}/>)
     expect(nameInputValue()).toBe('Text Input 1')
     expect(inputValue('Label')).toBe('')
@@ -520,7 +519,7 @@ test('shows errors for a normal property', () => {
 
 test('shows errors for styles properties', () => {
     // const start = Date.now()
-    const element = new TextInput('id1', 'Text Input 1', {
+    const element = newTextInput('id1', 'Text Input 1', {
         styles: {
             fontSize: 44,
             backgroundColor: ex`Splurge`,

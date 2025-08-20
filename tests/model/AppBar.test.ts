@@ -2,9 +2,9 @@ import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import {asJSON, ex} from '../testutil/testHelpers'
 import AppBar from '../../src/model/AppBar'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
+import {newTextInput} from '../testutil/modelHelpers'
 
 test('AppBar has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -66,7 +66,7 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`70`}})
+    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`70`}})
     const appBar = new AppBar('p1', 'AppBar 1', {title: 'An App', styles: {color: 'red'}}, [text, textInput])
     const newAppBar = loadJSON(asJSON(appBar))
     expect(newAppBar).toStrictEqual<AppBar>(appBar)

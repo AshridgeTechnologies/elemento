@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
-import TextInput from '../../src/model/TextInput'
 import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
@@ -18,6 +17,8 @@ import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
+import BaseInputElement from '../../src/model/BaseInputElement'
+import {asAny} from '../testutil/testHelpers'
 
 test('creates elements of correct type', () => {
     expect(createNewElement('App', 2)).toBeInstanceOf(App)
@@ -25,7 +26,7 @@ test('creates elements of correct type', () => {
     expect(createNewElement('Block', 2)).toBeInstanceOf(Block)
     expect(createNewElement('AppBar', 2)).toBeInstanceOf(AppBar)
     expect(createNewElement('Text', 2)).toBeInstanceOf(Text)
-    expect(createNewElement('TextInput', 2)).toBeInstanceOf(TextInput)
+    expect(createNewElement('TextInput', 2)).toBeInstanceOf(BaseInputElement)
     expect(createNewElement('NumberInput', 2)).toBeInstanceOf(NumberInput)
     expect(createNewElement('SelectInput', 2)).toBeInstanceOf(SelectInput)
     expect(createNewElement('TrueFalseInput', 2)).toBeInstanceOf(TrueFalseInput)
@@ -57,6 +58,6 @@ test('creates elements with next sequence number in start case name', ()=> {
 test('creates elements with properties', ()=> {
     const element = createNewElement('TextInput', 2, {label: 'The Input', initialValue: 'Wide'})
     expect(element.name).toBe('Text Input 2')
-    expect((element as TextInput).label).toBe('The Input')
-    expect((element as TextInput).initialValue).toBe('Wide')
+    expect(asAny(element).label).toBe('The Input')
+    expect(asAny(element).initialValue).toBe('Wide')
 })

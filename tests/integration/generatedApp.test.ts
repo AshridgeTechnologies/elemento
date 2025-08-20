@@ -15,7 +15,7 @@ import Project1 from '../../src/model/Project'
 import Project2 from '../../src/model/Project'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
-import TextInput from '../../src/model/TextInput'
+import {newTextInput} from '../testutil/modelHelpers'
 
 afterEach(() => {
     // @ts-ignore
@@ -50,7 +50,7 @@ test.skip('generated code includes types which can be referenced in the app', as
     const app = new App('t1', 'Test 1', {}, [
         new Page('p1', 'Page 1', {}, [
             new Text('text1', 'Text 1', {content: ex`"Enter up to " + MyTypes.Text1.maxLength + " characters"`}),
-            new TextInput('textInput2', 'Text Input', {styles: {width: ex`MyTypes.Text1.maxLength`}}),
+            newTextInput('textInput2', 'Text Input', {styles: {width: ex`MyTypes.Text1.maxLength`}}),
         ])])
 
     const textType1 = new TextType('tt1', 'Text 1', {description: 'The text', maxLength: 20}, )

@@ -3,10 +3,10 @@ import App from '../../src/model/App'
 import Text from '../../src/model/Text'
 import Form from '../../src/model/Form'
 import {asJSON, ex} from '../testutil/testHelpers'
-import TextInput from '../../src/model/TextInput'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
 import Block from '../../src/model/Block'
+import {newTextInput} from '../testutil/modelHelpers'
 
 test('Form has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -146,7 +146,7 @@ test('converts to JSON', ()=> {
 
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const form = new Form('form1', 'Form 1', {horizontal: ex`false`}, [text, textInput])
     const newForm = loadJSON(asJSON(form))
     expect(newForm).toStrictEqual<Form>(form)

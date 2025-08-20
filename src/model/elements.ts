@@ -4,7 +4,6 @@ import AppBar from './AppBar'
 import Page from './Page'
 import Dialog from './Dialog'
 import Text from './Text'
-import TextInput from './TextInput'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
@@ -78,7 +77,7 @@ export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     }
 }
 
-export const elementTypes = (): {[key in ElementType]: any} => {
+const elementTypes = (): {[key in ElementType]: any} => {
     return {
         Project: Project,
         App: App,
@@ -86,7 +85,7 @@ export const elementTypes = (): {[key in ElementType]: any} => {
         AppBar: AppBar,
         Page: Page,
         Text: Text,
-        TextInput: TextInput,
+        TextInput: modelElementClass(<ElementSchema>TextInput_Schema),
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
@@ -137,9 +136,6 @@ export const elementTypes = (): {[key in ElementType]: any} => {
 export const elementTypeNames = ()=> Object.keys(elementTypes()) as ElementType[]
 export const isBuiltInType = (elementType: ElementType) => elementTypeNames().includes(elementType)
 export const elementOfType = (elementType: ElementType) => {
-    if (elementType === 'TextInput') {
-        return modelElementClass(<ElementSchema>TextInput_Schema)
-    }
     return elementTypes()[elementType]
 }
 export const parentTypeOf = (elementType: ElementType) => isBuiltInType(elementType) ? elementOfType(elementType).parentType : 'any'

@@ -22,6 +22,8 @@ type ElementConstructor = {
          name: string,
          properties: any,
          elements?: ReadonlyArray<Element> | undefined): BaseInputElement<any>
+
+    is<T extends Element>(element: Element): element is T
 }
 
 const classes = new Map<ElementSchema, ElementConstructor>()

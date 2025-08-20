@@ -1,12 +1,12 @@
 import {expect, test} from "vitest"
 import Text from '../../src/model/Text'
 import Page from '../../src/model/Page'
-import TextInput from '../../src/model/TextInput'
 import App from '../../src/model/App'
 import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 import DateType from '../../src/model/types/DateType'
 import Block from '../../src/model/Block'
+import {newTextInput} from '../testutil/modelHelpers'
 
 // tests for loadJSON are in the test for each model class
 
@@ -14,7 +14,7 @@ test('converts single element from JSON string', ()=> {
     const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
+    const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
     const app = new App('a1', 'App 1', {author: ex`Jo`}, [page1, page2])
@@ -39,9 +39,9 @@ test('converts ISO date string to Date', () => {
 })
 
 test('does not convert numeric string to Date', () => {
-    const textInput = new TextInput('t1', 'Text 1', {label: "32"})
-    const newTextInput = loadJSONFromString(JSON.stringify(textInput))
-    expect(newTextInput).toStrictEqual<TextInput>(textInput)
+    const textInput = newTextInput('t1', 'Text 1', {label: "32"})
+    const reloadedTextInput = loadJSONFromString(JSON.stringify(textInput))
+    expect(reloadedTextInput).toStrictEqual(textInput)
 })
 
 test('converts Layout to Block', () => {

@@ -1,5 +1,5 @@
 import {expect, Page, test} from '@playwright/test'
-import {ex, treeExpand, treeItem} from './playwrightHelpers.js'
+import {treeExpand, treeItem} from './playwrightHelpers.js'
 
 // Expects test server such as Parcel dev server running on port 1234
 const pageUrl = '/studio'

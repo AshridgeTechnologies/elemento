@@ -1,6 +1,6 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
-import TextInput from '../../src/model/TextInput'
+import {newTextInput} from '../testutil/modelHelpers'
 import Image from '../../src/model/Image'
 import Button from '../../src/model/Button'
 import Project from '../../src/model/Project'
@@ -36,12 +36,12 @@ export function projectFixture2() {
 
     const page1 = new Page('page_1', 'Main Page', {}, [
         new Text('text_1', 'First Text', {content: ex`"Page One"`}),
-        new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value"`, label: ex`'A' + 'label'`}),
+        newTextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value"`, label: ex`'A' + 'label'`}),
         new Button('button_1', 'Button 1', {content: 'Go to Page 2', action: ex`ShowPage(OtherPage)`}),
     ])
     const page2 = new Page('page_2', 'Other Page', {}, [
         new Text('text_3', 'Some Text', {content: ex`"Page Two"`}),
-        new TextInput('textInput_2', 'Another Text Input', {initialValue: ex`"Type the text"`, label: ex`'B' + 'label'`}),
+        newTextInput('textInput_2', 'Another Text Input', {initialValue: ex`"Type the text"`, label: ex`'B' + 'label'`}),
         new Button('button_2', 'Button 2', {content: 'Back to Page 1', action: ex`ShowPage(MainPage)`}),
     ])
     const app = new App('app1', 'App One', {}, [

@@ -1,20 +1,8 @@
 import {expect, test} from "vitest"
-import TextInput from '../../src/model/TextInput'
+import {newTextInput, textInputClass} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
-import {asJSON, ex} from '../testutil/testHelpers'
+import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {ElementId} from '../../src/model/Types'
-import Element from '../../src/model/Element'
-import {ElementSchema, modelElementClass} from '../../src/model/ModelElement'
-import {Schema as TextInput_Schema} from '../../src/runtime/components/TextInput'
-
-const newTextInput = (id: ElementId,
-                      name: string,
-                      properties: object,
-                      elements: ReadonlyArray<Element> | undefined = undefined,
-) => new (modelElementClass(<ElementSchema>TextInput_Schema))(id, name, properties, elements)
-
-const asAny = (val: any) => (val as any)
 
 test('TextInput shows get values from properties', ()=> {
     const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,
@@ -63,8 +51,8 @@ test('tests if an object is this type', ()=> {
     const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {}, [])
 
-    expect(TextInput.is(textInput)).toBe(true)
-    expect(TextInput.is(page)).toBe(false)
+    expect(textInputClass.is(textInput)).toBe(true)
+    expect(textInputClass.is(page)).toBe(false)
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
