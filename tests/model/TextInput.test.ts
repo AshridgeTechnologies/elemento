@@ -3,16 +3,28 @@ import TextInput from '../../src/model/TextInput'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
+import {ElementId} from '../../src/model/Types'
+import Element from '../../src/model/Element'
+import {ElementSchema, modelElementClass} from '../../src/model/ModelElement'
+import {Schema as TextInput_Schema} from '../../src/runtime/components/TextInput'
+
+const newTextInput = (id: ElementId,
+                      name: string,
+                      properties: object,
+                      elements: ReadonlyArray<Element> | undefined = undefined,
+) => new (modelElementClass(<ElementSchema>TextInput_Schema))(id, name, properties, elements)
+
+const asAny = (val: any) => (val as any)
 
 test('TextInput shows get values from properties', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,
         multiline: true, label: ex`Text One`, readOnly: true, dataType: ex`textType1`, show: true, styles: {border: '1px solid red', color: ex`"text.primary"`}})
 
     expect(textInput.id).toBe('t1')
     expect(textInput.name).toBe('Text Input 1')
     expect(textInput.codeName).toBe('TextInput1')
     expect(textInput.initialValue).toStrictEqual(ex`"Some text"`)
-    expect(textInput.multiline).toBe(true)
+    expect(asAny(textInput).multiline).toBe(true)
     expect(textInput.readOnly).toBe(true)
     expect(textInput.show).toBe(true)
     expect(textInput.label).toStrictEqual(ex`Text One`)
@@ -21,7 +33,7 @@ test('TextInput shows get values from properties', ()=> {
 })
 
 test('TextInput does not allow codeName to be same as class name', ()=> {
-    const textInput = new TextInput('t1', 'Text Input', {})
+    const textInput = newTextInput('t1', 'Text Input', {})
 
     expect(textInput.id).toBe('t1')
     expect(textInput.name).toBe('Text Input')
@@ -29,12 +41,12 @@ test('TextInput does not allow codeName to be same as class name', ()=> {
 })
 
 test('TextInput has default values', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {})
+    const textInput = newTextInput('t1', 'Text Input 1', {})
 
     expect(textInput.id).toBe('t1')
     expect(textInput.name).toBe('Text Input 1')
     expect(textInput.initialValue).toBeUndefined()
-    expect(textInput.multiline).toBeUndefined()
+    expect(asAny(textInput).multiline).toBeUndefined()
     expect(textInput.label).toBe(`Text Input 1`)
     expect(textInput.readOnly).toBeUndefined()
     expect(textInput.show).toBeUndefined()
@@ -44,11 +56,11 @@ test('TextInput has default values', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new TextInput('t1', 'Text Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'multiline', 'keyAction', 'styles'])
+    expect(newTextInput('t1', 'Text Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'multiline', 'keyAction', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {}, [])
 
     expect(TextInput.is(textInput)).toBe(true)
@@ -56,7 +68,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const updated = textInput.set('t1', 'name', 'Text 1A')
     expect(updated.name).toBe('Text 1A')
     expect(updated.initialValue).toStrictEqual(ex`"Some text"`)
@@ -71,22 +83,22 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const updated = textInput.set('x1', 'name', 'Text 1A')
     expect(updated).toBe(textInput)
 })
 
 test('converts to JSON', ()=> {
-    const text = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,
         multiline: true, label: ex`"The Text"`, readOnly: ex`true`, dataType: ex`textType1`})
-    expect(asJSON(text)).toStrictEqual({
+    expect(asJSON(textInput)).toStrictEqual({
         kind: 'TextInput',
         id: 't1',
         name: 'Text Input 1',
-        properties: text.properties
+        properties: textInput.properties
     })
 
-    const text2 = new TextInput('t1', 'Text Input 2', {initialValue: `Some text`,
+    const text2 = newTextInput('t1', 'Text Input 2', {initialValue: `Some text`,
         multiline: true, label: 'The Text', readOnly: true, styles: {color: 'red'}})
     expect(asJSON(text2)).toStrictEqual({
         kind: 'TextInput',
@@ -97,13 +109,13 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, multiline: true, dataType: ex`textType1`})
+    const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`, multiline: true, dataType: ex`textType1`})
     const plainObj = asJSON(textInput)
     const newObj = loadJSON(plainObj)
-    expect(newObj).toStrictEqual<TextInput>(textInput)
+    expect(newObj).toStrictEqual(textInput)
 
-    const textInput2 = new TextInput('t1', 'Text Input 1', {initialValue: `Some text`, multiline: true, label: 'The Text', readOnly: true})
+    const textInput2 = newTextInput('t1', 'Text Input 1', {initialValue: `Some text`, multiline: true, label: 'The Text', readOnly: true})
     const plainObj2 = asJSON(textInput2)
     const newObj2 = loadJSON(plainObj2)
-    expect(newObj2).toStrictEqual<TextInput>(textInput2)
+    expect(newObj2).toStrictEqual(textInput2)
 })

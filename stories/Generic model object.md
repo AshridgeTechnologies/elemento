@@ -24,3 +24,4 @@ Technical
 - Change component type to property
 - Create a Meta-Schema to enforce the special keywords used
 - Separate out types to ensure runtime does not depend on model package
+- Generic type to recognise properties?

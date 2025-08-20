@@ -34,7 +34,7 @@ test('caches element classes', () => {
 })
 
 test('Model class properties do not affect BaseInputElement prototype', async ()=> {
-    const modelClass = await modelElementClass(TextInput_Schema as ElementSchema)
+    modelElementClass(TextInput_Schema as ElementSchema)
 
     const BaseInputElementClass = BaseInputElement
     expect(BaseInputElementClass.prototype).not.toHaveProperty('multiline')

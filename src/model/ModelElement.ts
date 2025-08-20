@@ -1,5 +1,5 @@
 import {JSONSchema} from "@apidevtools/json-schema-ref-parser"
-import BaseElement, {propDef} from './BaseElement'
+import {propDef} from './BaseElement'
 import {ComponentType, ElementId, eventAction, PropertyDef, PropertyType} from "./Types";
 import BaseInputElement from './BaseInputElement'
 import {mapValues} from 'radash'
@@ -27,10 +27,6 @@ type ElementConstructor = {
 const classes = new Map<ElementSchema, ElementConstructor>()
 
 const createElementClass = (schema: ElementSchema): ElementConstructor => {
-    // let schema = await $RefParser.dereference(originalSchema, {mutateInputSchema: false});
-    // console.dir(schema)
-    // console.log(JSON.stringify(schema, null, 2))
-
     const {icon, kind, elementType, valueType} = schema
 
     const ownProps = (schema.properties!.properties as JSONSchema).properties as Record<string, PropertySchema>
@@ -54,8 +50,8 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
     const elementClass = {
         [kind]: class extends BaseInputElement<any> {
             readonly kind: string = kind
-            readonly iconClass: string = icon
-            readonly valueType: PropertyType = valueType!
+            get iconClass() { return icon }
+            get valueType(): PropertyType { return valueType! }
 
             type(): ComponentType {
                 return elementType

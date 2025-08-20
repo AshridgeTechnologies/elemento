@@ -59,6 +59,9 @@ import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
+import {ElementSchema, modelElementClass} from './ModelElement'
+
+import {Schema as TextInput_Schema} from '../runtime/components/TextInput'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -133,5 +136,10 @@ export const elementTypes = (): {[key in ElementType]: any} => {
 
 export const elementTypeNames = ()=> Object.keys(elementTypes()) as ElementType[]
 export const isBuiltInType = (elementType: ElementType) => elementTypeNames().includes(elementType)
-export const elementOfType = (elementType: ElementType) => elementTypes()[elementType]
+export const elementOfType = (elementType: ElementType) => {
+    if (elementType === 'TextInput') {
+        return modelElementClass(<ElementSchema>TextInput_Schema)
+    }
+    return elementTypes()[elementType]
+}
 export const parentTypeOf = (elementType: ElementType) => isBuiltInType(elementType) ? elementOfType(elementType).parentType : 'any'
