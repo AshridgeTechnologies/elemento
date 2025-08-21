@@ -237,6 +237,9 @@ export const Definitions: {[k: string]: JSONSchema7Definition } = {
             }
         ]
     },
+    "StringMultilineOrExpression": {
+        "$ref": "#/definitions/StringOrExpression"
+    },
     "StringOrNumberOrExpression": {
         "anyOf": [
             {

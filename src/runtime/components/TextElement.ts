@@ -53,6 +53,12 @@ export const Schema: ElementSchema = {
                     "$ref": "#/definitions/Styles"
                 }
             }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
         }
     },
     "required": ["kind", "properties"],
