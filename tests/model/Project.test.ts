@@ -6,7 +6,6 @@ import AppBar from '../../src/model/AppBar'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
-import Block from '../../src/model/Block'
 import FileFolder from '../../src/model/FileFolder'
 import File from '../../src/model/File'
 import {ConfirmAction} from '../../src/editor/Types'
@@ -20,7 +19,7 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import NumberInput from '../../src/model/NumberInput'
 import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {newBlock, newText, newTextInput} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})
@@ -71,7 +70,7 @@ test('can find page by id', ()=> {
 let testProject = function () {
     const text1 = newText('t1', 'Text 1', {content: ex``})
     const text2 = newText('t2', 'Text 3', {content: ex``})
-    const layout1 = new Block('lay1', 'Layout 1', {}, [text2])
+    const layout1 = newBlock('lay1', 'Layout 1', {}, [text2])
     const page1 = new Page('p1', 'Page 1', {}, [
         text1, layout1,
     ])
@@ -132,8 +131,8 @@ test('can find path of element on a page by id', ()=> {
 test('can find path of element in a layout by id', ()=> {
     const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
     const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const innerBlock = new Block('lay2', 'Layout 2', {}, [text2])
-    const block = new Block('lay1', 'Layout 1', {}, [text1, innerBlock])
+    const innerBlock = newBlock('lay2', 'Layout 2', {}, [text2])
+    const block = newBlock('lay1', 'Layout 1', {}, [text1, innerBlock])
     const page = new Page('p1', 'Page 1', {}, [block])
     const app = new App('app1', 'App 1', {}, [page])
     const project = Project.new([app])

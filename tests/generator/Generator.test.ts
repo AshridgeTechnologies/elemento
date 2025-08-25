@@ -6,7 +6,7 @@ import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {newBlock, newText, newTextInput} from '../testutil/modelHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
@@ -17,7 +17,6 @@ import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
-import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import UserLogon from '../../src/model/UserLogon'
 import BrowserDataStore from '../../src/model/BrowserDataStore'
@@ -1645,7 +1644,7 @@ test('generates ItemSet element with separate child component and global functio
             newTextInput('id4', 'Text Input 1', {}),
             new SelectInput('id5', 'Item Color', {}),
             new Data('id6', 'Data 1', {initialValue: 10}),
-            new Block('la1', 'Layout 1', {}, [
+            newBlock('la1', 'Layout 1', {}, [
                 new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id + Data1 !== Floor(99.9)`,
                     itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     newText('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
@@ -1897,7 +1896,7 @@ test('generates Block element with properties and children and includes drag fun
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            new Block('lay1', 'Layout 1', {layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}}, [
+            newBlock('lay1', 'Layout 1', {layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}}, [
                 newText('text1', 'T1', {content: ex`23 + 45`}),
                 newTextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),

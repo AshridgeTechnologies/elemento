@@ -1,6 +1,6 @@
 import {JSONSchema} from "@apidevtools/json-schema-ref-parser"
 import BaseElement, {propDef} from './BaseElement'
-import {ComponentType, ElementId, ElementType, eventAction, PropertyDef, PropertyType} from "./Types";
+import {CanContain, ComponentType, ElementId, ElementType, eventAction, PropertyDef, PropertyType} from "./Types";
 import BaseInputElement from './BaseInputElement'
 import {mapValues} from 'radash'
 import Element from './Element'
@@ -14,7 +14,7 @@ export type ElementSchema = JSONSchema & Readonly<{
     valueType?: PropertyType,
     isLayoutOnly?: boolean,
     initialProperties?: {[k:string]: any},
-    canContainElementsWithThisParentType?: boolean
+    canContain?: CanContain
 }>
 
 export type PropertySchema = JSONSchema & Readonly<{
@@ -47,12 +47,16 @@ const ajv = new Ajv2020({strictSchema: false, allErrors: true})
 
 const createElementClass = (schema: ElementSchema): ElementConstructor => {
     const {icon, kind, elementType, valueType,
-        isLayoutOnly, initialProperties, canContainElementsWithThisParentType} = schema
+        isLayoutOnly, initialProperties, canContain} = schema
 
     const props = schema.properties!.properties as JSONSchema
     const ownProps = props.properties as Record<string, PropertySchema>
     const propDefs = Object.entries(ownProps).map(([name, prop]) => {
-        const {$ref, type} = prop
+        const {$ref, type, enum: enumType} = prop
+
+        if (enumType) {
+            return propDef(name, enumType as string[])
+        }
         switch ($ref ?? type) {
             case '#/definitions/StringOrExpression':
                 return propDef(name, 'string')
@@ -75,7 +79,6 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
     })
 
     const hasBaseInputProps = props.$ref === '#/definitions/BaseInputProperties'
-    const baseClass = hasBaseInputProps ? BaseInputElement<any> : BaseElement<any>
     // hack to get the function to have the name of the element type
     const elementClass = (hasBaseInputProps ? {
         [kind]: class extends BaseInputElement<any> {
@@ -110,10 +113,10 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
         }
     })[kind]
 
-    const propertyProps = mapValues(ownProps, (_, name) => (
+    const propertyProps = mapValues(ownProps, (prop, name) => (
         {
             get: function () {
-                return (this as any).properties[name]
+                return (this as any).properties[name] ?? prop.default
             },
             enumerable: true
         })
@@ -130,7 +133,7 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
             {get: function () {return initialProperties}, enumerable: true})
     }
 
-    if (canContainElementsWithThisParentType) {
+    if (canContain === 'elementsWithThisParentType') {
         Object.defineProperty(elementClass.prototype, 'canContain',
             {get: function () {return (elementType: ElementType) => elementHasParentTypeOf(elementType, this)}, enumerable: true})
     }

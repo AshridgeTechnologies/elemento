@@ -7,7 +7,7 @@ import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {newBlock, newText, newTextInput} from '../testutil/modelHelpers'
 import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
@@ -23,7 +23,6 @@ import MemoryDataStore from '../../src/model/MemoryDataStore'
 import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import FileDataStore from '../../src/model/FileDataStore'
-import Block from '../../src/model/Block'
 import AppBar from '../../src/model/AppBar'
 import FileFolder from '../../src/model/FileFolder'
 import userEvent from '@testing-library/user-event'
@@ -295,7 +294,7 @@ test('has fields for Text', () => {
 })
 
 test('has fields for Block', () => {
-    const element = new Block('id1', 'Layout 1', {
+    const element = newBlock('id1', 'Layout 1', {
         layout: 'horizontal',
         styles: {
             width: 100,

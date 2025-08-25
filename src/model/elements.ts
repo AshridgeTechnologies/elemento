@@ -48,7 +48,6 @@ import Tool from './Tool'
 import Calculation from './Calculation'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
-import Block from './Block'
 import Timer from './Timer'
 import Frame from './Frame'
 import ScreenKeyboard from './ScreenKeyboard'
@@ -61,6 +60,7 @@ import {ElementSchema, modelElementClass} from './ModelElement'
 
 import {Schema as TextInput_Schema} from '../runtime/components/TextInput'
 import {Schema as Text_Schema} from '../runtime/components/TextElement'
+import {Schema as Block_Schema} from '../runtime/components/Block'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -117,7 +117,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         InputProperty: InputProperty,
         OutputProperty: OutputProperty,
         Collection: Collection,
-        Block: Block,
+        Block: modelElementClass(Block_Schema),
         Dialog: Dialog,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,

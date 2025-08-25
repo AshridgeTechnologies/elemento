@@ -31,7 +31,7 @@ export const Schema: ElementSchema = {
     "elementType": "statelessUI",
     "isLayoutOnly": true,
     "initialProperties": {"content": "Your text here"},
-    "canContainElementsWithThisParentType": true,
+    "canContain": "elementsWithThisParentType",
     "properties": {
         "properties": {
             "type": "object",

@@ -2,8 +2,9 @@ import Element from './Element'
 import BaseElement, {propDef} from './BaseElement'
 import {ComponentType, ElementType, ParentType, PropertyDef, PropertyValueType, Styling} from './Types'
 import {elementHasParentTypeOf} from './createElement'
-import {BlockLayout, blockLayoutChoices} from './Block'
 
+export const blockLayoutChoices = ['vertical', 'horizontal', 'horizontal wrapped', 'positioned', 'none'] as const
+export type BlockLayout = typeof blockLayoutChoices[number]
 type Properties = Partial<Readonly<{layout: BlockLayout, initiallyOpen: PropertyValueType<boolean>, showCloseButton: PropertyValueType<boolean>}>> & Styling
 
 export default class Block extends BaseElement<Properties> implements Element {

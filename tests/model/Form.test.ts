@@ -4,8 +4,7 @@ import Form from '../../src/model/Form'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import Block from '../../src/model/Block'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {newBlock, newText, newTextInput} from '../testutil/modelHelpers'
 
 test('Form has correct defaults', ()=> {
     let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
@@ -96,7 +95,7 @@ test('can be contained by Form, Block and Page', () => {
     const form = new Form('form1', 'Form 1', {}, [])
     const app = new App('app1', 'App1', {}, [])
     const page = new Page('page1', 'Page 1', {}, [])
-    const block = new Block('lay1', 'Layout 1', {}, [])
+    const block = newBlock('lay1', 'Layout 1', {}, [])
     const text = newText('text1', 'Text 1', {}, [])
     expect(form.canContain('Form')).toBe(true)
     expect(app.canContain('Form')).toBe(false)

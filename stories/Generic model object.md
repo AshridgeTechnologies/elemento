@@ -15,6 +15,7 @@ Requirements
 - Instances instantiated using a JSON schema
 - Defines elements
 - Validates JSON when loading using the schema
+- Meta-Schema to enforce the special keywords used
 - Share definitions between schemas
 - All tests continue to pass
 - Covers all style attributes
@@ -26,7 +27,6 @@ Technical
 - Create element classes dynamically when required for each schema
 - Extend BaseElement or BaseInputElement
 - Change component type to property
-- Create a Meta-Schema to enforce the special keywords used
 - Separate out types to ensure runtime does not depend on model package
 - Generic type to recognise properties?
 
@@ -35,3 +35,5 @@ To Do
 
 - Ensure all prop options can be set by the schema
 - Work out best way to define what an element can contain eg parentType
+- How to deal with enums that can be expressions
+- Shorthand for show and styles
