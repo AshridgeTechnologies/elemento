@@ -92,7 +92,6 @@ test('converts to JSON with optional properties', ()=> {
     })
 })
 
-
 test('converts from plain object', ()=> {
     const styles = {fontSize: ex`44`, fontFamily: 'Dog', color: ex`'red'`, backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40}
     const component = new ComponentInstance('t1', 'ComponentInstance 1', {componentType: 'MyComponent', styles: styles, fooFactor: ex`21`})

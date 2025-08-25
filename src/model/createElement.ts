@@ -1,9 +1,12 @@
-import lodash, {isArray} from 'lodash'; const {startCase} = lodash
+import lodash, {isArray} from 'lodash';
 import Element from './Element'
 import {elementId} from '../util/helpers'
 import {elementOfType, isBuiltInType, parentTypeOf} from './elements'
 import {ElementType} from './Types'
 import ComponentInstance from './ComponentInstance'
+import {ElementJson} from './loadJSON'
+
+const {startCase} = lodash
 
 export function createElement(elementType: ElementType, id: string, elementName: string, elementProps: {[p: string]: any}, elements?: Element[]) {
     if (isBuiltInType(elementType)) {
@@ -12,6 +15,16 @@ export function createElement(elementType: ElementType, id: string, elementName:
     }
 
     return new ComponentInstance(id, elementName, {...elementProps, componentType: elementType}, elements)
+}
+
+export function validateElement(elementJson: ElementJson) {
+    const elementType = elementJson.kind
+    if (isBuiltInType(elementType)) {
+        const elementClass = elementOfType(elementType)
+        return elementClass.validate(elementJson)
+    }
+
+    return null
 }
 
 export function createNewElement(elementType: ElementType, newIdSeq: number, properties: object = {}) {

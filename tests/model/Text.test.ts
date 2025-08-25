@@ -116,7 +116,7 @@ test('converts to JSON with optional properties', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const styles = {fontSize: ex`44`, fontFamily: 'Dog', color: ex`'red'`, backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40}
+    const styles = {fontSize: ex`44`, fontFamily: 'Dog', backgroundColor: 'green', width: 100}
     const text = newText('t1', 'Text 1', {content: ex`"Some text"`, styles: styles})
     const plainObj = asJSON(text)
     const loadedText = loadJSON(plainObj)
@@ -128,3 +128,29 @@ test('converts from plain object', ()=> {
     expect(loadedText2).toStrictEqual(text2)
 })
 
+test('validates JSON on loading', () => {
+    const styles = {fontSize: ex`44`, fontFamily: 'Dog', edgeColor: 'green', width: 100}
+    const text = newText('t1', 'Text 1', {stuff: ex`"Some text"`, styles: styles})
+    const plainObj = asJSON(text)
+    let error: Error
+    try {
+        loadJSON(plainObj)
+    } catch(e: any) {
+        error = e
+    }
+    expect(error!.cause).toEqual([
+        {
+            instancePath: '/properties/styles',
+            schemaPath: '#/additionalProperties',
+            keyword: 'additionalProperties',
+            params: { additionalProperty: 'edgeColor' },
+            message: 'must NOT have additional properties'
+        },
+        {
+            instancePath: '/properties',
+            schemaPath: '#/properties/properties/unevaluatedProperties',
+            keyword: 'unevaluatedProperties',
+            params: { unevaluatedProperty: 'stuff' },
+            message: 'must NOT have unevaluated properties'
+        }])
+})

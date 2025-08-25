@@ -7,7 +7,8 @@ import {sxProps} from './ComponentHelpers'
 import {flatten} from 'ramda'
 
 import lodash from 'lodash'
-import {Definitions, type ElementSchema} from '../../model/ModelElement'
+import {type ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const {isFunction, isPlainObject, isObject} = lodash
 

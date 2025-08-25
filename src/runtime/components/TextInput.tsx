@@ -14,7 +14,8 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
-import {Definitions, type ElementSchema} from '../../model/ModelElement'
+import {type ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
 

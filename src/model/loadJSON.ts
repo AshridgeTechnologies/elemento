@@ -1,10 +1,10 @@
 import Element from './Element'
 import {ElementId, ElementType} from './Types'
 import {isoDateReviver} from '../util/helpers'
-import {createElement} from './createElement'
+import {createElement, validateElement} from './createElement'
 import Block, {BlockLayout} from './Block'
 
-type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
+export type ElementJson = { id: ElementId, kind: ElementType, name: string, properties: any, elements?: any[] }
 
 function convertElementType(elementType: string, id: string, elementName: string, elementProps: {[p: string]: any}, elements?: any[]) {
     if (elementType === 'Layout') {
@@ -20,9 +20,15 @@ function convertElementType(elementType: string, id: string, elementName: string
 
 const isObsoleteType = (elementType: string) => ['Layout'].includes(elementType)
 
-function loadJSONElement({id, kind, name, properties, elements}: ElementJson): Element {
+function loadJSONElement(elementJson: ElementJson): Element {
+    const {id, kind, name, properties, elements} = elementJson
     if (isObsoleteType(kind)) {
         return convertElementType(kind, id, name, properties, elements)
+    }
+    const errors = validateElement(elementJson)
+    if (errors) {
+        // console.error('Elemento JSON validation error', errors)
+        throw new Error('Elemento JSON validation error', {cause: errors})
     }
     const childElements = elements?.map(el => loadJSONElement(el))
     return createElement(kind, id, name, properties, childElements)

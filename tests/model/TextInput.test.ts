@@ -1,8 +1,8 @@
 import {expect, test} from "vitest"
 import {newTextInput, textInputClass} from '../testutil/modelHelpers'
+import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
-import {loadJSON} from '../../src/model/loadJSON'
 
 test('TextInput shows get values from properties', ()=> {
     const textInput = newTextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`,

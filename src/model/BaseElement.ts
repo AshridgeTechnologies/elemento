@@ -46,6 +46,8 @@ export default abstract class BaseElement<PropertiesType extends object> {
     readonly properties: PropertiesType
     readonly elements: ReadonlyArray<Element> | undefined
 
+    static validate() { return null }
+
     constructor(
         id: ElementId,
         name: string,

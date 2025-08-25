@@ -3,26 +3,44 @@ import {ElementId} from '../model/Types'
 
 export default class PreviewControllerClient {
     constructor(public win: Window) {
+        this.isReady = callRpc('Preview.IsReady', this.win, 100)
+        this.serverStatus = callRpc('Preview.ServerStatus', this.win)
+        this.highlight = callRpc('Preview.Highlight', this.win)
+        this.callFunction = callRpc('Preview.CallFunction', this.win)
+        this.show = callRpc('Preview.Show', this.win)
+        this.click = callRpc('Preview.Click', this.win)
+        this.setValue = callRpc('Preview.SetValue', this.win)
+        this.getValue = callRpc('Preview.GetValue', this.win)
+        this.getState = callRpc('Preview.GetState', this.win)
+        this.getTextContent = callRpc('Preview.GetTextContent', this.win)
+        this.debug = observeRpc('Preview.Debug', undefined, this.win)
+        this.url = observeRpc('Preview.Url', undefined, this.win)
+        this.elementSelected = observeRpc('Preview.ElementSelected', undefined, this.win)
+        this.getUrl = callRpc('Preview.GetUrl', this.win)
+        this.setUrl = callRpc('Preview.SetUrl', this.win)
+        this.back = callRpc('Preview.Back', this.win)
+        this.forward = callRpc('Preview.Forward', this.win)
+        this.reload = callRpc('Preview.Reload', this.win)
     }
 
-    private isReady = callRpc('Preview.IsReady', this.win, 100)
-    private serverStatus = callRpc('Preview.ServerStatus', this.win)
-    private highlight = callRpc('Preview.Highlight', this.win)
-    private callFunction = callRpc('Preview.CallFunction', this.win)
-    private show = callRpc('Preview.Show', this.win)
-    private click = callRpc('Preview.Click', this.win)
-    private setValue = callRpc('Preview.SetValue', this.win)
-    private getValue = callRpc('Preview.GetValue', this.win)
-    private getState = callRpc('Preview.GetState', this.win)
-    private getTextContent = callRpc('Preview.GetTextContent', this.win)
-    private debug = observeRpc('Preview.Debug', undefined, this.win)
-    private url = observeRpc('Preview.Url', undefined, this.win)
-    private elementSelected = observeRpc('Preview.ElementSelected', undefined, this.win)
-    private getUrl = callRpc('Preview.GetUrl', this.win)
-    private setUrl = callRpc('Preview.SetUrl', this.win)
-    private back = callRpc('Preview.Back', this.win)
-    private forward = callRpc('Preview.Forward', this.win)
-    private reload = callRpc('Preview.Reload', this.win)
+    private readonly isReady
+    private readonly serverStatus
+    private readonly highlight
+    private readonly callFunction
+    private readonly show
+    private readonly click
+    private readonly setValue
+    private readonly getValue
+    private readonly getState
+    private readonly getTextContent
+    private readonly debug
+    private readonly url
+    private readonly elementSelected
+    private readonly getUrl
+    private readonly setUrl
+    private readonly back
+    private readonly forward
+    private readonly reload
 
     IsReady() {
         return this.isReady()
