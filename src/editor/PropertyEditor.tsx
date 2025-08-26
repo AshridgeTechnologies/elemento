@@ -72,20 +72,18 @@ function NotesTextField(props: TextFieldProps & {highlightRegex?: RegExp}) {
 
 export default function PropertyEditor({element, propertyDefs, onChange, onNameSelected, onSearch, errors = {}, search}: {element: Element, propertyDefs: PropertyDef[], onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, onSearch: OnSearchFn, errors?: object, search?: RegExp }) {
 
-    function propertyField(name: string, type: PropertyType = 'string', fixedOnly: boolean, readOnly: boolean) {
-        const valueFromElement = element[name as keyof object] as unknown as PropertyValue
-        const valueFromProps = (element.properties)[name as keyof object] as unknown as PropertyValue
-        const propertyValue = readOnly ? valueFromElement : valueFromProps
+    function propertyField(name: string, type: PropertyType = 'string', fixedOnly: boolean) {
+        const propertyValue = (element.properties)[name as keyof object] as unknown as PropertyValue
         const error = errors[name as keyof object]
         const key = `${element.id}.${name}.kind`
         if (type === 'styles') {
             return <StylesPropertyEditor key={key} elementId={element.id} name={name} value={propertyValue as StylingProps} onChange={onChange} onNameSelected={onNameSelected} errors={error} search={search}/>
         }
         return <PropertyInput key={key} elementId={element.id} name={name} type={type} value={propertyValue} onChange={onChange} onNameSelected={onNameSelected} fixedOnly={fixedOnly}
-                              readOnly={readOnly} error={error} search={search}/>
+                              error={error} search={search}/>
     }
 
-    const children = propertyDefs.map(({name, type, fixedOnly, readOnly}) => propertyField(name, type, fixedOnly ?? false, readOnly ?? false))
+    const children = propertyDefs.map(({name, type, fixedOnly}) => propertyField(name, type, fixedOnly ?? false))
     const readOnly = element.id === FILES_ID || element.id === TOOLS_ID
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'name', (event.target as HTMLInputElement).value)
     const onNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => onChange(element.id, 'notes', (event.target as HTMLInputElement).value)

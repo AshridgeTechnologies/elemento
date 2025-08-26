@@ -13,10 +13,10 @@ Requirements
 - ✅ Function to get a model element class for a schema
 - ✅ Cache classes so single class for each element type
 - Instances instantiated using a JSON schema
-- Defines elements
-- Validates JSON when loading using the schema
+- ✅ Defines elements
+- ✅ Validates JSON when loading using the schema
 - Meta-Schema to enforce the special keywords used
-- Share definitions between schemas
+- ✅ Share definitions between schemas
 - All tests continue to pass
 - Covers all style attributes
 - Use generated class for user-defined components

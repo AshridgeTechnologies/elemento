@@ -15,10 +15,10 @@ const {isArray, startCase} = lodash
 
 type PropertyInputProps = {
     elementId: ElementId, name: string, type: PropertyType, value: PropertyValue | undefined,
-    onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, fixedOnly?: boolean, readOnly?: boolean, error?: string, search?: RegExp
+    onChange: OnChangeFn, onNameSelected: OnNameSelectedFn, fixedOnly?: boolean, error?: string, search?: RegExp
 }
 
-export default function PropertyInput({ elementId, name, type, value, onChange, onNameSelected, fixedOnly = false, readOnly = false,  error, search}: PropertyInputProps) {
+export default function PropertyInput({ elementId, name, type, value, onChange, onNameSelected, fixedOnly = false,  error, search}: PropertyInputProps) {
     const isEventAction = (type as EventActionPropertyDef).type === 'Action'
     const exprOnlyProperty = isEventAction || type === 'expr'
     const valueIsExpr = value !== undefined && isExpr(value) || exprOnlyProperty
@@ -119,9 +119,6 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             sx:{padding: '4px 2px', minWidth: '3rem', maxHeight: '2.6rem'},
             'data-eltype': 'propertyTypeButton'
         } as any
-        if (readOnly) {
-            return null
-        }
 
         if (exprOnlyProperty) {
             return <Button {...commonProps} color={exprButtonColor} disabled title={'Expression required'}>{exprButtonLabel}</Button>
@@ -177,7 +174,7 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
             : (fixedNumber || fixedDate) ?
                 <TextField id={name} label={label} variant='filled' size='small' sx={{flex: 1}}
                            value={initialInputValue()}
-                           slotProps={{input: {readOnly, sx:{fontFamily: 'monospace', fontSize: '13px'}}}}
+                           slotProps={{input: {sx:{fontFamily: 'monospace', fontSize: '13px'}}}}
                            {...numericProps}
                            {...dateProps}
                            {...errorProps}
@@ -188,7 +185,6 @@ export default function PropertyInput({ elementId, name, type, value, onChange, 
                 sx={{width: '100%'}}
                 label={label}
                 multiline={multiline}
-                readOnly={readOnly}
                 value={initialInputValue()}
                 {...errorProps}
                 onChange={(event) => onChange(elementId, name, updatedPropertyValue(event.target.value))}

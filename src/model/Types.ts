@@ -21,7 +21,7 @@ export interface EventActionPropertyDef {
 
 export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
 
-export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean, readOnly?: boolean }
+export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean }
 
 export type PropertyDef = {
     name: string,
