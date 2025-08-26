@@ -18,7 +18,7 @@ import ComponentFolder from './ComponentFolder'
 import ComponentInstance from './ComponentInstance'
 import InputProperty from './InputProperty'
 import {modelElementClass} from './ModelElement'
-import {Schema as Text_Schema} from '../runtime/components/TextElement'
+import {TextElementSchema} from '../runtime/components/TextElement'
 
 type Properties = { author?: PropertyValue, configuration?: string }
 
@@ -238,7 +238,7 @@ export default class Project extends BaseElement<Properties> implements Element 
 }
 
 export function editorEmptyProject(name = 'New Project') {
-    const textClass = modelElementClass(Text_Schema)
+    const textClass = modelElementClass(TextElementSchema)
     return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
             new textClass('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})

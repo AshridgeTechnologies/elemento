@@ -20,7 +20,7 @@ type Properties = React.PropsWithChildren<Readonly<{
     styles?: StylesPropVals
 }>>
 
-export const Schema: ElementSchema = {
+export const TextElementSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Text",
     "description": "A text item on the page",

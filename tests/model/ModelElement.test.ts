@@ -1,12 +1,12 @@
 import {expect, test} from "vitest"
-import {Schema as TextInput_Schema} from '../../src/runtime/components/TextInput'
+import {TextInputSchema} from '../../src/runtime/components/TextInput'
 import {type ElementSchema, modelElementClass} from '../../src/model/ModelElement'
 import {propDef} from '../../src/model/BaseElement'
 import {eventAction, PropertyType} from '../../src/model/Types'
 import BaseInputElement from '../../src/model/BaseInputElement'
 
 test('Model element has correct properties', async ()=> {
-    const modelClass = modelElementClass(TextInput_Schema as ElementSchema)
+    const modelClass = modelElementClass(TextInputSchema as ElementSchema)
     expect(modelClass.name).toBe('TextInput')
 
     const element = new modelClass('textInput_1', 'Text Input 1', {multiline: true, keyAction: {expr: 'DoSomething()'}}) as BaseInputElement<any>
@@ -28,13 +28,13 @@ test('Model element has correct properties', async ()=> {
 })
 
 test('caches element classes', () => {
-    const class1 = modelElementClass(TextInput_Schema as ElementSchema)
-    const class2 = modelElementClass(TextInput_Schema as ElementSchema)
+    const class1 = modelElementClass(TextInputSchema as ElementSchema)
+    const class2 = modelElementClass(TextInputSchema as ElementSchema)
     expect(class2).toBe(class1)
 })
 
 test('Model class properties do not affect BaseInputElement prototype', async ()=> {
-    modelElementClass(TextInput_Schema as ElementSchema)
+    modelElementClass(TextInputSchema as ElementSchema)
 
     const BaseInputElementClass = BaseInputElement
     expect(BaseInputElementClass.prototype).not.toHaveProperty('multiline')

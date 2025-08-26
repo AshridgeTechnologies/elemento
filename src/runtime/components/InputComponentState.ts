@@ -4,6 +4,11 @@ import BaseType from '../types/BaseType'
 
 export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
 export type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
+
+export const InputComponentMetadata = {
+    stateProps: ['value', 'dataType']
+}
+
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
     extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
     implements ComponentState<InputComponentState<T, DT, Props>> {

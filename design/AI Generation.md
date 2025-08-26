@@ -93,3 +93,9 @@ Decision
 
 - Spike with adding own properties
 - Evolve to generating a class - can name class, properties and functions, most efficient
+
+Issue - metadata not needed in schema
+-------------------------------------
+
+- Knowing whether a property is used in the React component or the state object is not a schema thing - only needed by the generator
+- SO - encode this in a MetaData property on the React component

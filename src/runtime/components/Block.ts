@@ -22,7 +22,7 @@ type StateUpdatableProperties = Partial<Readonly<{
 }
 >>
 
-export const Schema: ElementSchema = {
+export const BlockSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Block",
     "description": "Organises a group of elements within a page.  The elements contained in the layout can be arranged vertically, as normal, or horizontally.\n" +
@@ -160,3 +160,4 @@ export class BlockState extends BaseComponentState<StateProperties, StateUpdatab
 }
 
 Block.State = BlockState
+Block.Schema = BlockSchema

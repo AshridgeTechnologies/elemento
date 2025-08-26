@@ -29,11 +29,13 @@ Technical
 - Change component type to property
 - Separate out types to ensure runtime does not depend on model package
 - Generic type to recognise properties?
+- Components have metadata to hold state props etc
 
 To Do
 -----
 
 - Ensure all prop options can be set by the schema
+- BUT move state/stateAndDom out of schema - how?
 - Work out best way to define what an element can contain eg parentType
 - How to deal with enums that can be expressions
 - Shorthand for show and styles

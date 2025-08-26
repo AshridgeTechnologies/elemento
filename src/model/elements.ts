@@ -58,9 +58,9 @@ import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {ElementSchema, modelElementClass} from './ModelElement'
 
-import {Schema as TextInput_Schema} from '../runtime/components/TextInput'
-import {Schema as Text_Schema} from '../runtime/components/TextElement'
-import {Schema as Block_Schema} from '../runtime/components/Block'
+import {TextInputSchema} from '../runtime/components/TextInput'
+import {TextElementSchema} from '../runtime/components/TextElement'
+import {BlockSchema} from '../runtime/components/Block'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -84,8 +84,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Tool: Tool,
         AppBar: AppBar,
         Page: Page,
-        Text: modelElementClass(Text_Schema),
-        TextInput: modelElementClass(TextInput_Schema),
+        Text: modelElementClass(TextElementSchema),
+        TextInput: modelElementClass(TextInputSchema),
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
@@ -117,7 +117,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         InputProperty: InputProperty,
         OutputProperty: OutputProperty,
         Collection: Collection,
-        Block: modelElementClass(Block_Schema),
+        Block: modelElementClass(BlockSchema),
         Dialog: Dialog,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,

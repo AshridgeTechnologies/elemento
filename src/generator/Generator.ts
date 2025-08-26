@@ -176,7 +176,6 @@ export default class Generator {
         const allContainerElements = canUseContainerElements ? allElements(containingComponent, true) : []
         const isAppElement = (name: string) => !!app.otherComponents.find( el => el.codeName === name && el.kind !== 'FunctionImport' )
         const isContainerElement = (name: string) => !!allContainerElements.find(el => el.codeName === name )
-        const isStateProperty = (name: string) => this.project.propertyDefsOf(component as Element).some( def => def.name === name && def.state)
         const uiElementCode = this.generateComponentCode(component, app, topLevelFunctions, requiredImports)
         const identifiers = this.parser.componentIdentifiers(component.id)
         const appLevelIdentifiers = identifiers.filter(isAppElement)

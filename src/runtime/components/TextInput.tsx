@@ -2,7 +2,7 @@ import React, {ChangeEvent, FocusEvent, KeyboardEventHandler} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {TextType} from '../types'
 import {pick} from 'ramda'
 import BaseType from '../types/BaseType'
@@ -29,7 +29,11 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     return props
 }
 
-export const Schema: ElementSchema = {
+export const TextInputMetadata = {
+    stateProps: [...InputComponentMetadata.stateProps]
+}
+
+export const TextInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Text Input",
     "description": "An input box to enter text data, single or multiline",
@@ -110,3 +114,5 @@ export class TextInputState extends InputComponentState<string, TextType> {
 }
 
 TextInput.State = TextInputState
+TextInput.Schema = TextInputSchema
+TextInput.Metadata = TextInputMetadata
