@@ -2,18 +2,18 @@ import {expect, test} from "vitest"
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
-import {newText, textClass} from '../testutil/modelHelpers'
+import {Text} from '../testutil/modelHelpers'
 import BaseElement from '../../src/model/BaseElement'
 import BaseInputElement from '../../src/model/BaseInputElement'
 
 test('extends correct class', () => {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     expect(text1).toBeInstanceOf(BaseElement)
     expect(text1).not.toBeInstanceOf(BaseInputElement)
 })
 
 test('Text has correct properties with default values', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const text1_ = asAny(text1)
     expect(text1.id).toBe('t1')
     expect(text1.name).toBe('Text 1')
@@ -28,7 +28,7 @@ test('Text has correct properties with default values', ()=> {
 
 test('Text has correct properties with specified values', ()=> {
     const styles = {fontSize: 32, fontFamily: 'Courier', color: 'red', backgroundColor: 'blue', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 20}
-    const text1 = newText('t1', 'Text 1', {notes:'This is some text', content: ex`"Some text"`, allowHtml: true, show: false,
+    const text1 = new Text('t1', 'Text 1', {notes:'This is some text', content: ex`"Some text"`, allowHtml: true, show: false,
         styles: styles})
     const text1_ = asAny(text1)
 
@@ -42,25 +42,25 @@ test('Text has correct properties with specified values', ()=> {
 })
 
 test('has initial properties', () => {
-    expect(asAny(textClass).initialProperties).toEqual({content: 'Your text here'})
+    expect(asAny(Text).initialProperties).toEqual({content: 'Your text here'})
 })
 
 test('has fixedOnly for allowHtml propert', () => {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const allowHtmlPropDef = text1.propertyDefs.find( pd => pd.name === 'allowHtml')
     expect(allowHtmlPropDef?.fixedOnly).toBe(true)
 })
 
 test('tests if an object is this type', ()=> {
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {}, [])
 
-    expect(textClass.is(text)).toBe(true)
-    expect(textClass.is(page)).toBe(false)
+    expect(Text.is(text)).toBe(true)
+    expect(Text.is(page)).toBe(false)
 })
 
 test('can contain expected types', () => {
-    const text = newText('t1', 'Text 1', {}, [])
+    const text = new Text('t1', 'Text 1', {}, [])
     expect(text.canContain('Project')).toBe(false)
     expect(text.canContain('App')).toBe(false)
     expect(text.canContain('Page')).toBe(false)
@@ -74,7 +74,7 @@ test('can contain expected types', () => {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const updatedText1 = text.set('t1', 'name', 'Text 1A')
     expect(updatedText1.name).toBe('Text 1A')
     expect(asAny(updatedText1).content).toStrictEqual(ex`"Some text"`)
@@ -89,13 +89,13 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const updatedText = text.set('x1', 'name', ex`Text 1A`)
     expect(updatedText).toStrictEqual(text)
 })
 
 test('converts to JSON without optional properties', ()=> {
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
         id: 't1',
@@ -106,7 +106,7 @@ test('converts to JSON without optional properties', ()=> {
 
 test('converts to JSON with optional properties', ()=> {
     const styles = {fontSize: 44, fontFamily: 'Dog', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 40}
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`, styles: styles, show: ex`false`})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`, styles: styles, show: ex`false`})
     expect(asJSON(text)).toStrictEqual({
         kind: 'Text',
         id: 't1',
@@ -117,12 +117,12 @@ test('converts to JSON with optional properties', ()=> {
 
 test('converts from plain object', ()=> {
     const styles = {fontSize: ex`44`, fontFamily: 'Dog', backgroundColor: 'green', width: 100}
-    const text = newText('t1', 'Text 1', {content: ex`"Some text"`, styles: styles})
+    const text = new Text('t1', 'Text 1', {content: ex`"Some text"`, styles: styles})
     const plainObj = asJSON(text)
     const loadedText = loadJSON(plainObj)
     expect(loadedText).toStrictEqual(text)
 
-    const text2 = newText('t1', 'Text 2', {content: `Some text`, styles: styles, show: false})
+    const text2 = new Text('t1', 'Text 2', {content: `Some text`, styles: styles, show: false})
     const plainObj2 = asJSON(text2)
     const loadedText2 = loadJSON(plainObj2)
     expect(loadedText2).toStrictEqual(text2)
@@ -130,7 +130,7 @@ test('converts from plain object', ()=> {
 
 test('validates JSON on loading', () => {
     const styles = {fontSize: ex`44`, fontFamily: 'Dog', edgeColor: 'green', width: 100}
-    const text = newText('t1', 'Text 1', {stuff: ex`"Some text"`, styles: styles})
+    const text = new Text('t1', 'Text 1', {stuff: ex`"Some text"`, styles: styles})
     const plainObj = asJSON(text)
     let error: Error
     try {

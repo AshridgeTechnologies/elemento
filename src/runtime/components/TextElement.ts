@@ -9,6 +9,7 @@ import {flatten} from 'ramda'
 import lodash from 'lodash'
 import {type ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import TextInput, {TextInputMetadata, TextInputSchema} from './TextInput'
 
 const {isFunction, isPlainObject, isObject} = lodash
 
@@ -135,3 +136,5 @@ export default function TextElement({children, path, content, allowHtml = false,
     const reactChildren = findReactChildren(text, allowHtml, children)
     return React.createElement(Typography, typographyProps, ...reactChildren)
 }
+
+TextElement.Schema = TextElementSchema

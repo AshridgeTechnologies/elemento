@@ -3,11 +3,11 @@ import Dialog from '../../src/model/Dialog'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {Text, TextInput} from '../testutil/modelHelpers'
 
 test('Dialog has correct defaults', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const dialog = new Dialog('dlg1', 'Dialog the First', {}, [text1, text2])
 
     expect(dialog.id).toBe('dlg1')
@@ -21,8 +21,8 @@ test('Dialog has correct defaults', ()=> {
 })
 
 test('Dialog has correct properties', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const dialog = new Dialog('dlg1', 'Dialog the First', {layout: 'horizontal', initiallyOpen: true, showCloseButton: true, styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
 
     expect(dialog.id).toBe('dlg1')
@@ -49,8 +49,8 @@ test('has correct property defs', () => {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('t2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"Some text"`})
     const dialog = new Dialog('dlg1', 'Dialog 1', {initiallyOpen: true}, [text1])
     const updatedDialog1 = dialog.set('dlg1', 'name', 'Dialog 1A')
     expect(updatedDialog1.name).toBe('Dialog 1A')
@@ -81,7 +81,7 @@ test('can contain correct types', () => {
 
 
 test('finds itself but not children in a page', () => {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const dialog = new Dialog('dlg1', 'Dialog 1', {}, [text1])
     const page = new Page('p1', 'Page 1', {}, [dialog])
 
@@ -90,8 +90,8 @@ test('finds itself but not children in a page', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const dialog = new Dialog('dlg1', 'Dialog 1', {layout: 'vertical', initiallyOpen: true, styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
 
     expect(asJSON(dialog)).toStrictEqual({
@@ -114,8 +114,8 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const dialog = new Dialog('dlg1', 'Dialog 1', {initiallyOpen: true}, [text, textInput])
     const newDialog = loadJSON(asJSON(dialog))
     expect(newDialog).toStrictEqual<Dialog>(dialog)

@@ -6,7 +6,7 @@ import {AppElementActionName} from '../../src/editor/Types'
 import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {Text, TextInput} from '../testutil/modelHelpers'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
 import Page from '../../src/model/Page'
@@ -125,7 +125,7 @@ test('can create a new element in the project and set name and properties', () =
 })
 
 test('can insert an element into the project', () => {
-    const newElement = newText('originalId', 'Text 1', {content: 'Hi!'})
+    const newElement = new Text('originalId', 'Text 1', {content: 'Hi!'})
     const newId = handler.insertElement('inside', 'page_2', newElement)
     expect(handler.current).not.toBe(project)
     expect(handler.current?.findElement(newId)?.id).toBe(newId)
@@ -178,7 +178,7 @@ test.each(['pasteAfter', 'pasteBefore', 'pasteInside'])('can do %s action on the
 test('can do pasteAfter action on the project after the first id with multiple items in correct order', async () => {
     mockClipboard()
     const elementToPaste1 = new Button('xyz', 'Big button', {})
-    const elementToPaste2 = newTextInput('pqr', 'Big Text Input', {})
+    const elementToPaste2 = new TextInput('pqr', 'Big Text Input', {})
     clipboardData = elementToJSON([elementToPaste1, elementToPaste2])
     const actionResult = await handler.elementAction(['text_3', 'text_1'], 'pasteAfter')
     const page2 = handler.current?.findElement('page_2')

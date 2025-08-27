@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
+import {beforeEach, expect, test, vi} from "vitest"
 import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties, RuntimeLoader} from '../../src/generator/ProjectBuilder'
 import Project, {TOOLS_ID} from '../../src/model/Project'
 import App from '../../src/model/App'
@@ -8,14 +8,14 @@ import {generateServerApp} from '../../src/generator/ServerAppGenerator'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
-import {ex, wait} from '../testutil/testHelpers'
+import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
 import ServerApp from '../../src/model/ServerApp'
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'
 import {BaseApp} from '../../src/model/BaseApp'
-import {newText} from '../testutil/modelHelpers'
+import {Text} from '../testutil/modelHelpers'
 
 const name = new TextType('tt1', 'Name', {required: true})
 const itemAmount = new NumberType('nt1', 'Item Amount', {})
@@ -24,32 +24,32 @@ const dataTypes2 = new DataTypes('dt2', 'Types 2', {}, [itemAmount])
 
 const app1 = new App('app1', 'App 1', {}, [
     new Page('p1', 'Page 1', {}, [
-            newText('text1', 'Text 1', {content: ex`"Uses Data Types 1" + Types1.Name`}),
+            new Text('text1', 'Text 1', {content: ex`"Uses Data Types 1" + Types1.Name`}),
         ]
     )
 ])
 const app2 = new App('app2', 'App 2', {}, [
     new Page('p2', 'Page 2', {}, [
-            newText('text2', 'Text 2', {content: ex`"Uses Data Types 2" + Types2.ItemAmount`}),
+            new Text('text2', 'Text 2', {content: ex`"Uses Data Types 2" + Types2.ItemAmount`}),
         ]
     )
 ])
 const app3 = new App('app3', 'App 3', {}, [
     new Page('p3', 'Page 3', {}, [
-            newText('text3', 'Text 3', {content: 'Another text'}),
+            new Text('text3', 'Text 3', {content: 'Another text'}),
         ]
     )
 ])
 
 const tool1 = new Tool('tool1', 'Tool 1', {}, [
     new Page('p11', 'Page 1', {}, [
-            newText('text11', 'Text 11', {content: 'stuff'}),
+            new Text('text11', 'Text 11', {content: 'stuff'}),
         ]
     )
 ])
 const tool2 = new Tool('tool2', 'Tool 2', {}, [
     new Page('p12', 'Page 2', {}, [
-            newText('text12', 'Text 12', {content: 'stuff'}),
+            new Text('text12', 'Text 12', {content: 'stuff'}),
         ]
     )
 ])

@@ -6,7 +6,7 @@ import Collection from '../../src/model/Collection'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {ElementType} from '../../src/model/Types'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {Text, TextInput} from '../testutil/modelHelpers'
 
 test('Tool has correct properties', ()=> {
     let page1 = new Page('p1', 'Page 1', {}, [])
@@ -59,14 +59,14 @@ test('can find page by id', ()=> {
 })
 
 let testTool = function () {
-    const text1 = newText('t1', 'Text 1', {content: ex``})
-    const text2 = newText('t2', 'Text 3', {content: ex``})
+    const text1 = new Text('t1', 'Text 1', {content: ex``})
+    const text2 = new Text('t2', 'Text 3', {content: ex``})
     let page1 = new Page('p1', 'Page 1', {}, [
         text1, text2,
     ])
-    const text3 = newText('t3', 'Text 1', {content: ex``})
-    const text4 = newText('t4', 'Text 4', {content: ex``})
-    const text5 = newText('t5', 'Text 3', {content: ex``})
+    const text3 = new Text('t3', 'Text 1', {content: ex``})
+    const text4 = new Text('t4', 'Text 4', {content: ex``})
+    const text5 = new Text('t5', 'Text 3', {content: ex``})
     let page2 = new Page('p2', 'Page 2', {}, [
         text3, text4, text5
     ])
@@ -109,11 +109,11 @@ test('can find element by path where two elements have the same name', () => {
 })
 
 test('finds max id for element type', ()=> {
-    const text1 = newText('text_1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('text_2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = new Text('text_1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('text_2', 'Text 2', {content: ex`"Some text"`})
     const page1 = new Page('page_1', 'Page 1', {}, [text1, text2])
-    const text3 = newText('text_7', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = newText('TEXT_8', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = new Text('text_7', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('TEXT_8', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('page_2', 'Page 2', {}, [text3, text4])
     const tool = new Tool('tool', 'Tool 1', {}, [page1, page2])
     expect(tool.findMaxId('Text')).toBe(7)
@@ -131,10 +131,10 @@ test.each(['Page', 'MemoryDataStore', 'FileDataStore', 'Collection', 'AppBar', '
 })
 
 test('converts to JSON', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const text4 = newText('t4', 'Text 4', {content: ex`"Some text 4"`})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const text4 = new Text('t4', 'Text 4', {content: ex`"Some text 4"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, text4])
 
     const tool = new Tool('a1', 'Tool 1', {author: `Jo`}, [page1, page2])
@@ -150,10 +150,10 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
-    const text3 = newText('t3', 'Text 3', {content: ex`"Some text 3"`})
-    const textInput4 = newTextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
+    const text3 = new Text('t3', 'Text 3', {content: ex`"Some text 3"`})
+    const textInput4 = new TextInput('t4', 'Text 4', {initialValue: ex`"Some text"`})
     const page2 = new Page('p2', 'Page 2', {}, [text3, textInput4])
 
     const tool = new Tool('a1', 'Tool 1', {author: `Jo`}, [page1, page2])

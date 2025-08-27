@@ -2,12 +2,12 @@ import {expect, test} from "vitest"
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {blockClass, newBlock, newText, newTextInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput} from '../testutil/modelHelpers'
 
 test('Block has correct defaults', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const block = newBlock('blk1', 'Block the First', {}, [text1, text2])
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const block = new Block('blk1', 'Block the First', {}, [text1, text2])
     const block_ = asAny(block)
 
     expect(block.id).toBe('blk1')
@@ -22,10 +22,10 @@ test('Block has correct defaults', ()=> {
 })
 
 test('Block has correct properties', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     let dropAction = ex`Log('drop')`
-    const block = newBlock('blk1', 'Block the First', {show: true, layout: 'horizontal wrapped', dropAction, styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
+    const block = new Block('blk1', 'Block the First', {show: true, layout: 'horizontal wrapped', dropAction, styles: {width: 500, backgroundColor: 'blue'}}, [text1, text2])
     const block_ = asAny(block)
 
     expect(block.id).toBe('blk1')
@@ -39,22 +39,22 @@ test('Block has correct properties', ()=> {
 })
 
 test('tests if an object is this type', ()=> {
-    const block = newBlock('l1', 'Block 1', {}, [])
+    const block = new Block('l1', 'Block 1', {}, [])
     const page = new Page('p1', 'Page 1', {}, [])
 
-    expect(blockClass.is(block)).toBe(true)
-    expect(blockClass.is(page)).toBe(false)
+    expect(Block.is(block)).toBe(true)
+    expect(Block.is(page)).toBe(false)
 })
 
 test('has correct property defs', () => {
-    const block = newBlock('l1', 'Block 1', {}, [])
+    const block = new Block('l1', 'Block 1', {}, [])
     expect(block.propertyDefs.map( d => d.name)).toStrictEqual(['layout', 'dropAction', 'show', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('t2', 'Text 2', {content: ex`"Some text"`})
-    const block = newBlock('blk1', 'Block 1', {show: true}, [text1])
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"Some text"`})
+    const block = new Block('blk1', 'Block 1', {show: true}, [text1])
     const updatedBlock1 = block.set('blk1', 'name', 'Block 1A')
     expect(updatedBlock1.name).toBe('Block 1A')
     expect(updatedBlock1.elements).toBe(block.elements)
@@ -69,14 +69,14 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const block1 = newBlock('blk1', 'Block 1', {}, [text1])
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const block1 = new Block('blk1', 'Block 1', {}, [text1])
     const updatedBlock = block1.set('x1', 'name', 'Block 1A')
     expect(updatedBlock).toBe(block1)
 })
 
 test('can contain correct types', () => {
-    const block = newBlock('blk1', 'Block 1', {}, [])
+    const block = new Block('blk1', 'Block 1', {}, [])
     expect(block.canContain('Project')).toBe(false)
     expect(block.canContain('App')).toBe(false)
     expect(block.canContain('Page')).toBe(false)
@@ -90,10 +90,10 @@ test('can contain correct types', () => {
 
 
 test('finds itself and children in a page', () => {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const innerBlock = newBlock('blk2', 'Block 2', {}, [text2])
-    const block = newBlock('blk1', 'Block 1', {}, [text1, innerBlock])
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const innerBlock = new Block('blk2', 'Block 2', {}, [text2])
+    const block = new Block('blk1', 'Block 1', {}, [text1, innerBlock])
     const page = new Page('p1', 'Page 1', {}, [block])
 
     expect(page.findElementByPath('Page1.Block1')).toBe(block)
@@ -102,9 +102,9 @@ test('finds itself and children in a page', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const block = newBlock('blk1', 'Block 1', {layout: 'positioned', styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const block = new Block('blk1', 'Block 1', {layout: 'positioned', styles: {width: '50%', backgroundColor: 'green'}}, [text1, text2])
 
     expect(asJSON(block)).toStrictEqual({
         kind: 'Block',
@@ -114,7 +114,7 @@ test('converts to JSON', ()=> {
         elements: [asJSON(text1), asJSON(text2)]
     })
 
-    const block2 = newBlock('blk1', 'Block 2', {show: true}, [text1, text2])
+    const block2 = new Block('blk1', 'Block 2', {show: true}, [text1, text2])
 
     expect(asJSON(block2)).toStrictEqual({
         kind: 'Block',
@@ -126,12 +126,12 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
-    const block = newBlock('blk1', 'Block 1', {show: ex`false`}, [text, textInput])
+    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    const block = new Block('blk1', 'Block 1', {show: ex`false`}, [text, textInput])
     const loadedBlock = loadJSON(asJSON(block))
     expect(loadedBlock).toStrictEqual(block)
-    const block2 = newBlock('blk1', 'Block 2', {show: true}, [text, textInput])
+    const block2 = new Block('blk1', 'Block 2', {show: true}, [text, textInput])
     const loadedBlock2 = loadJSON(asJSON(block2))
     expect(loadedBlock2).toStrictEqual(block2)
 })

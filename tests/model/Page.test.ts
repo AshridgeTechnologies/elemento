@@ -2,11 +2,11 @@ import {expect, test} from "vitest"
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {newText, newTextInput} from '../testutil/modelHelpers'
+import {Text, TextInput} from '../testutil/modelHelpers'
 
 test('Page has correct properties', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const page = new Page('p1', 'Page the First', {notLoggedInPage: ex`OtherPage`, styles: {backgroundColor: 'red'}}, [text1, text2])
 
     expect(page.id).toBe('p1')
@@ -33,8 +33,8 @@ test('has correct property names', () => {
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('t2', 'Text 2', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text1])
     const updatedPage1 = page.set('p1', 'name', 'Page 1A')
     expect(updatedPage1.name).toBe('Page 1A')
@@ -49,15 +49,15 @@ test('creates an updated object with a property set to a new value', ()=> {
 })
 
 test('ignores the set and returns itself if the id does not match', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     const page1 = new Page('p1', 'Page 1', {}, [text1])
     const updatedPage = page1.set('x1', 'name', 'Page 1A')
     expect(updatedPage).toBe(page1)
 })
 
 test('creates an updated object if a property in a contained object is changed and keeps unchanged objects', ()=> {
-    const text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    const text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    const text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    const text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const page = new Page('p1', 'Page 1', {}, [text1, text2])
     const updatedPage1 = page.set('t2', 'content', '"Further text"')
     expect(updatedPage1.name).toBe('Page 1')
@@ -86,8 +86,8 @@ test('can contain types apart from Project, App, Page, etc', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text1, text2])
 
     expect(asJSON(page)).toStrictEqual({
@@ -111,8 +111,8 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const page = new Page('p1', 'Page 1', {notLoggedInPage: ex`OtherPage`}, [text, textInput])
     const newPage = loadJSON(asJSON(page))
     expect(newPage).toStrictEqual<Page>(page)

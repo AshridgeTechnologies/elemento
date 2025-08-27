@@ -6,7 +6,7 @@ import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
-import {newBlock, newItemSet, newText, newTextInput} from '../testutil/modelHelpers'
+import {Block, ItemSet, Text,  TextInput} from '../testutil/modelHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
@@ -49,13 +49,13 @@ const project = (...els: Element[]) => Project.new(els, 'Project 1', 'proj1', {}
 test('generates app and all page output files', ()=> {
     const app = new App('app1', 'App 1', {maxWidth: '60%', fonts: 'Crazy Font\nWeird Font', themeOptions: ex`{primary: 'blue'}`}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there!'}),
-                newText('id2', 't2', {content: ex`23 + 45`}),
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id2', 't2', {content: ex`23 + 45`}),
             ]
         ),
         new Page('p2', 'Page 2', {notLoggedInPage: ex`Page1`}, [
-                newText('id3', 'Text 2', {content: 'Green!'}),
-                newText('id4', 't3', {content: 'Red!'}),
+                new Text('id3', 'Text 2', {content: 'Green!'}),
+                new Text('id4', 't3', {content: 'Red!'}),
             ]
         )])
 
@@ -118,7 +118,7 @@ App1.State = class App1_State extends App.State {
 test('generates Tool and all page output files, generates nothing for ToolImport', ()=> {
     const tool = new Tool('tool1', 'Tool 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 new Button('id2', 'Button 1', {content: 'Do It', action: ex`Editor.Highlight('menuItem+File')`}),
             ]
         )]
@@ -173,11 +173,11 @@ Tool1.State = class Tool1_State extends App.State {
 test('can get all code in one string from the output with imports and export', function () {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ]
         ),
         new Page('p2', 'Page 2', {}, [
-                newText('id3', 'Text 2', {content: 'Green!'}),
+                new Text('id3', 'Text 2', {content: 'Green!'}),
             ]
         )])
 
@@ -247,13 +247,13 @@ test('includes all DataTypes files and global functions in data types', () => {
 
     const app1 = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: ex`"Uses Data Types 2" + Types2.ItemAmount.max`}),
+                new Text('id1', 'Text 1', {content: ex`"Uses Data Types 2" + Types2.ItemAmount.max`}),
             ]
         )
     ])
     const app2 = new App('app2', 'App 2', {}, [
         new Page('p2', 'Page 1', {}, [
-                newText('id2', 'Text 1', {content: ex`"Uses Data Types 1" + Types1.Name.maxLength`}),
+                new Text('id2', 'Text 1', {content: ex`"Uses Data Types 1" + Types1.Name.maxLength`}),
             ]
         )
     ])
@@ -329,7 +329,7 @@ App1.State = class App1_State extends App.State {
 test('generates html runner file', () => {
     const app = new App('app1', 'App 1', {fonts: 'Crazy Font\nWeird Font'}, [
             new Page('p1', 'Page 1', {}, [
-                    newText('id1', 'Text 1', {content: 'Hi there!'}),
+                    new Text('id1', 'Text 1', {content: 'Hi there!'}),
                 ]
             )
         ]
@@ -366,12 +366,12 @@ test('generates html runner file', () => {
 test('generates App Bar elements with contents', ()=> {
     const app = new App('app1', 'Test1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            newText('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
+            new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-            newTextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
-            newTextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
-            newTextInput('id2', 't3', {}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
+            new TextInput('id2', 't3', {}),
     ]
         )])
 
@@ -398,7 +398,7 @@ Test1.State = class Test1_State extends App.State {
 test('generates startup action for App', ()=> {
     const app = new App('app1', 'Test1', {startupAction: ex`Log('Off we go!')`}, [
         new Page('p1', 'Page 1', {}, [
-            newText('id1', 't1', {content: 'Hi there!'})
+            new Text('id1', 't1', {content: 'Hi there!'})
         ])
     ])
 
@@ -425,9 +425,9 @@ Test1.State = class Test1_State extends App.State {
 test('generates TextInput elements with initial value and styles including expressions', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}, readOnly: true}),
-            newTextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, styles: {borderBottom: ex`50 + 50`}}),
-            newTextInput('id3', 't3', {}),
+            new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}, readOnly: true}),
+            new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`, styles: {borderBottom: ex`50 + 50`}}),
+            new TextInput('id3', 't3', {}),
     ]
         )])
 
@@ -467,7 +467,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates Text elements with multiline content', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday',
+                new Text('id1', 'Text 1', {content: 'Hi there!\nHow are you?\nToday',
                     styles: {fontSize: 36, fontFamily: 'Cat', color: 'red', backgroundColor: 'green', border: 10, borderColor: 'black', width: 100, height: 200, marginBottom: 33}}),
             ]
         )])
@@ -495,9 +495,9 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates Text elements with placeholders', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there @Comp1@ and @Comp2@!'},
+                new Text('id1', 'Text 1', {content: 'Hi there @Comp1@ and @Comp2@!'},
                     [
-                        newTextInput('ti1', 'Comp 1', {}),
+                        new TextInput('ti1', 'Comp 1', {}),
                         new Button('b1', 'Comp 2', {content: 'Click here'})
                     ]
                 )
@@ -537,7 +537,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates Text elements with escaped quotes', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: 'Hi there \'Doctor\' How are you?'})
+                new Text('id1', 'Text 1', {content: 'Hi there \'Doctor\' How are you?'})
             ]
         )])
 
@@ -808,7 +808,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates Button element action functions that depend on stateful components even if they have the same name as the button', () => {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('ti1', 'Description', {}),
+            new TextInput('ti1', 'Description', {}),
             new FunctionDef('f1', 'Do Stuff', {calculation: ex`Log("Doing it")`}),
             new Button('id1', 'Do Stuff', {content: 'Click here!', action: ex`DoStuff(Description)`})
             ]
@@ -1333,11 +1333,11 @@ App1.State = class App1_State extends App.State {
 test('sorts state entries into dependency order', () => {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
+            new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
             new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
             new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
-            newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})]),
+            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})]),
             ]
         ),
         new FileDataStore('fds1', 'Store1', {})
@@ -1409,12 +1409,12 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('sorts state entries into dependency order when nested inside a layout element', () => {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
+            new TextInput('ti1', 'Description', {initialValue: ex`TheWidget.Description`}),
             new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
             new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
             new List('ls1', 'List 1', {}, [
-                newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})])
+                new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [new Text('lt1', 'Desc', {content: 'Hi!'})])
             ])
         ]),
         new FileDataStore('fds1', 'Store1', {})
@@ -1490,7 +1490,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates elements under App used in Page', ()=> {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('text1', 'Text 1', {content: 'Update the widget'}),
+                new Text('text1', 'Text 1', {content: 'Update the widget'}),
                 new NumberInput('n1', 'Widget Value', {initialValue: ex`Get(Widgets, 'x1').a`, label: 'New widget value'}),
             ]
         ),
@@ -1566,7 +1566,7 @@ App1.State = class App1_State extends App.State {
 test('generates codeGenerationError for unknown names in elements under App used in Page', ()=> {
     const app = new App('app1', 'App1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('text1', 'Text 1', {content: 'Update the widget'}),
+                new Text('text1', 'Text 1', {content: 'Update the widget'}),
                 new NumberInput('n1', 'Widget Value', {initialValue: ex`Get(Widgets, 'x1').a`, label: 'New widget value'}),
             ]
         ),
@@ -1640,14 +1640,14 @@ App1.State = class App1_State extends App.State {
 test('generates ItemSet element with separate child component and global functions and select action', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('id4', 'Text Input 1', {}),
+            new TextInput('id4', 'Text Input 1', {}),
             new SelectInput('id5', 'Item Color', {}),
             new Data('id6', 'Data 1', {initialValue: 10}),
-            newBlock('la1', 'Layout 1', {}, [
-                newItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id + Data1 !== Floor(99.9)`,
+            new Block('la1', 'Layout 1', {}, [
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id + Data1 !== Floor(99.9)`,
                     itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
-                    newText('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
-                    newTextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
+                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
+                    new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
                 ])
             ])
@@ -1742,11 +1742,11 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates ItemSet element inside List', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-            newTextInput('id4', 'Text Input 1', {}),
+            new TextInput('id4', 'Text Input 1', {}),
             new List('l1', 'List 1', {}, [
-                newItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
-                    newText('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
-                    newTextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
+                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                    new Text('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
+                    new TextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
                 ])
             ])
@@ -1837,7 +1837,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
             newItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
-                newText('id1', 'Text 1', {content: 'Hi there!'}),
+                new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
         ),
@@ -1895,13 +1895,13 @@ test('generates Block element with properties and children and includes drag fun
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new NumberInput('n1', 'Widget Count', {initialValue: ex`18`, label: 'New widget value'}),
-            newBlock('lay1', 'Layout 1', {layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}}, [
-                newText('text1', 'T1', {content: ex`23 + 45`}),
-                newTextInput('input1', 'Name Input', {}),
+            new Block('lay1', 'Layout 1', {layout: 'horizontal wrapped', styles: {width: 500, backgroundColor: 'pink'}}, [
+                new Text('text1', 'T1', {content: ex`23 + 45`}),
+                new TextInput('input1', 'Name Input', {}),
                 new SelectInput('select1', 'Colour', {values: ['red', 'green']}),
                 new Button('b1', 'B1', {content: 'Click here!'}),
             ]),
-            newText('text2', 'T2', {content: ex`If(DragIsOver(Layout1) && DraggedItemId == 'blue', 'Drag', '')`})
+            new Text('text2', 'T2', {content: ex`If(DragIsOver(Layout1) && DraggedItemId == 'blue', 'Drag', '')`})
             ]
         )])
 
@@ -1950,8 +1950,8 @@ test('generates Dialog element with properties and children', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
             new Dialog('dlg1', 'Dialog 1', {initiallyOpen: true, styles: {width: 500, backgroundColor: 'pink'}}, [
-                newText('text1', 'T1', {content: ex`23 + 45`}),
-                newTextInput('input1', 'Name Input', {}),
+                new Text('text1', 'T1', {content: ex`23 + 45`}),
+                new TextInput('input1', 'Name Input', {}),
             ]),
             ]
         )])
@@ -1993,7 +1993,7 @@ test('generates simple Form element with separate child component and includes D
         new Page('p1', 'Page 1', {}, [
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`},
                     [
-                    newTextInput('id2', 'Text Input 2', {}),
+                    new TextInput('id2', 'Text Input 2', {}),
                         new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
                         new Calculation('id4', 'Calculation 1', { calculation: ex`1 + 2`}),
                         new Data('id5', 'Data 1', { initialValue: ex`1 + 2`}),
@@ -2069,10 +2069,10 @@ test('generates nested Form elements', ()=> {
         new Page('p1', 'Page 1', {}, [
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}}`},
                     [
-                        newTextInput('id2', 'Text Input 2', {}),
+                        new TextInput('id2', 'Text Input 2', {}),
                         new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
                         new Form('form2', 'Further Details', {horizontal: true}, [
-                            newTextInput('ti2', 'Description', {}),
+                            new TextInput('ti2', 'Description', {}),
                             new NumberInput('ni2', 'Size', {}),
                         ])
                     ])
@@ -2170,7 +2170,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates Form element with separate child component', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id0', 'Text Input 1', {}),
+                new TextInput('id0', 'Text Input 1', {}),
                 new TrueFalseInput('tf1', 'TF Input 1', {}),
                 new Form('form1', 'Details Form', {initialValue: ex`{TextInput2: 'foo', NumberInput1: 27}`, label: 'The Details',
                     styles: {width: '93%'},
@@ -2178,10 +2178,10 @@ test('generates Form element with separate child component', ()=> {
                         keyAction: ex`Log('You pressed', \$key, \$event.ctrlKey); If(\$key == 'Enter', DetailsForm.submit())`,
                         submitAction: ex`Log(\$data, TextInput1, TFInput1); Update('Things', '123', \$form.updates)`},
                     [
-                    newTextInput('id2', 'Text Input 2', {}),
-                    newText('id1', 'Text 1', {content: ex`"Hi there " + Left(TextInput2, 2)`}),
+                    new TextInput('id2', 'Text Input 2', {}),
+                    new Text('id1', 'Text 1', {content: ex`"Hi there " + Left(TextInput2, 2)`}),
                     new NumberInput('id3', 'Number Input 1', {initialValue: ex`5 + 3`}),
-                    newText('id5', 'Text 2', {content: ex`"Number is " + \$form.value.NumberInput1`}),
+                    new Text('id5', 'Text 2', {content: ex`"Number is " + \$form.value.NumberInput1`}),
                     new Button('id4', 'Button Update', {content: 'Update', action: ex`\$form.Submit('normal')`}),
                 ])
             ]
@@ -2274,8 +2274,8 @@ test('generates user defined component and instance', () => {
     const compDef = new ComponentDef('c1', 'My Component', {},[
         new InputProperty('ip1', 'source', {propertyType: 'string'}),
         new InputProperty('ip2', 'destination', {propertyType: 'string'}),
-        newText('id1', 'Text 1', {content: ex`"From " + source`}),
-        newText('id2', 't2', {content: ex`"To " + destination`}),
+        new Text('id1', 'Text 1', {content: ex`"From " + source`}),
+        new Text('id2', 't2', {content: ex`"To " + destination`}),
         new Button('b1', 'Do Something', {action: ex`Log('Hi')`}),
         new OutputProperty('op1', 'From To', {calculation: ex`"From" + source + " to " + destination`}),
         new FunctionDef('fn1', 'Journey', {calculation: ex`"Start: " + source + " Destination: " + destination`})
@@ -2284,7 +2284,7 @@ test('generates user defined component and instance', () => {
     const componentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {}, [compDef])
     const app = new App('app1', 'App 1', {maxWidth: '60%'}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id3', 'Text 3', {content: 'Over here!'}),
+                new Text('id3', 'Text 3', {content: 'Over here!'}),
                 new ComponentInstance('id4', 'A Component', {componentType: compDef.codeName, source: 'Here', destination: 'There', styles: {color: 'blue'}, show: true}),
             ]
         )])
@@ -2505,7 +2505,7 @@ test('Function can be recursive and does not depend on itself', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new FunctionDef('fn1', 'Get Stuff', {calculation: ex`'abc' + GetStuff()`}),
-                newTextInput('id2', 'Val 2', {initialValue: ex`GetStuff()`}),
+                new TextInput('id2', 'Val 2', {initialValue: ex`GetStuff()`}),
             ]
         )])
 
@@ -2637,11 +2637,11 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates local user defined functions in the app that can use built-in app functions', () => {
     const app = new App('app1', 'Test1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            newText('id0', 'Text 0', {content: ex`AppBarText('Welcome to ' + CurrentUrl())`})
+            new Text('id0', 'Text 0', {content: ex`AppBarText('Welcome to ' + CurrentUrl())`})
         ]),
         new FunctionDef('f1', 'AppBarText', {input1: 'greeting', calculation: ex`greeting + 'our new app' + ' at ' + CurrentUrl()`}),
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: 'Hi there!'}),
+                new Text('id1', 't1', {content: 'Hi there!'}),
             ]
         )])
 
@@ -2674,8 +2674,8 @@ test('generates page elements that can use user-defined and built-in app functio
     const app = new App('app1', 'Test1', {}, [
         new FunctionDef('f1', 'Greeting', {input1: 'greeting', calculation: ex`greeting + 'our new app' + ' at ' + CurrentUrl()`}),
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`'Hi there!' + Greeting() + Calc1` }),
-                newText('id2', 't2', {content: ex`'This is page' + CurrentUrl()` }),
+                new Text('id1', 't1', {content: ex`'Hi there!' + Greeting() + Calc1` }),
+                new Text('id2', 't2', {content: ex`'This is page' + CurrentUrl()` }),
                 new Button('id3', 'b1', {content: ex`'Show page' + CurrentUrl()`, action: ex`Log(CurrentUrl()); ShowPage(Page1)` }),
                 new Calculation('id4', 'Calc 1', {calculation: ex`'This is page' + CurrentUrl() + ' Hi ' + Greeting()` }),
             ]
@@ -2725,8 +2725,8 @@ test('generates local user defined functions in a list item that use a page item
             new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
-            newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [
-                newText('lt1', 'Desc', {content: 'Hi!'}),
+            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [
+                new Text('lt1', 'Desc', {content: 'Hi!'}),
                 new FunctionDef('f2', 'ExtraHeight', {calculation: ex`\$item.height - MinHeight`}),
             ]),
         ]),
@@ -2808,7 +2808,7 @@ test('generates function imports in the app', () => {
         new FunctionImport('f4', 'Get Amount', {source: 'Functions.js', exportName: 'amount'}),
         new FunctionImport('fAll', 'Calcs', {source: 'Functions.js', exportName: '*'}),
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz') + DoStuff()`}),
+                new Text('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz') + DoStuff()`}),
             ]
         )])
 
@@ -2861,7 +2861,7 @@ test('generates function imports for a Tool', () => {
     const tool = new Tool('tool1', 'Test1', {}, [
         new FunctionImport('f1', 'Get Name', {source: 'Function1.js'}),
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz')`}),
+                new Text('id1', 'Text 1', {content: ex`'This is ' + GetName('xyz')`}),
             ]
         )])
 
@@ -2911,7 +2911,7 @@ Test1.State = class Test1_State extends App.State {
 test('generates error for syntax error in expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`'Hello 'Doctor' how are you?'`}),
+                new Text('id1', 't1', {content: ex`'Hello 'Doctor' how are you?'`}),
             ]
         )])
 
@@ -2942,7 +2942,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates errors for styles sub-property expressions', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id1', 't1', {label: 'Some Text', styles: {color: 'red', borderWidth: ex`10~`, backgroundColor: ex`'pink'x`}}),
+                new TextInput('id1', 't1', {label: 'Some Text', styles: {color: 'red', borderWidth: ex`10~`, backgroundColor: ex`'pink'x`}}),
             ]
         )])
 
@@ -2985,7 +2985,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('generates error on correct line for syntax error in multiline content expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`23\n +`}),
+                new Text('id1', 't1', {content: ex`23\n +`}),
             ]
         )])
 
@@ -3017,7 +3017,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('global functions available in content expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`Sum(2, 3, 4)`}),
+                new Text('id1', 't1', {content: ex`Sum(2, 3, 4)`}),
             ]
         )])
 
@@ -3042,11 +3042,11 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('built-in names available in content expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`undefined`}),
-                newText('id2', 't2', {content: ex`null`}),
-                newText('id3', 't3', {content: ex`new Date(2020, 3, 4)`}),
-                newText('id4', 't4', {content: ex`Math.sqrt(2)`}),
-                newText('id5', 't5', {content: ex`document.getElementById('test1.Page1.t1').scrollTop`}),
+                new Text('id1', 't1', {content: ex`undefined`}),
+                new Text('id2', 't2', {content: ex`null`}),
+                new Text('id3', 't3', {content: ex`new Date(2020, 3, 4)`}),
+                new Text('id4', 't4', {content: ex`Math.sqrt(2)`}),
+                new Text('id5', 't5', {content: ex`document.getElementById('test1.Page1.t1').scrollTop`}),
             ]
         )])
 
@@ -3109,9 +3109,9 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('page elements available in content expression', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`ForenameInput.value + " " + SurnameInput.value`}),
-                newTextInput('id2', 'Forename Input', {}),
-                newTextInput('id3', 'Surname Input', {}),
+                new Text('id1', 't1', {content: ex`ForenameInput.value + " " + SurnameInput.value`}),
+                new TextInput('id2', 'Forename Input', {}),
+                new TextInput('id3', 'Surname Input', {}),
             ]
         )])
 
@@ -3149,7 +3149,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('unknown global functions generate error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`sumxx(2, 3, 4)`}),
+                new Text('id1', 't1', {content: ex`sumxx(2, 3, 4)`}),
             ]
         )])
 
@@ -3181,7 +3181,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('return statement in expression generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`return 42`}),
+                new Text('id1', 't1', {content: ex`return 42`}),
             ]
         )])
 
@@ -3213,7 +3213,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('syntax error statement in initialValue generates error into state defaults', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id2', 'Name Input', {initialValue: ex`{a: 10,`}),
+                new TextInput('id2', 'Name Input', {initialValue: ex`{a: 10,`}),
             ]
         )])
 
@@ -3254,7 +3254,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('statement not expression generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`while (true) log(10)`}),
+                new Text('id1', 't1', {content: ex`while (true) log(10)`}),
             ]
         )])
 
@@ -3269,7 +3269,7 @@ test('statement not expression generates error', ()=> {
 test('let as identifier generates error with quotes removed', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`let + 10`}),
+                new Text('id1', 't1', {content: ex`let + 10`}),
             ]
         )])
 
@@ -3284,7 +3284,7 @@ test('let as identifier generates error with quotes removed', ()=> {
 test('multiple statements in value expression generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`while (true) log(10); log(20)`}),
+                new Text('id1', 't1', {content: ex`while (true) log(10); log(20)`}),
             ]
         )])
 
@@ -3311,7 +3311,7 @@ test('multiple statements in action expression is ok', ()=> {
 test('assignment at top level is treated as comparison', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`Sum = 1`}),
+                new Text('id1', 't1', {content: ex`Sum = 1`}),
             ]
         )])
 
@@ -3338,8 +3338,8 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('assignment in function argument is treated as comparison', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id1', 'Input', {}),
-                newText('id2', 'Answer', {content: ex`If(Input.value = 42, 10, 20)`}),
+                new TextInput('id1', 'Input', {}),
+                new Text('id2', 'Answer', {content: ex`If(Input.value = 42, 10, 20)`}),
             ]
         )])
 
@@ -3376,7 +3376,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('assignment anywhere in expression is treated as comparison', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`If(true, 10, Sum(Log= 12, 3, 4))`}),
+                new Text('id1', 't1', {content: ex`If(true, 10, Sum(Log= 12, 3, 4))`}),
             ]
         )])
 
@@ -3437,7 +3437,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('property shorthand to name of property reports error and generates an error in the code', () => {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`{a: 10, xxx}`}),
+                new Text('id1', 't1', {content: ex`{a: 10, xxx}`}),
             ]
         )])
 
@@ -3469,7 +3469,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 test('Unexpected number error in expression generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 't1', {content: ex`If(Sum(1)    1, Log(10), Log(20))`}),
+                new Text('id1', 't1', {content: ex`If(Sum(1)    1, Log(10), Log(20))`}),
             ]
         )])
 
@@ -3485,8 +3485,8 @@ test('Circular reference generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new FunctionDef('fn1', 'Get Stuff', {calculation: ex`'abc' + 12`}),
-                newTextInput('id1', 'Val 1', {initialValue: ex`Val2`}),
-                newTextInput('id2', 'Val 2', {initialValue: ex`Val1 + GetStuff()`}),
+                new TextInput('id1', 'Val 1', {initialValue: ex`Val2`}),
+                new TextInput('id2', 'Val 2', {initialValue: ex`Val1 + GetStuff()`}),
             ]
         )])
 
@@ -3501,7 +3501,7 @@ test('Circular reference generates error', ()=> {
 test('Accepts modern JavaScript features', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
-                newText('id1', 'Optional ops', {content: ex`{a: 20}?.b ?? 20`}),
+                new Text('id1', 'Optional ops', {content: ex`{a: 20}?.b ?? 20`}),
             ]
         )])
 
@@ -3513,12 +3513,12 @@ test('generates standalone expressions block for selected element and includes a
     const app = new App('app1', 'Test1', {}, [
         new Data('d1', 'Width', {initialValue: 200}),
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            newText('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
+            new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id1', 't1', {initialValue: ex`t2.value`, multiline: true, label: "Text Input One", styles: {width: ex`Width`}}),
-                newTextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
-                newTextInput('id3', 't3', {}),
+                new TextInput('id1', 't1', {initialValue: ex`t2.value`, multiline: true, label: "Text Input One", styles: {width: ex`Width`}}),
+                new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
+                new TextInput('id3', 't3', {}),
             ]
         )])
 
@@ -3554,7 +3554,7 @@ test('generates standalone expressions block for app level selected element and 
         new WebFileDataStore('wf1', 'Store 1', {url: 'http://foo.com'}),
         new Collection('c1', 'Puzzles', {dataStore: ex`Store1`, collectionName: 'Puzzles'}),
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id3', 't3', {}),
+                new TextInput('id3', 't3', {}),
             ]
         )])
 
@@ -3565,7 +3565,6 @@ test('generates standalone expressions block for app level selected element and 
         'selectedElement': `Puzzles`,
     }
     const selectedElement = project1.findElement('c1')
-    const page = app.findElement('p1') as Page
     const [block] = gen.generateStandaloneBlock(selectedElement, exprs, app, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3581,12 +3580,12 @@ const Puzzles = getObject(pathTo('Puzzles'));
 test('generates standalone expressions block without selected element', ()=> {
     const app = new App('app1', 'Test1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            newText('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
+            new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
-                newTextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
-                newTextInput('id2', 't3', {}),
+                new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
+                new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
+                new TextInput('id2', 't3', {}),
             ]
         )])
 
@@ -3607,12 +3606,12 @@ const t1 = getObject(pathTo('t1'));
 test('generates standalone expressions block and errors and clears errors', ()=> {
     const app = new App('app1', 'Test 1', {}, [
         new AppBar('ab1', 'App Bar 1', {title: 'My App'}, [
-            newText('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
+            new Text('id0', 'Text 0', {styles: {width: 200}, content: 'Welcome!'})
         ]),
         new Page('p1', 'Page 1', {}, [
-                newTextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
-                newTextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
-                newTextInput('id2', 't3', {}),
+                new TextInput('id1', 't1', {initialValue: 'Hi there!', multiline: true, label: "Text Input One", styles: {width: 150}}),
+                new TextInput('id2', 't2', {initialValue: ex`"Some" + " things"`}),
+                new TextInput('id2', 't3', {}),
             ]
         )])
 

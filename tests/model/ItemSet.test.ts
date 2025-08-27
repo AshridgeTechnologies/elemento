@@ -2,10 +2,10 @@ import {expect, test} from "vitest"
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {itemSetClass, newItemSet, newText, newTextInput} from '../testutil/modelHelpers'
+import {ItemSet, Text, TextInput} from '../testutil/modelHelpers'
 
 test('ItemSet has correct default properties', ()=> {
-    const itemSet = newItemSet('l1', 'ItemSet the First', {}, [])
+    const itemSet = new ItemSet('l1', 'ItemSet the First', {}, [])
     const itemSet_ = asAny(itemSet)
     expect(itemSet.id).toBe('l1')
     expect(itemSet.name).toBe('ItemSet the First')
@@ -20,9 +20,9 @@ test('ItemSet has correct default properties', ()=> {
 })
 
 test('ItemSet has correct properties', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const itemSet = newItemSet('l1', 'ItemSet the First', {items: [{a:10}, {b: 20}], canDragItem: ex`1 === 2`, itemStyles: {color: ex`blue`}, selectable: 'none',
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const itemSet = new ItemSet('l1', 'ItemSet the First', {items: [{a:10}, {b: 20}], canDragItem: ex`1 === 2`, itemStyles: {color: ex`blue`}, selectable: 'none',
         selectAction: ex`Log(\$item.id)`, selectedItems: 10}, [text1, text2])
     const itemSet_ = asAny(itemSet)
 
@@ -39,22 +39,22 @@ test('ItemSet has correct properties', ()=> {
 })
 
 test('has correct property names and options', () => {
-    expect(newItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual([
+    expect(new ItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual([
         'items', 'selectedItems', 'selectable', 'selectAction', 'canDragItem', 'itemStyles'])
-    expect(newItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({state}) => state )).toStrictEqual([
+    expect(new ItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({state}) => state )).toStrictEqual([
         true, true, true, true, undefined, undefined])
 })
 
 test('tests if an object is this type', ()=> {
-    const itemSet = newItemSet('l1', 'ItemSet 1', {items: []}, [])
+    const itemSet = new ItemSet('l1', 'ItemSet 1', {items: []}, [])
     const page = new Page('p1', 'Page 1', {}, [])
 
-    expect(itemSetClass.is(itemSet)).toBe(true)
-    expect(itemSetClass.is(page)).toBe(false)
+    expect(ItemSet.is(itemSet)).toBe(true)
+    expect(ItemSet.is(page)).toBe(false)
 })
 
 test('can contain types apart from Project, App, Page, DataStore', () => {
-    const itemSet = newItemSet('l1', 'ItemSet 1', {items: []}, [])
+    const itemSet = new ItemSet('l1', 'ItemSet 1', {items: []}, [])
     expect(itemSet.canContain('Project')).toBe(false)
     expect(itemSet.canContain('App')).toBe(false)
     expect(itemSet.canContain('Page')).toBe(false)
@@ -67,9 +67,9 @@ test('can contain types apart from Project, App, Page, DataStore', () => {
 })
 
 test('converts to JSON', ()=> {
-    let text1 = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let text2 = newText('t2', 'Text 2', {content: ex`"More text"`})
-    const itemSet = newItemSet('l1', 'ItemSet 1', {items: [{a: 10}], canDragItem: ex`1 === 2`, itemStyles: {color: ex`blue`}}, [text1, text2])
+    let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let text2 = new Text('t2', 'Text 2', {content: ex`"More text"`})
+    const itemSet = new ItemSet('l1', 'ItemSet 1', {items: [{a: 10}], canDragItem: ex`1 === 2`, itemStyles: {color: ex`blue`}}, [text1, text2])
 
     expect(asJSON(itemSet)).toStrictEqual({
         kind: 'ItemSet',
@@ -81,9 +81,9 @@ test('converts to JSON', ()=> {
 })
 
 test('converts from plain object with correct types for elements', ()=> {
-    let text = newText('t1', 'Text 1', {content: ex`"Some text"`})
-    let textInput = newTextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
-    const itemSet = newItemSet('p1', 'ItemSet 1', {items: {expr: `[{a: 10}]`}, itemStyles: {backgroundColor: ex`blue`}, selectAction: ex`Log(\$item.id)`}, [text, textInput])
+    let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
+    let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
+    const itemSet = new ItemSet('p1', 'ItemSet 1', {items: {expr: `[{a: 10}]`}, itemStyles: {backgroundColor: ex`blue`}, selectAction: ex`Log(\$item.id)`}, [text, textInput])
     const loadedItemSet = loadJSON(asJSON(itemSet))
     expect(loadedItemSet).toEqual(itemSet)
 })

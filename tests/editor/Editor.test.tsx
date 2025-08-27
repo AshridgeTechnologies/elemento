@@ -8,7 +8,7 @@ import {act, fireEvent, render, screen, within} from '@testing-library/react/pur
 import lodash from 'lodash';
 import {ex, stopSuppressingRcTreeJSDomError, suppressRcTreeJSDomError, treeItemLabels, treeItemTitleClassNames, wait} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
-import {newTextInput} from '../testutil/modelHelpers'
+import {TextInput} from '../testutil/modelHelpers'
 import App from '../../src/model/App'
 import {projectFixture1, projectFixture2} from '../testutil/projectFixtures'
 import Project, {TOOLS_ID} from '../../src/model/Project'
@@ -133,7 +133,7 @@ test('shows TextInput element selected in tree in property editor', async () => 
 test('shows errors for properties of main client app', async () => {
     const projectWithErrors = Project.new([new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
-            newTextInput('textInput_1', 'First Text Input', {
+            new TextInput('textInput_1', 'First Text Input', {
                 initialValue: ex`"A text value" + `,
                 label: ex`BadName + 30`
             }),
@@ -171,7 +171,7 @@ test('shows errors for properties of main client app', async () => {
 test('shows errors for properties of all client apps', async () => {
     const app1 = new App('app1', 'App One', {}, [
         new Page('page_1', 'Main Page', {}, [
-            newTextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `}),
+            new TextInput('textInput_1', 'First Text Input', {initialValue: ex`"A text value" + `}),
         ]),
     ])
 

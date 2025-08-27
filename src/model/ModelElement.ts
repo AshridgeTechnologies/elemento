@@ -168,8 +168,16 @@ const addElementClass = (schema: ElementSchema, metadata: ElementMetadata | unde
     return newClass
 }
 
-export const modelElementClass = (schema: ElementSchema, metadata?: ElementMetadata): ElementConstructor => {
-    return classes.get(schema) ?? addElementClass(schema, metadata)
+export const modelElementClass = (schemaOrClass: ElementSchema | Function, metadata?: ElementMetadata): ElementConstructor => {
+    let theSchema: ElementSchema, theMetadata: ElementMetadata | undefined
+    if (typeof schemaOrClass === 'function') {
+        theSchema = (schemaOrClass as any).Schema
+        theMetadata = (schemaOrClass as any).Metadata
+    } else {
+        theSchema = schemaOrClass
+        theMetadata = metadata
+    }
+    return classes.get(theSchema) ?? addElementClass(theSchema, theMetadata)
 }
 
 
