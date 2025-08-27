@@ -1,12 +1,11 @@
 import {afterEach, beforeEach, expect, test, vi} from "vitest"
 import ProjectHandler from '../../src/editor/ProjectHandler'
 import {projectFixture1, welcomeProject} from '../testutil/projectFixtures'
-import Button from '../../src/model/Button'
 import {AppElementActionName} from '../../src/editor/Types'
 import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import {Text, TextInput} from '../testutil/modelHelpers'
+import {Text, TextInput, Button} from '../testutil/modelHelpers'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
 import Page from '../../src/model/Page'

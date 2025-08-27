@@ -7,8 +7,7 @@ import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
-import {Block, Text, TextInput} from '../testutil/modelHelpers'
-import Button from '../../src/model/Button'
+import {Block, Text, TextInput, Button} from '../testutil/modelHelpers'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
 import {componentProps, ex} from '../testutil/testHelpers'
@@ -401,8 +400,8 @@ test('has fields for Button', () => {
     expect(inputValue('Content')).toBe('"Hi!"')
     expect(selectValue('Appearance')).toBe('link')
     expect(inputValue('Action')).toBe('doIt()')
-    expect(kindButton(5).textContent).toBe('fx=')
-    expect(kindButton(5).disabled).toBe(true)
+    expect(kindButton(4).textContent).toBe('fx=')
+    expect(kindButton(4).disabled).toBe(true)
     expect(selectValue('Show')).toBe('false')
 })
 

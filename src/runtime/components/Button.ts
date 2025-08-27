@@ -4,6 +4,8 @@ import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
 import {omit, pick} from 'ramda'
 import {sxProps, typographyStyles} from './ComponentHelpers'
+import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 const appearanceChoices = ['outline', 'filled', 'link'] as const
 type Appearance = typeof appearanceChoices[number]
@@ -17,6 +19,61 @@ type Properties = {
     enabled?: PropVal<boolean>,
     styles?: StylesPropVals
 }
+
+export const ButtonSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Button",
+    "description": "A Button element carries out an action when it is clicked.  The action formula defines what the button does.",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Button",
+    "icon": "crop_3_2",
+    "elementType": "statelessUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "content": {
+                    "description": "The text shown in the button",
+                    "$ref": "#/definitions/StringOrExpression",
+                    "default": "=name"
+                },
+                "iconName": {
+                    "description": "The icon to show in the button",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
+                "appearance": {
+                    "description": "The overall style of the button",
+                    "enum": ["outline", "filled", "link"],
+                    "default": "outline"
+                },
+                "enabled": {
+                    "description": "Whether the button is enabled",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                },
+                "action": {
+                    "description": "An action to carry out when the button is clicked",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": []
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to this element",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
+
 
 export default function Button({path, ...props}: Properties) {
     const {action, content, iconName, appearance, show, enabled = true, styles = {}} = valueOfProps(props)
@@ -47,3 +104,5 @@ export default function Button({path, ...props}: Properties) {
         ...optionalProps,
     }, valueOf(content) as React.ReactNode)
 }
+
+Button.Schema = ButtonSchema

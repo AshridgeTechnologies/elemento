@@ -6,7 +6,6 @@ import Dialog from './Dialog'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
-import Button from './Button'
 import Icon from './Icon'
 import Image from './Image'
 import UserLogon from './UserLogon'
@@ -60,7 +59,8 @@ import {ElementSchema, modelElementClass} from './ModelElement'
 import {TextInputSchema, TextInputMetadata} from '../runtime/components/TextInput'
 import {TextElementSchema} from '../runtime/components/TextElement'
 import {BlockSchema} from '../runtime/components/Block'
-import {ItemSetMetadata, ItemSetSchema} from '../runtime/components/ItemSet'
+import ItemSet from '../runtime/components/ItemSet'
+import Button from '../runtime/components/Button'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -91,7 +91,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         TrueFalseInput: TrueFalseInput,
         DateInput: DateInput,
         SpeechInput: SpeechInput,
-        Button: Button,
+        Button: modelElementClass(Button),
         Form: Form,
         Image: Image,
         Frame: Frame,
@@ -100,7 +100,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Menu: Menu,
         MenuItem: MenuItem,
         List: List,
-        ItemSet: modelElementClass(ItemSetSchema, ItemSetMetadata),
+        ItemSet: modelElementClass(ItemSet),
         Data: Data,
         Calculation: Calculation,
         Timer: Timer,

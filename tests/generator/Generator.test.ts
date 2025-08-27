@@ -2,11 +2,10 @@ import {expect, test} from "vitest"
 import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';
-import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
-import {Block, ItemSet, Text,  TextInput} from '../testutil/modelHelpers'
+import {Block, ItemSet, Text,  TextInput, Button} from '../testutil/modelHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
@@ -784,7 +783,7 @@ test('generates Button elements with properties including await in action', ()=>
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Button, elProps(pathTo('b1')).content('Click here!').appearance(22 && 'filled').show(false).action(_state.b1_action).props),
+        React.createElement(Button, elProps(pathTo('b1')).content('Click here!').appearance(22 && 'filled').action(_state.b1_action).show(false).props),
         React.createElement(Button, elProps(pathTo('b2')).content('Do it all!').appearance('outline').action(_state.b2_action).props)
     )
 }

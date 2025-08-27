@@ -1,7 +1,6 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
-import {Block, Text, TextInput} from '../testutil/modelHelpers'
-import Button from '../../src/model/Button'
+import {Block, Text, TextInput, Button} from '../testutil/modelHelpers'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
 import NumberInput from '../../src/model/NumberInput'

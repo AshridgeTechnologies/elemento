@@ -123,10 +123,18 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
         }
     })[kind]
 
+    const defaultValue = (val: any, el: BaseElement<any>) => {
+        if (typeof val === 'string' && val.startsWith('=')) {
+            const propName = val.substring(1)
+            return el[propName as keyof BaseElement<any>]
+        }
+        return val
+    }
     const propertyProps = mapValues(ownProps, (prop, name) => (
         {
             get: function () {
-                return (this as any).properties[name] ?? prop.default
+                const this_ = this as any
+                return this_.properties[name] ?? defaultValue(prop.default, this_)
             },
             enumerable: true
         })

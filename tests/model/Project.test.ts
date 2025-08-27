@@ -1,5 +1,4 @@
 import {describe, expect, test} from "vitest"
-import Button from '../../src/model/Button'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
 import AppBar from '../../src/model/AppBar'
@@ -19,7 +18,7 @@ import ComponentInstance from '../../src/model/ComponentInstance'
 import NumberInput from '../../src/model/NumberInput'
 import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
-import {Block, Text, TextInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput, Button} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})

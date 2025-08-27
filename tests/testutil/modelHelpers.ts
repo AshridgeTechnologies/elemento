@@ -3,8 +3,10 @@ import {default as TextElementRuntime} from '../../src/runtime/components/TextEl
 import {default as TextInputRuntime} from '../../src/runtime/components/TextInput'
 import {default as BlockRuntime} from '../../src/runtime/components/Block'
 import {default as ItemSetRuntime} from '../../src/runtime/components/ItemSet'
+import {default as ButtonRuntime} from '../../src/runtime/components/Button'
 
 export const TextInput = modelElementClass(TextInputRuntime)
 export const Text = modelElementClass(TextElementRuntime)
 export const Block = modelElementClass(BlockRuntime)
 export const ItemSet = modelElementClass(ItemSetRuntime)
+export const Button = modelElementClass(ButtonRuntime)
