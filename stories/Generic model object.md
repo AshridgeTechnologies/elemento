@@ -18,7 +18,7 @@ Requirements
 - Meta-Schema to enforce the special keywords used
 - ✅ Share definitions between schemas
 - All tests continue to pass
-- Covers all style attributes
+- ✅ Covers all style attributes
 - Use generated class for user-defined components
 
 Technical

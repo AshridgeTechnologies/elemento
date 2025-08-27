@@ -1836,7 +1836,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
-            newItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
+            new ItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
