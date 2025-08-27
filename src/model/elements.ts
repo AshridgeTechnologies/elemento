@@ -6,7 +6,6 @@ import Dialog from './Dialog'
 import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
-import Icon from './Icon'
 import Image from './Image'
 import UserLogon from './UserLogon'
 import List from './List'
@@ -52,7 +51,7 @@ import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
-import {ElementSchema, modelElementClass} from './ModelElement'
+import {modelElementClass} from './ModelElement'
 
 import {TextInputSchema, TextInputMetadata} from '../runtime/components/TextInput'
 import {TextElementSchema} from '../runtime/components/TextElement'
@@ -61,6 +60,7 @@ import ItemSet from '../runtime/components/ItemSet'
 import Button from '../runtime/components/Button'
 import Menu from '../runtime/components/Menu'
 import MenuItem from '../runtime/components/MenuItem'
+import Icon from '../runtime/components/Icon'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -95,7 +95,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Form: Form,
         Image: Image,
         Frame: Frame,
-        Icon: Icon,
+        Icon: modelElementClass(Icon),
         UserLogon: UserLogon,
         Menu: modelElementClass(Menu),
         MenuItem: modelElementClass(MenuItem),
