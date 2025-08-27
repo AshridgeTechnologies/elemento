@@ -2,7 +2,7 @@ import {JSONSchema} from "@apidevtools/json-schema-ref-parser"
 import BaseElement, {propDef} from './BaseElement'
 import {CanContain, ComponentType, ElementId, ElementType, eventAction, PropertyDef, PropertyType} from "./Types";
 import BaseInputElement from './BaseInputElement'
-import {mapValues} from 'radash'
+import {isArray, mapValues} from 'radash'
 import Element from './Element'
 import {elementHasParentTypeOf} from './createElement'
 import Ajv2020 from 'ajv/dist/2020'
@@ -14,7 +14,8 @@ export type ElementSchema = JSONSchema & Readonly<{
     valueType?: PropertyType,
     isLayoutOnly?: boolean,
     initialProperties?: {[k:string]: any},
-    canContain?: CanContain
+    canContain?: CanContain,
+    parentType?: ElementType | ElementType[]
 }>
 
 export type PropertySchema = JSONSchema & Readonly<{
@@ -50,7 +51,7 @@ const ajv = new Ajv2020({strictSchema: false, allErrors: true})
 
 const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined): ElementConstructor => {
     const {icon, kind, elementType, valueType,
-        isLayoutOnly, initialProperties, canContain} = schema
+        isLayoutOnly, initialProperties, canContain, parentType} = schema
 
     const props = schema.properties!.properties as JSONSchema
     const ownProps = props.properties as Record<string, PropertySchema>
@@ -154,6 +155,14 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
     if (canContain === 'elementsWithThisParentType') {
         Object.defineProperty(elementClass.prototype, 'canContain',
             {get: function () {return (elementType: ElementType) => elementHasParentTypeOf(elementType, this)}, enumerable: true})
+    } else if (isArray(canContain)) {
+        Object.defineProperty(elementClass.prototype, 'canContain',
+            {get: function () {return (elementType: ElementType) => canContain.includes(elementType)}, enumerable: true})
+    }
+
+    if (parentType) {
+        Object.defineProperty(elementClass, 'parentType',
+            {get: function () {return parentType}, enumerable: true})
     }
 
     Object.defineProperty(elementClass, 'schema',

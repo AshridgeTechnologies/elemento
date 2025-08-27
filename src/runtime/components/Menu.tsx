@@ -1,8 +1,10 @@
-import React, {MouseEventHandler} from 'react'
-import {Button, Icon, Icon as MuiIcon, IconButton, IconButton as MuiIconButton, Menu as Mui_Menu} from '@mui/material'
+import React from 'react'
+import {Button, Icon, IconButton, Menu as Mui_Menu} from '@mui/material'
 import {compose, omit, pick} from 'ramda'
-import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
+import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {sxProps, typographyStyles} from './ComponentHelpers'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = Readonly<{
     path: string,
@@ -14,6 +16,61 @@ type Properties = Readonly<{
     buttonStyles?: StylesPropVals
     children?: any
 }>
+
+export const MenuSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Menu",
+    "description": "Displays a button that, when clicked, shows a list of Menu Items that the user can select.",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Menu",
+    "icon": "menu",
+    "elementType": "statelessUI",
+    "canContain": ['MenuItem'],
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "label": {
+                    "description": "The label in the button that displays the menu",
+                    "$ref": "#/definitions/StringOrExpression",
+                    "default": "=name"
+                },
+                "iconName": {
+                    "description": "The icon shown in the menu button",
+                    "$ref": "#/definitions/StringOrExpression",
+                },
+                "filled": {
+                    "description": "Whether the label in the button is filled with the main app colour",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "show": {
+                    "description": "Whether this element is displayed",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The specific CSS styles applied to the menu when opened",
+                    "$ref": "#/definitions/Styles"
+                },
+                "buttonStyles": {
+                    "description": "The specific CSS styles applied to the menu button",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        },
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/BaseElement"
+            }
+        }
+    },
+    "required": ["kind", "properties"],
+    "unevaluatedProperties": false,
+
+    "definitions": Definitions
+}
 
 export default function Menu({path, children = [], ...props}: Properties) {
     const {label, iconName, filled, show, styles = {}, buttonStyles = {}} = valueOfProps(props)
@@ -73,3 +130,5 @@ export default function Menu({path, children = [], ...props}: Properties) {
         </Mui_Menu>
     </div>
 }
+
+Menu.Schema = MenuSchema

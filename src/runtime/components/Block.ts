@@ -34,7 +34,7 @@ export const BlockSchema: ElementSchema = {
     "icon": "widgets",
     "elementType": "statefulUI",
     "isLayoutOnly": true,
-    "canContain": 'elementsWithThisParentType',
+    "canContain": "elementsWithThisParentType",
     "properties": {
         "properties": {
             "type": "object",

@@ -9,7 +9,7 @@ export type PropertyValue = string | number | boolean | string[] | Date | Proper
 export type MultiplePropertyValue = {[p: string]: PropertyValue}
 export type CombinedPropertyValue = PropertyValue | MultiplePropertyValue
 export type PropertyValueType<T> = T | PropertyExpr
-export type CanContain = 'elementsWithThisParentType'
+export type CanContain = 'elementsWithThisParentType' | ElementType[]
 
 export const InsertPositions = ['before', 'after', 'inside'] as const
 export type InsertPosition = typeof InsertPositions[number]

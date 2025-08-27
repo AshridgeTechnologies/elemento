@@ -9,8 +9,6 @@ import TrueFalseInput from './TrueFalseInput'
 import Icon from './Icon'
 import Image from './Image'
 import UserLogon from './UserLogon'
-import Menu from './Menu'
-import MenuItem from './MenuItem'
 import List from './List'
 import Data from './Data'
 import FileDataStore from './FileDataStore'
@@ -61,6 +59,8 @@ import {TextElementSchema} from '../runtime/components/TextElement'
 import {BlockSchema} from '../runtime/components/Block'
 import ItemSet from '../runtime/components/ItemSet'
 import Button from '../runtime/components/Button'
+import Menu from '../runtime/components/Menu'
+import MenuItem from '../runtime/components/MenuItem'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -97,8 +97,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Frame: Frame,
         Icon: Icon,
         UserLogon: UserLogon,
-        Menu: Menu,
-        MenuItem: MenuItem,
+        Menu: modelElementClass(Menu),
+        MenuItem: modelElementClass(MenuItem),
         List: List,
         ItemSet: modelElementClass(ItemSet),
         Data: Data,

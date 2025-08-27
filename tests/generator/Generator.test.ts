@@ -2,10 +2,8 @@ import {expect, test} from "vitest"
 import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';
-import Menu from '../../src/model/Menu'
-import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
-import {Block, ItemSet, Text,  TextInput, Button} from '../testutil/modelHelpers'
+import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem} from '../testutil/modelHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
