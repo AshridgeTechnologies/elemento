@@ -5,6 +5,7 @@ import {TextElementSchema} from '../../src/runtime/components/TextElement'
 import {TextInputSchema} from '../../src/runtime/components/TextInput'
 import {BlockSchema} from '../../src/runtime/components/Block'
 import BaseInputElement from '../../src/model/BaseInputElement'
+import {ItemSetMetadata, ItemSetSchema} from '../../src/runtime/components/ItemSet'
 
 export const textInputClass = modelElementClass(<ElementSchema>TextInputSchema)
 export const newTextInput = (id: ElementId,
@@ -26,3 +27,10 @@ export const newBlock = (id: ElementId,
                       properties: object,
                       elements: ReadonlyArray<Element> | undefined = undefined,
 ) => new blockClass(id, name, properties, elements)
+
+export const itemSetClass = modelElementClass(ItemSetSchema, ItemSetMetadata)
+export const newItemSet = (id: ElementId,
+                      name: string,
+                      properties: object,
+                      elements: ReadonlyArray<Element> | undefined = undefined,
+) => new itemSetClass(id, name, properties, elements)

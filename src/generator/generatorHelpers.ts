@@ -9,7 +9,6 @@ import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
 import FunctionDef from '../model/FunctionDef'
-import ItemSet from '../model/ItemSet'
 import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
 import {ElementId} from '../model/Types'
 
@@ -117,7 +116,7 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
         const childElements = component.itemSet.elements || []
         return flatten(childElements.map(el => [el, allElements(el)]))
     }
-    if (component instanceof ItemSet) {
+    if (component.kind === 'ItemSet') {
         return []
     }
 

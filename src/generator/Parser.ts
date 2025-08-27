@@ -4,7 +4,6 @@ import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
-import ItemSet from '../model/ItemSet'
 import FunctionDef from '../model/FunctionDef'
 import {AllErrors, ElementErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
@@ -17,6 +16,7 @@ import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
 import {mapValues} from 'radash'
 import App from '../model/App'
+import BaseElement from '../model/BaseElement'
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -307,7 +307,7 @@ export default class Parser {
         } else if (element.kind === 'Component') {
             this.parseComponent(element)
         } else if (element.kind === 'ItemSet') {
-            this.parseComponent(new ListItem(element as ItemSet), containingComponent)
+            this.parseComponent(new ListItem(element as BaseElement<any>), containingComponent)
         } else if (element.kind === 'DataTypes') {
             this.parseComponent(element)
         } else if (includeChildren) {

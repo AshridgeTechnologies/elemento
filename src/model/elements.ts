@@ -13,7 +13,6 @@ import UserLogon from './UserLogon'
 import Menu from './Menu'
 import MenuItem from './MenuItem'
 import List from './List'
-import ItemSet from './ItemSet'
 import Data from './Data'
 import FileDataStore from './FileDataStore'
 import WebFileDataStore from './WebFileDataStore'
@@ -58,9 +57,10 @@ import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {ElementSchema, modelElementClass} from './ModelElement'
 
-import {TextInputSchema} from '../runtime/components/TextInput'
+import {TextInputSchema, TextInputMetadata} from '../runtime/components/TextInput'
 import {TextElementSchema} from '../runtime/components/TextElement'
 import {BlockSchema} from '../runtime/components/Block'
+import {ItemSetMetadata, ItemSetSchema} from '../runtime/components/ItemSet'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -85,7 +85,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         AppBar: AppBar,
         Page: Page,
         Text: modelElementClass(TextElementSchema),
-        TextInput: modelElementClass(TextInputSchema),
+        TextInput: modelElementClass(TextInputSchema, TextInputMetadata),
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
@@ -100,7 +100,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Menu: Menu,
         MenuItem: MenuItem,
         List: List,
-        ItemSet: ItemSet,
+        ItemSet: modelElementClass(ItemSetSchema, ItemSetMetadata),
         Data: Data,
         Calculation: Calculation,
         Timer: Timer,

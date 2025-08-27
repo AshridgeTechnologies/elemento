@@ -19,8 +19,11 @@ export type ElementSchema = JSONSchema & Readonly<{
 
 export type PropertySchema = JSONSchema & Readonly<{
     argNames?: string[]
-    state?: boolean
 }>
+
+export type ElementMetadata = {
+    stateProps?: string[]
+}
 
 type BaseElementConstructor = {
     new (id: ElementId,
@@ -45,7 +48,7 @@ type ElementConstructor = BaseElementConstructor | BaseInputElementConstructor
 const classes = new Map<ElementSchema, ElementConstructor>()
 const ajv = new Ajv2020({strictSchema: false, allErrors: true})
 
-const createElementClass = (schema: ElementSchema): ElementConstructor => {
+const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined): ElementConstructor => {
     const {icon, kind, elementType, valueType,
         isLayoutOnly, initialProperties, canContain} = schema
 
@@ -54,28 +57,35 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
     const propDefs = Object.entries(ownProps).map(([name, prop]) => {
         const {$ref, type, enum: enumType} = prop
 
-        if (enumType) {
-            return propDef(name, enumType as string[])
+        const def = (() => {
+            if (enumType) {
+                return propDef(name, enumType as string[])
+            }
+            switch ($ref ?? type) {
+                case '#/definitions/StringOrExpression':
+                    return propDef(name, 'string')
+                case '#/definitions/StringMultilineOrExpression':
+                    return propDef(name, 'string multiline')
+                case '#/definitions/BooleanOrExpression':
+                    return propDef(name, 'boolean')
+                case '#/definitions/Expression':
+                    return propDef(name, 'expr')
+                case '#/definitions/Styles':
+                    return propDef(name, 'styles')
+                case '#/definitions/ActionExpression':
+                    const {argNames = []} = prop
+                    return propDef(name, eventAction(...argNames))
+                case 'boolean':
+                    return propDef(name, 'boolean', {fixedOnly: true})
+                default:
+                    throw new Error('Unknown property type: ' + $ref)
+            }
+        })()
+        if (metadata?.stateProps?.includes(name)) {
+            def.state = true
         }
-        switch ($ref ?? type) {
-            case '#/definitions/StringOrExpression':
-                return propDef(name, 'string')
-            case '#/definitions/StringMultilineOrExpression':
-                return propDef(name, 'string multiline')
-            case '#/definitions/BooleanOrExpression':
-                return propDef(name, 'boolean')
-            case '#/definitions/Expression':
-                return propDef(name, 'expr')
-            case '#/definitions/Styles':
-                return propDef(name, 'styles')
-            case '#/definitions/ActionExpression':
-                const {argNames = []} = prop
-                return propDef(name, eventAction(...argNames))
-            case 'boolean':
-                return propDef(name, 'boolean', {fixedOnly: true})
-            default:
-                throw new Error('Unknown property type: ' + $ref)
-        }
+        return def
+
     })
 
     const hasBaseInputProps = props.$ref === '#/definitions/BaseInputProperties'
@@ -152,14 +162,14 @@ const createElementClass = (schema: ElementSchema): ElementConstructor => {
     return elementClass
 }
 
-const addElementClass = (schema: ElementSchema) => {
-    const newClass= createElementClass(schema)
+const addElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined) => {
+    const newClass= createElementClass(schema, metadata)
     classes.set(schema, newClass)
     return newClass
 }
 
-export const modelElementClass = (schema: ElementSchema): ElementConstructor => {
-    return classes.get(schema) ?? addElementClass(schema)
+export const modelElementClass = (schema: ElementSchema, metadata?: ElementMetadata): ElementConstructor => {
+    return classes.get(schema) ?? addElementClass(schema, metadata)
 }
 
 

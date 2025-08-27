@@ -14,7 +14,7 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
-import {type ElementSchema} from '../../model/ModelElement'
+import {ElementMetadata, type ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
@@ -27,10 +27,6 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     }
 
     return props
-}
-
-export const TextInputMetadata = {
-    stateProps: [...InputComponentMetadata.stateProps]
 }
 
 export const TextInputSchema: ElementSchema = {
@@ -65,6 +61,10 @@ export const TextInputSchema: ElementSchema = {
     "unevaluatedProperties": false,
 
     "definitions": Definitions
+}
+
+export const TextInputMetadata: ElementMetadata = {
+    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
 }
 
 

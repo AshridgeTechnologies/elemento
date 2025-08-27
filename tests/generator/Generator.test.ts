@@ -6,7 +6,7 @@ import Button from '../../src/model/Button'
 import Menu from '../../src/model/Menu'
 import MenuItem from '../../src/model/MenuItem'
 import Page from '../../src/model/Page'
-import {newBlock, newText, newTextInput} from '../testutil/modelHelpers'
+import {newBlock, newItemSet, newText, newTextInput} from '../testutil/modelHelpers'
 import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
@@ -38,7 +38,6 @@ import Rule from '../../src/model/types/Rule';
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
-import ItemSet from '../../src/model/ItemSet'
 import {knownSync} from '../../src/generator/generatorHelpers'
 import Dialog from '../../src/model/Dialog'
 import WebFileDataStore from '../../src/model/WebFileDataStore'
@@ -1338,7 +1337,7 @@ test('sorts state entries into dependency order', () => {
             new Data('id3', 'The Widget', {initialValue: ex`WidgetId.value && Get(Widgets, WidgetId.value)`}),
             new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
-            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})]),
+            newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})]),
             ]
         ),
         new FileDataStore('fds1', 'Store1', {})
@@ -1415,7 +1414,7 @@ test('sorts state entries into dependency order when nested inside a layout elem
             new Data('id2', 'Widget Id', {initialValue: ex`WidgetSet.selectedItem && WidgetSet.selectedItem.id`}),
             new Collection('id1', 'Widgets', {dataStore: ex`Store1`, collectionName: 'Widgets'}),
             new List('ls1', 'List 1', {}, [
-                new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})])
+                newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [newText('lt1', 'Desc', {content: 'Hi!'})])
             ])
         ]),
         new FileDataStore('fds1', 'Store1', {})
@@ -1645,7 +1644,7 @@ test('generates ItemSet element with separate child component and global functio
             new SelectInput('id5', 'Item Color', {}),
             new Data('id6', 'Data 1', {initialValue: 10}),
             newBlock('la1', 'Layout 1', {}, [
-                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id + Data1 !== Floor(99.9)`,
+                newItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], canDragItem: ex`\$item.id + Data1 !== Floor(99.9)`,
                     itemStyles: {color: ex`\$selected ? 'red' : ItemColor`, width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     newText('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1 + $itemId`}),
                     newTextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
@@ -1745,7 +1744,7 @@ test('generates ItemSet element inside List', ()=> {
         new Page('p1', 'Page 1', {}, [
             newTextInput('id4', 'Text Input 1', {}),
             new List('l1', 'List 1', {}, [
-                new ItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
+                newItemSet('is1', 'Item Set 1', {items: [{a: 10}, {a: 20}], itemStyles: {color: 'red', width: 200}, selectAction: ex`Log(\$item.id)`}, [
                     newText('t1', 'Text 1', {content: ex`"Hi there " + TextInput2 + " in " + TextInput1`}),
                     newTextInput('id2', 'Text Input 2', {initialValue: ex`"from " + Left($item, 3)`}),
                     new Button('id3', 'Button Update', {content: 'Update', action: ex`Update('Things', \$item.id, {done: true})`}),
@@ -1837,7 +1836,7 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 2', {}, [
             // @ts-ignore
-            new ItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
+            newItemSet('is1', 'Item Set 1', {items: undefined, selectable: false}, [
                 newText('id1', 'Text 1', {content: 'Hi there!'}),
             ])
             ]
@@ -2726,7 +2725,7 @@ test('generates local user defined functions in a list item that use a page item
             new FunctionDef('f1', 'IsTallWidget', {input1: 'widget', calculation: ex`Or(widget.height > MinHeight, widget.shiny)`}),
             new Data('d1', 'TallWidgets', {initialValue: ex`Select(Widgets.getAllData(), IsTallWidget(\$item))`}),
             new NumberInput('n1', 'Min Height', {}),
-            new ItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [
+            newItemSet('id4', 'Widget Set', {items: ex`Widgets.Query({})`}, [
                 newText('lt1', 'Desc', {content: 'Hi!'}),
                 new FunctionDef('f2', 'ExtraHeight', {calculation: ex`\$item.height - MinHeight`}),
             ]),

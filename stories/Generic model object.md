@@ -30,6 +30,7 @@ Technical
 - Separate out types to ensure runtime does not depend on model package
 - Generic type to recognise properties?
 - Components have metadata to hold state props etc
+- Get rid of stateProperties - only used in Inspector
 
 To Do
 -----

@@ -1,11 +1,12 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
+import {ElementMetadata} from '../../model/ModelElement'
 
 export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
 export type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
 
-export const InputComponentMetadata = {
+export const InputComponentMetadata: ElementMetadata = {
     stateProps: ['value', 'dataType']
 }
 

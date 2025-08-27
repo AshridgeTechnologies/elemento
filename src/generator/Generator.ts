@@ -34,7 +34,6 @@ import {ASSET_DIR} from "../shared/constants"
 import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
-import ItemSet from '../model/ItemSet'
 import ComponentInstance from '../model/ComponentInstance'
 import OutputProperty from '../model/OutputProperty'
 import BaseElement from '../model/BaseElement'
@@ -595,11 +594,10 @@ ${generateChildren(form, indentLevel2, form)}
             }
 
             case 'ItemSet': {
-                const itemSet = element as ItemSet
-                const itemCode = this.generateComponent(app, new ListItem(itemSet), containingComponent)
+                const itemCode = this.generateComponent(app, new ListItem(element as BaseElement<any>), containingComponent)
                 requiredImports.add(itemCode.requiredImports)
                 topLevelFunctions.add(itemCode.contents)
-                const itemContentComponent = containingComponent!.codeName + '_' + itemSet.codeName + 'Item'
+                const itemContentComponent = containingComponent!.codeName + '_' + element.codeName + 'Item'
 
                 const modelProperties = omit(['canDragItem', 'itemStyles'], this.modelProperties(element))  // used in the item content component
                 const reactProperties = {itemContentComponent, ...modelProperties}
