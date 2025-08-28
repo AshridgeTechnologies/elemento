@@ -1,6 +1,5 @@
 import Project from './Project'
 import App from './App'
-import AppBar from './AppBar'
 import Page from './Page'
 import Dialog from './Dialog'
 import NumberInput from './NumberInput'
@@ -54,6 +53,7 @@ import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {modelElementClass} from './ModelElement'
 
 // import App from '../runtime/components/App'
+import AppBar from '../runtime/components/AppBar'
 import TextInput from '../runtime/components/TextInput'
 import TextElement from '../runtime/components/TextElement'
 import Block from '../runtime/components/Block'
@@ -83,7 +83,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Project: Project,
         App: App,  // specific class still needed for now
         Tool: Tool,
-        AppBar: AppBar,
+        AppBar: modelElementClass(AppBar),
         Page: Page,
         Text: modelElementClass(TextElement),
         TextInput: modelElementClass(TextInput),

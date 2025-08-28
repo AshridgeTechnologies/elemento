@@ -12,6 +12,7 @@ import Generator from '../generator/Generator'
 import Page from '../model/Page'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
+import App from '../model/App'
 
 const tooltipSlotProps = {
     popper: {
@@ -37,7 +38,7 @@ const displayValue = (val: any): string | ReactNode => {
 const watchName = (index: number) => `Watch ${index + 1}`
 const indexFromWatchName = (name: string) => parseInt(name.split(/ /)[1]) - 1
 
-export default function Inspector(props: any) {
+export default function Inspector(_props: any) {
     const [selectedItemId, setSelectedItemId] = useState<ElementId | null>(null)
     const [project, setProject] = useState<Project | null>(null)
     const [generator, setGenerator] = useState<Generator | null>(null)
@@ -48,7 +49,7 @@ export default function Inspector(props: any) {
     const [updatesInProgress, setUpdatesInProgress] = useState<string[]>([])
 
     const projectUpdated = (project: Project) => {
-        const app = project.findChildElements('App')[0]
+        const app = project.findChildElements('App')[0] as App
         setGenerator(new Generator(app, project))
         setProject(project)
     }
@@ -100,10 +101,10 @@ export default function Inspector(props: any) {
         return [prop.name, expr]
     })
     const styles: StylingProps = (element as any).styles ?? {}
-    const dynamicStyles = pickBy((value, key) => isExpr(value), styles) as StylingProps
+    const dynamicStyles = pickBy((value) => isExpr(value), styles) as StylingProps
     const dynamicStyleEntries = Object.entries(dynamicStyles).map( ([name, expr]) => [`styles.${name}`, (expr as PropertyExpr).expr])
     const statePropertyEntries = stateProperties.map( prop => [prop, `_selectedElement.${prop}`])
-    const watchEntries = watchExprs.map( (expr, index) => [watchName(index), expr]).filter(([name, expr]) => notBlank(expr))
+    const watchEntries = watchExprs.map( (expr, index) => [watchName(index), expr]).filter(([_name, expr]) => notBlank(expr))
     const allEntries = [currentPageEntry, stateEntry, ...selectedEntry, ...propertyDefEntries, ...dynamicStyleEntries, ...statePropertyEntries, ...watchEntries]
     const elementDebugExprs = Object.fromEntries(allEntries)
     const containerToEvaluateExprs = () => {
@@ -114,7 +115,7 @@ export default function Inspector(props: any) {
         const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as Page
         if (pageOfElement) return pageOfElement
 
-        return project!.findChildElements('App')[0]
+        return project!.findChildElements('App')[0] as App
     }
     const [latestDebugExpr = null, errors = {}] = generator?.generateStandaloneBlock(element, elementDebugExprs, containerToEvaluateExprs(), updatesInProgress) ?? []
     if (latestDebugExpr !== debugExpr) setDebugExpr(latestDebugExpr)

@@ -1,4 +1,5 @@
 import {modelElementClass} from '../../src/model/ModelElement'
+import {default as AppBarRuntime} from '../../src/runtime/components/AppBar'
 import {default as TextElementRuntime} from '../../src/runtime/components/TextElement'
 import {default as TextInputRuntime} from '../../src/runtime/components/TextInput'
 import {default as BlockRuntime} from '../../src/runtime/components/Block'
@@ -7,6 +8,7 @@ import {default as ButtonRuntime} from '../../src/runtime/components/Button'
 import {default as MenuRuntime} from '../../src/runtime/components/Menu'
 import {default as MenuItemRuntime} from '../../src/runtime/components/MenuItem'
 
+export const AppBar = modelElementClass(AppBarRuntime)
 export const TextInput = modelElementClass(TextInputRuntime)
 export const Text = modelElementClass(TextElementRuntime)
 export const Block = modelElementClass(BlockRuntime)
