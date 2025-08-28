@@ -27,7 +27,6 @@ import BrowserProjectLoader from '../generator/BrowserProjectLoader'
 import DiskProjectStoreFileLoader from './DiskProjectStoreFileLoader'
 import MultiFileWriter from '../generator/MultiFileWriter'
 import DiskProjectStoreFileWriter from './DiskProjectStoreFileWriter'
-import App from '../model/App'
 import Tool from '../model/Tool'
 import PreviewPanel from './PreviewPanel'
 import AppBar from '../appsShared/AppBar'
@@ -549,7 +548,7 @@ export default function EditorRunner() {
     }
 
     const showPageInPreview = (page: Page) => {
-        const app = getOpenProject().findParent(page.id) as App
+        const app = getOpenProject().findParent(page.id)!
         Preview.SetUrl('/' + app.codeName + '/' + page.codeName)
     }
 
@@ -598,7 +597,7 @@ export default function EditorRunner() {
         if (projectHandler.current) {
             const project = getOpenProject()
             const onUpdateFromGitHubProp = gitHubUrl ? onUpdateFromGitHub : undefined
-            const appName = () => project.findChildElements(App)[0]?.codeName
+            const appName = () => project.findChildElements('App')[0]?.codeName
             const runUrl = gitHubUrl ? window.location.origin + `/run/gh/${gitHubUrl.replace('https://github.com/', '')}/${appName()}` : undefined
             const previewUrlPrefix = ''
             const previewUrl = projectIdRef.current ? `${devServerUrl}/${previewUrlPrefix}/${appName()}/` : ''

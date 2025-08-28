@@ -15,7 +15,6 @@ import Form from '../model/Form'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
 import {mapValues} from 'radash'
-import App from '../model/App'
 import BaseElement from '../model/BaseElement'
 
 type FunctionCollector = {add(s: string): void}
@@ -126,7 +125,7 @@ export default class Parser {
         this.errors[elementId][propertyName] = err
     }
 
-    parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Page | App) {
+    parseStandaloneExpr(exprId: string, exprs: {[name: string] : string}, containingComponent: Element) {
         const identifierSet = new Set<string>()
         this.errors[exprId] = {}
         const onError = (name: string) => (err: string) => this.addError(exprId, name, err)

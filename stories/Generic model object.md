@@ -31,10 +31,15 @@ Technical
 - Generic type to recognise properties?
 - Components have metadata to hold state props etc
 - Get rid of stateProperties - only used in Inspector
+- Probably - keep special model classes for Project, App, Page, but have schema too
+
 
 To Do
 -----
 
+- How to deal with specific code-gen requirements?
+  - generator classes
+  - make the component do the work at runtime
 - Ensure all prop options can be set by the schema
 - BUT move state/stateAndDom out of schema - how?
 - Work out best way to define what an element can contain eg parentType

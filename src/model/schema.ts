@@ -439,6 +439,9 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             }
         ]
     },
+    "StringMultiline": {
+        "type": "string"
+    },
     "StringMultilineOrExpression": {
         "$ref": "#/definitions/StringOrExpression"
     },

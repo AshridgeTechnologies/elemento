@@ -62,11 +62,16 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
             if (enumType) {
                 return propDef(name, enumType as string[])
             }
-            switch ($ref ?? type) {
+            const typeOrRef = $ref ?? type
+            switch ($ref) {
                 case '#/definitions/StringOrExpression':
                     return propDef(name, 'string')
+                case '#/definitions/StringOrNumberOrExpression':
+                    return propDef(name, 'string|number')
                 case '#/definitions/StringMultilineOrExpression':
                     return propDef(name, 'string multiline')
+                case '#/definitions/StringMultiline':
+                    return propDef(name, 'string multiline', {fixedOnly: true})
                 case '#/definitions/BooleanOrExpression':
                     return propDef(name, 'boolean')
                 case '#/definitions/Expression':
@@ -76,11 +81,16 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
                 case '#/definitions/ActionExpression':
                     const {argNames = []} = prop
                     return propDef(name, eventAction(...argNames))
-                case 'boolean':
-                    return propDef(name, 'boolean', {fixedOnly: true})
-                default:
-                    throw new Error('Unknown property type: ' + $ref)
             }
+            switch (type) {
+                case 'boolean':
+                case 'string':
+                case 'number':
+                    return propDef(name, type, {fixedOnly: true})
+            }
+
+            throw new Error('Unknown property type: ' + typeOrRef)
+
         })()
         if (metadata?.stateProps?.includes(name)) {
             def.state = true

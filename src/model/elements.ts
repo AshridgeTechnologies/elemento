@@ -53,9 +53,10 @@ import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {modelElementClass} from './ModelElement'
 
-import {TextInputSchema, TextInputMetadata} from '../runtime/components/TextInput'
-import {TextElementSchema} from '../runtime/components/TextElement'
-import {BlockSchema} from '../runtime/components/Block'
+// import App from '../runtime/components/App'
+import TextInput from '../runtime/components/TextInput'
+import TextElement from '../runtime/components/TextElement'
+import Block from '../runtime/components/Block'
 import ItemSet from '../runtime/components/ItemSet'
 import Button from '../runtime/components/Button'
 import Menu from '../runtime/components/Menu'
@@ -80,12 +81,12 @@ export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
 const elementTypes = (): {[key in ElementType]: any} => {
     return {
         Project: Project,
-        App: App,
+        App: App,  // specific class still needed for now
         Tool: Tool,
         AppBar: AppBar,
         Page: Page,
-        Text: modelElementClass(TextElementSchema),
-        TextInput: modelElementClass(TextInputSchema, TextInputMetadata),
+        Text: modelElementClass(TextElement),
+        TextInput: modelElementClass(TextInput),
         NumberInput: NumberInput,
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
@@ -117,7 +118,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         InputProperty: InputProperty,
         OutputProperty: OutputProperty,
         Collection: Collection,
-        Block: modelElementClass(BlockSchema),
+        Block: modelElementClass(Block),
         Dialog: Dialog,
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,

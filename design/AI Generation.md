@@ -61,6 +61,17 @@ Possibilities
 - Separate JSc for each component, import ones needed into a project
 - SO there might be a specific schema for each project
 - Project and BaseElement model objects still do most of the work, as now
+- Component wrappers may provide special code generation where needed
+
+Advanced possibilities
+----------------------
+
+- Provide llms.txt - see https://jazz.tools/docs/react/ai-tools, https://llmstxt.org/
+- Separate the component set from the Studio (component assembler)
+- Load in different sets of components for different purposes
+- Use structured outputs - see https://platform.openai.com/docs/guides/structured-outputs
+- Automatically transform a core schema (Zod/JSON) to other formats for different purposes
+  - eg include expr for Elemento model, remove for validating at runtime
 
 Decisions
 ---------

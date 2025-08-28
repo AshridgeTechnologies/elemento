@@ -176,7 +176,7 @@ export default class ProjectBuilder {
     }
 
     private wranglerConfig() {
-        const appNames = this.project.findChildElements(App).map( el => el.codeName)
+        const appNames = this.project.findChildElements('App').map( el => el.codeName)
         const projectName = this.project.codeName
         const projectConfig = this.project.configuration
 

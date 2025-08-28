@@ -9,7 +9,6 @@ import {Preview} from '../shared/PreviewControllerClient'
 import {pickBy} from 'ramda'
 import {DebugData} from '../runtime/debug'
 import Generator from '../generator/Generator'
-import App from '../model/App'
 import Page from '../model/Page'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
@@ -49,7 +48,7 @@ export default function Inspector(props: any) {
     const [updatesInProgress, setUpdatesInProgress] = useState<string[]>([])
 
     const projectUpdated = (project: Project) => {
-        const app = project.findChildElements(App)[0]
+        const app = project.findChildElements('App')[0]
         setGenerator(new Generator(app, project))
         setProject(project)
     }
@@ -115,7 +114,7 @@ export default function Inspector(props: any) {
         const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as Page
         if (pageOfElement) return pageOfElement
 
-        return project!.findChildElements(App)[0]
+        return project!.findChildElements('App')[0]
     }
     const [latestDebugExpr = null, errors = {}] = generator?.generateStandaloneBlock(element, elementDebugExprs, containerToEvaluateExprs(), updatesInProgress) ?? []
     if (latestDebugExpr !== debugExpr) setDebugExpr(latestDebugExpr)
