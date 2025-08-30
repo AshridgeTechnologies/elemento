@@ -1,5 +1,4 @@
 import {expect, test} from "vitest"
-import NumberInput from '../../src/model/NumberInput'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import SelectInput from '../../src/model/SelectInput'
 import List from '../../src/model/List'
@@ -11,7 +10,7 @@ import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
-import {Block, Button, Text, TextInput, Menu, MenuItem, AppBar} from '../testutil/modelHelpers'
+import {Block, Button, Text, TextInput, Menu, MenuItem, AppBar, NumberInput} from '../testutil/modelHelpers'
 
 test('creates elements of correct type', () => {
     expect(createNewElement('App', 2)).toBeInstanceOf(App)

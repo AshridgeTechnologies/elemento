@@ -445,6 +445,12 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
     "StringMultilineOrExpression": {
         "$ref": "#/definitions/StringOrExpression"
     },
+    "StringList": {
+        "type": "array",
+        "items": {
+            "type": "string"
+        }
+    },
     "StringOrNumberOrExpression": {
         "anyOf": [
             {
@@ -468,6 +474,21 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             }
         ]
     },
+    "Date": {
+        "type": "string",
+        "format": "date"
+    },
+    "DateOrExpression": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/Date"
+            },
+            {
+                "$ref": "#/definitions/Expression"
+            }
+        ]
+    },
+
     "Styles": {
         "type": "object",
         "additionalProperties": false,

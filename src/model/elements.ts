@@ -1,8 +1,6 @@
 import Project from './Project'
 import App from './App'
 import Page from './Page'
-import Dialog from './Dialog'
-import NumberInput from './NumberInput'
 import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Image from './Image'
@@ -50,11 +48,13 @@ import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
-import {modelElementClass} from './ModelElement'
+import {modelClassFromGeneratedSchema, modelElementClass} from './ModelElement'
 
 // import App from '../runtime/components/App'
 import AppBar from '../runtime/components/AppBar'
 import TextInput from '../runtime/components/TextInput'
+import NumberInput from '../runtime/components/NumberInput'
+import Dialog from '../runtime/components/Dialog'
 import TextElement from '../runtime/components/TextElement'
 import Block from '../runtime/components/Block'
 import ItemSet from '../runtime/components/ItemSet'
@@ -87,7 +87,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Page: Page,
         Text: modelElementClass(TextElement),
         TextInput: modelElementClass(TextInput),
-        NumberInput: NumberInput,
+        NumberInput: modelElementClass(NumberInput),
         SelectInput: SelectInput,
         TrueFalseInput: TrueFalseInput,
         DateInput: DateInput,
@@ -119,7 +119,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         OutputProperty: OutputProperty,
         Collection: Collection,
         Block: modelElementClass(Block),
-        Dialog: Dialog,
+        Dialog: modelElementClass(Dialog),
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         Adapter: Adapter,

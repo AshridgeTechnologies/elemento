@@ -1,9 +1,8 @@
 import {expect, test} from "vitest"
-import Dialog from '../../src/model/Dialog'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {Text, TextInput} from '../testutil/modelHelpers'
+import {Text, TextInput, Dialog} from '../testutil/modelHelpers'
 
 test('Dialog has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -16,7 +15,7 @@ test('Dialog has correct defaults', ()=> {
     expect(dialog.initiallyOpen).toBe(undefined)
     expect(dialog.showCloseButton).toBe(undefined)
     expect(dialog.styles).toBe(undefined)
-    expect(dialog.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(dialog.elementArray().map( (el: Element) => el.id )).toStrictEqual(['t1', 't2'])
     expect(dialog.type()).toBe('statefulUI')
 })
 
@@ -32,7 +31,7 @@ test('Dialog has correct properties', ()=> {
     expect(dialog.initiallyOpen).toBe(true)
     expect(dialog.showCloseButton).toBe(true)
     expect(dialog.styles).toStrictEqual({width: 500, backgroundColor: 'blue'})
-    expect(dialog.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(dialog.elementArray().map( (el: any) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -45,7 +44,7 @@ test('tests if an object is this type', ()=> {
 
 test('has correct property defs', () => {
     const dialog = new Dialog('l1', 'Dialog 1', {}, [])
-    expect(dialog.propertyDefs.map( d => d.name)).toStrictEqual(['layout', 'initiallyOpen', 'showCloseButton', 'styles'])
+    expect(dialog.propertyDefs.map( (d: any) => d.name)).toStrictEqual(['layout', 'initiallyOpen', 'showCloseButton', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -118,5 +117,5 @@ test('converts from plain object with correct types for elements', ()=> {
     let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const dialog = new Dialog('dlg1', 'Dialog 1', {initiallyOpen: true}, [text, textInput])
     const newDialog = loadJSON(asJSON(dialog))
-    expect(newDialog).toStrictEqual<Dialog>(dialog)
+    expect(newDialog).toStrictEqual(dialog)
 })

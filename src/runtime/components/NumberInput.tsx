@@ -2,7 +2,7 @@ import React, {ChangeEvent, FocusEvent} from 'react'
 import {TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
 import BigNumber from 'bignumber.js'
@@ -16,6 +16,8 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = BaseInputComponentProperties
 
@@ -25,6 +27,45 @@ const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     const props = definedPropertiesOf(pick(['max', 'min'], dataType ?? {}))
     props.step = decPlaces(dataType) === 0 ? 1 : undefined
     return props
+}
+
+export const NumberInputSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Numberinput",
+    "description": "Description of NumberInput",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "NumberInput",
+    "icon": "money_outlined",
+    "elementType": "statefulUI",
+    "parentType": "any",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const NumberInputMetadata: ElementMetadata = {
+    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
+}
+
+export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {
+    defaultValue = 0
+
+    _setValues(value: number | BigNumber | null, editedValue: string) {
+        this.updateState({value, editedValue})
+    }
 }
 
 export default function NumberInput({path, ...props}: Properties) {
@@ -76,12 +117,6 @@ export default function NumberInput({path, ...props}: Properties) {
     })
 }
 
-export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {
-    defaultValue = 0
-
-    _setValues(value: number | BigNumber | null, editedValue: string) {
-        this.updateState({value, editedValue})
-    }
-}
-
 NumberInput.State = NumberInputState
+NumberInput.Schema = NumberInputSchema
+NumberInput.Metadata = NumberInputMetadata

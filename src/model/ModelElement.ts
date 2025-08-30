@@ -1,11 +1,13 @@
 import {JSONSchema} from "@apidevtools/json-schema-ref-parser"
 import BaseElement, {propDef} from './BaseElement'
-import {CanContain, ComponentType, ElementId, ElementType, eventAction, PropertyDef, PropertyType} from "./Types";
+import {CanContain, ComponentType, ElementId, ElementType, eventAction, EventActionPropertyDef, PropertyDef, PropertyType} from "./Types";
 import BaseInputElement from './BaseInputElement'
-import {isArray, mapValues} from 'radash'
+import {capitalize, isArray, mapValues} from 'radash'
 import Element from './Element'
 import {elementHasParentTypeOf} from './createElement'
 import Ajv2020 from 'ajv/dist/2020'
+import {Definitions} from './schema'
+import {JSONSchema7Definition, JSONSchema7Object} from 'json-schema'
 
 export type ElementSchema = JSONSchema & Readonly<{
     icon: string,
@@ -15,7 +17,8 @@ export type ElementSchema = JSONSchema & Readonly<{
     isLayoutOnly?: boolean,
     initialProperties?: {[k:string]: any},
     canContain?: CanContain,
-    parentType?: ElementType | ElementType[]
+    parentType?: ElementType | ElementType[],
+    unevaluatedProperties?: boolean
 }>
 
 export type PropertySchema = JSONSchema & Readonly<{
@@ -47,6 +50,7 @@ type BaseInputElementConstructor = {
 type ElementConstructor = BaseElementConstructor | BaseInputElementConstructor
 
 const classes = new Map<ElementSchema, ElementConstructor>()
+const generatedSchemas = new Map<ElementConstructor, ElementSchema>()
 const ajv = new Ajv2020({strictSchema: false, allErrors: true})
 
 const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined): ElementConstructor => {
@@ -66,6 +70,8 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
             switch ($ref) {
                 case '#/definitions/StringOrExpression':
                     return propDef(name, 'string')
+                case '#/definitions/NumberOrExpression':
+                    return propDef(name, 'number')
                 case '#/definitions/StringOrNumberOrExpression':
                     return propDef(name, 'string|number')
                 case '#/definitions/StringMultilineOrExpression':
@@ -195,6 +201,12 @@ const addElementClass = (schema: ElementSchema, metadata: ElementMetadata | unde
     return newClass
 }
 
+const addSchema = (elementClass: ElementConstructor) => {
+    const newSchema = generateSchema(elementClass)
+    generatedSchemas.set(elementClass, newSchema)
+    return newSchema
+}
+
 export const modelElementClass = (schemaOrClass: ElementSchema | Function, metadata?: ElementMetadata): ElementConstructor => {
     let theSchema: ElementSchema, theMetadata: ElementMetadata | undefined
     if (typeof schemaOrClass === 'function') {
@@ -208,3 +220,106 @@ export const modelElementClass = (schemaOrClass: ElementSchema | Function, metad
 }
 
 
+export function generateSchema(elementClass: { new(id: string, name: string, props: object): BaseElement<any> }): ElementSchema {
+    const model = new elementClass('id1', 'Name 1', {})
+
+    const properties = Object.fromEntries(model.propertyDefs.map(def => {
+            const {type} = def
+            const typeProps = () => {
+                if (isArray(def.type)) {
+                    return {enum: def.type}
+                }
+                if (def.fixedOnly) {
+                    switch (type) {
+                        case 'boolean':
+                        case 'string':
+                        case 'number':
+                            return {type}
+                        case 'string|number':
+                            return {$ref: '#/definitions/StringOrNumber'}
+                        case 'string multiline':
+                            return {$ref: '#/definitions/StringMultiline'}
+                        case 'string list':
+                            return {$ref: '#/definitions/StringList'}
+                        case 'date':
+                            return {$ref: '#/definitions/Date'}
+                    }
+                } else {
+                    const actionDef = type as EventActionPropertyDef
+                    if (actionDef.type === 'Action') {
+                        return {$ref: '#/definitions/ActionExpression', argNames: actionDef.argumentNames ?? []}
+                    }
+
+                    switch (type) {
+                        case 'boolean':
+                            return {$ref: '#/definitions/BooleanOrExpression'}
+                        case 'string':
+                            return {$ref: '#/definitions/StringOrExpression'}
+                        case 'number':
+                            return {$ref: '#/definitions/NumberOrExpression'}
+                        case 'string|number':
+                            return {$ref: '#/definitions/StringOrNumberOrExpression'}
+                        case 'string multiline':
+                            return {$ref: '#/definitions/StringMultilineOrExpression'}
+                        case 'date':
+                            return {$ref: '#/definitions/DateOrExpression'}
+                        case 'styles':
+                            return {$ref: '#/definitions/Styles'}
+                        case 'expr':
+                            return {$ref: '#/definitions/Expression'}
+
+
+                    }
+                }
+
+                throw new Error(`Unknown type ${type}`)
+            }
+
+            return [def.name, {description: "The ", ...typeProps()}]
+        }
+    ))
+
+    const canContain = Object.hasOwn(model.constructor.prototype, 'canContain') ? 'elementsWithThisParentType' : undefined
+    const elementsDef = {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/BaseElement"
+        }
+    }
+
+    return {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": capitalize(model.kind),
+        "description": "Description of " + model.kind,
+        "type": "object",
+        "$ref": "#/definitions/BaseElement",
+        "kind": model.kind,
+        "icon": model.iconClass,
+        "elementType": model.type(),
+        "isLayoutOnly": model.isLayoutOnly() ? true : undefined,
+        canContain,
+        "parentType": (model.constructor as any).parentType,
+        "properties": {
+            "properties": {
+                "type": "object",
+                // @ts-ignore
+                "unevaluatedProperties": false,
+                properties
+            },
+
+            ...(canContain ? {"elements": elementsDef} : {})
+        },
+        "required": ["kind", "properties"],
+        "unevaluatedProperties": false,
+
+        "definitions": Definitions
+    }
+}
+
+export function cachedGeneratedSchema(elementClass: ElementConstructor) {
+    return generatedSchemas.get(elementClass) ?? addSchema(elementClass)
+}
+
+export function modelClassFromGeneratedSchema(elementClass: ElementConstructor) {
+    return modelElementClass(cachedGeneratedSchema(elementClass))
+}
