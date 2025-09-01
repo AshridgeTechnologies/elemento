@@ -1,6 +1,6 @@
 import React from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {Box} from '@mui/material'
+import Box from '@mui/material/Box'
 import {sxProps} from './ComponentHelpers'
 
 type Properties = { path: string, show?: PropVal<boolean>, styles?: StylesPropVals, children?: any }

@@ -1,6 +1,6 @@
 import Tool from '../model/Tool'
 import React from 'react'
-import {Box} from '@mui/material'
+import Box from '@mui/material/Box'
 import ToolImport from '../model/ToolImport'
 
 export function ToolWindow({tool, projectId}: { tool: Tool | ToolImport, projectId: string }) {

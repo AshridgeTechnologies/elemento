@@ -13,7 +13,7 @@ import WorkingWithProjects from './howTo/Working with Projects'
 import Apps from './overview/Apps'
 import DataStorage from './overview/DataStorage'
 import {BulletList, NamedList, NLItem, Para} from './HelpComponents'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 const TutorialsIntro = () =>
     <div id='tutorials-intro' style={{paddingTop: '2rem', maxWidth: '50em'}}>

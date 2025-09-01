@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button} from '@mui/material'
+import Button from '@mui/material/Button'
 import {DirectoryInput, EditorActionDialog} from './ActionComponents'
 import {doAction, Optional, UIManager, useDialogState, validateDirectory} from './actionHelpers'
 import EditorManager from './EditorManager'

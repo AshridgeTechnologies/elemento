@@ -3,7 +3,7 @@ import React from 'react'
 import DataTypes from './overview/DataTypes'
 import {Para} from './HelpComponents'
 import ServerApps from './guides/ServerApps'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 const GuidesIntro = () =>
     <div id='guides-intro' style={{paddingTop: '2rem', maxWidth: '50em'}}>

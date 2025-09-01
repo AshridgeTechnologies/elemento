@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FocusEvent, KeyboardEventHandler} from 'react'
-import {TextField} from '@mui/material'
+import TextField from '@mui/material/TextField'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
 import InputComponentState, {InputComponentMetadata} from './InputComponentState'

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Typography} from '@mui/material'
+import Typography from '@mui/material/Typography'
 import DOMPurify from 'dompurify'
 import parse, {DOMNode} from 'html-react-parser'
 import {asArray, PropVal, StylesPropVals, valueLiteral, valueOfProps} from '../runtimeFunctions'

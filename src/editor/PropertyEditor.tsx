@@ -8,7 +8,7 @@ import lodash from 'lodash'
 import {FILES_ID, TOOLS_ID} from '../model/Project'
 import {StylesPropertyEditor} from './StylesPropertyEditor'
 import {HighlightedTextField} from './HighlightedTextField'
-import {Search} from '@mui/icons-material'
+import Search from '@mui/icons-material/Search'
 
 const {startCase} = lodash
 

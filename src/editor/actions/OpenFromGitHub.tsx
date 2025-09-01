@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button} from '@mui/material'
+import Button from '@mui/material/Button'
 import {DialogTextField, EditorActionDialog} from './ActionComponents'
 import {doAction, onChangeValue, openFromGitHub, Optional, UIManager, useDialogState} from './actionHelpers'
 import EditorManager from './EditorManager'

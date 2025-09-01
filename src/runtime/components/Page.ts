@@ -1,6 +1,6 @@
 import React from 'react'
 import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
-import {Stack} from '@mui/material'
+import Stack from '@mui/material/Stack'
 import {sxProps} from './ComponentHelpers'
 
 type Properties = { path: string, children?: any, styles?: StylesPropVals }

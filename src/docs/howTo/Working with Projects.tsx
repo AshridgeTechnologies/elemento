@@ -1,7 +1,6 @@
 import React from 'react'
 import {BulletList, Heading, HelpLink, MinorHeading, Para, Section, SubHeading, SubSection} from '../HelpComponents'
-import {Link} from '@mui/material'
-import {ArrowCircleRightTwoTone as ArrowCircleIcon} from '@mui/icons-material'
+import Link from '@mui/material/Link'
 
 export default () =>
     <Section id='working-with-projects'>

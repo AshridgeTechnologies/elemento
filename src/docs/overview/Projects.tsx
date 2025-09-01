@@ -10,7 +10,7 @@ import {
     SubHeading
 } from '../HelpComponents'
 import React from 'react'
-import {Link} from '@mui/material'
+import Link from '@mui/material/Link'
 
 export default () =>
     <Section id='projects-overview'>

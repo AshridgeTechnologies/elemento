@@ -11,7 +11,8 @@ import './splitPane.css'
 import Project from '../model/Project'
 import {AllErrors} from '../generator/Types'
 import {PanelTitle} from './PanelTitle'
-import {CancelOutlined, Search} from '@mui/icons-material'
+import CancelOutlined from '@mui/icons-material/CancelOutlined'
+import Search from '@mui/icons-material/Search'
 
 const treeData = (project: Project, errors: AllErrors, search: RegExp | undefined): ModelTreeItem => {
     const searchResults = search ? project.searchElements(search) : []

@@ -5,7 +5,7 @@ import {BaseComponentState} from './ComponentState'
 import * as SimpleKeyboard from 'react-simple-keyboard'
 import css from './ScreenKeyboard_css'
 import {sxProps} from './ComponentHelpers'
-import {Box} from '@mui/material'
+import Box from '@mui/material/Box'
 import {useObject} from '../appStateHooks'
 
 type Properties = {path: string, useRealKeyboard?: boolean, keyAction?: (key: string) => void, show?: PropVal<boolean>, styles?: StylesPropVals}

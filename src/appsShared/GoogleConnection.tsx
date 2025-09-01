@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Google} from '@mui/icons-material'
+import Google from '@mui/icons-material/Google'
 import {authorizeWithGoogle, deauthorize, googleAccessToken} from './gisProvider'
 import ServiceConnection from './ServiceConnection'
 
