@@ -2,7 +2,6 @@ import {modelElementClass} from '../../src/model/ModelElement'
 import {default as AppBarRuntime} from '../../src/runtime/components/AppBar'
 import {default as TextElementRuntime} from '../../src/runtime/components/TextElement'
 import {default as TextInputRuntime} from '../../src/runtime/components/TextInput'
-import {default as NumberInputRuntime} from '../../src/runtime/components/NumberInput'
 import {default as BlockRuntime} from '../../src/runtime/components/Block'
 import {default as ItemSetRuntime} from '../../src/runtime/components/ItemSet'
 import {default as ButtonRuntime} from '../../src/runtime/components/Button'
@@ -24,3 +23,6 @@ export const MenuItem = modelElementClass(MenuItemRuntime)
 export const Dialog = elementOfType('Dialog')
 export const BrowserDataStore = elementOfType('BrowserDataStore')
 export const Calculation = elementOfType('Calculation')
+export const CloudflareDataStore = elementOfType('CloudflareDataStore')
+export const Collection = elementOfType('Collection')
+export const Data = elementOfType('Data')

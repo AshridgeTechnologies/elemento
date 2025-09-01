@@ -6,11 +6,51 @@ import lodash from 'lodash'
 import {shallow} from 'zustand/shallow'
 import {equals, omit} from 'ramda'
 import {useObject} from '../appStateHooks'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const {isPlainObject} = lodash
 
 type Properties = {path: string, display?: boolean}
 type StateProperties = {value: any}
+
+const DataSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Data",
+    "description": "Description of Data",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Data",
+    "icon": "note",
+    "elementType": "statefulUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "initialValue": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Expression"
+                },
+                "display": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    "default": false
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const DataMetadata = {
+    stateProps: ['initialValue']
+}
 
 export default function Data({path, display = false}: Properties) {
     const state = useObject<DataState>(path)
@@ -83,3 +123,5 @@ export class DataState extends BaseComponentState<StateProperties>
 }
 
 Data.State = DataState
+Data.Schema = DataSchema
+Data.Metadata = DataMetadata

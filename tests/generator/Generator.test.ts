@@ -4,12 +4,10 @@ import Element from '../../src/model/Element';
 import App from '../../src/model/App';
 import Page from '../../src/model/Page'
 import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
-    BrowserDataStore, Calculation, DateInput, SelectInput} from '../testutil/modelHelpers'
+    BrowserDataStore, Calculation, DateInput, SelectInput, Collection, Data} from '../testutil/modelHelpers'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import List from '../../src/model/List'
-import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
-import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'

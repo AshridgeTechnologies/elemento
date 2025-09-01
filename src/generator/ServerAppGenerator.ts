@@ -7,7 +7,6 @@ import {isTruthy} from '../util/helpers'
 import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
-import CloudflareDataStore from '../model/CloudflareDataStore'
 import TinyBaseServerDataStore from '../model/TinyBaseServerDataStore'
 
 const indentLevel1 = '    '
@@ -54,7 +53,7 @@ export default class ServerAppGenerator {
         const propertyExprs = Object.fromEntries(propertyExprEntries)
         const modelProperties = (() => {
             if (element.kind === 'CloudflareDataStore') {
-                return {collections: `"${(element as CloudflareDataStore).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
+                return {collections: `"${(element as any).collections?.replace(/\n/g, '\\n')}"`, database: `env.${element.codeName}`}
             }
             if (element.kind === 'TinyBaseServerDataStore') {
                 const store = element as TinyBaseServerDataStore

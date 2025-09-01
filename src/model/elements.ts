@@ -5,15 +5,12 @@ import TrueFalseInput from './TrueFalseInput'
 import Image from './Image'
 import UserLogon from './UserLogon'
 import List from './List'
-import Data from './Data'
 import FileDataStore from './FileDataStore'
 import WebFileDataStore from './WebFileDataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
-import Collection from './Collection'
 import {DataTypeElementType, ElementType} from './Types'
-import CloudflareDataStore from './CloudflareDataStore'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
 import Adapter from './Adapter'
@@ -52,6 +49,7 @@ import TextInput from '../runtime/components/TextInput'
 import DateInput from '../runtime/components/DateInput'
 import SelectInput from '../runtime/components/SelectInput'
 import BrowserDataStore from '../runtime/components/BrowserDataStore'
+import CloudflareDataStore from '../serverRuntime/CloudflareDataStore'
 import NumberInput from '../runtime/components/NumberInput'
 import Dialog from '../runtime/components/Dialog'
 import TextElement from '../runtime/components/TextElement'
@@ -62,6 +60,8 @@ import Menu from '../runtime/components/Menu'
 import MenuItem from '../runtime/components/MenuItem'
 import Icon from '../runtime/components/Icon'
 import Calculation from '../runtime/components/Calculation'
+import Collection from '../runtime/components/Collection'
+import Data from '../runtime/components/Data'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -102,13 +102,13 @@ const elementTypes = (): {[key in ElementType]: any} => {
         MenuItem: modelElementClass(MenuItem),
         List: List,
         ItemSet: modelElementClass(ItemSet),
-        Data: Data,
+        Data: modelElementClass(Data),
         Calculation: modelElementClass(Calculation),
         Timer: Timer,
         FileDataStore: FileDataStore,
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: modelElementClass(BrowserDataStore),
-        CloudflareDataStore: CloudflareDataStore,
+        CloudflareDataStore: modelElementClass(CloudflareDataStore),
         TinyBaseDataStore: TinyBaseDataStore,
         TinyBaseServerDataStore: TinyBaseServerDataStore,
         MemoryDataStore: MemoryDataStore,
@@ -117,7 +117,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Component: Component,
         InputProperty: InputProperty,
         OutputProperty: OutputProperty,
-        Collection: Collection,
+        Collection: modelElementClass(Collection),
         Block: modelElementClass(Block),
         Dialog: modelElementClass(Dialog),
         ServerApp: ServerApp,

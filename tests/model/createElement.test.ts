@@ -2,14 +2,12 @@ import {expect, test} from "vitest"
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import List from '../../src/model/List'
 import {createNewElement} from '../../src/model/createElement'
-import Data from '../../src/model/Data'
 import Page from '../../src/model/Page'
 import App from '../../src/model/App'
-import Collection from '../../src/model/Collection'
 import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
-import {Block, Button, Text, TextInput, Menu, MenuItem, AppBar, NumberInput, SelectInput} from '../testutil/modelHelpers'
+import {Block, Button, Text, TextInput, Menu, MenuItem, AppBar, NumberInput, SelectInput, Collection, Data} from '../testutil/modelHelpers'
 
 test('creates elements of correct type', () => {
     expect(createNewElement('App', 2)).toBeInstanceOf(App)

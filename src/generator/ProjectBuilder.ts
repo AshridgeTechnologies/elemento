@@ -7,7 +7,6 @@ import Tool from '../model/Tool'
 import {flatten, pickBy} from 'ramda'
 import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
-import CloudflareDataStore from '../model/CloudflareDataStore'
 import TinyBaseDataStore from '../model/TinyBaseDataStore'
 import {flatMap} from 'lodash'
 
@@ -182,12 +181,12 @@ export default class ProjectBuilder {
 
         const {authStoreId} = projectConfig
         const d1DatabaseBindings = this.project.findElementsBy( el => el.kind === 'CloudflareDataStore').map( el => {
-            const cfds = el as CloudflareDataStore
+            const cfds = el
             return `
         {
             "binding": "${cfds.codeName}",
-            "database_name": "${cfds.databaseName}",
-            "database_id": "${cfds.databaseId}"
+            "database_name": "${(cfds as any).databaseName}",
+            "database_id": "${(cfds as any).databaseId}"
         }`
         }).join(',\n')
 

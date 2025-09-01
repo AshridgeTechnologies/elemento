@@ -3,6 +3,8 @@ import {D1Database, D1PreparedStatement} from "@cloudflare/workers-types/experim
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {isArray} from 'radash'
 import {convertFromDbData, convertToDbData} from '../shared/convertData'
+import {ElementMetadata, ElementSchema} from '../model/ModelElement'
+import {Definitions} from '../model/schema'
 
 type Properties = {database: D1Database, collections: string}
 
@@ -12,6 +14,48 @@ const normalizeCriteria = (criteria: Criteria): ComplexCriteria => {
 
 function asJsonString(changes: object) {
     return JSON.stringify(convertToDbData(changes))
+}
+
+export const CloudflareDataStoreSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Cloudflaredatastore",
+    "description": "Description of CloudflareDataStore",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "CloudflareDataStore",
+    "icon": "fireplace",
+    "elementType": "statefulUI",
+    "parentType": "App",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "collections": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringMultiline"
+                },
+                "databaseName": {
+                    "description": "The ",
+                    "type": "string"
+                },
+                "databaseId": {
+                    "description": "The ",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const CloudflareDataStoreMetadata: ElementMetadata = {
+    "stateProps": ['collections', 'databaseName', 'databaseId' ]
 }
 
 export default class CloudflareDataStore implements BasicDataStore {
@@ -108,3 +152,6 @@ export default class CloudflareDataStore implements BasicDataStore {
         await this.runSql(collectionName, () => this.db.prepare(`DELETE FROM ${collectionName}`).run())
     }
 }
+
+;(CloudflareDataStore as any).Schema = CloudflareDataStoreSchema
+;(CloudflareDataStore as any).Metadata = CloudflareDataStoreMetadata
