@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import SelectInput from '../../src/model/SelectInput'
+import {SelectInput} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
@@ -40,7 +40,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'values', 'styles'])
+    expect(new SelectInput('t1', 'Select Input 1', {values: []}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'values', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -86,10 +86,10 @@ test('converts from plain object', ()=> {
     const selectInput = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ex`Blue`})
     const plainObj = asJSON(selectInput)
     const newObj = loadJSON(plainObj)
-    expect(newObj).toStrictEqual<SelectInput>(selectInput)
+    expect(newObj).toStrictEqual<typeof SelectInput>(selectInput)
 
-    const selectInput2 = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: 'Green', label: 'The Select', dataType: ex`dataType1`})
+    const selectInput2 = new SelectInput('t1', 'Select Input 1', {values: ['Green', 'Blue', 'Pink'], initialValue: ['Green'], label: 'The Select', dataType: ex`dataType1`})
     const plainObj2 = asJSON(selectInput2)
     const newObj2 = loadJSON(plainObj2)
-    expect(newObj2).toStrictEqual<SelectInput>(selectInput2)
+    expect(newObj2).toStrictEqual<typeof SelectInput>(selectInput2)
 })

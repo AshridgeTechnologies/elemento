@@ -14,9 +14,8 @@ import ServerApp from '../../src/model/ServerApp'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
-import SelectInput from '../../src/model/SelectInput'
 import InputProperty from '../../src/model/InputProperty'
-import {Block, Text, TextInput, Button, AppBar, NumberInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput, Button, AppBar, NumberInput, SelectInput} from '../testutil/modelHelpers'
 
 const newToolFolder = new ToolFolder(TOOLS_ID, 'Tools', {})
 const newComponentFolder = new ComponentFolder(COMPONENTS_ID, 'Components', {})

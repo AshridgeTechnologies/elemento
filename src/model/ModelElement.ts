@@ -7,7 +7,6 @@ import Element from './Element'
 import {elementHasParentTypeOf} from './createElement'
 import Ajv2020 from 'ajv/dist/2020'
 import {Definitions} from './schema'
-import {JSONSchema7Definition, JSONSchema7Object} from 'json-schema'
 
 export type ElementSchema = JSONSchema & Readonly<{
     icon: string,
@@ -78,8 +77,18 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
                     return propDef(name, 'string multiline')
                 case '#/definitions/StringMultiline':
                     return propDef(name, 'string multiline', {fixedOnly: true})
+                case '#/definitions/StringList':
+                    return propDef(name, 'string list', {fixedOnly: true})
+                case '#/definitions/StringListOrExpression':
+                    return propDef(name, 'string list')
+                case '#/definitions/StringListOrStringOrExpression':
+                    return propDef(name, 'string list')
                 case '#/definitions/BooleanOrExpression':
                     return propDef(name, 'boolean')
+                case '#/definitions/DateOrExpression':
+                    return propDef(name, 'date')
+                case '#/definitions/Date':
+                    return propDef(name, 'date', {fixedOnly: true})
                 case '#/definitions/Expression':
                     return propDef(name, 'expr')
                 case '#/definitions/Styles':
@@ -261,6 +270,8 @@ export function generateSchema(elementClass: { new(id: string, name: string, pro
                             return {$ref: '#/definitions/StringOrNumberOrExpression'}
                         case 'string multiline':
                             return {$ref: '#/definitions/StringMultilineOrExpression'}
+                        case 'string list':
+                            return {$ref: '#/definitions/StringListOrExpression'}
                         case 'date':
                             return {$ref: '#/definitions/DateOrExpression'}
                         case 'styles':
@@ -280,6 +291,7 @@ export function generateSchema(elementClass: { new(id: string, name: string, pro
     ))
 
     const canContain = Object.hasOwn(model.constructor.prototype, 'canContain') ? 'elementsWithThisParentType' : undefined
+    const parentType: string = Object.hasOwn(model.constructor, 'parentType') ? (model.constructor as any).parentType : undefined
     const elementsDef = {
         "type": "array",
         "items": {
@@ -298,7 +310,7 @@ export function generateSchema(elementClass: { new(id: string, name: string, pro
         "elementType": model.type(),
         "isLayoutOnly": model.isLayoutOnly() ? true : undefined,
         canContain,
-        "parentType": (model.constructor as any).parentType,
+        ...(parentType ? {parentType: parentType} : {}),
         "properties": {
             "properties": {
                 "type": "object",
@@ -320,6 +332,6 @@ export function cachedGeneratedSchema(elementClass: ElementConstructor) {
     return generatedSchemas.get(elementClass) ?? addSchema(elementClass)
 }
 
-export function modelClassFromGeneratedSchema(elementClass: ElementConstructor) {
+export function modelElementClassFromGeneratedSchema(elementClass: ElementConstructor) {
     return modelElementClass(cachedGeneratedSchema(elementClass))
 }

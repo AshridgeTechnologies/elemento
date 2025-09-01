@@ -391,7 +391,7 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             },
             "initialValue": {
                 "description": "The initial value shown in the input box.",
-                "$ref": "#/definitions/StringOrNumberOrExpression"
+                "$ref": "#/definitions/StringOrNumberOrStringListOrExpression"
             }
 
         },
@@ -451,6 +451,29 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             "type": "string"
         }
     },
+    "StringListOrExpression": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/StringList"
+            },
+            {
+                "$ref": "#/definitions/Expression"
+            }
+        ]
+    },
+    "StringListOrStringOrExpression": {
+        "anyOf": [
+            {
+                "type": "string"
+            },
+            {
+                "$ref": "#/definitions/StringList"
+            },
+            {
+                "$ref": "#/definitions/Expression"
+            }
+        ]
+    },
     "StringOrNumberOrExpression": {
         "anyOf": [
             {
@@ -458,6 +481,22 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             },
             {
                 "type": "number"
+            },
+            {
+                "$ref": "#/definitions/Expression"
+            }
+        ]
+    },
+    "StringOrNumberOrStringListOrExpression": {
+        "anyOf": [
+            {
+                "type": "string"
+            },
+            {
+                "type": "number"
+            },
+            {
+                "$ref": "#/definitions/StringList"
             },
             {
                 "$ref": "#/definitions/Expression"

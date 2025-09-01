@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import DateInput from '../../src/model/DateInput'
+import {DateInput} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON, loadJSONFromString} from '../../src/model/loadJSON'
@@ -38,7 +38,7 @@ test('tests if an object is this type', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new DateInput('t1', 'Date Input 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
+    expect(new DateInput('t1', 'Date Input 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {
@@ -84,9 +84,9 @@ test('converts from plain object', ()=> {
     const dateInput = new DateInput('t1', 'Date Input 1', {initialValue: {expr: 'DateVal("2002-03-04")'}, dataType: ex`dataType1`})
     const plainObj = asJSON(dateInput)
     const newObj = loadJSON(plainObj)
-    expect(newObj).toStrictEqual<DateInput>(dateInput)
+    expect(newObj).toStrictEqual<typeof DateInput>(dateInput)
 
     const dateInput2 = new DateInput('t1', 'Date Input 1', {initialValue: new Date("2002-03-04"), label: 'The Date'})
     const newObj2 = loadJSONFromString(JSON.stringify(dateInput2))
-    expect(newObj2).toStrictEqual<DateInput>(dateInput2)
+    expect(newObj2).toStrictEqual<typeof DateInput>(dateInput2)
 })

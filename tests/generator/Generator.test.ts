@@ -3,9 +3,9 @@ import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';
 import Page from '../../src/model/Page'
-import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput} from '../testutil/modelHelpers'
+import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
+    BrowserDataStore, Calculation, DateInput, SelectInput} from '../testutil/modelHelpers'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
-import SelectInput from '../../src/model/SelectInput'
 import List from '../../src/model/List'
 import Data from '../../src/model/Data'
 import {ex} from '../testutil/testHelpers'
@@ -14,7 +14,6 @@ import FunctionDef from '../../src/model/FunctionDef'
 import MemoryDataStore from '../../src/model/MemoryDataStore'
 import FileDataStore from '../../src/model/FileDataStore'
 import UserLogon from '../../src/model/UserLogon'
-import BrowserDataStore from '../../src/model/BrowserDataStore'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
@@ -23,11 +22,9 @@ import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
-import DateInput from '../../src/model/DateInput'
 import Form from '../../src/model/Form';
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
-import Calculation from '../../src/model/Calculation'
 import ToolImport from '../../src/model/ToolImport'
 import Rule from '../../src/model/types/Rule';
 import ComponentDef from '../../src/model/ComponentDef'

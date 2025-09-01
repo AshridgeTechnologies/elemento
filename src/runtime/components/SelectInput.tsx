@@ -1,7 +1,7 @@
 import {createElement as el, FocusEvent} from 'react'
 import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {ChoiceType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -11,8 +11,45 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {Definitions} from '../../model/schema'
+import {ElementMetadata} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
+
+export const SelectInputSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Selectinput",
+    "description": "Description of SelectInput",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "SelectInput",
+    "icon": "density_small",
+    "elementType": "statefulUI",
+    "valueType": "string list",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+                "values": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringListOrExpression"
+                },
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const SelectInputMetadata: ElementMetadata = {
+    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
+}
 
 export default function SelectInput({path, ...props}: Properties) {
     const {label, values: valuesFromProps = [], readOnly, show, styles = {}} = valueOfProps(props)
@@ -65,3 +102,5 @@ export class SelectInputState extends InputComponentState<string, ChoiceType> {
 }
 
 SelectInput.State = SelectInputState
+SelectInput.Schema = SelectInputSchema
+SelectInput.Metadata = SelectInputMetadata

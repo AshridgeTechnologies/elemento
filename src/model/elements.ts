@@ -1,7 +1,6 @@
 import Project from './Project'
 import App from './App'
 import Page from './Page'
-import SelectInput from './SelectInput'
 import TrueFalseInput from './TrueFalseInput'
 import Image from './Image'
 import UserLogon from './UserLogon'
@@ -9,7 +8,6 @@ import List from './List'
 import Data from './Data'
 import FileDataStore from './FileDataStore'
 import WebFileDataStore from './WebFileDataStore'
-import BrowserDataStore from './BrowserDataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
@@ -33,11 +31,9 @@ import ChoiceType from './types/ChoiceType'
 import SpeechInput from "./SpeechInput"
 import FunctionImport from "./FunctionImport"
 import Form from './Form'
-import DateInput from './DateInput'
 import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
-import Calculation from './Calculation'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
 import Timer from './Timer'
@@ -48,11 +44,14 @@ import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
-import {modelClassFromGeneratedSchema, modelElementClass} from './ModelElement'
+import {modelElementClassFromGeneratedSchema, modelElementClass} from './ModelElement'
 
 // import App from '../runtime/components/App'
 import AppBar from '../runtime/components/AppBar'
 import TextInput from '../runtime/components/TextInput'
+import DateInput from '../runtime/components/DateInput'
+import SelectInput from '../runtime/components/SelectInput'
+import BrowserDataStore from '../runtime/components/BrowserDataStore'
 import NumberInput from '../runtime/components/NumberInput'
 import Dialog from '../runtime/components/Dialog'
 import TextElement from '../runtime/components/TextElement'
@@ -62,6 +61,7 @@ import Button from '../runtime/components/Button'
 import Menu from '../runtime/components/Menu'
 import MenuItem from '../runtime/components/MenuItem'
 import Icon from '../runtime/components/Icon'
+import Calculation from '../runtime/components/Calculation'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -88,9 +88,9 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Text: modelElementClass(TextElement),
         TextInput: modelElementClass(TextInput),
         NumberInput: modelElementClass(NumberInput),
-        SelectInput: SelectInput,
+        SelectInput: modelElementClass(SelectInput),
         TrueFalseInput: TrueFalseInput,
-        DateInput: DateInput,
+        DateInput: modelElementClass(DateInput),
         SpeechInput: SpeechInput,
         Button: modelElementClass(Button),
         Form: Form,
@@ -103,11 +103,11 @@ const elementTypes = (): {[key in ElementType]: any} => {
         List: List,
         ItemSet: modelElementClass(ItemSet),
         Data: Data,
-        Calculation: Calculation,
+        Calculation: modelElementClass(Calculation),
         Timer: Timer,
         FileDataStore: FileDataStore,
         WebFileDataStore: WebFileDataStore,
-        BrowserDataStore: BrowserDataStore,
+        BrowserDataStore: modelElementClass(BrowserDataStore),
         CloudflareDataStore: CloudflareDataStore,
         TinyBaseDataStore: TinyBaseDataStore,
         TinyBaseServerDataStore: TinyBaseServerDataStore,

@@ -1,6 +1,6 @@
 import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'
@@ -8,8 +8,41 @@ import {formControlStyles, getLabelWithRequired, inputElementProps, propsForInpu
 import {definedPropertiesOf} from '../../util/helpers'
 import {SxProps} from '@mui/material'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean> }
+
+export const DateInputSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Dateinput",
+    "description": "Description of DateInput",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "DateInput",
+    "icon": "insert_invitation_outlined",
+    "elementType": "statefulUI",
+    "valueType": "string",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const DateInputMetadata: ElementMetadata = {
+    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
+}
 
 export default function DateInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
@@ -68,3 +101,5 @@ export class DateInputState extends InputComponentState<Date, DateType> {
 }
 
 DateInput.State = DateInputState
+DateInput.Schema = DateInputSchema
+DateInput.Metadata = DateInputMetadata

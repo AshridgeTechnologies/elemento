@@ -7,11 +7,10 @@ import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import Page from '../../src/model/Page'
-import {Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput, SelectInput} from '../testutil/modelHelpers'
 import {componentProps, ex} from '../testutil/testHelpers'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import List from '../../src/model/List'
-import SelectInput from '../../src/model/SelectInput'
 import Data from '../../src/model/Data'
 import App from '../../src/model/App'
 import Project2, {FILES_ID, TOOLS_ID} from '../../src/model/Project'
