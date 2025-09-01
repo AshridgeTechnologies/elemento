@@ -104,7 +104,7 @@
     "@types/jwt-encode": "^1.0.3",
     "@types/lodash": "^4.14.189",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.2.5",
+    "@types/node": "^24.3.0",
     "@types/nodemailer": "^6",
     "@types/papaparse": "^5.3.5",
     "@types/ramda": "^0.28.20",

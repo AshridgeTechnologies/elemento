@@ -1,10 +1,8 @@
 import App from '../../src/model/App'
 import Page from '../../src/model/Page'
-import {Block, Text, TextInput, Button, NumberInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput, Button, NumberInput, File, FileFolder} from '../testutil/modelHelpers'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
-import File from '../../src/model/File'
-import FileFolder from '../../src/model/FileFolder'
 
 export function projectFixture1() {
 

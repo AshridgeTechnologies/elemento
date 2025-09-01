@@ -1,11 +1,9 @@
 import {ComponentType, ElementId, ElementType, InsertPosition, PropertyDef, PropertyValue} from './Types'
 import BaseElement, {newIdTransformer, propDef, visualPropertyDefs} from './BaseElement'
 import Element from './Element'
-import File from './File'
 import {createNewElement} from './createElement'
 import {toArray} from '../util/helpers'
-import {elementTypeNames, parentTypeOf} from './elements'
-import FileFolder from './FileFolder'
+import {elementOfType, elementTypeNames, parentTypeOf} from './elements'
 import {AppElementAction, ConfirmAction} from '../editor/Types'
 import Page from './Page'
 import DataTypes from './types/DataTypes'
@@ -206,6 +204,8 @@ export default class Project extends BaseElement<Properties> implements Element 
         let fileIdSeq = this.findMaxId('File') + 1
         const newId = () => `file_${fileIdSeq++}`
 
+        const File = elementOfType('File')
+        const FileFolder = elementOfType('FileFolder')
         const files = fileNames.map( name => new File(newId(), name, {}))
         const fileFolder = new FileFolder(FILES_ID, 'Files', {}, files)
         const elementsWithFiles = [...this.elementArray(), fileFolder]

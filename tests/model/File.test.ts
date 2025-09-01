@@ -1,9 +1,8 @@
 import {expect, test} from "vitest"
-import File from '../../src/model/File'
+import {File} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
-
 
 test('File has expected properties', () => {
     const file1 = new File('id1', 'File 1', {})

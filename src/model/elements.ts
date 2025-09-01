@@ -14,8 +14,8 @@ import {DataTypeElementType, ElementType} from './Types'
 import ServerApp from './ServerApp'
 import ServerAppConnector from './ServerAppConnector'
 import Adapter from './Adapter'
-import File from './File'
-import FileFolder from './FileFolder'
+import {FileSchema} from './File'
+import {FileFolderSchema} from './FileFolder'
 import TrueFalseType from './types/TrueFalseType'
 import DataTypes from './types/DataTypes'
 import TextType from './types/TextType'
@@ -124,8 +124,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         ServerAppConnector: ServerAppConnector,
         Adapter: Adapter,
         WebFile: WebFile,
-        File: File,
-        FileFolder: FileFolder,
+        File: modelElementClass(FileSchema),
+        FileFolder: modelElementClass(FileFolderSchema),
         ComponentFolder: ComponentFolder,
         ToolFolder: ToolFolder,
         ToolImport: ToolImport,

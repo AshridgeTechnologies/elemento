@@ -299,7 +299,7 @@ export function generateSchema(elementClass: { new(id: string, name: string, pro
         }
     }
 
-    return {
+    const schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": capitalize(model.kind),
         "description": "Description of " + model.kind,
@@ -326,6 +326,8 @@ export function generateSchema(elementClass: { new(id: string, name: string, pro
 
         "definitions": Definitions
     }
+
+    return schema as ElementSchema
 }
 
 export function cachedGeneratedSchema(elementClass: ElementConstructor) {

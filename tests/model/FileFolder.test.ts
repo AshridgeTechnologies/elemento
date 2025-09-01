@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import FileFolder from '../../src/model/FileFolder'
+import {FileFolder} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 import Page from '../../src/model/Page'
@@ -57,5 +57,5 @@ test('converts from plain object', ()=> {
     const folder1 = new FileFolder('id1', 'Folder 1', {})
     const plainObj = asJSON(folder1)
     const newFile = loadJSON(plainObj)
-    expect(newFile).toStrictEqual<FileFolder>(folder1)
+    expect(newFile).toStrictEqual<typeof FileFolder>(folder1)
 })
