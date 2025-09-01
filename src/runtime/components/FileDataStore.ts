@@ -3,12 +3,39 @@ import FileDataStoreImpl from './FileDataStoreImpl'
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {}
 type StateProperties = {dataStore?: FileDataStoreImpl}
 
 const {NotifyError} = appFunctions
+
+export const FileDataStoreSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Filedatastore",
+    "description": "Description of FileDataStore",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "FileDataStore",
+    "icon": "insert_drive_file",
+    "elementType": "statefulUI",
+    "parentType": "App",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {}
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
 
 export default function FileDataStore({path, display = false}: Properties) {
     return display ?  createElement('div', {id: path},
@@ -83,4 +110,5 @@ export class FileDataStoreState extends BaseComponentState<ExternalProperties, S
 }
 
 FileDataStore.State = FileDataStoreState
+FileDataStore.Schema = FileDataStoreSchema
 

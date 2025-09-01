@@ -5,7 +5,6 @@ import TrueFalseInput from './TrueFalseInput'
 import Image from './Image'
 import UserLogon from './UserLogon'
 import List from './List'
-import FileDataStore from './FileDataStore'
 import WebFileDataStore from './WebFileDataStore'
 import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
@@ -49,6 +48,7 @@ import TextInput from '../runtime/components/TextInput'
 import DateInput from '../runtime/components/DateInput'
 import SelectInput from '../runtime/components/SelectInput'
 import BrowserDataStore from '../runtime/components/BrowserDataStore'
+import FileDataStore from '../runtime/components/FileDataStore'
 import CloudflareDataStore from '../serverRuntime/CloudflareDataStore'
 import NumberInput from '../runtime/components/NumberInput'
 import Dialog from '../runtime/components/Dialog'
@@ -105,7 +105,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Data: modelElementClass(Data),
         Calculation: modelElementClass(Calculation),
         Timer: Timer,
-        FileDataStore: FileDataStore,
+        FileDataStore: modelElementClass(FileDataStore),
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: modelElementClass(BrowserDataStore),
         CloudflareDataStore: modelElementClass(CloudflareDataStore),
