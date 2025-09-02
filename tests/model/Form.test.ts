@@ -1,10 +1,9 @@
 import {expect, test} from "vitest"
 import App from '../../src/model/App'
-import Form from '../../src/model/Form'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {Block, Text, TextInput} from '../testutil/modelHelpers'
+import {Block, Text, TextInput, Form} from '../testutil/modelHelpers'
 
 test('Form has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -19,7 +18,7 @@ test('Form has correct defaults', ()=> {
     expect(form.wrap).toBe(false)
     expect(form.keyAction).toBe(undefined)
     expect(form.submitAction).toBe(undefined)
-    expect(form.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(form.elementArray().map( (el: any) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('Form has correct properties', ()=> {
@@ -41,7 +40,7 @@ test('Form has correct properties', ()=> {
     expect(form.wrap).toBe(true)
     expect(form.keyAction).toStrictEqual(ex`Log('You pressed ' + \$key)`)
     expect(form.submitAction).toStrictEqual(ex`Log('You submitted ' + \$data)`)
-    expect(form.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(form.elementArray().map( (el: any) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('tests if an object is this type', ()=> {
@@ -147,17 +146,17 @@ test('converts from plain object with correct types for elements', ()=> {
     let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
     const form = new Form('form1', 'Form 1', {horizontal: ex`false`}, [text, textInput])
     const newForm = loadJSON(asJSON(form))
-    expect(newForm).toStrictEqual<Form>(form)
+    expect(newForm).toStrictEqual<typeof Form>(form)
     const form2 = new Form('form1', 'Form 2', {horizontal: true}, [text, textInput])
     const newForm2 = loadJSON(asJSON(form2))
-    expect(newForm2).toStrictEqual<Form>(form2)
+    expect(newForm2).toStrictEqual<typeof Form>(form2)
 })
 
 test('has correct property defs', () => {
     const form = new Form('f1', 'Form 1', {})
     const {propertyDefs} = form
-    expect(propertyDefs.map( ({name}) => name ))
+    expect(propertyDefs.map( (def: any) => def.name ))
         .toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'horizontal', 'wrap', 'keyAction', 'submitAction', 'styles'])
-    const initialValueDef = form.propertyDefs.find( pd => pd.name === 'initialValue')
+    const initialValueDef = form.propertyDefs.find( (pd: any) => pd.name === 'initialValue')
     expect(initialValueDef?.type).toBe('expr')
 })

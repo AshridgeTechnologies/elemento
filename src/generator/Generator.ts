@@ -31,7 +31,6 @@ import {ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef,
 import TypesGenerator from './TypesGenerator'
 import FunctionImport from "../model/FunctionImport"
 import {ASSET_DIR} from "../shared/constants"
-import Form from '../model/Form'
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
 import ComponentInstance from '../model/ComponentInstance'
@@ -39,6 +38,10 @@ import OutputProperty from '../model/OutputProperty'
 import BaseElement from '../model/BaseElement'
 import InputProperty from '../model/InputProperty'
 import TinyBaseDataStore from '../model/TinyBaseDataStore'
+import {elementOfType} from '../model/elements'
+
+const FormClass = elementOfType('Form')
+type Form = typeof FormClass
 
 export type DebugErrors = {[name: string]: string}
 
@@ -165,7 +168,7 @@ export default class Generator {
         const requiredImports = new ImportsCollector()
         const componentIsApp = isAppLike(component)
         const componentIsListItem = component instanceof ListItem
-        const componentIsForm = component instanceof Form
+        const componentIsForm = component instanceof FormClass
         const componentIsPage = component instanceof Page
         const componentIsComponentDef = component instanceof ComponentDef
         const canUseContainerElements = componentIsListItem && containingComponent

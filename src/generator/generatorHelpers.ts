@@ -3,7 +3,6 @@ import lodash, {startCase} from 'lodash'
 import Element from '../model/Element'
 import {flatten, identity, last} from 'ramda'
 import {ExprType, ListItem} from './Types'
-import Form from '../model/Form'
 import {BaseApp} from '../model/BaseApp'
 import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
@@ -120,7 +119,7 @@ export const allElements = (component: Element | ListItem, isTopLevel = false): 
         return []
     }
 
-    if (component instanceof Form && !isTopLevel) {
+    if (component.kind === 'Form' && !isTopLevel) {
         return []
     }
 

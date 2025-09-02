@@ -11,7 +11,6 @@ import {allElements, valueLiteral} from './generatorHelpers'
 import type UrlContext from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
 import {elementTypeNames} from '../model/elements'
-import Form from '../model/Form'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
 import {mapValues} from 'radash'
@@ -153,7 +152,7 @@ export default class Parser {
 
     parseComponent(component: Element | ListItem, containingComponent?: Page) {
         const identifierSet = new Set<string>()
-        const componentIsForm = component instanceof Form
+        const componentIsForm = component.kind === 'Form'
         const componentIsCompDef = component instanceof ComponentDef
         const topLevelFunctions = new Set<string>()
         const allComponentElements = allElements(component, true)

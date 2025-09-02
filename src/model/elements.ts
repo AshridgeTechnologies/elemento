@@ -26,7 +26,6 @@ import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
 import SpeechInput from "./SpeechInput"
 import FunctionImport from "./FunctionImport"
-import Form from './Form'
 import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
@@ -62,6 +61,7 @@ import Icon from '../runtime/components/Icon'
 import Calculation from '../runtime/components/Calculation'
 import Collection from '../runtime/components/Collection'
 import Data from '../runtime/components/Data'
+import Form from '../runtime/components/Form'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -93,7 +93,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         DateInput: modelElementClass(DateInput),
         SpeechInput: SpeechInput,
         Button: modelElementClass(Button),
-        Form: Form,
+        Form: modelElementClass(Form),
         Image: Image,
         Frame: Frame,
         Icon: modelElementClass(Icon),
