@@ -53,7 +53,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new ScreenKeyboard('id1', 'ScreenKeyboard 1', {}).propertyDefs.map( ({name}) => name ))
+    expect(new ScreenKeyboard('id1', 'ScreenKeyboard 1', {}).propertyDefs.map( (def: any) => def.name ))
         .toStrictEqual(['keyAction', 'useRealKeyboard', 'show', 'styles'])
 })
 

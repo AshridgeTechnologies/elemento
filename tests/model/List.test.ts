@@ -19,7 +19,7 @@ test('List has correct properties', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new List('l1', 'List 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['show', 'styles'])
+    expect(new List('l1', 'List 1', {items: []}, []).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['show', 'styles'])
 })
 
 

@@ -48,7 +48,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Timer('id1', 'Timer 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['period', 'interval', 'intervalAction', 'endAction', 'label', 'show', 'styles'])
+    expect(new Timer('id1', 'Timer 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['period', 'interval', 'intervalAction', 'endAction', 'label', 'show', 'styles'])
 })
 
 test('converts to JSON without optional properties', ()=> {

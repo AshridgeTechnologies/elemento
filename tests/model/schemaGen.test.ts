@@ -1,11 +1,11 @@
 import {test} from "vitest"
 
 import {generateSchema} from '../../src/model/ModelElement'
-import {Form} from '../testutil/modelHelpers'
+import {Image} from '../testutil/modelHelpers'
 
 test('gen schema', () => {
 
-    const elementClass = Form
+    const elementClass = Image
     const schema = generateSchema(elementClass)
 
     const schemaNoDefs = {...schema, definitions: 'Definitions'}

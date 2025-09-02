@@ -23,7 +23,7 @@ test('Adapter has correct properties with specified values', ()=> {
 
 test('has correct property names', () => {
     const adapter = new Adapter('id1', 'Adapter 1', {target: ex`Widget_1`})
-    expect(adapter.propertyDefs.map( ({name}) => name )).toStrictEqual(['target'])
+    expect(adapter.propertyDefs.map( (def: any) => def.name )).toStrictEqual(['target'])
     expect(adapter.propertyDefs[0].type).toBe('expr')
 })
 

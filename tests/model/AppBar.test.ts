@@ -19,7 +19,7 @@ test('AppBar has correct properties', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new AppBar('ab1', 'Bar 1', {}).propertyDefs.map( ({name}) => name )).toStrictEqual(['title', 'show', 'styles'])
+    expect(new AppBar('ab1', 'Bar 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['title', 'show', 'styles'])
 })
 
 test('tests if an object is this type', ()=> {

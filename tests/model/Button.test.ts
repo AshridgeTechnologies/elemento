@@ -63,7 +63,7 @@ test('ignores the set and returns itself if the id does not match', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Button('id1', 'Button 1', {content: 'Some button'}).propertyDefs.map( ({name}) => name ))
+    expect(new Button('id1', 'Button 1', {content: 'Some button'}).propertyDefs.map( (def: any) => def.name ))
         .toStrictEqual(['content', 'iconName', 'appearance', 'enabled', 'action', 'show', 'styles'])
 })
 

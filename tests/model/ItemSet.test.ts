@@ -39,7 +39,7 @@ test('ItemSet has correct properties', ()=> {
 })
 
 test('has correct property names and options', () => {
-    expect(new ItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({name}) => name )).toStrictEqual([
+    expect(new ItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( (def: any) => def.name )).toStrictEqual([
         'items', 'selectedItems', 'selectable', 'selectAction', 'canDragItem', 'itemStyles'])
     expect(new ItemSet('l1', 'ItemSet 1', {items: []}, []).propertyDefs.map( ({state}) => state )).toStrictEqual([
         true, true, true, true, undefined, undefined])

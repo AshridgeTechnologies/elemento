@@ -29,7 +29,7 @@ test('Page has default properties', ()=> {
 })
 
 test('has correct property names', () => {
-    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( ({name}) => name )).toStrictEqual(['notLoggedInPage', 'styles'])
+    expect(new Page('p1', 'Page the First', {}, []).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['notLoggedInPage', 'styles'])
 })
 
 test('creates an updated object with a property set to a new value', ()=> {

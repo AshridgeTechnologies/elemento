@@ -2,7 +2,6 @@ import Project from './Project'
 import App from './App'
 import Page from './Page'
 import TrueFalseInput from './TrueFalseInput'
-import Image from './Image'
 import UserLogon from './UserLogon'
 import List from './List'
 import WebFileDataStore from './WebFileDataStore'
@@ -32,7 +31,6 @@ import Tool from './Tool'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
 import Timer from './Timer'
-import Frame from './Frame'
 import ScreenKeyboard from './ScreenKeyboard'
 import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
@@ -62,6 +60,8 @@ import Calculation from '../runtime/components/Calculation'
 import Collection from '../runtime/components/Collection'
 import Data from '../runtime/components/Data'
 import Form from '../runtime/components/Form'
+import Frame from '../runtime/components/Frame'
+import Image from '../runtime/components/Image'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -94,8 +94,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         SpeechInput: SpeechInput,
         Button: modelElementClass(Button),
         Form: modelElementClass(Form),
-        Image: Image,
-        Frame: Frame,
+        Image: modelElementClass(Image),
+        Frame: modelElementClass(Frame),
         Icon: modelElementClass(Icon),
         UserLogon: UserLogon,
         Menu: modelElementClass(Menu),
