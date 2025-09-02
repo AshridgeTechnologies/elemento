@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import MemoryDataStore from '../../src/model/MemoryDataStore'
+import {MemoryDataStore} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
@@ -75,10 +75,10 @@ test('converts from plain object', ()=> {
     const store = new MemoryDataStore('id1', 'MemoryDataStore 1', {initialValue: ex`{ Widgets: { w1: {a: 10}} }`, display: ex`false && true`})
     const plainObj = asJSON(store)
     const newInMemoryDataStore = loadJSON(plainObj)
-    expect(newInMemoryDataStore).toStrictEqual<MemoryDataStore>(store)
+    expect(newInMemoryDataStore).toStrictEqual<typeof MemoryDataStore>(store)
 
     const store2 = new MemoryDataStore('id1', 'MemoryDataStore 2', {display: false})
     const plainObj2 = asJSON(store2)
     const newInMemoryDataStore2 = loadJSON(plainObj2)
-    expect(newInMemoryDataStore2).toStrictEqual<MemoryDataStore>(store2)
+    expect(newInMemoryDataStore2).toStrictEqual<typeof MemoryDataStore>(store2)
 })

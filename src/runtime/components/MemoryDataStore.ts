@@ -2,8 +2,48 @@ import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, 
 import lodash from 'lodash'; const {clone} = lodash
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const emptyObservable = new Observable<UpdateNotification>(() => {})
+
+export const MemoryDataStoreSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Memorydatastore",
+    "description": "Description of MemoryDataStore",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "MemoryDataStore",
+    "icon": "memory",
+    "elementType": "backgroundFixed",
+    "parentType": "App",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "initialValue": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Expression"
+                },
+                "display": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    default: false
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+export const MemoryDataStoreMetadata: ElementMetadata = {
+    stateProps: ['initialValue']
+}
 
 export default class MemoryDataStore implements DataStore {
     private data: object
@@ -85,3 +125,6 @@ export default class MemoryDataStore implements DataStore {
         return collection
     }
 }
+
+(MemoryDataStore as any).Schema = MemoryDataStoreSchema;
+(MemoryDataStore as any).Metadata = MemoryDataStoreMetadata;

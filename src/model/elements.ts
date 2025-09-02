@@ -3,9 +3,7 @@ import App from './App'
 import Page from './Page'
 import TrueFalseInput from './TrueFalseInput'
 import UserLogon from './UserLogon'
-import List from './List'
 import WebFileDataStore from './WebFileDataStore'
-import MemoryDataStore from './MemoryDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import {DataTypeElementType, ElementType} from './Types'
@@ -37,7 +35,7 @@ import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import TinyBaseDataStore from './TinyBaseDataStore'
 import TinyBaseServerDataStore from './TinyBaseServerDataStore'
-import {modelElementClassFromGeneratedSchema, modelElementClass} from './ModelElement'
+import {modelElementClass, modelElementClassFromGeneratedSchema} from './ModelElement'
 
 // import App from '../runtime/components/App'
 import AppBar from '../runtime/components/AppBar'
@@ -62,6 +60,8 @@ import Data from '../runtime/components/Data'
 import Form from '../runtime/components/Form'
 import Frame from '../runtime/components/Frame'
 import Image from '../runtime/components/Image'
+import {ListElementSchema} from '../runtime/components/ListElement'
+import MemoryDataStore from '../runtime/components/MemoryDataStore'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -100,7 +100,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         UserLogon: UserLogon,
         Menu: modelElementClass(Menu),
         MenuItem: modelElementClass(MenuItem),
-        List: List,
+        List: modelElementClass(ListElementSchema),
         ItemSet: modelElementClass(ItemSet),
         Data: modelElementClass(Data),
         Calculation: modelElementClass(Calculation),
@@ -111,7 +111,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         CloudflareDataStore: modelElementClass(CloudflareDataStore),
         TinyBaseDataStore: TinyBaseDataStore,
         TinyBaseServerDataStore: TinyBaseServerDataStore,
-        MemoryDataStore: MemoryDataStore,
+        MemoryDataStore: modelElementClass(MemoryDataStore),
         Function: Function,
         FunctionImport: FunctionImport,
         Component: Component,

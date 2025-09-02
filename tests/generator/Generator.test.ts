@@ -5,12 +5,10 @@ import App from '../../src/model/App';
 import Page from '../../src/model/Page'
 import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
     BrowserDataStore, Calculation, DateInput, SelectInput, Collection, Data, FileDataStore,
-    Form} from '../testutil/modelHelpers'
+    Form, List, MemoryDataStore} from '../testutil/modelHelpers'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
-import List from '../../src/model/List'
 import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
-import MemoryDataStore from '../../src/model/MemoryDataStore'
 import UserLogon from '../../src/model/UserLogon'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'

@@ -1,9 +1,8 @@
 import {expect, test} from "vitest"
 import {asJSON, ex} from '../testutil/testHelpers'
-import List from '../../src/model/List'
 import {loadJSON} from '../../src/model/loadJSON'
 import Page from '../../src/model/Page'
-import {Text, TextInput} from '../testutil/modelHelpers'
+import {List, Text, TextInput} from '../testutil/modelHelpers'
 
 test('List has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})
@@ -15,7 +14,7 @@ test('List has correct properties', ()=> {
     expect(list.codeName).toBe('ListtheFirst')
     expect(list.show).toBe(false)
     expect(list.styles).toStrictEqual({color: ex`blue`})
-    expect(list.elementArray().map( el => el.id )).toStrictEqual(['t1', 't2'])
+    expect(list.elementArray().map( (el: any) => el.id )).toStrictEqual(['t1', 't2'])
 })
 
 test('has correct property names', () => {
@@ -61,8 +60,8 @@ test('converts to JSON', ()=> {
 test('converts from plain object with correct types for elements', ()=> {
     let text = new Text('t1', 'Text 1', {content: ex`"Some text"`})
     let textInput = new TextInput('t2', 'Text Input 2', {initialValue: ex`"Input text"`, styles: {width: ex`7`}})
-    const list = new List('p1', 'List 1', {items: [{a: 10}], styles: {color: ex`blue`}, selectAction: ex`Log(\$item.id)`}, [text, textInput])
+    const list = new List('p1', 'List 1', {styles: {color: ex`blue`}}, [text, textInput])
     const newList = loadJSON(asJSON(list))
-    expect(newList).toStrictEqual<List>(list)
+    expect(newList).toStrictEqual<typeof List>(list)
 })
 
