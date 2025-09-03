@@ -5,7 +5,7 @@ import App from '../../src/model/App';
 import Page from '../../src/model/Page'
 import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
     BrowserDataStore, Calculation, DateInput, SelectInput, Collection, Data, FileDataStore,
-    Form, List, MemoryDataStore} from '../testutil/modelHelpers'
+    Form, List, MemoryDataStore, SpeechInput} from '../testutil/modelHelpers'
 import TrueFalseInput from '../../src/model/TrueFalseInput'
 import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
@@ -16,7 +16,6 @@ import ServerApp from '../../src/model/ServerApp'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
-import SpeechInput from '../../src/model/SpeechInput';
 import FunctionImport from "../../src/model/FunctionImport";
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'

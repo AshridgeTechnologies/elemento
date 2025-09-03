@@ -6,6 +6,8 @@ import {BaseComponentState, ComponentState} from './ComponentState'
 import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 
 type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
@@ -14,6 +16,69 @@ type StateInternalProperties = Partial<Readonly<{startTime: Date, intervalCount:
 
 const stateReset = {startTime: undefined, intervalCount: undefined, stoppedTime: undefined, finishedTime: undefined, previousElapsedMillis: undefined}
 
+export const TimerSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Timer",
+    "description": "Description of Timer",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "Timer",
+    "icon": "av_timer",
+    "elementType": "statefulUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "period": {
+                    "description": "The ",
+                    "$ref": "#/definitions/NumberOrExpression"
+                },
+                "interval": {
+                    "description": "The ",
+                    "$ref": "#/definitions/NumberOrExpression"
+                },
+                "intervalAction": {
+                    "description": "The ",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": [
+                        "$timer"
+                    ]
+                },
+                "endAction": {
+                    "description": "The ",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": [
+                        "$timer"
+                    ]
+                },
+                "label": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
+                "show": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression",
+                    default: true
+                },
+                "styles": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const TimerMetadata: ElementMetadata = {
+    stateProps: ['period', 'interval', 'intervalAction', 'endAction']
+}
 export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
@@ -135,3 +200,5 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
 }
 
 Timer.State = TimerState
+Timer.Schema = TimerSchema
+Timer.Metadata = TimerMetadata

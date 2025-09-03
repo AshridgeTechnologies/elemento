@@ -21,15 +21,12 @@ import Rule from './types/Rule'
 import NumberType from './types/NumberType'
 import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
-import SpeechInput from "./SpeechInput"
 import FunctionImport from "./FunctionImport"
 import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
-import Timer from './Timer'
-import ScreenKeyboard from './ScreenKeyboard'
 import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
@@ -62,6 +59,9 @@ import Frame from '../runtime/components/Frame'
 import Image from '../runtime/components/Image'
 import {ListElementSchema} from '../runtime/components/ListElement'
 import MemoryDataStore from '../runtime/components/MemoryDataStore'
+import Timer from '../runtime/components/Timer'
+import ScreenKeyboard from '../runtime/components/ScreenKeyboard'
+import SpeechInput from '../runtime/components/SpeechInput'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -91,7 +91,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         SelectInput: modelElementClass(SelectInput),
         TrueFalseInput: TrueFalseInput,
         DateInput: modelElementClass(DateInput),
-        SpeechInput: SpeechInput,
+        SpeechInput: modelElementClass(SpeechInput),
         Button: modelElementClass(Button),
         Form: modelElementClass(Form),
         Image: modelElementClass(Image),
@@ -104,7 +104,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         ItemSet: modelElementClass(ItemSet),
         Data: modelElementClass(Data),
         Calculation: modelElementClass(Calculation),
-        Timer: Timer,
+        Timer: modelElementClass(Timer),
         FileDataStore: modelElementClass(FileDataStore),
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: modelElementClass(BrowserDataStore),
@@ -129,7 +129,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         ComponentFolder: ComponentFolder,
         ToolFolder: ToolFolder,
         ToolImport: ToolImport,
-        ScreenKeyboard: ScreenKeyboard,
+        ScreenKeyboard: modelElementClass(ScreenKeyboard),
         ...dataTypeElementTypes()
     }
 }

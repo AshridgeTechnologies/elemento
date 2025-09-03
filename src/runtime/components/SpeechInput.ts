@@ -1,5 +1,7 @@
 import {createElement} from 'react'
 import {BaseComponentState, ComponentState} from './ComponentState'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 const SpeechRecognition  = (globalThis as any).SpeechRecognition || (globalThis as any).webkitSpeechRecognition
 const SpeechGrammarList = (globalThis as any).SpeechGrammarList || (globalThis as any).webkitSpeechGrammarList
@@ -14,6 +16,43 @@ type SpeechRecognitionExt = typeof SpeechRecognition
 
 type SpeechRecognitionEvent = any
 type SpeechRecognitionErrorEvent = any
+
+export const SpeechInputSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Speechinput",
+    "description": "Description of SpeechInput",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "SpeechInput",
+    "icon": "keyboard_voice_outlined",
+    "elementType": "statefulUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "language": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
+                "expectedPhrases": {
+                    "description": "The ",
+                    "$ref": "#/definitions/StringListOrExpression"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const SpeechInputMetadata = {
+    stateProps: ['language', 'expectedPhrases']
+}
 
 export default function SpeechInput({path}: Properties) {
     return createElement('div', {id: path})
@@ -133,3 +172,5 @@ export class SpeechInputState extends BaseComponentState<ExternalProperties, Sta
 }
 
 SpeechInput.State = SpeechInputState
+SpeechInput.Schema = SpeechInputSchema
+SpeechInput.Metadata = SpeechInputMetadata

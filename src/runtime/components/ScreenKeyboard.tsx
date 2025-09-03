@@ -7,6 +7,8 @@ import css from './ScreenKeyboard_css'
 import {sxProps} from './ComponentHelpers'
 import Box from '@mui/material/Box'
 import {useObject} from '../appStateHooks'
+import {ElementSchema} from '../../model/ModelElement'
+import {Definitions} from '../../model/schema'
 
 type Properties = {path: string, useRealKeyboard?: boolean, keyAction?: (key: string) => void, show?: PropVal<boolean>, styles?: StylesPropVals}
 type ExternalStateProps = {}
@@ -67,6 +69,50 @@ const translateKey = (key: string) => {
         case '{tab}': return 'Tab'
         default: return key
     }
+}
+
+export const ScreenKeyboardSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Screenkeyboard",
+    "description": "Description of ScreenKeyboard",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "ScreenKeyboard",
+    "icon": "keyboard",
+    "elementType": "statefulUI",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+                "keyAction": {
+                    "description": "The ",
+                    "$ref": "#/definitions/ActionExpression",
+                    "argNames": [
+                        "$key"
+                    ]
+                },
+                "useRealKeyboard": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "show": {
+                    "description": "The ",
+                    "$ref": "#/definitions/BooleanOrExpression"
+                },
+                "styles": {
+                    "description": "The ",
+                    "$ref": "#/definitions/Styles"
+                }
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
 }
 
 export default function ScreenKeyboard({path, ...props}: Properties) {
@@ -147,3 +193,5 @@ export class ScreenKeyboardState extends BaseComponentState<ExternalStateProps, 
 }
 
 ScreenKeyboard.State = ScreenKeyboardState
+ScreenKeyboard.Schema = ScreenKeyboardSchema
+

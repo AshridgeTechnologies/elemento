@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import ScreenKeyboard from '../../src/model/ScreenKeyboard'
+import {ScreenKeyboard} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
@@ -82,10 +82,10 @@ test('converts from plain object', ()=> {
         show: ex`false && true`, styles: {width: ex`300 + 1`}})
     const plainObj = asJSON(keyboard)
     const newScreenKeyboard = loadJSON(plainObj)
-    expect(newScreenKeyboard).toStrictEqual<ScreenKeyboard>(keyboard)
+    expect(newScreenKeyboard).toStrictEqual<typeof ScreenKeyboard>(keyboard)
 
     const keyboard2 = new ScreenKeyboard('id1', 'ScreenKeyboard 2', {show: false})
     const plainObj2 = asJSON(keyboard2)
     const newScreenKeyboard2 = loadJSON(plainObj2)
-    expect(newScreenKeyboard2).toStrictEqual<ScreenKeyboard>(keyboard2)
+    expect(newScreenKeyboard2).toStrictEqual<typeof ScreenKeyboard>(keyboard2)
 })

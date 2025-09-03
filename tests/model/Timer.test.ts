@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import Timer from '../../src/model/Timer'
+import {Timer} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
@@ -77,5 +77,5 @@ test('converts from plain object', ()=> {
     const timer = new Timer('id1', 'Timer 1', {interval: ex`2`, show: ex`false && true`, styles: {width: ex`3+4`}, label: 'A Timer'})
     const plainObj = asJSON(timer)
     const newTimer = loadJSON(plainObj)
-    expect(newTimer).toStrictEqual<Timer>(timer)
+    expect(newTimer).toStrictEqual<typeof Timer>(timer)
 })

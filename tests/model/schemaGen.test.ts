@@ -1,11 +1,11 @@
 import {test} from "vitest"
 
 import {generateSchema} from '../../src/model/ModelElement'
-import {MemoryDataStore} from '../testutil/modelHelpers'
+import {SpeechInput} from '../testutil/modelHelpers'
 
 test('gen schema', () => {
 
-    const elementClass = MemoryDataStore
+    const elementClass = SpeechInput
     const schema = generateSchema(elementClass)
 
     const schemaNoDefs = {...schema, definitions: 'Definitions'}
