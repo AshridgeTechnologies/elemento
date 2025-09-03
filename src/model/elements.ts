@@ -30,8 +30,6 @@ import ComponentFolder from './ComponentFolder'
 import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
-import TinyBaseDataStore from './TinyBaseDataStore'
-import TinyBaseServerDataStore from './TinyBaseServerDataStore'
 import {modelElementClass, modelElementClassFromGeneratedSchema} from './ModelElement'
 
 // import App from '../runtime/components/App'
@@ -42,6 +40,7 @@ import SelectInput from '../runtime/components/SelectInput'
 import BrowserDataStore from '../runtime/components/BrowserDataStore'
 import FileDataStore from '../runtime/components/FileDataStore'
 import CloudflareDataStore from '../serverRuntime/CloudflareDataStore'
+import TinyBaseDataStore from '../runtime/components/TinyBaseDataStore'
 import NumberInput from '../runtime/components/NumberInput'
 import Dialog from '../runtime/components/Dialog'
 import TextElement from '../runtime/components/TextElement'
@@ -62,6 +61,7 @@ import MemoryDataStore from '../runtime/components/MemoryDataStore'
 import Timer from '../runtime/components/Timer'
 import ScreenKeyboard from '../runtime/components/ScreenKeyboard'
 import SpeechInput from '../runtime/components/SpeechInput'
+import {TinyBaseServerDataStoreMetadata, TinyBaseServerDataStoreSchema} from '../serverRuntime/TinyBaseServerDataStore'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -109,8 +109,8 @@ const elementTypes = (): {[key in ElementType]: any} => {
         WebFileDataStore: WebFileDataStore,
         BrowserDataStore: modelElementClass(BrowserDataStore),
         CloudflareDataStore: modelElementClass(CloudflareDataStore),
-        TinyBaseDataStore: TinyBaseDataStore,
-        TinyBaseServerDataStore: TinyBaseServerDataStore,
+        TinyBaseDataStore: modelElementClass(TinyBaseDataStore),
+        TinyBaseServerDataStore: modelElementClass(TinyBaseServerDataStoreSchema, TinyBaseServerDataStoreMetadata),
         MemoryDataStore: modelElementClass(MemoryDataStore),
         Function: Function,
         FunctionImport: FunctionImport,

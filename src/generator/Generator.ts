@@ -37,11 +37,13 @@ import ComponentInstance from '../model/ComponentInstance'
 import OutputProperty from '../model/OutputProperty'
 import BaseElement from '../model/BaseElement'
 import InputProperty from '../model/InputProperty'
-import TinyBaseDataStore from '../model/TinyBaseDataStore'
 import {elementOfType} from '../model/elements'
 
 const FormClass = elementOfType('Form')
 type Form = typeof FormClass
+
+const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
+type TinyBaseDataStore = typeof TinyBaseDataStoreClass
 
 export type DebugErrors = {[name: string]: string}
 
@@ -142,7 +144,7 @@ export default class Generator {
 }`
         }
 
-        const syncedTinyBaseStores = this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer) as TinyBaseDataStore[]
+        const syncedTinyBaseStores = this.project.findElementsBy(el => el.kind === 'TinyBaseDataStore' && (el as TinyBaseDataStore).syncWithServer) as TinyBaseDataStore[]
         return syncedTinyBaseStores.map(el => durableObjectClass(el))
     }
 

@@ -7,8 +7,11 @@ import Tool from '../model/Tool'
 import {flatten, pickBy} from 'ramda'
 import ServerApp from '../model/ServerApp'
 import {generateServerApp} from './ServerAppGenerator'
-import TinyBaseDataStore from '../model/TinyBaseDataStore'
 import {flatMap} from 'lodash'
+import {elementOfType} from '../model/elements'
+
+const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
+type TinyBaseDataStore = typeof TinyBaseDataStoreClass
 
 export type FileContents = Uint8Array | string
 export interface ProjectLoader {
@@ -93,7 +96,7 @@ export default class ProjectBuilder {
     get errors() { return {...this.generatedErrors}}
 
     private get project() { return this.props.projectLoader.getProject() }
-    private get syncedTinyBaseStores() { return this.project.findElementsBy(el => el instanceof TinyBaseDataStore && el.syncWithServer ) as TinyBaseDataStore[] }
+    private get syncedTinyBaseStores() { return this.project.findElementsBy(el => el.kind === 'TinyBaseDataStore' && (el as TinyBaseDataStore).syncWithServer ) as TinyBaseDataStore[] }
     private get runtimeLoader() { return this.props.runtimeLoader }
 
     async writeProjectFiles() {

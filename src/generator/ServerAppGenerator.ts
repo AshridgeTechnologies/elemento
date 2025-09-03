@@ -7,7 +7,10 @@ import {isTruthy} from '../util/helpers'
 import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
-import TinyBaseServerDataStore from '../model/TinyBaseServerDataStore'
+import {elementOfType} from '../model/elements'
+
+const TinyBaseServerDataStoreClass = elementOfType('TinyBaseServerDataStore')
+type TinyBaseServerDataStore = typeof TinyBaseServerDataStoreClass
 
 const indentLevel1 = '    '
 
@@ -149,7 +152,7 @@ ${this.publicFunctions().map(f => `    ${f.codeName}: ${generateFunctionMetadata
     }
 
     private getExpr(element: Element, propertyName: string, exprType: ExprType = 'singleExpression') {
-        const isKnownSyncUserFunction = (fnName: string) => false
+        const isKnownSyncUserFunction = (_fnName: string) => false
 
         const isSingleExpr = exprType === 'singleExpression'
         const errorMessage = this.parser.propertyError(element.id, propertyName)

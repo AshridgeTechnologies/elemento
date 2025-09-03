@@ -4,8 +4,48 @@ import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../shared/convertData'
 import {mergeDeepRight} from 'ramda'
 import {TinyBaseDurableObject} from './TinyBaseDurableObject'
+import {ElementMetadata, ElementSchema} from '../model/ModelElement'
+import {Definitions} from '../model/schema'
 
 type Properties = {collections: string, durableObject: DurableObjectNamespace, databaseName: string}
+
+export const TinyBaseServerDataStoreSchema: ElementSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Tinybaseserverdatastore",
+    "description": "Description of TinyBaseServerDataStore",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "TinyBaseServerDataStore",
+    "icon": "token",
+    "elementType": "statefulUI",
+    "parentType": "App",
+    "properties": {
+    "properties": {
+        "type": "object",
+            "unevaluatedProperties": false,
+            "properties": {
+            "collections": {
+                "description": "The ",
+                    "$ref": "#/definitions/StringMultiline"
+            },
+            "databaseName": {
+                "description": "The ",
+                    "$ref": "#/definitions/StringOrExpression"
+            }
+        }
+    }
+},
+    "required": [
+    "kind",
+    "properties"
+],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const TinyBaseServerDataStoreMetadata: ElementMetadata = {
+    "stateProps": ['collections', 'databaseName' ]
+}
 
 export default class TinyBaseServerDataStore implements BasicDataStore {
     private readonly collections: CollectionConfig[]
