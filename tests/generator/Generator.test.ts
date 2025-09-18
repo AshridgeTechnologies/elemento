@@ -4,9 +4,8 @@ import Element from '../../src/model/Element';
 import App from '../../src/model/App';
 import Page from '../../src/model/Page'
 import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
-    BrowserDataStore, Calculation, DateInput, SelectInput, Collection, Data, FileDataStore,
+    BrowserDataStore, Calculation, DateInput, SelectInput, TrueFalseInput, Collection, Data, FileDataStore,
     Form, List, MemoryDataStore, SpeechInput} from '../testutil/modelHelpers'
-import TrueFalseInput from '../../src/model/TrueFalseInput'
 import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
 import UserLogon from '../../src/model/UserLogon'

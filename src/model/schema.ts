@@ -391,7 +391,7 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             },
             "initialValue": {
                 "description": "The initial value shown in the input box.",
-                "$ref": "#/definitions/StringOrNumberOrStringListOrExpression"
+                "$ref": "#/definitions/InitialValueType"
             }
 
         },
@@ -487,13 +487,16 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             }
         ]
     },
-    "StringOrNumberOrStringListOrExpression": {
+    "InitialValueType": {
         "anyOf": [
             {
                 "type": "string"
             },
             {
                 "type": "number"
+            },
+            {
+                "type": "boolean"
             },
             {
                 "$ref": "#/definitions/StringList"

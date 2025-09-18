@@ -1,7 +1,7 @@
 import React, {ChangeEvent, createElement, FocusEvent} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {TrueFalseType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -13,8 +13,41 @@ import {
 import {noop} from 'lodash'
 import {useObject} from '../appStateHooks'
 import {omit} from 'ramda'
+import {Definitions} from '../../model/schema'
+import {ElementMetadata} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties
+
+export const TrueFalseInputSchema = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Truefalseinput",
+    "description": "Description of TrueFalseInput",
+    "type": "object",
+    "$ref": "#/definitions/BaseElement",
+    "kind": "TrueFalseInput",
+    "icon": "check_box_outlined",
+    "elementType": "statefulUI",
+    "valueType": "boolean",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "unevaluatedProperties": false,
+            "$ref": "#/definitions/BaseInputProperties",
+            "properties": {
+            }
+        }
+    },
+    "required": [
+        "kind",
+        "properties"
+    ],
+    "unevaluatedProperties": false,
+    "definitions": Definitions
+}
+
+export const TrueFalseInputMetadata: ElementMetadata = {
+    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
+}
 
 export default function TrueFalseInput({path, ...props}: Properties) {
     const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
@@ -70,3 +103,5 @@ export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseT
 }
 
 TrueFalseInput.State = TrueFalseInputState
+TrueFalseInput.Schema = TrueFalseInputSchema
+TrueFalseInput.Metadata = TrueFalseInputMetadata

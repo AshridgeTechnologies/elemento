@@ -1,7 +1,6 @@
 import Project from './Project'
 import App from './App'
 import Page from './Page'
-import TrueFalseInput from './TrueFalseInput'
 import UserLogon from './UserLogon'
 import WebFileDataStore from './WebFileDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
@@ -37,6 +36,7 @@ import AppBar from '../runtime/components/AppBar'
 import TextInput from '../runtime/components/TextInput'
 import DateInput from '../runtime/components/DateInput'
 import SelectInput from '../runtime/components/SelectInput'
+import TrueFalseInput from '../runtime/components/TrueFalseInput'
 import BrowserDataStore from '../runtime/components/BrowserDataStore'
 import FileDataStore from '../runtime/components/FileDataStore'
 import CloudflareDataStore from '../serverRuntime/CloudflareDataStore'
@@ -89,7 +89,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         TextInput: modelElementClass(TextInput),
         NumberInput: modelElementClass(NumberInput),
         SelectInput: modelElementClass(SelectInput),
-        TrueFalseInput: TrueFalseInput,
+        TrueFalseInput: modelElementClass(TrueFalseInput),
         DateInput: modelElementClass(DateInput),
         SpeechInput: modelElementClass(SpeechInput),
         Button: modelElementClass(Button),

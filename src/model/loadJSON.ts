@@ -9,7 +9,7 @@ function loadJSONElement(elementJson: ElementJson): Element {
     const {id, kind, name, properties, elements} = elementJson
     const errors = validateElement(elementJson)
     if (errors) {
-        // console.error('Elemento JSON validation error', errors)
+        console.error('Elemento JSON validation error', errors)
         throw new Error('Elemento JSON validation error', {cause: errors})
     }
     const childElements = elements?.map(el => loadJSONElement(el))

@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import TrueFalseInput from '../../src/model/TrueFalseInput'
+import {TrueFalseInput} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
@@ -83,10 +83,10 @@ test('converts from plain object', ()=> {
     const trueFalseInput = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: ex`true`})
     const plainObj = asJSON(trueFalseInput)
     const newObj = loadJSON(plainObj)
-    expect(newObj).toStrictEqual<TrueFalseInput>(trueFalseInput)
+    expect(newObj).toStrictEqual(trueFalseInput)
 
     const trueFalseInput2 = new TrueFalseInput('t1', 'True-False Input 1', {initialValue: true, label: 'The True-False', dataType: ex`dataType1`})
     const plainObj2 = asJSON(trueFalseInput2)
     const newObj2 = loadJSON(plainObj2)
-    expect(newObj2).toStrictEqual<TrueFalseInput>(trueFalseInput2)
+    expect(newObj2).toStrictEqual(trueFalseInput2)
 })
