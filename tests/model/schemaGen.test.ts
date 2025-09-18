@@ -1,11 +1,11 @@
 import {test} from "vitest"
 
 import {generateSchema} from '../../src/model/ModelElement'
-import {TinyBaseServerDataStore, TrueFalseInput} from '../testutil/modelHelpers'
+import {WebFileDataStore} from '../testutil/modelHelpers'
 
 test('gen schema', () => {
 
-    const elementClass = TrueFalseInput
+    const elementClass = WebFileDataStore
     const schema = generateSchema(elementClass)
 
     const schemaNoDefs = {...schema, definitions: 'Definitions'}

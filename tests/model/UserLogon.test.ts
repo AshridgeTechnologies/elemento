@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import UserLogon from '../../src/model/UserLogon'
+import {UserLogon} from '../testutil/modelHelpers'
 import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
@@ -42,10 +42,10 @@ test('converts from plain object', ()=> {
     const userLogon = new UserLogon('id1', 'UserLogon 1', {})
     const plainObj = asJSON(userLogon)
     const newUserLogon = loadJSON(plainObj)
-    expect(newUserLogon).toStrictEqual<UserLogon>(userLogon)
+    expect(newUserLogon).toStrictEqual<typeof UserLogon>(userLogon)
 
     const userLogon2 = new UserLogon('id1', 'UserLogon 2', {})
     const plainObj2 = asJSON(userLogon2)
     const newUserLogon2 = loadJSON(plainObj2)
-    expect(newUserLogon2).toStrictEqual<UserLogon>(userLogon2)
+    expect(newUserLogon2).toStrictEqual<typeof UserLogon>(userLogon2)
 })

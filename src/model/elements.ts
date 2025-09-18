@@ -1,8 +1,6 @@
 import Project from './Project'
 import App from './App'
 import Page from './Page'
-import UserLogon from './UserLogon'
-import WebFileDataStore from './WebFileDataStore'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import {DataTypeElementType, ElementType} from './Types'
@@ -26,7 +24,6 @@ import ToolFolder from './ToolFolder'
 import Tool from './Tool'
 import ToolImport from './ToolImport'
 import ComponentFolder from './ComponentFolder'
-import WebFile from './WebFile'
 import OutputProperty from './OutputProperty'
 import InputProperty from './InputProperty'
 import {modelElementClass, modelElementClassFromGeneratedSchema} from './ModelElement'
@@ -41,6 +38,7 @@ import BrowserDataStore from '../runtime/components/BrowserDataStore'
 import FileDataStore from '../runtime/components/FileDataStore'
 import CloudflareDataStore from '../serverRuntime/CloudflareDataStore'
 import TinyBaseDataStore from '../runtime/components/TinyBaseDataStore'
+import WebFileDataStore from '../runtime/components/WebFileDataStore'
 import NumberInput from '../runtime/components/NumberInput'
 import Dialog from '../runtime/components/Dialog'
 import TextElement from '../runtime/components/TextElement'
@@ -61,6 +59,8 @@ import MemoryDataStore from '../runtime/components/MemoryDataStore'
 import Timer from '../runtime/components/Timer'
 import ScreenKeyboard from '../runtime/components/ScreenKeyboard'
 import SpeechInput from '../runtime/components/SpeechInput'
+import UserLogon from '../runtime/components/UserLogon'
+import WebFile from '../runtime/components/WebFile'
 import {TinyBaseServerDataStoreMetadata, TinyBaseServerDataStoreSchema} from '../serverRuntime/TinyBaseServerDataStore'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
@@ -97,7 +97,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Image: modelElementClass(Image),
         Frame: modelElementClass(Frame),
         Icon: modelElementClass(Icon),
-        UserLogon: UserLogon,
+        UserLogon: modelElementClass(UserLogon),
         Menu: modelElementClass(Menu),
         MenuItem: modelElementClass(MenuItem),
         List: modelElementClass(ListElementSchema),
@@ -106,7 +106,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         Calculation: modelElementClass(Calculation),
         Timer: modelElementClass(Timer),
         FileDataStore: modelElementClass(FileDataStore),
-        WebFileDataStore: WebFileDataStore,
+        WebFileDataStore: modelElementClass(WebFileDataStore),
         BrowserDataStore: modelElementClass(BrowserDataStore),
         CloudflareDataStore: modelElementClass(CloudflareDataStore),
         TinyBaseDataStore: modelElementClass(TinyBaseDataStore),
@@ -123,7 +123,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         ServerApp: ServerApp,
         ServerAppConnector: ServerAppConnector,
         Adapter: Adapter,
-        WebFile: WebFile,
+        WebFile: modelElementClass(WebFile),
         File: modelElementClass(FileSchema),
         FileFolder: modelElementClass(FileFolderSchema),
         ComponentFolder: ComponentFolder,

@@ -5,10 +5,9 @@ import App from '../../src/model/App';
 import Page from '../../src/model/Page'
 import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
     BrowserDataStore, Calculation, DateInput, SelectInput, TrueFalseInput, Collection, Data, FileDataStore,
-    Form, List, MemoryDataStore, SpeechInput} from '../testutil/modelHelpers'
+    Form, List, MemoryDataStore, SpeechInput, UserLogon, WebFileDataStore} from '../testutil/modelHelpers'
 import {ex} from '../testutil/testHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
-import UserLogon from '../../src/model/UserLogon'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
 import ServerApp from '../../src/model/ServerApp'
@@ -24,7 +23,6 @@ import ComponentDef from '../../src/model/ComponentDef'
 import ComponentInstance from '../../src/model/ComponentInstance'
 import ComponentFolder from '../../src/model/ComponentFolder'
 import {knownSync} from '../../src/generator/generatorHelpers'
-import WebFileDataStore from '../../src/model/WebFileDataStore'
 import InputProperty from '../../src/model/InputProperty'
 import OutputProperty from '../../src/model/OutputProperty'
 
