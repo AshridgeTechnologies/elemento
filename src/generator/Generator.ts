@@ -27,7 +27,6 @@ import ServerAppConnector from '../model/ServerAppConnector'
 import ServerApp from '../model/ServerApp'
 import {ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
 import TypesGenerator from './TypesGenerator'
-import FunctionImport from "../model/FunctionImport"
 import {ASSET_DIR} from "../shared/constants"
 import ComponentDef from '../model/ComponentDef'
 import {BaseApp} from '../model/BaseApp'
@@ -45,6 +44,9 @@ type Page = typeof PageClass
 
 const FunctionDefClass = elementOfType('Function')
 type FunctionDef = typeof FunctionDefClass
+
+const FunctionImportClass = elementOfType('FunctionImport')
+type FunctionImport = typeof FunctionImportClass
 
 const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
 type TinyBaseDataStore = typeof TinyBaseDataStoreClass
@@ -166,7 +168,7 @@ export default class Generator {
             }
         }
 
-        const functionImports = app.findChildElements(FunctionImport)
+        const functionImports = app.findChildElements('FunctionImport') as FunctionImport[]
         return functionImports.length ? [`const {importModule, importHandlers} = Elemento`, ...functionImports.map(generateImport)] : []
     }
 

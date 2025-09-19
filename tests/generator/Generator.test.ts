@@ -4,7 +4,7 @@ import Element from '../../src/model/Element';
 import App from '../../src/model/App';
 import {Page, Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
     BrowserDataStore, Calculation, DateInput, SelectInput, TrueFalseInput, Collection, Data, FileDataStore,
-    Form, List, MemoryDataStore, SpeechInput, UserLogon, WebFileDataStore, FunctionDef} from '../testutil/modelHelpers'
+    Form, List, MemoryDataStore, SpeechInput, UserLogon, WebFileDataStore, FunctionDef, FunctionImport} from '../testutil/modelHelpers'
 import {ex} from '../testutil/testHelpers'
 import ServerAppConnector from '../../src/model/ServerAppConnector'
 import Project, {COMPONENTS_ID, TOOLS_ID} from '../../src/model/Project'
@@ -12,7 +12,6 @@ import ServerApp from '../../src/model/ServerApp'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
-import FunctionImport from "../../src/model/FunctionImport";
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'

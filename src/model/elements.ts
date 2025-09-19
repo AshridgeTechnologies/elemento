@@ -17,7 +17,7 @@ import Rule from './types/Rule'
 import NumberType from './types/NumberType'
 import DateType from './types/DateType'
 import ChoiceType from './types/ChoiceType'
-import FunctionImport from "./FunctionImport"
+import {FunctionImportSchema} from "./FunctionImport"
 import DecimalType from './types/DecimalType'
 import ToolFolder from './ToolFolder'
 import Tool from './Tool'
@@ -113,7 +113,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         TinyBaseServerDataStore: modelElementClass(TinyBaseServerDataStoreSchema, TinyBaseServerDataStoreMetadata),
         MemoryDataStore: modelElementClass(MemoryDataStore),
         Function: modelElementClass(FunctionDefSchema),
-        FunctionImport: FunctionImport,
+        FunctionImport: modelElementClass(FunctionImportSchema),
         Component: Component,
         InputProperty: InputProperty,
         OutputProperty: OutputProperty,
