@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import {Menu, MenuItem} from '../testutil/modelHelpers'
+import {Page, Menu, MenuItem} from '../testutil/modelHelpers'
 
 const item1 = new MenuItem('it1', 'Item 1', {label: 'One'})
 const item2 = new MenuItem('it2', 'Item 2', {label: 'Two'})

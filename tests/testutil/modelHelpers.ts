@@ -9,6 +9,7 @@ import {default as MenuRuntime} from '../../src/runtime/components/Menu'
 import {default as MenuItemRuntime} from '../../src/runtime/components/MenuItem'
 import {elementOfType} from '../../src/model/elements'
 
+export const Page = elementOfType('Page')
 export const AppBar = modelElementClass(AppBarRuntime)
 export const TextInput = modelElementClass(TextInputRuntime)
 export const NumberInput = elementOfType('NumberInput')

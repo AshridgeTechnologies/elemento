@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
-import {Block, Text, TextInput} from '../testutil/modelHelpers'
+import {Page, Block, Text, TextInput} from '../testutil/modelHelpers'
 
 test('Block has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

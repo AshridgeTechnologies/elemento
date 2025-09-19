@@ -1,7 +1,6 @@
 import {parse, prettyPrint} from 'recast'
 
 import App from '../model/App'
-import Page from '../model/Page'
 import Element from '../model/Element'
 import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
@@ -41,6 +40,9 @@ import {elementOfType} from '../model/elements'
 
 const FormClass = elementOfType('Form')
 type Form = typeof FormClass
+
+const PageClass = elementOfType('Page')
+type Page = typeof PageClass
 
 const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
 type TinyBaseDataStore = typeof TinyBaseDataStoreClass
@@ -171,7 +173,7 @@ export default class Generator {
         const componentIsApp = isAppLike(component)
         const componentIsListItem = component instanceof ListItem
         const componentIsForm = component instanceof FormClass
-        const componentIsPage = component instanceof Page
+        const componentIsPage = component instanceof PageClass
         const componentIsComponentDef = component instanceof ComponentDef
         const canUseContainerElements = componentIsListItem && containingComponent
         const topLevelFunctions = new Set<string>()

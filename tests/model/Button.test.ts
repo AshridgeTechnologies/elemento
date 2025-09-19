@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import {Button} from '../testutil/modelHelpers'
+import {Page, Button} from '../testutil/modelHelpers'
 
 test('Button has correct properties with default values', ()=> {
     const button1: any = new Button('id1', 'Button 1', {})

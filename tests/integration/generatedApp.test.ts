@@ -4,7 +4,6 @@
 
 import App from '../../src/model/App'
 import {generate} from '../../src/generator/Generator'
-import Page from '../../src/model/Page'
 import {ex, wait} from '../testutil/testHelpers'
 import {runAppFromWindowUrl} from '../../src/runner/AppMain'
 
@@ -14,7 +13,7 @@ import Project1 from '../../src/model/Project'
 import Project2 from '../../src/model/Project'
 import DataTypes from '../../src/model/types/DataTypes'
 import TextType from '../../src/model/types/TextType'
-import {Text, TextInput} from '../testutil/modelHelpers'
+import {Page, Text, TextInput} from '../testutil/modelHelpers'
 
 afterEach(() => {
     // @ts-ignore

@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import {NumberInput} from '../testutil/modelHelpers'
+import {Page, NumberInput} from '../testutil/modelHelpers'
 
 test('NumberInput has correct properties', ()=> {
     const numberInput: any = new NumberInput('t1', 'Number Input 1', {initialValue: {expr: '40'}, label: ex`Number One`, dataType: ex`dataType1`, show: false, styles: {border: '1px solid red', color: ex`"text.primary"`}})

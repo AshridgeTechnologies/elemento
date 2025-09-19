@@ -14,11 +14,11 @@ import {noop} from 'lodash'
 import {useObject} from '../appStateHooks'
 import {omit} from 'ramda'
 import {Definitions} from '../../model/schema'
-import {ElementMetadata} from '../../model/ModelElement'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties
 
-export const TrueFalseInputSchema = {
+export const TrueFalseInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Truefalseinput",
     "description": "Description of TrueFalseInput",

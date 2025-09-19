@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
-import {ItemSet, Text, TextInput} from '../testutil/modelHelpers'
+import {Page, ItemSet, Text, TextInput} from '../testutil/modelHelpers'
 
 test('ItemSet has correct default properties', ()=> {
     const itemSet = new ItemSet('l1', 'ItemSet the First', {}, [])

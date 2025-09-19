@@ -9,6 +9,7 @@ import {equals, pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
 import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 
 type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
@@ -28,7 +29,7 @@ const formatDisplay = (value: any) => {
     return yaml.dump(value, options)
 }
 
-export const CalculationSchema = {
+export const CalculationSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Calculation",
     "description": "Description of Calculation",

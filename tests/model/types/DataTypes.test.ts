@@ -1,7 +1,7 @@
 import {expect, test} from "vitest"
 import DataTypes from '../../../src/model/types/DataTypes'
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
-import Page from '../../../src/model/Page'
+import {Page} from '../../testutil/modelHelpers'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON} from '../../testutil/testHelpers'
 

@@ -12,11 +12,11 @@ import {
 } from './ComponentHelpers'
 import {useObject} from '../appStateHooks'
 import {Definitions} from '../../model/schema'
-import {ElementMetadata} from '../../model/ModelElement'
+import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
 
-export const SelectInputSchema = {
+export const SelectInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Selectinput",
     "description": "Description of SelectInput",

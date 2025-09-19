@@ -1,4 +1,3 @@
-import Page from '../model/Page'
 import Element from '../model/Element'
 import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
@@ -10,11 +9,14 @@ import Project from '../model/Project'
 import {allElements, valueLiteral} from './generatorHelpers'
 import type UrlContext from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
-import {elementTypeNames} from '../model/elements'
+import {elementOfType, elementTypeNames} from '../model/elements'
 import {parseExpr, parseExprAndIdentifiers} from './parserHelpers'
 import ComponentDef from '../model/ComponentDef'
 import {mapValues} from 'radash'
 import BaseElement from '../model/BaseElement'
+
+const PageClass = elementOfType('Page')
+type Page = typeof PageClass
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}

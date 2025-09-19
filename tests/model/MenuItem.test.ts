@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import {MenuItem} from '../testutil/modelHelpers'
+import {Page, MenuItem} from '../testutil/modelHelpers'
 
 test('MenuItem has correct properties with default values', ()=> {
     const menuItem1: any = new MenuItem('id1', 'MenuItem 1', {})

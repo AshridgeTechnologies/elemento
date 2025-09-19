@@ -2,7 +2,6 @@ import BaseElement, {propDef} from './BaseElement'
 import Element from './Element'
 import {ComponentType, ElementType, eventAction, ParentType, PropertyDef, PropertyExpr, PropertyValueType} from './Types'
 import {without} from 'ramda'
-import Page from './Page'
 import {isArray} from 'lodash'
 
 export type Properties = Partial<Readonly<{
@@ -16,6 +15,7 @@ export type Properties = Partial<Readonly<{
     themeOptions: PropertyExpr
 }>>
 
+type ExtendedElement = Element & {elementArray: () => ReadonlyArray<Element>}
 export abstract class BaseApp<PropsType extends Properties = Properties> extends BaseElement<PropsType> implements Element {
 
     type(): ComponentType {
@@ -23,7 +23,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
     }
 
     get pages() {
-        return this.findChildElements<Page>('Page') // to keep TS typing happy
+        return this.findChildElements('Page') as ExtendedElement[]
     }
 
     get otherComponents() {

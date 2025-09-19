@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
-import {List, Text, TextInput} from '../testutil/modelHelpers'
+import {Page, List, Text, TextInput} from '../testutil/modelHelpers'
 
 test('List has correct properties', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import ComponentFolder from '../../src/model/ComponentFolder'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 
 test('ComponentFolder has expected properties', () => {
     const folder1 = new ComponentFolder('id1', 'Folder 1', {})

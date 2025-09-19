@@ -5,7 +5,6 @@ import {createNewElement} from './createElement'
 import {toArray} from '../util/helpers'
 import {elementOfType, elementTypeNames, parentTypeOf} from './elements'
 import {AppElementAction, ConfirmAction} from '../editor/Types'
-import Page from './Page'
 import DataTypes from './types/DataTypes'
 import App from './App'
 import ToolFolder from './ToolFolder'
@@ -17,6 +16,7 @@ import ComponentInstance from './ComponentInstance'
 import InputProperty from './InputProperty'
 import {modelElementClass} from './ModelElement'
 import {TextElementSchema} from '../runtime/components/TextElement'
+import {PageSchema} from '../runtime/components/Page'
 
 type Properties = { author?: PropertyValue, configuration?: string }
 
@@ -239,6 +239,7 @@ export default class Project extends BaseElement<Properties> implements Element 
 
 export function editorEmptyProject(name = 'New Project') {
     const textClass = modelElementClass(TextElementSchema)
+    const Page = modelElementClass(PageSchema)
     return Project.new([new App('app_1', 'Main App', {}, [
         new Page('page_1', 'Main Page', {}, [
             new textClass('text_1', 'Title', {content: `${name} App`, styles: {fontSize: 24}})

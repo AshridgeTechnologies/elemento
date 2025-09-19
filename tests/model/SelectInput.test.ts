@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import {SelectInput} from '../testutil/modelHelpers'
-import Page from '../../src/model/Page'
+import {Page, SelectInput} from '../testutil/modelHelpers'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 

@@ -5,12 +5,13 @@ import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
 import {globalFetch} from './ComponentHelpers'
 import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
 type ExternalProperties = {url: string, fetch?: typeof globalThis.fetch}
 type StateProperties = {resultCache: object}
 
-export const WebFileSchema = {
+export const WebFileSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Webfile",
     "description": "Description of WebFile",

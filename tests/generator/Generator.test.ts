@@ -2,8 +2,7 @@ import {expect, test} from "vitest"
 import Generator, {generate} from '../../src/generator/Generator'
 import Element from '../../src/model/Element';
 import App from '../../src/model/App';
-import Page from '../../src/model/Page'
-import {Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
+import {Page, Block, ItemSet, Text,  TextInput, Button, Menu, MenuItem, AppBar, Dialog, NumberInput,
     BrowserDataStore, Calculation, DateInput, SelectInput, TrueFalseInput, Collection, Data, FileDataStore,
     Form, List, MemoryDataStore, SpeechInput, UserLogon, WebFileDataStore} from '../testutil/modelHelpers'
 import {ex} from '../testutil/testHelpers'
@@ -3514,7 +3513,7 @@ test('generates standalone expressions block for selected element and includes a
     }
     const updatesAllowed = ['t3.update']
     const selectedElement = project1.findElement('id1')
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block] = gen.generateStandaloneBlock(selectedElement, exprs, page, updatesAllowed)
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3575,7 +3574,7 @@ test('generates standalone expressions block without selected element', ()=> {
     const exprs = {
         't1.value': `t1.value`
     }
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block] = gen.generateStandaloneBlock(null, exprs, page, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name
@@ -3602,7 +3601,7 @@ test('generates standalone expressions block and errors and clears errors', ()=>
         'expr 1': `t1.`,
         'expr 2': `XX1.value`,
     }
-    const page = app.findElement('p1') as Page
+    const page = app.findElement('p1') as typeof Page
     const [block, errors] = gen.generateStandaloneBlock(null, exprs, page, [])
     expect(block).toBe(`
 const pathTo = name => props.path + '.' + name;

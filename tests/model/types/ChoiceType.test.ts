@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import ChoiceType from '../../../src/model/types/ChoiceType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
-import Page from '../../../src/model/Page'
+import {Page} from '../../testutil/modelHelpers'
 import Rule from '../../../src/model/types/Rule'
 import {standardOptionalRule} from '../../../src/model/types/BaseTypeElement'
 

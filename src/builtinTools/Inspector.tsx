@@ -17,7 +17,6 @@ import {Preview} from '../shared/PreviewControllerClient'
 import {pickBy} from 'ramda'
 import {DebugData} from '../runtime/debug'
 import Generator from '../generator/Generator'
-import Page from '../model/Page'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 import App from '../model/App'
@@ -118,9 +117,9 @@ export default function Inspector(_props: any) {
     const containerToEvaluateExprs = () => {
         const currentPageName = debugData?.['Current Page']
         if (currentPageName) {
-            return project!.findElementsBy( el => el.kind === 'Page' && el.codeName === currentPageName)[0] as Page
+            return project!.findElementsBy( el => el.kind === 'Page' && el.codeName === currentPageName)[0] as any
         }
-        const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as Page
+        const pageOfElement = project!.findElementsBy(el => el.kind === 'Page' && el.findElement(element.id) !== null)[0] as any
         if (pageOfElement) return pageOfElement
 
         return project!.findChildElements('App')[0] as App

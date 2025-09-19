@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 import {Text} from '../testutil/modelHelpers'

@@ -6,8 +6,7 @@ import PropertyEditor from '../../src/editor/PropertyEditor'
 import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
-import Page from '../../src/model/Page'
-import {Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
+import {Page, Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
             FileFolder, FileDataStore, List, MemoryDataStore} from '../testutil/modelHelpers'
 import {componentProps, ex} from '../testutil/testHelpers'
 import App from '../../src/model/App'

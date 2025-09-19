@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import Page from '../../src/model/Page'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
-import {CloudflareDataStore} from '../testutil/modelHelpers'
+import {Page, CloudflareDataStore} from '../testutil/modelHelpers'
 
 test('CloudflareDataStore has correct properties with default values', ()=> {
     const store1 = new CloudflareDataStore('id1', 'CloudflareDataStore 1', {

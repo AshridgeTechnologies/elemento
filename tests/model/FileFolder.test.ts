@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
-import {FileFolder} from '../testutil/modelHelpers'
+import {Page, FileFolder} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
-import Page from '../../src/model/Page'
 
 test('FileFolder has expected properties', () => {
     const folder1 = new FileFolder('id1', 'Folder 1', {})

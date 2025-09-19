@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import {TrueFalseInput} from '../testutil/modelHelpers'
-import Page from '../../src/model/Page'
+import {Page, TrueFalseInput} from '../testutil/modelHelpers'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 

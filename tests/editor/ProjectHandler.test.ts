@@ -5,10 +5,9 @@ import {AppElementActionName} from '../../src/editor/Types'
 import {asAny, resetSaveFileCallData, wait} from '../testutil/testHelpers'
 import {elementToJSON} from '../../src/util/helpers'
 import UnsupportedValueError from '../../src/util/UnsupportedValueError'
-import {Text, TextInput, Button} from '../testutil/modelHelpers'
+import {Page, Text, TextInput, Button} from '../testutil/modelHelpers'
 import {editorEmptyProject} from '../../src/model/Project'
 import SettingsHandler from '../../src/editor/SettingsHandler'
-import Page from '../../src/model/Page'
 
 const project = projectFixture1()
 

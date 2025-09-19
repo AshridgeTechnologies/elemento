@@ -1,6 +1,5 @@
 import App from '../../src/model/App'
-import Page from '../../src/model/Page'
-import {Block, Text, TextInput, Button, NumberInput, File, FileFolder} from '../testutil/modelHelpers'
+import {Page, Block, Text, TextInput, Button, NumberInput, File, FileFolder} from '../testutil/modelHelpers'
 import Project from '../../src/model/Project'
 import {ex} from './testHelpers'
 

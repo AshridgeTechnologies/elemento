@@ -1,7 +1,6 @@
 import {expect, test} from "vitest"
-import {TextInput} from '../testutil/modelHelpers'
+import {Page, TextInput} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
 import {asAny, asJSON, ex} from '../testutil/testHelpers'
 
 test('TextInput shows get values from properties', ()=> {

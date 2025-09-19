@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import DateType from '../../../src/model/types/DateType'
 import {loadJSONFromString} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
-import Page from '../../../src/model/Page'
+import {Page} from '../../testutil/modelHelpers'
 import Rule, {BuiltInRule} from '../../../src/model/types/Rule'
 import {standardOptionalRule, standardRequiredRule} from '../../../src/model/types/BaseTypeElement'
 

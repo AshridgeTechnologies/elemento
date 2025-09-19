@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import {UserLogon} from '../testutil/modelHelpers'
-import Page from '../../src/model/Page'
+import {Page, UserLogon} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON} from '../testutil/testHelpers'
 

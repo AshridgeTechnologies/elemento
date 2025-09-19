@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import TrueFalseType from '../../../src/model/types/TrueFalseType'
 import {loadJSON} from '../../../src/model/loadJSON'
 import {asJSON, ex} from '../../testutil/testHelpers'
-import Page from '../../../src/model/Page'
+import {Page} from '../../testutil/modelHelpers'
 
 test('TrueFalseType has expected properties', () => {
     const trueFalseType1 = new TrueFalseType('id1', 'TrueFalseType 1', {description: 'Yes or no'})

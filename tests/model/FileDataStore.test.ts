@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import {FileDataStore} from '../testutil/modelHelpers'
-import Page from '../../src/model/Page'
+import {Page, FileDataStore} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 

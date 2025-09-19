@@ -2,7 +2,6 @@ import {beforeEach, expect, test, vi} from "vitest"
 import ProjectBuilder, {type ProjectLoader, type Properties as PBProperties, RuntimeLoader} from '../../src/generator/ProjectBuilder'
 import Project, {TOOLS_ID} from '../../src/model/Project'
 import App from '../../src/model/App'
-import Page from '../../src/model/Page'
 import {generate} from '../../src/generator/index'
 import {generateServerApp} from '../../src/generator/ServerAppGenerator'
 import TextType from '../../src/model/types/TextType'
@@ -15,7 +14,7 @@ import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'
 import {BaseApp} from '../../src/model/BaseApp'
-import {Text} from '../testutil/modelHelpers'
+import {Page, Text} from '../testutil/modelHelpers'
 
 const name = new TextType('tt1', 'Name', {required: true})
 const itemAmount = new NumberType('nt1', 'Item Amount', {})

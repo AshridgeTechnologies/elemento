@@ -2,8 +2,7 @@ import {expect, test} from "vitest"
 import App from '../../src/model/App'
 import {asJSON, ex} from '../testutil/testHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
-import {Block, Text, TextInput, Form} from '../testutil/modelHelpers'
+import {Page, Block, Text, TextInput, Form} from '../testutil/modelHelpers'
 
 test('Form has correct defaults', ()=> {
     let text1 = new Text('t1', 'Text 1', {content: ex`"Some text"`})

@@ -3,6 +3,7 @@ import appFunctions from '../appFunctions'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import WebFileDataStoreImpl from './WebFileDataStoreImpl'
 import {Definitions} from '../../model/schema'
+import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
 type ExternalProperties = {url: string}
@@ -10,7 +11,7 @@ type StateProperties = {dataStore?: WebFileDataStoreImpl}
 
 const {NotifyError} = appFunctions
 
-export const WebFileDataStoreSchema = {
+export const WebFileDataStoreSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "Webfiledatastore",
     "description": "Description of WebFileDataStore",

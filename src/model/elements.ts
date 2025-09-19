@@ -1,6 +1,5 @@
 import Project from './Project'
 import App from './App'
-import Page from './Page'
 import Function from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import {DataTypeElementType, ElementType} from './Types'
@@ -29,6 +28,7 @@ import InputProperty from './InputProperty'
 import {modelElementClass, modelElementClassFromGeneratedSchema} from './ModelElement'
 
 // import App from '../runtime/components/App'
+import Page from '../runtime/components/Page'
 import AppBar from '../runtime/components/AppBar'
 import TextInput from '../runtime/components/TextInput'
 import DateInput from '../runtime/components/DateInput'
@@ -84,7 +84,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         App: App,  // specific class still needed for now
         Tool: Tool,
         AppBar: modelElementClass(AppBar),
-        Page: Page,
+        Page: modelElementClass(Page),
         Text: modelElementClass(TextElement),
         TextInput: modelElementClass(TextInput),
         NumberInput: modelElementClass(NumberInput),

@@ -2,7 +2,7 @@ import {expect, test} from "vitest"
 import {asJSON, ex, wait} from '../testutil/testHelpers'
 import ServerApp from '../../src/model/ServerApp'
 import {loadJSONFromString} from '../../src/model/loadJSON'
-import Page from '../../src/model/Page'
+import {Page} from '../testutil/modelHelpers'
 import FunctionDef from '../../src/model/FunctionDef'
 import {omit} from 'ramda'
 
