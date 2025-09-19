@@ -1,6 +1,5 @@
 import {expect, test} from "vitest"
-import FunctionDef from '../../src/model/FunctionDef'
-import {Page} from '../testutil/modelHelpers'
+import {Page, FunctionDef} from '../testutil/modelHelpers'
 import {loadJSON} from '../../src/model/loadJSON'
 import {asJSON, ex} from '../testutil/testHelpers'
 
@@ -89,10 +88,10 @@ test('converts from plain object', ()=> {
     const functionDef = new FunctionDef('id1', 'Function 1', {input1: 'in1', input2: 'in2', input3: 'in3', input4: 'in4', input5: 'in5', action: true, calculation: ex`doIt()`, private: true, javascript: true})
     const plainObj = asJSON(functionDef)
     const newFunction = loadJSON(plainObj)
-    expect(newFunction).toStrictEqual<FunctionDef>(functionDef)
+    expect(newFunction).toStrictEqual<typeof FunctionDef>(functionDef)
 
     const functionDef2 = new FunctionDef('id1', 'Function 2', {})
     const plainObj2 = asJSON(functionDef2)
     const newFunction2 = loadJSON(plainObj2)
-    expect(newFunction2).toStrictEqual<FunctionDef>(functionDef2)
+    expect(newFunction2).toStrictEqual<typeof FunctionDef>(functionDef2)
 })

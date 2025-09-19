@@ -1,8 +1,7 @@
 import {expect, test} from "vitest"
 import {createNewElement} from '../../src/model/createElement'
 import App from '../../src/model/App'
-import FunctionDef from '../../src/model/FunctionDef'
-import {Page, Block, Button, Text, TextInput, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
+import {FunctionDef, Page, Block, Button, Text, TextInput, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
             FileDataStore, List, MemoryDataStore} from '../testutil/modelHelpers'
 
 test('creates elements of correct type', () => {

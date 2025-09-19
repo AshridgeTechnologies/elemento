@@ -1,13 +1,15 @@
 import ServerApp from '../model/ServerApp'
-import FunctionDef from '../model/FunctionDef'
 import ServerAppParser from './ServerAppParser'
 import Element from '../model/Element'
 import {ExprType} from './Types'
 import {isTruthy} from '../util/helpers'
-import {convertAstToValidJavaScript, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
+import {convertAstToValidJavaScript, functionInputs, indent, objectLiteral, printAst, quote, StateInitializer, topoSort} from './generatorHelpers'
 import TypesGenerator from './TypesGenerator'
 import Project from '../model/Project'
 import {elementOfType} from '../model/elements'
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 const TinyBaseServerDataStoreClass = elementOfType('TinyBaseServerDataStore')
 type TinyBaseServerDataStore = typeof TinyBaseServerDataStoreClass
@@ -85,7 +87,7 @@ export default class ServerAppGenerator {
 
     public serverApp() {
         const generateFunction = (fn: FunctionDef) => {
-            const paramList = fn.inputs.join(', ')
+            const paramList = functionInputs(fn).join(', ')
             const exprType = fn.action ? 'action' : 'multilineExpression'//'singleExpression'
             const expr = this.getExpr(fn, 'calculation', exprType)
             const functionBody = fn.action || fn.javascript ? expr : `${expr}`
@@ -95,7 +97,8 @@ ${indent(functionBody ?? '', indentLevel1)}
         }
 
         const generateFunctionMetadata = (fn: FunctionDef) => {
-            return `{func: ${fn.codeName}, update: ${!!fn.action}, argNames: [${fn.inputs.map(quote).join(', ')}]}`
+            const inputs = functionInputs(fn)
+            return `{func: ${fn.codeName}, update: ${!!fn.action}, argNames: [${inputs.map(quote).join(', ')}]}`
         }
 
         const globalFunctionNames = this.parser.allGlobalFunctionIdentifiers()

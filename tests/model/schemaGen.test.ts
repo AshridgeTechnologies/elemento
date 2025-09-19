@@ -1,11 +1,11 @@
 import {test} from "vitest"
 
 import {generateSchema} from '../../src/model/ModelElement'
-import {Page, WebFileDataStore} from '../testutil/modelHelpers'
+import {FunctionDef} from '../testutil/modelHelpers'
 
 test('gen schema', () => {
 
-    const elementClass = Page
+    const elementClass = FunctionDef
     const schema = generateSchema(elementClass)
 
     const schemaNoDefs = {...schema, definitions: 'Definitions'}

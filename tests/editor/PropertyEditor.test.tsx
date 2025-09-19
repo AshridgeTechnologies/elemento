@@ -7,11 +7,10 @@ import {beforeEach, describe, expect, test, vi} from "vitest"
 
 import {fireEvent, render as tlRender, screen} from '@testing-library/react'
 import {Page, Block, Text, TextInput, Button, Menu, MenuItem, AppBar, NumberInput, SelectInput, TrueFalseInput, Collection, Data,
-            FileFolder, FileDataStore, List, MemoryDataStore} from '../testutil/modelHelpers'
+            FileFolder, FileDataStore, List, MemoryDataStore, FunctionDef} from '../testutil/modelHelpers'
 import {componentProps, ex} from '../testutil/testHelpers'
 import App from '../../src/model/App'
 import Project2, {FILES_ID, TOOLS_ID} from '../../src/model/Project'
-import FunctionDef from '../../src/model/FunctionDef'
 import userEvent from '@testing-library/user-event'
 import ToolFolder from '../../src/model/ToolFolder'
 import {presetPositionStyles} from '../../src/editor/StylesPropertyEditor'

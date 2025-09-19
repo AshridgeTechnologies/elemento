@@ -1,6 +1,6 @@
 import Project from './Project'
 import App from './App'
-import Function from './FunctionDef' // Note: use ElementType name for Function
+import {FunctionDefSchema} from './FunctionDef' // Note: use ElementType name for Function
 import Component from './ComponentDef' // Note: use ElementType name for Component
 import {DataTypeElementType, ElementType} from './Types'
 import ServerApp from './ServerApp'
@@ -112,7 +112,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         TinyBaseDataStore: modelElementClass(TinyBaseDataStore),
         TinyBaseServerDataStore: modelElementClass(TinyBaseServerDataStoreSchema, TinyBaseServerDataStoreMetadata),
         MemoryDataStore: modelElementClass(MemoryDataStore),
-        Function: Function,
+        Function: modelElementClass(FunctionDefSchema),
         FunctionImport: FunctionImport,
         Component: Component,
         InputProperty: InputProperty,

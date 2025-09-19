@@ -2,8 +2,7 @@ import {expect, test} from "vitest"
 import {asJSON, ex, wait} from '../testutil/testHelpers'
 import ServerApp from '../../src/model/ServerApp'
 import {loadJSONFromString} from '../../src/model/loadJSON'
-import {Page} from '../testutil/modelHelpers'
-import FunctionDef from '../../src/model/FunctionDef'
+import {FunctionDef, Page} from '../testutil/modelHelpers'
 import {omit} from 'ramda'
 
 const fn1 = new FunctionDef('fn1', 'Get Stuff', {input1: 'id', input2: 'length', calculation: ex`length * 2`})

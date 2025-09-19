@@ -1,7 +1,6 @@
 import {describe, expect, test} from "vitest"
 import ServerApp from '../../src/model/ServerApp'
 import ServerAppGenerator from '../../src/generator/ServerAppGenerator'
-import FunctionDef from '../../src/model/FunctionDef'
 import {ex} from '../testutil/testHelpers'
 import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
@@ -9,7 +8,7 @@ import DataTypes from '../../src/model/types/DataTypes'
 import Project1 from '../../src/model/Project'
 import Project2 from '../../src/model/Project'
 import Project3 from '../../src/model/Project'
-import {CloudflareDataStore, Collection} from '../testutil/modelHelpers'
+import {FunctionDef, CloudflareDataStore, Collection} from '../testutil/modelHelpers'
 
 describe('generates files for app and exposes public functions and includes data types', () => {
     const name = new TextType('tt1', 'Name', {required: true, maxLength: 20})

@@ -2,14 +2,13 @@ import {parse, prettyPrint} from 'recast'
 
 import App from '../model/App'
 import Element from '../model/Element'
-import FunctionDef from '../model/FunctionDef'
 import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
 import Parser, {isAppStateFunction, PropertyError} from './Parser'
 import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
 import {notBlank, notEmpty} from '../util/helpers'
 import {
     allElements,
-    convertAstToValidJavaScript,
+    convertAstToValidJavaScript, functionInputs,
     generateDestructures,
     GeneratedFile,
     indent,
@@ -43,6 +42,9 @@ type Form = typeof FormClass
 
 const PageClass = elementOfType('Page')
 type Page = typeof PageClass
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 const TinyBaseDataStoreClass = elementOfType('TinyBaseDataStore')
 type TinyBaseDataStore = typeof TinyBaseDataStoreClass
@@ -264,7 +266,8 @@ export default class Generator {
         const functionDeclaration = (el: FunctionDef) => {
             const exprType = el.action ? 'action' : 'multilineExpression'
             const bodyPrefix = dependencyDeclarations(el, 'calculation') + '\n'
-            const functionExpr = this.getExpr(el, 'calculation', exprType, el.inputs, bodyPrefix) ?? '() => {}'
+            const inputs = functionInputs(el)
+            const functionExpr = this.getExpr(el, 'calculation', exprType, inputs, bodyPrefix) ?? '() => {}'
             const functionCode = functionExpr instanceof CodeError ? `() => ${functionExpr}` : functionExpr
             const wrappedFunctionCode = `wrapFn('${component.codeName}.${el.codeName}', 'calculation', ${functionCode})`
             const functionName = `${el.codeName}`
@@ -378,7 +381,7 @@ ${declarations}${debugHook}
 
         const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {
             const name = el.codeName
-            if (initState instanceof FunctionDef) {
+            if ((initState as FunctionDef).kind === 'Function') {
                 return ''// `    const ${name} = this.getOrCreateChildState('${name}', ${functionDeclaration(initState)})`
             } else {
                 const stateObjectDeclaration = `        const ${name} = this.getOrCreateChildState('${name}', ${initState})`
@@ -736,9 +739,9 @@ ${generateChildren(form, indentLevel2, form)}
             configFunctionName = serverApp ? `config${serverApp.codeName}` : `configServerApp`
             if (serverApp) {
                 const functionInfo = (fn: FunctionDef) => fn.action ? {
-                    params: fn.inputs,
+                    params: functionInputs(fn),
                     action: true
-                } : {params: fn.inputs}
+                } : {params: functionInputs(fn)}
 
                 const serverUrlExpr = this.getExprWithoutParens(connector, 'serverUrl')
                 configExpr = `{

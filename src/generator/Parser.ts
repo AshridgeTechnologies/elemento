@@ -3,10 +3,9 @@ import {globalFunctions} from '../runtime/globalFunctions'
 import {appFunctionsNames} from '../runtime/appFunctions'
 import {isExpr} from '../util/helpers'
 import {ElementId, ElementType, EventActionPropertyDef, MultiplePropertyValue, PropertyDef, PropertyValue} from '../model/Types'
-import FunctionDef from '../model/FunctionDef'
 import {AllErrors, ElementErrors, ExprType, IdentifierCollector, ListItem, runtimeElementName, runtimeElementTypeName} from './Types'
 import Project from '../model/Project'
-import {allElements, valueLiteral} from './generatorHelpers'
+import {allElements, functionInputs, valueLiteral} from './generatorHelpers'
 import type UrlContext from '../runtime/UrlContext'
 import {AppData} from '../runtime/components/AppData'
 import {elementOfType, elementTypeNames} from '../model/elements'
@@ -17,6 +16,9 @@ import BaseElement from '../model/BaseElement'
 
 const PageClass = elementOfType('Page')
 type Page = typeof PageClass
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 type FunctionCollector = {add(s: string): void}
 type ElementIdentifiers = {[elementId: ElementId]: string[]}
@@ -213,7 +215,7 @@ export default class Parser {
         const isSpecialVar = (id: string) => def.name === 'keyAction' && id === '$key' || def.name === 'submitAction' && id === '$data'
         const isFunctionCalculation = element.kind === 'Function' && def.name === 'calculation'
         const isArgument = (id: string) => (isAction && eventActionDef.argumentNames.includes(id))
-            || (isFunctionCalculation && (element as FunctionDef).inputs.includes(id))
+            || (isFunctionCalculation && functionInputs(element as FunctionDef).includes(id))
         const isKnownOrArgument = (name: string) => isKnown(name) || isSpecialVar(name) || isArgument(name)
         const isJavaScript = (isFunctionCalculation && (element as FunctionDef).javascript) ?? false
 
@@ -249,7 +251,7 @@ export default class Parser {
         switch (element.kind) {
             case 'Function': {
                 const functionDef = element as FunctionDef
-                const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionDef.inputs.includes(identifier)
+                const isKnownOrParam = (identifier: string) => isKnown(identifier) || functionInputs(functionDef).includes(identifier)
                 const onError = (err: string) => this.addError(element.id, 'calculation', err)
                 parseExprAndIdentifiers(functionDef.calculation, elementIdentifiers, isKnownOrParam, 'multilineExpression', onError, true)
                 break

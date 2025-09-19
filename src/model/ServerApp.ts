@@ -1,7 +1,6 @@
 import {ComponentType, ElementId, ElementType, ParentType, PropertyDef} from './Types'
 import BaseElement from './BaseElement'
 import Element from './Element'
-import FunctionDef from './FunctionDef'
 
 type Properties = {updateTime: Date}
 
@@ -14,7 +13,7 @@ export default class ServerApp extends BaseElement<Properties> implements Elemen
     get updateTime() { return this.properties.updateTime }
 
     get functions() {
-        return this.elementArray().filter( el => el.kind === 'Function') as FunctionDef[]
+        return this.elementArray().filter( el => el.kind === 'Function')
     }
 
     get propertyDefs(): PropertyDef[] {

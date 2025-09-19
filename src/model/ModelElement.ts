@@ -91,6 +91,8 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
                     return propDef(name, 'date', {fixedOnly: true})
                 case '#/definitions/Expression':
                     return propDef(name, 'expr')
+                case '#/definitions/MultilineExpression':
+                    return propDef(name, 'expr', {multilineExpr: true})
                 case '#/definitions/Styles':
                     return propDef(name, 'styles')
                 case '#/definitions/ActionExpression':

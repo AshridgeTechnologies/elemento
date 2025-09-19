@@ -8,13 +8,12 @@ import TextType from '../../src/model/types/TextType'
 import NumberType from '../../src/model/types/NumberType'
 import DataTypes from '../../src/model/types/DataTypes'
 import {ex} from '../testutil/testHelpers'
-import FunctionDef from '../../src/model/FunctionDef'
 import ServerApp from '../../src/model/ServerApp'
 import Tool from '../../src/model/Tool'
 import ToolFolder from '../../src/model/ToolFolder'
 import ToolImport from '../../src/model/ToolImport'
 import {BaseApp} from '../../src/model/BaseApp'
-import {Page, Text} from '../testutil/modelHelpers'
+import {FunctionDef, Page, Text} from '../testutil/modelHelpers'
 
 const name = new TextType('tt1', 'Name', {required: true})
 const itemAmount = new NumberType('nt1', 'Item Amount', {})

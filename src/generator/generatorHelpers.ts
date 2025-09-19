@@ -7,9 +7,12 @@ import {BaseApp} from '../model/BaseApp'
 import {print, types} from 'recast'
 import {functionArgs, globalFunctions} from '../runtime/globalFunctions'
 import {visit} from 'ast-types'
-import FunctionDef from '../model/FunctionDef'
 import {knownSyncAppFunctionsNames} from '../runtime/appFunctions'
 import {ElementId} from '../model/Types'
+import {elementOfType} from '../model/elements'
+
+const FunctionDefClass = elementOfType('Function')
+type FunctionDef = typeof FunctionDefClass
 
 export type RequiredImports = {
     components: Set<string>,
@@ -222,4 +225,9 @@ export function convertAstToValidJavaScript(ast: any, exprType: ExprType, asyncE
     if (exprType === 'multilineExpression') {
         addReturnStatement(ast)
     }
+}
+
+type FuncDef = { input1?: string, input2?: string, input3?: string, input4?: string, input5?: string }
+export const functionInputs = (functionDef: FuncDef) => {
+    return [functionDef.input1, functionDef.input2, functionDef.input3, functionDef.input4, functionDef.input5].filter(inp => inp !== undefined)
 }

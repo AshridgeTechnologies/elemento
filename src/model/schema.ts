@@ -408,6 +408,17 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             }
         }
     },
+    "MultilineExpression": {
+        "description": "A formula used to calculate a value or perform an action.  May have multiple lines",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "expr": {
+                "description": "The formula",
+                "type": "string"
+            }
+        }
+    },
     "ActionExpression": {
         "description": "A formula used to perform an action",
         "type": "object",
