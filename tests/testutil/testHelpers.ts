@@ -220,9 +220,6 @@ function testAppStoreHook2() {
         setAppStore(sa: AppStateStore2) {
             this.store = sa
         },
-        setStateAt(path: string, stateObject: any) {
-            this.store!.set(path, stateObject)
-        },
         stateAt (path: string) {
             return this.store!.get(path)
         }

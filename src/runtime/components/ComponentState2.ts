@@ -133,14 +133,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     get _stateForTest() { return this.state }
 
-    protected updateState(changes: Partial<typeof this.state>) {
-        this._appStateInterface!.updateVersion(changes)
-    }
-
-    setPreventUpdates() {
-
-    }
-
     protected getChildState(name: string) {
         return (this._appStateInterface?.getChildState(name) as ComponentState<any>)
     }
