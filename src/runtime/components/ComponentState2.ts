@@ -1,5 +1,6 @@
 import {shallow} from 'zustand/shallow'
 import {StoredState} from '../AppStateStore'
+import {equals} from 'ramda'
 
 export interface AppStateForObject {
     latest: () => StoredState
@@ -89,6 +90,16 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return shallow(this.props, newObj.props)
     }
 
+    _matchesProps(props: ExternalProps) {
+        return equals(this.props, props)
+    }
+
+    _withStateForTest(state: any): this {
+        const newVersion = new (this as any).thisConstructor(this.props)
+        newVersion.state = state
+        return newVersion
+    }
+
     withState(state: WithChildStates<StateProps>): this {
         const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>
         newVersion.state = {...state}
@@ -118,14 +129,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
             // @ts-ignore
             this.updateState({childStates: latestChildStates})
         }
-    }
-
-    _withStateForTest(state: StateProps): this {
-        const newVersion = new this.thisConstructor(this.props)
-        newVersion.state = state
-        newVersion._appStateInterface = this._appStateInterface
-        newVersion._path = this._path
-        return newVersion
     }
 
     get _stateForTest() { return this.state }

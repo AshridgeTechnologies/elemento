@@ -14,6 +14,8 @@ import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
+import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
+import {default as AppStateStore2} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
@@ -212,6 +214,23 @@ function testAppStoreHook() {
     return hook as AppStoreHook
 }
 
+function testAppStoreHook2() {
+    const hook = {
+        store: null as (null | AppStateStore2),
+        setAppStore(sa: AppStateStore2) {
+            this.store = sa
+        },
+        setStateAt(path: string, stateObject: any) {
+            this.store!.set(path, stateObject)
+        },
+        stateAt (path: string) {
+            return this.store!.get(path)
+        }
+    }
+
+    return hook as AppStoreHook2
+}
+
 const TestWrapper = <State extends object>({
                                                       path,
                                                       state,
@@ -234,6 +253,21 @@ export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<
         const componentElement = createElement(TestWrapper, {path, state}, component)
         const innerElement = wrapForDnd ? createElement(DndContext, null, componentElement) : componentElement
         return createElement(StoreProvider, {appStoreHook, children:
+            createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
+        )
+    }
+    return [testElementCreatorFn, appStoreHook]
+}
+export const wrappedTestElementNew = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
+
+    const appStoreHook = testAppStoreHook2()
+
+    const testElementCreatorFn = (path: string, componentProps: any = {}, ...children: React.ReactNode[]) => {
+        const component = isArray(children)
+            ? createElement(componentClass as any, {path, ...componentProps}, ...children)
+            : createElement(componentClass as any, {path, ...componentProps}, children)
+        const innerElement = wrapForDnd ? createElement(DndContext, null, component) : component
+        return createElement(StoreProvider2, {appStoreHook, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }
