@@ -26,7 +26,7 @@ export class TinyBaseFullSyncDurableObject extends WsServerDurableObject<any> im
     }
 
     onMessage(fromClientId: Id, toClientId: Id, remainder: string) {
-        console.info('Server message', 'from', fromClientId, 'to', toClientId, remainder)
+        // console.log('Server message', 'from', fromClientId, 'to', toClientId, remainder)
     }
 
     createPersister() {

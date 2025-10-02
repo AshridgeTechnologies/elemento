@@ -1,13 +1,12 @@
-import {expect, test} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, test} from 'vitest'
 import {createElement, Fragment} from 'react'
 import {ItemSet, ListElement, TextElement} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {createStateFn, snapshot, wrappedTestElement} from '../../testutil/testHelpers'
 
 import {ListElementState} from '../../../src/runtime/components/ListElement'
-import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 
 function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: boolean}) {
     return createElement(Fragment, null, createElement(TextElement, {path: `${props.path}.Text99`, content: [props.$item.text, 'selected', props.$selected.toString()].join('\n')} ))
@@ -15,25 +14,25 @@ function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: bo
 
 const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
 
-const [listElement, appStoreHook] = wrappedTestElement(ListElement, ListElementState)
-const [itemSet, appStoreHookItemSet] = wrappedTestElement(ItemSet, ItemSetState)
+const [listElement, appStoreHook] = wrappedTestElement(ListElement)
+const [itemSet, appStoreHookItemSet] = wrappedTestElement(ItemSet)
 
 test('ListElement produces output containing fixed ReactElement children ', () => {
     const item1 = createElement(TextElement, {path: `app.page1.list1.Text99` , content: 'Text 99'})
     const item2 = createElement(TextElement, {path: `app.page1.list1.Text100`, content: 'Text 100'})
-    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, [item1, item2]))()
+    snapshot(listElement('app.page1.list1', {styles: {color: 'red'}, width: 200}, [item1, item2]))()
 })
 
 test('ListElement produces output containing an item set', () => {
     const itemSet1 = itemSet('app.page1.itemSet1', {}, {itemContentComponent: ItemSetItem1, items: itemSetData, itemStyles: {color: 'blue', width: 150}})
-    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, itemSet1))()
+    snapshot(listElement('app.page1.list1', {styles: {color: 'red'}, width: 200}, itemSet1))()
 })
 
 test('ListElement produces output containing an item set and fixed children', () => {
-    const itemSet1 = itemSet('app.page1.itemSet1', {}, {itemContentComponent: ItemSetItem1, items: itemSetData, itemStyles: {color: 'blue', width: 150}})
-    const item1 = createElement(TextElement, {path: `app.page1.list1.Text99` , content: 'Text 99'})
-    const item2 = createElement(TextElement, {path: `app.page1.list1.Text100`, content: 'Text 100'})
-    snapshot(listElement('app.page1.list1', {}, {styles: {color: 'red'}, width: 200}, [item1, itemSet1, item2]))()
+    const itemSet1 = itemSet('app.page1.itemSet1', {itemContentComponent: ItemSetItem1, items: itemSetData, itemStyles: {color: 'blue', width: 150}})
+    const item1 = createElement(TextElement, {path: `app.page1.list1.Text99` , content: 'Text 99', key: 1})
+    const item2 = createElement(TextElement, {path: `app.page1.list1.Text100`, content: 'Text 100', key: 2})
+    snapshot(listElement('app.page1.list1', {styles: {color: 'red'}, width: 200}, [item1, itemSet1, item2]))()
 })
 
 test('ListElement updates its scrollTop in the app state', async () => {
@@ -46,12 +45,9 @@ test('ListElement updates its scrollTop in the app state', async () => {
 })
 
 test('State class has correct properties', () => {
-    const item2 = {a: 2}
-    const state = new ListElementState({})
-    const appInterface = testAppInterface('testPath', state)
-    const updatedState = state._withStateForTest({scrollTop: 222})
-    expect(updatedState.scrollTop).toBe(222)
-
+    const createState = createStateFn(ListElementState)
+    const state = createState({})
+    expect(state.scrollTop).toBe(0)
     state._setScrollTop(333)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({scrollTop: 333})
+    expect(state.scrollTop).toBe(333)
 })

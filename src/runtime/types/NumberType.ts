@@ -2,8 +2,9 @@ import Rule from './Rule'
 import validator from 'validator'
 import BaseType, {BaseProperties} from './BaseType'
 
-const formats = {
+export const formats = {
     integer: {valFn: (item: number) => validator.isInt(item.toString()), desc: 'a whole number' },
+    decimal: {valFn: (item: number) => validator.isDecimal(item.toString()), desc: 'a decimal number' },
 }
 
 type Format = keyof typeof formats

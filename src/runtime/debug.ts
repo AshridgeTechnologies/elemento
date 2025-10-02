@@ -1,10 +1,10 @@
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import {mapValues} from 'radash'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
-import {StoredState} from './AppStateStore'
-import {GetObjectFn, useGetObjectFunction} from './appStateHooks'
 import {VoidFn} from '../editor/Types'
+import {StoreContext} from './state/StoreContext'
+import {FunctionTransform, StoredState} from './state/BaseComponentState'
 
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
@@ -36,6 +36,8 @@ const makeCloneable = (val: any) => {
 export type UpdateBlockable = {
     setPreventUpdates: (callback: VoidFn | null) => void
 }
+
+type GetObjectFn = <T extends StoredState>(path: string) => T
 
 function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => DebugFunctions, getObjectFn: GetObjectFn) {
     let valFns: DebugFunctions
@@ -69,6 +71,10 @@ function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => De
     })
 }
 
+export const useGetObjectFunction = (): GetObjectFn => {
+    const store = useContext(StoreContext)
+    return <T extends StoredState>(path: string): T => store.get(path) as T
+}
 export const elementoDebug = (valFnsFn: (() => DebugFunctions) | null) => {
     const getObjectFn = useGetObjectFunction()
     const data = valFnsFn ? getDebugData(valFnsFn, getObjectFn) : null
@@ -105,7 +111,7 @@ export const elProps = (path: string, includePathProp = true) => {
 }
 
 export const stateProps = (name: string) => elProps(name, false)
-export const wrapFn = (path: string, propertyName: string, func: (...args: any[]) => any): Function => {
+export const wrapFn: FunctionTransform = (func: Function, thisRef: any, path?: string, propertyName?: string): Function => {
     const notifyError = (e: any) => {
         const notified = addNotification('error', `Error: ${e.message}`, `in the ${startCase(propertyName)} property of element ${path}`, 30000)
         if (notified) {
@@ -114,7 +120,7 @@ export const wrapFn = (path: string, propertyName: string, func: (...args: any[]
     }
     return (...args: any[]) => {
         try {
-            const result = func(...args)
+            const result = func.apply(thisRef, args)
             const isPromise = typeof result?.then === 'function'
             return isPromise ? result.catch((e: any) => notifyError(e)) : result
         } catch (e: any) {

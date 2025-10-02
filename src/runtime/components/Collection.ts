@@ -1,7 +1,7 @@
 import {createElement} from 'react'
 import {idOf, valueLiteral} from '../runtimeFunctions'
-import lodash from 'lodash';
-import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
+import lodash, {result} from 'lodash';
+import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit, props} from 'ramda'
 import DataStore, {
     Add,
     CollectionName,
@@ -15,19 +15,19 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {AppStateForObject, BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
-import {shallow} from 'zustand/shallow'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
+
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
-type Properties = {path: string, display?: boolean}
-type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
-type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction, subscribedDataStore: DataStore}>
+type Properties = {path: string, display?: boolean} & ExternalProperties
+type ExternalProperties = {initialValue?: any, dataStore?: DataStore, collectionName?: CollectionName, normalisedInitialValue?: object}
+type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction}>
 
 let lastGeneratedId = 1
 
@@ -81,8 +81,8 @@ export const CollectionMetadata: ElementMetadata = {
     stateProps: ['initialValue', 'dataStore', 'collectionName']
 }
 
-export default function Collection({path, display = false}: Properties) {
-    const state = useObject<CollectionState>(path)
+export default function Collection({path, initialValue, dataStore, collectionName, display = false}: Properties) {
+    const state = useComponentState(path, CollectionState, {initialValue, dataStore, collectionName})
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null
@@ -106,7 +106,7 @@ export const toEntry = (value: any): [PropertyKey, any] => {
     return [generatedId, valueWithId]
 }
 
-const initialValue = (value?: any): object => {
+const getInitialValue = (value?: any): object => {
     if (isArray(value)) {
         return Object.fromEntries( value.map(toEntry))
     }
@@ -120,63 +120,49 @@ const initialValue = (value?: any): object => {
 
 type AddItem = object | string | number
 
-export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<CollectionState>{
+export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties> {
 
-    constructor({value, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
-        super({value: initialValue(value), collectionName, dataStore})
+    constructor({initialValue, collectionName, dataStore}: ExternalProperties) {
+        super({initialValue, collectionName, dataStore, normalisedInitialValue: getInitialValue(initialValue)})
     }
 
     private updateValue(id: Id, data: any) {
         const newValue = mergeRight(this.value, {[id]: data})
-        this.state.value = newValue
         this.updateState({value: newValue})
+        // this.state.value = newValue
     }
 
     private updateQueries(key: string, data: any) {
         const newQueries = mergeRight(this.queries, {[key]: data})
-        this.state.queries = newQueries
         this.updateState({queries: newQueries})
+        // this.state.queries = newQueries
     }
 
-    _withStateChanges(changes: StateProperties): CollectionState {
-        const newVersion = new CollectionState(this.props)
-        newVersion.state = Object.assign({}, this.state, changes) as WithChildStates<StateProperties>
-        newVersion._appStateInterface = this._appStateInterface
-        newVersion._path = this._path
-        return newVersion
-    }
-
-    init(asi: AppStateForObject, path: string): void {
-        super.init(asi, path)
+    protected doInit(_previousVersion: this | undefined, _proxyThis: this): void {
         const {dataStore, collectionName} = this.props
-        const {subscription, authSubscription, subscribedDataStore} = this.state
 
-        if (dataStore && collectionName && dataStore !== subscribedDataStore) {
-            subscription?.unsubscribe()
+        if (dataStore && collectionName && dataStore !== _previousVersion?.dataStore) {
+            _previousVersion?.state.subscription?.unsubscribe()
             this.state.subscription = dataStore.observable(collectionName).subscribe((update: UpdateNotification) => {
                 try {
-                    this.onDataUpdate(update)
+                    _proxyThis.onDataUpdate(update)
                 } catch (e) {
                     console.error('Error updating collection', e)
                 }
             })
-            this.state.subscribedDataStore = dataStore
         }
 
-        if (!authSubscription) {
-            this.state.authSubscription = onAuthChange(() => this.latest().updateState({value: {}, queries: {}}))
+        if (!_previousVersion) {
+            this.state.authSubscription = onAuthChange(() => this.updateState({value: {}, queries: {}}))
         }
     }
 
-    protected isEqualTo(newObj: this) {
-        const thisSimpleProps = omit(['value'], this.props)
-        const newSimpleProps = omit(['value'], newObj.props)
-        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
-        return simplePropsMatch && equals(this.props.value, newObj.props.value)
+
+    protected propsEqual(props: ExternalProperties): boolean {
+        return equals(omit(['normalisedInitialValue'], this.props), props)
     }
 
-    get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
+    get value() { return this.state.value !== undefined ? this.state.value : this.props.normalisedInitialValue! }
     get dataStore() { return this.props.dataStore }
     private get queries() { return this.state.queries ?? {} }
 
@@ -243,7 +229,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
         if (this.dataStore) {
             const result = pending(this.dataStore.getById(this.props.collectionName!, id, nullIfNotFound).then( data => {
-                this.latest().updateValue(id, data)
+                this.updateValue(id, data)
                 return data
             }))
 
@@ -264,7 +250,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             }
 
             const result = pending(this.dataStore.query(this.props.collectionName!, criteria).then(data => {
-                this.latest().updateQueries(criteriaKey, data)
+                this.updateQueries(criteriaKey, data)
                 return data
             }))
             this.updateQueries(criteriaKey, result)
@@ -290,15 +276,15 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     private onDataUpdate(update: UpdateNotification) {
         if (update.type === InvalidateAll) {
-            this.latest().updateState({value: {}, queries: {}})
+            this.updateState({value: {}, queries: {}})
         }
         if (update.type === MultipleChanges) {
-            this.latest().updateState({queries: {}})
+            this.updateState({queries: {}})
         }
 
         if (update.type === Add) {
             const {changes: newItem = {}} = update
-            const {queries} = this.latest()
+            const {queries} = this
 
             const addToQueryResults = (results: object[], queryKey: string) => {
                 const criteria = JSON.parse(queryKey) as Criteria
@@ -313,12 +299,12 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             const existingQueries = queries as {[key:string] : object[]}
             // @ts-ignore
             const adjustedQueries = mapObjIndexed(addToQueryResults, existingQueries)
-            this.latest().updateState({queries: adjustedQueries})
+            this.updateState({queries: adjustedQueries})
         }
 
         if (update.type === Update) {
             const {id, changes} = update
-            const {value, queries} = this.latest()
+            const {value, queries} = this
             const isTheUpdatedObj = (obj: any) => idOf(obj) === id
             const updatedValue = (id! in value) ? mergeDeepRight(value, {[id as string]: changes}) : value
             const updateQueryResults = (results: object[]) => {
@@ -349,12 +335,12 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             // @ts-ignore
             const updatedQueries = mapObjIndexed(updateQueryResults, existingQueries)
             const adjustedQueries = (id! in updatedValue) ? mapObjIndexed(addOrRemoveFromQueryResults, updatedQueries) : updatedQueries
-            this.latest().updateState({value: updatedValue, queries: adjustedQueries})
+            this.updateState({value: updatedValue, queries: adjustedQueries})
         }
 
         if (update.type === Remove) {
             const {id} = update
-            const {value, queries} = this.latest()
+            const {value, queries} = this
             const isTheDeletedObj = (obj: any) => idOf(obj) === id
             const updatedValue = (id! in value) ? omit([id as string], value) : value
             const updateQueryResults = (results: object[]) => {
@@ -368,7 +354,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
             const existingQueries = queries as {[key:string] : object[]}
             // @ts-ignore
             const updatedQueries = map(updateQueryResults, existingQueries)
-            this.latest().updateState({value: updatedValue, queries: updatedQueries})
+            this.updateState({value: updatedValue, queries: updatedQueries})
         }
     }
 }

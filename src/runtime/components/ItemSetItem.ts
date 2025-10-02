@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, MouseEvent, useContext} from 'react'
+import React, {MouseEvent, MouseEventHandler, useContext} from 'react'
 import Box from '@mui/material/Box'
 import {PropVal, StylesPropVals, valueOf} from '../runtimeFunctions'
 import {PageDndContext, sxProps} from './ComponentHelpers'

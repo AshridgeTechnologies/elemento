@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect, useRef, useState} from 'react'
 import {Box, Button, Icon, IconButton, Link, Popover, Typography} from '@mui/material'
-import {authIsReady, onAuthChange, currentUser, signOut, useSignedInState, isSignedIn} from './authentication.js'
+import {authIsReady, currentUser, isSignedIn, onAuthChange, signOut, useSignedInState} from './authentication.js'
 import {openLoginPopup} from './LoginManager.js'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'

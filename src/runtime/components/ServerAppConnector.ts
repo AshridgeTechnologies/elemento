@@ -1,11 +1,11 @@
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {equals, mergeRight} from 'ramda'
+import {mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import lodash from 'lodash'
-import {globalFetch} from './ComponentHelpers'
+
 const {startCase} = lodash
 
 type Properties = {path: string}
@@ -21,38 +21,38 @@ export interface Configuration {
     }
 }
 
-type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
+type ExternalProperties = {configuration: Configuration}
 type StateProperties = {resultCache: object, authSubscription?: VoidFunction }
 
 export default function ServerAppConnector(_props: Properties) {
     return null
 }
 
-export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<ServerAppConnectorState> {
+export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties> {
 
-    private get fetch() { return this.props.fetch }
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}
 
     constructor(props: ExternalProperties) {
-        super({fetch: globalFetch, ...props})
+        super(props)
         const functions = this.props.configuration?.functions ?? []
-        Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
+        Object.entries(functions).forEach( ([name, def]) => {
+            // these must be old-style functions so they use the this pointer supplied by the proxy
+            return (this as any)[name] = function (...params: any[]){
+                return this.doCall(name, params, def.action)
+            }
+        })
     }
 
-    init(asi: AppStateForObject, path: string) {
-        super.init(asi, path)
-        if (!this.state.authSubscription) {
-            this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({resultCache: {}}) )
+    protected doInit(_previousVersion: this | undefined, _proxyThis: this): void {
+        if (!_previousVersion) {
+            this.state.authSubscription = onAuthChange( ()=> _proxyThis.updateState({resultCache: {}}) )
         }
-
     }
 
     Refresh(functionName?: string, ...args: any[]) {
         if (!functionName) {
             const newCache = {}
-            this.state.resultCache = newCache
             this.updateState({resultCache: newCache})
         } else if (args.length > 0) {
             const functionArgsKey = this.getFunctionArgsKey(functionName, args)
@@ -61,7 +61,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
             const keysToDelete = Object.keys(this.resultCache).filter( key => key.startsWith(`${functionName}#`))
             const deletions = Object.fromEntries(keysToDelete.map(key => [key, undefined]))
             const newCache = mergeRight(this.resultCache, deletions)
-            this.state.resultCache = newCache
             this.updateState({resultCache: newCache})
         }
     }
@@ -72,10 +71,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         const description = `${this.configuration.appName}: ${functionDisplayName}`
         appFunctions.NotifyError(description, new Error(errorMessage))
         return new ErrorResult(description, errorMessage)
-    }
-
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.configuration, newObj.props.configuration)
     }
 
     private doCall(name: string, params: any[], action?: boolean) {
@@ -96,7 +91,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                 .then(token => {
                     const url = `${config.url}/${name}?${queryString}`
                     const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
-                    return this.fetch!(url, options)
+                    return fetch!(url, options)
                         .then(resp => {
                             if (resp.ok) {
                                 return resp.text().then( jsonText => JSON.parse(jsonText, isoDateReviver) )
@@ -131,7 +126,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                 const url = `${config.url}/${name}`
                 const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}
                 const headers = {...({'Content-Type': 'application/json'}), ...authHeaders} as HeadersInit
-                return this.fetch!(url, {
+                return fetch!(url, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify(bodyData)
@@ -155,10 +150,8 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
 
     private updateCalls(key: string, data: any) {
         const newCache = mergeRight(this.resultCache, {[key]: data})
-        this.state.resultCache = newCache
         this.updateState({resultCache: newCache})
     }
-
 }
 
 ServerAppConnector.State = ServerAppConnectorState

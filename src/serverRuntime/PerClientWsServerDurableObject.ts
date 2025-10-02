@@ -7,18 +7,19 @@ import {createCustomSynchronizer, Message} from 'tinybase/synchronizers'
 import {
     arrayIsEmpty,
     createPayload,
-    EMPTY_STRING, getClientId,
+    EMPTY_STRING,
+    getClientId,
     IdOrNull,
     ifNotUndefined,
     jsonParseWithUndefined,
     noop,
-    objValues, parsePayload,
+    objValues,
+    parsePayload,
     receivePayload,
     size,
     startTimeout,
     strMatch
 } from './tinybaseUtils'
-import {User} from '../shared/subjects'
 
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_CLIENT_ID = 'S';
@@ -57,7 +58,7 @@ const checkPayload = (payload: string): boolean => {
         body: any,
     ]
     const messageName = messageType(message) as string
-    console.log('receive', clientId, requestId, messageName, JSON.stringify(body))
+    // console.log('receive', clientId, requestId, messageName, JSON.stringify(body))
     return message !== 3  // do not allow incoming updates
 }
 
@@ -116,7 +117,7 @@ class ClientHandler {
     }
 
     private sendMessage = (toClientId: IdOrNull, requestId: IdOrNull, message: Message, body: any)=> {
-        console.log('send', toClientId, typeof toClientId, requestId, messageType(message) as string, JSON.stringify(body))
+        // console.log('send', toClientId, typeof toClientId, requestId, messageType(message) as string, JSON.stringify(body))
         if(toClientId !== null && toClientId !== '' && toClientId !== SERVER_CLIENT_ID && toClientId !== this.clientId) {
             console.warn(`sync send mismatch: to Client Id "${toClientId}" expected ${this.clientId}`)
         }

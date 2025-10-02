@@ -1,8 +1,7 @@
 import {DataStoreState} from './DataStoreState'
 import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from './TinyBaseDataStoreImpl'
 import {useEffect} from 'react'
-import {useObject} from '../appStateHooks'
-import {AppStateForObject} from './ComponentState'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -76,7 +75,7 @@ export const TinyBaseDataStoreMetadata: ElementMetadata = {
 }
 
 export default function TinyBaseDataStore({path}: Properties) {
-    const state: TinyBaseDataStoreState = useObject(path)
+    const state = useComponentState(path, TinyBaseDataStoreState)
 
     useEffect(() => () => state.close(), [])
     return null

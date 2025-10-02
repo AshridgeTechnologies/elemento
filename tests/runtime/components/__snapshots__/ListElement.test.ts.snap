@@ -23,6 +23,28 @@ exports[`ListElement produces output containing an item set and fixed children 1
   </div>
   <div
     className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+    id="app.page1.itemSet1.#id1.Text99"
+    style={{}}
+  >
+    where are you?
+    <br />
+    selected
+    <br />
+    false
+  </div>
+  <div
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+    id="app.page1.itemSet1.#id2.Text99"
+    style={{}}
+  >
+    over here!
+    <br />
+    selected
+    <br />
+    false
+  </div>
+  <div
+    className="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
     id="app.page1.list1.Text100"
     style={{}}
   >

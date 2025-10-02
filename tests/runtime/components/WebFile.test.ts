@@ -1,25 +1,31 @@
-import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
+import {afterAll, beforeEach, expect, MockInstance, test, vi} from 'vitest'
 import {isPending} from '../../../src/shared/DataStore'
-import {testAppInterface, wait} from '../../testutil/testHelpers'
+import {wait} from '../../testutil/testHelpers'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
+import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
 
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn().mockResolvedValue(data)})
-let originalFetch = globalThis.fetch
 
-let mockFetch: MockedFunction<any>
-const initWebFile = (url: string):[any, AppStateForObject] => {
-    const state = new WebFileState({url, fetch: mockFetch})
-    const appInterface = testAppInterface('testPath', state)
-    return [state, appInterface]
+let mockFetch: MockInstance
+
+const initWebFile = (url: string):[any, AppStateStore] => {
+    const store = new ComponentStateStore()
+    vi.spyOn(store, 'update')
+    const state = store.getOrUpdate('id1', WebFileState, {url})
+    return [state, store]
 }
 
+
 beforeEach(() => {
-    mockFetch = vi.fn()
+    mockFetch = vi.spyOn(globalThis, 'fetch')
 })
 
+afterAll(() => mockFetch.mockRestore())
+
 test('gets pending then text of a file', async () => {
-    const [webFile, appInterface] = initWebFile('https://example.com/myFile.txt')
+    const [webFile] = initWebFile('https://example.com/myFile.txt')
     mockFetch.mockResolvedValueOnce(mockTextResponse('abc1'))
     const initialValue = webFile.value
     expect(initialValue).toBe(null)
@@ -30,7 +36,7 @@ test('gets pending then text of a file', async () => {
 })
 
 test('caches file contents', async () => {
-    const [webFile, appInterface] = initWebFile('https://example.com/myFile.txt')
+    const [webFile] = initWebFile('https://example.com/myFile.txt')
     mockFetch.mockResolvedValueOnce(mockTextResponse('abc1'))
     const initialValue = webFile.value
     expect(initialValue).toBe(null)
@@ -42,17 +48,11 @@ test('caches file contents', async () => {
     expect(mockFetch).toHaveBeenCalledTimes(1)
 })
 
-test('state objects equal with same url', () => {
-    const state1 = new WebFileState({url: 'url1'})
-    const state2 = new WebFileState({url: 'url1'})
-    expect((state1 as any).isEqualTo(state2)).toBe(true)
-})
-
 test('valueOf state object is file contents', async () => {
-    const [webFile, appInterface] = initWebFile('https://example.com/myFile.txt')
+    const [webFile] = initWebFile('https://example.com/myFile.txt')
     mockFetch.mockResolvedValueOnce(mockTextResponse('abc1'))
     expect(webFile.valueOf()).toBe(null)
     await wait()
-    expect(webFile.latest().valueOf()).toBe('abc1')
+    expect(webFile.valueOf()).toBe('abc1')
 
 })

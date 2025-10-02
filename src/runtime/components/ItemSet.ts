@@ -1,11 +1,10 @@
 import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
-import {equals, isNil, last, omit, range, reverse, without} from 'ramda'
+import {BaseComponentState} from '../state/BaseComponentState'
+import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
-import {shallow} from 'zustand/shallow'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -20,7 +19,7 @@ type Properties = Readonly<{
     path: string,
     itemContentComponent: (props: { path: string, $item: any, $itemId: string, $index: number, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
-}>
+}> & StateProperties
 
 type StateProperties = Partial<Readonly<{
     items: PropVal<any[]>,
@@ -99,8 +98,8 @@ export const ItemSetMetadata: ElementMetadata = {
     stateProps: ['items', 'selectedItems', 'selectable', 'selectAction']
 }
 
-const ItemSet = function ItemSet({path, itemContentComponent}: Properties) {
-    const state: ItemSetState = useObject(path)
+const ItemSet = function ItemSet({path, itemContentComponent, items, selectable, selectedItems, selectAction}: Properties) {
+    const state = useComponentState(path, ItemSetState, {items, selectable, selectedItems, selectAction})
     const onClick: OnClickFn = (event:SyntheticMouseEvent, index: number) => {
         const {shiftKey, ctrlKey, metaKey} = event
         if (shiftKey) {
@@ -127,8 +126,7 @@ const ItemSet = function ItemSet({path, itemContentComponent}: Properties) {
 
 export default ItemSet
 
-export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<ItemSetState>{
+export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
 
     get items(): any[] {
         return valueOfOneLevel<any>(this.props.items) ?? []
@@ -156,15 +154,9 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         return last(this.selectedItems) ?? null
     }
 
-    protected isEqualTo(newObj: this): boolean {
-        const otherProps = omit(['items'], this.props)
-        const otherNewProps = omit(['items'], newObj.props)
-        return equals(this.props.items, newObj.props.items) && shallow(otherProps, otherNewProps)
-    }
-
     _setSelectedItems(selectedItems: any) {
-        const selectedItemIds = selectedItems ? asArray(valueOfOneLevel(selectedItems)).map( (it: any) => this.latest().findId(it)) : undefined
-        this.latest().updateState({selectedItemIds})
+        const selectedItemIds = selectedItems ? asArray(valueOfOneLevel(selectedItems)).map( (it: any) => this.findId(it)) : undefined
+        this.updateState({selectedItemIds})
     }
 
     Reset() {
@@ -176,7 +168,7 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
     }
 
     Select(selectedItems: any) {
-        this._setSelectedItems(this.latest().selectedItems.concat(valueOfOneLevel(selectedItems)))
+        this._setSelectedItems(this.selectedItems.concat(valueOfOneLevel(selectedItems)))
     }
 
     isSelected(itemIndex: number) {

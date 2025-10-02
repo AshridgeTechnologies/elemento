@@ -33,7 +33,7 @@ export class DefaultUrlContext implements UrlContext {
     private resourceUrl: string | null
 
     getUrl() {
-        const {origin, pathname, search, hash} = window.location
+        const {origin, pathname, search, hash} = globalThis.location ?? {origin: '', pathname: '', search: '', hash: ''}
         return {
             location: {
                 origin: origin,

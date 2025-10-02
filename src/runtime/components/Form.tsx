@@ -12,10 +12,11 @@ import TrueFalseInput from './TrueFalseInput'
 import DateInput from './DateInput'
 import {isNil, last, without} from 'ramda'
 import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 import {InputComponentMetadata} from './InputComponentState'
+import {ChoiceType, DateType, DecimalType, NumberType, TextType, TrueFalseType} from '../types'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
     if (isArray(errors)) {
@@ -28,26 +29,26 @@ const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
 
 type Properties = BaseInputComponentProperties & { horizontal?: boolean, wrap?: boolean, keyAction?: KeyboardEventHandler, children?: any }
 
-const formField = (parentPath: string, type: BaseType<any, any>) => {
+const formField = (parentPath: string, type: BaseType<any, any>, initialValue: any) => {
     const {name, codeName} = type
     const path = withDots(parentPath, codeName)
     if (type.kind === 'Text') {
-        return <TextInput path={path} label={name} key={path}/>
+        return <TextInput path={path} label={name} dataType={type as TextType} initialValue={initialValue} key={path}/>
     }
     if (type.kind === 'Number') {
-        return <NumberInput path={path} label={name} key={path}/>
+        return <NumberInput path={path} label={name} dataType={type as NumberType} initialValue={initialValue} key={path}/>
     }
     if (type.kind === 'Decimal') {
-        return <NumberInput path={path} label={name} key={path}/>
+        return <NumberInput path={path} label={name} dataType={type as DecimalType} initialValue={initialValue}  key={path}/>
     }
     if (type.kind === 'Choice') {
-        return <SelectInput path={path} label={name} key={path}/>
+        return <SelectInput path={path} label={name} dataType={type as ChoiceType} initialValue={initialValue}  key={path}/>
     }
     if (type.kind === 'TrueFalse') {
-        return <TrueFalseInput path={path} label={name} key={path}/>
+        return <TrueFalseInput path={path} label={name} dataType={type as TrueFalseType} initialValue={initialValue}  key={path}/>
     }
     if (type.kind === 'Date') {
-        return <DateInput path={path} label={name} key={path}/>
+        return <DateInput path={path} label={name} dataType={type as DateType} initialValue={initialValue}  key={path}/>
     }
     if (type.kind === 'Record') {
         return <Form path={path} label={name} key={path}/>
@@ -121,6 +122,7 @@ export const FormSchema: ElementSchema = {
 export const FormMetadata: ElementMetadata = {
     stateProps: ['submitAction', 'initialValue', ...(InputComponentMetadata.stateProps ?? [])]
 }
+
 export default function Form({children, path, ...props}: Properties) {
     const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
@@ -136,7 +138,7 @@ export default function Form({children, path, ...props}: Properties) {
         ...sxProps(styles, show)
     } as SxProps
 
-    const state = useObject<BaseFormState>(path)
+    const state = useComponentState(path) as BaseFormState
     const dataType = state.dataType
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors?._self ? errorsToString(state.errors._self) : undefined
@@ -153,7 +155,11 @@ export default function Form({children, path, ...props}: Properties) {
         return dataTypeFields.some( f => f.name === fieldName(el) )
     })
     const additionalChildren = without<any>(overrideChildren, childrenList)
-    const dataTypeChildren = dataTypeFields.map( (type) => overrideChildren.find( el => type.name === fieldName(el)) ?? formField(path, type) ) ?? []
+    const dataTypeChildren = dataTypeFields.map( (type) => {
+        const override = overrideChildren.find(el => type.name === fieldName(el))
+        return override
+            ?? formField(path, type, state.originalValue[type.codeName as keyof object])
+    }) ?? []
     const formChildrenFragment = createElement(Fragment, {}, ...dataTypeChildren, ...additionalChildren)
 
     const infoButton = dataType?.description ? <InfoButton description = {dataType?.description}/> : null

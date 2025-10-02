@@ -11,12 +11,12 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {noop} from 'lodash'
-import {useObject} from '../appStateHooks'
 import {omit} from 'ramda'
 import {Definitions} from '../../model/schema'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {useComponentState} from '../state/appStateHooks'
 
-type Properties = BaseInputComponentProperties
+type Properties = BaseInputComponentProperties & {initialValue?: boolean, dataType?: TrueFalseType}
 
 export const TrueFalseInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -53,9 +53,9 @@ export default function TrueFalseInput({path, ...props}: Properties) {
     const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state = useObject<TrueFalseInputState>(path)
-    const {dataValue, dataType} = state
-    const value = dataValue ?? false
+    const {initialValue, dataType} = props
+    const state = useComponentState(path, TrueFalseInputState, {initialValue, dataType})
+    const value = state.dataValue ?? false
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)
     const inputComponentPropsForCheckbox = omit(['endAdornment'], inputComponentProps.InputProps)

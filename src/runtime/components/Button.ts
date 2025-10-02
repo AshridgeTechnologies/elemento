@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button as MuiButton, Icon, IconButton, Link as MuiLink, SxProps, Typography} from '@mui/material'
+import {Button as MuiButton, Icon, Link as MuiLink, SxProps, Typography} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
 import {omit, pick} from 'ramda'

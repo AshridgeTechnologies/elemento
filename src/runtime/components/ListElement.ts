@@ -1,10 +1,10 @@
 import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -63,7 +63,7 @@ export const ListElementSchema: ElementSchema = {
 }
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
-    const state = useObject<ListElementState>(path)
+    const state = useComponentState(path, ListElementState)
     const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)
@@ -81,15 +81,14 @@ const ListElement = React.memo( function ListElement({path, children, ...props}:
     return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
-export class ListElementState extends BaseComponentState<StateProperties>
-    implements ComponentState<ListElementState>{
+export class ListElementState extends BaseComponentState<StateProperties> {
 
     get scrollTop() {
         return this.state.scrollTop ?? 0
     }
 
     _setScrollTop(scrollTop: number) {
-        this.latest().updateState({scrollTop})
+        this.updateState({scrollTop})
     }
 }
 

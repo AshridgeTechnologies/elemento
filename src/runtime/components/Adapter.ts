@@ -1,6 +1,6 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
-import {equals, mergeRight, without} from 'ramda'
+import {mergeRight, without} from 'ramda'
 import lodash from 'lodash'
 import {valuesOf} from '../runtimeFunctions'
 import appFunctions from '../appFunctions'
@@ -15,12 +15,11 @@ type StateProperties = {resultCache: object, subscriptionCache: object, pendingC
 
 const excludedProps = ['constructor', 'equals']
 
-export default function Adapter({path}: Properties) {
+export default function Adapter(_props: Properties) {
     return null
 }
 
-export class AdapterState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<AdapterState> {
+export class AdapterState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     constructor(props: ExternalProperties) {
         super(props)
@@ -29,7 +28,9 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
             const propNames = without(excludedProps, Object.getOwnPropertyNames(obj))
             for (const p of propNames) {
                 if (typeof this.target[p] === 'function') {
-                    (this as any)[p] = (...args: any[]) => this.doCall(p, args)
+                    (this as any)[p] = function (...args: any[])  {
+                        return this.doCall(p, args)
+                    }
                 }
             }
         }
@@ -57,7 +58,6 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
             })
             const subDeletions = Object.fromEntries(keysToUnsubscribe.map(key => [key, undefined]))
             const newSubsCache = mergeRight(this.subscriptionCache, subDeletions)
-            this.state.subscriptionCache = newSubsCache
             return newSubsCache
         }
 
@@ -65,14 +65,11 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
             const keysToDelete = Object.keys(this.resultCache).filter(key => key.startsWith(functionNamePrefix))
             const deletions = Object.fromEntries(keysToDelete.map(key => [key, undefined]))
             const newCache = mergeRight(this.resultCache, deletions)
-            this.state.resultCache = newCache
             return newCache
         }
 
         if (!functionName) {
             removeSubscriptions('')
-            this.state.resultCache = {}
-            this.state.subscriptionCache = {}
             this.updateState({resultCache: {}, subscriptionCache: {}})
         } else {
             const functionArgsKey = this.getFunctionArgsKey(functionName, args)
@@ -80,10 +77,6 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
             const newSubsCache = removeSubscriptions(functionArgsKey)
             this.updateState({resultCache: newCache, subscriptionCache: newSubsCache})
         }
-    }
-
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.target, newObj.props.target)
     }
 
     private doCall(name: string, args: any[]) {
@@ -133,15 +126,15 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
     private updateCalls(key: string, data: any, pendingCallsChange = 0) {
         const newPendingCalls = this.pendingCalls + pendingCallsChange
         const newCache = mergeRight(this.resultCache, {[key]: data})
-        this.state.resultCache = newCache
-        this.state.pendingCalls = newPendingCalls
         this.updateState({resultCache: newCache, pendingCalls: newPendingCalls})
+        // this.state.resultCache = newCache
+        // this.state.pendingCalls = newPendingCalls
     }
 
     private updateSubscriptions(key: string, subscription: ZenObservable.Subscription | undefined) {
         const newCache = mergeRight(this.subscriptionCache, {[key]: subscription})
-        this.state.subscriptionCache = newCache
         this.updateState({subscriptionCache: newCache})
+        // this.state.subscriptionCache = newCache
     }
 }
 

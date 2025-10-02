@@ -1,9 +1,11 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, UpdateNotification} from '../../shared/DataStore'
-import lodash from 'lodash'; const {clone} = lodash
+import lodash from 'lodash';
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+
+const {clone} = lodash
 
 const emptyObservable = new Observable<UpdateNotification>(() => {})
 

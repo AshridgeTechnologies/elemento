@@ -2,7 +2,7 @@ import {createElement} from 'react'
 import FileDataStoreImpl from './FileDataStoreImpl'
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -44,7 +44,7 @@ export default function FileDataStore({path, display = false}: Properties) {
 }
 
 export class FileDataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements DataStore, ComponentState<FileDataStoreState> {
+    implements DataStore {
 
     constructor(props: ExternalProperties = {}) {
         super(props)

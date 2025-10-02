@@ -3,8 +3,8 @@ import {PropVal, StylesProps, StylesPropVals, valueOfProps} from '../runtimeFunc
 import {Box, Stack, SxProps} from '@mui/material'
 import {sxProps} from './ComponentHelpers'
 import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
-import {BaseComponentState, ComponentState} from './ComponentState'
-import {useObject} from '../appStateHooks'
+import {BaseComponentState} from '../state/BaseComponentState'
+import {useComponentState} from '../state/appStateHooks'
 import type {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -126,7 +126,7 @@ export default function Block({children = [], path,  ...props}: Properties) {
         // ok - you should not call hooks inside a conditional block
         // BUT dropAction will always be defined or not defined for any given element
         ({isOver, setNodeRef} = useDroppable({id: path}))
-        const state: BlockState = useObject(path)
+        const state = useComponentState(path, BlockState)
         state.setIsOver(isOver)
 
         useDndMonitor({
@@ -145,17 +145,18 @@ export default function Block({children = [], path,  ...props}: Properties) {
     return React.createElement(BlockContent, {layout: layout, styles: styles, show: show, path: path, dragElementRef: setNodeRef, children: children})
 }
 
-export class BlockState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<BlockState> {
+export class BlockState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
 
     get isOver() {
         return this.state.isOver ?? false
     }
 
     setIsOver(isOver: boolean) {
-        if (this.latest().isOver !== isOver) {
-            this.latest().updateState({isOver})
-        }
+        this.updateState({isOver})
+    }
+
+    protected stateEqual(state: StateUpdatableProperties) {
+        return (state.isOver ?? false) === this.isOver
     }
 }
 

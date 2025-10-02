@@ -1,11 +1,14 @@
 import DataStore, {
-    Add, AuthStatusValues,
+    Add,
+    AuthStatusValues,
     CollectionName,
     Criteria,
     DataStoreObject,
     Id,
     InvalidateAll,
-    MultipleChanges, NullToken, queryMatcher,
+    MultipleChanges,
+    NullToken,
+    queryMatcher,
     Remove,
     Update,
     UpdateNotification,
@@ -47,12 +50,12 @@ const createStore = async (doNamespace: string, pathId: string, persist: boolean
         const protocols = [authToken, ...AuthStatusValues]
         const webSocket = new ReconnectingWebSocket(wsUrl, protocols) as unknown as WebSocket
         const receive = debug ? (fromClientId: any, requestId: any, message: any, body: any) => {
-            console.log('Client receive', fromClientId, requestId, message)
-            console.dir(body, {depth: 7})
+            // console.log('Client receive', fromClientId, requestId, message)
+            // console.dir(body, {depth: 7})
         } : undefined
         const send = debug ? (toClientId: any, requestId: any, message: any, body: any) => {
-            console.log('Client send', toClientId, requestId, message)
-            console.dir(body, {depth: 7})
+            // console.log('Client send', toClientId, requestId, message)
+            // console.dir(body, {depth: 7})
         } : undefined
         synchronizer = await createWsSynchronizer(
             store,

@@ -13,11 +13,11 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
 import {ElementMetadata, type ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import {useComponentState} from '../state/appStateHooks'
 
-type Properties = BaseInputComponentProperties & {multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
+type Properties = BaseInputComponentProperties & {initialValue?: string, dataType?: TextType, multiline?: PropVal<boolean>, keyAction?: KeyboardEventHandler}
 
 const dataTypeProps = (dataType: BaseType<any, any> | undefined) => {
     const props = definedPropertiesOf(pick(['maxLength', 'minLength'], dataType ?? {}))
@@ -72,8 +72,8 @@ export default function TextInput({path, ...props}: Properties) {
     const {label, multiline: multilineProp, readOnly, show, keyAction, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state: TextInputState = useObject(path)
-    const {value, dataType} = state
+    const {initialValue, dataType} = props
+    const state: TextInputState = useComponentState(path, TextInputState, {initialValue, dataType})
     const multiline = dataType?.format === 'multiline' || multilineProp
     const multilineProps = multiline ? {minRows: 2, maxRows: 10} : {}
     const labelWithRequired = getLabelWithRequired(dataType, label)
@@ -96,7 +96,7 @@ export default function TextInput({path, ...props}: Properties) {
         type: 'text',
         variant: 'outlined',
         size: 'small',
-        value,
+        value: state.value,
         error,
         helperText,
         onChange,

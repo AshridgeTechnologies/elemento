@@ -1,6 +1,6 @@
 import {expect, MockedFunction, test, vi} from 'vitest'
 import renderer from 'react-test-renderer'
-import React, {createElement, FunctionComponent} from 'react'
+import React, {createElement} from 'react'
 import {treeItemTitleSelector} from '../editor/Selectors'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
@@ -10,15 +10,19 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {setObject} from '../../src/runtime/appStateHooks'
-import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
-import {AppStateForObject} from '../../src/runtime/components/ComponentState'
-import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
+import {StoreProvider} from '../../src/runtime/state/StoreContext'
+import {AppStateForObject} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
+import {ComponentStateStore, StoredState, StoredStateWithProps} from '../../src/runtime/state/BaseComponentState'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
 export const componentJSON = (component: JSX.Element) => renderer.create(component).toJSON()
+export const componentJSONAsync = async (component: JSX.Element) => {
+    const componentRenderer = renderer.create(component)
+    await wait(500)
+    return componentRenderer.toJSON()
+}
 
 export const snapshot = (element: React.ReactElement) => () => expect(componentJSON(element)).toMatchSnapshot()
 
@@ -166,74 +170,54 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
 
-export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
-    let _latest: any = initialVersion
+export const testAppInterface = <T extends StoredState>(path: string, initialVersion: T): AppStateForObject<T> => {
+    let _latest: T = initialVersion
 
-    const appInterface: AppStateForObject = {
+    const appInterface: AppStateForObject<T> = {
+        path: path,
         latest() {
             return _latest
         },
-        updateVersion: vi.fn().mockImplementation((changes: object) => {
-            _latest = _latest.withMergedState(changes)
-            _latest.init(appInterface, path)
+        update: vi.fn().mockImplementation((newVersion: T) => {
+            newVersion.init?.(path, appInterface.update, _latest)
+            _latest = newVersion
         }),
-        getChildState: (subPath: string) => childStateValues[subPath as keyof object],
-        getOrCreateChildState(subPath: string, item: StoredState): StoredState {
-            const initItem = (item: StoredState) => {
-                item.init(appInterface, path + '.' + subPath)
-                return item
-            }
-            // @ts-ignore
-            return childStateValues[subPath as keyof object] ?? (childStateValues[subPath as keyof object] = initItem(item))
-        },
-        getApp(): StoredState {
-            throw new Error('getApp not implemented')
-        }
+        getChildState: (subPath: string) => { throw new Error('getChildState not implemented')},
+
     }
 
-    initialVersion.init(appInterface, path)
+    initialVersion.init?.(path, appInterface.update, null as unknown as T)
     return appInterface
 }
 
 function testAppStoreHook() {
-    const hook = {
-        store: null as (null | AppStateStore),
-        setAppStore(sa: AppStateStore) {
-            this.store = sa
-        },
-        setStateAt(path: string, stateObject: any) {
-            this.store!.set(path, stateObject)
-        },
+    return {
+        store: null as any,
         stateAt (path: string) {
-            return this.store!.get(path)
+            return this.store.get(path)
         }
     }
-
-    return hook as AppStoreHook
 }
 
-const TestWrapper = <State extends object>({
-                                                      path,
-                                                      state,
-                                                      children
-                                                  }: { path: string, state: any, children?: any }) => {
-    setObject(path, state)
-    return children
+export const createStateFn = <T extends StoredStateWithProps<P>, P extends object>(stateClass: new(props: P) => T) => {
+    const theStore = new ComponentStateStore()
+    let idSeq = 1
+    const createFn = (props: P) => theStore.getOrUpdate((idSeq++).toString(), stateClass, props)
+    createFn.store = theStore
+    return createFn
 }
-type Class<T> = new (...args: any[]) => T
-
-export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>, wrapForDnd = false): [any, any] => {
+export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 
     const appStoreHook = testAppStoreHook()
 
-    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, ...children: React.ReactNode[]) => {
-        const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
+    const testElementCreatorFn = (path: string, componentProps: any = {}, ...children: React.ReactNode[]) => {
         const component = isArray(children)
             ? createElement(componentClass as any, {path, ...componentProps}, ...children)
             : createElement(componentClass as any, {path, ...componentProps}, children)
-        const componentElement = createElement(TestWrapper, {path, state}, component)
-        const innerElement = wrapForDnd ? createElement(DndContext, null, componentElement) : componentElement
-        return createElement(StoreProvider, {appStoreHook, children:
+        const innerElement = wrapForDnd ? createElement(DndContext, null, component) : component
+        const appStoreToUse = componentProps.appStore ?? new ComponentStateStore()
+        appStoreHook.store = appStoreToUse
+        return createElement(StoreProvider, {appStore: appStoreToUse, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }
@@ -348,3 +332,4 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
 export const inDndContext = (itemSet: any) => createElement(DndWrapper, {elementToWrap: itemSet})
 export const getCallArg = (fn: (...args: any[]) => any, position: number): any => (fn as MockedFunction<any>).mock.calls[0]?.[position]
 export const asAny = (val: any) => (val as any)
+export const DEBUG_TIMEOUT = 1000000

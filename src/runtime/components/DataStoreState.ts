@@ -1,21 +1,20 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 
 type StateProperties = {dataStore?: DataStore, initialisedDataStore?: Promise<DataStore>}
 
 const {NotifyError} = appFunctions
 
 export abstract class DataStoreState<PropsType extends object> extends BaseComponentState<PropsType, StateProperties>
-    implements DataStore, ComponentState<DataStoreState<PropsType>> {
+    implements DataStore {
 
     constructor(props: PropsType) {
         super(props)
     }
 
-    init(asi: AppStateForObject, path: string) {
-        super.init(asi, path)
-        const dataStoreClosed = this.closeDataStore()
+    protected doInit(_previousVersion: this | undefined, _proxyThis: this): void {
+        const dataStoreClosed = _previousVersion?.closeDataStore() ?? Promise.resolve()
         this.state.dataStore = this.createDataStore()
         this.state.initialisedDataStore = dataStoreClosed.then( () => this.initDataStore() )
     }

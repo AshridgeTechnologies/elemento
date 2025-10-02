@@ -18,8 +18,8 @@ exports[`Form element produces output containing children 1`] = `
       className="MuiFormControl-root MuiTextField-root css-jznhkk-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
         htmlFor="app.page1.form1.Description"
         id="app.page1.form1.Description-label"
       >
@@ -50,7 +50,7 @@ exports[`Form element produces output containing children 1`] = `
           className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-ex8a5f-MuiNotchedOutlined-root"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -63,8 +63,8 @@ exports[`Form element produces output containing children 1`] = `
       className="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
         htmlFor="app.page1.form1.BoxSize"
         id="app.page1.form1.BoxSize-label"
       >
@@ -95,7 +95,7 @@ exports[`Form element produces output containing children 1`] = `
           className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-ex8a5f-MuiNotchedOutlined-root"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Size
@@ -133,8 +133,8 @@ exports[`Form element produces output containing nested form 1`] = `
       className="MuiFormControl-root MuiTextField-root css-jznhkk-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
         htmlFor="app.page1.formNested.Description"
         id="app.page1.formNested.Description-label"
       >
@@ -165,7 +165,7 @@ exports[`Form element produces output containing nested form 1`] = `
           className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-ex8a5f-MuiNotchedOutlined-root"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Description
@@ -178,8 +178,8 @@ exports[`Form element produces output containing nested form 1`] = `
       className="MuiFormControl-root MuiTextField-root css-qboax1-MuiFormControl-root-MuiTextField-root"
     >
       <label
-        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink={true}
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink={false}
         htmlFor="app.page1.formNested.BoxSize"
         id="app.page1.formNested.BoxSize-label"
       >
@@ -210,7 +210,7 @@ exports[`Form element produces output containing nested form 1`] = `
           className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
         >
           <legend
-            className="css-ex8a5f-MuiNotchedOutlined-root"
+            className="css-1n64csd-MuiNotchedOutlined-root"
           >
             <span>
               Size
@@ -234,8 +234,8 @@ exports[`Form element produces output containing nested form 1`] = `
           className="MuiFormControl-root MuiTextField-root css-jznhkk-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-hvjq6j-MuiFormLabel-root-MuiInputLabel-root"
-            data-shrink={true}
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink={false}
             htmlFor="app.page1.formNested.Extra.Description"
             id="app.page1.formNested.Extra.Description-label"
           >
@@ -266,7 +266,7 @@ exports[`Form element produces output containing nested form 1`] = `
               className="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                className="css-ex8a5f-MuiNotchedOutlined-root"
+                className="css-1n64csd-MuiNotchedOutlined-root"
               >
                 <span>
                   Description

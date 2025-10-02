@@ -1,15 +1,15 @@
 import UrlContext from '../UrlContext'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
-import {shallow} from 'zustand/shallow'
+import {BaseComponentState} from '../state/BaseComponentState'
 import Url, {asQueryObject} from '../Url'
-import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
+import {domElement, PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
 import type {FunctionComponent} from 'react'
 import {Theme, ThemeOptions} from '@mui/material'
 import {createTheme} from '@mui/material/styles'
 import {goBack, onUrlChange} from '../navigationHelpers'
 
-type StateExternalProps = {
+
+export type StateExternalProps = {
     pages: { [key: string]: FunctionComponent },
     urlContext: UrlContext,
     themeOptions: ThemeOptions
@@ -19,47 +19,36 @@ type StateInternalProps = {
     subscription?: any
 }
 
-export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
+export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> {
 
     private theme: Theme | undefined
-    init(asi: AppStateForObject, path: string): void {
-        super.init(asi, path)
-        const {subscription} = this.state
-
-        if (!subscription) {
-            this.state.subscription = onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
+    protected doInit(_previousVersion: this | undefined, _proxyThis: this): void {
+        if (!_previousVersion) {
+            this.state.subscription = onUrlChange(() => _proxyThis.updateState({updateCount: Date.now()}))  // need state update to cause re-render
         }
-    }
-
-    protected isEqualTo(newObj: this) {
-        const {pages: thisPages, ...thisProps} = this.props
-        const {pages: newPages, ...newProps} = newObj.props
-        const pagesEqual = shallow(thisPages, newPages)
-        const propsEqual = shallow(thisProps, newProps)
-        return pagesEqual && propsEqual
     }
 
     get urlContext() {
         return this.props.urlContext
     }
 
-    get currentPage() {
+    currentPage() {
         const pageName = this.CurrentUrl().allPathSections[1]
         const defaultPage = Object.values(this.props.pages)[0]
         return pageName ? this.props.pages[pageName] ?? defaultPage : defaultPage
     }
 
     pageToDisplay(signedIn: boolean) {
-        const notLoggedInPageName = (this.currentPage as any).notLoggedInPage
+        const notLoggedInPageName = (this.currentPage() as any).notLoggedInPage
         if (signedIn || !notLoggedInPageName) {
-            return this.currentPage
+            return this.currentPage()
         }
 
         return this.props.pages[notLoggedInPageName]
     }
 
-    AppWidth = () => this.domElement?.clientWidth ?? 0
-    AppHeight = () => this.domElement?.clientHeight ?? 0
+    AppWidth = () => domElement(this)?.clientWidth ?? 0
+    AppHeight = () => domElement(this)?.clientHeight ?? 0
 
     Theme = () => this.theme ??= createTheme(this.props.themeOptions)
 

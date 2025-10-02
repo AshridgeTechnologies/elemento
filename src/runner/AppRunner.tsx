@@ -7,7 +7,8 @@ import ErrorFallback from './ErrorFallback'
 import {DefaultUrlContext, UrlContextContext} from '../runtime/UrlContext'
 import PreviewController from '../shared/PreviewController'
 import {exposeFunctions} from '../shared/postmsgRpc/server'
-import {StoreProvider, StoreContext} from './StoreContext'
+import {StoreProvider, StoreContext} from '../runtime/state/StoreContext'
+import {ElementoStateStore} from '../runtime/components/ElementoComponentState'
 
 export const useGetUrlContext = () => useContext(UrlContextContext)
 
@@ -31,8 +32,9 @@ type Properties = {appFunction: React.FunctionComponent<any>, pathPrefix: string
 
 export default function AppRunner({appFunction, pathPrefix, resourceUrl}: Properties) {
     const urlContext = new DefaultUrlContext(pathPrefix, resourceUrl)
+    const appStore = new ElementoStateStore()
     return <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[appFunction]}>
-        <StoreProvider>
+        <StoreProvider appStore={appStore}>
             <UrlContextContext.Provider value={urlContext}>
                 <PreviewWrapper>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>

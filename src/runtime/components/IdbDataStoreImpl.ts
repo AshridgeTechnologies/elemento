@@ -14,8 +14,10 @@ import Observable from 'zen-observable'
 import SendObservable from '../../util/SendObservable'
 import {mapObjIndexed} from 'ramda'
 import Dexie, {Table} from 'dexie'
-import lodash from 'lodash'; const {matches} = lodash
+import lodash from 'lodash';
 import BigNumber from 'bignumber.js'
+
+const {matches} = lodash
 
 const DECIMAL_PREFIX = '#Dec'
 const convertFromDbValue = (value: any) => typeof value === 'string' && value.startsWith(DECIMAL_PREFIX) ? new BigNumber(value.substring(DECIMAL_PREFIX.length)) : value

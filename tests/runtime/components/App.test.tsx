@@ -4,24 +4,33 @@
 
 import {beforeEach, expect, test, vi} from "vitest"
 import React, {createElement} from 'react'
-import {componentJSON, mockReturn, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
-import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
-import {setObject, useObject} from '../../../src/runtime/appStateHooks'
+import {
+    componentJSON,
+    createStateFn,
+    mockReturn,
+    testAppInterface as testAppInterface,
+    valueObj,
+    wait,
+    wrappedTestElement
+} from '../../testutil/testHelpers'
+import {App, AppBar, BaseComponentState, Collection, Page, TextElement} from '../../../src/runtime/components/index'
+import {useComponentState} from '../../../src/runtime/state/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 
 import UrlContext, {DefaultUrlContext, UrlType} from '../../../src/runtime/UrlContext'
 import Url from '../../../src/runtime/Url'
-import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 
-import {StoreProvider} from '../../../src/runner/StoreContext'
+import {StoreProvider} from '../../../src/runtime/state/StoreContext'
+import {AppData} from '../../../src/runtime/components/AppData'
+import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
 
 vi.mock('../../../src/runtime/components/authentication')
 
-const [appComponent] = wrappedTestElement(App, AppData)
+const [appComponent] = wrappedTestElement(App)
 
 const text = (content: string) => createElement(TextElement, {path: 'app1.page1.para1', content})
 const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello\nwhere are you'))
@@ -44,48 +53,49 @@ function getRealUrlcontext(initialPath = '/TheApp'): UrlContext {
 
 }
 
+const createState = createStateFn(App.State)
+const getLatest = <T extends BaseComponentState<any, any>>(state: T): T => createState.store.get(state._path!)
+
 beforeEach(() => {
     urlContext = getRealUrlcontext()
     mockReturn(authentication.isSignedIn, false)
 })
 
 test('App element produces output containing page', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element produces output with max width', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {maxWidth: 500})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, maxWidth: 500})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element inserts favicon link', () => {
     const faviconUrl = 'https://example.com/favicon.svg'
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {faviconUrl})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, faviconUrl})
     renderer.create(component)
     const linkHref = (window.document.head.querySelector('link[rel=icon]') as any).href
     expect(linkHref).toBe(faviconUrl)
 })
 
-test('App element produces output containing page and additional components with app bar at the top', () => {
+test('App element produces output containing page and additional components with app bar at the top', async () => {
     const collection1 = createElement(Collection, {path: 'app1.coll1', display: true})
     const collection2 = createElement(Collection, {path: 'app1.coll2', display: true})
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        setObject('app1.coll1', new Collection.State({}))
-        setObject('app1.coll2', new Collection.State({}))
-        return createElement(App, {path: 'app1', topChildren: appBar1}, collection1, collection2)
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext, topChildren: appBar1}, collection1, collection2)
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    await wait(100)
     expect(componentJSON(runningApp)).toMatchSnapshot()
+    await wait(100)
 })
 
 test('App element shows notifications', async () => {
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        return createElement(App, {path: 'app1'})
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext})
     }
     const {el} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
 
@@ -94,14 +104,14 @@ test('App element shows notifications', async () => {
     expect(el`.notistack-Snackbar`).toContainHTML('Something happened')
 })
 
-test('App element produces output containing not logged in page if it exists and not logged in', () => {
+test('App element produces output containing not logged in page if it exists and not logged in', async () => {
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', topChildren: appBar1})
+        return createElement(App, {path: 'app1', pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext, topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    await wait(100)
     expect(JSON.stringify(componentJSON(runningApp))).toContain('Please log in')
     expect(componentJSON(runningApp)).toMatchSnapshot()
 })
@@ -111,8 +121,7 @@ test('App element produces output containing normal page if logged in', () => {
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', topChildren: appBar1})
+        return createElement(App, {path: 'app1', pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext, topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
     expect(JSON.stringify(componentJSON(runningApp))).toContain('You are logged in')
@@ -125,7 +134,7 @@ test('App shows first page initially and other page when state changes and only 
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1', content: 'this is page ' + pageName} )
 
     function MainPage(props: any) {
-        const appState = useObject('app1')
+        const appState = useComponentState('app1')
         return React.createElement(Page, {path: props.path},
             text('Main'),
             React.createElement('button', {
@@ -138,8 +147,7 @@ test('App shows first page initially and other page when state changes and only 
 
     const OtherPage = () => createElement(Page, {path: 'app1.page2'}, text('Other'), 'Page 2')
     const app = () => {
-        setObject('app1', new App.State({pages: {MainPage, OtherPage}, urlContext}))
-        return createElement(App, {path: 'app1', startupAction: () => {
+        return createElement(App, {path: 'app1', pages: {MainPage, OtherPage}, urlContext, startupAction: () => {
                 startupCount++
                 return () => {
                     throw new Error('Should not be called!')
@@ -158,15 +166,14 @@ test('App shows first page initially and other page when state changes and only 
 })
 
 test('App element produces output with cookie message', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {cookieMessage: 'We love cookies'})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, cookieMessage: 'We love cookies'})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element receives messages sent to window', async () => {
     const messageAction = vi.fn()
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', messageAction})
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext, messageAction})
     }
 
     const {unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})), 'messageActionTest')
@@ -198,51 +205,50 @@ test('App.State can send messages', async () => {
 test('App.State gets current page and can be updated by ShowPage, not called as an object method, with either name or functions', () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
-    const state = new App.State({pages, urlContext})
-    expect(state.currentPage).toBe(Page1)
+    const state: any = createState({pages, urlContext})
+    expect(state.currentPage()).toBe(Page1)
 
     urlContext.updateUrl('/unknownPage', null, null)
-    const updatedState1 = state._withStateForTest({currentUrl: urlContext.getUrl()})
-    expect(updatedState1.currentPage).toBe(Page1)
+    state.updateState({currentUrl: urlContext.getUrl()})
+    expect(state.currentPage()).toBe(Page1)
 
     urlContext.updateUrl('/TheApp/Page2', null, null)
-    const updatedState2 = state._withStateForTest({currentUrl: urlContext.getUrl()})
-    expect(updatedState2.currentPage).toBe(Page2)
+    state.updateState({currentUrl: urlContext.getUrl()})
+    expect(state.currentPage()).toBe(Page2)
 
-    const appInterface = testAppInterface('testPath', state)
     const {ShowPage} = state
 
     ShowPage('Page2')
-    expect(state.latest().currentPage).toBe(Page2)
+    expect(state.currentPage()).toBe(Page2)
 
     ShowPage(Page3)
-    expect(state.latest().currentPage).toBe(Page3)
+    expect(state.currentPage()).toBe(Page3)
 
     // doesn't work in jsdom
     // ShowPage('previous')
-    // expect(state.latest().currentPage).toBe(Page2)
+    // expect(state.currentPage()).toBe(Page2)
 })
 
 test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null
     const pages = {Page1, Page2}
     const updateUrlSpy = vi.spyOn(DefaultUrlContext.prototype, 'updateUrl');
-    const state = new App.State({pages, urlContext})
-    expect(state.currentPage).toBe(Page1)
+    const store = new ComponentStateStore()
+    const state: any = store.getOrUpdate('testPath', App.State, {pages, urlContext})
+    expect(state.currentPage()).toBe(Page1)
     urlContext.updateUrl('/TheApp/Page2', null, null)
-    const updatedState = state._withStateForTest({currentUrl: urlContext.getUrl()})
-    expect(updatedState.currentPage).toBe(Page2)
+    state.updateState({currentUrl: urlContext.getUrl()})
+    expect(state.currentPage()).toBe(Page2)
 
-    const appInterface = testAppInterface('testPath', state)
     const {ShowPage} = state
     const theDateStr = '2023-10-22T12:34:56.123Z'
     const theDate = new Date(theDateStr)
 
     ShowPage('Page2', 'tab1', 'sorted', 99, {a: 123, date: theDate}, 'id123')
-    expect(state.latest().currentPage).toBe(Page2)
+    expect(state.currentPage()).toBe(Page2)
 
     ShowPage(Page1, valueObj('tab2'), valueObj(null), valueObj('id123'))
-    expect(state.latest().currentPage).toBe(Page1)
+    expect(state.currentPage()).toBe(Page1)
     expect(updateUrlSpy).toHaveBeenCalledTimes(3)
     expect(updateUrlSpy).toHaveBeenNthCalledWith(2, '/testPath/Page2/tab1/sorted/99', {a: '123', date: theDateStr}, 'id123')
     expect(updateUrlSpy).toHaveBeenNthCalledWith(3, '/testPath/Page1/tab2', null, 'id123')
@@ -252,10 +258,10 @@ test('App.State uses latest default page version if it changes', () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page1updated = (_props: any) => null
     const pages = {Page1, Page2}
     const state = new App.State({pages, urlContext})
-    expect(state.currentPage).toBe(Page1)
+    expect(state.currentPage()).toBe(Page1)
 
-    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2}, urlContext}))
-    expect(updatedState.currentPage).toBe(Page1updated)
+    const updatedState = state.withProps({pages: {Page1: Page1updated, Page2}, urlContext})
+    expect(updatedState.currentPage()).toBe(Page1updated)
 })
 
 test('App.State uses latest set page version if it changes ', () => {
@@ -263,10 +269,10 @@ test('App.State uses latest set page version if it changes ', () => {
     const pages = {Page1, Page2}
     const urlContext = getRealUrlcontext('/TheApp/Page2')
     const state = new App.State({pages, urlContext})
-    expect(state.currentPage).toBe(Page2)
+    expect(state.currentPage()).toBe(Page2)
 
-    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2: Page2updated}, urlContext}))
-    expect(updatedState.currentPage).toBe(Page2updated)
+    const updatedState = state.withProps({pages: {Page1: Page1updated, Page2: Page2updated}, urlContext})
+    expect(updatedState.currentPage()).toBe(Page2updated)
 })
 
 test('App.State does next level compare on pages', () => {
@@ -274,10 +280,11 @@ test('App.State does next level compare on pages', () => {
     const pages = {Page1, Page2}
     const samePages = {Page1, Page2}
     const newPages = {Page1, Page2, Page3}
-    const state = new App.State({pages, urlContext})
 
-    expect(state.updateFrom(new App.State({pages: samePages, urlContext}))).toBe(state)
-    expect(state.updateFrom(new App.State({pages: newPages, urlContext}))).not.toBe(state)
+    const store = new ComponentStateStore()
+    const state = store.getOrUpdate('id1', AppData, {pages: pages, urlContext, themeOptions: {}})
+    expect(store.getOrUpdate('id1', AppData, {pages: samePages, urlContext, themeOptions: {}})).toBe(state)
+    expect(store.getOrUpdate('id1', AppData, {pages: newPages, urlContext, themeOptions: {}})).not.toBe(state)
 })
 
 test('App.State can get current url object', () => {
@@ -298,7 +305,7 @@ test('App.State can get current url object', () => {
         },
         updateUrl(_path: string, _query: object, _anchor: string): void {},
     }
-    const state = new App.State({pages, urlContext})._withStateForTest({currentUrl: urlForPage('Page2')})
+    const state = new App.State({pages, urlContext}).withState({currentUrl: urlForPage('Page2')})
     expect(state.CurrentUrl()).toStrictEqual(new Url(origin, pathname, pathPrefix, query, hash))
 })
 
@@ -313,27 +320,29 @@ test('App.State can get a File Url', () => {
             return 'resource/url/to' + ensureSlash(resourceName)
         }
     }
-    const state = new App.State({pages, urlContext})._withStateForTest({currentUrl: urlForPage('Page2')})
+    const state = new App.State({pages, urlContext}).withState({currentUrl: urlForPage('Page2')})
     expect(state.FileUrl('image1.jpg')).toBe('resource/url/to/image1.jpg')
     expect(state.FileUrl(valueObj('image1.jpg'))).toBe('resource/url/to/image1.jpg')
 })
 
-test('App.State responds to app context url changes', () => {
+test('App.State responds to app context url changes', async () => {
     const Page1 = (_props: any) => null, Page2 = (_props: any) => null, Page3 = (_props: any) => null
     const pages = {Page1, Page2, Page3}
-    const state = new App.State({pages, urlContext})
-    expect(state.currentPage).toBe(Page1)
-    const appInterface = testAppInterface('testPath', state)
+    const state: any = createState({pages, urlContext})
+    expect(state.currentPage()).toBe(Page1)
+    // const appInterface = testAppInterface('testPath', state)
 
     urlContext.updateUrl('/TheApp/Page2', null, null)
-    const state1 = state.latest()
+    await wait()
+    const state1 = getLatest(state)
     expect(state1).not.toBe(state)
-    expect(state1.currentPage).toBe(Page2)
+    expect(state1.currentPage()).toBe(Page2)
 
     urlContext.updateUrl('/TheApp/Page2', {a:10}, 'anchor1')
-    const state2 = state.latest()
+    await wait()
+    const state2 = getLatest(state)
     expect(state2).not.toBe(state1)
-    expect(state2.currentPage).toBe(Page2)
+    expect(state2.currentPage()).toBe(Page2)
     expect(state2.CurrentUrl().query).toStrictEqual({a:10})
     expect(state2.CurrentUrl().anchor).toBe('anchor1')
 })
@@ -343,18 +352,18 @@ test.skip('App.State responds to browser history changes', () => {
     const pages = {Page1, Page2, Page3}
     const urlContext = getRealUrlcontext('/testPath/Page1/abc')
     const state = new App.State({pages, urlContext})
-    const appInterface = testAppInterface('testPath', state)
+    testAppInterface('testPath', state)
     expect(state.CurrentUrl().page).toBe('Page1')
     expect(state.CurrentUrl().pathSections[0]).toBe('abc')
 
     urlContext.updateUrl('/TheApp/Page1/xyz', null, null)
-    const state1 = state.latest()
+    const state1 = state
     expect(state1).not.toBe(state)
     expect(state1.CurrentUrl().page).toBe('Page1')
     expect(state1.CurrentUrl().pathSections[0]).toBe('xyz')
 
     history.back()
-    const state2 = state.latest()
+    const state2 = state
     expect(state2).not.toBe(state1)
     expect(state2.CurrentUrl().page).toBe('Page1')
     expect(state2.CurrentUrl().pathSections[0]).toBe('abc')

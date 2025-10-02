@@ -9,7 +9,6 @@ import {flatten} from 'ramda'
 import lodash from 'lodash'
 import {type ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
-import TextInput, {TextInputMetadata, TextInputSchema} from './TextInput'
 
 const {isFunction, isPlainObject, isObject} = lodash
 

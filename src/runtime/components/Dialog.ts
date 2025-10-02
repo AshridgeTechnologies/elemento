@@ -1,15 +1,14 @@
 import React from 'react'
 import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Dialog as MuiDialog, IconButton} from '@mui/material'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {BlockContent, BlockLayout} from './Block'
 import Close from '@mui/icons-material/Close'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
-import {InputComponentMetadata} from './InputComponentState'
 
-type Properties = { path: string, layout: BlockLayout, showCloseButton?: boolean, styles?: StylesPropVals, children?: React.ReactElement[] }
+type Properties = { path: string, layout: BlockLayout, initiallyOpen?: boolean, showCloseButton?: boolean, styles?: StylesPropVals, children?: React.ReactElement[] }
 type StateProperties = Partial<Readonly<{initiallyOpen: boolean}>>
 
 type StateUpdatableProperties = Partial<Readonly<{ isOpen: boolean }>>
@@ -85,31 +84,30 @@ function CloseButton(props: { onClose: () => void }) {
     )
 }
 
-export default function Dialog({children = [], path,  layout, showCloseButton, styles: styleProps = {}}: Properties) {
+export default function Dialog({children = [], path,  layout, initiallyOpen, showCloseButton, styles: styleProps = {}}: Properties) {
     const styles = valueOfProps(styleProps)
-    const state = useObject<DialogState>(path)
+    const state = useComponentState(path, DialogState, {initiallyOpen})
     const handleClose = ()=> { state.Close() }
     return React.createElement(MuiDialog, {open: state.isOpen, onClose: handleClose, slotProps: dialogSlotProps},
         (showCloseButton ? React.createElement(CloseButton, {onClose: handleClose}) : null),
         React.createElement(BlockContent, {path, layout, styles}, children)
     )
 }
-export class DialogState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<DialogState> {
+export class DialogState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
 
     get isOpen() {
         return this.state.isOpen ?? this.props.initiallyOpen ?? false
     }
 
     Show() {
-        if (!this.latest().isOpen) {
-            this.latest().updateState({isOpen: true})
+        if (!this.isOpen) {
+            this.updateState({isOpen: true})
         }
     }
 
     Close() {
-        if (this.latest().isOpen) {
-            this.latest().updateState({isOpen: false})
+        if (this.isOpen) {
+            this.updateState({isOpen: false})
         }
     }
 }

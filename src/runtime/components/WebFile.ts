@@ -1,14 +1,13 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import appFunctions from '../appFunctions'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
-import {globalFetch} from './ComponentHelpers'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
-type ExternalProperties = {url: string, fetch?: typeof globalThis.fetch}
+type ExternalProperties = {url: string}
 type StateProperties = {resultCache: object}
 
 export const WebFileSchema: ElementSchema = {
@@ -52,14 +51,8 @@ export default function WebFile(_props: Properties) {
     return null
 }
 
-export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<WebFileState> {
+export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties> {
 
-    constructor(props: ExternalProperties) {
-        super({fetch: globalFetch, ...props})
-    }
-
-    private get fetch() { return this.props.fetch }
     private get url() { return this.props.url}
     private get resultCache() { return this.state.resultCache ?? {}}
 
@@ -67,7 +60,7 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 
         const cachedResult = this.resultCache[this.url as keyof object]
         if (cachedResult === undefined) {
-            const resultPromise = this.fetch!(this.url)
+            const resultPromise = fetch!(this.url)
                 .then(resp => {
                     if (resp.ok) {
                         return resp.text() as Promise<any>
@@ -102,8 +95,8 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 
     private updateCalls(key: string, data: any) {
         const newCache = mergeRight(this.resultCache, {[key]: data})
-        this.state.resultCache = newCache
         this.updateState({resultCache: newCache})
+        // this.state.resultCache = newCache
     }
 
     private handleError = (error?: {message: string}) => {

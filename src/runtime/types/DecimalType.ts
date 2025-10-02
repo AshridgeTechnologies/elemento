@@ -2,6 +2,7 @@ import Rule from './Rule'
 import BaseType, {BaseProperties} from './BaseType'
 import BigNumber from 'bignumber.js'
 import {isNil} from 'ramda'
+import {formats} from './NumberType'
 
 type Properties = Partial<Readonly<BaseProperties & {
     min: BigNumber,
@@ -29,6 +30,7 @@ export default class DecimalType extends BaseType<BigNumber | number, Properties
     get min() { return this.properties.min }
     get max() { return this.properties.max }
     get decimalPlaces() { return this.properties.decimalPlaces }
+    get format() { return formats.decimal }
 
     protected get shorthandRules(): Rule[] {
         const {min, max, decimalPlaces} = this

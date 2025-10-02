@@ -113,7 +113,7 @@ test('wrapFn returns function that passes on args and returns normal result if n
         return 'Good result: ' + length
     }
 
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn = wrapFn(doStuff, null, 'AComponent', 'DoYourStuff')
     expect(wrappedFn(99)).toBe('Good result: 99')
     expect(notifications.addNotification).not.toHaveBeenCalled()
 })
@@ -123,7 +123,7 @@ test('wrapFn returns function that passes on args and notifies errors in normal 
         throw new Error('Bad result: ' + length)
     }
 
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn = wrapFn(doStuff, null, 'AComponent', 'DoYourStuff')
     wrappedFn(99)
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))
@@ -135,7 +135,7 @@ test('wrapFn returns function that does not log to console if not notified ', ()
     }
     vi.spyOn(notifications, 'addNotification').mockReturnValue(false)
 
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn = wrapFn(doStuff, null, 'AComponent', 'DoYourStuff')
     wrappedFn(99)
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).not.toHaveBeenCalled()
@@ -146,7 +146,7 @@ test('wrapFn returns function that passes on args and returns promise if no erro
         return 'Good result: ' + length
     }
 
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn = wrapFn(doStuff, null, 'AComponent', 'DoYourStuff')
     await expect(wrappedFn(99)).resolves.toBe('Good result: 99')
     expect(notifications.addNotification).not.toHaveBeenCalled()
 })
@@ -156,7 +156,7 @@ test('wrapFn returns function that notifies errors in promises', async () => {
         throw new Error('Bad result: ' + length)
     }
 
-    const wrappedFn = wrapFn('AComponent', 'DoYourStuff', doStuff)
+    const wrappedFn = wrapFn(doStuff, null, 'AComponent', 'DoYourStuff')
     await wrappedFn(99)
     expect(notifications.addNotification).toHaveBeenCalledWith('error', 'Error: Bad result: 99', 'in the Do Your Stuff property of element AComponent', 30000)
     expect(mockConsoleError).toHaveBeenCalledWith(new Error('Bad result: 99'))

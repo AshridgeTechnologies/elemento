@@ -2,16 +2,16 @@ import React from 'react'
 import {SxProps, TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 
-type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
 type StateInputProperties = Partial<Readonly<{period: PropVal<number>, interval: PropVal<number>, intervalAction: (t: TimerState) => void, endAction: (t: TimerState) => void}>>
+type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}> & StateInputProperties
 type StateInternalProperties = Partial<Readonly<{startTime: Date, intervalCount: number, stoppedTime: Date, finishedTime: Date, previousElapsedMillis: number}>>
 
 const stateReset = {startTime: undefined, intervalCount: undefined, stoppedTime: undefined, finishedTime: undefined, previousElapsedMillis: undefined}
@@ -83,7 +83,8 @@ export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useObject<TimerState>(path)
+    const {period, interval, intervalAction, endAction} = props
+    const state = useComponentState(path, TimerState, {period, interval, intervalAction, endAction})
     const optionalProps = definedPropertiesOf({label})
     const inputComponentProps = propsForInputComponent(undefined, styles)
     const inputProps = inputElementProps(styles, false, {})
@@ -102,8 +103,7 @@ export default function Timer({path, ...props}: Properties) {
     })
 }
 
-export class TimerState extends BaseComponentState<StateInputProperties, StateInternalProperties>
-    implements ComponentState<TimerState> {
+export class TimerState extends BaseComponentState<StateInputProperties, StateInternalProperties> {
     get period() { return valueOf(this.props.period) ?? null }
     get interval() { return valueOf(this.props.interval) ?? null }
     get intervalAction() { return this.props.intervalAction ?? null }
@@ -140,7 +140,7 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
         return previousElapsedMillis + currentElapsedMillis}
 
     Start() {
-        this.latest().doStart()
+        this.doStart()
     }
 
     private doStart() {
@@ -151,11 +151,11 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
         } else {
             this.updateState({...stateReset, startTime: new Date()})
         }
-        requestAnimationFrame(() => this.latest().checkIntervals())
+        requestAnimationFrame(() => this.checkIntervals())
     }
 
     Stop() {
-        this.latest().doStop()
+        this.doStop()
     }
 
     private doStop() {
@@ -164,7 +164,7 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
     }
 
     Reset() {
-        this.latest().updateState(stateReset)
+        this.updateState(stateReset)
 
     }
 
@@ -182,19 +182,19 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
                 const currentIntervalCount = Math.floor(this.totalElapsedMillis / (this.interval * 1000))
                 if (currentIntervalCount > this.intervalCount) {
                     this.updateState({intervalCount: currentIntervalCount})
-                    this.latest().intervalAction?.(this.latest())
+                    this.intervalAction?.(this)
                 }
             } else {
                 this.updateState({intervalCount: this.intervalCount + 1})
-                this.latest().intervalAction?.(this.latest())
+                this.intervalAction?.(this)
             }
 
-            requestAnimationFrame(() => this.latest().checkIntervals())
+            requestAnimationFrame(() => this.checkIntervals())
         }
 
         if (this.isFinished) {
             this.updateState({finishedTime: new Date()})
-            this.endAction?.(this.latest())
+            this.endAction?.(this)
         }
     }
 }

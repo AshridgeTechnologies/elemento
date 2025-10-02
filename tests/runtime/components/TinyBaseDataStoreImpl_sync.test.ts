@@ -1,4 +1,4 @@
-import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
+import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
 import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
 import {testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
@@ -7,6 +7,8 @@ import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {TinyBaseDataStoreState} from '../../../src/runtime/components/TinyBaseDataStore'
+import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
+
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
@@ -734,7 +736,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
             sync: true,
         }
         const storeState = new TinyBaseDataStoreState(storeProps)
-        const appInterface = testAppInterface('path1', storeState)
+        testAppInterface('path1', storeState)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)
@@ -755,12 +757,13 @@ describe.sequential('through TinyBaseDataStoreState', () => {
             sync: true,
         }
 
+        const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
+
         const localItem = (store: TinyBaseDataStoreState, id: string) => store.getById(collectionName, id, true)
         const serverItem = (dbName: string, id: string) => callStore(dbType, dbName, 'getById', collectionName, id, true)
 
-        const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
-        const storeState = new TinyBaseDataStoreState(storeProps)
-        const appInterface = testAppInterface('path1', storeState)
+        const theStore = new ComponentStateStore()
+        const storeState = theStore.getOrUpdate('store1', TinyBaseDataStoreState, storeProps)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)
@@ -769,19 +772,18 @@ describe.sequential('through TinyBaseDataStoreState', () => {
         expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
         expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
 
-        const storeState2 = storeState.updateFrom(new TinyBaseDataStoreState(storePropsDb2))
-        const appInterface2 = testAppInterface('path1', storeState2)
+        const storeState2 = theStore.getOrUpdate('store1', TinyBaseDataStoreState, storePropsDb2)
         // @ts-ignore
         await(storeState2.state.initialisedDataStore)
         expect(await localItem(storeState2, id)).toBe(null)
-        expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
+        expect(await localItem(storeState, id)).toBe(null)  // state objects always use latest version
         expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
         expect(await serverItem(storePropsDb2.databaseInstanceName, id)).toBe(null)
 
         const id2 = newId()
         await storeState2.add(collectionName, id2, item)
         expect(await localItem(storeState2, id2)).toStrictEqual({id: id2, ...item})
-        expect(await localItem(storeState, id2)).toBe(null)
+        expect(await localItem(storeState, id2)).toStrictEqual({id: id2, ...item})  // state objects always use latest version
         expect(await serverItem(storePropsDb2.databaseInstanceName, id2)).toStrictEqual({id: id2, ...item})
         expect(await serverItem(storeProps.databaseInstanceName, id2)).toBe(null)
     })

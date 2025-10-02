@@ -10,11 +10,11 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {useComponentState} from '../state/appStateHooks'
 import {Definitions} from '../../model/schema'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 
-type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>}
+type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>, initialValue?: string, dataType?: ChoiceType}
 
 export const SelectInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -55,8 +55,9 @@ export default function SelectInput({path, ...props}: Properties) {
     const {label, values: valuesFromProps = [], readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
-    const state = useObject<SelectInputState>(path)
-    const {value, dataType} = state
+    const {initialValue, dataType} = props
+    const state = useComponentState(path, SelectInputState, {initialValue, dataType})
+    const {value} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)
     const inputProps = inputElementProps(styles, readOnly, {})
