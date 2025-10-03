@@ -2,7 +2,7 @@ import React, {ChangeEvent, FocusEvent} from 'react'
 import TextField from '@mui/material/TextField'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
 import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
 import BigNumber from 'bignumber.js'
@@ -15,11 +15,11 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
-type Properties = BaseInputComponentProperties
+type Properties = BaseInputComponentProperties & {initialValue?: string, dataType?: NumberType}
 
 const decPlaces = (dataType: BaseType<any, any> | undefined) => dataType?.kind === 'Decimal' ? (dataType as DecimalType).decimalPlaces : undefined
 
@@ -64,7 +64,7 @@ export class NumberInputState extends InputComponentState<number | BigNumber, Nu
     defaultValue = 0
 
     _setValues(value: number | BigNumber | null, editedValue: string) {
-        this.updateState({value, editedValue})
+        (this as any).updateState({value, editedValue})
     }
 }
 
@@ -72,8 +72,9 @@ export default function NumberInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
-    const state: NumberInputState = useObject(path)
-    const {dataValue, dataType} = state
+    const {initialValue, dataType} = props
+    const state: NumberInputState = use$state(path, NumberInputState, {initialValue, dataType})
+    const {dataValue} = state
 
     const formatValue = () => {
         if (isNil(dataValue)) return ''
