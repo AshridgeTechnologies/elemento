@@ -4,7 +4,8 @@ type Props = { [p: string]: any }
 
 export type StoredState = any
 
-const placeholder = function() {}
+const placeholder = function() {const placeholder = 0}
+placeholder.valueOf = () => undefined
 
 export default class AppStateStore {
 
@@ -19,7 +20,7 @@ export default class AppStateStore {
         return state && this.itemProxy(id, state)
     }
 
-    getOrCreate(id: string, stateClass: any, stateProps: any) {
+    getOrCreate<T>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
         const existingState = this.getRaw(id)
         let targetState = existingState
         if (existingState === null || existingState === undefined) {
@@ -54,7 +55,15 @@ export default class AppStateStore {
     private itemProxy(path: string, targetState: any) {
         const store = this
         const handler = {
-            get(target: Props, property: string) {
+            get(target: Props, property: string | symbol) {
+                if (property === Symbol.toPrimitive) {
+                    return target.valueOf
+                }
+
+                if (typeof property === 'symbol') {
+                    return undefined
+                }
+
                 if (property === 'id') {
                     return (subId: Id) => `${path}.${subId}`
                 }

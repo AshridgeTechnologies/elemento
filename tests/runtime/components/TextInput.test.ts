@@ -3,7 +3,7 @@ import {expect, MockedFunction, test, vi} from "vitest"
  * @vitest-environment jsdom
  */
 import {TextInput} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -117,7 +117,6 @@ test('TextInput stores null value in the app store when cleared', async () => {
 test('TextInput stores errors shown when blurred and ShowErrors or Reset called', async () => {
     const {el, user, domContainer} = testContainer(textInput('app.page1.sprocket2', {initialValue: 'Hi'}))
 
-    // expect(stateAt('app.page1.sprocket2').errorsShown).toBe(false)
     const inputEl = el`app.page1.sprocket2`
     await user.click(inputEl)
     await wait(10)
@@ -232,6 +231,12 @@ test('valueOf returns the value', () => {
 test('string conversion uses the value', () => {
     const state = new TextInput.State({initialValue: 'car'})
     expect('x' + state).toBe('xcar')
+})
+
+test('Can use state object proxy in simple expressions', () => {
+    const store = new AppStateStore()
+    const state = store.getOrCreate('id1', TextInputState, {initialValue: 'car'})
+    expect(state + 'park').toBe('carpark')
 })
 
 test('State is valid and has no errors when it has no data type', () => {

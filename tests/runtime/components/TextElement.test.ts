@@ -99,7 +99,7 @@ test('Sanitises incorrect HTML text', () => {
 })
 
 test('Can show HTML text with values in a template string', () => {
-    const input1 = new TextInputState({value: 'Number 42'})
+    const input1 = new TextInputState({initialValue: 'Number 42'})
     snapshot(createElement(TextElement, {path: 'page1.para1', allowHtml: true, content: `<h2>Hello</h2>\n<em>${input1}</em>`} ))()
 })
 

@@ -130,6 +130,8 @@ test('State class has correct properties', () => {
     expect(state.value).toBe(77)
     expect(state.toString()).toBe('77')
     expect(state.defaultValue).toBe(0)
+    // @ts-ignore
+    expect(state + 10).toBe(87)
 
     state._setValues(88, '88')
     const state2 = store.get('id1')
