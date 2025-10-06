@@ -12,7 +12,7 @@ import TrueFalseInput from './TrueFalseInput'
 import DateInput from './DateInput'
 import {isNil, last, without} from 'ramda'
 import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 import {InputComponentMetadata} from './InputComponentState'
@@ -121,6 +121,7 @@ export const FormSchema: ElementSchema = {
 export const FormMetadata: ElementMetadata = {
     stateProps: ['submitAction', 'initialValue', ...(InputComponentMetadata.stateProps ?? [])]
 }
+
 export default function Form({children, path, ...props}: Properties) {
     const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
@@ -136,7 +137,7 @@ export default function Form({children, path, ...props}: Properties) {
         ...sxProps(styles, show)
     } as SxProps
 
-    const state = useObject<BaseFormState>(path)
+    const state = use$state<BaseFormState>(path)
     const dataType = state.dataType
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors?._self ? errorsToString(state.errors._self) : undefined

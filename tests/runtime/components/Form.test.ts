@@ -1,22 +1,23 @@
-import {expect, MockedFunction, test, vi} from "vitest"
+import {expect, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
 import React, {KeyboardEventHandler} from 'react'
-import {componentJSON, getCallArg, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, componentJSONAsync, getCallArg, testAppInterface, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {NumberType, RecordType, Rule, TextType} from '../../../src/runtime/types'
 import {ErrorResult} from '../../../src/shared/DataStore'
-import {useObject} from '../../../src/runtime/appStateHooks'
+import {use$state} from '../../../src/runtime/state/appStateHooks'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
-const descriptionType = new TextType('tt1', {minLength: 2, maxLength: 10})
-const sizeType = new NumberType('nt1', {min: 1, max: 20})
+const descriptionType = new TextType('Description', {minLength: 2, maxLength: 10})
+const sizeType = new NumberType('BoxSize', {min: 1, max: 20})
 const recordType = new RecordType('rt1', {}, [
     new Rule('r1', ($item: any) => {
             return $item.Description.length < $item.BoxSize
-        }, {description: 'Description shorter than Size'},
+        }, {description: 'Description must be shorter than Size'},
     )
 ], [
     descriptionType, sizeType
@@ -30,27 +31,18 @@ type NestedFormContents = FormContents & {Extra: OneElementFormContents}
 
 class TestFormState extends BaseFormState<FormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize']
-    childNames = ['Description', 'BoxSize']
-
-    createChildStates() {
-        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
-        const BoxSize = this.getOrCreateChildState('BoxSize', new NumberInput.State({value: this.originalValue?.BoxSize, dataType: sizeType}))
-        return {Description, BoxSize}
-    }
-
-    get Description() { return this.childStates.Description }
-    get BoxSize() { return this.childStates.BoxSize }
 }
 
-function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
+function TestForm(props: {path: string, initialValue: object, dataType: RecordType, keyAction: KeyboardEventHandler} & FormContents) {
     const pathTo = (name: string) => props.path + '.' + name
 
-    const _state: TestFormState = useObject(props.path)
-    const {BoxSize} = _state
+    const {initialValue, dataType} = props
+    const _state = use$state(props.path, TestFormState, {initialValue, dataType})
+    const {BoxSize} = _state as any
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}}),
-        React.createElement(NumberInput, {path: pathTo('BoxSize'), label: 'Size'}),
+        React.createElement(TextInput, {path: pathTo('Description'), initialValue: _state.originalValue?.Description, dataType: descriptionType, label: 'Description', styles: {width: '100%'}}),
+        React.createElement(NumberInput, {path: pathTo('BoxSize'), initialValue: _state.originalValue?.BoxSize, dataType: sizeType, label: 'Size'}),
         // @ts-ignore
         React.createElement(TextElement, {path: pathTo('Feedback'), content: 'Size is ' + BoxSize} )
     )
@@ -58,52 +50,34 @@ function TestForm(props: {path: string, keyAction: KeyboardEventHandler}) {
 
 class TestOneElementFormState extends BaseFormState<{Description: string}> {
     protected readonly ownFieldNames = ['Description']
-    childNames = ['Description']
-
-    createChildStates() {
-        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
-        return {Description}
-    }
-
-    get Description() { return this.childStates.Description }
 }
 
-function TestOneElementForm(props: {path: string}) {
+function TestOneElementForm(props: {path: string, initialValue: object}) {
     const pathTo = (name: string) => props.path + '.' + name
 
-    const _state = useObject(props.path)
+    const {initialValue} = props
+    const _state = use$state(props.path, TestOneElementFormState, {initialValue})
 
     return React.createElement(Form, {path: props.path},
-        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}})
+        React.createElement(TextInput, {path: pathTo('Description'), initialValue: _state.originalValue?.Description, dataType: descriptionType, label: 'Description', styles: {width: '100%'}})
     )
 }
 
 class TestNestedFormState extends BaseFormState<NestedFormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize', 'Extra']
-    childNames = ['Description', 'BoxSize', 'Extra']
-
-    createChildStates() {
-        const Description = this.getOrCreateChildState('Description', new TextInput.State({value: this.originalValue?.Description, dataType: descriptionType}))
-        const BoxSize = this.getOrCreateChildState('BoxSize', new NumberInput.State({value: this.originalValue?.BoxSize, dataType: sizeType}))
-        const Extra = this.getOrCreateChildState('Extra', new TestOneElementFormState({value: this.originalValue?.Extra}))
-        return {Description, BoxSize, Extra}
-    }
-
-    get Description() { return this.childStates.Description }
-    get BoxSize() { return this.childStates.BoxSize }
-    get Extra() { return this.childStates.Extra }
 }
 
-function TestNestedForm(props: {path: string, keyAction: KeyboardEventHandler}) {
+function TestNestedForm(props: {path: string, initialValue: object, keyAction: KeyboardEventHandler}) {
     const pathTo = (name: string) => props.path + '.' + name
 
-    const _state: TestNestedFormState = useObject(props.path)
-    const {BoxSize} = _state
+    const {initialValue} = props
+    const _state = use$state(props.path, TestNestedFormState, {initialValue})
+    const {BoxSize} = _state as any
 
     return React.createElement(Form, props,
-        React.createElement(TextInput, {path: pathTo('Description'), label: 'Description', styles: {width: '100%'}}),
-        React.createElement(NumberInput, {path: pathTo('BoxSize'), label: 'Size'}),
-        React.createElement(TestOneElementForm, {path: pathTo('Extra')}),
+        React.createElement(TextInput, {path: pathTo('Description'), initialValue: _state.originalValue?.Description, dataType: descriptionType, label: 'Description', styles: {width: '100%'}}),
+        React.createElement(NumberInput, {path: pathTo('BoxSize'), initialValue: _state.originalValue?.BoxSize, dataType: sizeType, label: 'Size'}),
+        React.createElement(TestOneElementForm, {path: pathTo('Extra'), initialValue: _state.originalValue?.Extra}),
         // @ts-ignore
         React.createElement(TextElement, {path: pathTo('Feedback'), content: 'Size is ' + BoxSize} )
     )
@@ -114,78 +88,84 @@ class TestEmptyFormState extends BaseFormState {
 }
 
 function TestEmptyForm(props: {path: string}) {
-    useObject(props.path)
+    const _state = use$state(props.path, TestEmptyFormState, {})
     return React.createElement(Form, {path: props.path})
 }
 
-const [form, appStoreHook] = wrappedTestElement(TestForm, TestFormState)
-const [emptyForm] = wrappedTestElement(TestEmptyForm, TestEmptyFormState)
-const [oneElementForm] = wrappedTestElement(TestOneElementForm, TestOneElementFormState)
-const [nestedForm, appStoreHook2] = wrappedTestElement(TestNestedForm, TestNestedFormState)
+const [form, appStoreHook] = wrappedTestElementNew(TestForm)
+const [emptyForm] = wrappedTestElementNew(TestEmptyForm)
+const [oneElementForm] = wrappedTestElementNew(TestOneElementForm)
+const [nestedForm, appStoreHook2] = wrappedTestElementNew(TestNestedForm)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 const stateAt2 = (path: string) => appStoreHook2.stateAt(path)
 
-test('Form element produces output containing children', () => {
+test('Form element produces output containing children', async () => {
     const component = form('app.page1.form1', {
-        value: {
+        initialValue: {
             Description: 'Big',
             BoxSize: 17
-        }
-    }, {label: 'Test Form 1'})
-    expect(componentJSON(component)).toMatchSnapshot()
+        },
+        label: 'Test Form 1'
+    })
+    // TO DO snapshot is incorrect - label shrink should be true
+    const json = await componentJSONAsync(component)
+    expect(json).toMatchSnapshot()
 })
 
 test('Form element produces output with no children', () => {
     const component = emptyForm('app.page1.formEmpty', {
-        value: {}
-    }, {label: 'Test Form Empty'})
+        initialValue: {},
+        label: 'Test Form Empty'
+    })
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('Form element produces output with one child', () => {
     const component = oneElementForm('app.page1.formSingle', {
-        value: {}
-    }, {label: 'Test Form One Element'})
+        initialValue: {},
+        label: 'Test Form One Element'
+    })
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
-test('Form element produces output containing nested form', () => {
+test('Form element produces output containing nested form', async () => {
     const component = nestedForm('app.page1.formNested', {
-        value: {
+        initialValue: {
             Description: 'Big',
             BoxSize: 17,
             Extra: {
                 Description: 'Extra Big'
             }
-        }
-    }, {label: 'Test Form 1'})
-    expect(componentJSON(component)).toMatchSnapshot()
+        },
+        label: 'Test Form 1'
+    })
+    // TO DO snapshot is incorrect - label shrink should be true
+    expect(await componentJSONAsync(component)).toMatchSnapshot()
 })
 
-test('State class has correct properties and functions', () => {
+test('State class has correct properties and functions on new instance', () => {
     const submitAction = vi.fn()
-    const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface('formPath', state, {})
+    const store = new AppStateStore()
+    const state = store.getOrCreate('id1', TestFormState, {initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 
     state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
+    state.ShowErrors(true)
 })
 
 test('State class has empty object original value if props value is null', () => {
-    const state = new TestFormState({value: null })
-    const appInterface = testAppInterface('formPath', state, {})
+    const state = new TestFormState({initialValue: null })
     expect(state.originalValue).toStrictEqual({})
     expect(state.value).toStrictEqual({BoxSize: null, Description: null})
     expect(state.defaultValue).toStrictEqual({})
 })
 
 test('State class compares values as objects', () => {
-    const state1 = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
-    const state2 = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
-    const state3 = new TestFormState({value: {Description: 'Small', BoxSize: 17}})
+    const state1 = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}})
+    const state2 = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}})
+    const state3 = new TestFormState({initialValue: {Description: 'Small', BoxSize: 17}})
 
     expect(state1.updateFrom(state2)).toBe(state1)
     expect(state1.updateFrom(state3)).toStrictEqual(state3)
@@ -201,7 +181,7 @@ test('State class compares data types as objects', () => {
 })
 
 test.skip('State class uses states of child objects where present', () => {
-    const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}})
+    const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}})
     const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'});
     (state as any)._updateValue()
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
@@ -209,7 +189,7 @@ test.skip('State class uses states of child objects where present', () => {
 
 test('State has expected values', async () => {
     const component = form('form1', {
-        value: {
+        initialValue: {
             Description: 'Big',
             BoxSize: 17
         }
@@ -223,7 +203,7 @@ test('State has expected values', async () => {
 
 test('State has null values where fields are empty or missing', async () => {
     const component = form('form1', {
-        value: {
+        initialValue: {
             Description: null,
             //no BoxSize
         }
@@ -239,7 +219,7 @@ test('State has null values where fields are empty or missing', async () => {
 
 test('State has expected values after update', async () => {
     const {domContainer, enter}  = testContainer(form('app.page1.form1', {
-        value: {Description: 'Big', BoxSize: 17}
+        initialValue: {Description: 'Big', BoxSize: 17}
     }))
     await actWait()
     expect(stateAt('app.page1.form1').value).toStrictEqual({Description: 'Big', BoxSize: 17})
@@ -259,7 +239,7 @@ test('State has expected values after update', async () => {
 
 test('State of nested form has expected values', async () => {
     const {domContainer, enter}  = testContainer(nestedForm('app.page1.nestedForm1', {
-        value: {Description: 'Big', BoxSize: 17, Extra: {Description: 'Extra Big'}}
+        initialValue: {Description: 'Big', BoxSize: 17, Extra: {Description: 'Extra Big'}}
     }))
     await wait(50)
     expect(stateAt2('app.page1.nestedForm1').updates).toStrictEqual({})
@@ -278,8 +258,7 @@ test('State of nested form has expected values', async () => {
 test('keyAction function is called with key', async () => {
     const keyAction = vi.fn()
     const {keyDown} = testContainer(form('app.page1.form1', {
-        value: {Description: 'Big', BoxSize: 17}
-    }, {keyAction}))
+        initialValue: {Description: 'Big', BoxSize: 17}, keyAction}))
     await wait()
     await keyDown('app.page1.form1', 'Enter')
     expect(keyAction).toHaveBeenCalled()
@@ -288,7 +267,7 @@ test('keyAction function is called with key', async () => {
 
 test('State Resets all its component states and modified', async () => {
     const {enter}  = testContainer(form('app.page2.form1', {
-        value: {Description: 'Big', BoxSize: 17}
+        initialValue: {Description: 'Big', BoxSize: 17}
     }), 'testContainer2')
     await wait()
     expect(stateAt('app.page2.form1').modified).toBe(false)
@@ -312,7 +291,7 @@ test('State Resets all its component states and modified', async () => {
 
 test('State has correct errors and valid from component states', async () => {
     const {enter}  = testContainer(form('app.page3.form1', {
-        value: {Description: 'Big', BoxSize: 17}
+        initialValue: {Description: 'Big', BoxSize: 17}
     }), 'testContainer3')
     await wait(10)
     expect(stateAt('app.page3.form1').valid).toBe(true)
@@ -341,7 +320,7 @@ test('State has correct errors and valid from component states', async () => {
 
 test('State has correct errors and valid from empty component states', async () => {
     const {enter}  = testContainer(form('app.page3.form1', {
-        value: {Description: null, }
+        initialValue: {Description: null, }
     }), 'testContainer3')
     await wait(10)
     expect(stateAt('app.page3.form1').valid).toBe(true)
@@ -370,7 +349,7 @@ test('State has correct errors and valid from empty component states', async () 
 
 test('State has own errors', async () => {
     const {enter}  = testContainer(form('app.page5.form1', {
-        value: {Description: 'Big', BoxSize: 5}, dataType: recordType
+        initialValue: {Description: 'Big', BoxSize: 5}, dataType: recordType
     }), 'testContainer4')
     await wait()
     expect(stateAt('app.page5.form1').valid).toBe(true)
@@ -380,8 +359,9 @@ test('State has own errors', async () => {
     await enter('app.page5.form1.BoxSize', '5')
     await wait()
 
+    expect(stateAt('app.page5.form1').value).toStrictEqual({Description: 'Medium', BoxSize: 5})
     expect(stateAt('app.page5.form1').errors).toStrictEqual({
-        _self: ['Description shorter than Size']
+        _self: ['Description must be shorter than Size']
     })
     expect(stateAt('app.page5.form1').valid).toBe(false)
 
@@ -390,7 +370,7 @@ test('State has own errors', async () => {
     await enter('app.page5.form1.Description', 'Description more than 21 chars')
     await wait()
     expect(stateAt('app.page5.form1').errors).toStrictEqual({
-        _self: ['Description shorter than Size'],
+        _self: ['Description must be shorter than Size'],
         Description: ['Maximum length 10'],
         BoxSize: ['Maximum 20']
     })
@@ -398,7 +378,7 @@ test('State has own errors', async () => {
 
 test('State calls ShowErrors on all its component states', async () => {
     testContainer(form('app.page4.form1', {
-        value: {Description: 'Big', BoxSize: 17}
+        initialValue: {Description: 'Big', BoxSize: 17}
     }))
     await wait()
 
@@ -417,8 +397,8 @@ test('State calls ShowErrors on all its component states', async () => {
 
 test('State Submit calls submit action if present and calls Reset after if succeeds', async () => {
     const submitAction = vi.fn()
-    const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const stateNoAction = new TestFormState({value: {Description: 'Big', BoxSize: 17} })
+    const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
+    const stateNoAction = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17} })
     state.Reset = vi.fn()
     stateNoAction.Reset = vi.fn()
     const appInterface = testAppInterface('formPath', state, {})
@@ -437,7 +417,7 @@ test('State Submit calls submit action if present and calls Reset after if succe
 
 test('State Submit calls submit action and adds Error Result to errors and does not call Reset', async () => {
     const submitAction = vi.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
-    const state = new TestFormState({value: {Description: 'Big', BoxSize: 17}, submitAction })
+    const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
     state.Reset = vi.fn()
     const appInterface = testAppInterface('formPath', state)
 

@@ -21,6 +21,11 @@ import {render} from '@testing-library/react'
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
 export const componentJSON = (component: JSX.Element) => renderer.create(component).toJSON()
+export const componentJSONAsync = async (component: JSX.Element) => {
+    const componentRenderer = renderer.create(component)
+    await wait(500)
+    return componentRenderer.toJSON()
+}
 
 export const snapshot = (element: React.ReactElement) => () => expect(componentJSON(element)).toMatchSnapshot()
 
@@ -379,3 +384,4 @@ export class MockFileSystemFileHandle implements FileSystemFileHandle {
 export const inDndContext = (itemSet: any) => createElement(DndWrapper, {elementToWrap: itemSet})
 export const getCallArg = (fn: (...args: any[]) => any, position: number): any => (fn as MockedFunction<any>).mock.calls[0]?.[position]
 export const asAny = (val: any) => (val as any)
+export const DEBUG_TIMEOUT = 1000000

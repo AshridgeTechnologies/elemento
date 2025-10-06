@@ -1,4 +1,4 @@
-import InputComponentState from './InputComponentState'
+import InputComponentState from './InputComponentState2'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import {equals, mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../../shared/DataStore'
@@ -11,20 +11,20 @@ import BigNumber from 'bignumber.js'
 import {SelectInputState} from './SelectInput'
 import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
-import {StoredState} from '../AppStateStore'
-import {StateMap} from './ComponentState'
+import {StoredState} from '../state/AppStateStore'
+import {unique} from '../../util/helpers'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 
 const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): StoredState => {
     if (type instanceof TextType) {
-        return new TextInputState({dataType: type, value: value as PropVal<string>})
+        return new TextInputState({dataType: type, initialValue: value as PropVal<string>})
     }
     if (type instanceof NumberType) {
-        return new NumberInputState({dataType: type, value: value as PropVal<number>})
+        return new NumberInputState({dataType: type, initialValue: value as PropVal<number>})
     }
     if (type instanceof DecimalType) {
-        return new NumberInputState({dataType: type, value: value as PropVal<BigNumber>})
+        return new NumberInputState({dataType: type, initialValue: value as PropVal<BigNumber>})
     }
     if (type instanceof ChoiceType) {
         return new SelectInputState({dataType: type, value: value as PropVal<string>})
@@ -36,7 +36,7 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): St
         return new DateInputState({dataType: type, value: value as PropVal<Date>})
     }
     if (type instanceof RecordType) {
-        return new DataTypeFormState({dataType: type, value: value as PropVal<object>})
+        return new DataTypeFormState({dataType: type, initialValue: value as PropVal<object>})
     }
     // if (type instanceof ListType) {
     //     return new ListElementState({})
@@ -52,16 +52,6 @@ export default abstract class BaseFormState<T extends object = object> extends I
 
     protected get submitAction() { return this.props.submitAction }
 
-    protected setupChildStates() {
-        const dataTypeFields = this.dataType?.fields ?? []
-        dataTypeFields.forEach( type => {
-            const {codeName} = type
-            this.getOrCreateChildState(codeName, formState(type, this.originalValue?.[codeName as keyof object]))
-        })
-
-        this.createChildStates()
-    }
-
     get dataValue(): T {
         return this.valueFromChildren() as T
     }
@@ -72,7 +62,7 @@ export default abstract class BaseFormState<T extends object = object> extends I
 
     get fieldNames() {
         const dataTypeFields = this.props.dataType?.fields?.map(f => f.codeName ) ?? []
-        return [...dataTypeFields, ...(this.ownFieldNames ?? [])]
+        return unique([...dataTypeFields, ...(this.ownFieldNames ?? [])])
     }
 
     get updates() {
@@ -98,33 +88,33 @@ export default abstract class BaseFormState<T extends object = object> extends I
     }
 
     protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.value, newObj.props.value)
+        return equals(this.props.initialValue, newObj.props.initialValue)
             && equals(this.props.dataType, newObj.props.dataType)
     }
 
     private valueFromChildren(names: string[] = this.fieldNames) {
-        return Object.fromEntries(names.map(name => [name, this.getChildValue(name)]))
+        return Object.fromEntries(names.map(name => [name, this.getChildValue(name) ?? null]))
     }
 
     private getChildValue(name: string) {
         const childStateValue = this.getChildState(name)?.dataValue
         if (childStateValue !== undefined) return childStateValue
 
-        return this.props.value?.[name as keyof object]
+        return this.props.initialValue?.[name as keyof object]
     }
 
     protected getChildState(name: string) {
-        return super.getChildState(name) as InputComponentState<any, any>
+        return super.getChildState(name) as unknown as InputComponentState<any, any>
     }
 
     Reset() {
         super.Reset()
-        this.fieldNames.forEach(name => this.getChildState(name)?.Reset())
+        this.fieldNames.forEach(name => this.getChildState(name)?.Reset?.())
     }
 
     ShowErrors(errorsShown: boolean) {
         super.ShowErrors(errorsShown)
-        this.fieldNames.forEach(name => this.getChildState(name)?.ShowErrors(errorsShown))
+        this.fieldNames.forEach(name => this.getChildState(name)?.ShowErrors?.(errorsShown))
     }
 
     async Submit(data: any) {

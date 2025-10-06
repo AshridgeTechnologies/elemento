@@ -15,8 +15,6 @@ const [textInput, appStoreHook] = wrappedTestElementNew(TextInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
-const DEBUG_TIMEOUT = 1000000
-
 test('TextInput element produces output with properties supplied', () => {
         const component = textInput('app.page1.width', {
             initialValue: 'Hi there!',
