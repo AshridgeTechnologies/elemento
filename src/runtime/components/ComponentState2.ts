@@ -3,15 +3,16 @@ import {StoredState} from '../AppStateStore'
 import {equals} from 'ramda'
 
 export interface AppStateForObject {
+    path: string,
     latest: () => StoredState
     updateVersion: (changes: object) => void,
     getChildState: (subPath: string) => StoredState
-    getOrCreateChildState: (subPath: string, item: StoredState) => StoredState
-    getApp: () => StoredState
+    // getOrCreateChildState: (subPath: string, item: StoredState) => StoredState
+    // getApp: () => StoredState
 }
 
 export interface ComponentState<T> {
-    init(asi: AppStateForObject, path: string): void
+    init(asi: AppStateForObject): void
 
     updateFrom(newObj: T): T
 
@@ -33,15 +34,14 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected _appStateInterface?: AppStateForObject
     private __path?: string
     protected get _path(): string | undefined { return this.__path}
-    protected set _path(path: string) { this.__path = path}
 
     protected readonly childNames: string[] = []
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject, path: string): void {
+    init(asi: AppStateForObject): void {
         this._appStateInterface = asi
-        this._path = path
+        this.__path = asi.path
         this.setupChildStates()
     }
 
@@ -54,18 +54,21 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     protected getOrCreateChildState(path: string, item: StoredState) {
-        const childState = this._appStateInterface!.getOrCreateChildState(path, item)
-        this.state.childStates[path] = childState
-        return childState
+        // const childState = this._appStateInterface!.getOrCreateChildState(path, item)
+        // this.state.childStates[path] = childState
+        // return childState
     }
 
+    updateState(changes: Partial<typeof this.state>) {
+        this._appStateInterface!.updateVersion(changes)
+    }
     updateFrom(newObj: this): this {
         const sameType = this.constructor === newObj.constructor
         return sameType && this.isEqualTo(newObj) ? this : newObj.withState(this.state)
     }
 
     latest(): this {
-        return this._appStateInterface!.latest() as this
+        return this._appStateInterface!.latest() as unknown as this
     }
 
     get domElement(): HTMLElement | null {
@@ -77,7 +80,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     get app() {
-        return this._appStateInterface?.getApp()
+        return null //this._appStateInterface?.getApp()
     }
 
     Focus() {
@@ -90,26 +93,29 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return shallow(this.props, newObj.props)
     }
 
+    private copy(props: ExternalProps, state: WithChildStates<StateProps>): this {
+        const newVersion = new this.thisConstructor(props) as this
+        if (this._appStateInterface) {
+            newVersion.init(this._appStateInterface)
+        }
+        newVersion.state = {...state}
+        return newVersion
+    }
+
     _matchesProps(props: ExternalProps) {
         return equals(this.props, props)
     }
 
     _withStateForTest(state: any): this {
-        const newVersion = new (this as any).thisConstructor(this.props)
-        newVersion.state = state
-        return newVersion
+        return this.withState(state)
     }
 
     withState(state: WithChildStates<StateProps>): this {
-        const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>
-        newVersion.state = {...state}
-        return newVersion as this
+        return this.copy(this.props, state)
     }
 
     withProps(props: ExternalProps): this {
-        const newVersion = new this.thisConstructor(props) as BaseComponentState<ExternalProps, StateProps>
-        newVersion.state = {...this.state}
-        return newVersion as this
+        return this.copy(props, this.state)
     }
 
     withMergedState(changes: Partial<StateProps>): this {
@@ -123,18 +129,18 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     onChildStateChange() {
-        const getChildState = (name: string) => this._appStateInterface?.getChildState(name) as ComponentState<any>
-        const latestChildStates = Object.fromEntries(this.childNames.map(name => [name, getChildState(name)]))
-        if (!shallow(this.childStates, latestChildStates)) {
-            // @ts-ignore
-            this.updateState({childStates: latestChildStates})
-        }
+        // const getChildState = (name: string) => this._appStateInterface?.getChildState(name) as ComponentState<any>
+        // const latestChildStates = Object.fromEntries(this.childNames.map(name => [name, getChildState(name)]))
+        // if (!shallow(this.childStates, latestChildStates)) {
+        //     // @ts-ignore
+        //     this.updateState({childStates: latestChildStates})
+        // }
     }
 
     get _stateForTest() { return this.state }
 
     protected getChildState(name: string) {
-        return (this._appStateInterface?.getChildState(name) as ComponentState<any>)
+        return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
     }
 
 }

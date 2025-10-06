@@ -16,12 +16,6 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
 
     abstract defaultValue: T | null
 
-    protected get _path() {
-        return (this.props as any).path
-    }
-
-    protected set _path(path: string) {throw new Error('Path cannot be set on InputComponentState')}
-
     get value() {
         return this.dataValue ?? this.defaultValue
     }

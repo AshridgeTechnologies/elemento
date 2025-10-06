@@ -1,4 +1,5 @@
 import SubscribableStore, {type AllChangesCallback, type Callback, type Id, type UnsubscribeFn} from './SubscribableStore'
+import {AppStateForObject} from '../components/ComponentState2'
 
 type Props = { [p: string]: any }
 
@@ -7,6 +8,7 @@ export type StoredState = any
 const placeholder = function() {const placeholder = 0}
 placeholder.valueOf = () => undefined
 
+type MaybeInitable = { init?: (asi: AppStateForObject) => void }
 export default class AppStateStore {
 
     constructor(private store: SubscribableStore = new SubscribableStore()) {}
@@ -20,11 +22,29 @@ export default class AppStateStore {
         return state && this.itemProxy(id, state)
     }
 
-    getOrCreate<T>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
+    getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
         const existingState = this.getRaw(id)
         let targetState = existingState
         if (existingState === null || existingState === undefined) {
             const initialState = new stateClass(stateProps)
+            if (typeof initialState.init === 'function') {
+                const store = this
+                const asi: AppStateForObject = {
+                    path: id,
+                    latest() {
+                        return store.get(id)
+                    },
+                    updateVersion(changes: object) {
+                        const latestState = store.getRaw(id)
+                        const updatedState = (latestState as any).withState(changes)
+                        store.setDeferNotifications(id, updatedState)
+                    },
+                    getChildState(subPath: string) {
+                        return store.get(id + '.' + subPath)
+                    }
+                }
+                initialState.init?.(asi)
+            }
             targetState = initialState
             this.setDeferNotifications(id, initialState)
         } else if (!existingState._matchesProps(stateProps)) {
@@ -70,13 +90,6 @@ export default class AppStateStore {
 
                 if (property in target) {
                     return target[property]
-                }
-
-                if (property === 'updateState') {
-                    const latestState = store.getRaw(path)
-                    return (changes: any) => {
-                        store.setDeferNotifications(path, (latestState as any).withState(changes))
-                    }
                 }
 
                 const childState = store.get(path + '.' + property)
