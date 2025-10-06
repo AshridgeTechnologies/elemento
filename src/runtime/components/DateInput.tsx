@@ -1,17 +1,17 @@
 import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'
 import {formControlStyles, getLabelWithRequired, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {definedPropertiesOf} from '../../util/helpers'
 import {SxProps} from '@mui/material'
-import {useObject} from '../appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import {use$state} from '../state/appStateHooks'
 
-type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean> }
+type Properties = { path: string, label?: PropVal<string>, readOnly?: PropVal<boolean>, initialValue?: Date, dataType?: DateType}
 
 export const DateInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -48,8 +48,9 @@ export default function DateInput({path, ...props}: Properties) {
     const {label, readOnly, show, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state = useObject<DateInputState>(path)
-    const {value, dataType} = state
+    const {initialValue, dataType} = props
+    const state = use$state(path, DateInputState, {initialValue, dataType})
+    const {value} = state
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const optionalProps = definedPropertiesOf({label: labelWithRequired})
     const inputComponentProps = propsForInputComponent(dataType, styles)
