@@ -19,7 +19,7 @@ import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
-type Properties = BaseInputComponentProperties & {initialValue?: number, dataType?: NumberType}
+type Properties = BaseInputComponentProperties & {initialValue?: number, dataType?: NumberType | DecimalType}
 
 const decPlaces = (dataType: BaseType<any, any> | undefined) => dataType?.kind === 'Decimal' ? (dataType as DecimalType).decimalPlaces : undefined
 

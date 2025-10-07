@@ -31,7 +31,7 @@ test('TextInput element produces output with properties supplied as state object
     const {el} = testContainer(textInput('app.page1.widget1', {
         initialValue: 'Hello!',
         label: new TextInputState({initialValue: 'Item Description'}),
-        readOnly: new TrueFalseInputState({value: true})
+        readOnly: new TrueFalseInputState({initialValue: true})
     }))
     expect(el`app.page1.widget1`.readOnly).toBe(true)
     expect(el`label[for="app.page1.widget1"]`.innerHTML).toBe('Item Description')
