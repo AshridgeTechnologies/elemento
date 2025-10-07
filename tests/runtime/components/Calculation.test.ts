@@ -3,7 +3,7 @@
  */
 import {expect, test, vi} from "vitest"
 import {Calculation} from '../../../src/runtime/components/index'
-import {testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 import {testContainer} from '../../testutil/rtlHelpers'

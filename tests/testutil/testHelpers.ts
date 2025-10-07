@@ -13,6 +13,7 @@ import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext
 import {setObject} from '../../src/runtime/appStateHooks'
 import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
+import {AppStateForObject as AppStateForObject2} from '../../src/runtime/components/ComponentState2'
 import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
 import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
 import {default as AppStateStore2} from '../../src/runtime/state/AppStateStore'
@@ -199,6 +200,26 @@ export const testAppInterface = (path: string, initialVersion: any, childStateVa
     }
 
     initialVersion.init(appInterface, path)
+    return appInterface
+}
+
+export const testAppInterfaceNew = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject2 => {
+    let _latest: any = initialVersion
+
+    const appInterface: AppStateForObject2 = {
+        path: path,
+        latest() {
+            return _latest
+        },
+        updateVersion: vi.fn().mockImplementation((changes: object) => {
+            _latest = _latest.withMergedState(changes)
+            _latest.init(appInterface, path)
+        }),
+        getChildState: (subPath: string) => childStateValues[subPath as keyof object],
+
+    }
+
+    initialVersion.init(appInterface)
     return appInterface
 }
 
