@@ -125,10 +125,6 @@ export class CalculationState extends BaseComponentState<ExternalStateProperties
         return this.props.whenTrueAction
     }
 
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.initialValue, newObj.props.initialValue) && this.props.whenTrueAction === newObj.props.whenTrueAction
-    }
-
     checkTriggered() {
         if (!this.whenTrueAction) return
         const currentValueTruthy = !!this.value

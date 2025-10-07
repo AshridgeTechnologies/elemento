@@ -183,24 +183,6 @@ test('State class has correct properties and functions', () => {
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
 })
 
-test('State class compares values as objects', () => {
-    const state1 = new DataTypeFormState({initialValue: {Description: 'Big', BoxSize: 17}})
-    const state2 = new DataTypeFormState({initialValue: {Description: 'Big', BoxSize: 17}})
-    const state3 = new DataTypeFormState({initialValue: {Description: 'Small', BoxSize: 17}})
-
-    expect(state1.updateFrom(state2)).toBe(state1)
-    expect(state1.updateFrom(state3)).toStrictEqual(state3)
-})
-
-test('State class compares data types as objects', () => {
-    const state1 = new DataTypeFormState({dataType: new RecordType('rt1', {description: 'Desc 1'}, [], [])})
-    const state2 = new DataTypeFormState({dataType: new RecordType('rt1', {description: 'Desc 1'}, [], [])})
-    const state3 = new DataTypeFormState({dataType: new RecordType('rt1', {description: 'Desc 2'}, [], [])})
-
-    expect(state1.updateFrom(state2)).toBe(state1)
-    expect(state1.updateFrom(state3)).toStrictEqual(state3)
-})
-
 test.skip('State class uses states of child objects where present', () => {
     const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}})
     const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})

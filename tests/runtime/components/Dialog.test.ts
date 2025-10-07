@@ -1,16 +1,14 @@
-import {expect, test} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, test} from 'vitest'
 import {createElement} from 'react'
 import {Dialog, TextElement} from '../../../src/runtime/components'
-import {wrappedTestElement} from '../../testutil/testHelpers'
-import {DialogState} from '../../../src/runtime/components/Dialog'
+import {wrappedTestElementNew} from '../../testutil/testHelpers'
 import {actWait} from '../../testutil/rtlHelpers'
 import {fireEvent, render} from '@testing-library/react'
 
-
-const [dialog, appStoreHook] = wrappedTestElement(Dialog, DialogState)
+const [dialog, appStoreHook] = wrappedTestElementNew(Dialog)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
@@ -18,22 +16,21 @@ const text1 = createElement(TextElement, {path: 'app.page1.things.text1', styles
 const text2 = createElement(TextElement, {path: 'app.page1.things.text2', styles: {width: 300, bottom: 10, right: 34}, content: 'Second text'} )
 
 test('Dialog element shows dialog when initially closed', () => {
-    const element = dialog('app.page1.confirmIt', {}, {styles: {color: 'red'}}, text1, text2)
+    const element = dialog('app.page1.confirmIt', {styles: {color: 'red'}}, text1, text2)
     const { baseElement } = render(element)
     expect(baseElement).toMatchSnapshot();
 })
 
 test('Dialog element shows dialog when initially open',() => {
-    const element = dialog('app.page1.confirmIt', {initiallyOpen: true}, {layout: 'vertical', styles: {color: 'red'}}, text1)
+    const element = dialog('app.page1.confirmIt', {initiallyOpen: true, layout: 'vertical', styles: {color: 'red'}}, text1)
     const { baseElement } = render(element)
     expect(baseElement).toMatchSnapshot()
 })
 
 test('Dialog can be closed and opened via state object', async () => {
     let queryByText: any
-    const element = dialog('app.page1.confirmIt', {}, {}, text1)
+    const element = dialog('app.page1.confirmIt', {}, text1)
     await actWait( () => ({queryByText} = render(element)))
-    await actWait( () => appStoreHook.setStateAt('app.page1.confirmIt', new DialogState({})))
 
     expect(queryByText('First text')).toBe(null)
     expect(stateAt('app.page1.confirmIt').isOpen).toBe(false)
@@ -49,7 +46,7 @@ test('Dialog can be closed and opened via state object', async () => {
 
 test('Dialog can be closed by close button', async () => {
     let queryByText: any, getByTestId: any
-    const element = dialog('app.page1.confirmIt', {initiallyOpen: true}, {showCloseButton: true}, text1)
+    const element = dialog('app.page1.confirmIt', {initiallyOpen: true, showCloseButton: true}, text1)
     await actWait( () => ({queryByText, getByTestId} = render(element)))
 
     expect(queryByText('First text')).not.toBe(null)

@@ -1,148 +1,114 @@
-import {expect, test} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, test} from "vitest"
 import {Data} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {snapshot, testAppInterfaceNew as testAppInterface, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
-import {DataState} from '../../../src/runtime/components/Data'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
-const [data, appStoreHook] = wrappedTestElement(Data, DataState)
+const [data, appStoreHook] = wrappedTestElementNew(Data)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
+const theStore = new AppStateStore()
+let idSeq = 1
+const createState = (props: object) => theStore.getOrCreate((idSeq++).toString(), Data.State, props)
+
 test('Data element produces output with simple value',
-    snapshot(data('app.page1.data1', {value: 'Hi there!'}, {display: true}))
+    snapshot(data('app.page1.data1', {initialValue: 'Hi there!', display: true}))
 )
 
 test('Data element produces output with record value',
-    snapshot(data('app.page1.data2', {value: {a: 10, b: 'Bee1', c: true}}, {display: true}))
+    snapshot(data('app.page1.data2', {initialValue: {a: 10, b: 'Bee1', c: true}, display: true}))
 )
 
 test('Data element produces empty output with default value for display', () => {
-    const {container} = render(data('app.page1.height', {value: 'Hi!'}))
+    const {container} = render(data('app.page1.height', {initialValue: 'Hi!'}))
     expect(container.innerHTML).toBe('')
 })
 
-test('Set returns correct update', () => {
-    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface('testPath', state)
+test('Set replaces value', () => {
+    const state = createState({initialValue: {a: 10, b: 'Bee1', c: true}})
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Set({a:20, b:'Cee'})
-    const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
-    expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
-    expect(state.value).toStrictEqual({a:20, b:'Cee'})
+    expect(state.latest().value).toStrictEqual({a:20, b:'Cee'})
 })
 
-test('Reset returns correct update', () => {
-    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})._withStateForTest({value: {a:5, c:'Cee'}})
-    const appInterface = testAppInterface('testPath', state)
-    expect(state.value).toStrictEqual({a:5, c:'Cee'})
+test('Reset returns to initial value', () => {
+    const state = createState({initialValue: {a: 10, b: 'Bee1', c: true}})
+    state.updateState({value: {a:5, c:'Cee'}})
+    expect(state.latest().value).toStrictEqual({a:5, c:'Cee'})
 
     state.Set({a:20, b:'Cee'})
-    const expectedState = state._withStateForTest({value: {a:20, b:'Cee'}})
-    expect(expectedState.value).toStrictEqual({a:20, b:'Cee'})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee'}})
-    expect(state.value).toStrictEqual({a:20, b:'Cee'})
+    expect(state.latest().value).toStrictEqual({a:20, b:'Cee'})
 
     state.Reset()
-    const expectedState2 = state._withStateForTest({value: undefined})
-    expect(expectedState2.value).toStrictEqual({a: 10, b: 'Bee1', c: true}) //initial value
-    expect(appInterface.updateVersion).toHaveBeenLastCalledWith({value: undefined})
-    expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
+    expect(state.latest().value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 })
 
-test('Set returns correct update for array', () => {
-    const state = new Data.State({value: []})
-    const appInterface = testAppInterface('testPath', state)
+test('Set can set array', () => {
+    const state = createState({initialValue: []})
     expect(state.value).toStrictEqual([])
 
     state.Set(['a', 20])
-    const expectedState = state._withStateForTest({value: ['a', 20]})
-    expect(expectedState.value).toStrictEqual(['a', 20])
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: ['a', 20]})
-    expect(state.value).toStrictEqual(['a', 20])
+    expect(state.latest().value).toStrictEqual(['a', 20])
 })
 
-test('Update returns correct update for object', () => {
-    const state = new Data.State({value: {a: 10, b: 'Bee1', c: true}})
-    const appInterface = testAppInterface('testPath', state)
+test('Update changes only props given', () => {
+    const state = createState({initialValue: {a: 10, b: 'Bee1', c: true}})
     expect(state.value).toStrictEqual({a: 10, b: 'Bee1', c: true})
 
     state.Update({a:20, b:'Cee'})
-    const expectedState = state._withStateForTest({value: {a:20, b:'Cee', c: true}})
-    expect(expectedState.value).toStrictEqual({a:20, b:'Cee', c: true})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {a:20, b:'Cee', c: true}})
+    expect(state.latest().value).toStrictEqual({a:20, b:'Cee', c: true})
 })
 
-test('Update returns correct update for array', () => {
-    const state = new Data.State({value: [10, 20, 30]})
-    const appInterface = testAppInterface('testPath', state)
+test('Update can update an array', () => {
+    const state = createState({initialValue: [10, 20, 30]})
     expect(state.value).toStrictEqual([10, 20, 30])
 
     state.Update({0:99, '2':'Cee'})
-    const expectedState = state._withStateForTest({value: [99, 20, 'Cee']})
-    expect(expectedState.value).toStrictEqual([99, 20, 'Cee'])
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: [99, 20, 'Cee']})
+    expect(state.latest().value).toStrictEqual([99, 20, 'Cee'])
 })
 
 test('valueOf returns the value', () => {
-    const value = {a: 10, b: 'Bee1', c: true}
-    const state = new Data.State({value})
-    expect(state.valueOf()).toBe(value)
+    const initialValue = {a: 10, b: 'Bee1', c: true}
+    const state = new Data.State({initialValue})
+    expect(state.valueOf()).toBe(initialValue)
 })
 
 test('string conversion uses the value toString', () => {
-    const value = [1, 2, 3]
-    const state = new Data.State({value})
+    const initialValue = [1, 2, 3]
+    const state = new Data.State({initialValue})
     expect('x' + state).toBe('x1,2,3')
 })
 
 test('properties of the value are copied onto the Data instance', () => {
-    const value = {a: 10, b: 'Bee1', c: true}
-    const state = new Data.State({value}) as any
+    const initialValue = {a: 10, b: 'Bee1', c: true}
+    const state = new Data.State({initialValue}) as any
     expect(state.a).toBe(10)
     expect(state.b).toBe('Bee1')
     expect(state.c).toBe(true)
 })
 
 test('no properties are copied onto the Data instance for a null value', () => {
-    const state = new Data.State({value: null})
+    const state = new Data.State({initialValue: null})
     expect(state.value).toBe(null)
 })
 
 test('no properties are copied onto the Data instance for a primitive value', () => {
-    const propNamesWithNull = Object.getOwnPropertyNames(new Data.State({value: null}))
-    const state = new Data.State({value: 42})
+    const propNamesWithNull = Object.getOwnPropertyNames(new Data.State({initialValue: null}))
+    const state = new Data.State({initialValue: 42})
     expect(state.value).toBe(42)
     const propNamesWith42 = Object.getOwnPropertyNames(state)
     expect(propNamesWith42).toStrictEqual(propNamesWithNull)
 })
 
-test('does deep compare on value in props', () => {
-    {
-        const state1 = new Data.State({value: {}})
-        const state2 = new Data.State({value: {}})
-        expect(state1.updateFrom(state2)).toBe(state1)
-    }
-    {
-        const state1 = new Data.State({value: {a: 10}})
-        const state2 = new Data.State({value: {a: 10}})
-        expect(state1.updateFrom(state2)).toBe(state1)
-    }
-    {
-        const state1 = new Data.State({value: {a: 10}})
-        const state2 = new Data.State({value: {a: 10, b: 20}})
-        expect(state1.updateFrom(state2)).not.toBe(state1)
-    }
-})
-
 test('properties of the value are copied onto the Data instance after an update', () => {
-    const value = {a: 10, b: 'Bee1', c: true}
+    const initialValue = {a: 10, b: 'Bee1', c: true}
     // @ts-ignore
-    const state = new Data.State({value}).withState({value: {b: 'Bee2', c: false, d: '99'}}) as any
+    const state = new Data.State({initialValue}).withState({value: {b: 'Bee2', c: false, d: '99'}}) as any
     expect(state.a).toBe(undefined)
     expect(state.b).toBe('Bee2')
     expect(state.c).toBe(false)

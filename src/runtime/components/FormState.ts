@@ -27,13 +27,13 @@ const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): St
         return new NumberInputState({dataType: type, initialValue: value as PropVal<BigNumber>})
     }
     if (type instanceof ChoiceType) {
-        return new SelectInputState({dataType: type, value: value as PropVal<string>})
+        return new SelectInputState({dataType: type, initialValue: value as PropVal<string>})
     }
     if (type instanceof TrueFalseType) {
-        return new TrueFalseInputState({dataType: type, value: value as PropVal<boolean>})
+        return new TrueFalseInputState({dataType: type, initialValue: value as PropVal<boolean>})
     }
     if (type instanceof DateType) {
-        return new DateInputState({dataType: type, value: value as PropVal<Date>})
+        return new DateInputState({dataType: type, initialValue: value as PropVal<Date>})
     }
     if (type instanceof RecordType) {
         return new DataTypeFormState({dataType: type, initialValue: value as PropVal<object>})
@@ -85,11 +85,6 @@ export default abstract class BaseFormState<T extends object = object> extends I
         const selfErrors = mergeDeepRight(ownErrors, submitErrors ?? {})
         const allErrors = {...selfErrors, ...componentErrors, }
         return Object.keys(allErrors).length ? allErrors : null
-    }
-
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.initialValue, newObj.props.initialValue)
-            && equals(this.props.dataType, newObj.props.dataType)
     }
 
     private valueFromChildren(names: string[] = this.fieldNames) {

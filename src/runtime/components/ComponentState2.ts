@@ -14,8 +14,6 @@ export interface AppStateForObject {
 export interface ComponentState<T> {
     init(asi: AppStateForObject): void
 
-    updateFrom(newObj: T): T
-
     withMergedState(changes: object): T
 
     latest(): T
@@ -62,10 +60,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     updateState(changes: Partial<typeof this.state>) {
         this._appStateInterface!.updateVersion(changes)
     }
-    updateFrom(newObj: this): this {
-        const sameType = this.constructor === newObj.constructor
-        return sameType && this.isEqualTo(newObj) ? this : newObj.withState(this.state)
-    }
 
     latest(): this {
         return this._appStateInterface!.latest() as unknown as this
@@ -88,10 +82,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     private get thisConstructor(): any { return this.constructor as any }
-
-    protected isEqualTo(newObj: this) {
-        return shallow(this.props, newObj.props)
-    }
 
     private copy(props: ExternalProps, state: WithChildStates<StateProps>): this {
         const newVersion = new this.thisConstructor(props) as this

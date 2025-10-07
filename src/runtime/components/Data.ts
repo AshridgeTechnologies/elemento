@@ -1,18 +1,19 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
+import {BaseComponentState, ComponentState, WithChildStates} from './ComponentState2'
 import {clone} from 'radash'
 import lodash from 'lodash'
 import {shallow} from 'zustand/shallow'
 import {equals, omit} from 'ramda'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 const {isPlainObject} = lodash
 
-type Properties = {path: string, display?: boolean}
-type StateProperties = {value: any}
+type Properties = {path: string, initialValue: any, display?: boolean}
+type StateExternalProperties = {initialValue: any}
+type StateInternalProperties = {value: any}
 
 const DataSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -52,17 +53,17 @@ export const DataMetadata = {
     stateProps: ['initialValue']
 }
 
-export default function Data({path, display = false}: Properties) {
-    const state = useObject<DataState>(path)
+export default function Data({path, initialValue, display = false}: Properties) {
+    const state = use$state(path, DataState, {initialValue})
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null
 }
 
-export class DataState extends BaseComponentState<StateProperties>
+export class DataState extends BaseComponentState<StateExternalProperties, StateInternalProperties>
     implements ComponentState<DataState>{
 
-    constructor(props: StateProperties, exposeProps = true) {
+    constructor(props: StateExternalProperties, exposeProps = true) {
         super(props)
         if (exposeProps) this.exposeValueProperties()
     }
@@ -72,18 +73,11 @@ export class DataState extends BaseComponentState<StateProperties>
         this.updateState({value})
     }
 
-    protected withState(state: WithChildStates<StateProperties>) {
+    public withState(state: WithChildStates<StateInternalProperties>) {
         const newVersion = new DataState(this.props, false)
-        newVersion.state = state
+        newVersion.state = {...state}
         newVersion.exposeValueProperties()
         return newVersion as this
-    }
-
-    protected isEqualTo(newObj: this) {
-        const thisSimpleProps = omit(['value'], this.props)
-        const newSimpleProps = omit(['value'], newObj.props)
-        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
-        return simplePropsMatch && equals(this.props.value, newObj.props.value)
     }
 
     private exposeValueProperties() {
@@ -94,7 +88,7 @@ export class DataState extends BaseComponentState<StateProperties>
     }
 
     get value() {
-        return this.state.value !== undefined ? this.state.value : this.props.value
+        return this.state.value !== undefined ? this.state.value : this.props.initialValue
     }
 
     valueOf() {
