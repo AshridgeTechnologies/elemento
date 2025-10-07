@@ -11,12 +11,10 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {noop} from 'lodash'
-import {useObject} from '../appStateHooks'
 import {omit} from 'ramda'
 import {Definitions} from '../../model/schema'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {use$state} from '../state/appStateHooks'
-import {NumberInputState} from './NumberInput'
 
 type Properties = BaseInputComponentProperties & {initialValue?: boolean, dataType?: TrueFalseType}
 

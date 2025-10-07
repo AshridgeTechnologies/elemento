@@ -3,17 +3,17 @@ import {SxProps, TextField} from '@mui/material'
 import yaml from 'js-yaml'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState} from './ComponentState2'
 import {isArray, isObject} from 'radash'
 import {equals, pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
 
 
-type Properties = Readonly<{path: string, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
-type ExternalStateProperties = Partial<Readonly<{value: any, whenTrueAction: () => void}>>
+type Properties = Readonly<{path: string, initialValue: any, whenTrueAction: () => void, label?: PropVal<string>, show?: PropVal<boolean>, styles?: StylesPropVals}>
+type ExternalStateProperties = Partial<Readonly<{initialValue: any, whenTrueAction: () => void}>>
 type InternalStateProperties = Partial<Readonly<{previousValueTruthy: any}>>
 
 const isObjOrArray = (value: any) => isObject(value) ?? isArray(value)
@@ -84,7 +84,8 @@ export default function Calculation({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
 
-    const state: CalculationState = useObject(path)
+    const {initialValue, whenTrueAction} = props
+    const state = use$state(path, CalculationState, {initialValue, whenTrueAction})
     const {value} = state
     setTimeout( () => state.latest().checkTriggered(), 0)
     const multiline = true
@@ -113,7 +114,7 @@ export class CalculationState extends BaseComponentState<ExternalStateProperties
     // 'calculation' is called value in the state object to be consistent with input elements
     // AND so it will work with Form
     get value() {
-        return valueOf(this.props.value)
+        return valueOf(this.props.initialValue)
     }
 
     private get previousValueTruthy(): boolean {
@@ -125,7 +126,7 @@ export class CalculationState extends BaseComponentState<ExternalStateProperties
     }
 
     protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.value, newObj.props.value) && this.props.whenTrueAction === newObj.props.whenTrueAction
+        return equals(this.props.initialValue, newObj.props.initialValue) && this.props.whenTrueAction === newObj.props.whenTrueAction
     }
 
     checkTriggered() {
