@@ -25,8 +25,8 @@ export default class AppStateStore {
     getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
         const existingState = this.getRaw(id)
         let targetState = existingState
-        if (existingState === null || existingState === undefined) {
-            const initialState = new stateClass(stateProps)
+
+        const initIfNeeded = (initialState: T) => {
             if (typeof initialState.init === 'function') {
                 const store = this
                 const asi: AppStateForObject = {
@@ -43,12 +43,18 @@ export default class AppStateStore {
                         return store.get(id + '.' + subPath)
                     }
                 }
-                initialState.init?.(asi)
+                initialState.init(asi)
             }
+        }
+
+        if (existingState === null || existingState === undefined) {
+            const initialState = new stateClass(stateProps)
+            initIfNeeded(initialState)
             targetState = initialState
             this.setDeferNotifications(id, initialState)
         } else if (!existingState._matchesProps(stateProps)) {
             const updatedState = (existingState as any).withProps(stateProps)
+            initIfNeeded(updatedState)
             targetState = updatedState
             this.setDeferNotifications(id, updatedState)
         }

@@ -1,4 +1,4 @@
-import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
+import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
 import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
 import {testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
@@ -7,6 +7,8 @@ import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {TinyBaseDataStoreState} from '../../../src/runtime/components/TinyBaseDataStore'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
+
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
@@ -757,10 +759,10 @@ describe.sequential('through TinyBaseDataStoreState', () => {
 
         const localItem = (store: TinyBaseDataStoreState, id: string) => store.getById(collectionName, id, true)
         const serverItem = (dbName: string, id: string) => callStore(dbType, dbName, 'getById', collectionName, id, true)
-
         const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
-        const storeState = new TinyBaseDataStoreState(storeProps)
-        const appInterface = testAppInterface('path1', storeState)
+
+        const theStore = new AppStateStore()
+        const storeState = theStore.getOrCreate('id1', TinyBaseDataStoreState, storeProps)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)
@@ -769,8 +771,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
         expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
         expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
 
-        const storeState2 = storeState.updateFrom(new TinyBaseDataStoreState(storePropsDb2))
-        const appInterface2 = testAppInterface('path1', storeState2)
+        const storeState2 = theStore.getOrCreate('id1', TinyBaseDataStoreState, storePropsDb2)
         // @ts-ignore
         await(storeState2.state.initialisedDataStore)
         expect(await localItem(storeState2, id)).toBe(null)

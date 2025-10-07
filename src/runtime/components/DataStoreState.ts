@@ -1,6 +1,6 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
 
 type StateProperties = {dataStore?: DataStore, initialisedDataStore?: Promise<DataStore>}
 
@@ -13,8 +13,8 @@ export abstract class DataStoreState<PropsType extends object> extends BaseCompo
         super(props)
     }
 
-    init(asi: AppStateForObject, path: string) {
-        super.init(asi, path)
+    init(asi: AppStateForObject) {
+        super.init(asi)
         const dataStoreClosed = this.closeDataStore()
         this.state.dataStore = this.createDataStore()
         this.state.initialisedDataStore = dataStoreClosed.then( () => this.initDataStore() )
