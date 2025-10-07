@@ -1,7 +1,7 @@
 import React, {ChangeEvent, createElement, FocusEvent} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
 import {TrueFalseType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -15,8 +15,10 @@ import {useObject} from '../appStateHooks'
 import {omit} from 'ramda'
 import {Definitions} from '../../model/schema'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {use$state} from '../state/appStateHooks'
+import {NumberInputState} from './NumberInput'
 
-type Properties = BaseInputComponentProperties
+type Properties = BaseInputComponentProperties & {initialValue?: boolean, dataType?: TrueFalseType}
 
 export const TrueFalseInputSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -53,9 +55,9 @@ export default function TrueFalseInput({path, ...props}: Properties) {
     const {label = '', readOnly, show, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
 
-    const state = useObject<TrueFalseInputState>(path)
-    const {dataValue, dataType} = state
-    const value = dataValue ?? false
+    const {initialValue, dataType} = props
+    const state = use$state(path, TrueFalseInputState, {initialValue, dataType})
+    const value = state.dataValue ?? false
     const labelWithRequired = getLabelWithRequired(dataType, label)
     const inputComponentProps = propsForInputComponent(dataType, styles)
     const inputComponentPropsForCheckbox = omit(['endAdornment'], inputComponentProps.InputProps)

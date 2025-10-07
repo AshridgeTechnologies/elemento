@@ -73,7 +73,7 @@ export default function NumberInput({path, ...props}: Properties) {
     const sx = sxPropsForFormControl(styles, show, {minWidth: 120, flex: 0})
 
     const {initialValue, dataType} = props
-    const state: NumberInputState = use$state(path, NumberInputState, {initialValue, dataType})
+    const state = use$state(path, NumberInputState, {initialValue, dataType})
     const {dataValue} = state
 
     const formatValue = () => {
