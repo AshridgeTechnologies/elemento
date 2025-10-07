@@ -1,4 +1,3 @@
-import {shallow} from 'zustand/shallow'
 import {StoredState} from '../AppStateStore'
 import {equals} from 'ramda'
 

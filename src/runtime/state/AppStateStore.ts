@@ -8,7 +8,7 @@ export type StoredState = any
 const placeholder = function() {const placeholder = 0}
 placeholder.valueOf = () => undefined
 
-type MaybeInitable = { init?: (asi: AppStateForObject) => void }
+export type MaybeInitable = { init?: (asi: AppStateForObject) => void }
 export default class AppStateStore {
 
     constructor(private store: SubscribableStore = new SubscribableStore()) {}
@@ -36,7 +36,7 @@ export default class AppStateStore {
                     },
                     updateVersion(changes: object) {
                         const latestState = store.getRaw(id)
-                        const updatedState = (latestState as any).withState(changes)
+                        const updatedState = (latestState as any).withMergedState(changes)
                         store.setDeferNotifications(id, updatedState)
                     },
                     getChildState(subPath: string) {

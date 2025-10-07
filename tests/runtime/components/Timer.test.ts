@@ -1,16 +1,17 @@
-import {expect, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, test, vi} from 'vitest'
 import {Timer} from '../../../src/runtime/components/index'
-import {testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {createStateFn, testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 import {testContainer} from '../../testutil/rtlHelpers'
-import {TimerState} from '../../../src/runtime/components/Timer'
 
-const [timer, appStoreHook] = wrappedTestElement(Timer, TimerState)
+const [timer, appStoreHook] = wrappedTestElementNew(Timer)
 const stateAt = (path: string) => appStoreHook.stateAt(path)
+
+const createState = createStateFn(Timer.State)
 
 // Start of possible technique for mocking time, but also uses Date AND requestAnimationFrame only runs the callback once
 // let rafCallback: FrameRequestCallback
@@ -24,10 +25,11 @@ const stateAt = (path: string) => appStoreHook.stateAt(path)
 // }
 
 test('Timer element produces output with properties supplied', () => {
-    const {container} = render(timer('app.page1.timer', {period: 10}, {
-            styles: {width: 23},
-            label: 'Time Left'
-        }))
+    const {container} = render(timer('app.page1.timer', {
+        period: 10,
+        styles: {width: 23},
+        label: 'Time Left'
+    }))
     expect(container.innerHTML).toMatchSnapshot()
 })
 
@@ -39,7 +41,7 @@ test('Timer element produces output with default values where properties omitted
 )
 
 test.skip('Timer shows elapsed time value', async () => {
-    const {el} = testContainer(timer('app.page1.timer1', {show: true}, {period: 0.2, interval: 0.1}))
+    const {el} = testContainer(timer('app.page1.timer1', {show: true, period: 0.2, interval: 0.1}))
     stateAt('app.page1.timer1').Start()
     await wait(120)
     expect(el`app.page1.timer1`.textContent).toBe('0.10')
@@ -81,8 +83,7 @@ test('Has correct output properties before started', () => {
 })
 
 test('Has correct output properties immediately after started', () => {
-    const state = new Timer.State({period: 2, interval: 0.05 })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 2, interval: 0.05 })
     const startTime = new Date()
     state.Start()
     const updatedState = state.latest()
@@ -97,8 +98,7 @@ test('Has correct output properties immediately after started', () => {
 })
 
 test('Has correct output properties immediately after started without fixed period', () => {
-    const state = new Timer.State({ interval: 0.05, intervalAction: vi.fn(), endAction: vi.fn() })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({ interval: 0.05, intervalAction: vi.fn(), endAction: vi.fn() })
     const startTime = new Date()
     state.Start()
     const updatedState = state.latest()
@@ -114,10 +114,10 @@ test('Has correct output properties immediately after started without fixed peri
 
 test('Calls interval action while running', async () => {
     const intervalAction = vi.fn()
-    const state = new Timer.State({period: 2, interval: 0.03, intervalAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 2, interval: 0.03, intervalAction })
     const startTime = new Date()
     state.Start()
+    expect(state.latest().startTime?.getTime()).toBeCloseTo(startTime.getTime())
     await wait(80)  // 2 intervals
     const updatedState = state.latest()
     expect(updatedState.startTime?.getTime()).toBeCloseTo(startTime.getTime())
@@ -134,8 +134,7 @@ test('Calls interval action while running', async () => {
 
 test('Has correct output properties if start called while running', async () => {
     const intervalAction = vi.fn()
-    const state = new Timer.State({period: 2, interval: 0.03, intervalAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 2, interval: 0.03, intervalAction })
     const startTime = new Date()
     state.Start()
     await wait(80)  // 2 intervals
@@ -156,8 +155,7 @@ test('Has correct output properties if start called while running', async () => 
 })
 
 test('Has correct output properties while running without fixed period ', async () => {
-    const state = new Timer.State({interval: 0.03, intervalAction: vi.fn(), endAction: vi.fn() })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.03, intervalAction: vi.fn(), endAction: vi.fn() })
     const startTime = new Date()
     state.Start()
     await wait(80)  // 2 intervals
@@ -174,8 +172,7 @@ test('Has correct output properties while running without fixed period ', async 
 
 test('Has correct output properties while running without fixed interval or period', async () => {
     const intervalAction = vi.fn()
-    const state = new Timer.State({intervalAction, endAction: vi.fn() })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({intervalAction, endAction: vi.fn() })
     const startTime = new Date()
     state.Start()
     await wait(36)
@@ -193,8 +190,7 @@ test('Has correct output properties while running without fixed interval or peri
 
 test('Has correct output properties while running with period but no fixed interval', async () => {
     const intervalAction = vi.fn()
-    const state = new Timer.State({period: 3, intervalAction, endAction: vi.fn() })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 3, intervalAction, endAction: vi.fn() })
     const startTime = new Date()
     state.Start()
     await wait(34)
@@ -212,8 +208,7 @@ test('Has correct output properties while running with period but no fixed inter
 
 test('Has correct output properties and calls to actions when finished', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({period: 0.09, interval: 0.03, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 0.09, interval: 0.03, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(120)  // should be finished
@@ -236,8 +231,7 @@ test('Has correct output properties and calls to actions when finished', async (
 
 test('Has correct output properties and calls to actions when finished with incomplete interval', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({period: 0.075, interval: 0.03, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 0.075, interval: 0.03, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(95)  // 2 intervals and finished
@@ -260,8 +254,7 @@ test('Has correct output properties and calls to actions when finished with inco
 
 test('Has correct output properties and calls to actions when finished with no fixed interval', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({period: 0.06, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 0.06, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(85)  // finished
@@ -282,8 +275,7 @@ test('Has correct output properties and calls to actions when finished with no f
 
 test('Has correct output properties and calls after Stop', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({interval: 0.03, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.03, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(80)  // 2 intervals
@@ -305,14 +297,13 @@ test('Has correct output properties and calls after Stop', async () => {
     await wait(30)  //make sure nothing else happens
     expect(intervalAction).toHaveBeenCalledTimes(2)
     expect(endAction).not.toHaveBeenCalled()
-    expect(state.latest()).toBe(stateAfterStop)
+    expect(state.latest()).toStrictEqual(stateAfterStop)
     expect(stateAfterStop.elapsedTime).toBeCloseTo(0.08, 2)
 })
 
 test('Stop, Stop again and Start without Reset', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({interval: 0.05, period: 1.0, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.05, period: 1.0, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(115)  // 2 intervals
@@ -343,8 +334,7 @@ test('Stop, Stop again and Start without Reset', async () => {
 
 test('Stop, Start again without Reset', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({interval: 0.05, period: 1.0, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.05, period: 1.0, intervalAction, endAction })
     const startTime = new Date()
     state.Start()
     await wait(115)  // 2 intervals
@@ -374,8 +364,7 @@ test('Stop, Start again without Reset', async () => {
 
 test('Stop, Reset, Start', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({interval: 0.03, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.03, intervalAction, endAction })
     state.Start()
     await wait(80)  // 2 intervals
 
@@ -406,8 +395,7 @@ test('Stop, Reset, Start', async () => {
 
 test('Reset while running', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({interval: 0.03, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({interval: 0.03, intervalAction, endAction })
     state.Start()
     await wait(50)  // 1 interval
 
@@ -429,8 +417,7 @@ test('Reset while running', async () => {
 
 test('Has correct output properties and calls to actions when finished after Stop and re-Start', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({period: 0.15, interval: 0.06, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 0.15, interval: 0.06, intervalAction, endAction })
     state.Start()
     await wait(70)
     state.Stop()
@@ -456,8 +443,7 @@ test('Has correct output properties and calls to actions when finished after Sto
 
 test('Has correct output properties and calls to actions after Start, finish, Start again', async () => {
     const intervalAction = vi.fn(), endAction = vi.fn()
-    const state = new Timer.State({period: 0.15, interval: 0.06, intervalAction, endAction })
-    const appInterface = testAppInterface('testPath', state)
+    const state = createState({period: 0.15, interval: 0.06, intervalAction, endAction })
     state.Start()
     await wait(200)
     state.Start()

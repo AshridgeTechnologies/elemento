@@ -1,12 +1,12 @@
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import React, {useEffect, useState} from 'react'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState2'
 
 import * as SimpleKeyboard from 'react-simple-keyboard'
 import css from './ScreenKeyboard_css'
 import {sxProps} from './ComponentHelpers'
 import Box from '@mui/material/Box'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -118,7 +118,7 @@ export const ScreenKeyboardSchema: ElementSchema = {
 export default function ScreenKeyboard({path, ...props}: Properties) {
     const {keyAction, useRealKeyboard, show = true, styles = {}} = valueOfProps(props)
     const [layoutName, setLayoutName] = useState("lettersOnly")
-    const state = useObject<ScreenKeyboardState>(path)
+    const state = use$state(path, ScreenKeyboardState, {})
     useEffect(() => insertStyleElement('ScreenKeyboardCss', css), [])
     useEffect(() => {
         if (useRealKeyboard) {
@@ -181,14 +181,14 @@ export class ScreenKeyboardState extends BaseComponentState<ExternalStateProps, 
             }
         }
         const value = updatedValue(this.latest().value, key)
-        this.latest().updateState({value})
+        this.updateState({value})
 
     }
 
     toString() { return String(this.value) }
 
     Reset() {
-        this.latest().updateState({value: undefined})
+        this.updateState({value: undefined})
     }
 }
 

@@ -16,8 +16,9 @@ import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {AppStateForObject as AppStateForObject2} from '../../src/runtime/components/ComponentState2'
 import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
 import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
-import {default as AppStateStore2} from '../../src/runtime/state/AppStateStore'
+import {default as AppStateStore2, MaybeInitable} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
+import {Data} from '../../src/runtime/components'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -254,6 +255,11 @@ function testAppStoreHook2() {
     return hook as AppStoreHook2
 }
 
+export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: any[]) => T) => {
+    const theStore = new AppStateStore2()
+    let idSeq = 1
+    return (props: object) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
+}
 const TestWrapper = <State extends object>({
                                                       path,
                                                       state,

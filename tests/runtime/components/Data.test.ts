@@ -3,18 +3,13 @@
  */
 import {expect, test} from "vitest"
 import {Data} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterfaceNew as testAppInterface, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {createStateFn, snapshot, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
-import AppStateStore from '../../../src/runtime/state/AppStateStore'
+import {DataState} from '../../../src/runtime/components/Data'
 
-const [data, appStoreHook] = wrappedTestElementNew(Data)
+const [data] = wrappedTestElementNew(Data)
 
-const stateAt = (path: string) => appStoreHook.stateAt(path)
-
-const theStore = new AppStateStore()
-let idSeq = 1
-const createState = (props: object) => theStore.getOrCreate((idSeq++).toString(), Data.State, props)
-
+const createState = createStateFn(DataState)
 test('Data element produces output with simple value',
     snapshot(data('app.page1.data1', {initialValue: 'Hi there!', display: true}))
 )
