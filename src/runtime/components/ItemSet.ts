@@ -1,11 +1,10 @@
 import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
-import {equals, isNil, last, omit, range, reverse, without} from 'ramda'
+import {BaseComponentState, ComponentState} from './ComponentState2'
+import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
-import {shallow} from 'zustand/shallow'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -20,7 +19,7 @@ type Properties = Readonly<{
     path: string,
     itemContentComponent: (props: { path: string, $item: any, $itemId: string, $index: number, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
-}>
+}> & StateProperties
 
 type StateProperties = Partial<Readonly<{
     items: PropVal<any[]>,
@@ -99,8 +98,8 @@ export const ItemSetMetadata: ElementMetadata = {
     stateProps: ['items', 'selectedItems', 'selectable', 'selectAction']
 }
 
-const ItemSet = function ItemSet({path, itemContentComponent}: Properties) {
-    const state: ItemSetState = useObject(path)
+const ItemSet = function ItemSet({path, itemContentComponent, items, selectable, selectedItems, selectAction}: Properties) {
+    const state = use$state(path, ItemSetState, {items, selectable, selectedItems, selectAction})
     const onClick: OnClickFn = (event:SyntheticMouseEvent, index: number) => {
         const {shiftKey, ctrlKey, metaKey} = event
         if (shiftKey) {
@@ -156,15 +155,9 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         return last(this.selectedItems) ?? null
     }
 
-    protected isEqualTo(newObj: this): boolean {
-        const otherProps = omit(['items'], this.props)
-        const otherNewProps = omit(['items'], newObj.props)
-        return equals(this.props.items, newObj.props.items) && shallow(otherProps, otherNewProps)
-    }
-
     _setSelectedItems(selectedItems: any) {
         const selectedItemIds = selectedItems ? asArray(valueOfOneLevel(selectedItems)).map( (it: any) => this.latest().findId(it)) : undefined
-        this.latest().updateState({selectedItemIds})
+        this.updateState({selectedItemIds})
     }
 
     Reset() {
