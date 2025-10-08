@@ -24,7 +24,7 @@ import {Definitions} from '../../model/schema'
 
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
-type Properties = {path: string, display?: boolean} & ExternalProperties
+type Properties = {path: string, display?: boolean} & Partial<ExternalProperties>
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
 type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction, subscribedDataStore: DataStore}>
 

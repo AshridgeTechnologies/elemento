@@ -9,13 +9,13 @@ import {type Notification, subscribeToNotifications} from './notifications'
 
 import {dndWrappedComponent} from './ComponentHelpers'
 import {ThemeProvider} from '@mui/material/styles'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
-import {InputComponentMetadata} from './InputComponentState'
+import {StateExternalProps} from './AppData'
 
 type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void,
-    messageAction?: ($sender: Window, $data: any) => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any}
+    messageAction?: ($sender: Window, $data: any) => void, cookieMessage?: string, faviconUrl?: string, children?: any, topChildren?: any} & StateExternalProps
 
 export const AppSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -142,8 +142,9 @@ function CookieMessage({path, message}: {path: string, message: string}) {
 }
 
 const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [],
-                                                      startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren}: Properties) {
-    const state: AppData = useObject(path)
+                                                      startupAction = noop, messageAction, cookieMessage, faviconUrl, children, topChildren,
+                                                  pages, urlContext, themeOptions}: Properties) {
+    const state  = use$state(path, AppData, {pages, urlContext, themeOptions})
     const {currentPage} = state
     const pagePath = path + '.' + currentPage.name
 

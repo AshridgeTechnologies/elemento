@@ -16,6 +16,7 @@ Needs
 - A Project contains a set of components
 - App and Page are just components
 - User-defined components are also just components
+- User defined components can have child elements if appropriate
 - Each component produces one code file
 - Each component is edited separately
 - Any component can be previewed individually

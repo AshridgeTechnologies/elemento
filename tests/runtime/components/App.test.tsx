@@ -4,24 +4,25 @@
 
 import {beforeEach, expect, test, vi} from "vitest"
 import React, {createElement} from 'react'
-import {componentJSON, mockReturn, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, mockReturn, testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
-import {setObject, useObject} from '../../../src/runtime/appStateHooks'
+import {use$state} from '../../../src/runtime/state/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 
 import UrlContext, {DefaultUrlContext, UrlType} from '../../../src/runtime/UrlContext'
 import Url from '../../../src/runtime/Url'
-import {AppData} from '../../../src/runtime/components/AppData'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 
 import {StoreProvider} from '../../../src/runner/StoreContext'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
+import {AppData} from '../../../src/runtime/components/AppData'
 
 vi.mock('../../../src/runtime/components/authentication')
 
-const [appComponent] = wrappedTestElement(App, AppData)
+const [appComponent] = wrappedTestElementNew(App)
 
 const text = (content: string) => createElement(TextElement, {path: 'app1.page1.para1', content})
 const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello\nwhere are you'))
@@ -50,18 +51,18 @@ beforeEach(() => {
 })
 
 test('App element produces output containing page', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element produces output with max width', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {maxWidth: 500})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, maxWidth: 500})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element inserts favicon link', () => {
     const faviconUrl = 'https://example.com/favicon.svg'
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {faviconUrl})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, faviconUrl})
     renderer.create(component)
     const linkHref = (window.document.head.querySelector('link[rel=icon]') as any).href
     expect(linkHref).toBe(faviconUrl)
@@ -73,10 +74,7 @@ test('App element produces output containing page and additional components with
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        setObject('app1.coll1', new Collection.State({}))
-        setObject('app1.coll2', new Collection.State({}))
-        return createElement(App, {path: 'app1', topChildren: appBar1}, collection1, collection2)
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext, topChildren: appBar1}, collection1, collection2)
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
     expect(componentJSON(runningApp)).toMatchSnapshot()
@@ -84,8 +82,7 @@ test('App element produces output containing page and additional components with
 
 test('App element shows notifications', async () => {
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        return createElement(App, {path: 'app1'})
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext})
     }
     const {el} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})))
 
@@ -98,8 +95,7 @@ test('App element produces output containing not logged in page if it exists and
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', topChildren: appBar1})
+        return createElement(App, {path: 'app1', pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext, topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
     expect(JSON.stringify(componentJSON(runningApp))).toContain('Please log in')
@@ -111,8 +107,7 @@ test('App element produces output containing normal page if logged in', () => {
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
 
     const app = () => {
-        setObject('app1', new App.State({pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', topChildren: appBar1})
+        return createElement(App, {path: 'app1', pages: {loggedInOnlyPage, notLoggedInPage, mainPage}, urlContext, topChildren: appBar1})
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
     expect(JSON.stringify(componentJSON(runningApp))).toContain('You are logged in')
@@ -125,7 +120,7 @@ test('App shows first page initially and other page when state changes and only 
     const text = (pageName: string) => createElement(TextElement, {path: 'app1.page1.para1', content: 'this is page ' + pageName} )
 
     function MainPage(props: any) {
-        const appState = useObject('app1')
+        const appState = use$state('app1')
         return React.createElement(Page, {path: props.path},
             text('Main'),
             React.createElement('button', {
@@ -138,8 +133,7 @@ test('App shows first page initially and other page when state changes and only 
 
     const OtherPage = () => createElement(Page, {path: 'app1.page2'}, text('Other'), 'Page 2')
     const app = () => {
-        setObject('app1', new App.State({pages: {MainPage, OtherPage}, urlContext}))
-        return createElement(App, {path: 'app1', startupAction: () => {
+        return createElement(App, {path: 'app1', pages: {MainPage, OtherPage}, urlContext, startupAction: () => {
                 startupCount++
                 return () => {
                     throw new Error('Should not be called!')
@@ -158,15 +152,14 @@ test('App shows first page initially and other page when state changes and only 
 })
 
 test('App element produces output with cookie message', () => {
-    const component = appComponent('app1', {pages: {mainPage}, urlContext}, {cookieMessage: 'We love cookies'})
+    const component = appComponent('app1', {pages: {mainPage}, urlContext, cookieMessage: 'We love cookies'})
     expect(componentJSON(component)).toMatchSnapshot()
 })
 
 test('App element receives messages sent to window', async () => {
     const messageAction = vi.fn()
     const app = () => {
-        setObject('app1', new App.State({pages: {mainPage}, urlContext}))
-        return createElement(App, {path: 'app1', messageAction})
+        return createElement(App, {path: 'app1', pages: {mainPage}, urlContext, messageAction})
     }
 
     const {unmount} = testContainer(createElement(StoreProvider, null, createElement(app, {path: 'app1',})), 'messageActionTest')
@@ -254,7 +247,7 @@ test('App.State uses latest default page version if it changes', () => {
     const state = new App.State({pages, urlContext})
     expect(state.currentPage).toBe(Page1)
 
-    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2}, urlContext}))
+    const updatedState = state.withProps({pages: {Page1: Page1updated, Page2}, urlContext})
     expect(updatedState.currentPage).toBe(Page1updated)
 })
 
@@ -265,7 +258,7 @@ test('App.State uses latest set page version if it changes ', () => {
     const state = new App.State({pages, urlContext})
     expect(state.currentPage).toBe(Page2)
 
-    const updatedState = state.updateFrom(new App.State({pages: {Page1: Page1updated, Page2: Page2updated}, urlContext}))
+    const updatedState = state.withProps({pages: {Page1: Page1updated, Page2: Page2updated}, urlContext})
     expect(updatedState.currentPage).toBe(Page2updated)
 })
 
@@ -274,10 +267,11 @@ test('App.State does next level compare on pages', () => {
     const pages = {Page1, Page2}
     const samePages = {Page1, Page2}
     const newPages = {Page1, Page2, Page3}
-    const state = new App.State({pages, urlContext})
 
-    expect(state.updateFrom(new App.State({pages: samePages, urlContext}))).toBe(state)
-    expect(state.updateFrom(new App.State({pages: newPages, urlContext}))).not.toBe(state)
+    const store = new AppStateStore()
+    const state = store.getOrCreate('id1', AppData, {pages: pages, urlContext})
+    expect(store.getOrCreate('id1', AppData, {pages: samePages, urlContext})._raw).toBe(state._raw)
+    expect(store.getOrCreate('id1', AppData, {pages: newPages, urlContext})._raw).not.toBe(state._raw)
 })
 
 test('App.State can get current url object', () => {

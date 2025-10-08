@@ -1,5 +1,5 @@
 import UrlContext from '../UrlContext'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
 import {shallow} from 'zustand/shallow'
 import Url, {asQueryObject} from '../Url'
 import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
@@ -9,7 +9,7 @@ import {Theme, ThemeOptions} from '@mui/material'
 import {createTheme} from '@mui/material/styles'
 import {goBack, onUrlChange} from '../navigationHelpers'
 
-type StateExternalProps = {
+export type StateExternalProps = {
     pages: { [key: string]: FunctionComponent },
     urlContext: UrlContext,
     themeOptions: ThemeOptions
@@ -22,8 +22,8 @@ type StateInternalProps = {
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
 
     private theme: Theme | undefined
-    init(asi: AppStateForObject, path: string): void {
-        super.init(asi, path)
+    init(asi: AppStateForObject): void {
+        super.init(asi)
         const {subscription} = this.state
 
         if (!subscription) {
@@ -31,9 +31,9 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         }
     }
 
-    protected isEqualTo(newObj: this) {
+    _matchesProps(props: StateExternalProps) {
         const {pages: thisPages, ...thisProps} = this.props
-        const {pages: newPages, ...newProps} = newObj.props
+        const {pages: newPages, ...newProps} = props
         const pagesEqual = shallow(thisPages, newPages)
         const propsEqual = shallow(thisProps, newProps)
         return pagesEqual && propsEqual
