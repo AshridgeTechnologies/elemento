@@ -128,6 +128,8 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     get _stateForTest() { return this.state }
 
+    get _raw() { return this }
+
     protected getChildState(name: string) {
         return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
     }

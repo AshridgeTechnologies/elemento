@@ -105,5 +105,4 @@ export default class AppStateStore {
 
         return new Proxy(targetState, handler)
     }
-
 }

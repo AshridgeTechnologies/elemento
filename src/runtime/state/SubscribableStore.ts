@@ -25,7 +25,6 @@ export default class SubscribableStore {
         } else {
             this.notifyListeners(id)
             this.notifyListenersToAll([id])
-
         }
     }
 

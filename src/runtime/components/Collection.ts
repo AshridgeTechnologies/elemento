@@ -1,7 +1,7 @@
 import {createElement} from 'react'
 import {idOf, valueLiteral} from '../runtimeFunctions'
 import lodash from 'lodash';
-import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
+import {map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
 import DataStore, {
     Add,
     CollectionName,
@@ -15,17 +15,16 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {AppStateForObject, BaseComponentState, ComponentState, WithChildStates} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
-import {shallow} from 'zustand/shallow'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
-type Properties = {path: string, display?: boolean}
+type Properties = {path: string, display?: boolean} & ExternalProperties
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
 type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction, subscribedDataStore: DataStore}>
 
@@ -81,8 +80,8 @@ export const CollectionMetadata: ElementMetadata = {
     stateProps: ['initialValue', 'dataStore', 'collectionName']
 }
 
-export default function Collection({path, display = false}: Properties) {
-    const state = useObject<CollectionState>(path)
+export default function Collection({path, value, dataStore, collectionName, display = false}: Properties) {
+    const state = use$state(path, CollectionState, {value, dataStore, collectionName})
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', null, valueLiteral(state.value))) : null
@@ -139,16 +138,16 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         this.updateState({queries: newQueries})
     }
 
-    _withStateChanges(changes: StateProperties): CollectionState {
-        const newVersion = new CollectionState(this.props)
-        newVersion.state = Object.assign({}, this.state, changes) as WithChildStates<StateProperties>
-        newVersion._appStateInterface = this._appStateInterface
-        newVersion._path = this._path
-        return newVersion
-    }
+    // _withStateChanges(changes: StateProperties): CollectionState {
+    //     const newVersion = new CollectionState(this.props)
+    //     newVersion.state = Object.assign({}, this.state, changes) as WithChildStates<StateProperties>
+    //     newVersion._appStateInterface = this._appStateInterface
+    //     newVersion._path = this._path
+    //     return newVersion
+    // }
 
-    init(asi: AppStateForObject, path: string): void {
-        super.init(asi, path)
+    init(asi: AppStateForObject): void {
+        super.init(asi)
         const {dataStore, collectionName} = this.props
         const {subscription, authSubscription, subscribedDataStore} = this.state
 
@@ -167,13 +166,6 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         if (!authSubscription) {
             this.state.authSubscription = onAuthChange(() => this.latest().updateState({value: {}, queries: {}}))
         }
-    }
-
-    protected isEqualTo(newObj: this) {
-        const thisSimpleProps = omit(['value'], this.props)
-        const newSimpleProps = omit(['value'], newObj.props)
-        const simplePropsMatch = shallow(thisSimpleProps, newSimpleProps)
-        return simplePropsMatch && equals(this.props.value, newObj.props.value)
     }
 
     get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
