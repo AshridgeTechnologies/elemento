@@ -1,10 +1,10 @@
 import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState} from './ComponentState2'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
-import {useObject} from '../appStateHooks'
+import {use$state} from '../state/appStateHooks'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -63,7 +63,7 @@ export const ListElementSchema: ElementSchema = {
 }
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
-    const state = useObject<ListElementState>(path)
+    const state = use$state(path, ListElementState)
     const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)
