@@ -7,10 +7,9 @@ import {
     componentJSON,
     componentJSONAsync, DEBUG_TIMEOUT,
     getCallArg,
-    testAppInterface,
+    testAppInterfaceNew,
     wait,
-    wrappedTestElement,
-    wrappedTestElementNew
+    wrappedTestElement
 } from '../../testutil/testHelpers'
 import {Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
@@ -94,8 +93,8 @@ function TestForm(props: {path: string, initialValue: object, dataType: RecordTy
 
 let appStoreHook: any, testFormAppStoreHook
 let form: any, testForm: any;
-[form, appStoreHook] = wrappedTestElementNew(PlainForm);
-[testForm, testFormAppStoreHook] = wrappedTestElementNew(TestForm);
+[form, appStoreHook] = wrappedTestElement(PlainForm);
+[testForm, testFormAppStoreHook] = wrappedTestElement(TestForm);
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 const testFormStateAt = (path: string) => testFormAppStoreHook.stateAt(path)
 
@@ -173,7 +172,7 @@ test('Form element produces output containing nested form', async () => {
 test('State class has correct properties and functions', () => {
     const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface('formPath', state)
+    const appInterface = testAppInterfaceNew('formPath', state)
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 
@@ -183,7 +182,7 @@ test('State class has correct properties and functions', () => {
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
+    const appInterface = testAppInterfaceNew('formPath', state, {Description: 'Extra Large'})
     expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
 })
 
@@ -244,8 +243,8 @@ test('keyAction function is called with key', async () => {
     const keyAction = vi.fn()
     const {keyDown} = testContainer(form('app.page1.form1', {
         dataType: recordType,
-        initialValue: {Description: 'Big', BoxSize: 17}
-    }, {keyAction}))
+        initialValue: {Description: 'Big', BoxSize: 17},
+        keyAction}))
     await wait()
     await keyDown('app.page1.form1', 'Enter')
     expect(keyAction).toHaveBeenCalled()
@@ -359,7 +358,7 @@ test('State calls ShowErrors on all its component states', async () => {
 test('State Submit calls submit action if present', async () => {
     const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterface('formPath', state, {})
+    const appInterface = testAppInterfaceNew('formPath', state, {})
 
     const data = {a: 10}
     await state.Submit(data)

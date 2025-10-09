@@ -1,9 +1,9 @@
-import {expect, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, test, vi} from 'vitest'
 import React, {KeyboardEventHandler} from 'react'
-import {componentJSON, componentJSONAsync, getCallArg, testAppInterface, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {componentJSON, componentJSONAsync, getCallArg, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
@@ -92,10 +92,10 @@ function TestEmptyForm(props: {path: string}) {
     return React.createElement(Form, {path: props.path})
 }
 
-const [form, appStoreHook] = wrappedTestElementNew(TestForm)
-const [emptyForm] = wrappedTestElementNew(TestEmptyForm)
-const [oneElementForm] = wrappedTestElementNew(TestOneElementForm)
-const [nestedForm, appStoreHook2] = wrappedTestElementNew(TestNestedForm)
+const [form, appStoreHook] = wrappedTestElement(TestForm)
+const [emptyForm] = wrappedTestElement(TestEmptyForm)
+const [oneElementForm] = wrappedTestElement(TestOneElementForm)
+const [nestedForm, appStoreHook2] = wrappedTestElement(TestNestedForm)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 const stateAt2 = (path: string) => appStoreHook2.stateAt(path)

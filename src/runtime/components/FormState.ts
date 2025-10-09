@@ -93,7 +93,7 @@ export default abstract class BaseFormState<T extends object = object> extends I
 
     private getChildValue(name: string) {
         const childStateValue = this.getChildState(name)?.dataValue
-        if (childStateValue !== undefined) return childStateValue
+        if (childStateValue !== undefined && !childStateValue?._isPlaceholder) return childStateValue
 
         return this.props.initialValue?.[name as keyof object]
     }

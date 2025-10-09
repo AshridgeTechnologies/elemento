@@ -7,6 +7,7 @@ export type StoredState = any
 
 const placeholder = function() {const placeholder = 0}
 placeholder.valueOf = () => undefined
+placeholder._isPlaceholder = true
 
 export type MaybeInitable = { init?: (asi: AppStateForObject) => void }
 export default class AppStateStore {
