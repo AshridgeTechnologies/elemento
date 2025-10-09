@@ -18,12 +18,10 @@ import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {ChoiceType, DateType, NumberType, RecordType, Rule, TextType, TrueFalseType} from '../../../src/runtime/types'
 import {DataTypeFormState} from '../../../src/runtime/components/FormState'
 import React, {KeyboardEventHandler} from 'react'
-import {useObject} from '../../../src/runtime'
 import BigNumber from 'bignumber.js'
 import DecimalType from '../../../src/runtime/types/DecimalType'
 import {render} from '@testing-library/react'
 import {use$state} from '../../../src/runtime/state/appStateHooks'
-import {AppStoreHook} from '../../../src/runner/StoreContext'
 
 const descriptionType = new TextType('Description', {maxLength: 10})
 const sizeType = new NumberType('Box Size', {max: 20})

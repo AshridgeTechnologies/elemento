@@ -20,7 +20,7 @@ import Observable from 'zen-observable'
 import {getUrlChangeObservable, goBack, goForward, pushUrl} from '../runtime/navigationHelpers'
 import {ElementId} from '../model/Types'
 import {isNil} from 'ramda'
-import AppStateStore from '../runtime/AppStateStore'
+import AppStateStore from '../runtime/state/AppStateStore'
 
 
 export function valueOf<T>(x: Value<T>): T {

@@ -19,7 +19,7 @@ export default class AppStateStore {
 
     get(id: string): StoredState {
         const state = this.getRaw(id)
-        return state && this.itemProxy(id, state)
+        return state ? this.itemProxy(id, state) : this.itemProxy(id, placeholder)
     }
 
     getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {

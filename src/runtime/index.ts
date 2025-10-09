@@ -13,3 +13,4 @@ export {asArray, codeGenerationError, importModule, importHandlers, parentPath, 
 export {useGetUrlContext} from '../runner/AppRunner'
 export {runAppFromWindowUrl} from '../runner/AppMain'
 export {useObject, setObject} from './appStateHooks'
+export {use$state} from './state/appStateHooks'

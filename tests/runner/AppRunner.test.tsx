@@ -5,12 +5,11 @@ import {beforeEach, expect, test, vi} from "vitest"
 import AppRunner from '../../src/runner/AppRunner'
 import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
-import {setObject, useObject} from '../../src/runtime/index'
+import {use$state} from '../../src/runtime/index'
 
 import {actWait, testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
-import {TextInput} from '../../src/runtime/components'
 
 vi.mock('../../src/runtime/components/authentication')   // prevent errors
 
@@ -28,9 +27,9 @@ const testApp = (version: string) => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput, Image} = Elemento.components
-        const app = useObject('AppOne') as AppData
-        const _state = setObject(props.path, new MainPage.State({}))
-        const {input1} = _state
+        const app = use$state('AppOne') as AppData
+        const _state = use$state(props.path)
+        const {input1} = _state as any
 
         return React.createElement(Page, {path: props.path},
             React.createElement(TextElement, {path: pathWith('FirstText'), content:'This is App ' + version } ),
@@ -42,26 +41,11 @@ const testApp = (version: string) => {
         )
     }
 
-    MainPage.State = class MainPage_State extends Elemento.components.BaseComponentState<any> {
-        childNames = ['input1']
-
-        createChildStates() {
-            const input1 = this.getOrCreateChildState('input1', new TextInput.State({}))
-            return {input1}
-        }
-
-        get input1() {
-            return this.childStates.input1
-        }
-    }
-
-    function AppOne(props: {urlContext: UrlContext}) {
-
+    function AppOne(_props: {urlContext: UrlContext}) {
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
         const urlContext = Elemento.useGetUrlContext() as UrlContext
-        const app = setObject('AppOne', new App.State({pages, urlContext}))
-        return React.createElement(App, {path: 'AppOne'})
+        return React.createElement(App, {path: 'AppOne', pages, urlContext})
     }
 
     return AppOne
@@ -70,8 +54,7 @@ const testApp = (version: string) => {
 const badApp = () => {
     function MainPage(props: {path: string}) {
         const pathWith = (name: string) => props.path + '.' + name
-        const {Page, TextElement, TextInput} = Elemento.components
-        const app = useObject('AppOne') as AppData
+        const {Page, TextElement} = Elemento.components
 
         // @ts-ignore
         const goWrong = () => {throw new Error('Aaaargh!')}
@@ -86,8 +69,7 @@ const badApp = () => {
         const {App} = Elemento.components
         // @ts-ignore
         const {urlContext} = props
-        const app = setObject('AppOne', new App.State({pages, urlContext}))
-        return React.createElement(App, {path: 'AppOne'})
+        return React.createElement(App, {path: 'AppOne', pages, urlContext})
     }
 
     return AppOne
@@ -104,8 +86,7 @@ test('shows app on page', () => {
 })
 
 test('passes app context', () => {
-    console.log(window.location.origin)
-    expectEl('TheUrl').toHaveTextContent('http://localhost:3000/pp')
+    expectEl('TheUrl').toHaveTextContent(/^http:\/\/localhost:3000\/pp\/$/)
 })
 
 test('makes app utils available to images', () => {

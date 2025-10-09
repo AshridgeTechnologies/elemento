@@ -7,7 +7,7 @@ import ErrorFallback from './ErrorFallback'
 import {DefaultUrlContext, UrlContextContext} from '../runtime/UrlContext'
 import PreviewController from '../shared/PreviewController'
 import {exposeFunctions} from '../shared/postmsgRpc/server'
-import {StoreProvider, StoreContext} from './StoreContext'
+import {StoreProvider, StoreContext} from '../runtime/state/StoreContext'
 
 export const useGetUrlContext = () => useContext(UrlContextContext)
 
