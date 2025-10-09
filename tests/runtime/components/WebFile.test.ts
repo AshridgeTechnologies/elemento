@@ -1,8 +1,8 @@
 import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
 import {isPending} from '../../../src/shared/DataStore'
-import {testAppInterface, wait} from '../../testutil/testHelpers'
+import {testAppInterfaceNew, wait} from '../../testutil/testHelpers'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState2'
 
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn().mockResolvedValue(data)})
 let originalFetch = globalThis.fetch
@@ -10,7 +10,7 @@ let originalFetch = globalThis.fetch
 let mockFetch: MockedFunction<any>
 const initWebFile = (url: string):[any, AppStateForObject] => {
     const state = new WebFileState({url, fetch: mockFetch})
-    const appInterface = testAppInterface('testPath', state)
+    const appInterface = testAppInterfaceNew('testPath', state)
     return [state, appInterface]
 }
 

@@ -4,7 +4,7 @@
 import {expect, test, vi} from 'vitest'
 import {createElement} from 'react'
 import {ScreenKeyboard} from '../../../src/runtime/components/index'
-import {valueObj, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {valueObj, wrappedTestElement} from '../../testutil/testHelpers'
 import {globalFunctions} from '../../../src/runtime/globalFunctions'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {render} from '@testing-library/react'
@@ -13,7 +13,7 @@ const {Log} = globalFunctions
 
 const doIt = () => {}
 
-const [screenKeyboard, appStoreHook] = wrappedTestElementNew(ScreenKeyboard)
+const [screenKeyboard, appStoreHook] = wrappedTestElement(ScreenKeyboard)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

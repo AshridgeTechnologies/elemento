@@ -1,7 +1,7 @@
 import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
 import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
-import {testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
+import {testAppInterfaceNew, wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
 import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
@@ -736,7 +736,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
             sync: true,
         }
         const storeState = new TinyBaseDataStoreState(storeProps)
-        const appInterface = testAppInterface('path1', storeState)
+        const appInterface = testAppInterfaceNew('path1', storeState)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)

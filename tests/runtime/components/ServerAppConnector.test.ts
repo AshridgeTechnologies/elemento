@@ -2,11 +2,11 @@ import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, isPending} from '../../../src/shared/DataStore'
-import {mockClear, mockImplementation, testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
+import {mockClear, mockImplementation, testAppInterfaceNew, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {noop} from 'lodash'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState2'
 
 vi.mock('../../../src/runtime/components/authentication')
 vi.mock('../../../src/runtime/appFunctions')
@@ -40,7 +40,7 @@ const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
 let mockFetch: MockedFunction<any>
 const initConnector = ():[any, AppStateForObject] => {
     const state = new ServerAppConnectorState({configuration, fetch: mockFetch})
-    const appInterface = testAppInterface('testPath', state)
+    const appInterface = testAppInterfaceNew('testPath', state)
 
     return [state, appInterface]
 }
@@ -65,10 +65,10 @@ test('does not fail with empty configuration', () => {
     new ServerAppConnector.State({configuration: {} as Configuration})
 })
 
-test('returns self as update result for equivalent configuration', () => {
+test('matches equivalent configuration', () => {
     const conn = new ServerAppConnector.State({configuration})
     const copyConfig = JSON.parse(JSON.stringify(configuration))
-    expect(conn.updateFrom(new ServerAppConnector.State({configuration: copyConfig}))).toBe(conn)
+    expect(conn._matchesProps({configuration: copyConfig})).toBe(true)
 })
 
 test('calls get functions, returns pending and then cached result', async () => {
@@ -522,7 +522,7 @@ describe('subscribe to auth changes', () => {
     test('uses same onAuthChange subscription when already in the state', () => {
         const authSubscription = noop
         const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}})
-        const appInterface = testAppInterface('testPath', state)
+        const appInterface = testAppInterfaceNew('testPath', state)
 
         expect(authentication.onAuthChange).not.toHaveBeenCalled()
         expect(appInterface.updateVersion).not.toHaveBeenCalled()
@@ -534,7 +534,7 @@ describe('subscribe to auth changes', () => {
         const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({resultCache: {
                 'GetWidget#["id1",true]': 'xyz',
             }})
-        const appInterface = testAppInterface('testPath', state)
+        const appInterface = testAppInterfaceNew('testPath', state)
 
         authCallback!()
         expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({})

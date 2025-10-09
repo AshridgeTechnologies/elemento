@@ -4,11 +4,11 @@
 import {expect, test} from 'vitest'
 import {createElement} from 'react'
 import {Dialog, TextElement} from '../../../src/runtime/components'
-import {wrappedTestElementNew} from '../../testutil/testHelpers'
+import {wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait} from '../../testutil/rtlHelpers'
 import {fireEvent, render} from '@testing-library/react'
 
-const [dialog, appStoreHook] = wrappedTestElementNew(Dialog)
+const [dialog, appStoreHook] = wrappedTestElement(Dialog)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

@@ -4,7 +4,7 @@
 
 import {beforeEach, expect, test, vi} from "vitest"
 import React, {createElement} from 'react'
-import {componentJSON, mockReturn, testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {componentJSON, mockReturn, testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
 import {use$state} from '../../../src/runtime/state/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
@@ -22,7 +22,7 @@ import {AppData} from '../../../src/runtime/components/AppData'
 
 vi.mock('../../../src/runtime/components/authentication')
 
-const [appComponent] = wrappedTestElementNew(App)
+const [appComponent] = wrappedTestElement(App)
 
 const text = (content: string) => createElement(TextElement, {path: 'app1.page1.para1', content})
 const mainPage = () => createElement(Page, {path: 'app1.page1'}, text('Hello\nwhere are you'))

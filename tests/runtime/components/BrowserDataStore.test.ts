@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
+import {beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
 import {BrowserDataStore, IdbDataStoreImpl} from '../../../src/runtime/components/index'
 import {createElement} from 'react'
 import {render} from '@testing-library/react'
@@ -10,7 +10,7 @@ import {render} from '@testing-library/react'
 import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/shared/DataStore'
 import Observable from 'zen-observable'
-import {testAppInterface} from '../../testutil/testHelpers'
+import {testAppInterfaceNew} from '../../testutil/testHelpers'
 
 vi.mock('../../../src/runtime/appFunctions')
 
@@ -19,7 +19,7 @@ let state: any
 const dataStoreProps = {databaseName: 'db1', collectionNames:['Gadgets','Widgets']}
 const createStore = () => {
     const state = new BrowserDataStore.State(dataStoreProps)
-    const appInterface = testAppInterface('path1', state)
+    const appInterface = testAppInterfaceNew('path1', state)
     return state
 }
 
@@ -47,8 +47,7 @@ test('produces empty output', () => {
 
 test('compares state props correctly', () => {
     const state = new BrowserDataStore.State(dataStoreProps)
-    const newState = new BrowserDataStore.State({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})
-    expect(state.updateFrom(newState)).toBe(state)
+    expect(state._matchesProps({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})).toBe(true)
 })
 
 test('creates its own data store if not supplied', async () => {

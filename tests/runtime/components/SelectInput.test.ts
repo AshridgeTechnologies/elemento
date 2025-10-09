@@ -3,14 +3,14 @@
  */
 import {expect, test} from "vitest"
 import {SelectInput} from '../../../src/runtime/components/index'
-import {snapshot, testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {fireEvent, render, within} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {SelectInputState} from '../../../src/runtime/components/SelectInput'
 import {ChoiceType} from '../../../src/runtime/types'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
-const [selectInput, appStoreHook] = wrappedTestElementNew(SelectInput)
+const [selectInput, appStoreHook] = wrappedTestElement(SelectInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

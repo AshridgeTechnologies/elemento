@@ -3,11 +3,11 @@
  */
 import {expect, test} from "vitest"
 import {createElement} from 'react'
-import {componentJSON, testAppInterfaceNew as testAppInterface, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {componentJSON, testAppInterfaceNew as testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {Block, TextElement} from '../../../src/runtime/components/index'
 import {BlockState} from '../../../src/runtime/components/Block'
 
-const [block, appStoreHook] = wrappedTestElementNew(Block, true)
+const [block, appStoreHook] = wrappedTestElement(Block, true)
 
 const text1 = createElement(TextElement, {path: 'app.page1.things.text1', styles: {width: 200, top: 20, left: 30}, content: 'First text'} )
 const text2 = createElement(TextElement, {path: 'app.page1.things.text2', styles: {width: 300, bottom: 10, right: 34}, content: 'Second text'} )

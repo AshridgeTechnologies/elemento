@@ -4,7 +4,7 @@
 import {expect, test} from 'vitest'
 import {createElement, Fragment} from 'react'
 import {ItemSet, ListElement, TextElement} from '../../../src/runtime/components/index'
-import {createStateFn, snapshot, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {createStateFn, snapshot, wrappedTestElement} from '../../testutil/testHelpers'
 
 import {ListElementState} from '../../../src/runtime/components/ListElement'
 
@@ -14,8 +14,8 @@ function ItemSetItem1(props: {path: string, $item: {text: string}, $selected: bo
 
 const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
 
-const [listElement, appStoreHook] = wrappedTestElementNew(ListElement)
-const [itemSet, appStoreHookItemSet] = wrappedTestElementNew(ItemSet)
+const [listElement, appStoreHook] = wrappedTestElement(ListElement)
+const [itemSet, appStoreHookItemSet] = wrappedTestElement(ItemSet)
 
 test('ListElement produces output containing fixed ReactElement children ', () => {
     const item1 = createElement(TextElement, {path: `app.page1.list1.Text99` , content: 'Text 99'})

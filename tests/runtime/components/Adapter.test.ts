@@ -1,11 +1,11 @@
-import {beforeEach, describe, expect, test, vi} from "vitest"
+import {beforeEach, describe, expect, test, vi} from 'vitest'
 import {Adapter} from '../../../src/runtime/components'
 import {AdapterState} from '../../../src/runtime/components/Adapter'
 import {ErrorResult, isPending} from '../../../src/shared/DataStore'
-import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
+import {testAppInterfaceNew, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState2'
 
 vi.mock('../../../src/runtime/appFunctions')
 vi.mock('../../../src/runtime/appFunctions')
@@ -43,7 +43,7 @@ class Target {
 const initAdapter = ():[any, AppStateForObject, any] => {
     const target = new Target(99)
     const state = new AdapterState({target: target})
-    const appInterface = testAppInterface('testPath', state)
+    const appInterface = testAppInterfaceNew('testPath', state)
 
     return [state, appInterface, target]
 }

@@ -3,11 +3,11 @@
  */
 import {expect, test} from "vitest"
 import {Data} from '../../../src/runtime/components/index'
-import {createStateFn, snapshot, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {createStateFn, snapshot, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import {DataState} from '../../../src/runtime/components/Data'
 
-const [data] = wrappedTestElementNew(Data)
+const [data] = wrappedTestElement(Data)
 
 const createState = createStateFn(DataState)
 test('Data element produces output with simple value',

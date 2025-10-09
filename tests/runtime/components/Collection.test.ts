@@ -12,7 +12,7 @@ import {
     mockImplementation,
     snapshot,
     testAppInterfaceNew as testAppInterface,
-    wrappedTestElementNew
+    wrappedTestElement
 } from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 import DataStore, {
@@ -47,7 +47,7 @@ const mockDataStore = (): DataStore => ({
     query: vi.fn()
 })
 
-const [collection] = wrappedTestElementNew(Collection)
+const [collection] = wrappedTestElement(Collection)
 const createState = createStateFn(CollectionState)
 
 beforeEach(() => {

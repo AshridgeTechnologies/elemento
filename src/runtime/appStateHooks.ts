@@ -22,4 +22,3 @@ export const useGetObjectFunction = (): GetObjectFn => {
     const store = useContext(StoreContext)
     return <T extends StoredState>(path: string): T => store.get(path) as T
 }
-

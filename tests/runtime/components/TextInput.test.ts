@@ -3,7 +3,7 @@ import {expect, MockedFunction, test, vi} from "vitest"
  * @vitest-environment jsdom
  */
 import {TextInput} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {componentJSON, snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -11,7 +11,7 @@ import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInpu
 import {TextType} from '../../../src/runtime/types'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
-const [textInput, appStoreHook] = wrappedTestElementNew(TextInput)
+const [textInput, appStoreHook] = wrappedTestElement(TextInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

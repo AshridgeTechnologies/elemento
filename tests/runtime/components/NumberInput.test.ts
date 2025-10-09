@@ -3,7 +3,7 @@ import {expect, test} from "vitest"
  * @vitest-environment jsdom
  */
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
-import {snapshot, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {snapshot, wrappedTestElement} from '../../testutil/testHelpers'
 
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -14,7 +14,7 @@ import DecimalType from '../../../src/runtime/types/DecimalType'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 import {NumberInputState} from '../../../src/runtime/components/NumberInput'
 
-const [numberInput, appStoreHook] = wrappedTestElementNew(NumberInput)
+const [numberInput, appStoreHook] = wrappedTestElement(NumberInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

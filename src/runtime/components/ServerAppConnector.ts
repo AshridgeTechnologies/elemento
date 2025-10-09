@@ -1,4 +1,4 @@
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
@@ -41,8 +41,8 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
     }
 
-    init(asi: AppStateForObject, path: string) {
-        super.init(asi, path)
+    init(asi: AppStateForObject) {
+        super.init(asi)
         if (!this.state.authSubscription) {
             this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({resultCache: {}}) )
         }
@@ -74,8 +74,8 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         return new ErrorResult(description, errorMessage)
     }
 
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.configuration, newObj.props.configuration)
+    _matchesProps(props:ExternalProperties): boolean {
+        return equals(this.props.configuration, props.configuration)
     }
 
     private doCall(name: string, params: any[], action?: boolean) {
@@ -158,7 +158,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         this.state.resultCache = newCache
         this.updateState({resultCache: newCache})
     }
-
 }
 
 ServerAppConnector.State = ServerAppConnectorState

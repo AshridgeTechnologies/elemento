@@ -4,7 +4,7 @@
 import {beforeEach, expect, MockedFunction, test, vi} from 'vitest'
 import {createElement, MouseEventHandler} from 'react'
 import {ItemSet, TextElement} from '../../../src/runtime/components/index'
-import {createStateFn, inDndContext, snapshot, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {createStateFn, inDndContext, snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
 
@@ -31,7 +31,7 @@ const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'ove
 const longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
 const itemSetDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
 
-const [itemSet, appStoreHook] = wrappedTestElementNew(ItemSet, true)
+const [itemSet, appStoreHook] = wrappedTestElement(ItemSet, true)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 

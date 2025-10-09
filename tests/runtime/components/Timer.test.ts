@@ -3,12 +3,12 @@
  */
 import {expect, test, vi} from 'vitest'
 import {Timer} from '../../../src/runtime/components/index'
-import {createStateFn, testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {createStateFn, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 import {testContainer} from '../../testutil/rtlHelpers'
 
-const [timer, appStoreHook] = wrappedTestElementNew(Timer)
+const [timer, appStoreHook] = wrappedTestElement(Timer)
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
 const createState = createStateFn(Timer.State)

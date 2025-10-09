@@ -3,14 +3,14 @@
  */
 import {expect, test, vi} from "vitest"
 import {Calculation} from '../../../src/runtime/components/index'
-import {testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
 
 import {testContainer} from '../../testutil/rtlHelpers'
 import {CalculationState} from '../../../src/runtime/components/Calculation'
 import {act} from '@testing-library/react/pure'
 
-const [calculation] = wrappedTestElementNew(Calculation)
+const [calculation] = wrappedTestElement(Calculation)
 
 test('Calculation element produces empty output with show not supplied', () => {
     const {container} = render(calculation('app.page1.width', {

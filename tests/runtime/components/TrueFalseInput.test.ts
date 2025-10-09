@@ -2,13 +2,12 @@
  * @vitest-environment jsdom
  */
 
-import {expect, test} from "vitest"
+import {expect, test} from 'vitest'
 import {TrueFalseInput} from '../../../src/runtime/components/index'
-import {DEBUG_TIMEOUT, snapshot, testAppInterface, valueObj, wait, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {DEBUG_TIMEOUT, snapshot, testAppInterfaceNew, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
-import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 
-const [trueFalseInput, appStoreHook] = wrappedTestElementNew(TrueFalseInput)
+const [trueFalseInput, appStoreHook] = wrappedTestElement(TrueFalseInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
@@ -59,10 +58,9 @@ test('TrueFalseInput shows true value when state value is set to true and initia
     const {el, user} = testContainer(trueFalseInput('app.page1.widget22', {initialValue: false}), 'testContainer3')
     expect(el`app.page1.widget22`.checked).toBe(false)
     stateAt('app.page1.widget22')._setValue(true)
-    await wait()
+    await wait(10)
     expect(el`app.page1.widget22`.checked).toBe(true)
-
-})
+}, DEBUG_TIMEOUT)
 
 test('TrueFalseInput shows false value when state value is set to false and initial value exists', async () => {
     const {el, user} = testContainer(trueFalseInput('app.page1.widget77', {initialValue: true}), 'testContainer4')
@@ -100,7 +98,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(false)
 
     const state = new TrueFalseInput.State({initialValue: true})
-    const appInterface = testAppInterface('testPath', state)
+    const appInterface = testAppInterfaceNew('testPath', state)
     expect(state.value).toBe(true)
     expect(state.toString()).toBe('true')
 

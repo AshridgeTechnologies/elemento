@@ -1,6 +1,6 @@
 import {expect, MockedFunction, test, vi} from 'vitest'
 import renderer from 'react-test-renderer'
-import React, {createElement, FunctionComponent} from 'react'
+import React, {createElement} from 'react'
 import {treeItemTitleSelector} from '../editor/Selectors'
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LocalizationProvider} from '@mui/x-date-pickers'
@@ -10,15 +10,11 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {setObject} from '../../src/runtime/appStateHooks'
-import AppStateStore, {StoredState} from '../../src/runtime/AppStateStore'
 import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {AppStateForObject as AppStateForObject2} from '../../src/runtime/components/ComponentState2'
-import {type AppStoreHook, StoreProvider} from '../../src/runner/StoreContext'
 import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
-import {default as AppStateStore2, MaybeInitable} from '../../src/runtime/state/AppStateStore'
+import {default as AppStateStore2, MaybeInitable, StoredState} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
-import {Data} from '../../src/runtime/components'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -224,23 +220,6 @@ export const testAppInterfaceNew = (path: string, initialVersion: any, childStat
     return appInterface
 }
 
-function testAppStoreHook() {
-    const hook = {
-        store: null as (null | AppStateStore),
-        setAppStore(sa: AppStateStore) {
-            this.store = sa
-        },
-        setStateAt(path: string, stateObject: any) {
-            this.store!.set(path, stateObject)
-        },
-        stateAt (path: string) {
-            return this.store!.get(path)
-        }
-    }
-
-    return hook as AppStoreHook
-}
-
 function testAppStoreHook2() {
     const hook = {
         store: null as (null | AppStateStore2),
@@ -260,34 +239,7 @@ export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: 
     let idSeq = 1
     return (props: object) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
 }
-const TestWrapper = <State extends object>({
-                                                      path,
-                                                      state,
-                                                      children
-                                                  }: { path: string, state: any, children?: any }) => {
-    setObject(path, state)
-    return children
-}
-type Class<T> = new (...args: any[]) => T
-
-export const wrappedTestElement = <StateType>(componentClass: FunctionComponent<any>, stateClass: Class<StateType>, wrapForDnd = false): [any, any] => {
-
-    const appStoreHook = testAppStoreHook()
-
-    const testElementCreatorFn = (path: string, stateProps: { value?: any } | StateType = {}, componentProps: any = {}, ...children: React.ReactNode[]) => {
-        const state = stateProps instanceof stateClass ? stateProps : new stateClass(stateProps as object)
-        const component = isArray(children)
-            ? createElement(componentClass as any, {path, ...componentProps}, ...children)
-            : createElement(componentClass as any, {path, ...componentProps}, children)
-        const componentElement = createElement(TestWrapper, {path, state}, component)
-        const innerElement = wrapForDnd ? createElement(DndContext, null, componentElement) : componentElement
-        return createElement(StoreProvider, {appStoreHook, children:
-            createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
-        )
-    }
-    return [testElementCreatorFn, appStoreHook]
-}
-export const wrappedTestElementNew = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
+export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 
     const appStoreHook = testAppStoreHook2()
 

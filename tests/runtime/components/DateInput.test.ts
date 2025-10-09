@@ -2,16 +2,15 @@
  * @vitest-environment jsdom
  */
 
-import {expect, test} from "vitest"
+import {expect, test} from 'vitest'
 import {DateInput} from '../../../src/runtime/components/index'
-import {htmlSnapshot, snapshot, testAppInterface, wait, wrappedTestElement, wrappedTestElementNew} from '../../testutil/testHelpers'
+import {htmlSnapshot, testAppInterfaceNew, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
-import {DateInputState} from '../../../src/runtime/components/DateInput'
 import {DateType} from '../../../src/runtime/types'
 import {act, render, waitFor} from '@testing-library/react'
 
-const [dateInput, appStoreHook] = wrappedTestElementNew(DateInput)
+const [dateInput, appStoreHook] = wrappedTestElement(DateInput)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
@@ -96,7 +95,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(null)
 
     const state = new DateInput.State({initialValue: new Date('2021-11-12')})
-    const appInterface = testAppInterface('testPath', state)
+    const appInterface = testAppInterfaceNew('testPath', state)
     expect(state.value).toStrictEqual(new Date('2021-11-12'))
     expect(state.defaultValue).toBe(null)
 
