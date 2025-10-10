@@ -10,10 +10,9 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {AppStateForObject as AppStateForObject2} from '../../src/runtime/components/ComponentState2'
 import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
-import {default as AppStateStore2, MaybeInitable, StoredState} from '../../src/runtime/state/AppStateStore'
+import AppStateStore, {MaybeInitable} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
@@ -170,36 +169,6 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
-
-export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
-    let _latest: any = initialVersion
-
-    const appInterface: AppStateForObject = {
-        latest() {
-            return _latest
-        },
-        updateVersion: vi.fn().mockImplementation((changes: object) => {
-            _latest = _latest.withMergedState(changes)
-            _latest.init(appInterface, path)
-        }),
-        getChildState: (subPath: string) => childStateValues[subPath as keyof object],
-        getOrCreateChildState(subPath: string, item: StoredState): StoredState {
-            const initItem = (item: StoredState) => {
-                item.init(appInterface, path + '.' + subPath)
-                return item
-            }
-            // @ts-ignore
-            return childStateValues[subPath as keyof object] ?? (childStateValues[subPath as keyof object] = initItem(item))
-        },
-        getApp(): StoredState {
-            throw new Error('getApp not implemented')
-        }
-    }
-
-    initialVersion.init(appInterface, path)
-    return appInterface
-}
-
 export const testAppInterfaceNew = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject2 => {
     let _latest: any = initialVersion
 
@@ -222,8 +191,8 @@ export const testAppInterfaceNew = (path: string, initialVersion: any, childStat
 
 function testAppStoreHook2() {
     const hook = {
-        store: null as (null | AppStateStore2),
-        setAppStore(sa: AppStateStore2) {
+        store: null as (null | AppStateStore),
+        setAppStore(sa: AppStateStore) {
             this.store = sa
         },
         stateAt (path: string) {
@@ -235,7 +204,7 @@ function testAppStoreHook2() {
 }
 
 export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: any[]) => T) => {
-    const theStore = new AppStateStore2()
+    const theStore = new AppStateStore()
     let idSeq = 1
     return (props: object) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
 }

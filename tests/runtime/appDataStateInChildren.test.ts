@@ -7,7 +7,7 @@ import {testContainer} from '../testutil/rtlHelpers'
 import {use$state} from '../../src/runtime/state/appStateHooks'
 import {BaseComponentState} from '../../src/runtime/components/ComponentState2'
 
-import {StoreProvider} from '../../src/runner/StoreContext'
+import {StoreProvider} from '../../src/runtime/state/StoreContext'
 import {wait} from '../testutil/testHelpers'
 
 let stateInParent: any = null

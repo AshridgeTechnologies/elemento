@@ -3,7 +3,6 @@ import AppStateStore from './AppStateStore'
 
 export type AppStoreHook = {setAppStore(sa: AppStateStore): void}
 
-//in separate file to avoid pulling AppRunner into all tests
 export const StoreContext = createContext<AppStateStore>(null as unknown as AppStateStore)
 const StoreProvider = ({children, appStoreHook}: { children: React.ReactNode, appStoreHook?: AppStoreHook }) => {
     const store = useRef(new AppStateStore())

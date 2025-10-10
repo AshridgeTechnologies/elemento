@@ -1,4 +1,4 @@
-import SubscribableStore, {type AllChangesCallback, type Callback, type Id, type UnsubscribeFn} from './SubscribableStore'
+import SubscribableStore, {type AllChangesCallback, type Callback, type UnsubscribeFn} from './SubscribableStore'
 import {AppStateForObject} from '../components/ComponentState2'
 
 type Props = { [p: string]: any }
@@ -14,13 +14,9 @@ export default class AppStateStore {
 
     constructor(private store: SubscribableStore = new SubscribableStore()) {}
 
-    getRaw(id: string): StoredState {
-        return this.store.get(id)
-    }
-
     get(id: string): StoredState {
         const state = this.getRaw(id)
-        return state ? this.itemProxy(id, state) : this.itemProxy(id, placeholder)
+        return this.itemProxy(id, state ?? placeholder)
     }
 
     getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
@@ -63,10 +59,6 @@ export default class AppStateStore {
         return this.itemProxy(id, targetState)
     }
 
-    subscribe(id: string, callback: Callback): UnsubscribeFn {
-        return this.store.subscribe(id, callback)
-    }
-
     subscribeAll(callback: AllChangesCallback): UnsubscribeFn {
         return this.store.subscribeAll(callback)
     }
@@ -77,6 +69,10 @@ export default class AppStateStore {
             setTimeout(() => this.store.sendNotifications(), 0)
         }
         this.store.set(id, item)
+    }
+
+    private getRaw(id: string): StoredState {
+        return this.store.get(id)
     }
 
     private itemProxy(path: string, targetState: any) {
@@ -91,16 +87,11 @@ export default class AppStateStore {
                     return undefined
                 }
 
-                if (property === 'id') {
-                    return (subId: Id) => `${path}.${subId}`
-                }
-
                 if (property in target) {
                     return target[property]
                 }
 
-                const childState = store.get(path + '.' + property)
-                return childState ?? placeholder
+                return store.get(path + '.' + property)
             }
         }
 

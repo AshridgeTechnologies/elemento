@@ -3,7 +3,7 @@ import {mapValues} from 'radash'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
 import {StoredState} from './AppStateStore'
-import {GetObjectFn, useGetObjectFunction} from './appStateHooks'
+import {GetObjectFn, useGetObjectFunction} from './state/appStateHooks'
 import {VoidFn} from '../editor/Types'
 
 type DebugFn = () => any

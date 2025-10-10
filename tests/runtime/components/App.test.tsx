@@ -16,7 +16,7 @@ import {addNotification} from '../../../src/runtime/components/notifications'
 import {ensureSlash} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 
-import {StoreProvider} from '../../../src/runner/StoreContext'
+import {StoreProvider} from '../../../src/runtime/state/StoreContext'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 import {AppData} from '../../../src/runtime/components/AppData'
 
