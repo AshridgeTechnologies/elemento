@@ -1,8 +1,8 @@
-import AppStateStore from './AppStateStore'
+import {AppStateForObject} from '../components/ComponentState'
 
 type Props = { [p: string]: any }
 
-export function createProxy(store: AppStateStore, path: string, targetState: any) {
+export function createProxy(store: AppStateForObject, targetState: any) {
     const handler = {
         get(target: Props, property: string | symbol) {
             if (property === Symbol.toPrimitive) {
@@ -17,7 +17,7 @@ export function createProxy(store: AppStateStore, path: string, targetState: any
                 return target[property]
             }
 
-            return store.get(path + '.' + property)
+            return store.getChildState(property)
         }
     }
 

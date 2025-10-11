@@ -1,5 +1,6 @@
 import {StoredState} from '../state/AppStateStore'
 import {equals} from 'ramda'
+import {createProxy} from '../state/createProxy'
 
 export interface AppStateForObject {
     path: string,
@@ -30,7 +31,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     init(asi: AppStateForObject): this {
         this._appStateInterface = asi
         this.doInit()
-        return this
+        return createProxy(asi, this)
     }
 
     protected doInit() {}

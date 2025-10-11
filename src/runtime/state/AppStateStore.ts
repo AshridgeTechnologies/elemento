@@ -1,6 +1,5 @@
 import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
 import {AppStateForObject} from '../components/ComponentState'
-import {createProxy} from './createProxy'
 
 export type StoredState = any
 
@@ -33,7 +32,7 @@ export default class AppStateStore {
 
     get(id: string): StoredState {
         const state = this.getRaw(id)
-        return createProxy(this, id, state ?? placeholder)
+        return state ?? placeholder
     }
 
     getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
@@ -53,7 +52,7 @@ export default class AppStateStore {
             }
         }
 
-        return createProxy(this, id, targetState)
+        return targetState
     }
 
     subscribeAll(callback: AllChangesCallback): UnsubscribeFn {
