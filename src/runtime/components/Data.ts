@@ -1,10 +1,8 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState, WithChildStates} from './ComponentState2'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {clone} from 'radash'
 import lodash from 'lodash'
-import {shallow} from 'zustand/shallow'
-import {equals, omit} from 'ramda'
 import {use$state} from '../state/appStateHooks'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
@@ -73,7 +71,7 @@ export class DataState extends BaseComponentState<StateExternalProperties, State
         this.updateState({value})
     }
 
-    public withState(state: WithChildStates<StateInternalProperties>) {
+    public withState(state: StateInternalProperties) {
         const newVersion = new DataState(this.props, false)
         newVersion.state = {...state}
         newVersion.exposeValueProperties()

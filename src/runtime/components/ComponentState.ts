@@ -1,18 +1,15 @@
-import {shallow} from 'zustand/shallow'
-import {StoredState} from '../AppStateStore'
+import {StoredState} from '../state/AppStateStore'
+import {equals} from 'ramda'
 
 export interface AppStateForObject {
+    path: string,
     latest: () => StoredState
-    updateVersion: (changes: object) => void,
+    updateVersion: (newVersion: StoredState) => void,
     getChildState: (subPath: string) => StoredState
-    getOrCreateChildState: (subPath: string, item: StoredState) => StoredState
-    getApp: () => StoredState
 }
 
 export interface ComponentState<T> {
-    init(asi: AppStateForObject, path: string): void
-
-    updateFrom(newObj: T): T
+    init(asi: AppStateForObject): void
 
     withMergedState(changes: object): T
 
@@ -23,48 +20,46 @@ export interface ComponentState<T> {
     get _stateForTest(): any
 }
 
-export type StateMap = { [key: string]: StoredState }
-
-export type WithChildStates<SP> = SP & {childStates: StateMap}
-
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
-    protected state: WithChildStates<StateProps> = {childStates: {}} as WithChildStates<StateProps>
+    protected state: StateProps = {} as StateProps
     protected _appStateInterface?: AppStateForObject
     private __path?: string
     protected get _path(): string | undefined { return this.__path}
-    protected set _path(path: string) { this.__path = path}
 
     protected readonly childNames: string[] = []
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject, path: string): void {
+    init(asi: AppStateForObject): void {
         this._appStateInterface = asi
-        this._path = path
+        this.__path = asi.path
         this.setupChildStates()
     }
 
     protected setupChildStates() {
-        this.state.childStates ??= {}
-        this.createChildStates()
+        // this.state.childStates ??= {}
+        // this.createChildStates()
     }
 
     protected createChildStates(): void {
     }
 
     protected getOrCreateChildState(path: string, item: StoredState) {
-        const childState = this._appStateInterface!.getOrCreateChildState(path, item)
-        this.state.childStates[path] = childState
-        return childState
+        // const childState = this._appStateInterface!.getOrCreateChildState(path, item)
+        // this.state.childStates[path] = childState
+        // return childState
     }
 
-    updateFrom(newObj: this): this {
-        const sameType = this.constructor === newObj.constructor
-        return sameType && this.isEqualTo(newObj) ? this : newObj.withState(this.state)
+    updateState(changes: Partial<typeof this.state>) {
+        const latestState = this._appStateInterface!.latest()
+        const updatedState = (latestState as any).withMergedState(changes)
+        if (updatedState !== latestState) {
+            this._appStateInterface!.updateVersion(updatedState)
+        }
     }
 
     latest(): this {
-        return this._appStateInterface!.latest() as this
+        return this._appStateInterface!.latest() as unknown as this
     }
 
     get domElement(): HTMLElement | null {
@@ -72,11 +67,11 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     get childStates() {
-        return this.state.childStates ?? {}
+        return {}
     }
 
     get app() {
-        return this._appStateInterface?.getApp()
+        return null //this._appStateInterface?.getApp()
     }
 
     Focus() {
@@ -85,24 +80,37 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     private get thisConstructor(): any { return this.constructor as any }
 
-    protected isEqualTo(newObj: this) {
-        return shallow(this.props, newObj.props)
+    private copy(props: ExternalProps, state: StateProps): this {
+        const newVersion = new this.thisConstructor(props) as this
+        newVersion.state = {...state}
+        if (this._appStateInterface) {
+            newVersion.init(this._appStateInterface)
+        }
+        return newVersion
     }
 
-    withState(state: WithChildStates<StateProps>): this {
-        const newVersion = new this.thisConstructor(this.props) as BaseComponentState<ExternalProps, StateProps>
-        newVersion.state = {...state}
-        return newVersion as this
+    propsEqual(props: ExternalProps) {
+        return equals(this.props, props)
+    }
+
+    stateEqual(state: StateProps) {
+        return equals(this.state, state)
+    }
+
+    _withStateForTest(state: any): this {
+        return this.withState(state)
+    }
+
+    withState(state: StateProps): this {
+        return this.stateEqual(state) ? this : this.copy(this.props, state)
     }
 
     withProps(props: ExternalProps): this {
-        const newVersion = new this.thisConstructor(props) as BaseComponentState<ExternalProps, StateProps>
-        newVersion.state = {...this.state}
-        return newVersion as this
+        return this.propsEqual(props) ? this : this.copy(props, this.state)
     }
 
     withMergedState(changes: Partial<StateProps>): this {
-        const newState = Object.assign({}, this.state, changes) as WithChildStates<StateProps>
+        const newState = Object.assign({}, this.state, changes) as StateProps
         for (const p in newState) {
             // @ts-ignore
             if (newState[p] === undefined) delete newState[p]
@@ -112,34 +120,20 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     }
 
     onChildStateChange() {
-        const getChildState = (name: string) => this._appStateInterface?.getChildState(name) as ComponentState<any>
-        const latestChildStates = Object.fromEntries(this.childNames.map(name => [name, getChildState(name)]))
-        if (!shallow(this.childStates, latestChildStates)) {
-            // @ts-ignore
-            this.updateState({childStates: latestChildStates})
-        }
-    }
-
-    _withStateForTest(state: StateProps): this {
-        const newVersion = new this.thisConstructor(this.props)
-        newVersion.state = state
-        newVersion._appStateInterface = this._appStateInterface
-        newVersion._path = this._path
-        return newVersion
+        // const getChildState = (name: string) => this._appStateInterface?.getChildState(name) as ComponentState<any>
+        // const latestChildStates = Object.fromEntries(this.childNames.map(name => [name, getChildState(name)]))
+        // if (!shallow(this.childStates, latestChildStates)) {
+        //     // @ts-ignore
+        //     this.updateState({childStates: latestChildStates})
+        // }
     }
 
     get _stateForTest() { return this.state }
 
-    protected updateState(changes: Partial<typeof this.state>) {
-        this._appStateInterface!.updateVersion(changes)
-    }
-
-    setPreventUpdates() {
-
-    }
+    get _raw() { return this }
 
     protected getChildState(name: string) {
-        return (this._appStateInterface?.getChildState(name) as ComponentState<any>)
+        return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
     }
 
 }

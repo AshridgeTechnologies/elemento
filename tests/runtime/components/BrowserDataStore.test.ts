@@ -10,7 +10,7 @@ import {render} from '@testing-library/react'
 import appFunctions from '../../../src/runtime/appFunctions'
 import {ErrorResult} from '../../../src/shared/DataStore'
 import Observable from 'zen-observable'
-import {testAppInterfaceNew} from '../../testutil/testHelpers'
+import {testAppInterface} from '../../testutil/testHelpers'
 
 vi.mock('../../../src/runtime/appFunctions')
 
@@ -19,7 +19,7 @@ let state: any
 const dataStoreProps = {databaseName: 'db1', collectionNames:['Gadgets','Widgets']}
 const createStore = () => {
     const state = new BrowserDataStore.State(dataStoreProps)
-    const appInterface = testAppInterfaceNew('path1', state)
+    const appInterface = testAppInterface('path1', state)
     return state
 }
 
@@ -47,7 +47,7 @@ test('produces empty output', () => {
 
 test('compares state props correctly', () => {
     const state = new BrowserDataStore.State(dataStoreProps)
-    expect(state._matchesProps({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})).toBe(true)
+    expect(state.propsEqual({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})).toBe(true)
 })
 
 test('creates its own data store if not supplied', async () => {

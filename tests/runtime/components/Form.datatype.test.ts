@@ -7,7 +7,7 @@ import {
     componentJSON,
     componentJSONAsync, DEBUG_TIMEOUT,
     getCallArg,
-    testAppInterfaceNew,
+    testAppInterface,
     wait,
     wrappedTestElement
 } from '../../testutil/testHelpers'
@@ -172,18 +172,18 @@ test('Form element produces output containing nested form', async () => {
 test('State class has correct properties and functions', () => {
     const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterfaceNew('formPath', state)
+    const appInterface = testAppInterface('formPath', state)
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 
     state.Reset()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: undefined, errorsShown: false}))
 })
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterfaceNew('formPath', state, {Description: 'Extra Large'})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
+    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {Description: 'Extra Large', BoxSize: 17}}))
 })
 
 test('State has expected values', async () => {
@@ -358,7 +358,7 @@ test('State calls ShowErrors on all its component states', async () => {
 test('State Submit calls submit action if present', async () => {
     const submitAction = vi.fn()
     const state = new DataTypeFormState({dataType: recordType, value: {Description: 'Big', BoxSize: 17}, submitAction })
-    const appInterface = testAppInterfaceNew('formPath', state, {})
+    const appInterface = testAppInterface('formPath', state, {})
 
     const data = {a: 10}
     await state.Submit(data)

@@ -4,7 +4,7 @@
 
 import {expect, test} from 'vitest'
 import {TrueFalseInput} from '../../../src/runtime/components/index'
-import {DEBUG_TIMEOUT, snapshot, testAppInterfaceNew, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {DEBUG_TIMEOUT, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
 
 const [trueFalseInput, appStoreHook] = wrappedTestElement(TrueFalseInput)
@@ -58,15 +58,15 @@ test('TrueFalseInput shows true value when state value is set to true and initia
     const {el, user} = testContainer(trueFalseInput('app.page1.widget22', {initialValue: false}), 'testContainer3')
     expect(el`app.page1.widget22`.checked).toBe(false)
     stateAt('app.page1.widget22')._setValue(true)
-    await wait(10)
+    await wait(20)
     expect(el`app.page1.widget22`.checked).toBe(true)
-}, DEBUG_TIMEOUT)
+})
 
 test('TrueFalseInput shows false value when state value is set to false and initial value exists', async () => {
     const {el, user} = testContainer(trueFalseInput('app.page1.widget77', {initialValue: true}), 'testContainer4')
     expect(el`app.page1.widget77`.checked).toBe(true)
     stateAt('app.page1.widget77')._setValue(false)
-    await wait()
+    await wait(20)
     expect(el`app.page1.widget77`.checked).toBe(false)
 
 })
@@ -98,13 +98,13 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(false)
 
     const state = new TrueFalseInput.State({initialValue: true})
-    const appInterface = testAppInterfaceNew('testPath', state)
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toBe(true)
     expect(state.toString()).toBe('true')
 
     state.Reset()
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: undefined, errorsShown: false}))
     expect(resetState.value).toBe(true)
     expect(resetState.dataValue).toBe(true)
 })

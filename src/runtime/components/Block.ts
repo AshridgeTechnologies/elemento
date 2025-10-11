@@ -3,7 +3,7 @@ import {PropVal, StylesProps, StylesPropVals, valueOfProps} from '../runtimeFunc
 import {Box, Stack, SxProps} from '@mui/material'
 import {sxProps} from './ComponentHelpers'
 import {DragEndEvent, useDndMonitor, useDroppable} from '@dnd-kit/core'
-import {BaseComponentState, ComponentState} from './ComponentState2'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {use$state} from '../state/appStateHooks'
 import type {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'

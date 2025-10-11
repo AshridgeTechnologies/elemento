@@ -10,8 +10,8 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {AppStateForObject as AppStateForObject2} from '../../src/runtime/components/ComponentState2'
-import {type AppStoreHook as AppStoreHook2, StoreProvider as StoreProvider2} from '../../src/runtime/state/StoreContext'
+import {AppStateForObject} from '../../src/runtime/components/ComponentState'
+import {type AppStoreHook, StoreProvider} from '../../src/runtime/state/StoreContext'
 import AppStateStore, {MaybeInitable} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 
@@ -169,16 +169,16 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
-export const testAppInterfaceNew = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject2 => {
+export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
     let _latest: any = initialVersion
 
-    const appInterface: AppStateForObject2 = {
+    const appInterface: AppStateForObject = {
         path: path,
         latest() {
             return _latest
         },
-        updateVersion: vi.fn().mockImplementation((changes: object) => {
-            _latest = _latest.withMergedState(changes)
+        updateVersion: vi.fn().mockImplementation((newVersion: object) => {
+            _latest = newVersion
             _latest.init(appInterface, path)
         }),
         getChildState: (subPath: string) => childStateValues[subPath as keyof object],
@@ -189,7 +189,7 @@ export const testAppInterfaceNew = (path: string, initialVersion: any, childStat
     return appInterface
 }
 
-function testAppStoreHook2() {
+function testAppStoreHook() {
     const hook = {
         store: null as (null | AppStateStore),
         setAppStore(sa: AppStateStore) {
@@ -200,7 +200,7 @@ function testAppStoreHook2() {
         }
     }
 
-    return hook as AppStoreHook2
+    return hook as AppStoreHook
 }
 
 export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: any[]) => T) => {
@@ -210,14 +210,14 @@ export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: 
 }
 export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 
-    const appStoreHook = testAppStoreHook2()
+    const appStoreHook = testAppStoreHook()
 
     const testElementCreatorFn = (path: string, componentProps: any = {}, ...children: React.ReactNode[]) => {
         const component = isArray(children)
             ? createElement(componentClass as any, {path, ...componentProps}, ...children)
             : createElement(componentClass as any, {path, ...componentProps}, children)
         const innerElement = wrapForDnd ? createElement(DndContext, null, component) : component
-        return createElement(StoreProvider2, {appStoreHook, children:
+        return createElement(StoreProvider, {appStoreHook, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }

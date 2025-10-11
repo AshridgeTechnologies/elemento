@@ -2,7 +2,7 @@ import {useContext, useEffect, useRef, useState} from 'react'
 import {StoreContext} from './StoreContext'
 import type {Id} from './SubscribableStore'
 import AppStateStore, {StoredState} from './AppStateStore'
-import {ComponentState} from '../components/ComponentState2'
+import {ComponentState} from '../components/ComponentState'
 
 export type GetObjectFn = <T extends StoredState>(path: string) => T
 

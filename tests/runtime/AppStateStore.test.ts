@@ -1,10 +1,11 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test } from "vitest"  
-import AppStateStore from '../../src/runtime/AppStateStore'
-import SubscribableStore from '../../src/runtime/SubscribableStore'
+import {beforeEach, expect, test, vi} from 'vitest'
+import AppStateStore from '../../src/runtime/state/AppStateStore'
 import {BaseComponentState, ComponentState} from '../../src/runtime/components/ComponentState'
 import {wait} from '../testutil/testHelpers'
 
-class TestItem extends BaseComponentState<any> {}
+class TestItem extends BaseComponentState<any> {
+    get id() { return this.props.id }
+}
 
 type StateObjectProperties = {color?: string, length?: number}
 class StateObject extends BaseComponentState<StateObjectProperties> implements ComponentState<StateObject> {
@@ -39,56 +40,75 @@ let store: AppStateStore
 const id1 = 'id1'
 const id2 = 'id2'
 const id1_2 = 'id1.id2'
-let item1: TestItem,
-    item2: TestItem,
+let item1Props: object,
+    item2Props: object,
     item1_2: TestItem,
-    item1same: TestItem,
-    item1changed: TestItem,
+    item1sameProps: object,
+    item1changedProps: object,
     item1_2changed: TestItem
 
 beforeEach( ()=> {
-    item1 = new TestItem({id: id1, a: 10})
-    item2 = new TestItem({id: id2, a: 20})
+    item1Props = {id: id1, a: 10}
+    item2Props = {id: id2, a: 20}
     item1_2 = new TestItem({id: id1_2, a: 100})
-    item1same = new TestItem({id: id1, a: 10})
-    item1changed = new TestItem({id: id1, a: 11})
+    item1sameProps = {...item1Props}
+    item1changedProps = {id: id1, a: 11}
     item1_2changed = new TestItem({id: id1_2, a: 101})
-    store = new AppStateStore(new SubscribableStore())
+    store = new AppStateStore()
 })
 
-test('gets and sets items by id and inits the items', () => {
-    store.set(id1, item1)
-    store.set(id2, item2)
-    expect(store.get(id1)).toBe(item1)
-    expect(store.get(id2)).toBe(item2)
+test('creates new items', () => {
+    const item1 = store.getOrCreate(id1, TestItem, item1Props)
+    const item2 = store.getOrCreate(id2, TestItem, item2Props)
+    expect(store.get(id1)._raw).toBe(item1._raw)
+    expect(store.get(id2)._raw).toBe(item2._raw)
     // @ts-ignore
     expect(item1._path).toBe('id1')
+    expect(item1.id).toBe('id1')
 })
 
-test('updateIfChanged does nothing if items equal', () => {
-    store.set(id1, item1)
-    store.updateIfChanged(id1, item1same)
-    expect(store.get(id1)).toBe(item1)
+test('creates new items if props have changed', () => {
+    const item1 = store.getOrCreate(id1, TestItem, item1Props)
+    const item1a = store.getOrCreate(id1, TestItem, item1changedProps)
+    expect(store.get(id1)._raw).not.toBe(item1._raw)
+    expect(store.get(id1)._raw).toBe(item1a._raw)
+    // @ts-ignore
+    expect(item1a._path).toBe('id1')
+    expect(item1a.props.a).toBe(11)
 })
 
-test('updateIfChanged sets and defers notifications if item not present', async () => {
+test('setDeferNotifications sets and defers notifications if item not present', async () => {
+    const item1 = new TestItem(item1Props)
     const callback = vi.fn()
-    store.subscribe(id1, callback)
-    store.updateIfChanged(id1, item1)
-    expect(store.get(id1)).toBe(item1)
+    store.subscribeAll(callback)
+    store.setDeferNotifications(id1, item1)
+    expect(store.get(id1)._raw).toBe(item1)
     expect(callback).not.toHaveBeenCalled()
     await wait()
-    expect(callback).toHaveBeenCalled()})
+    expect(callback).toHaveBeenCalledWith([id1])
+})
 
-test('updateIfChanged replaces if items change and defers notifications', async () => {
+test('setDeferNotifications replaces if item present and defers notifications', async () => {
+    const item1 = store.getOrCreate(id1, TestItem, item1Props)
     const callback = vi.fn()
-    store.set(id1, item1)
-    store.subscribe(id1, callback)
-    store.updateIfChanged(id1, item1changed)
+    store.subscribeAll(callback)
+    const item1changed = new TestItem(item1changedProps)
+    store.setDeferNotifications(id1, item1changed)
     expect((store.get(id1) as TestItem).props.a).toBe(item1changed.props.a)
     expect(callback).not.toHaveBeenCalled()
     await wait()
-    expect(callback).toHaveBeenCalled()
+    expect(callback).toHaveBeenCalledWith([id1])
+})
+
+test('gets item if already in store', () => {
+    const item1 = store.getOrCreate(id1, TestItem, item1Props)
+    const item1_ = store.get('id1')
+    expect(item1_._raw).toBe(item1._raw)
+})
+
+test('gets placeholder if not in store', () => {
+    const item1_ = store.get('id1')
+    expect(item1_._isPlaceholder).toBe(true)
 })
 
 test('notifies parent items on changes', () => {

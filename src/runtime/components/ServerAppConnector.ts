@@ -1,4 +1,4 @@
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {equals, mergeRight} from 'ramda'
@@ -74,7 +74,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         return new ErrorResult(description, errorMessage)
     }
 
-    _matchesProps(props:ExternalProperties): boolean {
+    propsEqual(props:ExternalProperties): boolean {
         return equals(this.props.configuration, props.configuration)
     }
 

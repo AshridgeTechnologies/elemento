@@ -1,7 +1,7 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import appFunctions from '../appFunctions'
 import {ErrorResult, pending} from '../../shared/DataStore'
-import {mergeRight} from 'ramda'
+import {equals, mergeRight, omit} from 'ramda'
 import {isObject} from 'lodash'
 import {globalFetch} from './ComponentHelpers'
 import {Definitions} from '../../model/schema'
@@ -57,6 +57,10 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 
     constructor(props: ExternalProperties) {
         super({fetch: globalFetch, ...props})
+    }
+
+    propsEqual(props: ExternalProperties) {
+        return equals(omit(['fetch'], props), omit(['fetch'], this.props))
     }
 
     private get fetch() { return this.props.fetch }

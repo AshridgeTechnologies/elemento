@@ -1,7 +1,7 @@
 import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import {BaseComponentState, ComponentState} from './ComponentState2'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
 import {use$state} from '../state/appStateHooks'

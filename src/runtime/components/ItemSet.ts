@@ -1,6 +1,6 @@
 import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState2'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'

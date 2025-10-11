@@ -7,7 +7,7 @@ import {appFunctions, globalFunctions, stateProps, wrapFn} from '../../../src/ru
 import {DataState} from '../../../src/runtime/components/Data'
 import {BaseComponentState, Block, Calculation, Data, TextInput} from '../../../src/runtime/components'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
-import AppStateStore from '../../../src/runtime/AppStateStore'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
 import SubscribableStore from '../../../src/runtime/SubscribableStore'
 
 const {Log, Left} = globalFunctions

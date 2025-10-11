@@ -3,7 +3,7 @@
  */
 import {expect, test, vi} from 'vitest'
 import React, {KeyboardEventHandler} from 'react'
-import {componentJSON, componentJSONAsync, getCallArg, testAppInterfaceNew, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, componentJSONAsync, getCallArg, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {BaseFormState, Form, NumberInput, TextElement, TextInput} from '../../../src/runtime/components'
 import renderer from 'react-test-renderer'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
@@ -164,9 +164,9 @@ test('State class has empty object original value if props value is null', () =>
 
 test.skip('State class uses states of child objects where present', () => {
     const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterfaceNew('formPath', state, {Description: 'Extra Large'});
+    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'});
     (state as any)._updateValue()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {Description: 'Extra Large', BoxSize: 17}})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {Description: 'Extra Large', BoxSize: 17}}))
 })
 
 test('State has expected values', async () => {
@@ -383,7 +383,7 @@ test('State Submit calls submit action if present and calls Reset after if succe
     const stateNoAction = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17} })
     state.Reset = vi.fn()
     stateNoAction.Reset = vi.fn()
-    const appInterface = testAppInterfaceNew('formPath', state, {})
+    const appInterface = testAppInterface('formPath', state, {})
 
     const data = {a: 10}
     await stateNoAction.Submit(data)
@@ -401,7 +401,7 @@ test('State Submit calls submit action and adds Error Result to errors and does 
     const submitAction = vi.fn().mockResolvedValue(new ErrorResult('Submit Function', 'This has all gone wrong'))
     const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
     state.Reset = vi.fn()
-    const appInterface = testAppInterfaceNew('formPath', state)
+    const appInterface = testAppInterface('formPath', state)
 
     await state.Submit(null)
     expect(state.Reset).not.toHaveBeenCalled()

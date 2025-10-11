@@ -4,7 +4,7 @@
 
 import {beforeEach, expect, test, vi} from "vitest"
 import React, {createElement} from 'react'
-import {componentJSON, mockReturn, testAppInterfaceNew as testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, mockReturn, testAppInterface as testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {App, AppBar, Collection, Page, TextElement} from '../../../src/runtime/components/index'
 import {use$state} from '../../../src/runtime/state/appStateHooks'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'

@@ -3,11 +3,11 @@ import {PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
 import {ElementMetadata} from '../../model/ModelElement'
 
-export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {value?: PropVal<T | null> | null, dataType?: DT} & Props
+export type InputComponentExternalProps<T, DT extends BaseType<T, any>, Props> = {initialValue?: PropVal<T | null> | null, dataType?: DT} & Props
 export type InputComponentStateProps<T> = {value?: T | null, errorsShown?: boolean, editedValue?: string}
 
 export const InputComponentMetadata: ElementMetadata = {
-    stateProps: ['value', 'dataType']
+    stateProps: []
 }
 
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
@@ -21,7 +21,7 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     }
 
     get originalValue() {
-        return valueOf(this.props.value) as T
+        return valueOf(this.props.initialValue) as T
     }
 
     get valid() {

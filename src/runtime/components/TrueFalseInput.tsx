@@ -1,7 +1,7 @@
 import React, {ChangeEvent, createElement, FocusEvent} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {TrueFalseType} from '../types'
 import {
     BaseInputComponentProperties,

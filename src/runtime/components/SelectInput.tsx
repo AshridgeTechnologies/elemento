@@ -1,7 +1,7 @@
 import {createElement as el, FocusEvent} from 'react'
 import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {ChoiceType, NumberType} from '../types'
 import {
     BaseInputComponentProperties,

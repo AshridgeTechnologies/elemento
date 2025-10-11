@@ -3,7 +3,7 @@
  */
 import {expect, test} from "vitest"
 import {createElement} from 'react'
-import {componentJSON, testAppInterfaceNew as testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, testAppInterface as testAppInterface, wrappedTestElement} from '../../testutil/testHelpers'
 import {Block, TextElement} from '../../../src/runtime/components/index'
 import {BlockState} from '../../../src/runtime/components/Block'
 
@@ -52,12 +52,12 @@ test('Block State only updates isOver when changed', () => {
     state.setIsOver(false)
     expect(appInterface.updateVersion).not.toHaveBeenCalled()
     state.setIsOver(true)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({isOver: true})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({isOver: true}))
     expect(state.latest().isOver).toBe(true)
     state.setIsOver(true)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
     state.setIsOver(false)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
-    expect(appInterface.updateVersion).toHaveBeenLastCalledWith({isOver: false})
+    expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state.withMergedState({isOver: false}))
 
 })

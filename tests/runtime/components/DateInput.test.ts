@@ -4,7 +4,7 @@
 
 import {expect, test} from 'vitest'
 import {DateInput} from '../../../src/runtime/components/index'
-import {htmlSnapshot, testAppInterfaceNew, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {htmlSnapshot, testAppInterface, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {DateType} from '../../../src/runtime/types'
@@ -95,13 +95,13 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(null)
 
     const state = new DateInput.State({initialValue: new Date('2021-11-12')})
-    const appInterface = testAppInterfaceNew('testPath', state)
+    const appInterface = testAppInterface('testPath', state)
     expect(state.value).toStrictEqual(new Date('2021-11-12'))
     expect(state.defaultValue).toBe(null)
 
     state.Reset()
     const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith({value: undefined, errorsShown: false})
+    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: undefined, errorsShown: false}))
     expect(resetState.value).toStrictEqual(new Date('2021-11-12'))
     expect(resetState.dataValue).toStrictEqual(new Date('2021-11-12'))
 

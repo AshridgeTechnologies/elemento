@@ -1,4 +1,4 @@
-import InputComponentState from './InputComponentState2'
+import InputComponentState from './InputComponentState'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
 import {equals, mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../../shared/DataStore'

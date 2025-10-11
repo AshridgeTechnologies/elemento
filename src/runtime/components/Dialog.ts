@@ -1,7 +1,7 @@
 import React from 'react'
 import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Dialog as MuiDialog, IconButton} from '@mui/material'
-import {BaseComponentState, ComponentState} from './ComponentState2'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {BlockContent, BlockLayout} from './Block'
 import Close from '@mui/icons-material/Close'
 import {use$state} from '../state/appStateHooks'

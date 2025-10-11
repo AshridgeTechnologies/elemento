@@ -1,5 +1,5 @@
 import UrlContext from '../UrlContext'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState2'
+import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
 import {shallow} from 'zustand/shallow'
 import Url, {asQueryObject} from '../Url'
 import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
@@ -31,7 +31,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         }
     }
 
-    _matchesProps(props: StateExternalProps) {
+    propsEqual(props: StateExternalProps) {
         const {pages: thisPages, ...thisProps} = this.props
         const {pages: newPages, ...newProps} = props
         const pagesEqual = shallow(thisPages, newPages)

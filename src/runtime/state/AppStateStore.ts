@@ -1,5 +1,5 @@
-import SubscribableStore, {type AllChangesCallback, type Callback, type UnsubscribeFn} from './SubscribableStore'
-import {AppStateForObject} from '../components/ComponentState2'
+import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
+import {AppStateForObject} from '../components/ComponentState'
 
 type Props = { [p: string]: any }
 
@@ -8,6 +8,23 @@ export type StoredState = any
 const placeholder = function() {const placeholder = 0}
 placeholder.valueOf = () => undefined
 placeholder._isPlaceholder = true
+
+class ObjectStateInterface implements AppStateForObject {
+    constructor(public path: string, private _store: AppStateStore) {}
+
+    getChildState(subPath: string): StoredState {
+        return this._store.get(this.path + '.' + subPath)
+    }
+
+    latest(): StoredState {
+        return this._store.get(this.path)
+    }
+
+    updateVersion(newVersion: StoredState): void {
+        this._store.setDeferNotifications(this.path, newVersion)
+    }
+
+}
 
 export type MaybeInitable = { init?: (asi: AppStateForObject) => void }
 export default class AppStateStore {
@@ -25,35 +42,22 @@ export default class AppStateStore {
 
         const initIfNeeded = (initialState: T) => {
             if (typeof initialState.init === 'function') {
-                const store = this
-                const asi: AppStateForObject = {
-                    path: id,
-                    latest() {
-                        return store.get(id)
-                    },
-                    updateVersion(changes: object) {
-                        const latestState = store.getRaw(id)
-                        const updatedState = (latestState as any).withMergedState(changes)
-                        store.setDeferNotifications(id, updatedState)
-                    },
-                    getChildState(subPath: string) {
-                        return store.get(id + '.' + subPath)
-                    }
-                }
-                initialState.init(asi)
+                initialState.init(new ObjectStateInterface(id, this))
             }
         }
 
-        if (existingState === null || existingState === undefined) {
+        const noExistingState = existingState === null || existingState === undefined
+        if (noExistingState) {
             const initialState = new stateClass(stateProps)
             initIfNeeded(initialState)
             targetState = initialState
             this.setDeferNotifications(id, initialState)
-        } else if (!existingState._matchesProps(stateProps)) {
+        } else {
             const updatedState = (existingState as any).withProps(stateProps)
-            initIfNeeded(updatedState)
-            targetState = updatedState
-            this.setDeferNotifications(id, updatedState)
+            if (updatedState !== existingState) {
+                targetState = updatedState
+                this.setDeferNotifications(id, updatedState)
+            }
         }
 
         return this.itemProxy(id, targetState)
@@ -71,7 +75,7 @@ export default class AppStateStore {
         this.store.set(id, item)
     }
 
-    private getRaw(id: string): StoredState {
+    getRaw(id: string): StoredState {
         return this.store.get(id)
     }
 

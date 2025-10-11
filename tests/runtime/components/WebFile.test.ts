@@ -1,8 +1,8 @@
 import {beforeEach, expect, MockedFunction, test, vi} from "vitest"
 import {isPending} from '../../../src/shared/DataStore'
-import {testAppInterfaceNew, wait} from '../../testutil/testHelpers'
+import {testAppInterface, wait} from '../../testutil/testHelpers'
 import {WebFileState} from '../../../src/runtime/components/WebFile'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState2'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn().mockResolvedValue(data)})
 let originalFetch = globalThis.fetch
@@ -10,7 +10,7 @@ let originalFetch = globalThis.fetch
 let mockFetch: MockedFunction<any>
 const initWebFile = (url: string):[any, AppStateForObject] => {
     const state = new WebFileState({url, fetch: mockFetch})
-    const appInterface = testAppInterfaceNew('testPath', state)
+    const appInterface = testAppInterface('testPath', state)
     return [state, appInterface]
 }
 
@@ -44,8 +44,7 @@ test('caches file contents', async () => {
 
 test('state objects equal with same url', () => {
     const state1 = new WebFileState({url: 'url1'})
-    const state2 = new WebFileState({url: 'url1'})
-    expect((state1 as any).isEqualTo(state2)).toBe(true)
+    expect(state1.withProps({url: 'url1'})).toBe(state1)
 })
 
 test('valueOf state object is file contents', async () => {

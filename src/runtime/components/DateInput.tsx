@@ -1,6 +1,6 @@
 import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState2'
+import InputComponentState, {InputComponentMetadata} from './InputComponentState'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'

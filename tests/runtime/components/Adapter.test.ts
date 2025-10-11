@@ -2,10 +2,10 @@ import {beforeEach, describe, expect, test, vi} from 'vitest'
 import {Adapter} from '../../../src/runtime/components'
 import {AdapterState} from '../../../src/runtime/components/Adapter'
 import {ErrorResult, isPending} from '../../../src/shared/DataStore'
-import {testAppInterfaceNew, valueObj, wait} from '../../testutil/testHelpers'
+import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState2'
+import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
 
 vi.mock('../../../src/runtime/appFunctions')
 vi.mock('../../../src/runtime/appFunctions')
@@ -43,7 +43,7 @@ class Target {
 const initAdapter = ():[any, AppStateForObject, any] => {
     const target = new Target(99)
     const state = new AdapterState({target: target})
-    const appInterface = testAppInterfaceNew('testPath', state)
+    const appInterface = testAppInterface('testPath', state)
 
     return [state, appInterface, target]
 }
@@ -81,7 +81,7 @@ test('has functions from the target class object', () => {
 
 test('returns self as update result for equivalent configuration', () => {
     const adapter = new Adapter.State({target: new Target(222)})
-    expect(adapter.updateFrom(new Adapter.State({target: new Target(222)}))).toBe(adapter)
+    expect(adapter.propsEqual({target: new Target(222)})).toBe(true)
 })
 
 test('calls functions, returns value immediately if not a promise and does not cache', async () => {

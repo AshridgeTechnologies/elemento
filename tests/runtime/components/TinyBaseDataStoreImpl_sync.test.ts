@@ -1,7 +1,7 @@
 import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
 import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
-import {testAppInterfaceNew, wait, waitUntil} from '../../testutil/testHelpers'
+import {DEBUG_TIMEOUT, testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
 import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
@@ -736,7 +736,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
             sync: true,
         }
         const storeState = new TinyBaseDataStoreState(storeProps)
-        const appInterface = testAppInterfaceNew('path1', storeState)
+        const appInterface = testAppInterface('path1', storeState)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)
@@ -785,5 +785,5 @@ describe.sequential('through TinyBaseDataStoreState', () => {
         expect(await localItem(storeState, id2)).toBe(null)
         expect(await serverItem(storePropsDb2.databaseInstanceName, id2)).toStrictEqual({id: id2, ...item})
         expect(await serverItem(storeProps.databaseInstanceName, id2)).toBe(null)
-    })
+    }, DEBUG_TIMEOUT)
 })

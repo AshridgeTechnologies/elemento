@@ -11,7 +11,7 @@ import {
     mockClear,
     mockImplementation,
     snapshot,
-    testAppInterfaceNew as testAppInterface,
+    testAppInterface as testAppInterface,
     wrappedTestElement
 } from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'
@@ -647,7 +647,7 @@ describe('subscribe with external data store', () => {
         const appInterface = testAppInterface('testPath', state)
 
         testObservable.send({collection: 'Widgets', type: InvalidateAll})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {}, queries: {}})
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {}, queries: {}}))
     })
 
     test('clears queries when subscription receives Multiple Changes', () => {
@@ -658,7 +658,7 @@ describe('subscribe with external data store', () => {
         const appInterface = testAppInterface('testPath', state);
 
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith({queries: {}})
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({queries: {}}))
     })
 
     test('clears queries without losing later Get when subscription receives Multiple Changes', async () => {
@@ -675,12 +675,8 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
         await actWait()
         expect(state.latest().Get('x1')).toStrictEqual({a: 10, b: 'Bee'})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith({
-            queries: {}
-        })
-        expect(appInterface.updateVersion).toHaveBeenCalledWith({
-            value: {x1: {a: 10, b: 'Bee'}}
-        })
+        expect(state.latest()._stateForTest.queries).toStrictEqual({})
+        expect(state.latest()._stateForTest.value).toStrictEqual({x1: {a: 10, b: 'Bee'}})
     })
 
     test('updates queries and item cache when update item that is in the item cache', () => {
@@ -853,7 +849,7 @@ describe('subscribe to auth changes', () => {
         const appInterface = testAppInterface('testPath', state)
 
         authCallback!()
-        expect(appInterface.updateVersion).toHaveBeenCalledWith({value: {}, queries: {}})
+        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {}, queries: {}}))
     })
 })
 
