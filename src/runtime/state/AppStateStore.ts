@@ -1,7 +1,6 @@
 import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
 import {AppStateForObject} from '../components/ComponentState'
-
-type Props = { [p: string]: any }
+import {createProxy} from './createProxy'
 
 export type StoredState = any
 
@@ -26,30 +25,24 @@ class ObjectStateInterface implements AppStateForObject {
 
 }
 
-export type MaybeInitable = { init?: (asi: AppStateForObject) => void }
+export type MaybeInitable = { init?: (asi: AppStateForObject) => any }
+
 export default class AppStateStore {
 
     constructor(private store: SubscribableStore = new SubscribableStore()) {}
 
     get(id: string): StoredState {
         const state = this.getRaw(id)
-        return this.itemProxy(id, state ?? placeholder)
+        return createProxy(this, id, state ?? placeholder)
     }
 
     getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
         const existingState = this.getRaw(id)
         let targetState = existingState
 
-        const initIfNeeded = (initialState: T) => {
-            if (typeof initialState.init === 'function') {
-                initialState.init(new ObjectStateInterface(id, this))
-            }
-        }
-
-        const noExistingState = existingState === null || existingState === undefined
-        if (noExistingState) {
-            const initialState = new stateClass(stateProps)
-            initIfNeeded(initialState)
+        if (existingState === null || existingState === undefined) {
+            const newState = new stateClass(stateProps)
+            const initialState = newState.init?.(new ObjectStateInterface(id, this)) ?? newState
             targetState = initialState
             this.setDeferNotifications(id, initialState)
         } else {
@@ -60,7 +53,7 @@ export default class AppStateStore {
             }
         }
 
-        return this.itemProxy(id, targetState)
+        return createProxy(this, id, targetState)
     }
 
     subscribeAll(callback: AllChangesCallback): UnsubscribeFn {
@@ -77,28 +70,5 @@ export default class AppStateStore {
 
     getRaw(id: string): StoredState {
         return this.store.get(id)
-    }
-
-    private itemProxy(path: string, targetState: any) {
-        const store = this
-        const handler = {
-            get(target: Props, property: string | symbol) {
-                if (property === Symbol.toPrimitive) {
-                    return target.valueOf
-                }
-
-                if (typeof property === 'symbol') {
-                    return undefined
-                }
-
-                if (property in target) {
-                    return target[property]
-                }
-
-                return store.get(path + '.' + property)
-            }
-        }
-
-        return new Proxy(targetState, handler)
     }
 }

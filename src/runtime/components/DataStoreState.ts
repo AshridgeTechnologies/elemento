@@ -13,8 +13,7 @@ export abstract class DataStoreState<PropsType extends object> extends BaseCompo
         super(props)
     }
 
-    init(asi: AppStateForObject) {
-        super.init(asi)
+    doInit() {
         const dataStoreClosed = this.closeDataStore()
         this.state.dataStore = this.createDataStore()
         this.state.initialisedDataStore = dataStoreClosed.then( () => this.initDataStore() )

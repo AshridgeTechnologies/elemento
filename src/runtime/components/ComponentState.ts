@@ -9,7 +9,7 @@ export interface AppStateForObject {
 }
 
 export interface ComponentState<T> {
-    init(asi: AppStateForObject): void
+    init(asi: AppStateForObject): T | undefined
 
     withMergedState(changes: object): T
 
@@ -23,26 +23,17 @@ export interface ComponentState<T> {
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
     protected state: StateProps = {} as StateProps
     protected _appStateInterface?: AppStateForObject
-    private __path?: string
-    protected get _path(): string | undefined { return this.__path}
-
-    protected readonly childNames: string[] = []
+    protected get _path(): string | undefined { return this._appStateInterface?.path }
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject): void {
+    init(asi: AppStateForObject): this {
         this._appStateInterface = asi
-        this.__path = asi.path
-        this.setupChildStates()
+        this.doInit()
+        return this
     }
 
-    protected setupChildStates() {
-        // this.state.childStates ??= {}
-        // this.createChildStates()
-    }
-
-    protected createChildStates(): void {
-    }
+    protected doInit() {}
 
     protected getOrCreateChildState(path: string, item: StoredState) {
         // const childState = this._appStateInterface!.getOrCreateChildState(path, item)

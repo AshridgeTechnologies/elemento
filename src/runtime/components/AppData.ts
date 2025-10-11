@@ -22,8 +22,7 @@ type StateInternalProps = {
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
 
     private theme: Theme | undefined
-    init(asi: AppStateForObject): void {
-        super.init(asi)
+    protected doInit(): void {
         const {subscription} = this.state
 
         if (!subscription) {
