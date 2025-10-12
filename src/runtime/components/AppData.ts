@@ -23,9 +23,7 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
 
     private theme: Theme | undefined
     protected doInit(): void {
-        const {subscription} = this.state
-
-        if (!subscription) {
+        if (!this.state.subscription) {
             this.state.subscription = onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
         }
     }

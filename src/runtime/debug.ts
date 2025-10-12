@@ -1,10 +1,10 @@
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import {mapValues} from 'radash'
 import {addNotification} from './components/notifications'
 import {startCase} from 'lodash'
-import {StoredState} from '../state/AppStateStore'
-import {GetObjectFn, useGetObjectFunction} from './state/appStateHooks'
+import {StoredState} from './state/AppStateStore'
 import {VoidFn} from '../editor/Types'
+import {StoreContext} from './state/StoreContext'
 
 type DebugFn = () => any
 type UpdateFunction = { updateAllowed: true, fn: DebugFn }
@@ -36,6 +36,8 @@ const makeCloneable = (val: any) => {
 export type UpdateBlockable = {
     setPreventUpdates: (callback: VoidFn | null) => void
 }
+
+type GetObjectFn = <T extends StoredState>(path: string) => T
 
 function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => DebugFunctions, getObjectFn: GetObjectFn) {
     let valFns: DebugFunctions
@@ -69,6 +71,10 @@ function getDebugData(valFnsFn: (getObject: (path: string) => StoredState) => De
     })
 }
 
+export const useGetObjectFunction = (): GetObjectFn => {
+    const store = useContext(StoreContext)
+    return <T extends StoredState>(path: string): T => store.get(path) as T
+}
 export const elementoDebug = (valFnsFn: (() => DebugFunctions) | null) => {
     const getObjectFn = useGetObjectFunction()
     const data = valFnsFn ? getDebugData(valFnsFn, getObjectFn) : null
