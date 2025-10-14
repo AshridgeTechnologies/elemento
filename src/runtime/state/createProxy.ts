@@ -4,7 +4,7 @@ type Props = { [p: string]: any }
 
 export function createProxy(store: AppStateForObject, targetState: any) {
     const handler = {
-        get(target: Props, property: string | symbol) {
+        get(target: Props, property: string | symbol): any {
             if (property === Symbol.toPrimitive) {
                 return target.valueOf
             }

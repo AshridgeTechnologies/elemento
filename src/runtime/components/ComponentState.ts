@@ -16,8 +16,6 @@ export interface ComponentState<T> {
 
     latest(): T
 
-    onChildStateChange(): void
-
     get _stateForTest(): any
 }
 

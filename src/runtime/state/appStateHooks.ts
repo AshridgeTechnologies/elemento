@@ -26,6 +26,6 @@ export const use$state = <T extends ComponentState<any>>(path: string, stateClas
     if (subscribeRef.current === null) {
         subscribeRef.current = subscribe()
     }
-    return stateClass ? store.getOrCreate(path, stateClass, {path, ...stateProps}) : store.get(path) as T
+    return stateClass ? store.getOrCreate(path, stateClass, {...stateProps}) : store.get(path) as T
 }
 

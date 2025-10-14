@@ -29,12 +29,15 @@ Remaining refactoring
 - ✅ Init is called by the store on all new and updated objects
 - ✅ Previous version (if any) is passed to init
 - ✅ Objects should not call init, even when copying
-- In update, store should not replace a proxy that wraps the same object
+- ✅ In update, store should not replace a proxy that wraps the same object
 - ✅ Proxy creation moved out of AppStateStore
-- Two ComponentStates - with/without proxy
-- Good approach to using state from elsewhere in the app
+- ✅ Two ComponentStates - with/without proxy
+- ✅ Good approach to using state from elsewhere in the app - just reference it's path.  Calculate path from own path if appropriate
 - Decide what parts of base component are to do with state, and which are convenience for Elemento eg valueOf, domElement
+- ✅ Does path need to be in properties - no, can get from asi
 - ✅ Read https://www.telerik.com/blogs/vue-basics-state-management-vue
 - Proper typing for state objects - no as any
 - Move overrides of withState/withProps to copy eg Data
 - Unit tests for AppStateStore, ComponentState, app state hook
+- Change all code generation to use auto state
+

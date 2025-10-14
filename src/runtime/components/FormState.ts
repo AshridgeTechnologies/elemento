@@ -1,6 +1,6 @@
 import InputComponentState from './InputComponentState'
 import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
-import {equals, mergeDeepRight} from 'ramda'
+import {mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../../shared/DataStore'
 import BaseType from '../types/BaseType'
 import {PropVal} from '../runtimeFunctions'
@@ -13,6 +13,8 @@ import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
 import {StoredState} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
+import {AppStateForObject} from './ComponentState'
+import {createProxy} from '../state/createProxy'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 
@@ -49,6 +51,10 @@ export default abstract class BaseFormState<T extends object = object> extends I
     defaultValue = {} as T
 
     protected abstract readonly ownFieldNames: string[]
+
+    init(asi: AppStateForObject, previousVersion?: this): this {
+        return createProxy(asi, super.init(asi, previousVersion))
+    }
 
     protected get submitAction() { return this.props.submitAction }
 
