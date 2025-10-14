@@ -68,6 +68,10 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
         return this.value
     }
 
+    [Symbol.toPrimitive]() {
+        return this.valueOf()
+    }
+
     toString() { return String(this.value) }
 
     Reset() {

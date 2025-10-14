@@ -1,6 +1,5 @@
 import {StoredState} from '../state/AppStateStore'
 import {equals} from 'ramda'
-import {createProxy} from '../state/createProxy'
 
 export interface AppStateForObject {
     path: string,
@@ -105,6 +104,22 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected getChildState(name: string) {
         return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
     }
+}
+
+type Props = { [p: string]: any }
+
+export function createProxy(store: AppStateForObject, targetState: any) {
+    const handler = {
+        get(target: Props, property: string): any {
+            if (property in target) {
+                return target[property]
+            }
+
+            return store.getChildState(property)
+        }
+    }
+
+    return new Proxy(targetState, handler)
 }
 
 export class BaseComponentStateWithProxy<ExternalProps extends object, StateProps extends object = ExternalProps> extends BaseComponentState<ExternalProps, StateProps> {
