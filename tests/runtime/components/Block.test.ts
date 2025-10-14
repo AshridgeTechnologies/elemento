@@ -52,12 +52,10 @@ test('Block State only updates isOver when changed', () => {
     state.setIsOver(false)
     expect(appInterface.updateVersion).not.toHaveBeenCalled()
     state.setIsOver(true)
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({isOver: true}))
     expect(state.latest().isOver).toBe(true)
     state.setIsOver(true)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
     state.setIsOver(false)
     expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
-    expect(appInterface.updateVersion).toHaveBeenLastCalledWith(state.withMergedState({isOver: false}))
-
+    expect(state.latest().isOver).toBe(false)
 })

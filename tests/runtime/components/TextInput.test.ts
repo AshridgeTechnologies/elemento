@@ -3,7 +3,7 @@ import {expect, MockedFunction, test, vi} from "vitest"
  * @vitest-environment jsdom
  */
 import {TextInput} from '../../../src/runtime/components/index'
-import {componentJSON, snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {componentJSON, DEBUG_TIMEOUT, snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -132,7 +132,7 @@ test('TextInput stores errors shown when blurred and ShowErrors or Reset called'
 
     await act( () => stateAt('app.page1.sprocket2').Reset() )
     expect(stateAt('app.page1.sprocket2').errorsShown).toBe(false)
-})
+}, DEBUG_TIMEOUT)
 
 test('TextInput shows errors if errorShown is true', async () => {
     const minLength3 = new TextType('tt1', {minLength: 3})

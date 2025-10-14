@@ -100,10 +100,8 @@ test('State class has correct properties', () => {
     expect(state.defaultValue).toBe(null)
 
     state.Reset()
-    const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: undefined, errorsShown: false}))
-    expect(resetState.value).toStrictEqual(new Date('2021-11-12'))
-    expect(resetState.dataValue).toStrictEqual(new Date('2021-11-12'))
+    expect(state.latest().value).toStrictEqual(new Date('2021-11-12'))
+    expect(state.latest().dataValue).toStrictEqual(new Date('2021-11-12'))
 
     const clearedState = state._withStateForTest({value: null})
     expect(clearedState.value).toBe(null)

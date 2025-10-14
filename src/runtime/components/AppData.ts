@@ -22,8 +22,8 @@ type StateInternalProps = {
 export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
 
     private theme: Theme | undefined
-    protected doInit(): void {
-        if (!this.state.subscription) {
+    protected doInit(previousVersion?: this): void {
+        if (!previousVersion) {
             this.state.subscription = onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
         }
     }

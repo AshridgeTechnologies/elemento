@@ -31,6 +31,7 @@ import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {noop} from 'lodash'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
 let dataStore: DataStore
 let testObservable: SendObservable<UpdateNotification>
@@ -356,7 +357,7 @@ describe('Update with external datastore', () => {
 
         const result = state.Update('x1', {a: 20, b: 'Cee'})
         expect(dataStore.update).toHaveBeenCalledWith('Widgets', 'x1', {a: 20, b: 'Cee'})
-        expect(state.latest()._raw).toBe(state._raw)
+        expect(state.latest()).toBe(state)
         await expect(result).resolves.toBeUndefined()
     })
 
@@ -389,7 +390,7 @@ describe('Remove with external datastore', () => {
 
         const result = state.Remove('x1')
         expect(dataStore.remove).toHaveBeenCalledWith('Widgets', 'x1')
-        expect(state.latest()._raw).toBe(state._raw)
+        expect(state.latest()).toBe(state)
         await expect(result).resolves.toBeUndefined()
     })
 
@@ -611,32 +612,31 @@ describe('subscribe with external data store', () => {
         const state = initState({});
         expect(dataStore.observable).toHaveBeenCalledWith('Widgets')
         expect(state._stateForTest.subscription).not.toBeUndefined()
-        expect(state._stateForTest.subscribedDataStore).toBe(dataStore)
     })
 
-    test('uses same subscription when already in the state', () => {
-        const subscription = {unsubscribe: vi.fn()}
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
-            subscription,
-            subscribedDataStore: dataStore
-        })
-        const appInterface = testAppInterface('testPath', state)
-        expect(dataStore.observable).not.toHaveBeenCalled()
-        expect(subscription.unsubscribe).not.toHaveBeenCalled()
-        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    test('uses same subscription when already in the state and data store is the same', () => {
+        const theStore = new AppStateStore()
+        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const unsubscribeSpy = vi.spyOn(state._stateForTest.subscription, 'unsubscribe')
+
+        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        expect(state2).toBe(state)
+        expect(dataStore.observable).toHaveBeenCalledTimes(1)
+        expect(unsubscribeSpy).not.toHaveBeenCalled()
     })
 
     test('changes subscription when data store changes', () => {
+        const theStore = new AppStateStore()
+        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const unsubscribeSpy = vi.spyOn(state._stateForTest.subscription, 'unsubscribe')
+
         const newDataStore = mockDataStore()
-        const subscription = {unsubscribe: vi.fn()}
-        const state = new CollectionState({value: {}, dataStore: newDataStore, collectionName: 'Widgets'})._withStateForTest({
-            subscription,
-            subscribedDataStore: dataStore
-        })
-        const appInterface = testAppInterface('testPath', state)
+        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
+        expect(state2).not.toBe(state)
+        expect(dataStore.observable).toHaveBeenCalledTimes(1)
+        expect(newDataStore.observable).toHaveBeenCalledTimes(1)
         expect(newDataStore.observable).toHaveBeenCalledWith('Widgets')
-        expect(subscription.unsubscribe).toHaveBeenCalled()
-        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        expect(unsubscribeSpy).toHaveBeenCalledTimes(1)
     })
 
     test('clears data and queries when subscription receives InvalidateAll', () => {
@@ -644,10 +644,11 @@ describe('subscribe with external data store', () => {
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })
-        const appInterface = testAppInterface('testPath', state)
+        testAppInterface('testPath', state)
 
         testObservable.send({collection: 'Widgets', type: InvalidateAll})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {}, queries: {}}))
+        expect(state.latest()._stateForTest.value).toStrictEqual({})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({})
     })
 
     test('clears queries when subscription receives Multiple Changes', () => {
@@ -655,10 +656,11 @@ describe('subscribe with external data store', () => {
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })
-        const appInterface = testAppInterface('testPath', state);
+        testAppInterface('testPath', state);
 
         testObservable.send({collection: 'Widgets', type: MultipleChanges})
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({queries: {}}))
+        expect(state.latest()._stateForTest.value).toStrictEqual({id1: {a: 10}})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({})
     })
 
     test('clears queries without losing later Get when subscription receives Multiple Changes', async () => {
@@ -691,13 +693,11 @@ describe('subscribe with external data store', () => {
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]
             }
         })
-        const appInterface = testAppInterface('testPath', state);
+        testAppInterface('testPath', state);
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const changes = getCallArg(appInterface.updateVersion, 0)
-        expect(changes.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Beep'}})
-        expect(changes.queries).toStrictEqual({
+        expect(state.latest()._stateForTest.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Beep'}})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Beep'}
@@ -718,13 +718,11 @@ describe('subscribe with external data store', () => {
                     ]
                 }
             })
-            const appInterface = testAppInterface('testPath', state);
+            testAppInterface('testPath', state);
             testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {c: 'Beep'}})
 
-            expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-            const changes = getCallArg(appInterface.updateVersion, 0)
-            expect(changes.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
-            expect(changes.queries).toStrictEqual({
+            expect(state.latest()._stateForTest.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
+            expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Beep'}
@@ -745,13 +743,11 @@ describe('subscribe with external data store', () => {
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]
             }
         })
-        const appInterface = testAppInterface('testPath', state);
+        testAppInterface('testPath', state);
         testObservable.send({collection: 'Widgets', type: Remove, id: 'w2'})
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const changes = getCallArg(appInterface.updateVersion, 0)
-        expect(changes.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
-        expect(changes.queries).toStrictEqual({
+        expect(state.latest()._stateForTest.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                 ],
@@ -777,9 +773,8 @@ describe('subscribe with external data store', () => {
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {b: true}})
 
         expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const changes = getCallArg(appInterface.updateVersion, 0)
-        expect(changes.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: true, c: 'Bar'}})
-        expect(changes.queries).toStrictEqual({
+        expect(state.latest()._stateForTest.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: true, c: 'Bar'}})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: true, c: 'Bar'}
@@ -802,12 +797,10 @@ describe('subscribe with external data store', () => {
                 '{"b":false}': [{id: 'w2', a: 10, b: false, c: 'Bar'}]
             }
         })
-        const appInterface = testAppInterface('testPath', state);
+        testAppInterface('testPath', state);
         testObservable.send({collection: 'Widgets', type: Add, id: 'w3', changes: {id: 'w3', a: 10, b: true, c: 'Three'}})
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
-        const changes = getCallArg(appInterface.updateVersion, 0)
-        expect(changes.queries).toStrictEqual({
+        expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [
                     {id: 'w1', a: 10, b: true, c: 'Foo'},
                     {id: 'w2', a: 10, b: false, c: 'Bar'},
@@ -826,17 +819,18 @@ describe('subscribe to auth changes', () => {
 
     test('subscribes to onAuthChange when not in the state', () => {
         const state = initState({});
-        expect(authentication.onAuthChange).toHaveBeenCalled()
+        expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })
 
-    test('uses same onAuthChange subscription when already in the state', () => {
-        const authSubscription = noop
-        const dataStore = mockDataStore()
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({authSubscription})
-        const appInterface = testAppInterface('testPath', state)
+    test('uses same onAuthChange subscription when already initialised', () => {
+        const theStore = new AppStateStore()
+        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
 
-        expect(authentication.onAuthChange).not.toHaveBeenCalled()
-        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        const newDataStore = mockDataStore()
+        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
+        expect(state2).not.toBe(state)
+        expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })
 
     test('clears data and queries on auth change', () => {
@@ -846,10 +840,11 @@ describe('subscribe to auth changes', () => {
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })
-        const appInterface = testAppInterface('testPath', state)
+        testAppInterface('testPath', state)
 
         authCallback!()
-        expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {}, queries: {}}))
+        expect(state.latest()._stateForTest.value).toStrictEqual({})
+        expect(state.latest()._stateForTest.queries).toStrictEqual({})
     })
 })
 

@@ -41,8 +41,8 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
     }
 
-    doInit() {
-        if (!this.state.authSubscription) {
+    protected doInit(previousVersion?: this) {
+        if (!previousVersion) {
             this.state.authSubscription = onAuthChange( ()=> this.latest().updateState({resultCache: {}}) )
         }
     }

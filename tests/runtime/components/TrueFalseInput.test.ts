@@ -103,10 +103,10 @@ test('State class has correct properties', () => {
     expect(state.toString()).toBe('true')
 
     state.Reset()
-    const resetState = state._withStateForTest({value: undefined, errorsShown: false})
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: undefined, errorsShown: false}))
-    expect(resetState.value).toBe(true)
-    expect(resetState.dataValue).toBe(true)
+    expect(state.latest()._stateForTest).toStrictEqual({errorsShown: false})
+
+    expect(state.latest().value).toBe(true)
+    expect(state.latest().dataValue).toBe(true)
 })
 
 test('State is modified only when its value is not null and different to its empty initial value', () => {

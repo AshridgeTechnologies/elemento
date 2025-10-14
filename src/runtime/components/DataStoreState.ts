@@ -13,8 +13,8 @@ export abstract class DataStoreState<PropsType extends object> extends BaseCompo
         super(props)
     }
 
-    doInit() {
-        const dataStoreClosed = this.closeDataStore()
+    protected doInit(previousVersion?: this) {
+        const dataStoreClosed = previousVersion?.closeDataStore() ?? Promise.resolve()
         this.state.dataStore = this.createDataStore()
         this.state.initialisedDataStore = dataStoreClosed.then( () => this.initDataStore() )
     }

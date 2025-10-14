@@ -28,19 +28,13 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject): this {
+    init(asi: AppStateForObject, previousVersion?: this): this {
         this._appStateInterface = asi
-        this.doInit()
-        return createProxy(asi, this)
+        this.doInit(previousVersion)
+        return this
     }
 
-    protected doInit() {}
-
-    protected getOrCreateChildState(path: string, item: StoredState) {
-        // const childState = this._appStateInterface!.getOrCreateChildState(path, item)
-        // this.state.childStates[path] = childState
-        // return childState
-    }
+    protected doInit(_previousVersion?: this) {}
 
     updateState(changes: Partial<typeof this.state>) {
         const latestState = this._appStateInterface!.latest()
@@ -75,9 +69,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     private copy(props: ExternalProps, state: StateProps): this {
         const newVersion = new this.thisConstructor(props) as this
         newVersion.state = {...state}
-        if (this._appStateInterface) {
-            newVersion.init(this._appStateInterface)
-        }
         return newVersion
     }
 
@@ -111,21 +102,16 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return this.withState(newState)
     }
 
-    onChildStateChange() {
-        // const getChildState = (name: string) => this._appStateInterface?.getChildState(name) as ComponentState<any>
-        // const latestChildStates = Object.fromEntries(this.childNames.map(name => [name, getChildState(name)]))
-        // if (!shallow(this.childStates, latestChildStates)) {
-        //     // @ts-ignore
-        //     this.updateState({childStates: latestChildStates})
-        // }
-    }
-
     get _stateForTest() { return this.state }
-
-    get _raw() { return this }
 
     protected getChildState(name: string) {
         return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
     }
+}
 
+export class BaseComponentStateWithProxy<ExternalProps extends object, StateProps extends object = ExternalProps> extends BaseComponentState<ExternalProps, StateProps> {
+
+    init(asi: AppStateForObject, previousVersion?: this): this {
+        return createProxy(asi, super.init(asi, previousVersion))
+    }
 }

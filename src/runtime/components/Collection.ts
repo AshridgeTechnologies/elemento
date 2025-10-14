@@ -26,7 +26,7 @@ const {clone, isArray, isNumber, isObject, isString} = lodash;
 
 type Properties = {path: string, display?: boolean} & Partial<ExternalProperties>
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
-type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction, subscribedDataStore: DataStore}>
+type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction}>
 
 let lastGeneratedId = 1
 
@@ -146,12 +146,11 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     //     return newVersion
     // }
 
-    protected doInit(): void {
+    protected doInit(previousVersion?: this): void {
         const {dataStore, collectionName} = this.props
-        const {subscription, authSubscription, subscribedDataStore} = this.state
 
-        if (dataStore && collectionName && dataStore !== subscribedDataStore) {
-            subscription?.unsubscribe()
+        if (dataStore && collectionName && dataStore !== previousVersion?.dataStore) {
+            previousVersion?.state.subscription?.unsubscribe()
             this.state.subscription = dataStore.observable(collectionName).subscribe((update: UpdateNotification) => {
                 try {
                     this.onDataUpdate(update)
@@ -159,10 +158,9 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
                     console.error('Error updating collection', e)
                 }
             })
-            this.state.subscribedDataStore = dataStore
         }
 
-        if (!authSubscription) {
+        if (!previousVersion) {
             this.state.authSubscription = onAuthChange(() => this.latest().updateState({value: {}, queries: {}}))
         }
     }

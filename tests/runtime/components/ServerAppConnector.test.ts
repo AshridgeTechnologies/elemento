@@ -7,6 +7,8 @@ import appFunctions from '../../../src/runtime/appFunctions'
 import * as authentication from '../../../src/runtime/components/authentication'
 import {noop} from 'lodash'
 import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+import AppStateStore from '../../../src/runtime/state/AppStateStore'
+import {CollectionState} from '../../../src/runtime/components/Collection'
 
 vi.mock('../../../src/runtime/components/authentication')
 vi.mock('../../../src/runtime/appFunctions')
@@ -520,12 +522,14 @@ describe('subscribe to auth changes', () => {
     })
 
     test('uses same onAuthChange subscription when already in the state', () => {
-        const authSubscription = noop
-        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({authSubscription, resultCache: {}})
-        const appInterface = testAppInterface('testPath', state)
+        const theStore = new AppStateStore()
+        const state = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration, fetch: mockFetch})
+        expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
 
-        expect(authentication.onAuthChange).not.toHaveBeenCalled()
-        expect(appInterface.updateVersion).not.toHaveBeenCalled()
+        const config2 = {...configuration, url: 'xxx'}
+        const state2 = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration: config2, fetch: mockFetch})
+        expect(state2).not.toBe(state)
+        expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })
 
     test('clears data and queries on auth change', () => {

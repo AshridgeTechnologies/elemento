@@ -26,9 +26,10 @@ Remaining refactoring
 - ✅ Use matchesProps and matchesState functions
 - ✅ Testing for new version with state -> ComponentState
 - ✅ Init may optionally return the state object to use
-- Init is called by the store on all new objects
-- Previous version (if any) is passed to init
-- Objects should not call init, even when copying
+- ✅ Init is called by the store on all new and updated objects
+- ✅ Previous version (if any) is passed to init
+- ✅ Objects should not call init, even when copying
+- In update, store should not replace a proxy that wraps the same object
 - ✅ Proxy creation moved out of AppStateStore
 - Two ComponentStates - with/without proxy
 - Good approach to using state from elsewhere in the app

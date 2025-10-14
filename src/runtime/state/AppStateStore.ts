@@ -19,12 +19,12 @@ class ObjectStateInterface implements AppStateForObject {
     }
 
     updateVersion(newVersion: StoredState): void {
-        this._store.setDeferNotifications(this.path, newVersion)
+        this._store.updateVersion(this.path, newVersion, this.latest())
     }
 
 }
 
-export type MaybeInitable = { init?: (asi: AppStateForObject) => any }
+export type MaybeInitable = { init?: (asi: AppStateForObject, previousVersion?: any) => any }
 
 export default class AppStateStore {
 
@@ -45,8 +45,9 @@ export default class AppStateStore {
             targetState = initialState
             this.setDeferNotifications(id, initialState)
         } else {
-            const updatedState = (existingState as any).withProps(stateProps)
-            if (updatedState !== existingState) {
+            const newState = (existingState as any).withProps(stateProps)
+            if (newState !== existingState) {
+                const updatedState = newState.init?.(new ObjectStateInterface(id, this), existingState) ?? newState
                 targetState = updatedState
                 this.setDeferNotifications(id, updatedState)
             }
@@ -57,6 +58,12 @@ export default class AppStateStore {
 
     subscribeAll(callback: AllChangesCallback): UnsubscribeFn {
         return this.store.subscribeAll(callback)
+    }
+
+    updateVersion<T extends MaybeInitable>(id: string, newVersion: T, previousVersion: T | null) {
+        const initialisedItem = newVersion.init?.(new ObjectStateInterface(id, this), previousVersion) ?? newVersion
+
+        this.setDeferNotifications(id, initialisedItem)
     }
 
     setDeferNotifications<T extends StoredState>(id: string, item: T) {
