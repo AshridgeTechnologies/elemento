@@ -15,7 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {use$state} from '../state/appStateHooks'
@@ -24,7 +24,7 @@ import {Definitions} from '../../model/schema'
 
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
-type Properties = {path: string, display?: boolean} & Partial<ExternalProperties>
+type Properties = {path: string, display?: boolean} & ExternalProperties
 type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
 type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction}>
 
@@ -122,7 +122,7 @@ type AddItem = object | string | number
 export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
     implements ComponentState<CollectionState>{
 
-    constructor({value, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
+    constructor({value = {}, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         super({value: initialValue(value), collectionName, dataStore})
     }
 

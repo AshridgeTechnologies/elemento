@@ -87,8 +87,7 @@
     "valibot": "^1.0.0",
     "validator": "^13.9.0",
     "ws": "8.17.1",
-    "zen-observable": "^0.10.0",
-    "zustand": "^4.3.8"
+    "zen-observable": "^0.10.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250510.0",

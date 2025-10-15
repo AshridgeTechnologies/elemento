@@ -8,7 +8,7 @@ import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = {path: string}
-type ExternalProperties = {url: string, fetch?: typeof globalThis.fetch}
+type ExternalProperties = {url: string}
 type StateProperties = {resultCache: object}
 
 export const WebFileSchema: ElementSchema = {
@@ -55,15 +55,6 @@ export default function WebFile(_props: Properties) {
 export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties>
     implements ComponentState<WebFileState> {
 
-    constructor(props: ExternalProperties) {
-        super({fetch: globalFetch, ...props})
-    }
-
-    propsEqual(props: ExternalProperties) {
-        return equals(omit(['fetch'], props), omit(['fetch'], this.props))
-    }
-
-    private get fetch() { return this.props.fetch }
     private get url() { return this.props.url}
     private get resultCache() { return this.state.resultCache ?? {}}
 
@@ -71,7 +62,7 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 
         const cachedResult = this.resultCache[this.url as keyof object]
         if (cachedResult === undefined) {
-            const resultPromise = this.fetch!(this.url)
+            const resultPromise = fetch!(this.url)
                 .then(resp => {
                     if (resp.ok) {
                         return resp.text() as Promise<any>

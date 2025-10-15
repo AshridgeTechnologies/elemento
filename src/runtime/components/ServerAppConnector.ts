@@ -1,11 +1,11 @@
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {equals, mergeRight} from 'ramda'
+import {mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import lodash from 'lodash'
-import {globalFetch} from './ComponentHelpers'
+
 const {startCase} = lodash
 
 type Properties = {path: string}
@@ -21,7 +21,7 @@ export interface Configuration {
     }
 }
 
-type ExternalProperties = {configuration: Configuration, fetch?: typeof globalThis.fetch}
+type ExternalProperties = {configuration: Configuration}
 type StateProperties = {resultCache: object, authSubscription?: VoidFunction }
 
 export default function ServerAppConnector(_props: Properties) {
@@ -31,12 +31,11 @@ export default function ServerAppConnector(_props: Properties) {
 export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties>
     implements ComponentState<ServerAppConnectorState> {
 
-    private get fetch() { return this.props.fetch }
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}
 
     constructor(props: ExternalProperties) {
-        super({fetch: globalFetch, ...props})
+        super(props)
         const functions = this.props.configuration?.functions ?? []
         Object.entries(functions).forEach( ([name, def]) => (this as any)[name] = (...params: any[]) => this.doCall(name, params, def.action))
     }
@@ -72,10 +71,6 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
         return new ErrorResult(description, errorMessage)
     }
 
-    propsEqual(props:ExternalProperties): boolean {
-        return equals(this.props.configuration, props.configuration)
-    }
-
     private doCall(name: string, params: any[], action?: boolean) {
         return action ? this.doPostCall(name, params) : this.doGetCall(name, params)
     }
@@ -94,7 +89,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                 .then(token => {
                     const url = `${config.url}/${name}?${queryString}`
                     const options = token ? {headers: {Authorization: `Bearer ${token}`} as HeadersInit} : {}
-                    return this.fetch!(url, options)
+                    return fetch!(url, options)
                         .then(resp => {
                             if (resp.ok) {
                                 return resp.text().then( jsonText => JSON.parse(jsonText, isoDateReviver) )
@@ -129,7 +124,7 @@ export class ServerAppConnectorState extends BaseComponentState<ExternalProperti
                 const url = `${config.url}/${name}`
                 const authHeaders = token ? {Authorization: `Bearer ${token}`} : {}
                 const headers = {...({'Content-Type': 'application/json'}), ...authHeaders} as HeadersInit
-                return this.fetch!(url, {
+                return fetch!(url, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify(bodyData)

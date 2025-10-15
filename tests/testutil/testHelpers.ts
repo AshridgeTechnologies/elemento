@@ -10,9 +10,8 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {AppStateForObject} from '../../src/runtime/components/ComponentState'
 import {type AppStoreHook, StoreProvider} from '../../src/runtime/state/StoreContext'
-import AppStateStore, {MaybeInitable} from '../../src/runtime/state/AppStateStore'
+import AppStateStore, {AppStateForObject, StoredState, StoredStateWithProps} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
@@ -204,10 +203,10 @@ function testAppStoreHook() {
     return hook as AppStoreHook
 }
 
-export const createStateFn = <T extends MaybeInitable>(stateClass: new(...args: any[]) => T) => {
+export const createStateFn = <T extends StoredStateWithProps<P>, P extends object>(stateClass: new(props: P) => T) => {
     const theStore = new AppStateStore()
     let idSeq = 1
-    return (props: object) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
+    return (props: P) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
 }
 export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 

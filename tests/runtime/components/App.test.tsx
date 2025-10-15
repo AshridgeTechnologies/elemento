@@ -68,7 +68,7 @@ test('App element inserts favicon link', () => {
     expect(linkHref).toBe(faviconUrl)
 })
 
-test('App element produces output containing page and additional components with app bar at the top', () => {
+test('App element produces output containing page and additional components with app bar at the top', async () => {
     const collection1 = createElement(Collection, {path: 'app1.coll1', display: true})
     const collection2 = createElement(Collection, {path: 'app1.coll2', display: true})
     const appBar1 = createElement(AppBar, {path: 'app1.appBar1', title: 'The App bar'})
@@ -77,7 +77,9 @@ test('App element produces output containing page and additional components with
         return createElement(App, {path: 'app1', pages: {mainPage}, urlContext, topChildren: appBar1}, collection1, collection2)
     }
     const runningApp = createElement(StoreProvider, {children: createElement(app)})
+    await wait(100)
     expect(componentJSON(runningApp)).toMatchSnapshot()
+    await wait(100)
 })
 
 test('App element shows notifications', async () => {

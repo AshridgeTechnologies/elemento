@@ -138,7 +138,7 @@ export default function Form({children, path, ...props}: Properties) {
         ...sxProps(styles, show)
     } as SxProps
 
-    const state = use$state<BaseFormState>(path)
+    const state = use$state(path) as BaseFormState
     const dataType = state.dataType
     const error = state.errorsShown && !state.valid
     const helperText = state.errorsShown && state.errors?._self ? errorsToString(state.errors._self) : undefined

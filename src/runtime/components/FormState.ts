@@ -11,9 +11,9 @@ import BigNumber from 'bignumber.js'
 import {SelectInputState} from './SelectInput'
 import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
-import {StoredState} from '../state/AppStateStore'
+import {AppStateForObject, StoredState} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
-import {AppStateForObject, createProxy} from './ComponentState'
+import {createProxy} from './ComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 

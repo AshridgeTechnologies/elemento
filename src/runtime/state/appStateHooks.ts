@@ -1,9 +1,9 @@
 import {useContext, useEffect, useRef, useState} from 'react'
 import {StoreContext} from './StoreContext'
 import type {Id} from './SubscribableStore'
-import {ComponentState} from '../components/ComponentState'
+import {StoredStateWithProps} from './AppStateStore'
 
-export const use$state = <T extends ComponentState<any>>(path: string, stateClass?: new (...args: any[]) => T, stateProps: any = {}): T => {
+export const use$state = <T extends StoredStateWithProps<P>, P extends object>(path: string, stateClass?: new (props: P) => T, stateProps?: P): T => {
     const store = useContext(StoreContext)
     const [, setRenderCount] = useState<any>(0)
     const subscribe = () => {
@@ -26,6 +26,6 @@ export const use$state = <T extends ComponentState<any>>(path: string, stateClas
     if (subscribeRef.current === null) {
         subscribeRef.current = subscribe()
     }
-    return stateClass ? store.getOrCreate(path, stateClass, {...stateProps}) : store.get(path) as T
+    return stateClass && stateProps ? store.getOrCreate(path, stateClass, {...stateProps}) : store.get(path) as T
 }
 

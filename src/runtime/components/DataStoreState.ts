@@ -1,6 +1,6 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState, ComponentState} from './ComponentState'
 
 type StateProperties = {dataStore?: DataStore, initialisedDataStore?: Promise<DataStore>}
 

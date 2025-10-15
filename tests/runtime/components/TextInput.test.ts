@@ -206,7 +206,7 @@ test('State class has correct properties and functions', async () => {
 
     state.ShowErrors(true)
     await wait()
-    expect(store.get('id1').errorsShown).toBe(true)
+    expect(store.get<TextInputState>('id1').errorsShown).toBe(true)
 })
 
 test('State class gives correct value when its value is a value object', () => {

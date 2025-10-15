@@ -1,12 +1,5 @@
-import {StoredState} from '../state/AppStateStore'
+import {AppStateForObject} from '../state/AppStateStore'
 import {equals} from 'ramda'
-
-export interface AppStateForObject {
-    path: string,
-    latest: () => StoredState
-    updateVersion: (newVersion: StoredState) => void,
-    getChildState: (subPath: string) => StoredState
-}
 
 export interface ComponentState<T> {
     init(asi: AppStateForObject): T | undefined
@@ -63,17 +56,17 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     private get thisConstructor(): any { return this.constructor as any }
 
-    private copy(props: ExternalProps, state: StateProps): this {
+    protected copy(props: ExternalProps, state: StateProps): this {
         const newVersion = new this.thisConstructor(props) as this
         newVersion.state = {...state}
         return newVersion
     }
 
-    propsEqual(props: ExternalProps) {
+    protected propsEqual(props: ExternalProps) {
         return equals(this.props, props)
     }
 
-    stateEqual(state: StateProps) {
+    protected stateEqual(state: StateProps) {
         return equals(this.state, state)
     }
 

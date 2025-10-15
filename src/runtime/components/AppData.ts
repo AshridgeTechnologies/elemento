@@ -1,6 +1,5 @@
 import UrlContext from '../UrlContext'
-import {AppStateForObject, BaseComponentState, ComponentState} from './ComponentState'
-import {shallow} from 'zustand/shallow'
+import {BaseComponentState, ComponentState} from './ComponentState'
 import Url, {asQueryObject} from '../Url'
 import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
@@ -26,14 +25,6 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         if (!previousVersion) {
             this.state.subscription = onUrlChange(() => this.latest().updateState({updateCount: (this.latest().state.updateCount ?? 0) + 1}))  // need state update to cause re-render
         }
-    }
-
-    propsEqual(props: StateExternalProps) {
-        const {pages: thisPages, ...thisProps} = this.props
-        const {pages: newPages, ...newProps} = props
-        const pagesEqual = shallow(thisPages, newPages)
-        const propsEqual = shallow(thisProps, newProps)
-        return pagesEqual && propsEqual
     }
 
     get urlContext() {

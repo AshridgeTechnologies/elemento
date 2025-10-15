@@ -47,7 +47,7 @@ test('produces empty output', () => {
 
 test('compares state props correctly', () => {
     const state = new BrowserDataStore.State(dataStoreProps)
-    expect(state.propsEqual({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})).toBe(true)
+    expect(state.withProps({databaseName: dataStoreProps.databaseName, collectionNames:[...dataStoreProps.collectionNames]})).toBe(state)
 })
 
 test('creates its own data store if not supplied', async () => {

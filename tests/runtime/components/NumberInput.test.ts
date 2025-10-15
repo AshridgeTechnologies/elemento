@@ -126,7 +126,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(0)
 
     const store = new AppStateStore()
-    const state: NumberInputState = store.getOrCreate('id1', NumberInputState, {initialValue: 77})
+    const state = store.getOrCreate('id1', NumberInputState, {initialValue: 77})
     expect(state.value).toBe(77)
     expect(state.toString()).toBe('77')
     expect(state.defaultValue).toBe(0)
@@ -134,18 +134,18 @@ test('State class has correct properties', () => {
     expect(state + 10).toBe(87)
 
     state._setValues(88, '88')
-    const state2 = store.get('id1')
+    const state2 = store.get<NumberInputState>('id1')
     expect(state2.value).toBe(88)
     expect(state2.toString()).toBe('88')
 
     state2.Reset()
-    const resetState = store.get('id1')
+    const resetState = store.get<NumberInputState>('id1')
     expect(resetState.value).toBe(77)
     expect(resetState.dataValue).toBe(77)
 
     state._setValues(null, '')
 
-    const clearedState = store.get('id1')
+    const clearedState = store.get<NumberInputState>('id1')
     expect(clearedState.value).toBe(0)
     expect(clearedState.dataValue).toBe(null)
 })

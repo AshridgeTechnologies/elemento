@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import {expect, test} from "vitest"
+import {expect, test} from 'vitest'
 import {Data} from '../../../src/runtime/components/index'
 import {createStateFn, snapshot, wrappedTestElement} from '../../testutil/testHelpers'
 import {render} from '@testing-library/react'

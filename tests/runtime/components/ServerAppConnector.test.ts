@@ -1,14 +1,11 @@
-import {beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
+import {afterAll, beforeAll, beforeEach, describe, expect, MockedFunction, MockInstance, test, vi} from 'vitest'
 import {ServerAppConnector} from '../../../src/runtime/components'
 import {Configuration, ServerAppConnectorState} from '../../../src/runtime/components/ServerAppConnector'
 import {ErrorResult, isPending} from '../../../src/shared/DataStore'
 import {mockClear, mockImplementation, testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import * as authentication from '../../../src/runtime/components/authentication'
-import {noop} from 'lodash'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
-import AppStateStore from '../../../src/runtime/state/AppStateStore'
-import {CollectionState} from '../../../src/runtime/components/Collection'
+import AppStateStore, {AppStateForObject} from '../../../src/runtime/state/AppStateStore'
 
 vi.mock('../../../src/runtime/components/authentication')
 vi.mock('../../../src/runtime/appFunctions')
@@ -38,20 +35,24 @@ const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn(
 const mockError = (message: string) => ({status: 500, ok: false, json: vi.fn().mockResolvedValue({error: {message}})})
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
 
-
-let mockFetch: MockedFunction<any>
+let mockFetch: MockInstance
 const initConnector = ():[any, AppStateForObject] => {
-    const state = new ServerAppConnectorState({configuration, fetch: mockFetch})
+    const state = new ServerAppConnectorState({configuration})
     const appInterface = testAppInterface('testPath', state)
 
     return [state, appInterface]
 }
 
-beforeEach(()=> mockFetch = vi.fn())
+beforeAll(() => {
+    mockFetch = vi.spyOn(globalThis, 'fetch')
+})
+
 beforeEach(()=> {
     vi.resetAllMocks()
     mock_getIdToken.mockResolvedValue(null)
 })
+
+afterAll(() => mockFetch.mockRestore())
 
 test('adds functions to itself from configuration', () => {
 
@@ -472,7 +473,7 @@ test('handles error returned from server in get call', async () => {
 
 test('handles error in making get call', async () => {
     const message = 'It did not work'
-    mockFetch = vi.fn().mockRejectedValue( new Error(message) )
+    mockFetch.mockRejectedValue( new Error(message) )
     const [conn, appInterface] = initConnector()
 
     expect(isPending(conn.GetWidget('id1', true))).toBe(true)
@@ -492,7 +493,7 @@ test('handles error in making get call', async () => {
 
 test('handles error in making post call', async () => {
     const message = 'It did not work'
-    mockFetch = vi.fn().mockRejectedValue(new Error(message))
+    mockFetch.mockRejectedValue(new Error(message))
     const [conn] = initConnector()
     const changes = {c: 'foo'}
     expect(await conn.UpdateWidget('id1', changes)).toStrictEqual(new ErrorResult("Server App 1: Update Widget", message))
@@ -523,11 +524,11 @@ describe('subscribe to auth changes', () => {
 
     test('uses same onAuthChange subscription when already in the state', () => {
         const theStore = new AppStateStore()
-        const state = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration, fetch: mockFetch})
+        const state = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration})
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
 
         const config2 = {...configuration, url: 'xxx'}
-        const state2 = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration: config2, fetch: mockFetch})
+        const state2 = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration: config2})
         expect(state2).not.toBe(state)
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })
@@ -535,7 +536,7 @@ describe('subscribe to auth changes', () => {
     test('clears data and queries on auth change', () => {
         let authCallback: VoidFunction
         mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
-        const state = new ServerAppConnectorState({configuration, fetch: mockFetch})._withStateForTest({resultCache: {
+        const state = new ServerAppConnectorState({configuration})._withStateForTest({resultCache: {
                 'GetWidget#["id1",true]': 'xyz',
             }})
         const appInterface = testAppInterface('testPath', state)

@@ -1,11 +1,22 @@
 import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
-import {AppStateForObject} from '../components/ComponentState'
 
-export type StoredState = any
+export interface StoredState {
+    init?: (asi: AppStateForObject, previousVersion?: this) => this | undefined
+}
+export interface StoredStateWithProps<Props extends object> extends StoredState {
+    withProps: (props: Props) => this
+}
 
-const placeholder = function() {const placeholder = 0}
+const placeholder = function() {let _placeholder = 0}
 placeholder.valueOf = () => undefined
 placeholder._isPlaceholder = true
+
+export interface AppStateForObject {
+    path: string,
+    latest: () => StoredState
+    updateVersion: (newVersion: StoredState) => void,
+    getChildState: (subPath: string) => StoredState
+}
 
 class ObjectStateInterface implements AppStateForObject {
     constructor(public path: string, private _store: AppStateStore) {}
@@ -24,19 +35,18 @@ class ObjectStateInterface implements AppStateForObject {
 
 }
 
-export type MaybeInitable = { init?: (asi: AppStateForObject, previousVersion?: any) => any }
 
 export default class AppStateStore {
 
     constructor(private store: SubscribableStore = new SubscribableStore()) {}
 
-    get(id: string): StoredState {
-        const state = this.getRaw(id)
+    get<T extends StoredState>(id: string): T {
+        const state = this.getRaw(id) as T
         return state ?? placeholder
     }
 
-    getOrCreate<T extends MaybeInitable>(id: string, stateClass: new(...args: any[]) => T, stateProps: any): T {
-        const existingState = this.getRaw(id)
+    getOrCreate<T extends StoredStateWithProps<P>, P extends object>(id: string, stateClass: new(props: P) => T, stateProps: P): T {
+        const existingState = this.getRaw<T>(id)
         let targetState = existingState
 
         if (existingState === null || existingState === undefined) {
@@ -45,7 +55,7 @@ export default class AppStateStore {
             targetState = initialState
             this.setDeferNotifications(id, initialState)
         } else {
-            const newState = (existingState as any).withProps(stateProps)
+            const newState: T = (existingState).withProps(stateProps)
             if (newState !== existingState) {
                 const updatedState = newState.init?.(new ObjectStateInterface(id, this), existingState) ?? newState
                 targetState = updatedState
@@ -53,14 +63,14 @@ export default class AppStateStore {
             }
         }
 
-        return targetState
+        return targetState as T
     }
 
     subscribeAll(callback: AllChangesCallback): UnsubscribeFn {
         return this.store.subscribeAll(callback)
     }
 
-    updateVersion<T extends MaybeInitable>(id: string, newVersion: T, previousVersion: T | null) {
+    updateVersion<T extends StoredState>(id: string, newVersion: T, previousVersion: T | undefined) {
         const initialisedItem = newVersion.init?.(new ObjectStateInterface(id, this), previousVersion) ?? newVersion
 
         this.setDeferNotifications(id, initialisedItem)
@@ -74,7 +84,7 @@ export default class AppStateStore {
         this.store.set(id, item)
     }
 
-    getRaw(id: string): StoredState {
+    getRaw<T extends StoredState>(id: string): T {
         return this.store.get(id)
     }
 }

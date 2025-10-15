@@ -71,8 +71,8 @@ export class DataState extends BaseComponentState<StateExternalProperties, State
         this.updateState({value})
     }
 
-    public withState(state: StateInternalProperties) {
-        const newVersion = new DataState(this.props, false)
+    protected copy(props: StateExternalProperties, state: StateInternalProperties): this {
+        const newVersion = new DataState(props, false)
         newVersion.state = {...state}
         newVersion.exposeValueProperties()
         return newVersion as this

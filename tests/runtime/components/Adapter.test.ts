@@ -5,7 +5,7 @@ import {ErrorResult, isPending} from '../../../src/shared/DataStore'
 import {testAppInterface, valueObj, wait} from '../../testutil/testHelpers'
 import appFunctions from '../../../src/runtime/appFunctions'
 import SendObservable, {Observer} from '../../../src/util/SendObservable'
-import {AppStateForObject} from '../../../src/runtime/components/ComponentState'
+import {AppStateForObject} from '../../../src/runtime/state/AppStateStore'
 
 vi.mock('../../../src/runtime/appFunctions')
 vi.mock('../../../src/runtime/appFunctions')
