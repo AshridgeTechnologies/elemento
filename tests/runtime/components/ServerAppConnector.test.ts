@@ -71,7 +71,7 @@ test('does not fail with empty configuration', () => {
 test('matches equivalent configuration', () => {
     const conn = new ServerAppConnector.State({configuration})
     const copyConfig = JSON.parse(JSON.stringify(configuration))
-    expect(conn.propsEqual({configuration: copyConfig})).toBe(true)
+    expect(conn.withProps({configuration: copyConfig})).toBe(conn)
 })
 
 test('calls get functions, returns pending and then cached result', async () => {

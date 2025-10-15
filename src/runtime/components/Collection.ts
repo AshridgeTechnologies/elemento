@@ -25,7 +25,7 @@ import {Definitions} from '../../model/schema'
 const {clone, isArray, isNumber, isObject, isString} = lodash;
 
 type Properties = {path: string, display?: boolean} & ExternalProperties
-type ExternalProperties = {value: object, dataStore?: DataStore, collectionName?: CollectionName}
+type ExternalProperties = {value?: object, dataStore?: DataStore, collectionName?: CollectionName}
 type StateProperties = Partial<{value: object, queries: object, subscription: any, authSubscription: VoidFunction}>
 
 let lastGeneratedId = 1
@@ -165,7 +165,7 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
     }
 
-    get value() { return this.state.value !== undefined ? this.state.value : this.props.value }
+    get value() { return (this.state.value !== undefined ? this.state.value : this.props.value) ?? {} }
     get dataStore() { return this.props.dataStore }
     private get queries() { return this.state.queries ?? {} }
 

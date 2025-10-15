@@ -271,9 +271,9 @@ test('App.State does next level compare on pages', () => {
     const newPages = {Page1, Page2, Page3}
 
     const store = new AppStateStore()
-    const state = store.getOrCreate('id1', AppData, {pages: pages, urlContext})
-    expect(store.getOrCreate('id1', AppData, {pages: samePages, urlContext})).toBe(state)
-    expect(store.getOrCreate('id1', AppData, {pages: newPages, urlContext})).not.toBe(state)
+    const state = store.getOrCreate('id1', AppData, {pages: pages, urlContext, themeOptions: {}})
+    expect(store.getOrCreate('id1', AppData, {pages: samePages, urlContext, themeOptions: {}})).toBe(state)
+    expect(store.getOrCreate('id1', AppData, {pages: newPages, urlContext, themeOptions: {}})).not.toBe(state)
 })
 
 test('App.State can get current url object', () => {

@@ -11,40 +11,40 @@ import BigNumber from 'bignumber.js'
 import {SelectInputState} from './SelectInput'
 import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
-import {AppStateForObject, StoredState} from '../state/AppStateStore'
+import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
 import {createProxy} from './ComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 
-const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): StoredState => {
-    if (type instanceof TextType) {
-        return new TextInputState({dataType: type, initialValue: value as PropVal<string>})
-    }
-    if (type instanceof NumberType) {
-        return new NumberInputState({dataType: type, initialValue: value as PropVal<number>})
-    }
-    if (type instanceof DecimalType) {
-        return new NumberInputState({dataType: type, initialValue: value as PropVal<BigNumber>})
-    }
-    if (type instanceof ChoiceType) {
-        return new SelectInputState({dataType: type, initialValue: value as PropVal<string>})
-    }
-    if (type instanceof TrueFalseType) {
-        return new TrueFalseInputState({dataType: type, initialValue: value as PropVal<boolean>})
-    }
-    if (type instanceof DateType) {
-        return new DateInputState({dataType: type, initialValue: value as PropVal<Date>})
-    }
-    if (type instanceof RecordType) {
-        return new DataTypeFormState({dataType: type, initialValue: value as PropVal<object>})
-    }
-    // if (type instanceof ListType) {
-    //     return new ListElementState({})
-    // }
-
-    return {} as StoredState
-}
+// const formState = <T extends any>(type: BaseType<T, any>, value: PropVal<T>): StoredStateWithProps<any> => {
+//     if (type instanceof TextType) {
+//         return new TextInputState({dataType: type, initialValue: value as PropVal<string>})
+//     }
+//     if (type instanceof NumberType) {
+//         return new NumberInputState({dataType: type, initialValue: value as PropVal<number>})
+//     }
+//     if (type instanceof DecimalType) {
+//         return new NumberInputState({dataType: type, initialValue: value as PropVal<BigNumber>})
+//     }
+//     if (type instanceof ChoiceType) {
+//         return new SelectInputState({dataType: type, initialValue: value as PropVal<string>})
+//     }
+//     if (type instanceof TrueFalseType) {
+//         return new TrueFalseInputState({dataType: type, initialValue: value as PropVal<boolean>})
+//     }
+//     if (type instanceof DateType) {
+//         return new DateInputState({dataType: type, initialValue: value as PropVal<Date>})
+//     }
+//     if (type instanceof RecordType) {
+//         return new DataTypeFormState({dataType: type, initialValue: value as PropVal<object>})
+//     }
+//     // if (type instanceof ListType) {
+//     //     return new ListElementState({})
+//     // }
+//
+//     return {} as StoredState
+// }
 
 export default abstract class BaseFormState<T extends object = object> extends InputComponentState<T, RecordType<T>, {submitAction?: SubmitActionFn}> {
     defaultValue = {} as T
