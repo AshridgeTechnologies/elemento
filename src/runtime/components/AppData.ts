@@ -1,7 +1,7 @@
 import UrlContext from '../UrlContext'
 import {BaseComponentState, ComponentState} from './ComponentState'
 import Url, {asQueryObject} from '../Url'
-import {PropVal, valueOf, valuesOf} from '../runtimeFunctions'
+import {domElement, PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
 import type {FunctionComponent} from 'react'
 import {Theme, ThemeOptions} from '@mui/material'
@@ -18,7 +18,7 @@ type StateInternalProps = {
     subscription?: any
 }
 
-export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> {
+export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState {
 
     private theme: Theme | undefined
     protected doInit(previousVersion?: this): void {
@@ -46,8 +46,8 @@ export class AppData extends BaseComponentState<StateExternalProps, StateInterna
         return this.props.pages[notLoggedInPageName]
     }
 
-    AppWidth = () => this.domElement?.clientWidth ?? 0
-    AppHeight = () => this.domElement?.clientHeight ?? 0
+    AppWidth = () => domElement(this)?.clientWidth ?? 0
+    AppHeight = () => domElement(this)?.clientHeight ?? 0
 
     Theme = () => this.theme ??= createTheme(this.props.themeOptions)
 

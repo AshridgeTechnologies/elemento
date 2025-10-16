@@ -5,12 +5,13 @@ export interface ComponentState extends StoredState {
     withMergedState(changes: object): this
     latest(): this
     get _stateForTest(): any
+    get _path(): string | undefined
 }
 
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> implements StoredStateWithProps<ExternalProps> {
     protected state: StateProps = {} as StateProps
     protected _appStateInterface?: AppStateForObject<any>
-    protected get _path(): string | undefined { return this._appStateInterface?.path }
+    get _path(): string | undefined { return this._appStateInterface?.path }
 
     constructor(public props: ExternalProps) {}
 
@@ -34,21 +35,29 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return this._appStateInterface!.latest() as this
     }
 
-    get domElement(): HTMLElement | null {
-        return this._path ? document.getElementById(this._path) : null
+    withState(state: StateProps): this {
+        return this.stateEqual(state) ? this : this.copy(this.props, state)
     }
 
-    get childStates() {
-        return {}
+    withProps(props: ExternalProps): this {
+        return this.propsEqual(props) ? this : this.copy(props, this.state)
     }
 
-    get app() {
-        return null //this._appStateInterface?.getApp()
+    withMergedState(changes: Partial<StateProps>): this {
+        const newState = Object.assign({}, this.state, changes) as StateProps
+        for (const p in newState) {
+            if (newState[p] === undefined) delete newState[p]
+        }
+
+        return this.withState(newState)
     }
 
-    Focus() {
-        this.domElement?.focus()
+    get _stateForTest() { return this.state }
+
+    _withStateForTest(state: any): this {
+        return this.withState(state)
     }
+
 
     protected copy(props: ExternalProps, state: StateProps): this {
         const ctor = this.constructor as new (props: ExternalProps) => this
@@ -64,30 +73,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected stateEqual(state: StateProps) {
         return equals(this.state, state)
     }
-
-    _withStateForTest(state: any): this {
-        return this.withState(state)
-    }
-
-    withState(state: StateProps): this {
-        return this.stateEqual(state) ? this : this.copy(this.props, state)
-    }
-
-    withProps(props: ExternalProps): this {
-        return this.propsEqual(props) ? this : this.copy(props, this.state)
-    }
-
-    withMergedState(changes: Partial<StateProps>): this {
-        const newState = Object.assign({}, this.state, changes) as StateProps
-        for (const p in newState) {
-            // @ts-ignore
-            if (newState[p] === undefined) delete newState[p]
-        }
-
-        return this.withState(newState)
-    }
-
-    get _stateForTest() { return this.state }
 
     protected getChildState<T extends ComponentState>(name: string): T {
         return this._appStateInterface?.getChildState(name) as T

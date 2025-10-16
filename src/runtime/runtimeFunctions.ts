@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js'
 import {StylingProp} from '../util/StylingTypes'
 import {DragOverEvent, DragStartEvent, useDndMonitor} from '@dnd-kit/core'
 import {useState} from 'react'
+import {ComponentState} from './components/ComponentState'
 
 export {isoDateReviver} from '../util/helpers'
 
@@ -141,3 +142,5 @@ export const dragFunctions = () => {
         DraggedItemId: ()=> draggedData?.itemId
     }
 }
+
+export const domElement = (state: ComponentState) => state._path ? document.getElementById(state._path) : null

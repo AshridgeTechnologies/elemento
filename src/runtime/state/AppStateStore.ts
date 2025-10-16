@@ -1,7 +1,7 @@
 import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
 
 export interface StoredState {
-    init?: (asi: AppStateForObject<this>, previousVersion?: this) => this | undefined
+    init?: (asi: AppStateForObject<any>, previousVersion?: any) => this | undefined
 }
 export interface StoredStateWithProps<Props extends object> extends StoredState {
     withProps: (props: Props) => this

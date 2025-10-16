@@ -10,6 +10,7 @@ import {TextInputState} from '../../../src/runtime/components/TextInput'
 import {TrueFalseInputState} from '../../../src/runtime/components/TrueFalseInput'
 import {TextType} from '../../../src/runtime/types'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
+import {domElement} from '../../../src/runtime/runtimeFunctions'
 
 const [textInput, appStoreHook] = wrappedTestElement(TextInput)
 
@@ -187,7 +188,7 @@ test('TextInput can be focused', async () => {
     expect(document.activeElement).not.toBe(el`app.page1.sprocket2`)
     await actWait( () => stateAt(elementId).Focus() )
     expect(document.activeElement).toBe(el`app.page1.sprocket2`)
-    expect(stateAt(elementId).domElement).toBe(el`app.page1.sprocket2`)
+    expect(domElement(stateAt(elementId))).toBe(el`app.page1.sprocket2`)
 })
 
 test('State class has correct properties and functions with defaults', () => {

@@ -1,5 +1,5 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
-import {PropVal, valueOf} from '../runtimeFunctions'
+import {domElement, PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
 import {ElementMetadata} from '../../model/ModelElement'
 
@@ -81,4 +81,9 @@ export default abstract class InputComponentState<T, DT extends BaseType<T, any>
     ShowErrors(errorsShown: boolean) {
         this.updateState({errorsShown})
     }
+
+    Focus() {
+        domElement(this)?.focus()
+    }
+
 }
