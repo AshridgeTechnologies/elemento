@@ -59,7 +59,7 @@ export default function SpeechInput({path}: Properties) {
 }
 
 export class SpeechInputState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<SpeechInputState>{
+    implements ComponentState{
 
     static defaultValue = ''
 

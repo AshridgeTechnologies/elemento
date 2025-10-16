@@ -8,7 +8,7 @@ class TestItem extends BaseComponentState<any> {
 }
 
 type StateObjectProperties = {color?: string, length?: number}
-class StateObject extends BaseComponentState<StateObjectProperties> implements ComponentState<StateObject> {
+class StateObject extends BaseComponentState<StateObjectProperties> implements ComponentState {
 
     constructor(props: StateObjectProperties) {
         super(props)

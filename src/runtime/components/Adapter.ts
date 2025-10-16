@@ -1,6 +1,6 @@
 import {BaseComponentState, ComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
-import {equals, mergeRight, without} from 'ramda'
+import {mergeRight, without} from 'ramda'
 import lodash from 'lodash'
 import {valuesOf} from '../runtimeFunctions'
 import appFunctions from '../appFunctions'
@@ -15,12 +15,12 @@ type StateProperties = {resultCache: object, subscriptionCache: object, pendingC
 
 const excludedProps = ['constructor', 'equals']
 
-export default function Adapter({path}: Properties) {
+export default function Adapter(_props: Properties) {
     return null
 }
 
 export class AdapterState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<AdapterState> {
+    implements ComponentState {
 
     constructor(props: ExternalProperties) {
         super(props)
@@ -80,10 +80,6 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
             const newSubsCache = removeSubscriptions(functionArgsKey)
             this.updateState({resultCache: newCache, subscriptionCache: newSubsCache})
         }
-    }
-
-    protected isEqualTo(newObj: this): boolean {
-        return equals(this.props.target, newObj.props.target)
     }
 
     private doCall(name: string, args: any[]) {

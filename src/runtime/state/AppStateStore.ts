@@ -1,7 +1,7 @@
 import SubscribableStore, {type AllChangesCallback, type UnsubscribeFn} from './SubscribableStore'
 
 export interface StoredState {
-    init?: (asi: AppStateForObject, previousVersion?: this) => this | undefined
+    init?: (asi: AppStateForObject<this>, previousVersion?: this) => this | undefined
 }
 export interface StoredStateWithProps<Props extends object> extends StoredState {
     withProps: (props: Props) => this
@@ -11,28 +11,27 @@ const placeholder = function() {let _placeholder = 0}
 placeholder.valueOf = () => undefined
 placeholder._isPlaceholder = true
 
-export interface AppStateForObject {
+export interface AppStateForObject<T extends StoredState> {
     path: string,
-    latest: () => StoredState
-    updateVersion: (newVersion: StoredState) => void,
+    latest: () => T
+    updateVersion: (newVersion: T) => void,
     getChildState: (subPath: string) => StoredState
 }
 
-class ObjectStateInterface implements AppStateForObject {
+class ObjectStateInterface<T extends StoredState> implements AppStateForObject<T> {
     constructor(public path: string, private _store: AppStateStore) {}
 
     getChildState(subPath: string): StoredState {
         return this._store.get(this.path + '.' + subPath)
     }
 
-    latest(): StoredState {
+    latest(): T {
         return this._store.get(this.path)
     }
 
-    updateVersion(newVersion: StoredState): void {
+    updateVersion(newVersion: T): void {
         this._store.updateVersion(this.path, newVersion, this.latest())
     }
-
 }
 
 

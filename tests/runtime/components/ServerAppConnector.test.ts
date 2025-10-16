@@ -36,7 +36,7 @@ const mockError = (message: string) => ({status: 500, ok: false, json: vi.fn().m
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
 
 let mockFetch: MockInstance
-const initConnector = ():[any, AppStateForObject] => {
+const initConnector = ():[any, AppStateForObject<any>] => {
     const state = new ServerAppConnectorState({configuration})
     const appInterface = testAppInterface('testPath', state)
 

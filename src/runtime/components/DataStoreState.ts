@@ -7,7 +7,7 @@ type StateProperties = {dataStore?: DataStore, initialisedDataStore?: Promise<Da
 const {NotifyError} = appFunctions
 
 export abstract class DataStoreState<PropsType extends object> extends BaseComponentState<PropsType, StateProperties>
-    implements DataStore, ComponentState<DataStoreState<PropsType>> {
+    implements DataStore, ComponentState {
 
     constructor(props: PropsType) {
         super(props)

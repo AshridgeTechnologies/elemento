@@ -33,7 +33,7 @@ class TestFormState extends BaseFormState<FormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize']
 }
 
-function TestForm(props: {path: string, initialValue: object, dataType: RecordType, keyAction: KeyboardEventHandler} & FormContents) {
+function TestForm(props: {path: string, initialValue: FormContents, dataType: RecordType, keyAction: KeyboardEventHandler} & FormContents) {
     const pathTo = (name: string) => props.path + '.' + name
 
     const {initialValue, dataType} = props
@@ -52,7 +52,7 @@ class TestOneElementFormState extends BaseFormState<{Description: string}> {
     protected readonly ownFieldNames = ['Description']
 }
 
-function TestOneElementForm(props: {path: string, initialValue: object}) {
+function TestOneElementForm(props: {path: string, initialValue: {Description: string}}) {
     const pathTo = (name: string) => props.path + '.' + name
 
     const {initialValue} = props
@@ -67,7 +67,7 @@ class TestNestedFormState extends BaseFormState<NestedFormContents> {
     protected readonly ownFieldNames = ['Description', 'BoxSize', 'Extra']
 }
 
-function TestNestedForm(props: {path: string, initialValue: object, keyAction: KeyboardEventHandler}) {
+function TestNestedForm(props: {path: string, initialValue: NestedFormContents, keyAction: KeyboardEventHandler}) {
     const pathTo = (name: string) => props.path + '.' + name
 
     const {initialValue} = props

@@ -29,7 +29,7 @@ export default function ServerAppConnector(_props: Properties) {
 }
 
 export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<ServerAppConnectorState> {
+    implements ComponentState {
 
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}

@@ -104,7 +104,7 @@ export default function Timer({path, ...props}: Properties) {
 }
 
 export class TimerState extends BaseComponentState<StateInputProperties, StateInternalProperties>
-    implements ComponentState<TimerState> {
+    implements ComponentState {
     get period() { return valueOf(this.props.period) ?? null }
     get interval() { return valueOf(this.props.interval) ?? null }
     get intervalAction() { return this.props.intervalAction ?? null }

@@ -120,7 +120,7 @@ const initialValue = (value?: any): object => {
 type AddItem = object | string | number
 
 export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<CollectionState>{
+    implements ComponentState{
 
     constructor({value = {}, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         super({value: initialValue(value), collectionName, dataStore})

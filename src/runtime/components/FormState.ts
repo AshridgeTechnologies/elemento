@@ -13,7 +13,7 @@ import {TrueFalseInputState} from './TrueFalseInput'
 import {DateInputState} from './DateInput'
 import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
-import {createProxy} from './ComponentState'
+import {ComponentState, createProxy} from './ComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 
@@ -51,7 +51,7 @@ export default abstract class BaseFormState<T extends object = object> extends I
 
     protected abstract readonly ownFieldNames: string[]
 
-    init(asi: AppStateForObject, previousVersion?: this): this {
+    init(asi: AppStateForObject<any>, previousVersion?: this): this {
         return createProxy(asi, super.init(asi, previousVersion))
     }
 
@@ -71,16 +71,16 @@ export default abstract class BaseFormState<T extends object = object> extends I
     }
 
     get updates() {
-        const modifiedFields = this.fieldNames.filter(name => this.getChildState(name)?.modified)
+        const modifiedFields = this.fieldNames.filter(name => this.getInputChildState(name)?.modified)
         return this.valueFromChildren(modifiedFields)
     }
 
     get modified() {
-        return this.fieldNames.some(name => this.getChildState(name)?.modified)
+        return this.fieldNames.some(name => this.getInputChildState(name)?.modified)
     }
 
     get errors(): { [p: string]: string[] } | null {
-        const componentErrorEntries = this.fieldNames.map(name => [name, this.getChildState(name)?.errors]).filter( ([_name, entries]) => entries)
+        const componentErrorEntries = this.fieldNames.map(name => [name, this.getInputChildState(name)?.errors]).filter( ([_name, entries]) => entries)
         const validationResult = this.dataType?.validate(this.dataValue)
         const ownErrorResult = (validationResult && (validationResult as any)._self) as string[]
         const ownErrors = ownErrorResult ? {_self: ownErrorResult} : {}
@@ -97,24 +97,24 @@ export default abstract class BaseFormState<T extends object = object> extends I
     }
 
     private getChildValue(name: string) {
-        const childStateValue = this.getChildState(name)?.dataValue
+        const childStateValue = this.getInputChildState(name)?.dataValue
         if (childStateValue !== undefined && !childStateValue?._isPlaceholder) return childStateValue
 
         return this.props.initialValue?.[name as keyof object]
     }
 
-    protected getChildState(name: string) {
-        return super.getChildState(name) as unknown as InputComponentState<any, any>
+    protected getInputChildState<T extends InputComponentState<any, any>>(name: string): T {
+        return super.getChildState(name) as T
     }
 
     Reset() {
         super.Reset()
-        this.fieldNames.forEach(name => this.getChildState(name)?.Reset?.())
+        this.fieldNames.forEach(name => this.getInputChildState(name)?.Reset?.())
     }
 
     ShowErrors(errorsShown: boolean) {
         super.ShowErrors(errorsShown)
-        this.fieldNames.forEach(name => this.getChildState(name)?.ShowErrors?.(errorsShown))
+        this.fieldNames.forEach(name => this.getInputChildState(name)?.ShowErrors?.(errorsShown))
     }
 
     async Submit(data: any) {

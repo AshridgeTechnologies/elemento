@@ -18,7 +18,7 @@ type StateInternalProps = {
     subscription?: any
 }
 
-export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState<AppData> {
+export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> {
 
     private theme: Theme | undefined
     protected doInit(previousVersion?: this): void {

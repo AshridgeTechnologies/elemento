@@ -146,7 +146,7 @@ export default function Block({children = [], path,  ...props}: Properties) {
 }
 
 export class BlockState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<BlockState> {
+    implements ComponentState {
 
     get isOver() {
         return this.state.isOver ?? false

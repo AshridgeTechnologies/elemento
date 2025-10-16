@@ -40,7 +40,7 @@ class Target {
     equals(other: Target) { return other.size === this.size}
 }
 
-const initAdapter = ():[any, AppStateForObject, any] => {
+const initAdapter = ():[any, AppStateForObject<any>, any] => {
     const target = new Target(99)
     const state = new AdapterState({target: target})
     const appInterface = testAppInterface('testPath', state)
@@ -81,7 +81,7 @@ test('has functions from the target class object', () => {
 
 test('returns self as update result for equivalent configuration', () => {
     const adapter = new Adapter.State({target: new Target(222)})
-    expect(adapter.propsEqual({target: new Target(222)})).toBe(true)
+    expect(adapter.withProps({target: new Target(222)})).toBe(adapter)
 })
 
 test('calls functions, returns value immediately if not a promise and does not cache', async () => {

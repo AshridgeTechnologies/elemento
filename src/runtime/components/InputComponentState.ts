@@ -12,7 +12,7 @@ export const InputComponentMetadata: ElementMetadata = {
 
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
     extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
-    implements ComponentState<InputComponentState<T, DT, Props>> {
+    implements ComponentState {
 
     abstract defaultValue: T | null
 

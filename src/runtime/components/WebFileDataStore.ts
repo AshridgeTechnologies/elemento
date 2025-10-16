@@ -50,7 +50,7 @@ export default function WebFileDataStore({path}: Properties) {
 }
 
 export class WebFileDataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements DataStore, ComponentState<WebFileDataStoreState> {
+    implements DataStore, ComponentState {
 
     constructor(props: ExternalProperties) {
         super(props)

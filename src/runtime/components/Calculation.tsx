@@ -109,7 +109,7 @@ export default function Calculation({path, ...props}: Properties) {
 }
 
 export class CalculationState extends BaseComponentState<ExternalStateProperties, InternalStateProperties>
-    implements ComponentState<CalculationState> {
+    implements ComponentState {
 
     // 'calculation' is called value in the state object to be consistent with input elements
     // AND so it will work with Form

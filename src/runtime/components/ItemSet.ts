@@ -127,7 +127,7 @@ const ItemSet = function ItemSet({path, itemContentComponent, items, selectable,
 export default ItemSet
 
 export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<ItemSetState>{
+    implements ComponentState{
 
     get items(): any[] {
         return valueOfOneLevel<any>(this.props.items) ?? []

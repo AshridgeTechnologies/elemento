@@ -44,7 +44,7 @@ export default function FileDataStore({path, display = false}: Properties) {
 }
 
 export class FileDataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements DataStore, ComponentState<FileDataStoreState> {
+    implements DataStore, ComponentState {
 
     constructor(props: ExternalProperties = {}) {
         super(props)

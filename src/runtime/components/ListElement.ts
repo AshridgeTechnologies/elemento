@@ -82,7 +82,7 @@ const ListElement = React.memo( function ListElement({path, children, ...props}:
 })
 
 export class ListElementState extends BaseComponentState<StateProperties>
-    implements ComponentState<ListElementState>{
+    implements ComponentState{
 
     get scrollTop() {
         return this.state.scrollTop ?? 0

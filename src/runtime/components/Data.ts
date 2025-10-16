@@ -59,7 +59,7 @@ export default function Data({path, initialValue, display = false}: Properties) 
 }
 
 export class DataState extends BaseComponentState<StateExternalProperties, StateInternalProperties>
-    implements ComponentState<DataState>{
+    implements ComponentState {
 
     constructor(props: StateExternalProperties, exposeProps = true) {
         super(props)

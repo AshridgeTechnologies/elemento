@@ -9,7 +9,7 @@ const mockTextResponse = (data: string) => ({status: 200, ok: true, text: vi.fn(
 
 let mockFetch: MockInstance
 
-const initWebFile = (url: string):[any, AppStateForObject] => {
+const initWebFile = (url: string):[any, AppStateForObject<any>] => {
     const state = new WebFileState({url})
     const appInterface = testAppInterface('testPath', state)
     return [state, appInterface]

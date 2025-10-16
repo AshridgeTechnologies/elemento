@@ -169,23 +169,23 @@ export function filePickerReturning(returnedData: object | string, fileHandleNam
 export const filePickerCancelling = () => Promise.reject({name: 'AbortError'})
 export const filePickerErroring = () => Promise.reject(new Error('Could not access file'))
 
-export const testAppInterface = (path: string, initialVersion: any, childStateValues: object = {}): AppStateForObject => {
-    let _latest: any = initialVersion
+export const testAppInterface = <T extends StoredState>(path: string, initialVersion: T, childStateValues: object = {}): AppStateForObject<T> => {
+    let _latest: T = initialVersion
 
-    const appInterface: AppStateForObject = {
+    const appInterface: AppStateForObject<T> = {
         path: path,
         latest() {
             return _latest
         },
-        updateVersion: vi.fn().mockImplementation((newVersion: any) => {
-            newVersion.init(appInterface, _latest)
+        updateVersion: vi.fn().mockImplementation((newVersion: T) => {
+            newVersion.init?.(appInterface, _latest)
             _latest = newVersion
         }),
         getChildState: (subPath: string) => childStateValues[subPath as keyof object],
 
     }
 
-    initialVersion.init(appInterface)
+    initialVersion.init?.(appInterface)
     return appInterface
 }
 

@@ -53,7 +53,7 @@ export default function WebFile(_props: Properties) {
 }
 
 export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState<WebFileState> {
+    implements ComponentState {
 
     private get url() { return this.props.url}
     private get resultCache() { return this.state.resultCache ?? {}}

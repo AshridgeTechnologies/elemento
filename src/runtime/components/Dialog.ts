@@ -94,7 +94,7 @@ export default function Dialog({children = [], path,  layout, initiallyOpen, sho
     )
 }
 export class DialogState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState<DialogState> {
+    implements ComponentState {
 
     get isOpen() {
         return this.state.isOpen ?? this.props.initiallyOpen ?? false

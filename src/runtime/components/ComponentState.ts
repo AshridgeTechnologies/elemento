@@ -1,24 +1,20 @@
-import {AppStateForObject} from '../state/AppStateStore'
+import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
 import {equals} from 'ramda'
 
-export interface ComponentState<T> {
-    init(asi: AppStateForObject): T | undefined
-
-    withMergedState(changes: object): T
-
-    latest(): T
-
+export interface ComponentState extends StoredState {
+    withMergedState(changes: object): this
+    latest(): this
     get _stateForTest(): any
 }
 
-export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> {
+export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> implements StoredStateWithProps<ExternalProps> {
     protected state: StateProps = {} as StateProps
-    protected _appStateInterface?: AppStateForObject
+    protected _appStateInterface?: AppStateForObject<any>
     protected get _path(): string | undefined { return this._appStateInterface?.path }
 
     constructor(public props: ExternalProps) {}
 
-    init(asi: AppStateForObject, previousVersion?: this): this {
+    init(asi: AppStateForObject<any>, previousVersion?: this): this {
         this._appStateInterface = asi
         this.doInit(previousVersion)
         return this
@@ -27,15 +23,15 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected doInit(_previousVersion?: this) {}
 
     updateState(changes: Partial<typeof this.state>) {
-        const latestState = this._appStateInterface!.latest()
-        const updatedState = (latestState as any).withMergedState(changes)
+        const latestState = this.latest()
+        const updatedState = latestState.withMergedState(changes)
         if (updatedState !== latestState) {
             this._appStateInterface!.updateVersion(updatedState)
         }
     }
 
     latest(): this {
-        return this._appStateInterface!.latest() as unknown as this
+        return this._appStateInterface!.latest() as this
     }
 
     get domElement(): HTMLElement | null {
@@ -54,10 +50,9 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         this.domElement?.focus()
     }
 
-    private get thisConstructor(): any { return this.constructor as any }
-
     protected copy(props: ExternalProps, state: StateProps): this {
-        const newVersion = new this.thisConstructor(props) as this
+        const ctor = this.constructor as new (props: ExternalProps) => this
+        const newVersion = new ctor(props) as this
         newVersion.state = {...state}
         return newVersion
     }
@@ -94,18 +89,16 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
     get _stateForTest() { return this.state }
 
-    protected getChildState(name: string) {
-        return this._appStateInterface?.getChildState(name) as unknown as ComponentState<any>
+    protected getChildState<T extends ComponentState>(name: string): T {
+        return this._appStateInterface?.getChildState(name) as T
     }
 }
 
-type Props = { [p: string]: any }
-
-export function createProxy(store: AppStateForObject, targetState: any) {
+export function createProxy<T extends StoredState>(store: AppStateForObject<T>, targetState: T) {
     const handler = {
-        get(target: Props, property: string): any {
+        get(target: T, property: string): any {
             if (property in target) {
-                return target[property]
+                return target[property as keyof T]
             }
 
             return store.getChildState(property)
@@ -117,7 +110,7 @@ export function createProxy(store: AppStateForObject, targetState: any) {
 
 export class BaseComponentStateWithProxy<ExternalProps extends object, StateProps extends object = ExternalProps> extends BaseComponentState<ExternalProps, StateProps> {
 
-    init(asi: AppStateForObject, previousVersion?: this): this {
+    init(asi: AppStateForObject<any>, previousVersion?: this): this {
         return createProxy(asi, super.init(asi, previousVersion))
     }
 }
