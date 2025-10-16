@@ -9,6 +9,7 @@ import {BaseComponentState, Block, Calculation, Data, TextInput} from '../../../
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 import SubscribableStore from '../../../src/runtime/SubscribableStore'
+import {ComponentState} from '../../../src/runtime/components/ComponentState'
 
 const {Log, Left} = globalFunctions
 const {Set} = appFunctions
@@ -70,6 +71,36 @@ class NameInput_State extends BaseComponentState<any> {
     }
 }
 
+type StateObjectProperties = {color?: string, length?: number}
+class StateObject extends BaseComponentState<StateObjectProperties> implements ComponentState {
+
+    constructor(props: StateObjectProperties) {
+        super(props)
+    }
+    get color() {
+        return this.state.color ?? this.props.color
+    }
+
+    get length() {
+        return this.state.length ?? this.props.length ?? 0
+    }
+
+    setColor(color: string) {
+        this.updateState({color})
+    }
+
+    increaseLength(amount: number) {
+        this.updateState({length: this.length + amount})
+    }
+
+}
+
+class StateObject2 extends StateObject {
+}
+
+const stateObj = (props: StateObjectProperties) => new StateObject(props)
+
+
 test('State class has correct properties and functions', async () => {
     const store = new AppStateStore(new SubscribableStore())
     const saveAction = vi.fn()
@@ -99,3 +130,32 @@ test('State class updates from an object with new props', () => {
     expect(state1.updateFrom(state2)).toBe(state1)
     expect(state1.updateFrom(state3).props.Second).toBe('Black')
 })
+
+// from old appData.test
+
+test('state object can update its own state immediately', () => {
+    const store = new AppStateStore()
+    const state = store.getOrCreate('TheApp.foo', StateObject, {color: 'red', length: 23})
+    state.setColor('blue')
+    state.increaseLength(2)
+    expect(state.latest().color).toBe('blue')
+    expect(state.latest().length).toBe(25)
+    expect((store.get('TheApp.foo') as StateObject)).toBe(state.latest())
+})
+
+test('state object can get latest to update its own state', () => {
+    const store = new AppStateStore()
+    const state = store.getOrCreate('TheApp.foo', StateObject, {color: 'red', length: 23})
+    state.increaseLength(2)
+    state.latest().increaseLength(2)
+    state.latest().increaseLength(3)
+    expect(state.latest().length).toBe(30)
+})
+
+test('BaseComponentState keeps same state if properties change', async () => {
+    const state = stateObj({color: 'red', length: 23})._withStateForTest({color: 'blue'})
+    const stateWithNewProps = state.withProps({color: 'red', length: 55})
+    expect(stateWithNewProps.color).toBe('blue')
+    expect(stateWithNewProps.length).toBe(55)
+})
+

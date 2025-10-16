@@ -772,7 +772,7 @@ describe('subscribe with external data store', () => {
         const appInterface = testAppInterface('testPath', state);
         testObservable.send({collection: 'Widgets', type: Update, id: 'w2', changes: {b: true}})
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
+        expect(appInterface.update).toHaveBeenCalledTimes(1)
         expect(state.latest()._stateForTest.value).toStrictEqual({w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: true, c: 'Bar'}})
         expect(state.latest()._stateForTest.queries).toStrictEqual({
                 '{"a":10}': [

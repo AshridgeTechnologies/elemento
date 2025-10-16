@@ -27,7 +27,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         const latestState = this.latest()
         const updatedState = latestState.withMergedState(changes)
         if (updatedState !== latestState) {
-            this._appStateInterface!.updateVersion(updatedState)
+            this._appStateInterface!.update(updatedState)
         }
     }
 

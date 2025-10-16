@@ -79,7 +79,7 @@ test('State class does nothing on trigger if no when true action', () => {
     const state = new Calculation.State({initialValue: true})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
-    expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    expect(appInterface.update).not.toHaveBeenCalled()
 })
 
 test('State class does nothing on trigger if false and previous value missing but updates previous value', () => {
@@ -97,7 +97,7 @@ test('State class does nothing on trigger if false and does not update previous 
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
-    expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    expect(appInterface.update).not.toHaveBeenCalled()
 })
 
 test('State class runs action on trigger if truthy and previous value false and updates previous value', () => {
@@ -115,7 +115,7 @@ test('State class does not run action on trigger if truthy and previous value tr
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
-    expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    expect(appInterface.update).not.toHaveBeenCalled()
 })
 
 test('State class does not run action on trigger if falsy and previous value truthy but updates previous value', () => {

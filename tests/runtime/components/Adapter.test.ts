@@ -92,7 +92,7 @@ test('calls functions, returns value immediately if not a promise and does not c
     expect(result1).toStrictEqual({a: 10})
     expect(result2).toStrictEqual({a: 10})
     expect(result2).not.toBe(result1)
-    expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    expect(appInterface.update).not.toHaveBeenCalled()
     expect(appInterface.latest()._stateForTest.resultCache).toBe(undefined)
 })
 
@@ -100,7 +100,7 @@ test('calls functions, returns pending for a promise and then cached result', as
     const [adapter, appInterface] = initAdapter()
 
     expect(isPending(adapter.GetWidget('id1', true))).toBe(true)
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(1)
+    expect(appInterface.update).toHaveBeenCalledTimes(1)
     expect(isPending(appInterface.latest()._stateForTest.resultCache['GetWidget#["id1",true]'])).toBe(true)
 
     await wait(10)
@@ -108,7 +108,7 @@ test('calls functions, returns pending for a promise and then cached result', as
     expect(resultData).toStrictEqual(42)
     const resultData2 = adapter.GetWidget('id1', true)
     expect(resultData2).toBe(resultData)
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
+    expect(appInterface.update).toHaveBeenCalledTimes(2)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({
         'GetWidget#["id1",true]': resultData,
     })
@@ -191,11 +191,11 @@ test('refreshes individual cached result for each call', async () => {
     expect(adapter.GetWidget('id1', true)).toBe(42)
     expect(adapter.GetWidget('id1', false)).toBe(43)
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(6)
+    expect(appInterface.update).toHaveBeenCalledTimes(6)
 
 
     adapter.Refresh('GetWidget', 'id1', true)
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
+    expect(appInterface.update).toHaveBeenCalledTimes(7)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': undefined,
@@ -209,7 +209,7 @@ test('refreshes individual cached result for each call', async () => {
     expect(adapter.GetWidget('id1', false)).toStrictEqual(43)
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
 
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(9)
+    expect(appInterface.update).toHaveBeenCalledTimes(9)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': 42,
@@ -228,10 +228,10 @@ test('refreshes all cached results for one function', async () => {
     expect(adapter.GetWidget('id1', true)).toStrictEqual(42)
     expect(adapter.GetWidget('id1', false)).toStrictEqual(43)
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(6)
+    expect(appInterface.update).toHaveBeenCalledTimes(6)
 
     adapter.Refresh('GetWidget')
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
+    expect(appInterface.update).toHaveBeenCalledTimes(7)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': undefined,
@@ -247,7 +247,7 @@ test('refreshes all cached results for one function', async () => {
     expect(adapter.GetWidget('id1', true)).toStrictEqual(42)
     expect(adapter.GetWidget('id1', false)).toStrictEqual(43)
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(11)
+    expect(appInterface.update).toHaveBeenCalledTimes(11)
 })
 
 test('refreshes all cached results', async () => {
@@ -262,7 +262,7 @@ test('refreshes all cached results', async () => {
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
 
     adapter.Refresh()
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(7)
+    expect(appInterface.update).toHaveBeenCalledTimes(7)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({})
 
     expect(isPending(adapter.GetWidget('id1', true))).toBe(true)
@@ -272,7 +272,7 @@ test('refreshes all cached results', async () => {
     expect(adapter.GetWidget('id1', true)).toStrictEqual(42)
     expect(adapter.GetWidget('id1', false)).toStrictEqual(43)
     expect(adapter.GetSprocket('id1', false)).toStrictEqual({a: 10})
-    expect(appInterface.updateVersion).toHaveBeenCalledTimes(13)
+    expect(appInterface.update).toHaveBeenCalledTimes(13)
     expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual(
         {
             'GetWidget#["id1",true]': 42,
@@ -297,7 +297,7 @@ test('does not cache functions that return undefined immediately', async () => {
     const returnVal2 = adapter.UpdateImmediate()
     expect(returnVal1).toBe(undefined)
     expect(returnVal2).toBe(undefined)
-    expect(appInterface.updateVersion).not.toHaveBeenCalled()
+    expect(appInterface.update).not.toHaveBeenCalled()
     expect(appInterface.latest()._stateForTest.resultCache).toBe(undefined)
     expect(target.updateImmediateCalls).toBe(2)
 })
@@ -330,7 +330,7 @@ describe('observables', () => {
         // expect(isPending(adapter.GetObservable('id1', true))).toBe(true)
         expect(adapter.GetObservable('id1', true)).toBe(null)
         expect(adapter.GetObservable('id1', true)).toBe(null)
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
+        expect(appInterface.update).toHaveBeenCalledTimes(2)
 
         const data1 = {d: 99}, data2 = {d: 100}
         target.observable.send(data1)
@@ -341,7 +341,7 @@ describe('observables', () => {
         expect(resultData2).toBe(resultData)
 
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(3)
+        expect(appInterface.update).toHaveBeenCalledTimes(3)
         expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({
             'GetObservable#["id1",true]': resultData,
         })
@@ -353,7 +353,7 @@ describe('observables', () => {
         expect(resultData3).toStrictEqual(data2)
         expect(resultData4).toBe(resultData3)
 
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(4)
+        expect(appInterface.update).toHaveBeenCalledTimes(4)
     })
 
     test('unsubscribes after refresh at all levels', async () => {
@@ -380,13 +380,13 @@ describe('observables', () => {
         const [adapter, appInterface, target] = initAdapter()
 
         expect(adapter.GetObservable('id1', true)).toBe(null)
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(2)
+        expect(appInterface.update).toHaveBeenCalledTimes(2)
 
         const data1 = {d: 99}, error = {message: 'No good'}
         target.observable.send(data1)
         await wait()
         expect(adapter.GetObservable('id1', true)).toStrictEqual(data1)
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(3)
+        expect(appInterface.update).toHaveBeenCalledTimes(3)
 
         target.observable.error(error)
         await wait()
@@ -398,7 +398,7 @@ describe('observables', () => {
         expect(appInterface.latest()._stateForTest.resultCache).toStrictEqual({
             'GetObservable#["id1",true]': new ErrorResult('Get Observable', 'No good'),
         })
-        expect(appInterface.updateVersion).toHaveBeenCalledTimes(4)
+        expect(appInterface.update).toHaveBeenCalledTimes(4)
     })
 
 })

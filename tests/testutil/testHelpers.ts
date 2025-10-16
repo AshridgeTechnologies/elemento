@@ -177,7 +177,7 @@ export const testAppInterface = <T extends StoredState>(path: string, initialVer
         latest() {
             return _latest
         },
-        updateVersion: vi.fn().mockImplementation((newVersion: T) => {
+        update: vi.fn().mockImplementation((newVersion: T) => {
             newVersion.init?.(appInterface, _latest)
             _latest = newVersion
         }),

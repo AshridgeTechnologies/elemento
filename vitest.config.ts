@@ -5,6 +5,10 @@ export default defineConfig({
         setupFiles: ['./vitest-setup.js'],
         include: ['tests/**/*.test.ts?(x)'],
         exclude: ['**/tests/functional', '**/tests/util'],
-        pool: 'threads'
+        pool: 'threads',
+        coverage: {
+            include: ['src/**/*.ts?(x)'],
+            reportsDirectory: './html/coverage'
+        }
     }
 })

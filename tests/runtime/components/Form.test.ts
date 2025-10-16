@@ -166,7 +166,7 @@ test.skip('State class uses states of child objects where present', () => {
     const state = new TestFormState({initialValue: {Description: 'Big', BoxSize: 17}})
     const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'});
     (state as any)._updateValue()
-    expect(appInterface.updateVersion).toHaveBeenCalledWith(state.withMergedState({value: {Description: 'Extra Large', BoxSize: 17}}))
+    expect(appInterface.update).toHaveBeenCalledWith(state.withMergedState({value: {Description: 'Extra Large', BoxSize: 17}}))
 })
 
 test('State has expected values', async () => {
