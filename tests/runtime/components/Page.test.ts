@@ -7,7 +7,7 @@ import {componentJSON, componentJSONAsync} from '../../testutil/testHelpers'
 import TextElement from '../../../src/runtime/components/TextElement'
 import {NumberInput, Page, TextInput} from '../../../src/runtime/components/index'
 import {use$state} from '../../../src/runtime'
-import {BaseComponentStateWithProxy} from '../../../src/runtime/components/ComponentState'
+import {BaseComponentStateWithProxy} from '../../../src/runtime/state/BaseComponentState'
 
 
 class TestPageState extends BaseComponentStateWithProxy<{}> {

@@ -536,9 +536,11 @@ describe('subscribe to auth changes', () => {
     test('clears data and queries on auth change', () => {
         let authCallback: VoidFunction
         mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
-        const state = new ServerAppConnectorState({configuration})._withStateForTest({resultCache: {
+        const state = new ServerAppConnectorState({configuration}).withState({
+            resultCache: {
                 'GetWidget#["id1",true]': 'xyz',
-            }})
+            }
+        })
         const appInterface = testAppInterface('testPath', state)
 
         authCallback!()

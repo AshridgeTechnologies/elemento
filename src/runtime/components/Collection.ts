@@ -15,7 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {use$state} from '../state/appStateHooks'

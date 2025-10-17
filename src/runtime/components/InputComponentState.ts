@@ -1,4 +1,4 @@
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {domElement, PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
 import {ElementMetadata} from '../../model/ModelElement'

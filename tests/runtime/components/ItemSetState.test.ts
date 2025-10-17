@@ -110,7 +110,7 @@ test('has no selected item if not supplied', () => {
     expect(state.selectedItemIds).toStrictEqual([])
     expect(state.selectedItem).toBe(null)
 
-    const updatedState = state._withStateForTest({selectedItemIds: [1]})
+    const updatedState = state.withState({selectedItemIds: [1]})
     expect(updatedState.selectedItems).toStrictEqual([item2])
     expect(updatedState.selectedItemIds).toStrictEqual([1])
     expect(updatedState.selectedItem).toBe(item2)
@@ -122,7 +122,7 @@ test('has single selected item given as object', () => {
     expect(state.selectedItemIds).toStrictEqual([0])
     expect(state.selectedItem).toStrictEqual(item1)
 
-    const updatedState = state._withStateForTest({selectedItemIds: [1]})
+    const updatedState = state.withState({selectedItemIds: [1]})
     expect(updatedState.selectedItems).toStrictEqual([item2])
     expect(updatedState.selectedItemIds).toStrictEqual([1])
     expect(updatedState.selectedItem).toBe(item2)

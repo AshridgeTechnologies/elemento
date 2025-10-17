@@ -4,7 +4,7 @@ import {mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../../shared/DataStore'
 import {AppStateForObject} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
-import {createProxy} from './ComponentState'
+import {createProxy} from '../state/BaseComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 

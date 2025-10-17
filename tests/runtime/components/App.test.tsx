@@ -197,11 +197,11 @@ test('App.State gets current page and can be updated by ShowPage, not called as 
     expect(state.currentPage).toBe(Page1)
 
     urlContext.updateUrl('/unknownPage', null, null)
-    const updatedState1 = state._withStateForTest({currentUrl: urlContext.getUrl()})
+    const updatedState1 = state.withState({currentUrl: urlContext.getUrl()})
     expect(updatedState1.currentPage).toBe(Page1)
 
     urlContext.updateUrl('/TheApp/Page2', null, null)
-    const updatedState2 = state._withStateForTest({currentUrl: urlContext.getUrl()})
+    const updatedState2 = state.withState({currentUrl: urlContext.getUrl()})
     expect(updatedState2.currentPage).toBe(Page2)
 
     const appInterface = testAppInterface('testPath', state)
@@ -225,7 +225,7 @@ test('App.State page, path, query and hash can be updated by ShowPage', () => {
     const state = new App.State({pages, urlContext})
     expect(state.currentPage).toBe(Page1)
     urlContext.updateUrl('/TheApp/Page2', null, null)
-    const updatedState = state._withStateForTest({currentUrl: urlContext.getUrl()})
+    const updatedState = state.withState({currentUrl: urlContext.getUrl()})
     expect(updatedState.currentPage).toBe(Page2)
 
     const appInterface = testAppInterface('testPath', state)
@@ -294,7 +294,7 @@ test('App.State can get current url object', () => {
         },
         updateUrl(_path: string, _query: object, _anchor: string): void {},
     }
-    const state = new App.State({pages, urlContext})._withStateForTest({currentUrl: urlForPage('Page2')})
+    const state = new App.State({pages, urlContext}).withState({currentUrl: urlForPage('Page2')})
     expect(state.CurrentUrl()).toStrictEqual(new Url(origin, pathname, pathPrefix, query, hash))
 })
 
@@ -309,7 +309,7 @@ test('App.State can get a File Url', () => {
             return 'resource/url/to' + ensureSlash(resourceName)
         }
     }
-    const state = new App.State({pages, urlContext})._withStateForTest({currentUrl: urlForPage('Page2')})
+    const state = new App.State({pages, urlContext}).withState({currentUrl: urlForPage('Page2')})
     expect(state.FileUrl('image1.jpg')).toBe('resource/url/to/image1.jpg')
     expect(state.FileUrl(valueObj('image1.jpg'))).toBe('resource/url/to/image1.jpg')
 })

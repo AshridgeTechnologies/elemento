@@ -7,7 +7,6 @@ import {testAppInterface as testAppInterface, valueObj, wait, wrappedTestElement
 import {render} from '@testing-library/react'
 
 import {testContainer} from '../../testutil/rtlHelpers'
-import {CalculationState} from '../../../src/runtime/components/Calculation'
 import {act} from '@testing-library/react/pure'
 
 const [calculation] = wrappedTestElement(Calculation)
@@ -93,7 +92,7 @@ test('State class does nothing on trigger if false and previous value missing bu
 
 test('State class does nothing on trigger if false and does not update previous value if false', () => {
     const action = vi.fn()
-    const state = new Calculation.State({initialValue: false, whenTrueAction: action})._withStateForTest({previousValueTruthy: false})
+    const state = new Calculation.State({initialValue: false, whenTrueAction: action}).withState({previousValueTruthy: false})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
@@ -102,7 +101,7 @@ test('State class does nothing on trigger if false and does not update previous 
 
 test('State class runs action on trigger if truthy and previous value false and updates previous value', () => {
     const action = vi.fn()
-    const state = new Calculation.State({initialValue: 1, whenTrueAction: action})._withStateForTest({previousValueTruthy: false})
+    const state = new Calculation.State({initialValue: 1, whenTrueAction: action}).withState({previousValueTruthy: false})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).toHaveBeenCalled()
@@ -111,7 +110,7 @@ test('State class runs action on trigger if truthy and previous value false and 
 
 test('State class does not run action on trigger if truthy and previous value truthy and does not update previous value', () => {
     const action = vi.fn()
-    const state = new Calculation.State({initialValue: 2, whenTrueAction: action})._withStateForTest({previousValueTruthy: true})
+    const state = new Calculation.State({initialValue: 2, whenTrueAction: action}).withState({previousValueTruthy: true})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()
@@ -120,7 +119,7 @@ test('State class does not run action on trigger if truthy and previous value tr
 
 test('State class does not run action on trigger if falsy and previous value truthy but updates previous value', () => {
     const action = vi.fn()
-    const state = new Calculation.State({initialValue: null, whenTrueAction: action})._withStateForTest({previousValueTruthy: true})
+    const state = new Calculation.State({initialValue: null, whenTrueAction: action}).withState({previousValueTruthy: true})
     const appInterface = testAppInterface('testPath', state)
     state.checkTriggered()
     expect(action).not.toHaveBeenCalled()

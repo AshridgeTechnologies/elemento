@@ -10,7 +10,7 @@ import {DirectoryNode, FileNode, FileSystemTree} from '../../src/editor/Types'
 import {DndContext} from '@dnd-kit/core'
 import {DndWrapper} from '../../src/runtime/components/ComponentHelpers'
 import {DefaultUrlContext, UrlContextContext} from '../../src/runtime/UrlContext'
-import {type AppStoreHook, StoreProvider} from '../../src/runtime/state/StoreContext'
+import {StoreProvider} from '../../src/runtime/state/StoreContext'
 import AppStateStore, {AppStateForObject, StoredState, StoredStateWithProps} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 
@@ -189,18 +189,12 @@ export const testAppInterface = <T extends StoredState>(path: string, initialVer
     return appInterface
 }
 
-function testAppStoreHook() {
-    const hook = {
-        store: null as (null | AppStateStore),
-        setAppStore(sa: AppStateStore) {
-            this.store = sa
-        },
+function testAppStoreHook(store: AppStateStore) {
+    return {
         stateAt (path: string) {
-            return this.store!.get(path)
+            return store.get(path)
         }
     }
-
-    return hook as AppStoreHook
 }
 
 export const createStateFn = <T extends StoredStateWithProps<P>, P extends object>(stateClass: new(props: P) => T) => {
@@ -210,14 +204,15 @@ export const createStateFn = <T extends StoredStateWithProps<P>, P extends objec
 }
 export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 
-    const appStoreHook = testAppStoreHook()
+    const appStore = new AppStateStore()
+    const appStoreHook = testAppStoreHook(appStore)
 
     const testElementCreatorFn = (path: string, componentProps: any = {}, ...children: React.ReactNode[]) => {
         const component = isArray(children)
             ? createElement(componentClass as any, {path, ...componentProps}, ...children)
             : createElement(componentClass as any, {path, ...componentProps}, children)
         const innerElement = wrapForDnd ? createElement(DndContext, null, component) : component
-        return createElement(StoreProvider, {appStoreHook, children:
+        return createElement(StoreProvider, {appStore, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }

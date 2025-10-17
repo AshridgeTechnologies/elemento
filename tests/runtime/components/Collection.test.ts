@@ -7,7 +7,6 @@ import {Collection} from '../../../src/runtime/components/index'
 import {
     asAny,
     createStateFn,
-    getCallArg,
     mockClear,
     mockImplementation,
     snapshot,
@@ -30,7 +29,6 @@ import SendObservable from '../../../src/util/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
 import * as authentication from '../../../src/runtime/components/authentication'
-import {noop} from 'lodash'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
 
 let dataStore: DataStore
@@ -526,7 +524,7 @@ describe('Query with external datastore', () => {
     })
 
     test('query when in cache', async () => {
-        const state = createState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = createState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             queries: {
                 '{"a":10,"c":false}': [{id: 'a1', a: 10, b: 'Bee'}]
             }
@@ -640,7 +638,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('clears data and queries when subscription receives InvalidateAll', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })
@@ -652,7 +650,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('clears queries when subscription receives Multiple Changes', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })
@@ -664,7 +662,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('clears queries without losing later Get when subscription receives Multiple Changes', async () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {},
             queries: {'{"a":10}': [{a: 10}]}
         })
@@ -682,7 +680,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('updates queries and item cache when update item that is in the item cache', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Bar'}},
             queries: {
                 '{"a":10}': [
@@ -709,7 +707,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('updates only queries when update item that is not in the item cache', () => {
-            const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+            const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
                 value: {w1: {id: 'w1', a: 10, b: true, c: 'Foo'}},
                 queries: {
                     '{"a":10}': [
@@ -732,7 +730,7 @@ describe('subscribe with external data store', () => {
     )
 
     test('removes from queries and item cache when delete item that is in the item cache', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Bar'}},
             queries: {
                 '{"a":10}': [
@@ -758,7 +756,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('inserts or removes from queries when update item that is in the item cache', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Bar'}},
             queries: {
                 '{"a":10}': [
@@ -786,7 +784,7 @@ describe('subscribe with external data store', () => {
     })
 
     test('inserts into queries when add an item', () => {
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {w1: {id: 'w1', a: 10, b: true, c: 'Foo'}, w2: {id: 'w2', a: 10, b: false, c: 'Bar'}},
             queries: {
                 '{"a":10}': [
@@ -836,7 +834,7 @@ describe('subscribe to auth changes', () => {
     test('clears data and queries on auth change', () => {
         let authCallback: VoidFunction
         mockImplementation(authentication.onAuthChange, (callback: VoidFunction) => authCallback = callback)
-        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'})._withStateForTest({
+        const state = new CollectionState({value: {}, dataStore, collectionName: 'Widgets'}).withState({
             value: {id1: {a: 10}},
             queries: {'{"a":10}': [{a: 10}]}
         })

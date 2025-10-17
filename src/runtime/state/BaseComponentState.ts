@@ -1,4 +1,4 @@
-import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
+import {AppStateForObject, StoredState, StoredStateWithProps} from './AppStateStore'
 import {equals} from 'ramda'
 
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> implements StoredStateWithProps<ExternalProps> {
@@ -45,12 +45,9 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return this.withState(newState)
     }
 
-    get _stateForTest() { return this.state }
-
-    _withStateForTest(state: any): this {
-        return this.withState(state)
+    get _stateForTest() {
+        return this.state
     }
-
 
     protected copy(props: ExternalProps, state: StateProps): this {
         const ctor = this.constructor as new (props: ExternalProps) => this

@@ -1,4 +1,4 @@
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight, without} from 'ramda'
 import lodash from 'lodash'

@@ -4,7 +4,7 @@
 
 import {expect, test} from 'vitest'
 import {TrueFalseInput} from '../../../src/runtime/components/index'
-import {DEBUG_TIMEOUT, snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {snapshot, testAppInterface, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {testContainer} from '../../testutil/rtlHelpers'
 
 const [trueFalseInput, appStoreHook] = wrappedTestElement(TrueFalseInput)
@@ -112,34 +112,34 @@ test('State class has correct properties', () => {
 test('State is modified only when its value is not null and different to its empty initial value', () => {
     const state = new TrueFalseInput.State({})
     expect(state.modified).toBe(false)
-    const updatedState = state._withStateForTest({value: true})
+    const updatedState = state.withState({value: true})
     expect(updatedState.modified).toBe(true)
-    const resetState = updatedState._withStateForTest({value: undefined})
+    const resetState = updatedState.withState({value: undefined})
     expect(resetState.modified).toBe(false)
-    const updatedToNullState = updatedState._withStateForTest({value: null})
+    const updatedToNullState = updatedState.withState({value: null})
     expect(updatedToNullState.modified).toBe(false)
-    const updatedToFalseState = updatedState._withStateForTest({value: false})
+    const updatedToFalseState = updatedState.withState({value: false})
     expect(updatedToFalseState.modified).toBe(false)
 })
 
 test('State is modified only when its value is not null and different to its true initial value', () => {
     const state = new TrueFalseInput.State({initialValue: true})
     expect(state.modified).toBe(false)
-    const updatedState = state._withStateForTest({value: false})
+    const updatedState = state.withState({value: false})
     expect(updatedState.modified).toBe(true)
-    const resetState = updatedState._withStateForTest({value: undefined})
+    const resetState = updatedState.withState({value: undefined})
     expect(resetState.modified).toBe(false)
-    const updatedToNullState = updatedState._withStateForTest({value: null})
+    const updatedToNullState = updatedState.withState({value: null})
     expect(updatedToNullState.modified).toBe(true)
 })
 
 test('State is modified only when its value is different to its false value', () => {
     const state = new TrueFalseInput.State({initialValue: false})
     expect(state.modified).toBe(false)
-    const updatedState = state._withStateForTest({value: true})
+    const updatedState = state.withState({value: true})
     expect(updatedState.modified).toBe(true)
-    const resetState = updatedState._withStateForTest({value: undefined})
+    const resetState = updatedState.withState({value: undefined})
     expect(resetState.modified).toBe(false)
-    const updatedToNullState = updatedState._withStateForTest({value: null})
+    const updatedToNullState = updatedState.withState({value: null})
     expect(updatedToNullState.modified).toBe(false)
 })

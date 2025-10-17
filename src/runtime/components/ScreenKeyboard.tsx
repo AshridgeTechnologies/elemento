@@ -1,6 +1,6 @@
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import React, {useEffect, useState} from 'react'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 
 import * as SimpleKeyboard from 'react-simple-keyboard'
 import css from './ScreenKeyboard_css'

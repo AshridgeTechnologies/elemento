@@ -32,7 +32,7 @@ export default class SubscribableStore {
         const existingListeners = this.listenersFor(id)
         this.listeners.set(id, [...existingListeners, callback])
         return () => {
-            const existingListeners = this.listenersFor(id) ?? []
+            const existingListeners = this.listenersFor(id)
             this.listeners.set(id, without([callback], existingListeners))
         }
     }

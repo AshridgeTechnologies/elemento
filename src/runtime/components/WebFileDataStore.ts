@@ -1,6 +1,6 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import WebFileDataStoreImpl from './WebFileDataStoreImpl'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'

@@ -5,7 +5,7 @@ import {expect, test} from 'vitest'
 import {createElement} from 'react'
 import {testContainer} from '../testutil/rtlHelpers'
 import {use$state} from '../../src/runtime/state/appStateHooks'
-import {BaseComponentState} from '../../src/runtime/components/ComponentState'
+import {BaseComponentState} from '../../src/runtime/state/BaseComponentState'
 
 import {StoreProvider} from '../../src/runtime/state/StoreContext'
 import {wait} from '../testutil/testHelpers'

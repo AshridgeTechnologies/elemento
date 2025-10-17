@@ -3,7 +3,7 @@ import {expect, test} from "vitest"
  * @vitest-environment jsdom
  */
 import {NumberInput, TextInput} from '../../../src/runtime/components/index'
-import {snapshot, wrappedTestElement} from '../../testutil/testHelpers'
+import {snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
 
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
@@ -81,7 +81,7 @@ test('NumberInput shows initial value when state value  exists', () => {
 })
 
 test('NumberInput shows empty value when state value is set to null and initial value exists', () => {
-    const {el}  = testContainer(numberInput('app.page1.widget1', new TextInput.State({initialValue: 'Axe'})._withStateForTest({initialValue: null})))
+    const {el}  = testContainer(numberInput('app.page1.widget1', new TextInput.State({initialValue: 'Axe'}).withState({value: null})))
     expect(el`app.page1.widget1`.value).toBe('')
 })
 
@@ -95,6 +95,7 @@ test('NumberInput stores updated Decimal values in the app store section for its
     const decimalType1 = new DecimalType('dt1')
     const {enter}  = testContainer(numberInput('app.page1.sprocket', {initialValue: 27, dataType: decimalType1}))
     await enter('sprocket', '421')
+    await wait(10)
     expect(stateAt('app.page1.sprocket').value).toStrictEqual(new BigNumber('421'))
 })
 

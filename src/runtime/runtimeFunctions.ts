@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import {StylingProp} from '../util/StylingTypes'
 import {DragOverEvent, DragStartEvent, useDndMonitor} from '@dnd-kit/core'
 import {useState} from 'react'
-import {BaseComponentState} from './components/ComponentState'
+import {BaseComponentState} from './state/BaseComponentState'
 
 export {isoDateReviver} from '../util/helpers'
 

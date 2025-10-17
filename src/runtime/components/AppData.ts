@@ -1,5 +1,5 @@
 import UrlContext from '../UrlContext'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import Url, {asQueryObject} from '../Url'
 import {domElement, PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'

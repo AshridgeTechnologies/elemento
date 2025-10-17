@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {clone} from 'radash'
 import lodash from 'lodash'
 import {use$state} from '../state/appStateHooks'

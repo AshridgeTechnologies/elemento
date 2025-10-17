@@ -1,4 +1,4 @@
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import appFunctions from '../appFunctions'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight} from 'ramda'

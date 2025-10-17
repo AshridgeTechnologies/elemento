@@ -71,7 +71,7 @@ test('DateInput shows initial value when state value  exists', () => {
 })
 
 test('DateInput shows empty value when state value is set to null and initial value exists', () => {
-    const {el}  = testContainer(dateInput('app.page1.widget5', new DateInput.State({initialValue: new Date('2021-11-12')})._withStateForTest({value: null})))
+    const {el}  = testContainer(dateInput('app.page1.widget5', new DateInput.State({initialValue: new Date('2021-11-12')}).withState({value: null})))
     expect(el`app.page1.widget5`.value).toBe('')
 })
 
@@ -103,7 +103,7 @@ test('State class has correct properties', () => {
     expect(state.latest().value).toStrictEqual(new Date('2021-11-12'))
     expect(state.latest().dataValue).toStrictEqual(new Date('2021-11-12'))
 
-    const clearedState = state._withStateForTest({value: null})
+    const clearedState = state.withState({value: null})
     expect(clearedState.value).toBe(null)
     expect(clearedState.dataValue).toBe(null)
 })

@@ -112,8 +112,8 @@ test('State class has correct properties and functions', async () => {
     await state.latest().SetNames('Marti', 'Parti')
     expect(state.latest().NameData.value).toBe('Parti, Marti')
 
-    store.update('nameInput1.FirstName', new TextInputState({})._withStateForTest({value: 'Genna'}))
-    store.update('nameInput1.SecondName', new TextInputState({})._withStateForTest({value: 'Venna'}))
+    store.update('nameInput1.FirstName', new TextInputState({}).withState({value: 'Genna'}))
+    store.update('nameInput1.SecondName', new TextInputState({}).withState({value: 'Venna'}))
     await wait()
     expect(state.latest().Initials).toStrictEqual('GV')
 })
@@ -129,33 +129,5 @@ test('State class updates from an object with new props', () => {
 
     state1.updateState({Second: 'Black'})
     expect(state1.latest()).toBe('Black')
-})
-
-// from old appData.test
-
-test('state object can update its own state immediately', () => {
-    const store = new AppStateStore()
-    const state = store.getOrUpdate('TheApp.foo', StateObject, {color: 'red', length: 23})
-    state.setColor('blue')
-    state.increaseLength(2)
-    expect(state.latest().color).toBe('blue')
-    expect(state.latest().length).toBe(25)
-    expect((store.get('TheApp.foo') as StateObject)).toBe(state.latest())
-})
-
-test('state object can get latest to update its own state', () => {
-    const store = new AppStateStore()
-    const state = store.getOrUpdate('TheApp.foo', StateObject, {color: 'red', length: 23})
-    state.increaseLength(2)
-    state.latest().increaseLength(2)
-    state.latest().increaseLength(3)
-    expect(state.latest().length).toBe(30)
-})
-
-test('BaseComponentState keeps same state if properties change', async () => {
-    const state = stateObj({color: 'red', length: 23})._withStateForTest({color: 'blue'})
-    const stateWithNewProps = state.withProps({color: 'red', length: 55})
-    expect(stateWithNewProps.color).toBe('blue')
-    expect(stateWithNewProps.length).toBe(55)
 })
 

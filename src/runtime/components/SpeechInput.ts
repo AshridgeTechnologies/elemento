@@ -1,5 +1,5 @@
 import {createElement} from 'react'
-import {BaseComponentState} from './ComponentState'
+import {BaseComponentState} from '../state/BaseComponentState'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
