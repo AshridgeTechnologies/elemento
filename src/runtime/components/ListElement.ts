@@ -1,7 +1,7 @@
 import React, {ReactNode, SyntheticEvent, useEffect, useMemo, useRef} from 'react'
 import {PropVal, StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import List from '@mui/material/List'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import lodash from 'lodash'
 import {sxProps} from './ComponentHelpers'
 import {use$state} from '../state/appStateHooks'
@@ -81,8 +81,7 @@ const ListElement = React.memo( function ListElement({path, children, ...props}:
     return React.createElement(List, {id: path, sx, onScroll: debouncedScrollHandler, ref: listRef}, children)
 })
 
-export class ListElementState extends BaseComponentState<StateProperties>
-    implements ComponentState{
+export class ListElementState extends BaseComponentState<StateProperties> {
 
     get scrollTop() {
         return this.state.scrollTop ?? 0

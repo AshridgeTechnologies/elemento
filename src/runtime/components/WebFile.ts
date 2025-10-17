@@ -1,9 +1,8 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import appFunctions from '../appFunctions'
 import {ErrorResult, pending} from '../../shared/DataStore'
-import {equals, mergeRight, omit} from 'ramda'
+import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
-import {globalFetch} from './ComponentHelpers'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
 
@@ -52,8 +51,7 @@ export default function WebFile(_props: Properties) {
     return null
 }
 
-export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState {
+export class WebFileState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     private get url() { return this.props.url}
     private get resultCache() { return this.state.resultCache ?? {}}

@@ -1,19 +1,10 @@
 import InputComponentState from './InputComponentState'
-import {ChoiceType, DateType, NumberType, RecordType, TextType, TrueFalseType} from '../types'
+import {RecordType} from '../types'
 import {mergeDeepRight} from 'ramda'
 import {ErrorResult} from '../../shared/DataStore'
-import BaseType from '../types/BaseType'
-import {PropVal} from '../runtimeFunctions'
-import {TextInputState} from './TextInput'
-import {NumberInputState} from './NumberInput'
-import DecimalType from '../types/DecimalType'
-import BigNumber from 'bignumber.js'
-import {SelectInputState} from './SelectInput'
-import {TrueFalseInputState} from './TrueFalseInput'
-import {DateInputState} from './DateInput'
-import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
+import {AppStateForObject} from '../state/AppStateStore'
 import {unique} from '../../util/helpers'
-import {ComponentState, createProxy} from './ComponentState'
+import {createProxy} from './ComponentState'
 
 type SubmitActionFn = (form: BaseFormState, data: any) => any | Promise<any>
 

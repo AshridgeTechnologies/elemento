@@ -1,5 +1,5 @@
 import {createElement} from 'react'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
@@ -58,8 +58,7 @@ export default function SpeechInput({path}: Properties) {
     return createElement('div', {id: path})
 }
 
-export class SpeechInputState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState{
+export class SpeechInputState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     static defaultValue = ''
 

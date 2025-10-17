@@ -173,12 +173,6 @@ test('State class has correct properties and functions', () => {
     expect(state.latest()._stateForTest).toStrictEqual({errorsShown: false})
 })
 
-test.skip('State class uses states of child objects where present', () => {
-    const state = new DataTypeFormState({dataType: recordType, initialValue: {Description: 'Big', BoxSize: 17}})
-    const appInterface = testAppInterface('formPath', state, {Description: 'Extra Large'})
-    expect(appInterface.update).toHaveBeenCalledWith(state.withMergedState({value: {Description: 'Extra Large', BoxSize: 17}}))
-})
-
 test('State has expected values', async () => {
     const component = testForm('form1', {
         dataType: recordType,

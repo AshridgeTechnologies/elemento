@@ -3,9 +3,9 @@ import {SxProps, TextField} from '@mui/material'
 import yaml from 'js-yaml'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {isArray, isObject} from 'radash'
-import {equals, pick} from 'ramda'
+import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {use$state} from '../state/appStateHooks'
 import {Definitions} from '../../model/schema'
@@ -108,8 +108,7 @@ export default function Calculation({path, ...props}: Properties) {
     }) : null
 }
 
-export class CalculationState extends BaseComponentState<ExternalStateProperties, InternalStateProperties>
-    implements ComponentState {
+export class CalculationState extends BaseComponentState<ExternalStateProperties, InternalStateProperties> {
 
     // 'calculation' is called value in the state object to be consistent with input elements
     // AND so it will work with Form

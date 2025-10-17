@@ -2,7 +2,7 @@ import React from 'react'
 import {SxProps, TextField} from '@mui/material'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, StylesPropVals, valueOf, valueOfProps} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {use$state} from '../state/appStateHooks'
@@ -103,8 +103,7 @@ export default function Timer({path, ...props}: Properties) {
     })
 }
 
-export class TimerState extends BaseComponentState<StateInputProperties, StateInternalProperties>
-    implements ComponentState {
+export class TimerState extends BaseComponentState<StateInputProperties, StateInternalProperties> {
     get period() { return valueOf(this.props.period) ?? null }
     get interval() { return valueOf(this.props.interval) ?? null }
     get intervalAction() { return this.props.intervalAction ?? null }

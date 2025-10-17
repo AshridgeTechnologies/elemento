@@ -1,6 +1,6 @@
 import {createElement} from 'react'
 import {valueLiteral} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {clone} from 'radash'
 import lodash from 'lodash'
 import {use$state} from '../state/appStateHooks'
@@ -58,8 +58,7 @@ export default function Data({path, initialValue, display = false}: Properties) 
         createElement('code', null, valueLiteral(state.value))) : null
 }
 
-export class DataState extends BaseComponentState<StateExternalProperties, StateInternalProperties>
-    implements ComponentState {
+export class DataState extends BaseComponentState<StateExternalProperties, StateInternalProperties> {
 
     constructor(props: StateExternalProperties, exposeProps = true) {
         super(props)

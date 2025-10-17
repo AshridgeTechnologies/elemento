@@ -1,6 +1,6 @@
 import React, {Fragment, MouseEvent as SyntheticMouseEvent} from 'react'
 import {asArray, indexedPath, lastItemIdOfPath, PropVal, StylesPropVals, valueOf, valueOfOneLevel} from '../runtimeFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
@@ -126,8 +126,7 @@ const ItemSet = function ItemSet({path, itemContentComponent, items, selectable,
 
 export default ItemSet
 
-export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState{
+export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
 
     get items(): any[] {
         return valueOfOneLevel<any>(this.props.items) ?? []

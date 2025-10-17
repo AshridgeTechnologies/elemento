@@ -15,7 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {use$state} from '../state/appStateHooks'
@@ -119,8 +119,7 @@ const initialValue = (value?: any): object => {
 
 type AddItem = object | string | number
 
-export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState{
+export class CollectionState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     constructor({value = {}, collectionName, dataStore}: { value?: any, dataStore?: DataStore, collectionName?: CollectionName }) {
         super({value: initialValue(value), collectionName, dataStore})

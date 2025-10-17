@@ -1,13 +1,6 @@
 import {AppStateForObject, StoredState, StoredStateWithProps} from '../state/AppStateStore'
 import {equals} from 'ramda'
 
-export interface ComponentState extends StoredState {
-    withMergedState(changes: object): this
-    latest(): this
-    get _stateForTest(): any
-    get _path(): string | undefined
-}
-
 export class BaseComponentState<ExternalProps extends object, StateProps extends object = ExternalProps> implements StoredStateWithProps<ExternalProps> {
     protected state: StateProps = {} as StateProps
     protected _appStateInterface?: AppStateForObject<any>
@@ -43,7 +36,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return this.propsEqual(props) ? this : this.copy(props, this.state)
     }
 
-    withMergedState(changes: Partial<StateProps>): this {
+    private withMergedState(changes: Partial<StateProps>): this {
         const newState = Object.assign({}, this.state, changes) as StateProps
         for (const p in newState) {
             if (newState[p] === undefined) delete newState[p]
@@ -74,7 +67,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         return equals(this.state, state)
     }
 
-    protected getChildState<T extends ComponentState>(name: string): T {
+    protected getChildState<T extends StoredState>(name: string): T {
         return this._appStateInterface?.getChildState(name) as T
     }
 }

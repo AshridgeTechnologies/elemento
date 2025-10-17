@@ -1,5 +1,5 @@
 import UrlContext from '../UrlContext'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import Url, {asQueryObject} from '../Url'
 import {domElement, PropVal, valueOf, valuesOf} from '../runtimeFunctions'
 import {dropWhile, takeWhile} from 'ramda'
@@ -18,7 +18,7 @@ type StateInternalProps = {
     subscription?: any
 }
 
-export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> implements ComponentState {
+export class AppData extends BaseComponentState<StateExternalProps, StateInternalProps> {
 
     private theme: Theme | undefined
     protected doInit(previousVersion?: this): void {

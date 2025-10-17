@@ -1,4 +1,4 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import {mergeRight, without} from 'ramda'
 import lodash from 'lodash'
@@ -19,8 +19,7 @@ export default function Adapter(_props: Properties) {
     return null
 }
 
-export class AdapterState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState {
+export class AdapterState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     constructor(props: ExternalProperties) {
         super(props)

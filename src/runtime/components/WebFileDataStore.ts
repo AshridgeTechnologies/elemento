@@ -1,6 +1,6 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import WebFileDataStoreImpl from './WebFileDataStoreImpl'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
@@ -50,7 +50,7 @@ export default function WebFileDataStore({path}: Properties) {
 }
 
 export class WebFileDataStoreState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements DataStore, ComponentState {
+    implements DataStore {
 
     constructor(props: ExternalProperties) {
         super(props)

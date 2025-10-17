@@ -1,7 +1,7 @@
 import React from 'react'
 import {StylesPropVals, valueOfProps} from '../runtimeFunctions'
 import {Dialog as MuiDialog, IconButton} from '@mui/material'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {BlockContent, BlockLayout} from './Block'
 import Close from '@mui/icons-material/Close'
 import {use$state} from '../state/appStateHooks'
@@ -93,8 +93,7 @@ export default function Dialog({children = [], path,  layout, initiallyOpen, sho
         React.createElement(BlockContent, {path, layout, styles}, children)
     )
 }
-export class DialogState extends BaseComponentState<StateProperties, StateUpdatableProperties>
-    implements ComponentState {
+export class DialogState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
 
     get isOpen() {
         return this.state.isOpen ?? this.props.initiallyOpen ?? false

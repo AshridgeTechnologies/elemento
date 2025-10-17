@@ -1,4 +1,4 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {domElement, PropVal, valueOf} from '../runtimeFunctions'
 import BaseType from '../types/BaseType'
 import {ElementMetadata} from '../../model/ModelElement'
@@ -11,8 +11,7 @@ export const InputComponentMetadata: ElementMetadata = {
 }
 
 export default abstract class InputComponentState<T, DT extends BaseType<T, any>, Props = {}>
-    extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>>
-    implements ComponentState {
+    extends BaseComponentState<InputComponentExternalProps<T, DT, Props>, InputComponentStateProps<T>> {
 
     abstract defaultValue: T | null
 

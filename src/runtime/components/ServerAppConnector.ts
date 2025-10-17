@@ -1,4 +1,4 @@
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 import {ErrorResult, pending} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
 import {mergeRight} from 'ramda'
@@ -28,8 +28,7 @@ export default function ServerAppConnector(_props: Properties) {
     return null
 }
 
-export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties>
-    implements ComponentState {
+export class ServerAppConnectorState extends BaseComponentState<ExternalProperties, StateProperties> {
 
     private get configuration() { return this.props.configuration }
     private get resultCache() { return this.state.resultCache ?? {}}

@@ -1,13 +1,13 @@
 import DataStore, {CollectionName, Criteria, DataStoreObject, ErrorResult, Id} from '../../shared/DataStore'
 import appFunctions from '../appFunctions'
-import {BaseComponentState, ComponentState} from './ComponentState'
+import {BaseComponentState} from './ComponentState'
 
 type StateProperties = {dataStore?: DataStore, initialisedDataStore?: Promise<DataStore>}
 
 const {NotifyError} = appFunctions
 
 export abstract class DataStoreState<PropsType extends object> extends BaseComponentState<PropsType, StateProperties>
-    implements DataStore, ComponentState {
+    implements DataStore {
 
     constructor(props: PropsType) {
         super(props)

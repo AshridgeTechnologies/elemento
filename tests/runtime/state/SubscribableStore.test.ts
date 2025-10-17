@@ -1,5 +1,5 @@
 import {beforeEach, expect, test, vi} from 'vitest'
-import SubscribableStore from '../../../src/runtime/SubscribableStore'
+import SubscribableStore from '../../../src/runtime/state/SubscribableStore'
 
 let store: SubscribableStore
 const id1 = 'id1'
@@ -8,7 +8,6 @@ const item1 = 'Item 1', item2 = {a: 10}
 const item1a = 'Item 1a', item2a = {a: 11}
 
 beforeEach( ()=> store = new SubscribableStore())
-
 
 test('gets and sets items by id', () => {
     store.set(id1, item1)
