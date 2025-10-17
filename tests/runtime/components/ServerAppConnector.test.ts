@@ -524,11 +524,11 @@ describe('subscribe to auth changes', () => {
 
     test('uses same onAuthChange subscription when already in the state', () => {
         const theStore = new AppStateStore()
-        const state = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration})
+        const state = theStore.getOrUpdate('id1', ServerAppConnectorState, {configuration})
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
 
         const config2 = {...configuration, url: 'xxx'}
-        const state2 = theStore.getOrCreate('id1', ServerAppConnectorState, {configuration: config2})
+        const state2 = theStore.getOrUpdate('id1', ServerAppConnectorState, {configuration: config2})
         expect(state2).not.toBe(state)
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })

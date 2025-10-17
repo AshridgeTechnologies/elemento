@@ -45,8 +45,8 @@ beforeEach( ()=> {
 })
 
 test('creates new items', () => {
-    const item1 = store.getOrCreate(id1, TestItemWithInit, item1Props)
-    const item2 = store.getOrCreate(id2, TestItemWithInit, item2Props)
+    const item1 = store.getOrUpdate(id1, TestItemWithInit, item1Props)
+    const item2 = store.getOrUpdate(id2, TestItemWithInit, item2Props)
     expect(store.get(id1)).toBe(item1)
     expect(store.get(id2)).toBe(item2)
     // @ts-ignore
@@ -55,8 +55,8 @@ test('creates new items', () => {
 })
 
 test('creates new items if props have changed', () => {
-    const item1 = store.getOrCreate(id1, TestItemWithInit, item1Props)
-    const item1a = store.getOrCreate(id1, TestItemWithInit, item1changedProps)
+    const item1 = store.getOrUpdate(id1, TestItemWithInit, item1Props)
+    const item1a = store.getOrUpdate(id1, TestItemWithInit, item1changedProps)
     expect(store.get(id1)).not.toBe(item1)
     expect(store.get(id1)).toBe(item1a)
     expect(item1a.asi?.path).toBe('id1')
@@ -64,8 +64,8 @@ test('creates new items if props have changed', () => {
 })
 
 test('creates new items if class has changed', () => {
-    const item1 = store.getOrCreate(id1, TestItemWithInit, item1Props)
-    const item2 = store.getOrCreate(id1, TestItem2, item1Props)
+    const item1 = store.getOrUpdate(id1, TestItemWithInit, item1Props)
+    const item2 = store.getOrUpdate(id1, TestItem2, item1Props)
     expect(store.get(id1)).not.toBe(item1)
     expect(store.get(id1)).toBe(item2)
     expect(store.get(id1)).toBeInstanceOf(TestItem2)
@@ -74,16 +74,16 @@ test('creates new items if class has changed', () => {
 })
 
 test('creates new items with no init', () => {
-    const item1 = store.getOrCreate(id1, TestItem, item1Props)
-    const item2 = store.getOrCreate(id2, TestItem, item2Props)
+    const item1 = store.getOrUpdate(id1, TestItem, item1Props)
+    const item2 = store.getOrUpdate(id2, TestItem, item2Props)
     expect(store.get(id1)).toBe(item1)
     expect(store.get(id2)).toBe(item2)
     expect(item1.id).toBe('id1')
 })
 
 test('creates new items with no init if props have changed', () => {
-    const item1 = store.getOrCreate(id1, TestItem, item1Props)
-    const item1a = store.getOrCreate(id1, TestItem, item1changedProps)
+    const item1 = store.getOrUpdate(id1, TestItem, item1Props)
+    const item1a = store.getOrUpdate(id1, TestItem, item1changedProps)
     expect(store.get(id1)).not.toBe(item1)
     expect(store.get(id1)).toBe(item1a)
     expect(item1a.props.a).toBe(11)
@@ -101,7 +101,7 @@ test('setDeferNotifications sets and defers notifications if item not present', 
 })
 
 test('setDeferNotifications replaces if item present and defers notifications', async () => {
-    store.getOrCreate(id1, TestItemWithInit, item1Props)
+    store.getOrUpdate(id1, TestItemWithInit, item1Props)
     const callback = vi.fn()
     store.subscribeAll(callback)
     const item1changed = new TestItemWithInit(item1changedProps)
@@ -113,7 +113,7 @@ test('setDeferNotifications replaces if item present and defers notifications', 
 })
 
 test('gets item if already in store', () => {
-    const item1 = store.getOrCreate(id1, TestItemWithInit, item1Props)
+    const item1 = store.getOrUpdate(id1, TestItemWithInit, item1Props)
     const item1_ = store.get('id1')
     expect(item1_).toBe(item1)
 })
@@ -126,14 +126,14 @@ test('gets placeholder if not in store', () => {
 })
 
 test('updates item if already in store', () => {
-    const item1 = store.getOrCreate(id1, TestItemWithInit, item1Props)
+    const item1 = store.getOrUpdate(id1, TestItemWithInit, item1Props)
     const item1a = new TestItemWithInit(item1changedProps)
     store.update(id1, item1a, item1)
     expect(store.get(id1)).toBe(item1a)
 })
 
 test('updates item with no init if already in store', () => {
-    const item1 = store.getOrCreate(id1, TestItem, item1Props)
+    const item1 = store.getOrUpdate(id1, TestItem, item1Props)
     const item1a = new TestItem(item1changedProps)
     store.update(id1, item1a as StoredState, item1 as StoredState)
     expect(store.get(id1)).toBe(item1a)
@@ -152,7 +152,7 @@ test('inserts item with no init if not already in store', () => {
 })
 
 test('updates and gets latest version via AppStateForObject', () => {
-    const item1 = store.getOrCreate(id1, TestItem2, item1Props)
+    const item1 = store.getOrUpdate(id1, TestItem2, item1Props)
     const item1a = new TestItem2(item1changedProps)
 
     expect(item1.latest()).toBe(item1)
@@ -163,8 +163,8 @@ test('updates and gets latest version via AppStateForObject', () => {
 })
 
 test('gets child state via AppStateForObject', () => {
-    const item1 = store.getOrCreate(id1, TestItem2, item1Props)
-    const item2 = store.getOrCreate(id1_2, TestItem2, item2Props)
+    const item1 = store.getOrUpdate(id1, TestItem2, item1Props)
+    const item2 = store.getOrUpdate(id1_2, TestItem2, item2Props)
 
     expect(item1.getChild(id2)).toBe(item2)
 })

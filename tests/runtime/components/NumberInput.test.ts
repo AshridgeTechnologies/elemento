@@ -126,7 +126,7 @@ test('State class has correct properties', () => {
     expect(emptyState.defaultValue).toBe(0)
 
     const store = new AppStateStore()
-    const state = store.getOrCreate('id1', NumberInputState, {initialValue: 77})
+    const state = store.getOrUpdate('id1', NumberInputState, {initialValue: 77})
     expect(state.value).toBe(77)
     expect(state.toString()).toBe('77')
     expect(state.defaultValue).toBe(0)

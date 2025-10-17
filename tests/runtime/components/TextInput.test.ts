@@ -200,7 +200,7 @@ test('State class has correct properties and functions with defaults', () => {
 
 test('State class has correct properties and functions', async () => {
     const store = new AppStateStore()
-    const state: TextInputState = store.getOrCreate('id1', TextInputState, {initialValue: 'car'})
+    const state: TextInputState = store.getOrUpdate('id1', TextInputState, {initialValue: 'car'})
     expect(state.value).toBe('car')
     expect(state.toString()).toBe('car')
     expect(state.defaultValue).toBe('')
@@ -234,7 +234,7 @@ test('string conversion uses the value', () => {
 
 test('Can use state object proxy in simple expressions', () => {
     const store = new AppStateStore()
-    const state = store.getOrCreate('id1', TextInputState, {initialValue: 'car'})
+    const state = store.getOrUpdate('id1', TextInputState, {initialValue: 'car'})
     expect(state + 'park').toBe('carpark')
 })
 

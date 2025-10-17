@@ -762,7 +762,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
         const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
 
         const theStore = new AppStateStore()
-        const storeState = theStore.getOrCreate('id1', TinyBaseDataStoreState, storeProps)
+        const storeState = theStore.getOrUpdate('id1', TinyBaseDataStoreState, storeProps)
         // @ts-ignore
         const dataStore = await(storeState.state.initialisedDataStore)
         expect((dataStore as any).isReadWrite).toBe(true)
@@ -771,7 +771,7 @@ describe.sequential('through TinyBaseDataStoreState', () => {
         expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
         expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
 
-        const storeState2 = theStore.getOrCreate('id1', TinyBaseDataStoreState, storePropsDb2)
+        const storeState2 = theStore.getOrUpdate('id1', TinyBaseDataStoreState, storePropsDb2)
         // @ts-ignore
         await(storeState2.state.initialisedDataStore)
         expect(await localItem(storeState2, id)).toBe(null)

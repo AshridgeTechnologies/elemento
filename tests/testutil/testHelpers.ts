@@ -206,7 +206,7 @@ function testAppStoreHook() {
 export const createStateFn = <T extends StoredStateWithProps<P>, P extends object>(stateClass: new(props: P) => T) => {
     const theStore = new AppStateStore()
     let idSeq = 1
-    return (props: P) => theStore.getOrCreate((idSeq++).toString(), stateClass, props)
+    return (props: P) => theStore.getOrUpdate((idSeq++).toString(), stateClass, props)
 }
 export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 

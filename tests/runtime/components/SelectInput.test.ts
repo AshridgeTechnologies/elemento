@@ -101,7 +101,7 @@ test('SelectInput stores null value in the app store when cleared', async () => 
 
 test('State class has correct properties', () => {
     const store = new AppStateStore()
-    const state = store.getOrCreate('id1', SelectInputState, {initialValue: 'green'})
+    const state = store.getOrUpdate('id1', SelectInputState, {initialValue: 'green'})
     expect(state.value).toBe('green')
     expect(state.defaultValue).toBe('')
     state._setValue('red')

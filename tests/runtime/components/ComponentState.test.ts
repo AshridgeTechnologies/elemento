@@ -135,7 +135,7 @@ test('State class updates from an object with new props', () => {
 
 test('state object can update its own state immediately', () => {
     const store = new AppStateStore()
-    const state = store.getOrCreate('TheApp.foo', StateObject, {color: 'red', length: 23})
+    const state = store.getOrUpdate('TheApp.foo', StateObject, {color: 'red', length: 23})
     state.setColor('blue')
     state.increaseLength(2)
     expect(state.latest().color).toBe('blue')
@@ -145,7 +145,7 @@ test('state object can update its own state immediately', () => {
 
 test('state object can get latest to update its own state', () => {
     const store = new AppStateStore()
-    const state = store.getOrCreate('TheApp.foo', StateObject, {color: 'red', length: 23})
+    const state = store.getOrUpdate('TheApp.foo', StateObject, {color: 'red', length: 23})
     state.increaseLength(2)
     state.latest().increaseLength(2)
     state.latest().increaseLength(3)

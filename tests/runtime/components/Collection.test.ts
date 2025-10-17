@@ -616,10 +616,10 @@ describe('subscribe with external data store', () => {
 
     test('uses same subscription when already in the state and data store is the same', () => {
         const theStore = new AppStateStore()
-        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const state = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
         const unsubscribeSpy = vi.spyOn(state._stateForTest.subscription, 'unsubscribe')
 
-        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const state2 = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
         expect(state2).toBe(state)
         expect(dataStore.observable).toHaveBeenCalledTimes(1)
         expect(unsubscribeSpy).not.toHaveBeenCalled()
@@ -627,11 +627,11 @@ describe('subscribe with external data store', () => {
 
     test('changes subscription when data store changes', () => {
         const theStore = new AppStateStore()
-        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const state = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
         const unsubscribeSpy = vi.spyOn(state._stateForTest.subscription, 'unsubscribe')
 
         const newDataStore = mockDataStore()
-        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
+        const state2 = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
         expect(state2).not.toBe(state)
         expect(dataStore.observable).toHaveBeenCalledTimes(1)
         expect(newDataStore.observable).toHaveBeenCalledTimes(1)
@@ -824,11 +824,11 @@ describe('subscribe to auth changes', () => {
 
     test('uses same onAuthChange subscription when already initialised', () => {
         const theStore = new AppStateStore()
-        const state = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
+        const state = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore, collectionName: 'Widgets'})
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
 
         const newDataStore = mockDataStore()
-        const state2 = theStore.getOrCreate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
+        const state2 = theStore.getOrUpdate('id1', CollectionState, {value: {}, dataStore: newDataStore, collectionName: 'Widgets'})
         expect(state2).not.toBe(state)
         expect(authentication.onAuthChange).toHaveBeenCalledTimes(1)
     })

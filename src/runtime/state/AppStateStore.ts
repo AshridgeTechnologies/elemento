@@ -44,7 +44,7 @@ export default class AppStateStore {
         return state ?? placeholder
     }
 
-    getOrCreate<T extends StoredStateWithProps<P>, P extends object>(id: string, stateClass: new(props: P) => T, stateProps: P): T {
+    getOrUpdate<T extends StoredStateWithProps<P>, P extends object>(id: string, stateClass: new(props: P) => T, stateProps: P): T {
         const existingState = this.store.get(id)
         let targetState = existingState
 

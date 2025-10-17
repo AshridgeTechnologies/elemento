@@ -147,7 +147,7 @@ test('Form element produces output containing nested form', async () => {
 test('State class has correct properties and functions on new instance', () => {
     const submitAction = vi.fn()
     const store = new AppStateStore()
-    const state = store.getOrCreate('id1', TestFormState, {initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
+    const state = store.getOrUpdate('id1', TestFormState, {initialValue: {Description: 'Big', BoxSize: 17}, submitAction })
     expect(state.value).toStrictEqual({Description: 'Big', BoxSize: 17})
     expect(state.defaultValue).toStrictEqual({})
 

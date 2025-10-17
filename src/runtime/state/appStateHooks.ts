@@ -26,6 +26,6 @@ export const use$state = <T extends StoredStateWithProps<P>, P extends object>(p
     if (subscribeRef.current === null) {
         subscribeRef.current = subscribe()
     }
-    return stateClass && stateProps ? store.getOrCreate(path, stateClass, {...stateProps}) : store.get(path) as T
+    return stateClass && stateProps ? store.getOrUpdate(path, stateClass, {...stateProps}) : store.get(path) as T
 }
 
