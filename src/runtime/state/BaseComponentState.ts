@@ -67,6 +67,17 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
     protected getChildState<T extends StoredState>(name: string): T {
         return this._appStateInterface?.getChildState(name) as T
     }
+
+    _boundMethods() {
+        const propertyDescriptorEntries = Object.entries(Object.getOwnPropertyDescriptors(Object.getPrototypeOf(this)))
+        const isPublicMethod = ([name, desc]: [string, PropertyDescriptor]) => name !== 'constructor'  && !name.startsWith('_') && typeof desc.value === 'function'
+        const methodNames = propertyDescriptorEntries
+            .filter(isPublicMethod)
+            .map(([name]) => name)
+        const boundMethodEntries = methodNames.map(name => [name, (this[name as keyof object] as any).bind(this)])
+        return Object.fromEntries(boundMethodEntries)
+    }
+
 }
 
 export function createProxy<T extends StoredState>(store: AppStateForObject<T>, targetState: T) {

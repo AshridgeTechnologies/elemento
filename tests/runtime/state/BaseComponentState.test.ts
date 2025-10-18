@@ -51,6 +51,11 @@ class StateObjectWithProxy extends BaseComponentStateWithProxy<StateObjectProper
         return 'light' + this.backgroundColor
     }
 
+    get lbcx2() {
+        const {lightBackgroundColor} = this._boundMethods()
+        return this.lightBackgroundColor() + '-' + lightBackgroundColor()
+    }
+
     instanceLightColor = () => {
         return 'light' + this.color
     }
@@ -148,15 +153,15 @@ test('gets child state from store automatically via proxy in own method', () => 
     expect(state.lightColor()).toBe('lightred')
     expect(state.lightBackgroundColor()).toBe('lightgreen')
     expect(state.backgroundColor).toBe('green')
+    expect(state.lbcx2).toBe('lightgreen-lightgreen')
 })
 
-test('can call own methods when bound to state object', () => {
+test('can call own methods without target when bound to state object', () => {
     const store = new AppStateStore()
     const state: any = store.getOrUpdate('TheApp.foo', StateObjectWithProxy, {color: 'red'})
     const subState = store.getOrUpdate('TheApp.foo.background', StateObject, {color: 'green'})
 
-    const lightColor = state.lightColor.bind(state)
-    const lightBackgroundColor = state.lightBackgroundColor.bind(state)
+    const {lightColor, lightBackgroundColor} = state._boundMethods()
     expect(lightColor()).toBe('lightred')
     expect(lightBackgroundColor()).toBe('lightgreen')
 })

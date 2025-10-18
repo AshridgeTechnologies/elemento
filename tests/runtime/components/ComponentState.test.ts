@@ -13,18 +13,18 @@ const Left = (s: {value: string | null} | undefined, n: number): string => s?.va
 
 class NameInput_State extends BaseComponentStateWithProxy<any> {
 
-    SetNames =  (firstName: string, secondName: string) => {
-        const {SetNameData} = this
+    SetNames(firstName: string, secondName: string) {
+        const {SetNameData} = this._boundMethods()
         SetNameData(secondName + ', ' + firstName)
     }
-    SetNameData = (newName: string) => {
-        const {NameData} = (this as any)
+    SetNameData(newName: string) {
+        const {NameData} = this
         const {Initials} = this
         NameData.Set(newName)
         console.log('Set Name Data', newName, Initials)
     }
     get Initials() {
-        const {FirstName, SecondName} = (this as any)
+        const {FirstName, SecondName} = this//._boundMethods()
         return Left(FirstName, 1)  +   Left(SecondName, 1)
     }
 }
