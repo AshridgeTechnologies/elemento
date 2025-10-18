@@ -32,6 +32,7 @@ const TestContainer1 = ({id}: {id: string}) => {
     const timesXValue = (state.test1.value * state.multiplier).toString()
     return <div>
         <TestComponent id={id + '.' + 'test1'} />
+        [<TestComponent id={id + '.' + 'test2'} value={state.test1.value} />]
         <span> x <ParentMultiplierDisplay id={id + '.' + 'test1'}/> = </span>
         <div id='timesX'>{timesXValue}</div>
     </div>
@@ -90,12 +91,12 @@ describe('use$state hook', () => {
         )
 
         await wait(10)
-        expect(container.textContent).toBe('42 x 10 = 420')
+        expect(container.textContent).toBe('42[42] x 10 = 420')
         const childState = store.get<TestState>('container1.test1')
         expect(childState.value).toBe(42)
         childState.value = 99
         await wait(10)
-        expect(container.textContent).toBe('99 x 10 = 990')
+        expect(container.textContent).toBe('99[99] x 10 = 990')
     })
 
     test('can access parent state and update when it changes', async () => {
@@ -107,12 +108,12 @@ describe('use$state hook', () => {
         )
 
         await wait(10)
-        expect(container.textContent).toBe('42 x 10 = 420')
+        expect(container.textContent).toBe('42[42] x 10 = 420')
         const containerState = store.get<TestContainerState>('container1')
         expect(containerState.multiplier).toBe(10)
         containerState.multiplier = 20
         await wait(10)
-        expect(container.textContent).toBe('42 x 20 = 840')
+        expect(container.textContent).toBe('42[42] x 20 = 840')
     })
 
     test('unsubscribes on unmount', async () => {

@@ -38,7 +38,7 @@ Remaining refactoring
 - ✅ Read https://www.telerik.com/blogs/vue-basics-state-management-vue
 - ✅ Proper typing for state objects - no as any
 - ✅ Move overrides of withState/withProps to copy eg Data
-- Unit tests for AppStateStore, ComponentState, app state hook
-- Separate unit test for Elemento aspects of BaseComponentState
+- ✅ Unit tests for AppStateStore, ComponentState, app state hook
+- ✅ Separate unit test for Elemento aspects of BaseComponentState
 - Change all code generation to use auto state
 - Move to separate package

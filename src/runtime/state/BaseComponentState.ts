@@ -71,9 +71,9 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
 export function createProxy<T extends StoredState>(store: AppStateForObject<T>, targetState: T) {
     const handler = {
-        get(target: T, property: string): any {
+        get(target: T, property: string, receiver: any): any {
             if (property in target) {
-                return target[property as keyof T]
+                return Reflect.get(target, property, receiver)
             }
 
             return store.getChildState(property)

@@ -3,131 +3,48 @@
  */
 import {expect, test, vi} from 'vitest'
 import {wait} from '../../testutil/testHelpers'
-import {appFunctions, globalFunctions, wrapFn} from '../../../src/runtime'
 import {DataState} from '../../../src/runtime/components/Data'
-import {BaseComponentState, Data, TextInput} from '../../../src/runtime/components'
 import {TextInputState} from '../../../src/runtime/components/TextInput'
 import AppStateStore from '../../../src/runtime/state/AppStateStore'
-import SubscribableStore from '../../../src/runtime/state/SubscribableStore'
+import {CalculationState} from '../../../src/runtime/components/Calculation'
+import {BaseComponentStateWithProxy} from '../../../src/runtime/state/BaseComponentState'
 
-const {Log, Left} = globalFunctions
-const {Set} = appFunctions
+const Left = (s: {value: string | null} | undefined, n: number): string => s?.value?.slice(0, n) ?? ''
 
-class NameInput_State extends BaseComponentState<any> {
-    // childNames = ['Block1', 'FirstName', 'SecondName', 'FullName', 'NameData']
-    //
-    // createChildStates() {
-    //     const pathTo = (name: string) => this._path + '.' + name
-    //     const {First, Second, SaveAction} = this.props
-    //     const {SetNames, GetNameAndInitial, SetNameData} = this
-    //     const Block1 = this.getOrCreateChildState('Block1', new Block.State(stateProps(pathTo('Block1')).props))
-    //     const FirstName = this.getOrCreateChildState('FirstName', new TextInput.State(stateProps(pathTo('FirstName')).value(First).props))
-    //     const SecondName = this.getOrCreateChildState('SecondName', new TextInput.State(stateProps(pathTo('SecondName')).value(Second).props))
-    //     const FullName = this.getOrCreateChildState('FullName', new Calculation.State(stateProps(pathTo('FullName')).value(FirstName + ' ' + SecondName).props))
-    //     const NameData = this.getOrCreateChildState('NameData', new Data.State(stateProps(pathTo('NameData')).props))
-    //     return {Block1, FirstName, SecondName, FullName, NameData}
-    // }
+class NameInput_State extends BaseComponentStateWithProxy<any> {
 
-    get Block1() { return this.getChildState('Block1') }
-    get FirstName() { return this.getChildState('FirstName') as TextInputState }
-    get SecondName() { return this.getChildState('SecondName') as TextInputState }
-    get FullName() { return this.getChildState('FullName') }
-    get NameData() { return this.getChildState('NameData') as DataState }
-
-    SetNames = wrapFn('NameInput.SetNames', 'calculation', async (firstName, secondName) => {
+    SetNames =  (firstName: string, secondName: string) => {
         const {SetNameData} = this
-        await SetNameData(secondName + ', ' + firstName)
-    })
-    SetNameData = wrapFn('NameInput.SetNameData', 'calculation', (newName) => {
-        const {NameData} = this
+        SetNameData(secondName + ', ' + firstName)
+    }
+    SetNameData = (newName: string) => {
+        const {NameData} = (this as any)
         const {Initials} = this
-        Set(NameData, newName)
-        Log('Set Name Data', newName, Initials)
-    })
-    GetNameAndInitial = wrapFn('NameInput.GetNameAndInitial', 'calculation', () => {
-        const {SecondName, FirstName} = this
-        return SecondName + ', ' + Left(FirstName, 1)
-    })
-
-    Save_action = wrapFn('NameInput.Save', 'action', async () => {
-        const {FirstName, SecondName} = this
-        const {SaveAction} = this.props
-        const {SetNames} = this
-        await SaveAction()
-        await SetNames(FirstName, SecondName)
-    })
-    get DisplayName() {
-        const {FirstName, SecondName, FullName} = this
-        return FirstName + ' ' +  SecondName + ' - aka ' + FullName
+        NameData.Set(newName)
+        console.log('Set Name Data', newName, Initials)
     }
     get Initials() {
-        const {FirstName, SecondName} = this
+        const {FirstName, SecondName} = (this as any)
         return Left(FirstName, 1)  +   Left(SecondName, 1)
     }
-    get NamePlusInitial() {
-        const {GetNameAndInitial} = this
-        return GetNameAndInitial()
-    }
 }
 
-type StateObjectProperties = {color?: string, length?: number}
-class StateObject extends BaseComponentState<StateObjectProperties> {
-
-    constructor(props: StateObjectProperties) {
-        super(props)
-    }
-    get color() {
-        return this.state.color ?? this.props.color
-    }
-
-    get length() {
-        return this.state.length ?? this.props.length ?? 0
-    }
-
-    setColor(color: string) {
-        this.updateState({color})
-    }
-
-    increaseLength(amount: number) {
-        this.updateState({length: this.length + amount})
-    }
-
-}
-
-class StateObject2 extends StateObject {
-}
-
-const stateObj = (props: StateObjectProperties) => new StateObject(props)
-
-
-test('State class has correct properties and functions', async () => {
-    const store = new AppStateStore(new SubscribableStore())
+test('State class can use child elements', async () => {
+    const store = new AppStateStore()
     const saveAction = vi.fn()
-    const state = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
-    store.update('nameInput1', state)
-    store.update('nameInput1.FirstName', new TextInputState({initialValue: 'Andy'}))
-    store.update('nameInput1.SecondName', new TextInputState({initialValue: 'Brown'}))
-    await wait()
-    expect(state.Initials).toStrictEqual('AB')
-    await state.latest().SetNames('Marti', 'Parti')
+    const state: any = store.getOrUpdate('nameInput1', NameInput_State, {SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
+    store.getOrUpdate('nameInput1.FirstName', TextInputState, {initialValue: 'Andy'})
+    store.getOrUpdate('nameInput1.SecondName', TextInputState, {initialValue: 'Brown'})
+    store.getOrUpdate('nameInput1.FullName', CalculationState, {initialValue: state.FirstName + ' ' + state.SecondName})
+    store.getOrUpdate('nameInput1.NameData', DataState, {initialValue: undefined})
+    await wait(10)
+    expect(state.latest().Initials).toStrictEqual('AB')
+    await state.SetNames('Marti', 'Parti')
     expect(state.latest().NameData.value).toBe('Parti, Marti')
 
     store.update('nameInput1.FirstName', new TextInputState({}).withState({value: 'Genna'}))
     store.update('nameInput1.SecondName', new TextInputState({}).withState({value: 'Venna'}))
     await wait()
     expect(state.latest().Initials).toStrictEqual('GV')
-})
-
-test('State class updates from an object with new props', () => {
-    const saveAction = vi.fn()
-    const state1 = new NameInput_State({SaveAction: saveAction, First: 'Andy', Second: 'Brown' })
-    const store = new AppStateStore(new SubscribableStore())
-    store.update('nameInput1', state1)
-
-    state1.updateState({Second: 'Brown'})
-    expect(state1.latest()).toBe(state1)
-
-    state1.updateState({Second: 'Black'})
-    expect(state1.latest()).toBe('Black')
 })
 

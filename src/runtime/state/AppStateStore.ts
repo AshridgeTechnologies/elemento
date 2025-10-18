@@ -7,7 +7,7 @@ export interface StoredStateWithProps<Props extends object> extends StoredState 
     withProps: (props: Props) => this
 }
 
-const placeholder = function() {let _placeholder = 0}
+const placeholder = function() {console.warn('placeholder called')}
 placeholder.valueOf = () => undefined
 placeholder._isPlaceholder = true
 

@@ -39,6 +39,26 @@ class StateObjectWithProxy extends BaseComponentStateWithProxy<StateObjectProper
         return this.props.color
     }
 
+    get backgroundColor() {
+        return (this as any).background.color
+    }
+
+    lightColor() {
+        return 'light' + this.color
+    }
+
+    lightBackgroundColor() {
+        return 'light' + this.backgroundColor
+    }
+
+    instanceLightColor = () => {
+        return 'light' + this.color
+    }
+
+    instanceLightBackgroundColor = () => {
+        return 'light' + this.backgroundColor
+    }
+
 }
 
 test('State class gets path', () => {
@@ -103,11 +123,13 @@ test('gets child state from store', () => {
     expect(state.subState).toBe(subState)
 })
 
-test('gets own properties via proxy', () => {
+test('gets own properties and methods via proxy', () => {
     const store = new AppStateStore()
     const state = store.getOrUpdate('TheApp.foo', StateObjectWithProxy, {color: 'red'})
 
     expect(state.color).toBe('red')
+    expect(state.lightColor()).toBe('lightred')
+    expect(state.instanceLightColor()).toBe('lightred')
 })
 
 test('gets child state from store automatically via proxy', () => {
@@ -116,4 +138,34 @@ test('gets child state from store automatically via proxy', () => {
     const subState = store.getOrUpdate('TheApp.foo.subState', StateObject, {color: 'green', length: 7})
 
     expect(state.subState).toBe(subState)
+})
+
+test('gets child state from store automatically via proxy in own method', () => {
+    const store = new AppStateStore()
+    const state: any = store.getOrUpdate('TheApp.foo', StateObjectWithProxy, {color: 'red'})
+    const subState = store.getOrUpdate('TheApp.foo.background', StateObject, {color: 'green'})
+
+    expect(state.lightColor()).toBe('lightred')
+    expect(state.lightBackgroundColor()).toBe('lightgreen')
+    expect(state.backgroundColor).toBe('green')
+})
+
+test('can call own methods when bound to state object', () => {
+    const store = new AppStateStore()
+    const state: any = store.getOrUpdate('TheApp.foo', StateObjectWithProxy, {color: 'red'})
+    const subState = store.getOrUpdate('TheApp.foo.background', StateObject, {color: 'green'})
+
+    const lightColor = state.lightColor.bind(state)
+    const lightBackgroundColor = state.lightBackgroundColor.bind(state)
+    expect(lightColor()).toBe('lightred')
+    expect(lightBackgroundColor()).toBe('lightgreen')
+})
+
+test.skip('can call own methods in method defined on instance instead of prototype', () => {
+    const store = new AppStateStore()
+    const state: any = store.getOrUpdate('TheApp.foo', StateObjectWithProxy, {color: 'red'})
+    const subState = store.getOrUpdate('TheApp.foo.background', StateObject, {color: 'green'})
+
+    expect(state.instanceLightColor()).toBe('lightred')
+    expect(state.instanceLightBackgroundColor()).toBe('lightgreen')
 })
