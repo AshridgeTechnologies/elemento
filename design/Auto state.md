@@ -81,4 +81,3 @@ Technical
   - init may return itself and ignore the app store interface
   - or init may return a proxy
 - AppStateStore deals with all this so it can be used outside the react hooks world
-- 

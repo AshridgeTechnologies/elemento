@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, afterAll, beforeAll, describe, expect, it, vi, test, Mock } from "vitest"
+import {beforeEach, describe, expect, Mock, test, vi} from "vitest"
 import {valueObj} from '../testutil/testHelpers'
 import dataFunctions from '../../src/runtime/dataFunctions'
 
@@ -19,11 +19,11 @@ describe('Update single item', () => {
 
 describe('Add', () => {
 
-    test('adds an object with id', () => {
+    test('adds an object with id', async () => {
         const elementState = {value: {}, Add: mockFn}
         const result = Add(elementState, {id: 'x3', a: 50, b: 'Bee'})
         expect(elementState.Add).toBeCalledWith({id: 'x3', a: 50, b: 'Bee'})
-        expect(result).resolves.toBe(dataStoreResult)
+        await expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -35,11 +35,11 @@ describe('Add', () => {
 
 describe('AddAll', () => {
 
-    test('adds many objects with ids', () => {
+    test('adds many objects with ids', async () => {
         const elementState = {value: {}, AddAll: mockFn}
         const result = AddAll(elementState, [{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
         expect(elementState.AddAll).toBeCalledWith([{id: 'x3', a: 50, b: 'Bee'}, {id: 'x4', a: 60, b: 'Been'}])
-        expect(result).resolves.toBe(dataStoreResult)
+        await expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -50,11 +50,11 @@ describe('AddAll', () => {
 })
 
 describe('Remove', () => {
-    test('removes an object with id', () => {
+    test('removes an object with id', async () => {
         const elementState = {value: {}, Remove: mockFn}
         const result = Remove(elementState, 'x3')
         expect(elementState.Remove).toBeCalledWith('x3')
-        expect(result).resolves.toBe(dataStoreResult)
+        await expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {
@@ -68,11 +68,11 @@ describe('Remove', () => {
 describe('Update item in collection', () => {
     const existingCollection = {}
 
-    test('updates an object by id', () => {
+    test('updates an object by id', async () => {
         const elementState = {value: existingCollection, Update: mockFn}
         const result = Update(elementState, 'x1', {a: 50, b: 'Bee'})
         expect(elementState.Update).toBeCalledWith('x1', {a: 50, b: 'Bee'})
-        expect(result).resolves.toBe(dataStoreResult)
+        await expect(result).resolves.toBe(dataStoreResult)
     })
 
     test('uses object value for id', () => {

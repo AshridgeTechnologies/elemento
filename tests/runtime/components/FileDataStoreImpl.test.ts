@@ -88,7 +88,7 @@ test('notifies error opening file', async () => {
     const showOpenFilePicker = filePickerErroring
 
     const store = new FileDataStoreImpl({showOpenFilePicker, showSaveFilePicker})
-    expect(store.Open()).rejects.toHaveProperty('message', 'Could not access file')
+    await expect(store.Open()).rejects.toHaveProperty('message', 'Could not access file')
 })
 
 test('saves to new file', async () => {
@@ -133,7 +133,7 @@ test('notifies error in Save As', async () => {
         showSaveFilePicker: filePickerErroring
     })
 
-    expect(store.SaveAs()).rejects.toHaveProperty('message', 'Could not access file')
+    await expect(store.SaveAs()).rejects.toHaveProperty('message', 'Could not access file')
     expect(saveFileData).toBeUndefined()
 })
 

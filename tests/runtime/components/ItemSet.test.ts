@@ -27,19 +27,20 @@ function ItemSetItemDraggable(props: {path: string, $item: {text: string}, $sele
     )
 }
 
-const itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
-const longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
-const itemSetDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
+let itemSetData: any, longItemSetData: any, itemSetDataNoIds: any, selectAction: MockedFunction<any>
 
 const [itemSet, appStoreHook] = wrappedTestElement(ItemSet, true)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
 
-let selectAction: MockedFunction<any>
-
 const createState = createStateFn(ItemSetState)
 
-beforeEach( ()=> selectAction = vi.fn() )
+beforeEach(() => {
+    itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
+    longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
+    itemSetDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
+    selectAction = vi.fn()
+})
 
 test('produces output containing ReactElement children', () => {
     snapshot(itemSet('app.page1.itemSet1', {items: itemSetData, itemContentComponent: ItemSetItem1, itemStyles: {color: 'red', width: 300}}))()
@@ -104,6 +105,7 @@ test('adds to selectedItems in the app state with Control key', async () => {
     const itemSetItem0El = el`[id="app.page1.itemSet1.#id1.Text99"]`
     await user.keyboard('[ControlLeft>]')
     await user.click(itemSetItem0El)
+    await wait(50)
     expect(stateAt('app.page1.itemSet1').selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[0]])
     expect(selectAction).toHaveBeenCalledWith([longItemSetData[0]], ['id1'], [0])
 })
@@ -124,7 +126,7 @@ test('updates the selectedItem when it changes', async () => {
     expect(stateAt('app.page1.itemSet66').selectedItem).toStrictEqual(itemSetData[0])
 
     const updatedItemSetData = [{id: 'id1', text: 'new text'}, itemSetData[1]]
-    renderThe(itemSet('app.page1.itemSet66', {items: updatedItemSetData, itemContentComponent: ItemSetItem1}))
+    renderThe(itemSet('app.page1.itemSet66', {items: updatedItemSetData, itemContentComponent: ItemSetItem1, appStore: appStoreHook.store}))
     await wait(20)
     expect(stateAt('app.page1.itemSet66').selectedItem).toBe(updatedItemSetData[0])
 })

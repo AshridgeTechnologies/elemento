@@ -189,10 +189,11 @@ export const testAppInterface = <T extends StoredState>(path: string, initialVer
     return appInterface
 }
 
-function testAppStoreHook(store: AppStateStore) {
+function testAppStoreHook() {
     return {
+        store: null as any,
         stateAt (path: string) {
-            return store.get(path)
+            return this.store.get(path)
         }
     }
 }
@@ -204,15 +205,16 @@ export const createStateFn = <T extends StoredStateWithProps<P>, P extends objec
 }
 export const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>, wrapForDnd = false): [any, any] => {
 
-    const appStore = new AppStateStore()
-    const appStoreHook = testAppStoreHook(appStore)
+    const appStoreHook = testAppStoreHook()
 
     const testElementCreatorFn = (path: string, componentProps: any = {}, ...children: React.ReactNode[]) => {
         const component = isArray(children)
             ? createElement(componentClass as any, {path, ...componentProps}, ...children)
             : createElement(componentClass as any, {path, ...componentProps}, children)
         const innerElement = wrapForDnd ? createElement(DndContext, null, component) : component
-        return createElement(StoreProvider, {appStore, children:
+        const appStoreToUse = componentProps.appStore ?? new AppStateStore()
+        appStoreHook.store = appStoreToUse
+        return createElement(StoreProvider, {appStore: appStoreToUse, children:
             createElement(LocalizationProvider, {dateAdapter: AdapterDateFns,  adapterLocale: enGB}, innerElement)}
         )
     }
