@@ -21,7 +21,7 @@ import SendObservable from '../../../src/util/SendObservable'
 import {CollectionState} from '../../../src/runtime/components/Collection'
 import {actWait} from '../../testutil/rtlHelpers'
 import * as authentication from '../../../src/runtime/components/authentication'
-import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
+import {ComponentStateStore, StatePlaceholder} from '../../../src/runtime/state/BaseComponentState'
 
 let dataStore: DataStore
 let testObservable: SendObservable<UpdateNotification>
@@ -46,8 +46,8 @@ beforeEach(() => {
     return dataStore = mockDataStore()
 })
 
-const initState = (initialCollection: object): CollectionState => {
-    return createState({initialValue: initialCollection, dataStore, collectionName: 'Widgets'})
+const initState = (initialCollection: object, theDataStore: DataStore = dataStore): CollectionState => {
+    return createState({initialValue: initialCollection, dataStore: theDataStore, collectionName: 'Widgets'})
 }
 
 test('produces output with simple values',
@@ -593,6 +593,13 @@ describe('Query with external datastore', () => {
 })
 
 describe('subscribe with external data store', () => {
+
+    test('does not subscribe to data store observable when data store is a placeholder', () => {
+        let placeholderDataStore = new StatePlaceholder('dataStore') as unknown as DataStore
+        const state = initState({}, placeholderDataStore);
+        expect(dataStore.observable).not.toHaveBeenCalled()
+        expect(state._stateForTest.subscription).toBeUndefined()
+    })
 
     test('subscribes to data store observable when not in the state', () => {
         const state = initState({});

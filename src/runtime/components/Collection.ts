@@ -1,5 +1,5 @@
 import {createElement} from 'react'
-import {idOf, valueLiteral} from '../runtimeFunctions'
+import {idOf, valueLiteral, valueOfProps, valuesOf} from '../runtimeFunctions'
 import lodash, {result} from 'lodash';
 import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit, props} from 'ramda'
 import DataStore, {
@@ -129,17 +129,15 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
     private updateValue(id: Id, data: any) {
         const newValue = mergeRight(this.value, {[id]: data})
         this.updateState({value: newValue})
-        // this.state.value = newValue
     }
 
     private updateQueries(key: string, data: any) {
         const newQueries = mergeRight(this.queries, {[key]: data})
         this.updateState({queries: newQueries})
-        // this.state.queries = newQueries
     }
 
     protected doInit(_previousVersion: this | undefined, _proxyThis: this): void {
-        const {dataStore, collectionName} = this.props
+        const {dataStore, collectionName} = valueOfProps(this.props)
 
         if (dataStore && collectionName && dataStore !== _previousVersion?.dataStore) {
             _previousVersion?.state.subscription?.unsubscribe()

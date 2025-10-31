@@ -127,8 +127,6 @@ export class AdapterState extends BaseComponentState<ExternalProperties, StatePr
         const newPendingCalls = this.pendingCalls + pendingCallsChange
         const newCache = mergeRight(this.resultCache, {[key]: data})
         this.updateState({resultCache: newCache, pendingCalls: newPendingCalls})
-        // this.state.resultCache = newCache
-        // this.state.pendingCalls = newPendingCalls
     }
 
     private updateSubscriptions(key: string, subscription: ZenObservable.Subscription | undefined) {

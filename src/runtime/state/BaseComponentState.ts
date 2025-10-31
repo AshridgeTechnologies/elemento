@@ -81,7 +81,7 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
 
 const excludedProps = ['@@functional/placeholder', 'fantasy-land/equals', 'equals', '$$typeof']
 
-class StatePlaceholder {
+export class StatePlaceholder {
     constructor(public path: string) {}
     valueOf() { return undefined}
     [Symbol.toPrimitive]() { return undefined }

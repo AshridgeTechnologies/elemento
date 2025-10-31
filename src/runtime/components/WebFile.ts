@@ -96,7 +96,6 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
     private updateCalls(key: string, data: any) {
         const newCache = mergeRight(this.resultCache, {[key]: data})
         this.updateState({resultCache: newCache})
-        // this.state.resultCache = newCache
     }
 
     private handleError = (error?: {message: string}) => {

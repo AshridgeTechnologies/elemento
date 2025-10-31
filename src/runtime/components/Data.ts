@@ -67,7 +67,6 @@ export class DataState extends BaseComponentState<StateExternalProperties, State
 
     private updateValue(value: any) {
         this.updateState({value})
-        // this.state.value = value
     }
 
     protected copy(props: StateExternalProperties, state: StateInternalProperties): this {

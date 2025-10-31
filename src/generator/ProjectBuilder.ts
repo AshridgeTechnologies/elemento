@@ -251,7 +251,7 @@ ${durableObjectBindings}
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
-		"wrangler": "^4.12.0"
+		"wrangler": "^4.45.0"
 	}
 }
 `.trimStart()
