@@ -94,7 +94,8 @@ export function valueOfOneLevel<T>(x: Value<T>): T {
 }
 
 export const valuesOf = (...values: Value<any>[]): any[] => values.map(valueOf)
-export const valueOfProps = <T extends object>(props: T): T => map(valueOf, props)
+export const valueOfProps = (props: object): any => map(valueOf, props)
+// export const valueOfProps = <T extends object>(props: T): T => map(valueOf, props)  // gives difficulties with value objects
 
 export function asArray(value: any[] | object | any) {
     if (isArray(value)) {

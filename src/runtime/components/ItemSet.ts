@@ -11,7 +11,7 @@ import {Definitions} from '../../model/schema'
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
 type Selectable = typeof selectableChoices[number]
 
-type SelectionType = 'replace' | 'addRemove' | 'fromLast'
+export type SelectionType = 'replace' | 'addRemove' | 'fromLast'
 
 export type OnClickFn = (event: SyntheticMouseEvent<HTMLDivElement>, index: number) => void
 
@@ -19,19 +19,18 @@ type Properties = Readonly<{
     path: string,
     itemContentComponent: (props: { path: string, $item: any, $itemId: string, $index: number, $selected: boolean, onClick: OnClickFn }) => React.ReactElement | null,
     itemStyles?: StylesPropVals
-}> & StateProperties
+}> & SelectableListStateProperties
 
-type StateProperties = Partial<Readonly<{
+export type SelectableListStateProperties = Partial<Readonly<{
     items: PropVal<any[]>,
     selectable: PropVal<Selectable>,
     selectedItems: PropVal<any>,
-    selectAction: ($items: any, $itemIds: any, $indexes: any) => void}
->>
+    selectAction: ($items: any, $itemIds: any, $indexes: any) => void
+}>>
 
-type StateUpdatableProperties = Partial<Readonly<{
+type SelectableListStateUpdatableProperties = Partial<Readonly<{
     selectedItemIds: (string|number)[]
-}
->>
+}>>
 
 export const ItemSetSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -76,7 +75,7 @@ export const ItemSetSchema: ElementSchema = {
                     "$ref": "#/definitions/BooleanOrExpression"
                 },
                 "itemStyles": {
-                    "description": "The specific CSS styles applied to this element",
+                    "description": "The specific CSS styles applied to items in this element, not the container",
                     "$ref": "#/definitions/Styles"
                 }
             }
@@ -97,6 +96,12 @@ export const ItemSetSchema: ElementSchema = {
 export const ItemSetMetadata: ElementMetadata = {
     stateProps: ['items', 'selectedItems', 'selectable', 'selectAction']
 }
+
+const idsEqual = (item1: any, item2: any) => {
+    return !isNil(item1?.id) && !isNil(item2?.id) && item1.id === item2.id
+}
+
+const itemMatch = (item: any) => (it: any) => !isNil(it) && (it === item || it.id === item || idsEqual(it, item))
 
 const ItemSet = function ItemSet({path, itemContentComponent, items, selectable, selectedItems, selectAction}: Properties) {
     const state = useComponentState(path, ItemSetState, {items, selectable, selectedItems, selectAction})
@@ -126,7 +131,8 @@ const ItemSet = function ItemSet({path, itemContentComponent, items, selectable,
 
 export default ItemSet
 
-export class ItemSetState extends BaseComponentState<StateProperties, StateUpdatableProperties> {
+export class SelectableListState
+    extends BaseComponentState<SelectableListStateProperties, SelectableListStateUpdatableProperties>  {
 
     get items(): any[] {
         return valueOfOneLevel<any>(this.props.items) ?? []
@@ -240,11 +246,11 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         if (typeof item === 'number' || typeof(item) === 'string' && isNumeric(item)) {
             return this.items[Number(item)]
         }
-        return this.items.find( it => !isNil(it) && (it === item || it.id === item) ) ?? undefined
+        return this.items.find( itemMatch(item) ) ?? undefined
     }
 
     private findIndex(item: any) {
-        return this.items.findIndex( it => !isNil(it) && (it === item || it.id === item) )
+        return this.items.findIndex( itemMatch(item) )
     }
 
     private findId(item: any) {
@@ -261,6 +267,8 @@ export class ItemSetState extends BaseComponentState<StateProperties, StateUpdat
         return undefined
     }
 }
+
+export class ItemSetState extends SelectableListState {}
 
 (ItemSet as any).State = ItemSetState;
 (ItemSet as any).Schema = ItemSetSchema;

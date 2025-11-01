@@ -190,7 +190,7 @@ export const testAppInterface = <T extends StoredState>(path: string, initialVer
     return appInterface
 }
 
-function testAppStoreHook() {
+export function testAppStoreHook() {
     return {
         store: null as any,
         stateAt (path: string) {

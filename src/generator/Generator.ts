@@ -258,7 +258,8 @@ export default class Generator {
             const actionDef = def.type as EventActionPropertyDef
             const formKeyPrefix = el.kind === 'Form' && def.name === 'keyAction' ? `const \$key = \$event.key\n` : ''
             const bodyPrefix = formKeyPrefix + dependencyDeclarations(el, def.name) + '\n'
-            const functionExpr = this.getExpr(el, def.name, 'action', actionDef.argumentNames, bodyPrefix)
+            const exprType: ExprType = actionDef.return ? 'multilineExpression' : 'action'
+            const functionExpr = this.getExpr(el, def.name, exprType, actionDef.argumentNames, bodyPrefix)
             const async = typeof functionExpr === 'string' && functionExpr.startsWith('/*async*/')
             const asyncPrefix = async ? 'async ' : ''
             const functionWithoutPrefix = typeof functionExpr === 'string' ? functionExpr.replace('/*async*/', '') : functionExpr

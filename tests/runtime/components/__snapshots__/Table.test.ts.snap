@@ -1,0 +1,837 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`applies styles to outer container where necessary 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-1jrxkz"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-s3ecpy-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id1
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                10
+              </td>
+            </tr>
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id2
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                20
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`correctly renders table 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-15uttcx-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id1
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                10
+              </td>
+            </tr>
+            <tr
+              class="MuiTableRow-root css-15uttcx-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id2
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                20
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`produces empty output if items is null but there is a selected item, as may happen when refreshing data 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`produces output if items have no ids 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-18zz647-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+            <tr
+              class="MuiTableRow-root css-18zz647-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`produces output when an item is null 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id1
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                One
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+            <tr
+              class="MuiTableRow-root Mui-selected css-1xtozoh-MuiTableRow-root"
+              data-index="2"
+              data-item-index="2"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id3
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                Three
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`shows items with no ids 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+            <tr
+              class="MuiTableRow-root Mui-selected css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`shows only first selectedItem as selected if no ids when given zero as index 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root Mui-selected css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`shows single selectedItem as selected 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                text
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id1
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                where are you?
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                10
+              </td>
+            </tr>
+            <tr
+              class="MuiTableRow-root Mui-selected css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id2
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                over here!
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                20
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -4,11 +4,9 @@
 import {beforeEach, expect, MockedFunction, test, vi} from 'vitest'
 import {createElement, MouseEventHandler} from 'react'
 import {ItemSet, TextElement} from '../../../src/runtime/components/index'
-import {createStateFn, inDndContext, snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
+import {inDndContext, snapshot, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {actWait, testContainer} from '../../testutil/rtlHelpers'
 import userEvent from '@testing-library/user-event'
-
-import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 import {StylesProps} from '../../../src/runtime/runtimeFunctions'
 import renderer from 'react-test-renderer'
 import {ItemSetItem} from '../../../src/runtime/components'
@@ -32,8 +30,6 @@ let itemSetData: any, longItemSetData: any, itemSetDataNoIds: any, selectAction:
 const [itemSet, appStoreHook] = wrappedTestElement(ItemSet, true)
 
 const stateAt = (path: string) => appStoreHook.stateAt(path)
-
-const createState = createStateFn(ItemSetState)
 
 beforeEach(() => {
     itemSetData = [{id: 'id1', text: 'where are you?'}, {id: 'id2', text: 'over here!'}]
@@ -140,53 +136,3 @@ test('does not update its selectedItem if not selectable but does call select ac
     expect(selectAction).toHaveBeenCalledWith(itemSetData[0], 'id1', 0)
 })
 
-test('can set, add to and reset selection', () => {
-    const state = createState({items: longItemSetData, selectedItems: 1})
-    state.Set(['id1', 'id3'])
-    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[2]])
-
-    state.Select(longItemSetData[3])
-    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[2], longItemSetData[3]])
-
-    state.Reset()
-    expect(state.selectedItems).toStrictEqual([longItemSetData[1]])  // back to initial value
-})
-
-test('can remove from selection in onSelect', () => {
-    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
-    state.onSelect('id2', 1, 'addRemove')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[2]])
-
-})
-
-test('can add to selection in onSelect', () => {
-    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
-    state.onSelect('id4', 3, 'addRemove')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2], longItemSetData[3]])
-})
-
-test('add to selection with non-existent id does nothing', () => {
-    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
-    state.onSelect('id99', 99, 'addRemove')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2]])
-})
-
-test('can extend selection from last in onSelect', () => {
-    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple'})
-    state.onSelect(3, 3, 'fromLast')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2], longItemSetData[3]])
-
-})
-
-test('extend selection from last in onSelect with invalid id does nothing', () => {
-    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple', selectAction})
-    state.onSelect('id99', 99, 'fromLast')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[1]])
-    expect(selectAction).not.toHaveBeenCalled()
-})
-
-test('can extend selection single item even if multiple', () => {
-    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple'})
-    state.onSelect(3, 3, 'replace')
-    expect(state.selectedItems).toStrictEqual([longItemSetData[3]])
-})

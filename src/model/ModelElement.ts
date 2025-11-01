@@ -1,6 +1,16 @@
 import {JSONSchema} from "@apidevtools/json-schema-ref-parser"
 import BaseElement, {propDef} from './BaseElement'
-import {CanContain, ComponentType, ElementId, ElementType, eventAction, EventActionPropertyDef, PropertyDef, PropertyType} from "./Types";
+import {
+    calculation,
+    CanContain,
+    ComponentType,
+    ElementId,
+    ElementType,
+    eventAction,
+    EventActionPropertyDef,
+    PropertyDef,
+    PropertyType
+} from "./Types";
 import BaseInputElement from './BaseInputElement'
 import {capitalize, isArray, mapValues} from 'radash'
 import Element from './Element'
@@ -98,6 +108,9 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
                 case '#/definitions/ActionExpression':
                     const {argNames = []} = prop
                     return propDef(name, eventAction(...argNames))
+                case '#/definitions/CalculationExpression':
+                    const {argNames: calcArgNames = []} = prop
+                    return propDef(name, calculation(...calcArgNames))
             }
             switch (type) {
                 case 'boolean':

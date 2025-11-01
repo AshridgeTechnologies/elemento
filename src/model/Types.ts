@@ -16,10 +16,12 @@ export type InsertPosition = typeof InsertPositions[number]
 
 export interface EventActionPropertyDef {
     type: 'Action',
-    argumentNames: string[]
+    argumentNames: string[],
+    return?: boolean
 }
 
 export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
+export const calculation = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames, return: true})
 
 export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean }
 

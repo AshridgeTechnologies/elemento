@@ -62,6 +62,7 @@ import SpeechInput from '../runtime/components/SpeechInput'
 import UserLogon from '../runtime/components/UserLogon'
 import WebFile from '../runtime/components/WebFile'
 import {TinyBaseServerDataStoreMetadata, TinyBaseServerDataStoreSchema} from '../serverRuntime/TinyBaseServerDataStore'
+import Table from '../runtime/components/Table'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
     return {
@@ -102,6 +103,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         MenuItem: modelElementClass(MenuItem),
         List: modelElementClass(ListElementSchema),
         ItemSet: modelElementClass(ItemSet),
+        Table: modelElementClass(Table),
         Data: modelElementClass(Data),
         Calculation: modelElementClass(Calculation),
         Timer: modelElementClass(Timer),

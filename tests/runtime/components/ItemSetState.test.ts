@@ -6,6 +6,7 @@ const item1 = {a: 1}, item2 = {a: 2}, item3 = {a: 3}, item4 = {a: 4}
 const idItem1 = {id: 'x1', a: 1}, idItem2 = {id: 'x2', a: 2}, idItem3 = {id: 'x3', a: 3}, idItem4 = {id: 'x4', a: 4}
 const textItem1 = 'a', textItem2 = 'b', textItem3 = 'c', textItem4 = 'd'
 const numberItem1 = 11, numberItem2 = 22, numberItem3 = 33, numberItem4 = 44
+const longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
 
 let selectAction: Mock
 beforeEach( ()=> selectAction = vi.fn() )
@@ -129,6 +130,13 @@ test('has single selected item given as value object', () => {
     expect(state.selectedItems).toStrictEqual([item1])
     expect(state.selectedItemIds).toStrictEqual([0])
     expect(state.selectedItem).toStrictEqual(item1)
+})
+
+test('has single selected item given as copy of item object if items have ids', () => {
+    const state = new ItemSetState({items: [idItem1, idItem2], selectedItems: {...idItem1}})
+    expect(state.selectedItems).toStrictEqual([idItem1])
+    expect(state.selectedItemIds).toStrictEqual([idItem1.id])
+    expect(state.selectedItem).toStrictEqual(idItem1)
 })
 
 test('has single selected item given as index', () => {
@@ -443,4 +451,57 @@ test('Has no new selected item after onSelect if selectable is none, but selectA
     state.onSelect(1, 1, 'replace')
     expect(state.selectedItem).toStrictEqual(item1)
     expect(selectAction).toHaveBeenCalledWith(item2, 1, 1)
+})
+
+
+// moved from ItemSet.test - may duplicate some tests above
+test('can set, add to and reset selection', () => {
+    const state = createState({items: longItemSetData, selectedItems: 1})
+    state.Set(['id1', 'id3'])
+    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[2]])
+
+    state.Select(longItemSetData[3])
+    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[2], longItemSetData[3]])
+
+    state.Reset()
+    expect(state.selectedItems).toStrictEqual([longItemSetData[1]])  // back to initial value
+})
+
+test('can remove from selection in onSelect', () => {
+    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
+    state.onSelect('id2', 1, 'addRemove')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[2]])
+
+})
+
+test('can add to selection in onSelect', () => {
+    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
+    state.onSelect('id4', 3, 'addRemove')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2], longItemSetData[3]])
+})
+
+test('add to selection with non-existent id does nothing', () => {
+    const state = createState({items: longItemSetData, selectedItems: [1, 2], selectable: 'multiple'})
+    state.onSelect('id99', 99, 'addRemove')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2]])
+})
+
+test('can extend selection from last in onSelect', () => {
+    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple'})
+    state.onSelect(3, 3, 'fromLast')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[1], longItemSetData[2], longItemSetData[3]])
+
+})
+
+test('extend selection from last in onSelect with invalid id does nothing', () => {
+    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple', selectAction})
+    state.onSelect('id99', 99, 'fromLast')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[0], longItemSetData[1]])
+    expect(selectAction).not.toHaveBeenCalled()
+})
+
+test('can extend selection single item even if multiple', () => {
+    const state = createState({items: longItemSetData, selectedItems: [0, 1], selectable: 'multiple'})
+    state.onSelect(3, 3, 'replace')
+    expect(state.selectedItems).toStrictEqual([longItemSetData[3]])
 })

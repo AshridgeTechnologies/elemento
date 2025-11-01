@@ -430,6 +430,17 @@ export const Definitions: { [k: string]: JSONSchema7Definition } = {
             }
         }
     },
+    "CalculationExpression": {
+        "description": "A formula used to calculate a value",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "expr": {
+                "description": "The formula",
+                "type": "string"
+            }
+        }
+    },
     "StringOrExpression": {
         "anyOf": [
             {
