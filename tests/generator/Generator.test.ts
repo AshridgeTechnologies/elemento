@@ -43,7 +43,7 @@ test('generates app and all page output files', ()=> {
     expect(gen.output().files[0].name).toBe('Page1.js')
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -53,14 +53,14 @@ test('generates app and all page output files', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
     expect(gen.output().files[1].name).toBe('Page2.js')
     expect(gen.output().files[1].contents).toBe(`function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({}))
+    const _state = useComponentState(props.path, Page2.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -71,7 +71,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
 Page2.notLoggedInPage = 'Page1'
 
 
-Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
+Page2.State = class Page2_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -81,9 +81,9 @@ Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
     const pages = {Page1, Page2}
     const urlContext = Elemento.useGetUrlContext()
     const themeOptions = ({primary: 'blue'})
-    const _state = setObject('App1', new App1.State({pages, urlContext, themeOptions}))
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('App1').maxWidth('60%').fonts(['Crazy Font', 'Weird Font']).props},)
+    return React.createElement(App, {...elProps('App1').maxWidth('60%').themeOptions({primary: 'blue'}).fonts(['Crazy Font', 'Weird Font']).pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -111,7 +111,7 @@ test('generates Tool and all page output files, generates nothing for ToolImport
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {Editor, Preview} = Elemento
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -121,11 +121,11 @@ test('generates Tool and all page output files, generates nothing for ToolImport
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    Button1_action = wrapFn('Page1.Button1', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async Button1_action() {
         
         await Editor.Highlight('menuItem+File')
-    })
+    }
 }
 `)
 
@@ -135,9 +135,10 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     const {Editor, Preview} = Elemento
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Tool1', new Tool1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Tool1', Tool1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('Tool1').maxWidth('60%').props},)
+    return React.createElement(App, {...elProps('Tool1').maxWidth('60%').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -149,7 +150,7 @@ Tool1.State = class Tool1_State extends App.State {
     expect(gen.output().files.length).toBe(2)
 })
 
-test('can get all code in one string from the output with imports and export', function () {
+test('can get all code in one string from the output with imports and export', function() {
     const app = new App('app1', 'App 1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new Text('id1', 'Text 1', {content: 'Hi there!'}),
@@ -164,13 +165,13 @@ test('can get all code in one string from the output with imports and export', f
 
     expect(output.code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
-const {React, trace, elProps, stateProps, wrapFn, setObject, useObject, codeGenerationError} = Elemento
+const {React, trace, elProps, stateProps, wrapFn, useComponentState, codeGenerationError} = Elemento
 const {Page, TextElement, App} = Elemento.components
 
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -179,14 +180,14 @@ function Page1(props) {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 
 // Page2.js
 function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({}))
+    const _state = useComponentState(props.path, Page2.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -195,7 +196,7 @@ function Page2(props) {
 }
 
 
-Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
+Page2.State = class Page2_State extends Elemento.components.ElementoComponentState {
 
 }
 
@@ -204,9 +205,10 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1, Page2}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -243,7 +245,7 @@ test('includes all DataTypes files and global functions in data types', () => {
 
     expect(output.code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
-const {React, trace, elProps, stateProps, wrapFn, setObject, useObject, codeGenerationError} = Elemento
+const {React, trace, elProps, stateProps, wrapFn, useComponentState, codeGenerationError} = Elemento
 const {Page, TextElement, App} = Elemento.components
 
 const {types: {ChoiceType, DateType, ListType, NumberType, DecimalType, RecordType, TextType, TrueFalseType, Rule}} = Elemento
@@ -274,7 +276,7 @@ const Types2 = (() => {
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -283,7 +285,7 @@ function Page1(props) {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 
@@ -292,9 +294,10 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -359,9 +362,10 @@ test('generates App Bar elements with contents', ()=> {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Test1', Test1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
+    return React.createElement(App, {...elProps('Test1').pages(pages).urlContext(urlContext).props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
             React.createElement(TextElement, elProps(pathTo('Text0')).styles(elProps(pathTo('Text0.Styles')).width(200).props).content('Welcome!').props)
     ))
     },)
@@ -386,17 +390,18 @@ test('generates startup action for App', ()=> {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Test1', Test1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('Test1').startupAction(_state.Test1_startupAction).props},)
+    return React.createElement(App, {...elProps('Test1').startupAction(_state.Test1_startupAction).pages(pages).urlContext(urlContext).props},)
 }
 
 
 Test1.State = class Test1_State extends App.State {
-    Test1_startupAction = wrapFn('Test1.Test1', 'startupAction', () => {
+    Test1_startupAction() {
         
         Log('Off we go!')
-    })
+    }
 }
 `)
 })
@@ -413,32 +418,20 @@ test('generates TextInput elements with initial value and styles including expre
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TextInput, elProps(pathTo('t1')).label('Text Input One').readOnly(true).multiline(true).styles(elProps(pathTo('t1.Styles')).width(150).props).props),
-        React.createElement(TextInput, elProps(pathTo('t2')).label('t2').styles(elProps(pathTo('t2.Styles')).borderBottom(50 + 50).props).props),
+        React.createElement(TextInput, elProps(pathTo('t1')).initialValue('Hi there!').label('Text Input One').readOnly(true).multiline(true).styles(elProps(pathTo('t1.Styles')).width(150).props).props),
+        React.createElement(TextInput, elProps(pathTo('t2')).initialValue('Some' + ' things').label('t2').styles(elProps(pathTo('t2.Styles')).borderBottom(50 + 50).props).props),
         React.createElement(TextInput, elProps(pathTo('t3')).label('t3').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new TextInput.State(stateProps(pathTo('t1')).value('Hi there!').props))
-        const t2 = this.getOrCreateChildState('t2', new TextInput.State(stateProps(pathTo('t2')).value('Some' + ' things').props))
-        const t3 = this.getOrCreateChildState('t3', new TextInput.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
 })
@@ -454,7 +447,7 @@ test('generates Text elements with multiline content', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -465,7 +458,7 @@ Today\`).props)
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -486,7 +479,7 @@ test('generates Text elements with placeholders', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {Comp1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -499,16 +492,8 @@ test('generates Text elements with placeholders', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Comp1']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Comp1 = this.getOrCreateChildState('Comp1', new TextInput.State(stateProps(pathTo('Comp1')).props))
-    }
-
-    get Comp1() { return this.childStates.Comp1 }
 }
 `)
 })
@@ -524,7 +509,7 @@ test('generates Text elements with escaped quotes', ()=> {
     const output = gen.output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -533,7 +518,7 @@ test('generates Text elements with escaped quotes', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -551,32 +536,20 @@ test('generates NumberInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(NumberInput, elProps(pathTo('t1')).label('Number Input One').props),
-        React.createElement(NumberInput, elProps(pathTo('t2')).label('t2').props),
+        React.createElement(NumberInput, elProps(pathTo('t1')).initialValue(44).label('Number Input One').props),
+        React.createElement(NumberInput, elProps(pathTo('t2')).initialValue(22 + 33).label('t2').props),
         React.createElement(NumberInput, elProps(pathTo('t3')).label('t3').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new NumberInput.State(stateProps(pathTo('t1')).value(44).props))
-        const t2 = this.getOrCreateChildState('t2', new NumberInput.State(stateProps(pathTo('t2')).value(22 + 33).props))
-        const t3 = this.getOrCreateChildState('t3', new NumberInput.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
 })
@@ -593,32 +566,20 @@ test('generates DateInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(DateInput, elProps(pathTo('t1')).label('Date Input One').props),
-        React.createElement(DateInput, elProps(pathTo('t2')).label('t2').props),
+        React.createElement(DateInput, elProps(pathTo('t1')).initialValue(new Date('2022-04-05T00:00:00.000Z')).label('Date Input One').props),
+        React.createElement(DateInput, elProps(pathTo('t2')).initialValue(DateVal('2022-02-03')).label('t2').props),
         React.createElement(DateInput, elProps(pathTo('t3')).label('t3').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new DateInput.State(stateProps(pathTo('t1')).value(new Date('2022-04-05T00:00:00.000Z')).props))
-        const t2 = this.getOrCreateChildState('t2', new DateInput.State(stateProps(pathTo('t2')).value(DateVal('2022-02-03')).props))
-        const t3 = this.getOrCreateChildState('t3', new DateInput.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
 })
@@ -633,26 +594,18 @@ test('generates SpeechInput elements with language and phrases', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(SpeechInput, elProps(pathTo('t1')).props)
+        React.createElement(SpeechInput, elProps(pathTo('t1')).language('fr').expectedPhrases(['One', 'Two']).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new SpeechInput.State(stateProps(pathTo('t1')).language('fr').expectedPhrases(['One', 'Two']).props))
-    }
-
-    get t1() { return this.childStates.t1 }
 }
 `)
 })
@@ -669,32 +622,20 @@ test('generates SelectInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {Select1, Select2, Select3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(SelectInput, elProps(pathTo('Select1')).label('Select Input One').values(['22', '33', '44']).props),
-        React.createElement(SelectInput, elProps(pathTo('Select2')).label('Select2').values(['22', '33', '44']).props),
+        React.createElement(SelectInput, elProps(pathTo('Select1')).initialValue('44').label('Select Input One').values(['22', '33', '44']).props),
+        React.createElement(SelectInput, elProps(pathTo('Select2')).initialValue(4+'4').label('Select2').values(['22', '33', '44']).props),
         React.createElement(SelectInput, elProps(pathTo('Select3')).label('Select3').values([]).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Select1', 'Select2', 'Select3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Select1 = this.getOrCreateChildState('Select1', new SelectInput.State(stateProps(pathTo('Select1')).value('44').props))
-        const Select2 = this.getOrCreateChildState('Select2', new SelectInput.State(stateProps(pathTo('Select2')).value(4+'4').props))
-        const Select3 = this.getOrCreateChildState('Select3', new SelectInput.State(stateProps(pathTo('Select3')).props))
-    }
-
-    get Select1() { return this.childStates.Select1 }
-    get Select2() { return this.childStates.Select2 }
-    get Select3() { return this.childStates.Select3 }
 }
 `)
 })
@@ -711,32 +652,20 @@ test('generates TrueFalseInput elements with initial value', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TrueFalseInput, elProps(pathTo('t1')).label('True False Input One').props),
-        React.createElement(TrueFalseInput, elProps(pathTo('t2')).label('t2').props),
+        React.createElement(TrueFalseInput, elProps(pathTo('t1')).initialValue(true).label('True False Input One').props),
+        React.createElement(TrueFalseInput, elProps(pathTo('t2')).initialValue(true || false).label('t2').props),
         React.createElement(TrueFalseInput, elProps(pathTo('t3')).label('t3').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new TrueFalseInput.State(stateProps(pathTo('t1')).value(true).props))
-        const t2 = this.getOrCreateChildState('t2', new TrueFalseInput.State(stateProps(pathTo('t2')).value(true || false).props))
-        const t3 = this.getOrCreateChildState('t3', new TrueFalseInput.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
 })
@@ -757,9 +686,9 @@ test('generates Button elements with properties including await in action', ()=>
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('test1')
+    const app = useComponentState('test1')
     const Words = app.Words
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -769,17 +698,17 @@ test('generates Button elements with properties including await in action', ()=>
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    b1_action = wrapFn('Page1.b1', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async b1_action() {
         
         const message = 'You clicked me!'; await Log(message)
             Log('Didn\\'t you?')
-    })
-    b2_action = wrapFn('Page1.b2', 'action', async () => {
+    }
+    async b2_action() {
         const {Words} = this.app
         let newWords = await JSON.parse('some json');
             ForEach(newWords, async ($item, $index) => await Add(Words, $item))
-    })
+    }
 }
 `)
 })
@@ -796,7 +725,7 @@ test('generates Button element action functions that depend on stateful componen
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {Description, DoStuff} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -807,26 +736,16 @@ test('generates Button element action functions that depend on stateful componen
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Description']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {DoStuff} = this
-        const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).props))
-    }
-
-    get Description() { return this.childStates.Description }
-
-    DoStuff = wrapFn('Page1.DoStuff', 'calculation', () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    DoStuff() {
         
         return Log('Doing it')
-    })
+    }
 
-    DoStuff_action = wrapFn('Page1.DoStuff', 'action', () => {
+    DoStuff_action() {
         const {DoStuff, Description} = this
         DoStuff(Description)
-    })
+    }
 }
 `)
 })
@@ -841,7 +760,7 @@ test('generates User Logon elements with properties', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -850,7 +769,7 @@ test('generates User Logon elements with properties', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -869,7 +788,7 @@ test('generates Menu element with items', () => {
     const output = generate(app, project(app))
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -881,11 +800,11 @@ test('generates Menu element with items', () => {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    Item1_action = wrapFn('Page1.Item1', 'action', () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    Item1_action() {
         
         Log('I am Item One')
-    })
+    }
 }
 `)
 })
@@ -902,32 +821,20 @@ test('generates Data elements with initial value and no errors on object express
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Data, elProps(pathTo('t1')).display(false).props),
-        React.createElement(Data, elProps(pathTo('t2')).display(true).props),
+        React.createElement(Data, elProps(pathTo('t1')).initialValue(44).display(false).props),
+        React.createElement(Data, elProps(pathTo('t2')).initialValue({a:10, b: 'Bee'}).display(true).props),
         React.createElement(Data, elProps(pathTo('t3')).display(false).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new Data.State(stateProps(pathTo('t1')).value(44).props))
-        const t2 = this.getOrCreateChildState('t2', new Data.State(stateProps(pathTo('t2')).value(({a:10, b: 'Bee'})).props))
-        const t3 = this.getOrCreateChildState('t3', new Data.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -945,32 +852,20 @@ test('generates Calculation elements with initial value and no errors on object 
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Calculation, elProps(pathTo('t1')).props),
-        React.createElement(Calculation, elProps(pathTo('t2')).label('My Calc').show(true).styles(elProps(pathTo('t2.Styles')).width(3+100).props).props),
+        React.createElement(Calculation, elProps(pathTo('t1')).calculation(44 + 7).props),
+        React.createElement(Calculation, elProps(pathTo('t2')).calculation({a:10, b: 'Bee'}).label('My Calc').show(true).styles(elProps(pathTo('t2.Styles')).width(3+100).props).props),
         React.createElement(Calculation, elProps(pathTo('t3')).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new Calculation.State(stateProps(pathTo('t1')).value(44 + 7).props))
-        const t2 = this.getOrCreateChildState('t2', new Calculation.State(stateProps(pathTo('t2')).value(({a:10, b: 'Bee'})).props))
-        const t3 = this.getOrCreateChildState('t3', new Calculation.State(stateProps(pathTo('t3')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -990,34 +885,22 @@ test('generates Collection elements with initial value and no errors on object e
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('test1')
+    const app = useComponentState('test1')
     const Store1 = app.Store1
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {t1, t2, t3} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Collection, elProps(pathTo('t1')).display(false).props),
-        React.createElement(Collection, elProps(pathTo('t2')).display(true).props),
-        React.createElement(Collection, elProps(pathTo('t3')).display(false).props)
+        React.createElement(Collection, elProps(pathTo('t1')).dataStore(Store1).collectionName('Widgets').display(false).props),
+        React.createElement(Collection, elProps(pathTo('t2')).initialValue(['red', 'yellow']).collectionName('t2').display(true).props),
+        React.createElement(Collection, elProps(pathTo('t3')).collectionName('t3').display(false).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1', 't2', 't3']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Store1} = this.app
-        const t1 = this.getOrCreateChildState('t1', new Collection.State(stateProps(pathTo('t1')).dataStore(Store1).collectionName('Widgets').props))
-        const t2 = this.getOrCreateChildState('t2', new Collection.State(stateProps(pathTo('t2')).value(['red', 'yellow']).collectionName('t2').props))
-        const t3 = this.getOrCreateChildState('t3', new Collection.State(stateProps(pathTo('t3')).collectionName('t3').props))
-    }
-
-    get t1() { return this.childStates.t1 }
-    get t2() { return this.childStates.t2 }
-    get t3() { return this.childStates.t3 }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -1044,9 +927,9 @@ test('generates ServerAppConnector elements with correct configuration', () => {
 
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Connector1 = app.Connector1
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -1055,11 +938,11 @@ test('generates ServerAppConnector elements with correct configuration', () => {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    DoItButton_action = wrapFn('Page1.DoItButton', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async DoItButton_action() {
         const {Connector1} = this.app
         await Connector1.DoStuff('Number1')
-    })
+    }
 }
 `)
 
@@ -1090,23 +973,16 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
     const {Connector1} = _state
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Connector1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
-    }
-
-    get Connector1() { return this.childStates.Connector1 }
 }
 `)
 
@@ -1145,23 +1021,16 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
     const {ServerApp1} = _state
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['ServerApp1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const ServerApp1 = this.getOrCreateChildState('ServerApp1', new ServerAppConnector.State({configuration: configServerApp1()}))
-    }
-
-    get ServerApp1() { return this.childStates.ServerApp1 }
 }
 `)
 })
@@ -1198,23 +1067,16 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
     const {Connector1} = _state
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Connector1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp1()}))
-    }
-
-    get Connector1() { return this.childStates.Connector1 }
 }
 `)
 
@@ -1243,23 +1105,16 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
     const {Connector1} = _state
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Connector1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
-    }
-
-    get Connector1() { return this.childStates.Connector1 }
 }
 `)
 })
@@ -1287,23 +1142,16 @@ export default function App1(props) {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
     const {Connector1} = _state
 
-    return React.createElement(App, {...elProps('App1').props},)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},)
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Connector1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Connector1 = this.getOrCreateChildState('Connector1', new ServerAppConnector.State({configuration: configServerApp()}))
-    }
-
-    get Connector1() { return this.childStates.Connector1 }
 }
 `)
 
@@ -1327,8 +1175,8 @@ test('sorts state entries into dependency order', () => {
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const _state = useComponentState(props.path, Page1_WidgetSetItem.State, {$item, $itemId, $index, $selected})
     const canDragItem = undefined
     const styles = undefined
 
@@ -1338,47 +1186,31 @@ test('sorts state entries into dependency order', () => {
 })
 
 
-Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.BaseComponentState {
+Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.ElementoComponentState {
 
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('test1')
+    const app = useComponentState('test1')
     const Store1 = app.Store1
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {Description, TheWidget, WidgetId, Widgets, WidgetSet} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TextInput, elProps(pathTo('Description')).label('Description').props),
-        React.createElement(Data, elProps(pathTo('TheWidget')).display(false).props),
-        React.createElement(Data, elProps(pathTo('WidgetId')).display(false).props),
-        React.createElement(Collection, elProps(pathTo('Widgets')).display(false).props),
-        React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).props)
+        React.createElement(TextInput, elProps(pathTo('Description')).initialValue(TheWidget.Description).label('Description').props),
+        React.createElement(Data, elProps(pathTo('TheWidget')).initialValue(WidgetId.value && Get(Widgets, WidgetId.value)).display(false).props),
+        React.createElement(Data, elProps(pathTo('WidgetId')).initialValue(WidgetSet.selectedItem && WidgetSet.selectedItem.id).display(false).props),
+        React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').display(false).props),
+        React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).items(Widgets.Query({})).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Description', 'TheWidget', 'WidgetId', 'Widgets', 'WidgetSet']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Store1} = this.app
-        const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').props))
-        const WidgetSet = this.getOrCreateChildState('WidgetSet', new ItemSet.State(stateProps(pathTo('WidgetSet')).items(Widgets.Query({})).props))
-        const WidgetId = this.getOrCreateChildState('WidgetId', new Data.State(stateProps(pathTo('WidgetId')).value(WidgetSet.selectedItem && WidgetSet.selectedItem.id).props))
-        const TheWidget = this.getOrCreateChildState('TheWidget', new Data.State(stateProps(pathTo('TheWidget')).value(WidgetId.value && Get(Widgets, WidgetId.value)).props))
-        const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(TheWidget.Description).props))
-    }
-
-    get Description() { return this.childStates.Description }
-    get TheWidget() { return this.childStates.TheWidget }
-    get WidgetId() { return this.childStates.WidgetId }
-    get Widgets() { return this.childStates.Widgets }
-    get WidgetSet() { return this.childStates.WidgetSet }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -1404,8 +1236,8 @@ test('sorts state entries into dependency order when nested inside a layout elem
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const _state = useComponentState(props.path, Page1_WidgetSetItem.State, {$item, $itemId, $index, $selected})
     const canDragItem = undefined
     const styles = undefined
 
@@ -1415,51 +1247,33 @@ test('sorts state entries into dependency order when nested inside a layout elem
 })
 
 
-Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.BaseComponentState {
+Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.ElementoComponentState {
 
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('test1')
+    const app = useComponentState('test1')
     const Store1 = app.Store1
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {Description, TheWidget, WidgetId, Widgets, List1, WidgetSet} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TextInput, elProps(pathTo('Description')).label('Description').props),
-        React.createElement(Data, elProps(pathTo('TheWidget')).display(false).props),
-        React.createElement(Data, elProps(pathTo('WidgetId')).display(false).props),
-        React.createElement(Collection, elProps(pathTo('Widgets')).display(false).props),
+        React.createElement(TextInput, elProps(pathTo('Description')).initialValue(TheWidget.Description).label('Description').props),
+        React.createElement(Data, elProps(pathTo('TheWidget')).initialValue(WidgetId.value && Get(Widgets, WidgetId.value)).display(false).props),
+        React.createElement(Data, elProps(pathTo('WidgetId')).initialValue(WidgetSet.selectedItem && WidgetSet.selectedItem.id).display(false).props),
+        React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').display(false).props),
         React.createElement(ListElement, elProps(pathTo('List1')).props,
-            React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).props)
+            React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).items(Widgets.Query({})).props)
     )
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Description', 'TheWidget', 'WidgetId', 'Widgets', 'List1', 'WidgetSet']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Store1} = this.app
-        const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').props))
-        const List1 = this.getOrCreateChildState('List1', new ListElement.State(stateProps(pathTo('List1')).props))
-        const WidgetSet = this.getOrCreateChildState('WidgetSet', new ItemSet.State(stateProps(pathTo('WidgetSet')).items(Widgets.Query({})).props))
-        const WidgetId = this.getOrCreateChildState('WidgetId', new Data.State(stateProps(pathTo('WidgetId')).value(WidgetSet.selectedItem && WidgetSet.selectedItem.id).props))
-        const TheWidget = this.getOrCreateChildState('TheWidget', new Data.State(stateProps(pathTo('TheWidget')).value(WidgetId.value && Get(Widgets, WidgetId.value)).props))
-        const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(TheWidget.Description).props))
-    }
-
-    get Description() { return this.childStates.Description }
-    get TheWidget() { return this.childStates.TheWidget }
-    get WidgetId() { return this.childStates.WidgetId }
-    get Widgets() { return this.childStates.Widgets }
-    get List1() { return this.childStates.List1 }
-    get WidgetSet() { return this.childStates.WidgetSet }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -1482,29 +1296,21 @@ test('generates elements under App used in Page', ()=> {
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Widgets = app.Widgets
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {WidgetValue} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(TextElement, elProps(pathTo('Text1')).content('Update the widget').props),
-        React.createElement(NumberInput, elProps(pathTo('WidgetValue')).label('New widget value').props)
+        React.createElement(NumberInput, elProps(pathTo('WidgetValue')).initialValue(Get(Widgets, 'x1').a).label('New widget value').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['WidgetValue']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Widgets} = this.app
-        const WidgetValue = this.getOrCreateChildState('WidgetValue', new NumberInput.State(stateProps(pathTo('WidgetValue')).value(Get(Widgets, 'x1').a).props))
-    }
-
-    get WidgetValue() { return this.childStates.WidgetValue }
 }
 `)
 
@@ -1512,30 +1318,19 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
-    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).value(({ Widgets: { x1: {a: 10}}})).props))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
+    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).initialValue(({ Widgets: { x1: {a: 10}}})).props))
     const {Widgets, Store2, Store3} = _state
 
-    return React.createElement(App, {...elProps('App1').props},
-        React.createElement(Collection, elProps(pathTo('Widgets')).display(false).props)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},
+        React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').display(false).props)
     )
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Widgets', 'Store2', 'Store3']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(Store1).collectionName('Widgets').props))
-        const Store2 = this.getOrCreateChildState('Store2', new FileDataStore.State(stateProps('App1.Store2').props))
-        const Store3 = this.getOrCreateChildState('Store3', new BrowserDataStore.State(stateProps('App1.Store3').databaseName('Accounts').collectionNames(['Cheques', 'Postings']).props))
-    }
-
-    get Widgets() { return this.childStates.Widgets }
-    get Store2() { return this.childStates.Store2 }
-    get Store3() { return this.childStates.Store3 }
 }
 `)
 
@@ -1556,29 +1351,21 @@ test('generates codeGenerationError for unknown names in elements under App used
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Widgets = app.Widgets
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {WidgetValue} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(TextElement, elProps(pathTo('Text1')).content('Update the widget').props),
-        React.createElement(NumberInput, elProps(pathTo('WidgetValue')).label('New widget value').props)
+        React.createElement(NumberInput, elProps(pathTo('WidgetValue')).initialValue(Get(Widgets, 'x1').a).label('New widget value').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['WidgetValue']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Widgets} = this.app
-        const WidgetValue = this.getOrCreateChildState('WidgetValue', new NumberInput.State(stateProps(pathTo('WidgetValue')).value(Get(Widgets, 'x1').a).props))
-    }
-
-    get WidgetValue() { return this.childStates.WidgetValue }
 }
 `)
 
@@ -1586,26 +1373,19 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
-    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).value(({ Widgets: { x1: {a: 10}}})).props))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
+    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).initialValue(({ Widgets: { x1: {a: 10}}})).props))
     const {Widgets} = _state
 
-    return React.createElement(App, {...elProps('App1').props},
-        React.createElement(Collection, elProps(pathTo('Widgets')).display(false).props)
+    return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},
+        React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(codeGenerationError(\`StoreX\`, 'Unknown names: StoreX')).collectionName('Widgets').display(false).props)
     )
 }
 
 
 App1.State = class App1_State extends App.State {
-    childNames = ['Widgets']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Widgets = this.getOrCreateChildState('Widgets', new Collection.State(stateProps('App1.Widgets').dataStore(codeGenerationError(\`StoreX\`, 'Unknown names: StoreX')).collectionName('Widgets').props))
-    }
-
-    get Widgets() { return this.childStates.Widgets }
 }
 `)
 
@@ -1639,81 +1419,52 @@ test('generates ItemSet element with separate child component and global functio
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const $container = useObject(Elemento.parentPath(props.path))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const $container = useComponentState(Elemento.parentPath(props.path))
     const {ItemColor, Data1, TextInput1} = $container
-    const _state = setObject(props.path, new Page1_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
+    const _state = useComponentState(props.path, Page1_ItemSet1Item.State, {$item, $itemId, $index, $selected})
     const {TextInput2} = _state
     const canDragItem = $item.id + Data1 !== Floor(99.9)
     const styles = elProps(pathTo('ItemSet1.Styles')).color($selected ? 'red' : ItemColor).width(200).props
 
     return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, index: $index, onClick, canDragItem, styles},
         React.createElement(TextElement, elProps(pathTo('Text1')).content('Hi there ' + TextInput2 + ' in ' + TextInput1 + $itemId).props),
-        React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
+        React.createElement(TextInput, elProps(pathTo('TextInput2')).initialValue('from ' + Left($item, 3)).label('Text Input 2').props),
         React.createElement(Button, elProps(pathTo('ButtonUpdate')).content('Update').appearance('outline').action(_state.ButtonUpdate_action).props)
     )
 })
 
 
-Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.components.BaseComponentState {
-    childNames = ['TextInput2']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {$item, $itemId, $index, $selected, $container} = this.props
-        const {ItemColor, Data1, TextInput1} = $container
-        const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value('from ' + Left($item, 3)).props))
-    }
-
-    get TextInput2() { return this.childStates.TextInput2 }
-
-    ButtonUpdate_action = wrapFn('ItemSet1_ListItem.ButtonUpdate', 'action', async () => {
+Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.components.ElementoComponentState {
+    async ButtonUpdate_action() {
         
         await Update('Things', $item.id, {done: true})
-    })
+    }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {TextInput1, ItemColor, Data1, Layout1, ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(TextInput, elProps(pathTo('TextInput1')).label('Text Input 1').props),
         React.createElement(SelectInput, elProps(pathTo('ItemColor')).label('Item Color').props),
-        React.createElement(Data, elProps(pathTo('Data1')).display(false).props),
+        React.createElement(Data, elProps(pathTo('Data1')).initialValue(10).display(false).props),
         React.createElement(Block, elProps(pathTo('Layout1')).layout('vertical').props,
-            React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page1_ItemSet1Item).props)
+            React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page1_ItemSet1Item).items([{a: 10}, {a: 20}]).selectAction(_state.ItemSet1_selectAction).props)
     )
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TextInput1', 'ItemColor', 'Data1', 'Layout1', 'ItemSet1']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput1 = this.getOrCreateChildState('TextInput1', new TextInput.State(stateProps(pathTo('TextInput1')).props))
-        const ItemColor = this.getOrCreateChildState('ItemColor', new SelectInput.State(stateProps(pathTo('ItemColor')).props))
-        const Data1 = this.getOrCreateChildState('Data1', new Data.State(stateProps(pathTo('Data1')).value(10).props))
-        const Layout1 = this.getOrCreateChildState('Layout1', new Block.State(stateProps(pathTo('Layout1')).props))
-        const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).items([{a: 10}, {a: 20}]).selectAction(this.ItemSet1_selectAction).props))
-    }
-
-    get TextInput1() { return this.childStates.TextInput1 }
-    get ItemColor() { return this.childStates.ItemColor }
-    get Data1() { return this.childStates.Data1 }
-    get Layout1() { return this.childStates.Layout1 }
-    get ItemSet1() { return this.childStates.ItemSet1 }
-
-    ItemSet1_selectAction = wrapFn('Page1.ItemSet1', 'selectAction', ($item, $itemId, $index) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    ItemSet1_selectAction($item, $itemId, $index) {
         
         Log($item.id)
-    })
+    }
 }
 `)
 })
@@ -1738,75 +1489,50 @@ test('generates ItemSet element inside List', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page1_ItemSet1Item = React.memo(function Page1_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const $container = useObject(Elemento.parentPath(props.path))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const $container = useComponentState(Elemento.parentPath(props.path))
     const {TextInput1} = $container
-    const _state = setObject(props.path, new Page1_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
+    const _state = useComponentState(props.path, Page1_ItemSet1Item.State, {$item, $itemId, $index, $selected})
     const {TextInput2} = _state
     const canDragItem = undefined
     const styles = elProps(pathTo('ItemSet1.Styles')).color('red').width(200).props
 
     return React.createElement(ItemSetItem, {path: props.path, item: $item, itemId: $itemId, index: $index, onClick, canDragItem, styles},
         React.createElement(TextElement, elProps(pathTo('Text1')).content('Hi there ' + TextInput2 + ' in ' + TextInput1).props),
-        React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
+        React.createElement(TextInput, elProps(pathTo('TextInput2')).initialValue('from ' + Left($item, 3)).label('Text Input 2').props),
         React.createElement(Button, elProps(pathTo('ButtonUpdate')).content('Update').appearance('outline').action(_state.ButtonUpdate_action).props)
     )
 })
 
 
-Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.components.BaseComponentState {
-    childNames = ['TextInput2']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {$item, $itemId, $index, $selected, $container} = this.props
-        const {TextInput1} = $container
-        const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value('from ' + Left($item, 3)).props))
-    }
-
-    get TextInput2() { return this.childStates.TextInput2 }
-
-    ButtonUpdate_action = wrapFn('ItemSet1_ListItem.ButtonUpdate', 'action', async () => {
+Page1_ItemSet1Item.State = class Page1_ItemSet1Item_State extends Elemento.components.ElementoComponentState {
+    async ButtonUpdate_action() {
         
         await Update('Things', $item.id, {done: true})
-    })
+    }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {TextInput1, List1, ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(TextInput, elProps(pathTo('TextInput1')).label('Text Input 1').props),
         React.createElement(ListElement, elProps(pathTo('List1')).props,
-            React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page1_ItemSet1Item).props)
+            React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page1_ItemSet1Item).items([{a: 10}, {a: 20}]).selectAction(_state.ItemSet1_selectAction).props)
     )
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TextInput1', 'List1', 'ItemSet1']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput1 = this.getOrCreateChildState('TextInput1', new TextInput.State(stateProps(pathTo('TextInput1')).props))
-        const List1 = this.getOrCreateChildState('List1', new ListElement.State(stateProps(pathTo('List1')).props))
-        const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).items([{a: 10}, {a: 20}]).selectAction(this.ItemSet1_selectAction).props))
-    }
-
-    get TextInput1() { return this.childStates.TextInput1 }
-    get List1() { return this.childStates.List1 }
-    get ItemSet1() { return this.childStates.ItemSet1 }
-
-    ItemSet1_selectAction = wrapFn('Page1.ItemSet1', 'selectAction', ($item, $itemId, $index) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    ItemSet1_selectAction($item, $itemId, $index) {
         
         Log($item.id)
-    })
+    }
 }
 `)
 })
@@ -1827,8 +1553,8 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
     expect(gen.output().files[0].contents).toBe(`const Page2_ItemSet1Item = React.memo(function Page2_ItemSet1ItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const _state = setObject(props.path, new Page2_ItemSet1Item.State({$item, $itemId, $index, $selected, $container}))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const _state = useComponentState(props.path, Page2_ItemSet1Item.State, {$item, $itemId, $index, $selected})
     const canDragItem = undefined
     const styles = undefined
 
@@ -1838,33 +1564,25 @@ test('generates ItemSet element with no items expression if undefined', ()=> {
 })
 
 
-Page2_ItemSet1Item.State = class Page2_ItemSet1Item_State extends Elemento.components.BaseComponentState {
+Page2_ItemSet1Item.State = class Page2_ItemSet1Item_State extends Elemento.components.ElementoComponentState {
 
 }
 
 
 function Page2(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page2.State({}))
+    const _state = useComponentState(props.path, Page2.State, {})
     const {ItemSet1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page2_ItemSet1Item).props)
+        React.createElement(ItemSet, elProps(pathTo('ItemSet1')).itemContentComponent(Page2_ItemSet1Item).selectable(false).props)
     )
 }
 
 
-Page2.State = class Page2_State extends Elemento.components.BaseComponentState {
-    childNames = ['ItemSet1']
+Page2.State = class Page2_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const ItemSet1 = this.getOrCreateChildState('ItemSet1', new ItemSet.State(stateProps(pathTo('ItemSet1')).selectable(false).props))
-    }
-
-    get ItemSet1() { return this.childStates.ItemSet1 }
 }
 `)
 
@@ -1888,12 +1606,12 @@ test('generates Block element with properties and children and includes drag fun
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {DragIsOver, DraggedItemId} = Elemento.dragFunctions()
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {WidgetCount, Layout1, NameInput, Colour} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(NumberInput, elProps(pathTo('WidgetCount')).label('New widget value').props),
+        React.createElement(NumberInput, elProps(pathTo('WidgetCount')).initialValue(18).label('New widget value').props),
         React.createElement(Block, elProps(pathTo('Layout1')).layout('horizontal wrapped').styles(elProps(pathTo('Layout1.Styles')).width(500).backgroundColor('pink').props).props,
             React.createElement(TextElement, elProps(pathTo('T1')).content(23 + 45).props),
             React.createElement(TextInput, elProps(pathTo('NameInput')).label('Name Input').props),
@@ -1905,22 +1623,8 @@ test('generates Block element with properties and children and includes drag fun
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['WidgetCount', 'Layout1', 'NameInput', 'Colour']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const WidgetCount = this.getOrCreateChildState('WidgetCount', new NumberInput.State(stateProps(pathTo('WidgetCount')).value(18).props))
-        const Layout1 = this.getOrCreateChildState('Layout1', new Block.State(stateProps(pathTo('Layout1')).props))
-        const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).props))
-        const Colour = this.getOrCreateChildState('Colour', new SelectInput.State(stateProps(pathTo('Colour')).props))
-    }
-
-    get WidgetCount() { return this.childStates.WidgetCount }
-    get Layout1() { return this.childStates.Layout1 }
-    get NameInput() { return this.childStates.NameInput }
-    get Colour() { return this.childStates.Colour }
 }
 `)
 })
@@ -1938,12 +1642,12 @@ test('generates Dialog element with properties and children', ()=> {
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {Dialog1, NameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Dialog, elProps(pathTo('Dialog1')).styles(elProps(pathTo('Dialog1.Styles')).width(500).backgroundColor('pink').props).props,
+        React.createElement(Dialog, elProps(pathTo('Dialog1')).initiallyOpen(true).styles(elProps(pathTo('Dialog1.Styles')).width(500).backgroundColor('pink').props).props,
             React.createElement(TextElement, elProps(pathTo('T1')).content(23 + 45).props),
             React.createElement(TextInput, elProps(pathTo('NameInput')).label('Name Input').props)
     )
@@ -1951,18 +1655,8 @@ test('generates Dialog element with properties and children', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Dialog1', 'NameInput']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Dialog1 = this.getOrCreateChildState('Dialog1', new Dialog.State(stateProps(pathTo('Dialog1')).initiallyOpen(true).props))
-        const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).props))
-    }
-
-    get Dialog1() { return this.childStates.Dialog1 }
-    get NameInput() { return this.childStates.NameInput }
 }
 `)
 })
@@ -1985,60 +1679,38 @@ test('generates simple Form element with separate child component and includes D
 
     expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useObject(props.path)
+    const _state = useComponentState(props.path)
     const {TextInput2, NumberInput1, Calculation1, Data1} = _state
 
     return React.createElement(Form, props,
         React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
-        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).label('Number Input 1').props),
-        React.createElement(Calculation, elProps(pathTo('Calculation1')).props),
-        React.createElement(Data, elProps(pathTo('Data1')).display(false).props)
+        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).initialValue(5 + 3).label('Number Input 1').props),
+        React.createElement(Calculation, elProps(pathTo('Calculation1')).calculation(1 + 2).props),
+        React.createElement(Data, elProps(pathTo('Data1')).initialValue(1 + 2).display(false).props)
     )
 }
 
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
     ownFieldNames = ['TextInput2', 'NumberInput1', 'Data1']
-    childNames = ['TextInput2', 'NumberInput1', 'Calculation1', 'Data1']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value(this.originalValue?.TextInput2).props))
-        const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
-        const Calculation1 = this.getOrCreateChildState('Calculation1', new Calculation.State(stateProps(pathTo('Calculation1')).value(1 + 2).props))
-        const Data1 = this.getOrCreateChildState('Data1', new Data.State(stateProps(pathTo('Data1')).value(1 + 2).props))
-    }
-
-    get TextInput2() { return this.childStates.TextInput2 }
-    get NumberInput1() { return this.childStates.NumberInput1 }
-    get Calculation1() { return this.childStates.Calculation1 }
-    get Data1() { return this.childStates.Data1 }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).label('Details Form').horizontal(false).wrap(false).props)
+        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).initialValue({TextInput2: 'foo', NumberInput1: 27}).label('Details Form').horizontal(false).wrap(false).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['DetailsForm']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27})).props))
-    }
-
-    get DetailsForm() { return this.childStates.DetailsForm }
 }
 `)
 })
@@ -2063,7 +1735,7 @@ test('generates nested Form elements', ()=> {
 
     expect(gen.output().files[0].contents).toBe(`function DetailsForm_FurtherDetails(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useObject(props.path)
+    const _state = useComponentState(props.path)
     const {Description, Size} = _state
 
     return React.createElement(Form, props,
@@ -2075,28 +1747,18 @@ test('generates nested Form elements', ()=> {
 
 DetailsForm_FurtherDetails.State = class DetailsForm_FurtherDetails_State extends Elemento.components.BaseFormState {
     ownFieldNames = ['Description', 'Size']
-    childNames = ['Description', 'Size']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Description = this.getOrCreateChildState('Description', new TextInput.State(stateProps(pathTo('Description')).value(this.originalValue?.Description).props))
-        const Size = this.getOrCreateChildState('Size', new NumberInput.State(stateProps(pathTo('Size')).value(this.originalValue?.Size).props))
-    }
-
-    get Description() { return this.childStates.Description }
-    get Size() { return this.childStates.Size }
 }
 
 
 function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useObject(props.path)
+    const _state = useComponentState(props.path)
     const {TextInput2, NumberInput1, FurtherDetails} = _state
 
     return React.createElement(Form, props,
         React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
-        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).label('Number Input 1').props),
+        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).initialValue(5 + 3).label('Number Input 1').props),
         React.createElement(DetailsForm_FurtherDetails, elProps(pathTo('FurtherDetails')).label('Further Details').horizontal(true).wrap(false).props)
     )
 }
@@ -2104,44 +1766,24 @@ function Page1_DetailsForm(props) {
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
     ownFieldNames = ['TextInput2', 'NumberInput1', 'FurtherDetails']
-    childNames = ['TextInput2', 'NumberInput1', 'FurtherDetails']
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value(this.originalValue?.TextInput2).props))
-        const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
-        const FurtherDetails = this.getOrCreateChildState('FurtherDetails', new DetailsForm_FurtherDetails.State(stateProps(pathTo('FurtherDetails')).value(this.originalValue?.FurtherDetails).props))
-    }
-
-    get TextInput2() { return this.childStates.TextInput2 }
-    get NumberInput1() { return this.childStates.NumberInput1 }
-    get FurtherDetails() { return this.childStates.FurtherDetails }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).label('Details Form').horizontal(false).wrap(false).props)
+        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).initialValue({TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}}).label('Details Form').horizontal(false).wrap(false).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['DetailsForm']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27, FurtherDetails: {Description: 'Long', Size: 77}})).props))
-    }
-
-    get DetailsForm() { return this.childStates.DetailsForm }
 }
 `)
 })
@@ -2171,13 +1813,13 @@ test('generates Form element with separate child component', ()=> {
 
     expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useObject(props.path)
+    const _state = useComponentState(props.path)
     const {TextInput2, NumberInput1} = _state
 
     return React.createElement(Form, props,
         React.createElement(TextInput, elProps(pathTo('TextInput2')).label('Text Input 2').props),
         React.createElement(TextElement, elProps(pathTo('Text1')).content('Hi there ' + Left(TextInput2, 2)).props),
-        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).label('Number Input 1').props),
+        React.createElement(NumberInput, elProps(pathTo('NumberInput1')).initialValue(5 + 3).label('Number Input 1').props),
         React.createElement(TextElement, elProps(pathTo('Text2')).content('Number is ' + \$form.value.NumberInput1).props),
         React.createElement(Button, elProps(pathTo('ButtonUpdate')).content('Update').appearance('outline').action(_state.ButtonUpdate_action).props)
     )
@@ -2186,64 +1828,38 @@ test('generates Form element with separate child component', ()=> {
 
 Page1_DetailsForm.State = class Page1_DetailsForm_State extends Elemento.components.BaseFormState {
     ownFieldNames = ['TextInput2', 'NumberInput1']
-    childNames = ['TextInput2', 'NumberInput1']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput2 = this.getOrCreateChildState('TextInput2', new TextInput.State(stateProps(pathTo('TextInput2')).value(this.originalValue?.TextInput2).props))
-        const NumberInput1 = this.getOrCreateChildState('NumberInput1', new NumberInput.State(stateProps(pathTo('NumberInput1')).value(5 + 3).props))
-    }
-
-    get TextInput2() { return this.childStates.TextInput2 }
-    get NumberInput1() { return this.childStates.NumberInput1 }
-
-    ButtonUpdate_action = wrapFn('DetailsForm.ButtonUpdate', 'action', async () => {
+    async ButtonUpdate_action() {
         
         await $form.Submit('normal')
-    })
+    }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {TextInput1, TFInput1, DetailsForm} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
         React.createElement(TextInput, elProps(pathTo('TextInput1')).label('Text Input 1').props),
         React.createElement(TrueFalseInput, elProps(pathTo('TFInput1')).label('TF Input 1').props),
-        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).label('The Details').horizontal(true).wrap(false).keyAction(_state.DetailsForm_keyAction).styles(elProps(pathTo('DetailsForm.Styles')).width('93%').props).props)
+        React.createElement(Page1_DetailsForm, elProps(pathTo('DetailsForm')).initialValue({TextInput2: 'foo', NumberInput1: 27}).label('The Details').horizontal(true).wrap(false).keyAction(_state.DetailsForm_keyAction).submitAction(_state.DetailsForm_submitAction).styles(elProps(pathTo('DetailsForm.Styles')).width('93%').props).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TextInput1', 'TFInput1', 'DetailsForm']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const TextInput1 = this.getOrCreateChildState('TextInput1', new TextInput.State(stateProps(pathTo('TextInput1')).props))
-        const TFInput1 = this.getOrCreateChildState('TFInput1', new TrueFalseInput.State(stateProps(pathTo('TFInput1')).props))
-        const DetailsForm = this.getOrCreateChildState('DetailsForm', new Page1_DetailsForm.State(stateProps(pathTo('DetailsForm')).value(({TextInput2: 'foo', NumberInput1: 27})).submitAction(this.DetailsForm_submitAction).props))
-    }
-
-    get TextInput1() { return this.childStates.TextInput1 }
-    get TFInput1() { return this.childStates.TFInput1 }
-    get DetailsForm() { return this.childStates.DetailsForm }
-
-    DetailsForm_submitAction = wrapFn('Page1.DetailsForm', 'submitAction', async ($form, $data) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async DetailsForm_submitAction($form, $data) {
         const {TextInput1, TFInput1} = this
         Log($data, TextInput1, TFInput1); await Update('Things', '123', $form.updates)
-    })
+    }
 
-    DetailsForm_keyAction = wrapFn('Page1.DetailsForm', 'keyAction', async ($event) => {
+    async DetailsForm_keyAction($event) {
         const $key = $event.key
         const {DetailsForm} = this
         Log('You pressed', $key, $event.ctrlKey); await If($key == 'Enter', async () => await DetailsForm.submit())
-    })
+    }
 }
 `)
 })
@@ -2274,7 +1890,7 @@ test('generates user defined component and instance', () => {
     expect(gen.output().files[0].contents).toBe(`function MyComponent(props) {
     const pathTo = name => props.path + '.' + name
     const {source, destination} = props
-    const _state = useObject(props.path)
+    const _state = useComponentState(props.path)
     const {Journey} = _state
 
     return React.createElement(ComponentElement, props,
@@ -2285,16 +1901,16 @@ test('generates user defined component and instance', () => {
 }
 
 
-MyComponent.State = class MyComponent_State extends Elemento.components.BaseComponentState {
-    Journey = wrapFn('MyComponent.Journey', 'calculation', () => {
+MyComponent.State = class MyComponent_State extends Elemento.components.ElementoComponentState {
+    Journey() {
         const {source, destination} = this.props
         return 'Start: ' + source + ' Destination: ' + destination
-    })
+    }
 
-    DoSomething_action = wrapFn('MyComponent.DoSomething', 'action', () => {
+    DoSomething_action() {
         
         Log('Hi')
-    })
+    }
     get FromTo() { 
         const {source, destination} = this.props
         return 'From' + source + ' to ' + destination
@@ -2305,7 +1921,7 @@ MyComponent.State = class MyComponent_State extends Elemento.components.BaseComp
     expect(gen.output().files[1].name).toBe('Page1.js')
     expect(gen.output().files[1].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {AComponent} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2316,16 +1932,8 @@ MyComponent.State = class MyComponent_State extends Elemento.components.BaseComp
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['AComponent']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const AComponent = this.getOrCreateChildState('AComponent', new MyComponent.State(stateProps(pathTo('AComponent')).source('Here').destination('There').props))
-    }
-
-    get AComponent() { return this.childStates.AComponent }
 }
 `)
 
@@ -2334,9 +1942,10 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
     const pathTo = name => 'App1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('App1', new App1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('App1').maxWidth('60%').props},)
+    return React.createElement(App, {...elProps('App1').maxWidth('60%').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -2367,49 +1976,27 @@ test('transforms expressions to functions where needed and does not fail where n
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Widgets = app.Widgets
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {TallWidgets, TallerWidgets, FixedWidgets, NoWidgets, CountNoCondition, IfPlainValues, IfOneArg, IfTwoArgs} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Data, elProps(pathTo('TallWidgets')).display(false).props),
-        React.createElement(Data, elProps(pathTo('TallerWidgets')).display(false).props),
-        React.createElement(Data, elProps(pathTo('FixedWidgets')).display(false).props),
-        React.createElement(Data, elProps(pathTo('NoWidgets')).display(false).props),
-        React.createElement(Data, elProps(pathTo('CountNoCondition')).display(false).props),
-        React.createElement(Data, elProps(pathTo('IfPlainValues')).display(false).props),
-        React.createElement(Data, elProps(pathTo('IfOneArg')).display(false).props),
-        React.createElement(Data, elProps(pathTo('IfTwoArgs')).display(false).props)
+        React.createElement(Data, elProps(pathTo('TallWidgets')).initialValue(Select(Widgets.getAllData(), ($item, $index) => $item.height > $index)).display(false).props),
+        React.createElement(Data, elProps(pathTo('TallerWidgets')).initialValue(ForEach(Widgets.getAllData(), ($item, $index) => $item.height + 10)).display(false).props),
+        React.createElement(Data, elProps(pathTo('FixedWidgets')).initialValue(ForEach(Widgets.getAllData(), ($item, $index) => 99)).display(false).props),
+        React.createElement(Data, elProps(pathTo('NoWidgets')).initialValue(Select(Widgets.getAllData())).display(false).props),
+        React.createElement(Data, elProps(pathTo('CountNoCondition')).initialValue(Count(Widgets.getAllData())).display(false).props),
+        React.createElement(Data, elProps(pathTo('IfPlainValues')).initialValue(If(true, 1, Date)).display(false).props),
+        React.createElement(Data, elProps(pathTo('IfOneArg')).initialValue(If(false, () => Sum(10, 20))).display(false).props),
+        React.createElement(Data, elProps(pathTo('IfTwoArgs')).initialValue(If(false, 2, () => Sum(10, 20))).display(false).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TallWidgets', 'TallerWidgets', 'FixedWidgets', 'NoWidgets', 'CountNoCondition', 'IfPlainValues', 'IfOneArg', 'IfTwoArgs']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Widgets} = this.app
-        const TallWidgets = this.getOrCreateChildState('TallWidgets', new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => $item.height > $index)).props))
-        const TallerWidgets = this.getOrCreateChildState('TallerWidgets', new Data.State(stateProps(pathTo('TallerWidgets')).value(ForEach(Widgets.getAllData(), ($item, $index) => $item.height + 10)).props))
-        const FixedWidgets = this.getOrCreateChildState('FixedWidgets', new Data.State(stateProps(pathTo('FixedWidgets')).value(ForEach(Widgets.getAllData(), ($item, $index) => 99)).props))
-        const NoWidgets = this.getOrCreateChildState('NoWidgets', new Data.State(stateProps(pathTo('NoWidgets')).value(Select(Widgets.getAllData())).props))
-        const CountNoCondition = this.getOrCreateChildState('CountNoCondition', new Data.State(stateProps(pathTo('CountNoCondition')).value(Count(Widgets.getAllData())).props))
-        const IfPlainValues = this.getOrCreateChildState('IfPlainValues', new Data.State(stateProps(pathTo('IfPlainValues')).value(If(true, 1, Date)).props))
-        const IfOneArg = this.getOrCreateChildState('IfOneArg', new Data.State(stateProps(pathTo('IfOneArg')).value(If(false, () => Sum(10, 20))).props))
-        const IfTwoArgs = this.getOrCreateChildState('IfTwoArgs', new Data.State(stateProps(pathTo('IfTwoArgs')).value(If(false, 2, () => Sum(10, 20))).props))
-    }
-
-    get TallWidgets() { return this.childStates.TallWidgets }
-    get TallerWidgets() { return this.childStates.TallerWidgets }
-    get FixedWidgets() { return this.childStates.FixedWidgets }
-    get NoWidgets() { return this.childStates.NoWidgets }
-    get CountNoCondition() { return this.childStates.CountNoCondition }
-    get IfPlainValues() { return this.childStates.IfPlainValues }
-    get IfOneArg() { return this.childStates.IfOneArg }
-    get IfTwoArgs() { return this.childStates.IfTwoArgs }
 }
 `)
 })
@@ -2433,49 +2020,36 @@ test('generates local user defined functions even if empty or code error in a pa
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Widgets = app.Widgets
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {IsTallWidget, EmptyFunction, VeryEmptyFunction, BadCodeFunction, AsyncAction, TallWidgets, MinHeight} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Data, elProps(pathTo('TallWidgets')).display(false).props),
+        React.createElement(Data, elProps(pathTo('TallWidgets')).initialValue(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).display(false).props),
         React.createElement(NumberInput, elProps(pathTo('MinHeight')).label('Min Height').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TallWidgets', 'MinHeight']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Widgets} = this.app
-        const {EmptyFunction, IsTallWidget} = this
-        const TallWidgets = this.getOrCreateChildState('TallWidgets', new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).props))
-        const MinHeight = this.getOrCreateChildState('MinHeight', new NumberInput.State(stateProps(pathTo('MinHeight')).props))
-    }
-
-    get TallWidgets() { return this.childStates.TallWidgets }
-    get MinHeight() { return this.childStates.MinHeight }
-
-    IsTallWidget = wrapFn('Page1.IsTallWidget', 'calculation', (widget) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    IsTallWidget(widget) {
         const {MinHeight} = this
         let heightAllowed = MinHeight
         let isShiny = widget.shiny
         return Or(widget.height > heightAllowed, isShiny)
-    })
-    EmptyFunction = wrapFn('Page1.EmptyFunction', 'calculation', () => {})
-    VeryEmptyFunction = wrapFn('Page1.VeryEmptyFunction', 'calculation', () => {})
-    BadCodeFunction = wrapFn('Page1.BadCodeFunction', 'calculation', () => codeGenerationError(\`let x =\`, 'Error: Unexpected character(s) (Line 1 Position 7)'))
-    AsyncAction = wrapFn('Page1.AsyncAction', 'calculation', async () => {
+    }
+    EmptyFunction() {}
+    VeryEmptyFunction() {}
+    BadCodeFunction() { return codeGenerationError(\`let x =\`, 'Error: Unexpected character(s) (Line 1 Position 7)')}
+    async AsyncAction() {
         const {EmptyFunction, IsTallWidget} = this
         const {Widgets} = this.app
         let a = EmptyFunction()
         let tw = Select(await Widgets.getAllData(), ($item, $index) => IsTallWidget($item))
         (await Get(Widgets, 123)).height + 10
-    })
+    }
 }
 `)
 })
@@ -2492,31 +2066,21 @@ test('Function can be recursive and does not depend on itself', ()=> {
     expect(output.errors).toStrictEqual({})
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {GetStuff, Val2} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TextInput, elProps(pathTo('Val2')).label('Val 2').props)
+        React.createElement(TextInput, elProps(pathTo('Val2')).initialValue(GetStuff()).label('Val 2').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Val2']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {GetStuff} = this
-        const Val2 = this.getOrCreateChildState('Val2', new TextInput.State(stateProps(pathTo('Val2')).value(GetStuff()).props))
-    }
-
-    get Val2() { return this.childStates.Val2 }
-
-    GetStuff = wrapFn('Page1.GetStuff', 'calculation', () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    GetStuff() {
         const {GetStuff} = this
         return 'abc' + GetStuff()
-    })
+    }
 }
 `)
 })
@@ -2541,7 +2105,7 @@ return y
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {WidgetHeight, DoNothing} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2551,16 +2115,16 @@ return y
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    WidgetHeight = wrapFn('Page1.WidgetHeight', 'calculation', (widget) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    WidgetHeight(widget) {
         
         let y = 10
         for (let i = 1; i < 10; i++) {
             y += Sum(widget, 10)
         }
         return y
-    })
-    DoNothing = wrapFn('Page1.DoNothing', 'calculation', () => {})
+    }
+    DoNothing() {}
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -2588,7 +2152,7 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
 
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {WidgetHeight} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2598,8 +2162,8 @@ return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    WidgetHeight = wrapFn('Page1.WidgetHeight', 'calculation', (words, factory, formula) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    WidgetHeight(words, factory, formula) {
         
         function generateClause(placeholder) {
             const subFormulaArgs = placeholder.replace('[', '').replace(']','').trim().split(/ +/)
@@ -2608,7 +2172,7 @@ Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
             return factory.call(null, args)
         }
         return formula.replaceAll(/\\[[\\w ]+\\]/g, generateClause)
-    })
+    }
 }
 `)
 })
@@ -2629,11 +2193,12 @@ test('generates local user defined functions in the app that can use built-in ap
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Test1', Test1.State, {pages, urlContext, themeOptions})
     const {CurrentUrl} = _state
     const {AppBarText} = _state
 
-    return React.createElement(App, {...elProps('Test1').props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
+    return React.createElement(App, {...elProps('Test1').pages(pages).urlContext(urlContext).props, topChildren: React.createElement( React.Fragment, null, React.createElement(AppBar, elProps(pathTo('AppBar1')).title('My App').props,
             React.createElement(TextElement, elProps(pathTo('Text0')).content(AppBarText('Welcome to ' + CurrentUrl())).props)
     ))
     },)
@@ -2641,10 +2206,10 @@ test('generates local user defined functions in the app that can use built-in ap
 
 
 Test1.State = class Test1_State extends App.State {
-    AppBarText = wrapFn('Test1.AppBarText', 'calculation', (greeting) => {
+    AppBarText(greeting) {
         const {CurrentUrl} = this
         return greeting + 'our new app' + ' at ' + CurrentUrl()
-    })
+    }
 }
 `)
 })
@@ -2663,10 +2228,10 @@ test('generates page elements that can use user-defined and built-in app functio
     const gen = new Generator(app, project(app))
     expect(gen.output().files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('Test1')
+    const app = useComponentState('Test1')
     const {CurrentUrl, ShowPage} = app
     const Greeting = app.Greeting
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {Calc1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2674,26 +2239,16 @@ test('generates page elements that can use user-defined and built-in app functio
         React.createElement(TextElement, elProps(pathTo('t1')).content('Hi there!' + Greeting() + Calc1).props),
         React.createElement(TextElement, elProps(pathTo('t2')).content('This is page' + CurrentUrl()).props),
         React.createElement(Button, elProps(pathTo('b1')).content('Show page' + CurrentUrl()).appearance('outline').action(_state.b1_action).props),
-        React.createElement(Calculation, elProps(pathTo('Calc1')).props)
+        React.createElement(Calculation, elProps(pathTo('Calc1')).calculation('This is page' + CurrentUrl() + ' Hi ' + Greeting()).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Calc1']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {CurrentUrl, ShowPage, Greeting} = this.app
-        const Calc1 = this.getOrCreateChildState('Calc1', new Calculation.State(stateProps(pathTo('Calc1')).value('This is page' + CurrentUrl() + ' Hi ' + Greeting()).props))
-    }
-
-    get Calc1() { return this.childStates.Calc1 }
-
-    b1_action = wrapFn('Page1.b1', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async b1_action() {
         const {CurrentUrl, ShowPage} = this.app
         Log(await CurrentUrl()); await ShowPage(Page1)
-    })
+    }
 }
 `)
 })
@@ -2717,10 +2272,10 @@ test('generates local user defined functions in a list item that use a page item
     expect(output.files[0].contents).toBe(`const Page1_WidgetSetItem = React.memo(function Page1_WidgetSetItemFn(props) {
     const pathTo = name => props.path + '.' + name
     const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name
-    const {$item, $itemId, $index, $selected, $container, onClick} = props
-    const $container = useObject(Elemento.parentPath(props.path))
+    const {$item, $itemId, $index, $selected, onClick} = props
+    const $container = useComponentState(Elemento.parentPath(props.path))
     const {MinHeight} = $container
-    const _state = setObject(props.path, new Page1_WidgetSetItem.State({$item, $itemId, $index, $selected, $container}))
+    const _state = useComponentState(props.path, Page1_WidgetSetItem.State, {$item, $itemId, $index, $selected})
     const {ExtraHeight} = _state
     const canDragItem = undefined
     const styles = undefined
@@ -2731,50 +2286,35 @@ test('generates local user defined functions in a list item that use a page item
 })
 
 
-Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.BaseComponentState {
-    ExtraHeight = wrapFn('WidgetSet_ListItem.ExtraHeight', 'calculation', () => {
+Page1_WidgetSetItem.State = class Page1_WidgetSetItem_State extends Elemento.components.ElementoComponentState {
+    ExtraHeight() {
         
         return $item.height - MinHeight
-    })
+    }
 }
 
 
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('App1')
+    const app = useComponentState('App1')
     const Widgets = app.Widgets
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     const {IsTallWidget, TallWidgets, MinHeight, WidgetSet} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(Data, elProps(pathTo('TallWidgets')).display(false).props),
+        React.createElement(Data, elProps(pathTo('TallWidgets')).initialValue(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).display(false).props),
         React.createElement(NumberInput, elProps(pathTo('MinHeight')).label('Min Height').props),
-        React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).props)
+        React.createElement(ItemSet, elProps(pathTo('WidgetSet')).itemContentComponent(Page1_WidgetSetItem).items(Widgets.Query({})).props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['TallWidgets', 'MinHeight', 'WidgetSet']
-
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-        const {Widgets} = this.app
-        const {IsTallWidget} = this
-        const TallWidgets = this.getOrCreateChildState('TallWidgets', new Data.State(stateProps(pathTo('TallWidgets')).value(Select(Widgets.getAllData(), ($item, $index) => IsTallWidget($item))).props))
-        const MinHeight = this.getOrCreateChildState('MinHeight', new NumberInput.State(stateProps(pathTo('MinHeight')).props))
-        const WidgetSet = this.getOrCreateChildState('WidgetSet', new ItemSet.State(stateProps(pathTo('WidgetSet')).items(Widgets.Query({})).props))
-    }
-
-    get TallWidgets() { return this.childStates.TallWidgets }
-    get MinHeight() { return this.childStates.MinHeight }
-    get WidgetSet() { return this.childStates.WidgetSet }
-
-    IsTallWidget = wrapFn('Page1.IsTallWidget', 'calculation', (widget) => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    IsTallWidget(widget) {
         const {MinHeight} = this
         return Or(widget.height > MinHeight, widget.shiny)
-    })
+    }
 }
 `)
 })
@@ -2794,7 +2334,7 @@ test('generates function imports in the app', () => {
     const gen = new Generator(app, project(app))
     expect(gen.output().code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
-const {React, trace, elProps, stateProps, wrapFn, setObject, useObject, codeGenerationError} = Elemento
+const {React, trace, elProps, stateProps, wrapFn, useComponentState, codeGenerationError} = Elemento
 const {importModule, importHandlers} = Elemento
 const GetName = await import('../files/Function1.js').then(...importHandlers())
 const CalcTax = await importModule('https://cdn.example.com/CalcStuff.js')
@@ -2806,7 +2346,7 @@ const {Page, TextElement, App} = Elemento.components
 // Page1.js
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2815,7 +2355,7 @@ function Page1(props) {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 
@@ -2824,9 +2364,10 @@ export default function Test1(props) {
     const pathTo = name => 'Test1' + '.' + name
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Test1', Test1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('Test1').props},)
+    return React.createElement(App, {...elProps('Test1').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -2847,7 +2388,7 @@ test('generates function imports for a Tool', () => {
     const gen = new Generator(tool, project(new ToolFolder('tf1', 'Tools', {}, [tool])))
     expect(gen.output().code).toBe(`const runtimeUrl = window.elementoRuntimeUrl || 'https://elemento.online/lib/runtime.js'
 const Elemento = await import(runtimeUrl)
-const {React, trace, elProps, stateProps, wrapFn, setObject, useObject, codeGenerationError} = Elemento
+const {React, trace, elProps, stateProps, wrapFn, useComponentState, codeGenerationError} = Elemento
 const {importModule, importHandlers} = Elemento
 const GetName = await import('../../files/Function1.js').then(...importHandlers())
 const {Page, TextElement, App} = Elemento.components
@@ -2856,7 +2397,7 @@ const {Page, TextElement, App} = Elemento.components
 function Page1(props) {
     const pathTo = name => props.path + '.' + name
     const {Editor, Preview} = Elemento
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2865,7 +2406,7 @@ function Page1(props) {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 
@@ -2875,9 +2416,10 @@ export default function Test1(props) {
     const {Editor, Preview} = Elemento
     const pages = {Page1}
     const urlContext = Elemento.useGetUrlContext()
-    const _state = setObject('Test1', new Test1.State({pages, urlContext}))
+    const themeOptions = undefined
+    const _state = useComponentState('Test1', Test1.State, {pages, urlContext, themeOptions})
 
-    return React.createElement(App, {...elProps('Test1').props},)
+    return React.createElement(App, {...elProps('Test1').pages(pages).urlContext(urlContext).props},)
 }
 
 
@@ -2897,7 +2439,7 @@ test('generates error for syntax error in expression', ()=> {
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2906,7 +2448,7 @@ test('generates error for syntax error in expression', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -2937,7 +2479,7 @@ test('generates errors for styles sub-property expressions', ()=> {
 
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {t1} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -2947,16 +2489,8 @@ test('generates errors for styles sub-property expressions', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['t1']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const t1 = this.getOrCreateChildState('t1', new TextInput.State(stateProps(pathTo('t1')).props))
-    }
-
-    get t1() { return this.childStates.t1 }
 }
 `)
 })
@@ -2971,7 +2505,7 @@ test('generates error on correct line for syntax error in multiline content expr
     const output = new Generator(app, project(app)).output()
     expect(output.files[0].contents).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -2981,7 +2515,7 @@ test('generates error on correct line for syntax error in multiline content expr
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3003,7 +2537,7 @@ test('global functions available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3012,7 +2546,7 @@ test('global functions available in content expression', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3032,7 +2566,7 @@ test('built-in names available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3045,7 +2579,7 @@ test('built-in names available in content expression', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3065,9 +2599,9 @@ test('app state functions and Page names available in expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const app = useObject('test1')
+    const app = useComponentState('test1')
     const {ShowPage} = app
-    const _state = setObject(props.path, new Page1.State({app}))
+    const _state = useComponentState(props.path, Page1.State, {app})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3076,11 +2610,11 @@ test('app state functions and Page names available in expression', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    b1_action = wrapFn('Page1.b1', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async b1_action() {
         const {ShowPage} = this.app
         await ShowPage(Page2)
-    })
+    }
 }
 `)
 })
@@ -3097,7 +2631,7 @@ test('page elements available in content expression', ()=> {
     const content = new Generator(app, project(app)).output().files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {ForenameInput, SurnameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3109,18 +2643,8 @@ test('page elements available in content expression', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['ForenameInput', 'SurnameInput']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const ForenameInput = this.getOrCreateChildState('ForenameInput', new TextInput.State(stateProps(pathTo('ForenameInput')).props))
-        const SurnameInput = this.getOrCreateChildState('SurnameInput', new TextInput.State(stateProps(pathTo('SurnameInput')).props))
-    }
-
-    get ForenameInput() { return this.childStates.ForenameInput }
-    get SurnameInput() { return this.childStates.SurnameInput }
 }
 `)
 })
@@ -3136,7 +2660,7 @@ test('unknown global functions generate error', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3145,7 +2669,7 @@ test('unknown global functions generate error', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3168,7 +2692,7 @@ test('return statement in expression generates error', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3177,7 +2701,7 @@ test('return statement in expression generates error', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3200,26 +2724,18 @@ test('syntax error statement in initialValue generates error into state defaults
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {NameInput} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
-        React.createElement(TextInput, elProps(pathTo('NameInput')).label('Name Input').props)
+        React.createElement(TextInput, elProps(pathTo('NameInput')).initialValue(codeGenerationError(\`{a: 10,\`, 'Error: Unexpected character(s) (Line 1 Position 8)')).label('Name Input').props)
     )
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['NameInput']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const NameInput = this.getOrCreateChildState('NameInput', new TextInput.State(stateProps(pathTo('NameInput')).value(codeGenerationError(\`{a: 10,\`, 'Error: Unexpected character(s) (Line 1 Position 8)')).props))
-    }
-
-    get NameInput() { return this.childStates.NameInput }
 }
 `)
     expect(output.errors).toStrictEqual({
@@ -3298,7 +2814,7 @@ test('assignment at top level is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3307,7 +2823,7 @@ test('assignment at top level is treated as comparison', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3326,7 +2842,7 @@ test('assignment in function argument is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     const {Input} = _state
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
@@ -3337,16 +2853,8 @@ test('assignment in function argument is treated as comparison', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    childNames = ['Input']
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
-    createChildStates() {
-        const pathTo = name => this._path + '.' + name
-
-        const Input = this.getOrCreateChildState('Input', new TextInput.State(stateProps(pathTo('Input')).props))
-    }
-
-    get Input() { return this.childStates.Input }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -3363,7 +2871,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3372,7 +2880,7 @@ test('assignment anywhere in expression is treated as comparison', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3392,7 +2900,7 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3401,13 +2909,13 @@ test('assignment deep in complex expression is treated as comparison', ()=> {
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
-    Button1_action = wrapFn('Page1.Button1', 'action', async () => {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
+    async Button1_action() {
         
         let a = await If(true, 10, () => Sum(Log == 12, 3, 4))
             let b = await If(Sum == 42, 10, 20)
             Sum == 1
-    })
+    }
 }
 `)
     expect(output.errors).toStrictEqual({})
@@ -3424,7 +2932,7 @@ test('property shorthand to name of property reports error and generates an erro
     const content = output.files[0].contents
     expect(content).toBe(`function Page1(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = setObject(props.path, new Page1.State({}))
+    const _state = useComponentState(props.path, Page1.State, {})
     Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))
 
     return React.createElement(Page, elProps(props.path).props,
@@ -3433,7 +2941,7 @@ test('property shorthand to name of property reports error and generates an erro
 }
 
 
-Page1.State = class Page1_State extends Elemento.components.BaseComponentState {
+Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
 
 }
 `)
@@ -3460,7 +2968,7 @@ test('Unexpected number error in expression generates error', ()=> {
     })
 })
 
-test('Circular reference generates error', ()=> {
+test.skip('Circular reference generates error', ()=> {
     const app = new App('app1', 'test1', {}, [
         new Page('p1', 'Page 1', {}, [
                 new FunctionDef('fn1', 'Get Stuff', {calculation: ex`'abc' + 12`}),

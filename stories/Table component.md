@@ -28,7 +28,7 @@ Further requirements
 - OR override record
 - Auto-format from types of first record
 - Min/max display widths for certain data types
-- Cell styles is an object that has general top-level defaults plus individual styles for each cell, produces a function
+- ✅ Cell styles is an object that has general top-level defaults plus individual styles for each cell, produces a function
 
 
 Technical

@@ -787,7 +787,7 @@ ${generateChildren(form, indentLevel2, form)}
                 case 'multilineExpression': {
                     const argList = (argumentNames ?? []).join(', ')
                     const body = `${bodyPrefix}${exprCode}`
-                    const asyncPrefix = body.match(/\bawait\b/) ? '/*async*/ ' : ''
+                    const asyncPrefix = body.match(/\bawait\b/) ? '/*async*/' : ''
                     return exprCode.trim() ? `${asyncPrefix}(${argList}) {\n${indent(body, '        ')}\n    }` : '() {}'
                 }
 

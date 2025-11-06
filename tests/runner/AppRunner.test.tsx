@@ -7,9 +7,10 @@ import React, {createElement} from 'react'
 import * as Elemento from '../../src/runtime/index'
 import {useComponentState} from '../../src/runtime/index'
 
-import {actWait, testContainer} from '../testutil/rtlHelpers'
+import {testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
+import {DEBUG_TIMEOUT, wait} from '../testutil/testHelpers'
 
 vi.mock('../../src/runtime/components/authentication')   // prevent errors
 
@@ -28,7 +29,7 @@ const testApp = (version: string) => {
         const pathWith = (name: string) => props.path + '.' + name
         const {Page, TextElement, TextInput, Image} = Elemento.components
         const app = useComponentState('AppOne') as unknown as AppData
-        const _state = useComponentState(props.path)
+        const _state = useComponentState(props.path, MainPage.State, {})
         const {input1} = _state as any
 
         return React.createElement(Page, {path: props.path},
@@ -40,11 +41,14 @@ const testApp = (version: string) => {
             React.createElement(Image, {path: pathWith('TheImage'), source: 'Duck.jpg'}),
         )
     }
+    MainPage.State = class MainPage_State extends Elemento.components.BaseComponentState<any> {}
+
 
     function AppOne(_props: {urlContext: UrlContext}) {
         const pages = {MainPage: MainPage as any}
         const {App} = Elemento.components
         const urlContext = Elemento.useGetUrlContext() as UrlContext
+        const _state = useComponentState('AppOne', App.State, {pages, urlContext, themeOptions: {}})
         return React.createElement(App, {path: 'AppOne', pages, urlContext})
     }
 
@@ -100,13 +104,15 @@ test('updates app on page', () => {
 })
 
 test('app can set state', async () => {
+    await wait(100)
     await enter('input1', 'cool')
+    await wait(100)
     expectEl('SecondText').toHaveTextContent('Input is cool')
-})
+}, DEBUG_TIMEOUT)
 
 test('app can keep state when app is updated', async () => {
     renderThe(appRunner(testApp('One')))
-    await actWait(() => enter('input1', 'cool'))
+    await enter('input1', 'cool')
     renderThe(appRunner(testApp('Two')))
     expectEl('SecondText').toHaveTextContent('Input is cool')
 })

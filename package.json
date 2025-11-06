@@ -34,7 +34,7 @@
     "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@hapi/topo": "^6.0.0",
+    "@hapi/topo": "^6.0.2",
     "@isomorphic-git/lightning-fs": "^4.6.0",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
