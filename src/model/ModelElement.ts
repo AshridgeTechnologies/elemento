@@ -122,9 +122,6 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
             throw new Error('Unknown property type: ' + typeOrRef)
 
         })()
-        if (metadata?.stateProps?.includes(name)) {
-            def.state = true
-        }
         return def
 
     })

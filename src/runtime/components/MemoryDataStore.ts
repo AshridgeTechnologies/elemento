@@ -17,7 +17,7 @@ export const MemoryDataStoreSchema: ElementSchema = {
     "$ref": "#/definitions/BaseElement",
     "kind": "MemoryDataStore",
     "icon": "memory",
-    "elementType": "backgroundFixed",
+    "elementType": "background",
     "parentType": "App",
     "properties": {
         "properties": {

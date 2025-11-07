@@ -1320,8 +1320,7 @@ Page1.State = class Page1_State extends Elemento.components.ElementoComponentSta
     const urlContext = Elemento.useGetUrlContext()
     const themeOptions = undefined
     const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
-    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).initialValue(({ Widgets: { x1: {a: 10}}})).props))
-    const {Widgets, Store2, Store3} = _state
+    const {Widgets, Store1, Store2, Store3} = _state
 
     return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},
         React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(Store1).collectionName('Widgets').display(false).props)
@@ -1375,8 +1374,7 @@ Page1.State = class Page1_State extends Elemento.components.ElementoComponentSta
     const urlContext = Elemento.useGetUrlContext()
     const themeOptions = undefined
     const _state = useComponentState('App1', App1.State, {pages, urlContext, themeOptions})
-    const [Store1] = React.useState(new MemoryDataStore(stateProps(pathTo('Store1')).initialValue(({ Widgets: { x1: {a: 10}}})).props))
-    const {Widgets} = _state
+    const {Widgets, Store1} = _state
 
     return React.createElement(App, {...elProps('App1').pages(pages).urlContext(urlContext).props},
         React.createElement(Collection, elProps(pathTo('Widgets')).dataStore(codeGenerationError(\`StoreX\`, 'Unknown names: StoreX')).collectionName('Widgets').display(false).props)
@@ -1850,15 +1848,14 @@ function Page1(props) {
 
 
 Page1.State = class Page1_State extends Elemento.components.ElementoComponentState {
-    async DetailsForm_submitAction($form, $data) {
-        const {TextInput1, TFInput1} = this
-        Log($data, TextInput1, TFInput1); await Update('Things', '123', $form.updates)
-    }
-
     async DetailsForm_keyAction($event) {
         const $key = $event.key
         const {DetailsForm} = this
         Log('You pressed', $key, $event.ctrlKey); await If($key == 'Enter', async () => await DetailsForm.submit())
+    }
+    async DetailsForm_submitAction($form, $data) {
+        const {TextInput1, TFInput1} = this
+        Log($data, TextInput1, TFInput1); await Update('Things', '123', $form.updates)
     }
 }
 `)

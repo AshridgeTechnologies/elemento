@@ -74,7 +74,7 @@ export abstract class BaseApp<PropsType extends Properties = Properties> extends
             propDef('messageAction', eventAction('$sender', '$message')),
             propDef('cookieMessage', 'string'),
             propDef('faviconUrl', 'string'),
-            propDef('themeOptions', 'expr', {state: true}),
+            propDef('themeOptions', 'expr'),
         ]
     }
 

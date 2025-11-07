@@ -19,8 +19,8 @@ export default class ServerAppConnector extends BaseElement<Properties> implemen
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('serverApp', 'expr', {state: true}),
-            propDef('serverUrl', 'string', {state: true}),
+            propDef('serverApp', 'expr'),
+            propDef('serverUrl', 'string'),
         ]
     }
 

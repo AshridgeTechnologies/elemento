@@ -107,7 +107,7 @@ export default class Project extends BaseElement<Properties> implements Element 
             const componentDef = this.userDefinedComponents.find( comp => comp.codeName === element.kind)
             if (!componentDef) throw new Error('Component Def ' + element.kind + ' not found')
             const propDefs = componentDef.findChildElements(InputProperty)
-                .map( input => propDef(input.codeName, input.propertyType, {state: true, stateAndDom: true}))
+                .map( input => propDef(input.codeName, input.propertyType))
             return [...propDefs, ...visualPropertyDefs()]
         }
 

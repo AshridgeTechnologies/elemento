@@ -8,7 +8,8 @@ import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeEl
 import {notEmpty} from '../util/helpers'
 import {
     allElements,
-    convertAstToValidJavaScript, functionInputs,
+    convertAstToValidJavaScript,
+    functionInputs,
     generateDestructures,
     GeneratedFile,
     indent,
@@ -277,17 +278,14 @@ export default class Generator {
             return functionCode && `    ${asyncPrefix}${functionName}${functionCode}`
         }
 
-        const actionHandlers = (el: Element, state: boolean) => {
-            return this.project.propertyDefsOf(el)
-                .filter( def => Boolean(def.state) === state )
-                .filter(isActionProperty)
-                .map( (def) => actionHandler(el, def))
-                .filter( notEmpty )
-        }
-        const uiElementActionHandlers = (el: Element) => actionHandlers(el, false)
-        const stateActionHandlers = (el: Element) => actionHandlers(el, true)
-        const generateActionHandlers = (elements: ReadonlyArray<Element>, actionHandlerFn: any) => {
-            const actions = flatten(elements.map(  actionHandlerFn) as string[][])
+        const generateActionHandlers = (elements: ReadonlyArray<Element>) => {
+            const actionHandlers = (el: Element) => {
+                return this.project.propertyDefsOf(el)
+                    .filter(isActionProperty)
+                    .map( (def) => actionHandler(el, def))
+                    .filter( notEmpty )
+            }
+            const actions = flatten(elements.map(  actionHandlers) as string[][])
             return actions.join('\n')
         }
 
@@ -297,27 +295,6 @@ export default class Generator {
             const [configFunction] = this.serverAppConfigFunction(connector)
             topLevelFunctions.add(configFunction)
         })
-        // const stateInitializers = nonFunctionComponents.map((el): StateInitializer => {
-        //     // const initState = this.initialState(el, topLevelFunctions, componentIsListItem ? component.itemSet : component)
-        //     // const identifiers = this.parser.stateIdentifiers(el.id)
-        //     // const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
-        //     // return [el, initState, stateComponentIdentifiersUsed]
-        // })//.filter(([, initState]) => !!initState)
-
-        // const sortStateInitializers = () => {
-        //     try {
-        //         return topoSort(stateInitializers)
-        //     } catch(e: any) {
-        //         if (e instanceof TopoSortError) {
-        //             this.errors[e.elementId] ||= {}
-        //             this.errors[e.elementId]['element'] = e.message
-        //         } else {
-        //             throw e
-        //         }
-        //
-        //         return stateInitializers
-        //     }
-        // }
 
         const dependencyDeclarations =  (el: Element, propertyName: string, lineIndent = '') => {
             const identifiers = this.parser.statePropertyIdentifiers(el.id, propertyName)
@@ -345,12 +322,6 @@ export default class Generator {
     }`
         }
 
-        const backgroundFixedComponents = componentIsApp ? component.otherComponents.filter(comp => this.project.componentTypeIs(comp, 'backgroundFixed')) : []
-        const backgroundFixedDeclarations = backgroundFixedComponents.map(comp => {
-            const entry = this.initialState(comp, topLevelFunctions, componentIsListItem ? component.itemSet : component)
-            return `    const [${comp.codeName}] = React.useState(${entry})`
-        }).join('\n')
-
         const pathTo = componentIsApp ? `    const pathTo = name => '${component.codeName}' + '.' + name`
             : `    const pathTo = name => props.path + '.' + name`
         const parentPathWith = canUseContainerElements ? `    const parentPathWith = name => Elemento.parentPath(props.path) + '.' + name` : ''
@@ -366,7 +337,7 @@ export default class Generator {
 
         const declarations = [
             pathTo, parentPathWith, inputProperties, extraDeclarations, dragFunctionDeclarations, elementoDeclarations,
-            backgroundFixedDeclarations, stateBlock, listItemVarDeclarations
+            stateBlock, listItemVarDeclarations
         ].filter(d => d !== '').join('\n')
         const exportClause = componentIsApp ? 'export default ' : ''
         const debugHook = componentIsPage  ? `\n    Elemento.elementoDebug((getObject) => eval(Elemento.useDebugExpr()))` : ''
@@ -382,45 +353,28 @@ ${declarations}${debugHook}
         const componentFunction = `${exportClause}${wrappedFunction}${notLoggedInPage}
 `.trimStart()
 
-
-        // const appFeatures = component === app ? appStateFunctionIdentifiers : [...appStateFunctionIdentifiers, ...appLevelIdentifiers]
-        // const appRef = component === app ? 'this' : 'this.app'
-        // const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = ${appRef}` : ''
-        // const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
-
-        // const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {
-        //     const name = el.codeName
-        //     if ((initState as FunctionDef).kind === 'Function') {
-        //         return ''// `    const ${name} = this.getOrCreateChildState('${name}', ${functionDeclaration(initState)})`
-        //     } else {
-        //         const stateObjectDeclaration = `        const ${name} = this.getOrCreateChildState('${name}', ${initState})`
-        //         return [stateObjectDeclaration].filter( notBlank ).join('\n')
-        //     }
-        // }).join('\n')
-
         const stateFunctionDecls = functionComponents.map( el => functionDeclaration(el as FunctionDef)).join('\n')
-        const stateActionHandlerFunctions = generateActionHandlers(allComponentElements, stateActionHandlers)
-        const uiActionHandlers = generateActionHandlers(allComponentElements, uiElementActionHandlers)
+        const actionHandlerFunctions = generateActionHandlers(allComponentElements)
 
         const baseClass = componentIsApp ? 'App.State' : 'Elemento.components.ElementoComponentState'
         const pageOrAppStateClass = componentIsPage || componentIsApp ? `${component.codeName}.State = class ${component.codeName}_State extends ${baseClass} {
-${[stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[stateFunctionDecls, actionHandlerFunctions].filter(identity).join('\n\n')}
 }
 `.trimStart() : ''
 
         const stateNames = statefulComponents.filter( el => el.kind !== 'Calculation').map( el => el.codeName )
         const formStateClass = componentIsForm ? `${functionName}.State = class ${functionName}_State extends Elemento.components.BaseFormState {
     ownFieldNames = [${stateNames.map(quote).join(', ')}]
-${[stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[stateFunctionDecls, actionHandlerFunctions].filter(identity).join('\n\n')}
 }
 `.trimStart() : ''
 
         const itemSetItemStateClass = componentIsListItem ? `${functionName}.State = class ${functionName}_State extends Elemento.components.ElementoComponentState {
-${[stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[stateFunctionDecls, actionHandlerFunctions].filter(identity).join('\n\n')}
 }
 `.trimStart() : ''
         const componentStateClass = componentIsComponentDef && (component as ComponentDef).isStateful(this.project) ? `${functionName}.State = class ${functionName}_State extends Elemento.components.ElementoComponentState {
-${[stateFunctionDecls, stateActionHandlerFunctions, uiActionHandlers].filter(identity).join('\n\n')}
+${[stateFunctionDecls, actionHandlerFunctions].filter(identity).join('\n\n')}
 ${component.findChildElements(OutputProperty).map( outputProperty).join('\n')}
 }
 `.trimStart() : ''
@@ -477,7 +431,7 @@ ${component.findChildElements(OutputProperty).map( outputProperty).join('\n')}
     }
 
     private modelProperties = (element: Element) => {
-        const propertyDefs = this.project.propertyDefsOf(element)//.filter(def => !def.state || def.stateAndDom)
+        const propertyDefs = this.project.propertyDefsOf(element)
         const propertyExprs = propertyDefs.map(def => {
             const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
             const expr = this.getExprWithoutParens(element, def.name, exprType)
@@ -661,7 +615,6 @@ ${generateChildren(form, indentLevel2, form)}
         }
         const modelProperties = () => {
             const propertyExprs = this.project.propertyDefsOf(element)
-                .filter(({state}) => state)
                 .map(def => {
                     const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
                     const expr = this.getExpr(element, def.name, exprType)
@@ -712,10 +665,6 @@ ${generateChildren(form, indentLevel2, form)}
         if (this.project.componentTypeIs(element, 'statefulUI', 'background')) {
             const builderName = isAppLike(containingElement) ? {fullName: `'${containingElement.codeName}.${element.codeName}'`} : element.codeName
             return `new ${runtimeElementName(element)}.State(${objectBuilder(builderName, modelProperties(), true)})`
-        }
-
-        if (this.project.componentTypeIs(element, 'backgroundFixed')) {
-            return `new ${runtimeElementName(element)}(${objectBuilder(element.codeName, modelProperties(), true)})`
         }
 
         return ''

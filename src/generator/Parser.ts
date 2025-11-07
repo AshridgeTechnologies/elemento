@@ -258,7 +258,7 @@ export default class Parser {
             }
 
             default: {
-                this.project.propertyDefsOf(element).filter(({state}) => state).forEach(def => {
+                this.project.propertyDefsOf(element).forEach(def => {
                     const propertyIdentifiers = this.parseProperty(element, def, isKnown)
                     addAllTo(elementIdentifiers, propertyIdentifiers)
                 })
@@ -273,7 +273,7 @@ export default class Parser {
 
     private parseNonStateProperties(element: Element, isKnown: (name: string) => boolean) {
         const elementIdentifiers = new Set<string>
-        this.project.propertyDefsOf(element).filter( ({state}) => !state).forEach(def => {
+        this.project.propertyDefsOf(element).forEach(def => {
             const propertyIdentifiers = def.type === 'styles' ? this.parseStylesProperty(element, def, isKnown) : this.parseProperty(element, def, isKnown)
             addAllTo(elementIdentifiers, propertyIdentifiers)
         })

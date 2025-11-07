@@ -17,7 +17,7 @@ export default class Adapter extends BaseElement<Properties> implements Element 
 
     get propertyDefs(): PropertyDef[] {
         return [
-            propDef('target', 'expr', {state: true}),
+            propDef('target', 'expr'),
         ]
     }
 

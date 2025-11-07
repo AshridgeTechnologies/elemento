@@ -26,7 +26,7 @@ export default class TypesGenerator {
     }
 
     private modelProperties(element: Element) {
-        const propertyDefs = this.project.propertyDefsOf(element).filter(def => !def.state )
+        const propertyDefs = this.project.propertyDefsOf(element)
         const propertyExprs = propertyDefs.map(def => {
             const isEventAction = (def.type as EventActionPropertyDef).type === 'Action'
             const exprType: ExprType = isEventAction ? 'action': 'singleExpression'

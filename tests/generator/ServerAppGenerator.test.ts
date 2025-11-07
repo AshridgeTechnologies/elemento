@@ -128,8 +128,8 @@ const WidgetApp = (user, env, ctx) => {
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
 const DataStore1 = new CloudflareDataStore({collections: "Widgets,Sprockets", database: env.DataStore1})
-const Sprockets = new Collection({dataStore: DataStore1, collectionName: 'Sprockets'})
-const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
+const Sprockets = new Collection({dataStore: DataStore1, collectionName: 'Sprockets', display: false})
+const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets', display: false})
 async function GetWidget(id) {
     return await Get(Widgets, id)
 }
@@ -199,7 +199,7 @@ const WidgetApp = (user, env, ctx) => {
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
 const DataStore1 = new CloudflareDataStore({collections: "Widgets", database: env.DataStore1})
-const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets'})
+const Widgets = new Collection({dataStore: DataStore1, collectionName: 'Widgets', display: false})
 async function SayNothing(id) {
     return undefined
 }
@@ -325,7 +325,7 @@ const WidgetApp = (user, env, ctx) => {
 
 function CurrentUser() { return runtimeFunctions.asCurrentUser(user) }
 
-const Things = new Collection({collectionName: 'Things'})
+const Things = new Collection({collectionName: 'Things', display: false})
 async function DoSum(widget) {
     let y = 10
     for (let i = 1; i < 10; i++) {

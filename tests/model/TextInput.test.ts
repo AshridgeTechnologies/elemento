@@ -48,10 +48,6 @@ test('has correct property names', () => {
     expect(new TextInput('t1', 'Text Input 1', {}).propertyDefs.map( (def: any) => def.name )).toStrictEqual(['initialValue', 'label', 'readOnly', 'dataType', 'show', 'multiline', 'keyAction', 'styles'])
 })
 
-test('has state option for correct property defs', () => {
-    expect(new TextInput('t1', 'Text Input 1', {}).propertyDefs.map( ({state}) => !!state )).toStrictEqual([true, false, false, true, false, false, false, false])
-})
-
 test('tests if an object is this type', ()=> {
     const textInput = new TextInput('t1', 'Text Input 1', {initialValue: ex`"Some text"`})
     const page = new Page('p1', 'Page 1', {}, [])

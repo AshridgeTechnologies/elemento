@@ -1,7 +1,7 @@
 import {StylingProp} from '../util/StylingTypes'
 
 export type ElementId = string
-export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'backgroundFixed' | 'app' | 'utility' | 'dataType'
+export type ComponentType = 'statelessUI' | 'statefulUI' | 'background' | 'app' | 'utility' | 'dataType'
 export type ChoiceList = readonly string[]
 export type PropertyType = 'string' | 'string|number' | 'string list' | 'string multiline' | 'number' | 'boolean' | 'date' | 'object' | 'expr' | 'styles' | ChoiceList | EventActionPropertyDef
 export type PropertyExpr = {expr: string}
@@ -23,7 +23,7 @@ export interface EventActionPropertyDef {
 export const eventAction = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames})
 export const calculation = (...argumentNames: string[]): EventActionPropertyDef => ({type: 'Action', argumentNames, return: true})
 
-export type PropOptions = { multilineExpr?: boolean, state?: boolean, stateAndDom?: boolean, fixedOnly?: boolean }
+export type PropOptions = { multilineExpr?: boolean, fixedOnly?: boolean }
 
 export type PropertyDef = {
     name: string,
