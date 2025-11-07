@@ -33,11 +33,6 @@ export class BaseComponentState<ExternalProps extends object, StateProps extends
         if (updatedState !== this) {
             this._update!(updatedState)
         }
-        //
-        // Object.assign(this.state, changes) as StateProps
-        // for (const p in this.state) {
-        //     if (this.state[p] === undefined) delete this.state[p]
-        // }
     }
 
     withState(state: StateProps): this {

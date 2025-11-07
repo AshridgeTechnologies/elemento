@@ -5,7 +5,7 @@ import Element from '../model/Element'
 import {flatten, identity, mergeDeepRight, omit, without} from 'ramda'
 import Parser, {isAppStateFunction, PropertyError} from './Parser'
 import {AllErrors, ElementErrors, ExprType, GeneratorOutput, ListItem, runtimeElementName, runtimeImportPath} from './Types'
-import {notBlank, notEmpty} from '../util/helpers'
+import {notEmpty} from '../util/helpers'
 import {
     allElements,
     convertAstToValidJavaScript, functionInputs,
@@ -17,9 +17,6 @@ import {
     printAst,
     quote,
     RequiredImports,
-    StateInitializer,
-    topoSort,
-    TopoSortError,
     valueLiteral
 } from './generatorHelpers'
 import Project from '../model/Project'
@@ -208,9 +205,7 @@ export default class Generator {
         const statefulComponents = allComponentElements.filter(el => this.project.componentTypeIs(el, 'statefulUI', 'background') )
         const functionComponents = statefulComponents.filter(el => el.kind === 'Function')
         const nonFunctionComponents = statefulComponents.filter(el => el.kind !== 'Function')
-        const statefulContainerComponents = allContainerElements.filter(el => this.project.componentTypeIs(el, 'statefulUI', 'background') )
         const isStatefulComponentName = (name: string) => nonFunctionComponents.some(comp => comp.codeName === name)
-        const isStatefulContainerComponentName = (name: string) => statefulContainerComponents.some(comp => comp.codeName === name)
         const isInputProperty = (name: string) => inputPropertyNames.includes(name)
         const isOutputProperty = (name: string) => outputPropertyElements.some(comp => comp.codeName === name)
         const isStateFunction = (name: string) => functionComponents.some(comp => comp.codeName === name)
@@ -264,7 +259,6 @@ export default class Generator {
             const asyncPrefix = async ? 'async ' : ''
             const functionWithoutPrefix = typeof functionExpr === 'string' ? functionExpr.replace('/*async*/', '') : functionExpr
             const functionCode = functionExpr instanceof CodeError ? `() { return ${functionWithoutPrefix}}` : functionWithoutPrefix
-            // const wrappedFunctionCode = `wrapFn('${component.codeName}.${el.codeName}', '${def.name}', ${functionCode})`
 
             const functionName = `${el.codeName}_${def.name}`
             return functionExpr && `    ${asyncPrefix}${functionName}${functionCode}`
@@ -279,7 +273,6 @@ export default class Generator {
             const asyncPrefix = async ? 'async ' : ''
             const functionWithoutPrefix = typeof functionExpr === 'string' ? functionExpr.replace('/*async*/', '') : functionExpr
             const functionCode = functionExpr instanceof CodeError ? `() { return ${functionWithoutPrefix}}` : functionWithoutPrefix
-            // const wrappedFunctionCode = `wrapFn('${component.codeName}.${el.codeName}', 'calculation', ${functionCode})`
             const functionName = `${el.codeName}`
             return functionCode && `    ${asyncPrefix}${functionName}${functionCode}`
         }
@@ -298,27 +291,33 @@ export default class Generator {
             return actions.join('\n')
         }
 
-        const stateInitializers = nonFunctionComponents.map((el): StateInitializer => {
-            const initState = this.initialState(el, topLevelFunctions, componentIsListItem ? component.itemSet : component)
-            const identifiers = this.parser.stateIdentifiers(el.id)
-            const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
-            return [el, initState, stateComponentIdentifiersUsed]
-        }).filter(([, initState]) => !!initState)
+        const serverAppConnectors = statefulComponents.filter(el => el.kind === 'ServerAppConnector')
+        serverAppConnectors.map((el: Element) => {
+            const connector = el as ServerAppConnector
+            const [configFunction] = this.serverAppConfigFunction(connector)
+            topLevelFunctions.add(configFunction)
+        })
+        // const stateInitializers = nonFunctionComponents.map((el): StateInitializer => {
+        //     // const initState = this.initialState(el, topLevelFunctions, componentIsListItem ? component.itemSet : component)
+        //     // const identifiers = this.parser.stateIdentifiers(el.id)
+        //     // const stateComponentIdentifiersUsed = identifiers.filter(id => isStatefulComponentName(id) && id !== el.codeName)
+        //     // return [el, initState, stateComponentIdentifiersUsed]
+        // })//.filter(([, initState]) => !!initState)
 
-        const sortStateInitializers = () => {
-            try {
-                return topoSort(stateInitializers)
-            } catch(e: any) {
-                if (e instanceof TopoSortError) {
-                    this.errors[e.elementId] ||= {}
-                    this.errors[e.elementId]['element'] = e.message
-                } else {
-                    throw e
-                }
-
-                return stateInitializers
-            }
-        }
+        // const sortStateInitializers = () => {
+        //     try {
+        //         return topoSort(stateInitializers)
+        //     } catch(e: any) {
+        //         if (e instanceof TopoSortError) {
+        //             this.errors[e.elementId] ||= {}
+        //             this.errors[e.elementId]['element'] = e.message
+        //         } else {
+        //             throw e
+        //         }
+        //
+        //         return stateInitializers
+        //     }
+        // }
 
         const dependencyDeclarations =  (el: Element, propertyName: string, lineIndent = '') => {
             const identifiers = this.parser.statePropertyIdentifiers(el.id, propertyName)
@@ -384,20 +383,20 @@ ${declarations}${debugHook}
 `.trimStart()
 
 
-        const appFeatures = component === app ? appStateFunctionIdentifiers : [...appStateFunctionIdentifiers, ...appLevelIdentifiers]
-        const appRef = component === app ? 'this' : 'this.app'
-        const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = ${appRef}` : ''
-        const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
+        // const appFeatures = component === app ? appStateFunctionIdentifiers : [...appStateFunctionIdentifiers, ...appLevelIdentifiers]
+        // const appRef = component === app ? 'this' : 'this.app'
+        // const appFeatureDeclarations = appFeatures.length ? `        const {${appFeatures.join(', ')}} = ${appRef}` : ''
+        // const itemSetItemDeclarations = componentIsListItem ? '        const {$item, $itemId, $index, $selected, $container} = this.props' : ''
 
-        const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {
-            const name = el.codeName
-            if ((initState as FunctionDef).kind === 'Function') {
-                return ''// `    const ${name} = this.getOrCreateChildState('${name}', ${functionDeclaration(initState)})`
-            } else {
-                const stateObjectDeclaration = `        const ${name} = this.getOrCreateChildState('${name}', ${initState})`
-                return [stateObjectDeclaration].filter( notBlank ).join('\n')
-            }
-        }).join('\n')
+        // const pageStateBlock = () => sortStateInitializers().map(([el, initState]) => {
+        //     const name = el.codeName
+        //     if ((initState as FunctionDef).kind === 'Function') {
+        //         return ''// `    const ${name} = this.getOrCreateChildState('${name}', ${functionDeclaration(initState)})`
+        //     } else {
+        //         const stateObjectDeclaration = `        const ${name} = this.getOrCreateChildState('${name}', ${initState})`
+        //         return [stateObjectDeclaration].filter( notBlank ).join('\n')
+        //     }
+        // }).join('\n')
 
         const stateFunctionDecls = functionComponents.map( el => functionDeclaration(el as FunctionDef)).join('\n')
         const stateActionHandlerFunctions = generateActionHandlers(allComponentElements, stateActionHandlers)
