@@ -86,6 +86,7 @@ export default class TinyBaseDataStoreImpl implements DataStore {
     private removeChangeListeners: VoidFunction | null = null
     private readonly collections: CollectionConfig[]
     private authObserver: any = null
+    private authorisedUser: any = null
 
     constructor(private props: Properties) {
         this.collections = parseCollections(props.collections ?? '')
@@ -111,10 +112,14 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             this.initialising = this.initStore()
             await this.initialising
             this.authObserver = onAuthChange(async () => {
-                console.log('auth change', 'current user', currentUser())
-                this.closing = this.close()
-                await this.closing
-                this.initialising = this.initStore()
+                const newUser = currentUser()
+                console.log('auth change', 'current user', newUser)
+                if (newUser && this.authorisedUser && newUser !== this.authorisedUser) {
+                    console.log('reinitialising store for new user')
+                    this.closing = this.close()
+                    await this.closing
+                    this.initialising = this.initStore()
+                }
             })
         }
         await this.initialising

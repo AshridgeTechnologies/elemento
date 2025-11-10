@@ -101,7 +101,7 @@ const idsEqual = (item1: any, item2: any) => {
     return !isNil(item1?.id) && !isNil(item2?.id) && item1.id === item2.id
 }
 
-const itemMatch = (item: any) => (it: any) => !isNil(it) && (it === item || it.id === item || idsEqual(it, item))
+const itemMatch = (item: any) => (it: any) => !isNil(it) && (it === item || it.id === item?.toString() || idsEqual(it, item))
 
 const ItemSet = function ItemSet({path, itemContentComponent, items, selectable, selectedItems, selectAction}: Properties) {
     const state = useComponentState(path, ItemSetState, {items, selectable, selectedItems, selectAction})
@@ -243,10 +243,14 @@ export class SelectableListState
     }
 
     private findItem(item: any) {
+        const matchedItem = this.items.find( itemMatch(item) )
+        if (matchedItem) {
+            return matchedItem
+        }
         if (typeof item === 'number' || typeof(item) === 'string' && isNumeric(item)) {
             return this.items[Number(item)]
         }
-        return this.items.find( itemMatch(item) ) ?? undefined
+        return undefined
     }
 
     private findIndex(item: any) {

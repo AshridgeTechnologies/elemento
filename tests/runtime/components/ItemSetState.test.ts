@@ -4,6 +4,7 @@ import {ItemSetState} from '../../../src/runtime/components/ItemSet'
 
 const item1 = {a: 1}, item2 = {a: 2}, item3 = {a: 3}, item4 = {a: 4}
 const idItem1 = {id: 'x1', a: 1}, idItem2 = {id: 'x2', a: 2}, idItem3 = {id: 'x3', a: 3}, idItem4 = {id: 'x4', a: 4}
+const numidItem1 = {id: '111', a: 1}, numidItem2 = {id: '222', a: 2}, numidItem3 = {id: '333', a: 3}, numidItem4 = {id: '444', a: 4}
 const textItem1 = 'a', textItem2 = 'b', textItem3 = 'c', textItem4 = 'd'
 const numberItem1 = 11, numberItem2 = 22, numberItem3 = 33, numberItem4 = 44
 const longItemSetData = [{id: 'id1', text: 'One'}, {id: 'id2', text: 'Two'}, {id: 'id3', text: 'Three'}, {id: 'id4', text: 'Four'}]
@@ -31,6 +32,16 @@ test('Has correct properties from value objects', () => {
     expect(state.selectAction).toBe(undefined)
     expect(state.selectedItems).toStrictEqual([item1])
     expect(state.selectedItem).toStrictEqual(item1)
+})
+
+test('has correct selected items with numeric ids', () => {
+    const state = new ItemSetState({items: [numidItem1, numidItem2], selectedItems: Number(numidItem1.id)})
+    expect(state.selectedItems).toStrictEqual([numidItem1])
+})
+
+test('has correct selected items with numeric string ids', () => {
+    const state = new ItemSetState({items: [numidItem1, numidItem2], selectedItems: numidItem2.id})
+    expect(state.selectedItems).toStrictEqual([numidItem2])
 })
 
 test('Has empty item array if not defined', () => {
