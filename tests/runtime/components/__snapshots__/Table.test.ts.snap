@@ -516,6 +516,157 @@ exports[`produces output when an item is null 1`] = `
 </div>
 `;
 
+exports[`produces output with advanced data types 1`] = `
+<div>
+  <div
+    class="MuiBox-root css-0"
+    id="app.page1.table1"
+  >
+    <div
+      class="MuiTableContainer-root MuiBox-root css-jd4hnh-MuiTableContainer-root"
+      context="[object Object]"
+      data-testid="virtuoso-scroller"
+      data-virtuoso-scroller="true"
+      style="height: 100%; outline: none; overflow-y: auto; position: relative;"
+      tabindex="0"
+    >
+      <div
+        data-viewport-type="element"
+        style="height: 100%; position: absolute; top: 0px; width: 100%;"
+      >
+        <table
+          class="MuiTable-root css-1qutvhg-MuiTable-root"
+          context="[object Object]"
+          style="border-spacing: 0; overflow-anchor: none;"
+        >
+          <thead
+            class="MuiTableHead-root css-1a7iywq-MuiTableHead-root"
+            context="[object Object]"
+            style="position: sticky; top: 0px; z-index: 2;"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                startDate
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                amount
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter MuiTableCell-sizeMedium css-d6o7x7-MuiTableCell-root"
+                scope="col"
+              >
+                complete
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+            context="[object Object]"
+            data-testid="virtuoso-item-list"
+          >
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="0"
+              data-item-index="0"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id1
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                02 Jan 2020
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                12.34
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeMedium css-14y13q2-MuiTableCell-root"
+              >
+                false
+              </td>
+            </tr>
+            <tr
+              class="MuiTableRow-root css-1xtozoh-MuiTableRow-root"
+              data-index="1"
+              data-item-index="1"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id2
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                03 Jan 2020
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              >
+                99.9
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeMedium css-14y13q2-MuiTableCell-root"
+              >
+                true
+              </td>
+            </tr>
+            <tr
+              class="MuiTableRow-root Mui-selected css-1xtozoh-MuiTableRow-root"
+              data-index="2"
+              data-item-index="2"
+              data-known-size="100"
+              item="[object Object]"
+              style="overflow-anchor: none;"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              >
+                id3
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignLeft MuiTableCell-sizeMedium css-19syksp-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeMedium css-3ssuu9-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-alignCenter MuiTableCell-sizeMedium css-14y13q2-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`shows items with no ids 1`] = `
 <div>
   <div

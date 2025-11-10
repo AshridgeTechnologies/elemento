@@ -12,6 +12,7 @@ import {SelectableListState, type SelectableListStateProperties, type SelectionT
 import {isObject} from 'radash'
 import {pickBy} from 'ramda'
 import {omitBy} from 'lodash'
+import {formatDate} from 'date-fns'
 
 type Properties = Readonly<{
     path: string,
@@ -183,6 +184,14 @@ const Table = function Table(props: Properties) {
             }
         }
 
+        const formatCell = (value: any) => {
+            if (value instanceof Date) {
+                return formatDate(value, 'dd MMM yyyy')
+            }
+
+            return value?.toString()
+        }
+
         return (
             <React.Fragment>
                 {columnTypes.map((column) => (
@@ -191,7 +200,7 @@ const Table = function Table(props: Properties) {
                                sx={sxProps(stylesForCell(column.codeName))}
                                align={columnAlign(column)}
                     >
-                        {item?.[column.codeName as keyof object]}
+                        {formatCell(item?.[column.codeName as keyof object])}
                     </TableCell>
                 ))}
             </React.Fragment>

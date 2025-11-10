@@ -242,6 +242,9 @@ Tech debt
 ---------
 
 _ !!! Try Cloudflare Cap'n Web
+- Look into Jotai and atomic state - at least to justify the E3 approach!
+- Fastify instead of Express
+- Move to pnpm
 - Use es-toolkit instead of lodash and ramda
 - Use URLPattern
 - Consider vi.spyOn:  https://laconicwit.com/vi-mock-is-a-footgun-why-vi-spyon-should-be-your-default/

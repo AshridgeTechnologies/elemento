@@ -53,7 +53,7 @@ export const inputElementStyles = [
 export const formControlStyles = without([...inputComponentStyles, ...fieldsetComponentStyles, ...inputElementStyles], commonStylingPropNames.map(camel))
 
 export function InfoButton(props: { description: string }) {
-    return <Tooltip title={props.description} placement='top-end'>
+    return <Tooltip title={props.description ?? ''} placement='top-end'>
         <IconButton edge='end' sx={{px: 0.15, marginRight: '-16px'}}>
             <MuiIcon aria-label='Help' sx={{fontSize: '0.8em', color: 'action.active', ml: 0.5, mr: 1, mt: 0.25}}>info_outlined</MuiIcon>
         </IconButton>

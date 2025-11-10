@@ -5,7 +5,7 @@ import {beforeEach, expect, MockedFunction, test, vi} from 'vitest'
 import {Table} from '../../../src/runtime/components/index'
 import {testAppStoreHook, wait} from '../../testutil/testHelpers'
 import {containerFunctions} from '../../testutil/rtlHelpers'
-import {NumberType, RecordType, TextType} from '../../../src/runtime/types'
+import {DateType, DecimalType, NumberType, RecordType, TextType, TrueFalseType} from '../../../src/runtime/types'
 import {render} from '@testing-library/react/pure'
 import {VirtuosoMockContext} from 'react-virtuoso'
 import React, {createElement} from 'react'
@@ -13,13 +13,21 @@ import {isArray} from 'lodash'
 import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
 import {StoreProvider} from '../../../src/runtime/state/StoreContext'
 import userEvent from '@testing-library/user-event'
+import BigNumber from 'bignumber.js'
 
-let tableData: any, longTableData: any, tableDataNoIds: any, selectAction: MockedFunction<any>
+let tableData: any, longTableData: any, tableDataNoIds: any, advancedTableData: any, selectAction: MockedFunction<any>
 
 const tableDataType = new RecordType('tableType', {}, [], [
     new TextType('id'),
     new TextType('text'),
     new NumberType('amount'),
+])
+
+const advancedTableDataType= new RecordType('advancedTableType', {}, [], [
+    new TextType('id'),
+    new DateType('startDate'),
+    new DecimalType('amount'),
+    new TrueFalseType('complete'),
 ])
 
 const wrappedTestElement = <StateType>(componentClass: React.FunctionComponent<any>): [any, any] => {
@@ -45,6 +53,11 @@ beforeEach(() => {
     tableData = [{id: 'id1', text: 'where are you?', amount: 10}, {id: 'id2', text: 'over here!', amount: 20}]
     longTableData = [{id: 'id1', text: 'One', amount: 1}, {id: 'id2', text: 'Two', amount: 2}, {id: 'id3', text: 'Three', amount: 3}, {id: 'id4', text: 'Four', amount: 4}]
     tableDataNoIds = [{Label: 'No 1', text: 'where are you?'}, {Label: 'No 2', text: 'over here!'}]
+    advancedTableData = [
+        {id: 'id1', startDate: new Date('2020-01-02'), amount: new BigNumber('12.34'), complete: false},
+        {id: 'id2', startDate: new Date('2020-01-03'), amount: new BigNumber('99.9'), complete: true},
+        {id: 'id3', startDate: null, amount: null, complete: null},
+    ]
     selectAction = vi.fn()
 })
 
@@ -97,6 +110,11 @@ test('produces empty output if items is null but there is a selected item, as ma
 test('produces output when an item is null', () => {
     const items = [{id: 'id1', text: 'One'}, null, {id: 'id3', text: 'Three'}]
     snapshot(table('app.page1.table1', {items: items, dataType: tableDataType, selectedItems: items[2]}))
+})
+
+test('produces output with advanced data types', () => {
+    const items = [{id: 'id1', text: 'One'}, null, {id: 'id3', text: 'Three'}]
+    snapshot(table('app.page1.table1', {items: advancedTableData, dataType: advancedTableDataType, selectedItems: items[2]}))
 })
 
 test('updates its selectedItem in the app state if no select action supplied', async () => {

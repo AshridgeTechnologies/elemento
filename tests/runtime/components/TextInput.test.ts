@@ -1,7 +1,7 @@
-import {expect, MockedFunction, test, vi} from "vitest"
 /**
  * @vitest-environment jsdom
  */
+import {expect, MockedFunction, test, vi} from 'vitest'
 import {TextInput} from '../../../src/runtime/components/index'
 import {componentJSON, snapshot, valueObj, wait, wrappedTestElement} from '../../testutil/testHelpers'
 import {act, render} from '@testing-library/react'

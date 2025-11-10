@@ -232,7 +232,7 @@ export default class Generator {
             stateObjectDeclaration = `    const _state = useComponentState(props.path, ${functionName}.State, {$item, $itemId, $index, $selected})`
         }
         if (componentIsForm) {
-            stateObjectDeclaration = `    const _state = useComponentState(props.path)`
+            stateObjectDeclaration = `    const _state = useComponentState(props.path, ${functionName}.State, props)`
         }
         let appLevelDeclarations
         if (!componentIsApp) {
@@ -603,71 +603,6 @@ ${generateChildren(form, indentLevel2, form)}
             default:
                 return `React.createElement(${runtimeElementName(element)}, ${objectBuilder(element.codeName, this.modelProperties(element))})`
         }
-    }
-
-    private initialState(element: Element, topLevelFunctions: FunctionCollector, containingElement: Element): string | FunctionDef {
-
-        const propName = (def: PropertyDef) => {
-            // if (def.name === 'initialValue') return 'value'
-            // see CalculationState for reason for this conversion
-            if (element.kind === 'Calculation' && def.name === 'calculation') return 'initialValue'
-            return def.name
-        }
-        const modelProperties = () => {
-            const propertyExprs = this.project.propertyDefsOf(element)
-                .map(def => {
-                    const exprType: ExprType = isActionProperty(def) ? 'reference' : 'singleExpression'
-                    const expr = this.getExpr(element, def.name, exprType)
-                    return [propName(def), expr]
-                })
-                .filter(([, expr]) => !!expr)
-            const props = Object.fromEntries(propertyExprs)
-            if (containingElement.kind === 'Form' && props.value === undefined) {
-                props.value = `this.originalValue?.${element.codeName}`
-            }
-            return props
-        }
-
-        if (element.kind === 'Project') {
-            throw new Error('Cannot generate code for Project')
-        }
-
-        if (element.kind === 'Function') {
-            return element as FunctionDef
-        }
-
-        if (element.kind === 'ServerAppConnector') {
-            const connector = element as ServerAppConnector
-            const [configFunction, configFunctionName] = this.serverAppConfigFunction(connector)
-            topLevelFunctions.add(configFunction)
-            return `new ${runtimeElementName(element)}.State({configuration: ${configFunctionName}()})`
-        }
-
-        if (element.kind === 'Form') {
-            const formName = this.functionNamePrefix(containingElement) + element.codeName
-            return `new ${formName}.State(${objectBuilder(element.codeName, modelProperties(), true)})`
-        }
-
-        if (element.kind === 'TinyBaseDataStore') {
-            const store = element as TinyBaseDataStore
-            const modelProps = modelProperties()
-            const generatedProps = {
-                collections: modelProps.collections,
-                databaseTypeName: quote(store.codeName),
-                databaseInstanceName: modelProps.databaseName,
-                persist: modelProps.storeOnDevice,
-                sync: modelProps.syncWithServer,
-                serverUrl: modelProps.serverUrl
-            }
-            return `new ${runtimeElementName(element)}.State(${objectBuilder(element.codeName, generatedProps, true)})`
-        }
-
-        if (this.project.componentTypeIs(element, 'statefulUI', 'background')) {
-            const builderName = isAppLike(containingElement) ? {fullName: `'${containingElement.codeName}.${element.codeName}'`} : element.codeName
-            return `new ${runtimeElementName(element)}.State(${objectBuilder(builderName, modelProperties(), true)})`
-        }
-
-        return ''
     }
 
     private serverAppConfigFunction(connector: ServerAppConnector) {

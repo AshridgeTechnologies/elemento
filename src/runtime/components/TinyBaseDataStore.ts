@@ -1,11 +1,13 @@
 import {DataStoreState} from './DataStoreState'
-import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from './TinyBaseDataStoreImpl'
+import TinyBaseDataStoreImpl, {Properties as StoreImplProps} from './TinyBaseDataStoreImpl'
 import {useEffect} from 'react'
 import {useComponentState} from '../state/appStateHooks'
 import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
-type Properties = {path: string}
+export type DataStoreProperties = {collections: string, storeOnDevice?: boolean, syncWithServer?: boolean, databaseName?: string, databaseType?: string,
+    authorizeUser?: () => Promise<string>, authorizeData?: () => boolean, serverUrl?: string}
+type Properties = {path: string} & DataStoreProperties
 
 export const TinyBaseDataStoreSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -48,17 +50,16 @@ export const TinyBaseDataStoreSchema: ElementSchema = {
                 "authorizeData": {
                     "description": "The ",
                         "$ref": "#/definitions/ActionExpression",
-                        "argNames": [
-                        "$userId",
-                        "$tableId",
-                        "$rowId",
-                        "$changes"
-                    ]
+                        "argNames": ["$userId", "$tableId", "$rowId", "$changes"]
                 },
                 "serverUrl": {
                     "description": "The ",
                         "$ref": "#/definitions/StringOrExpression"
-                }
+                },
+                "databaseType": {
+                    "description": "The name of the Durable object to sync with",
+                    "$ref": "#/definitions/StringOrExpression"
+                },
             }
         }
     },
@@ -74,8 +75,11 @@ export const TinyBaseDataStoreMetadata: ElementMetadata = {
     stateProps:['collections', 'storeOnDevice', 'syncWithServer', 'databaseName', 'authorizeUser', 'authorizeData', 'serverUrl']
 }
 
-export default function TinyBaseDataStore({path}: Properties) {
-    const state = useComponentState(path, TinyBaseDataStoreState)
+const DEFAULT_DB_NAME = 'DB'
+const DEFAULT_TYPE_NAME = 'DO'
+
+export default function TinyBaseDataStore({path, ...storeProps}: Properties) {
+    const state = useComponentState(path, TinyBaseDataStoreState, storeProps)
 
     useEffect(() => () => state.close(), [])
     return null
@@ -88,7 +92,15 @@ export class TinyBaseDataStoreState extends DataStoreState<DataStoreProperties> 
     }
 
     protected createDataStore() {
-        return new TinyBaseDataStoreImpl(this.props)
+        const storeProps: StoreImplProps = {
+            collections: this.props.collections,
+            databaseInstanceName: this.props.databaseName ?? DEFAULT_DB_NAME,
+            databaseTypeName: this.props.databaseType ?? DEFAULT_TYPE_NAME,
+            persist: this.props.storeOnDevice,
+            sync: this.props.syncWithServer,
+            syncServer: this.props.serverUrl
+        }
+        return new TinyBaseDataStoreImpl(storeProps)
     }
 
     protected async initDataStore() {

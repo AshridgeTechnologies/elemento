@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 
-import {afterEach, beforeAll, beforeEach, describe, expect, Mock, MockedFunction, test, vi} from "vitest"
+import {afterEach, beforeEach, describe, expect, MockedFunction, test, vi} from "vitest"
 import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
-import {Add, InvalidateAll, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
+import {Add, MultipleChanges, Remove, Update} from '../../../src/shared/DataStore'
 import BigNumber from 'bignumber.js'
 import {getCallArg, wait} from '../../testutil/testHelpers'
 
@@ -169,7 +169,7 @@ describe('persistence', () => {
 
         await store.add('Widgets', 'w1', {a: 47, b: 'Bee87', c: true})
         const store2 = new TinyBaseDataStoreImpl({...storeProps, persist: true})
-await wait(500)
+        await wait(500)
         const retrievedObj = await store2.getById('Widgets', 'w1')
         expect(retrievedObj).toMatchObject({id: 'w1', a: 47, b: 'Bee87', c: true})
     })
