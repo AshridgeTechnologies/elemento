@@ -110,6 +110,8 @@ export const placeholder = (path: string, isSubProp?: boolean) => {
     return new Proxy(thePlaceholder, handler)
 }
 
+export const isPlaceholder = (obj: any) => !!obj._isPlaceholder
+
 export function withUpdatedProps<T extends object, P extends object>(state: T, props: P): T {
     const storedState = state as StoredStateWithProps<P>
     if (typeof storedState.withProps !== 'function') {
@@ -140,6 +142,9 @@ export function createProxy<T extends object>(store: AppStateForObject<T>, targe
             const latestVersion = store.latest() ?? receiver
             if (latestVersion !== receiver) {
                 return latestVersion[property as keyof T]
+            }
+            if (property === '_isPlaceholder') {
+                return (target as any)._isPlaceholder
             }
             if (typeof property === 'symbol') {
                 return Reflect.get(target, property, latestVersion)

@@ -38,6 +38,8 @@ const mockDataStore = (): DataStore => ({
     query: vi.fn()
 })
 
+const placeholderDataStore = new StatePlaceholder('ds1') as unknown as DataStore
+
 const [collection] = wrappedTestElement(Collection)
 const createState = createStateFn(CollectionState)
 
@@ -393,6 +395,18 @@ describe('Remove with external datastore', () => {
 
 describe('Get with external datastore', () => {
 
+    test('get object by id when datastore is a placeholder returns null and does not cache', async () => {
+        const state = initState({}, placeholderDataStore);
+        const initialResult = state.Get('x1')
+        expect(dataStore.getById).not.toHaveBeenCalled()
+        expect(isPending(initialResult)).toBe(false)
+        expect(isPending(asAny(state.value).x1)).toBe(false)
+        await expect(initialResult).toBe(null)
+
+        await actWait()
+        expect(state.value).toStrictEqual({})
+    })
+
     test('get object by id when not in cache', async () => {
         const state = initState({});
         (dataStore.getById as MockedFunction<any>).mockResolvedValue({a: 10, b: 'Bee'})
@@ -495,6 +509,18 @@ describe('Get with external datastore', () => {
 
 describe('Query with external datastore', () => {
 
+    test('query when data store is a placeholder returns empty results and does not cache', async () => {
+        const state = initState({}, placeholderDataStore);
+
+        const result = state.Query({a: 10, c: false})
+        expect(dataStore.query).not.toHaveBeenCalledWith('Widgets', {a: 10, c: false})
+        expect(isPending(result)).toBe(false)
+        expect(isPending((state as any).queries['{"a":10,"c":false}'])).toBe(false)
+        expect(result).toStrictEqual([])
+
+        expect(state._stateForTest.queries).toBe(undefined)
+    })
+
     test('query when not in cache', async () => {
         const state = initState({});
         (dataStore.query as MockedFunction<any>).mockResolvedValue([{id: 'a1', a: 10, b: 'Bee'}])
@@ -595,7 +621,6 @@ describe('Query with external datastore', () => {
 describe('subscribe with external data store', () => {
 
     test('does not subscribe to data store observable when data store is a placeholder', () => {
-        let placeholderDataStore = new StatePlaceholder('dataStore') as unknown as DataStore
         const state = initState({}, placeholderDataStore);
         expect(dataStore.observable).not.toHaveBeenCalled()
         expect(state._stateForTest.subscription).toBeUndefined()

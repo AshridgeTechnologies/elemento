@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import {expect, test} from 'vitest'
-import {BaseComponentState, ComponentStateStore, createProxy} from '../../../src/runtime/state/BaseComponentState'
+import {BaseComponentState, ComponentStateStore, createProxy, isPlaceholder} from '../../../src/runtime/state/BaseComponentState'
 import {AppStateForObject} from '../../../src/runtime/state/AppStateStore'
 
 type StateObjectProperties = {color?: string, length?: number}
@@ -164,6 +164,14 @@ test('gets child state from store automatically via proxy', () => {
     expect(state.subState).toBe(subState)
 })
 
+test('child state from store is not a placeholder', () => {
+    const store = new ComponentStateStore()
+    const state: any = store.getOrUpdate('TheApp.foo', StateObject3, {color: 'red', length: 23})
+    const subState = store.getOrUpdate('TheApp.foo.subState', StateObject, {color: 'green', length: 7})
+
+    expect(isPlaceholder(subState)).toBe(false)
+})
+
 test('gets child state from store automatically via proxy in own method', () => {
     const store = new ComponentStateStore()
     const state: any = store.getOrUpdate('TheApp.foo', StateObject3, {color: 'red'})
@@ -296,6 +304,7 @@ test('gets placeholder for unknown properties', () => {
     expect(foo.valueOf()).toBe(undefined)
     expect(foo[Symbol.toPrimitive]()).toBe(undefined)
     expect(foo.path).toBe('state1.foo')
+    expect(isPlaceholder(foo)).toBe(true)
 })
 
 test('does not get placeholder for excluded properties', () => {

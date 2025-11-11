@@ -15,7 +15,7 @@ import DataStore, {
     Update,
     UpdateNotification
 } from '../../shared/DataStore'
-import {BaseComponentState} from '../state/BaseComponentState'
+import {BaseComponentState, isPlaceholder} from '../state/BaseComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {useComponentState} from '../state/appStateHooks'
@@ -226,6 +226,9 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
         }
 
         if (this.dataStore) {
+            if (isPlaceholder(this.dataStore)) {
+                return null
+            }
             const result = pending(this.dataStore.getById(this.props.collectionName!, id, nullIfNotFound).then( data => {
                 this.updateValue(id, data)
                 return data
@@ -240,6 +243,9 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
     Query(criteria: Criteria) {
         if (this.dataStore) {
+            if (isPlaceholder(this.dataStore)) {
+                return []
+            }
 
             const criteriaKey = JSON.stringify(criteria)
             const storedResult = this.queries[criteriaKey as keyof object]

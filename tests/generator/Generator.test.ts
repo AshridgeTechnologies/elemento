@@ -1677,7 +1677,7 @@ test('generates simple Form element with separate child component and includes D
 
     expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useComponentState(props.path)
+    const _state = useComponentState(props.path, Page1_DetailsForm.State, props)
     const {TextInput2, NumberInput1, Calculation1, Data1} = _state
 
     return React.createElement(Form, props,
@@ -1733,7 +1733,7 @@ test('generates nested Form elements', ()=> {
 
     expect(gen.output().files[0].contents).toBe(`function DetailsForm_FurtherDetails(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useComponentState(props.path)
+    const _state = useComponentState(props.path, DetailsForm_FurtherDetails.State, props)
     const {Description, Size} = _state
 
     return React.createElement(Form, props,
@@ -1751,7 +1751,7 @@ DetailsForm_FurtherDetails.State = class DetailsForm_FurtherDetails_State extend
 
 function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useComponentState(props.path)
+    const _state = useComponentState(props.path, Page1_DetailsForm.State, props)
     const {TextInput2, NumberInput1, FurtherDetails} = _state
 
     return React.createElement(Form, props,
@@ -1811,7 +1811,7 @@ test('generates Form element with separate child component', ()=> {
 
     expect(gen.output().files[0].contents).toBe(`function Page1_DetailsForm(props) {
     const pathTo = name => props.path + '.' + name
-    const _state = useComponentState(props.path)
+    const _state = useComponentState(props.path, Page1_DetailsForm.State, props)
     const {TextInput2, NumberInput1} = _state
 
     return React.createElement(Form, props,
