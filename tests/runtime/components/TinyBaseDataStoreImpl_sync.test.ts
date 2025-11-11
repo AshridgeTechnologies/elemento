@@ -1,17 +1,18 @@
 import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockedFunction, test, vi} from 'vitest'
-import TinyBaseDataStoreImpl, {type Properties as DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStoreImpl'
+import TinyBaseDataStoreImpl from '../../../src/runtime/components/TinyBaseDataStoreImpl'
 import {unstable_startWorker} from 'wrangler'
-import {testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
+import {DEBUG_TIMEOUT, testAppInterface, wait, waitUntil} from '../../testutil/testHelpers'
 import {matches} from 'lodash'
 import DataStore, {Add, InvalidateAll} from '../../../src/shared/DataStore'
 import jwtEncode from 'jwt-encode'
 import * as authentication from '../../../src/runtime/components/authentication'
-import {TinyBaseDataStoreState} from '../../../src/runtime/components/TinyBaseDataStore'
+import {TinyBaseDataStoreState, type DataStoreProperties} from '../../../src/runtime/components/TinyBaseDataStore'
 import {ComponentStateStore} from '../../../src/runtime/state/BaseComponentState'
 
 vi.mock('../../../src/runtime/components/authentication')
 
 const mock_getIdToken = authentication.getIdToken as MockedFunction<any>
+const mock_currentUser = authentication.currentUser as MockedFunction<any>
 const mock_onAuthChange = authentication.onAuthChange as MockedFunction<any>
 
 const mockLocalStorage = () => {
@@ -167,7 +168,7 @@ describe.sequential('sync via server - authorized sync', () => {
     })
 
     // Note: this test checks for some incorrect update behaviour, but does not detect others that only show in a real browser
-    test.sequential('does not send multiple change notifications after auth change', async () => {
+    test.sequential('sends single change notification after auth change', async () => {
         let onAuthChangeCallback: any
         mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
 
@@ -178,6 +179,7 @@ describe.sequential('sync via server - authorized sync', () => {
         await wait(100)
         expect(onNextWidgets).toHaveBeenCalledTimes(0)
 
+        mock_currentUser.mockReturnValueOnce({name: 'JayDoh'})
         onAuthChangeCallback()
         await wait(1000)
         expect(onNextWidgets).toHaveBeenCalledTimes(1)
@@ -510,11 +512,32 @@ describe.sequential('sync via server - full sync', () => {
         expect(await store1.getById('Widgets', id, true)).toBe(null)
 
         mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        mock_currentUser.mockReturnValueOnce({name: 'JayDoh'})
         onAuthChangeCallback()
 
         await wait(500)
         const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
         await checkWidget({id, ...item})
+    })
+
+    test.sequential('does not re-init database on auth change when user is still null', async () => {
+        await callStore(dbType, 'db1', 'add', collectionName, id, item)
+        let onAuthChangeCallback: any
+        mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
+
+        mock_getIdToken.mockResolvedValueOnce(null)
+        store1 = await createStore().init()
+        await wait(500)
+        expect(await store1.getById('Widgets', id, true)).toBe(null)
+
+        const onChange = vi.fn()
+        store1.observable('Widgets').subscribe(onChange)
+        mock_getIdToken.mockResolvedValueOnce(null)
+        mock_currentUser.mockReturnValueOnce(null)
+        onAuthChangeCallback()
+
+        await wait(500)
+        expect(onChange).not.toHaveBeenCalled()
     })
 
     test.sequential('updates data and notifies observers when login', async () => {
@@ -530,6 +553,7 @@ describe.sequential('sync via server - full sync', () => {
         const onChange = vi.fn()
         store1.observable('Widgets').subscribe(onChange)
         mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        mock_currentUser.mockReturnValueOnce({name: 'JayDoh'})
         onAuthChangeCallback()
 
         await wait(500)
@@ -541,20 +565,28 @@ describe.sequential('sync via server - full sync', () => {
         let onAuthChangeCallback: any
         mock_onAuthChange.mockImplementationOnce( (cb: any) => onAuthChangeCallback = cb)
 
-        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        mock_getIdToken.mockResolvedValueOnce(null)
         store1 = await createStore().init()
+        await wait(1000)
+
+        // login
+        mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
+        mock_currentUser.mockReturnValueOnce({name: 'JayDoh'})
+        onAuthChangeCallback()
+
+        await waitUntil(async ()=> (await store1.getById('Widgets', id, true))?.id === id, 100, 10000)
+
         const onChange = vi.fn()
         store1.observable('Widgets').subscribe(onChange)
-        await wait(500)
-        expect(await store1.getById('Widgets', id, true)).toEqual({id, ...item})
-
+        // logout
         mock_getIdToken.mockResolvedValueOnce(null)
+        mock_currentUser.mockReturnValueOnce(null)
         onAuthChangeCallback()
         await wait(500)
 
         expect(onChange).toHaveBeenCalledWith({collection: 'Widgets', type: 'InvalidateAll'})
-        await waitUntil(async ()=> (await store1.getById('Widgets', id, true)) === null, 100, 2000)
-    })
+        await waitUntil(async ()=> (await store1.getById('Widgets', id, true)) === null, 100, 5000)
+    }, 20000)
 
     test.sequential('server ignores illegal changes on client if readonly', async () => {
         mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
@@ -578,7 +610,7 @@ describe.sequential('sync via server - full sync', () => {
     test.sequential('client warns for illegal changes', async () => {
         mock_getIdToken.mockResolvedValueOnce(tokenFor('readonly_user'))
         store1 = await createStore().init()
-        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 2000)
+        const checkWidget = (expected: object) => waitUntil(async ()=> matches(expected)(await store1.getById('Widgets', id)), 100, 5000)
 
         await callStore(dbType, 'db1', 'add', collectionName, id, item)
         await wait(1000)
@@ -730,10 +762,10 @@ describe.sequential('through TinyBaseDataStoreState', () => {
     test.sequential('saves and retrieves', async () => {
         const storeProps: DataStoreProperties = {
             collections: 'Widgets',
-            databaseTypeName: dbType,
-            databaseInstanceName: 'db1',
-            syncServer,
-            sync: true,
+            databaseType: dbType,
+            databaseName: 'db1',
+            serverUrl: syncServer,
+            syncWithServer: true,
         }
         const storeState = new TinyBaseDataStoreState(storeProps)
         testAppInterface('path1', storeState)
@@ -751,13 +783,13 @@ describe.sequential('through TinyBaseDataStoreState', () => {
     test.sequential('saves and retrieves to new database when instance name changes', async () => {
         const storeProps: DataStoreProperties = {
             collections: 'Widgets',
-            databaseTypeName: dbType,
-            databaseInstanceName: 'db1',
-            syncServer,
-            sync: true,
+            databaseType: dbType,
+            databaseName: 'db1',
+            serverUrl: syncServer,
+            syncWithServer: true,
         }
 
-        const storePropsDb2 = {...storeProps, databaseInstanceName: 'db2'}
+        const storePropsDb2 = {...storeProps, databaseName: 'db2'}
 
         const localItem = (store: TinyBaseDataStoreState, id: string) => store.getById(collectionName, id, true)
         const serverItem = (dbName: string, id: string) => callStore(dbType, dbName, 'getById', collectionName, id, true)
@@ -770,21 +802,21 @@ describe.sequential('through TinyBaseDataStoreState', () => {
 
         await storeState.add(collectionName, id, item)
         expect(await localItem(storeState, id)).toStrictEqual({id, ...item})
-        expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
+        expect(await serverItem(storeProps.databaseName!, id)).toStrictEqual({id, ...item})
 
         const storeState2 = theStore.getOrUpdate('store1', TinyBaseDataStoreState, storePropsDb2)
         // @ts-ignore
         await(storeState2.state.initialisedDataStore)
         expect(await localItem(storeState2, id)).toBe(null)
         expect(await localItem(storeState, id)).toBe(null)  // state objects always use latest version
-        expect(await serverItem(storeProps.databaseInstanceName, id)).toStrictEqual({id, ...item})
-        expect(await serverItem(storePropsDb2.databaseInstanceName, id)).toBe(null)
+        expect(await serverItem(storeProps.databaseName!, id)).toStrictEqual({id, ...item})
+        expect(await serverItem(storePropsDb2.databaseName, id)).toBe(null)
 
         const id2 = newId()
         await storeState2.add(collectionName, id2, item)
         expect(await localItem(storeState2, id2)).toStrictEqual({id: id2, ...item})
         expect(await localItem(storeState, id2)).toStrictEqual({id: id2, ...item})  // state objects always use latest version
-        expect(await serverItem(storePropsDb2.databaseInstanceName, id2)).toStrictEqual({id: id2, ...item})
-        expect(await serverItem(storeProps.databaseInstanceName, id2)).toBe(null)
+        expect(await serverItem(storePropsDb2.databaseName, id2)).toStrictEqual({id: id2, ...item})
+        expect(await serverItem(storeProps.databaseName!, id2)).toBe(null)
     })
 })

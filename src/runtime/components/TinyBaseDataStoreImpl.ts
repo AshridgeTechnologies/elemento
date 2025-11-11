@@ -112,12 +112,13 @@ export default class TinyBaseDataStoreImpl implements DataStore {
             this.initialising = this.initStore()
             await this.initialising
             this.authObserver = onAuthChange(async () => {
-                const newUser = currentUser()
-                console.log('auth change', 'current user', newUser)
-                if (newUser && this.authorisedUser && newUser !== this.authorisedUser) {
+                const newUser = currentUser() ?? null
+                console.log('auth change', 'new user', newUser)
+                if (newUser !== this.authorisedUser) {
                     console.log('reinitialising store for new user')
                     this.closing = this.close()
                     await this.closing
+                    this.authorisedUser = newUser
                     this.initialising = this.initStore()
                 }
             })
