@@ -5,8 +5,9 @@ import {mergeRight} from 'ramda'
 import {isObject} from 'lodash'
 import {Definitions} from '../../model/schema'
 import {ElementSchema} from '../../model/ModelElement'
+import {useComponentState} from '../state/appStateHooks'
 
-type Properties = {path: string}
+type Properties = {path: string} & ExternalProperties
 type ExternalProperties = {url: string}
 type StateProperties = {resultCache: object}
 
@@ -47,7 +48,8 @@ export const WebFileMetadata = {
     stateProps: ['url']
 }
 
-export default function WebFile(_props: Properties) {
+export default function WebFile({path, ...stateProps}: Properties) {
+    useComponentState(path, WebFileState, stateProps)
     return null
 }
 

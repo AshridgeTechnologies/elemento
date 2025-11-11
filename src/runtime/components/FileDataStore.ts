@@ -5,6 +5,7 @@ import appFunctions from '../appFunctions'
 import {BaseComponentState} from '../state/BaseComponentState'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import {useComponentState} from '../state/appStateHooks'
 
 type Properties = {path: string, display?: boolean}
 type ExternalProperties = {}
@@ -38,6 +39,7 @@ export const FileDataStoreSchema: ElementSchema = {
 }
 
 export default function FileDataStore({path, display = false}: Properties) {
+    useComponentState(path, FileDataStoreState, {})
     return display ?  createElement('div', {id: path},
         createElement('div', null, path),
         createElement('code', 'File Data Store ' + path)) : null

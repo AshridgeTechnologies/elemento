@@ -41,7 +41,7 @@ const mockDataStore = (): IdbDataStoreImpl => ({
 }) as unknown as IdbDataStoreImpl
 
 test('produces empty output', () => {
-    const {container} = render(createElement(BrowserDataStore, {path: 'app.page1.collection3'}))
+    const {container} = render(createElement(BrowserDataStore, {path: 'app.page1.collection3', ...dataStoreProps}))
     expect(container.innerHTML).toBe('')
 })
 

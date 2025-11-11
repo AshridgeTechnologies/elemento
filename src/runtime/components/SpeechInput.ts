@@ -2,11 +2,12 @@ import {createElement} from 'react'
 import {BaseComponentState} from '../state/BaseComponentState'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import {useComponentState} from '../state/appStateHooks'
 
 const SpeechRecognition  = (globalThis as any).SpeechRecognition || (globalThis as any).webkitSpeechRecognition
 const SpeechGrammarList = (globalThis as any).SpeechGrammarList || (globalThis as any).webkitSpeechGrammarList
 
-type Properties = {path: string}
+type Properties = {path: string} & ExternalProperties
 type ExternalProperties = {language?: string, expectedPhrases?: string[]}
 type StateProperties = {speechRecognition: any, recording: boolean, value: string, confidence: number | null}
 
@@ -54,7 +55,8 @@ export const SpeechInputMetadata = {
     stateProps: ['language', 'expectedPhrases']
 }
 
-export default function SpeechInput({path}: Properties) {
+export default function SpeechInput({path, ...stateProps}: Properties) {
+    useComponentState(path, SpeechInputState, stateProps)
     return createElement('div', {id: path})
 }
 

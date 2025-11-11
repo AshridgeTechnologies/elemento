@@ -63,7 +63,7 @@ export const ListElementSchema: ElementSchema = {
 }
 
 const ListElement = React.memo( function ListElement({path, children, ...props}: Properties) {
-    const state = useComponentState(path, ListElementState)
+    const state = useComponentState(path, ListElementState, {})
     const {scrollTop} = state
     const scrollHandler = (event: SyntheticEvent) => {
         const {scrollTop} = (event.target as HTMLElement)

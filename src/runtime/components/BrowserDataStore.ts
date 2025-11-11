@@ -4,8 +4,10 @@ import {DataStoreState} from './DataStoreState'
 import {equals} from 'ramda'
 import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
+import {useComponentState} from '../state/appStateHooks'
 
-type Properties = {path: string}
+type StateProperties = DataStoreProperties
+type Properties = {path: string} & StateProperties
 
 const BrowserDataStoreSchema: ElementSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -46,7 +48,8 @@ export const BrowserDataStoreMetadata = {
 }
 
 
-export default function BrowserDataStore(_props: Properties) {
+export default function BrowserDataStore({path, ...stateProps}: Properties) {
+    useComponentState(path, BrowserDataStoreState, stateProps)
     return null
 }
 

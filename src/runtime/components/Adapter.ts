@@ -5,17 +5,19 @@ import lodash from 'lodash'
 import {valuesOf} from '../runtimeFunctions'
 import appFunctions from '../appFunctions'
 import Observable from 'zen-observable'
+import {useComponentState} from '../state/appStateHooks'
 
 const {startCase} = lodash
 
-type Properties = {path: string}
+type Properties = {path: string} & ExternalProperties
 
 type ExternalProperties = {target?: any}
 type StateProperties = {resultCache: object, subscriptionCache: object, pendingCalls: number}
 
 const excludedProps = ['constructor', 'equals']
 
-export default function Adapter(_props: Properties) {
+export default function Adapter({path, ...stateProps}: Properties) {
+    useComponentState(path, AdapterState, stateProps)
     return null
 }
 

@@ -5,10 +5,11 @@ import {mergeRight} from 'ramda'
 import {isoDateReviver, valueOf} from '../runtimeFunctions'
 import {getIdToken, onAuthChange} from './authentication'
 import lodash from 'lodash'
+import {useComponentState} from '../state/appStateHooks'
 
 const {startCase} = lodash
 
-type Properties = {path: string}
+type Properties = {path: string} & ExternalProperties
 
 export interface Configuration {
     appName: string,
@@ -24,7 +25,8 @@ export interface Configuration {
 type ExternalProperties = {configuration: Configuration}
 type StateProperties = {resultCache: object, authSubscription?: VoidFunction }
 
-export default function ServerAppConnector(_props: Properties) {
+export default function ServerAppConnector({path, ...stateProps}: Properties) {
+    useComponentState(path, ServerAppConnectorState, stateProps)
     return null
 }
 
