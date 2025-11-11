@@ -10,7 +10,7 @@ import {type Notification, subscribeToNotifications} from './notifications'
 import {dndWrappedComponent} from './ComponentHelpers'
 import {ThemeProvider} from '@mui/material/styles'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 type Properties = {path: string, maxWidth?: string | number, fonts?: string[], startupAction?: () => void,
@@ -82,10 +82,6 @@ export const AppSchema: ElementSchema = {
     "unevaluatedProperties": false,
 
     "definitions": Definitions
-}
-
-export const AppMetadata: ElementMetadata = {
-    stateProps: ['themeOptions']
 }
 
 const containerBoxCss = {
@@ -188,6 +184,5 @@ const App: any = dndWrappedComponent(function App({path, maxWidth, fonts = [],
 
 App.State = AppData
 App.Schema = AppSchema
-App.Metadata = AppMetadata
 
 export default App

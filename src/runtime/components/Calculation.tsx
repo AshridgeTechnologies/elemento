@@ -76,10 +76,6 @@ export const CalculationSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const CalculationMetadata = {
-    stateProps: ['calculation', 'whenTrueAction']
-}
-
 export default function Calculation({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
@@ -147,4 +143,3 @@ export class CalculationState extends BaseComponentState<ExternalStateProperties
 
 Calculation.State = CalculationState
 Calculation.Schema = CalculationSchema
-Calculation.Metadata = CalculationMetadata

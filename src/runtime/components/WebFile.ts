@@ -44,10 +44,6 @@ export const WebFileSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const WebFileMetadata = {
-    stateProps: ['url']
-}
-
 export default function WebFile({path, ...stateProps}: Properties) {
     useComponentState(path, WebFileState, stateProps)
     return null
@@ -110,4 +106,3 @@ export class WebFileState extends BaseComponentState<ExternalProperties, StatePr
 
 WebFile.State = WebFileState
 WebFile.Schema = WebFileSchema
-WebFile.Metadata = WebFileMetadata

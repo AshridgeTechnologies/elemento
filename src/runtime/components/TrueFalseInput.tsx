@@ -1,7 +1,7 @@
 import React, {ChangeEvent, createElement, FocusEvent} from 'react'
 import {Checkbox, FormControl, FormControlLabel, FormHelperText} from '@mui/material'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {TrueFalseType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -13,7 +13,7 @@ import {
 import {noop} from 'lodash'
 import {omit} from 'ramda'
 import {Definitions} from '../../model/schema'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {useComponentState} from '../state/appStateHooks'
 
 type Properties = BaseInputComponentProperties & {initialValue?: boolean, dataType?: TrueFalseType}
@@ -43,10 +43,6 @@ export const TrueFalseInputSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const TrueFalseInputMetadata: ElementMetadata = {
-    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
 }
 
 export default function TrueFalseInput({path, ...props}: Properties) {
@@ -104,4 +100,3 @@ export class TrueFalseInputState extends InputComponentState<boolean, TrueFalseT
 
 TrueFalseInput.State = TrueFalseInputState
 TrueFalseInput.Schema = TrueFalseInputSchema
-TrueFalseInput.Metadata = TrueFalseInputMetadata

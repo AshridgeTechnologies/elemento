@@ -2,7 +2,7 @@ import {DataStoreState} from './DataStoreState'
 import TinyBaseDataStoreImpl, {Properties as StoreImplProps} from './TinyBaseDataStoreImpl'
 import {useEffect} from 'react'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 export type DataStoreProperties = {collections: string, storeOnDevice?: boolean, syncWithServer?: boolean, databaseName?: string, databaseType?: string,
@@ -71,10 +71,6 @@ export const TinyBaseDataStoreSchema: ElementSchema = {
         "definitions": Definitions
 }
 
-export const TinyBaseDataStoreMetadata: ElementMetadata = {
-    stateProps:['collections', 'storeOnDevice', 'syncWithServer', 'databaseName', 'authorizeUser', 'authorizeData', 'serverUrl']
-}
-
 const DEFAULT_DB_NAME = 'DB'
 const DEFAULT_TYPE_NAME = 'DO'
 
@@ -115,5 +111,4 @@ export class TinyBaseDataStoreState extends DataStoreState<DataStoreProperties> 
 
 TinyBaseDataStore.State = TinyBaseDataStoreState
 TinyBaseDataStore.Schema = TinyBaseDataStoreSchema
-TinyBaseDataStore.Metadata = TinyBaseDataStoreMetadata
 

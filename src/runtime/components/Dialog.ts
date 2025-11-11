@@ -5,7 +5,7 @@ import {BaseComponentState} from '../state/BaseComponentState'
 import {BlockContent, BlockLayout} from './Block'
 import Close from '@mui/icons-material/Close'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 type Properties = { path: string, layout: BlockLayout, initiallyOpen?: boolean, showCloseButton?: boolean, styles?: StylesPropVals, children?: React.ReactElement[] }
@@ -59,10 +59,6 @@ const DialogSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const DialogMetadata: ElementMetadata = {
-    stateProps: ['initiallyOpen']
-}
-
 const dialogSlotProps = {
     root: {
         sx: {position: 'absolute'},
@@ -114,4 +110,3 @@ export class DialogState extends BaseComponentState<StateProperties, StateUpdata
 
 Dialog.State = DialogState
 Dialog.Schema = DialogSchema
-Dialog.Metadata = DialogMetadata

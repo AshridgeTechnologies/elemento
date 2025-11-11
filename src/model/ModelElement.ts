@@ -34,10 +34,6 @@ export type PropertySchema = JSONSchema & Readonly<{
     argNames?: string[]
 }>
 
-export type ElementMetadata = {
-    stateProps?: string[]
-}
-
 type BaseElementConstructor = {
     new (id: ElementId,
          name: string,
@@ -62,7 +58,7 @@ const classes = new Map<ElementSchema, ElementConstructor>()
 const generatedSchemas = new Map<ElementConstructor, ElementSchema>()
 const ajv = new Ajv2020({strictSchema: false, allErrors: true})
 
-const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined): ElementConstructor => {
+const createElementClass = (schema: ElementSchema): ElementConstructor => {
     const {icon, kind, elementType, valueType,
         isLayoutOnly, initialProperties, canContain, parentType} = schema
 
@@ -71,7 +67,7 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
     const propDefs = Object.entries(ownProps).map(([name, prop]) => {
         const {$ref, type, enum: enumType} = prop
 
-        const def = (() => {
+        return (() => {
             if (enumType) {
                 return propDef(name, enumType as string[])
             }
@@ -122,7 +118,6 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
             throw new Error('Unknown property type: ' + typeOrRef)
 
         })()
-        return def
 
     })
 
@@ -216,8 +211,8 @@ const createElementClass = (schema: ElementSchema, metadata: ElementMetadata | u
     return elementClass
 }
 
-const addElementClass = (schema: ElementSchema, metadata: ElementMetadata | undefined) => {
-    const newClass= createElementClass(schema, metadata)
+const addElementClass = (schema: ElementSchema) => {
+    const newClass= createElementClass(schema)
     classes.set(schema, newClass)
     return newClass
 }
@@ -228,16 +223,14 @@ const addSchema = (elementClass: ElementConstructor) => {
     return newSchema
 }
 
-export const modelElementClass = (schemaOrClass: ElementSchema | Function, metadata?: ElementMetadata): ElementConstructor => {
-    let theSchema: ElementSchema, theMetadata: ElementMetadata | undefined
+export const modelElementClass = (schemaOrClass: ElementSchema | Function): ElementConstructor => {
+    let theSchema: ElementSchema
     if (typeof schemaOrClass === 'function') {
         theSchema = (schemaOrClass as any).Schema
-        theMetadata = (schemaOrClass as any).Metadata
     } else {
         theSchema = schemaOrClass
-        theMetadata = metadata
     }
-    return classes.get(theSchema) ?? addElementClass(theSchema, theMetadata)
+    return classes.get(theSchema) ?? addElementClass(theSchema)
 }
 
 

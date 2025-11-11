@@ -3,7 +3,7 @@ import {D1Database, D1PreparedStatement} from "@cloudflare/workers-types/experim
 import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {isArray} from 'radash'
 import {convertFromDbData, convertToDbData} from '../shared/convertData'
-import {ElementMetadata, ElementSchema} from '../model/ModelElement'
+import {ElementSchema} from '../model/ModelElement'
 import {Definitions} from '../model/schema'
 
 type Properties = {database: D1Database, collections: string}
@@ -52,10 +52,6 @@ export const CloudflareDataStoreSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const CloudflareDataStoreMetadata: ElementMetadata = {
-    "stateProps": ['collections', 'databaseName', 'databaseId' ]
 }
 
 export default class CloudflareDataStore implements BasicDataStore {
@@ -154,4 +150,3 @@ export default class CloudflareDataStore implements BasicDataStore {
 }
 
 ;(CloudflareDataStore as any).Schema = CloudflareDataStoreSchema
-;(CloudflareDataStore as any).Metadata = CloudflareDataStoreMetadata

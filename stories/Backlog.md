@@ -142,6 +142,7 @@ Stories
 
 ### Priority 1
 - Good performance on large list
+- Consider using TinyBase for all data stores, with choice of persister, remove BrowserDataStore - but move tests to TBDS
 - User menu can have extra options like My Account
 - Can run server functions from Inspector even when no Page is selected, reliably, and refresh them
 - Can debug server functions from Inspector

@@ -61,7 +61,7 @@ import ScreenKeyboard from '../runtime/components/ScreenKeyboard'
 import SpeechInput from '../runtime/components/SpeechInput'
 import UserLogon from '../runtime/components/UserLogon'
 import WebFile from '../runtime/components/WebFile'
-import {TinyBaseServerDataStoreMetadata, TinyBaseServerDataStoreSchema} from '../serverRuntime/TinyBaseServerDataStore'
+import {TinyBaseServerDataStoreSchema} from '../serverRuntime/TinyBaseServerDataStore'
 import Table from '../runtime/components/Table'
 
 export const dataTypeElementTypes = (): {[key in DataTypeElementType]: any} => {
@@ -112,7 +112,7 @@ const elementTypes = (): {[key in ElementType]: any} => {
         BrowserDataStore: modelElementClass(BrowserDataStore),
         CloudflareDataStore: modelElementClass(CloudflareDataStore),
         TinyBaseDataStore: modelElementClass(TinyBaseDataStore),
-        TinyBaseServerDataStore: modelElementClass(TinyBaseServerDataStoreSchema, TinyBaseServerDataStoreMetadata),
+        TinyBaseServerDataStore: modelElementClass(TinyBaseServerDataStoreSchema),
         MemoryDataStore: modelElementClass(MemoryDataStore),
         Function: modelElementClass(FunctionDefSchema),
         FunctionImport: modelElementClass(FunctionImportSchema),

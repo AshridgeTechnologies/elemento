@@ -2,7 +2,7 @@ import React, {ChangeEvent, FocusEvent, KeyboardEventHandler} from 'react'
 import TextField from '@mui/material/TextField'
 import {definedPropertiesOf} from '../../util/helpers'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {TextType} from '../types'
 import {pick} from 'ramda'
 import BaseType from '../types/BaseType'
@@ -13,7 +13,7 @@ import {
     propsForInputComponent,
     sxPropsForFormControl
 } from './ComponentHelpers'
-import {ElementMetadata, type ElementSchema} from '../../model/ModelElement'
+import {type ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 import {useComponentState} from '../state/appStateHooks'
 
@@ -63,11 +63,6 @@ export const TextInputSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const TextInputMetadata: ElementMetadata = {
-    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
-}
-
-
 export default function TextInput({path, ...props}: Properties) {
     const {label, multiline: multilineProp, readOnly, show, keyAction, styles = {}} = valueOfProps(props)
     const sx = sxPropsForFormControl(styles, show)
@@ -115,4 +110,3 @@ export class TextInputState extends InputComponentState<string, TextType> {
 
 TextInput.State = TextInputState
 TextInput.Schema = TextInputSchema
-TextInput.Metadata = TextInputMetadata

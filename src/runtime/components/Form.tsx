@@ -13,9 +13,8 @@ import DateInput from './DateInput'
 import {isNil, last, without} from 'ramda'
 import {BaseInputComponentProperties, InfoButton, sxProps} from './ComponentHelpers'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
-import {InputComponentMetadata} from './InputComponentState'
 import {ChoiceType, DateType, DecimalType, NumberType, TextType, TrueFalseType} from '../types'
 
 const errorsToString = (errors: string[] | {[p: string]: string[]}) => {
@@ -119,10 +118,6 @@ export const FormSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const FormMetadata: ElementMetadata = {
-    stateProps: ['submitAction', 'initialValue', ...(InputComponentMetadata.stateProps ?? [])]
-}
-
 export default function Form({children, path, ...props}: Properties) {
     const {horizontal = false, wrap = false, show, label, keyAction, styles = {}} = valueOfProps(props)
     const direction = horizontal ? 'row' : 'column'
@@ -179,4 +174,3 @@ export default function Form({children, path, ...props}: Properties) {
 }
 
 Form.Schema = FormSchema
-Form.Metadata = FormMetadata

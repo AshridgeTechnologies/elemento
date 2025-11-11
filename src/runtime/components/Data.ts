@@ -47,10 +47,6 @@ const DataSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const DataMetadata = {
-    stateProps: ['initialValue']
-}
-
 export default function Data({path, initialValue, display = false}: Properties) {
     const state = useComponentState(path, DataState, {initialValue})
     return display ?  createElement('div', {id: path},
@@ -114,4 +110,3 @@ export class DataState extends BaseComponentState<StateExternalProperties, State
 
 Data.State = DataState
 Data.Schema = DataSchema
-Data.Metadata = DataMetadata

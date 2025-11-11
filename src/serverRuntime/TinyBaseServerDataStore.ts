@@ -4,7 +4,7 @@ import CollectionConfig, {parseCollections} from '../shared/CollectionConfig'
 import {addIdToItem, convertFromDbData, convertToDbData} from '../shared/convertData'
 import {mergeDeepRight} from 'ramda'
 import {TinyBaseDurableObject} from './TinyBaseDurableObject'
-import {ElementMetadata, ElementSchema} from '../model/ModelElement'
+import {ElementSchema} from '../model/ModelElement'
 import {Definitions} from '../model/schema'
 
 type Properties = {collections: string, durableObject: DurableObjectNamespace, databaseName: string}
@@ -41,10 +41,6 @@ export const TinyBaseServerDataStoreSchema: ElementSchema = {
 ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const TinyBaseServerDataStoreMetadata: ElementMetadata = {
-    "stateProps": ['collections', 'databaseName' ]
 }
 
 export default class TinyBaseServerDataStore implements BasicDataStore {

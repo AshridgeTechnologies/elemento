@@ -43,11 +43,6 @@ const BrowserDataStoreSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const BrowserDataStoreMetadata = {
-    stateProps: ['databaseName', 'collectionNames']
-}
-
-
 export default function BrowserDataStore({path, ...stateProps}: Properties) {
     useComponentState(path, BrowserDataStoreState, stateProps)
     return null
@@ -74,4 +69,3 @@ export class BrowserDataStoreState extends DataStoreState<DataStoreProperties> {
 
 BrowserDataStore.State = BrowserDataStoreState
 BrowserDataStore.Schema = BrowserDataStoreSchema
-BrowserDataStore.Metadata = BrowserDataStoreMetadata

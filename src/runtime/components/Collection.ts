@@ -1,7 +1,7 @@
 import {createElement} from 'react'
-import {idOf, valueLiteral, valueOfProps, valuesOf} from '../runtimeFunctions'
-import lodash, {result} from 'lodash';
-import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit, props} from 'ramda'
+import {idOf, valueLiteral, valueOfProps} from '../runtimeFunctions'
+import lodash from 'lodash';
+import {equals, map, mapObjIndexed, mergeDeepRight, mergeRight, omit} from 'ramda'
 import DataStore, {
     Add,
     CollectionName,
@@ -19,7 +19,7 @@ import {BaseComponentState, isPlaceholder} from '../state/BaseComponentState'
 import {onAuthChange} from './authentication'
 import {toArray} from '../../util/helpers'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 
@@ -77,10 +77,6 @@ export const CollectionSchema: ElementSchema = {
     "unevaluatedProperties": false,
     "definitions": Definitions
 }
-export const CollectionMetadata: ElementMetadata = {
-    stateProps: ['initialValue', 'dataStore', 'collectionName']
-}
-
 export default function Collection({path, initialValue, dataStore, collectionName, display = false}: Properties) {
     const state = useComponentState(path, CollectionState, {initialValue, dataStore, collectionName})
     return display ?  createElement('div', {id: path},
@@ -365,4 +361,3 @@ export class CollectionState extends BaseComponentState<ExternalProperties, Stat
 
 Collection.State = CollectionState
 Collection.Schema = CollectionSchema
-Collection.Metadata = CollectionMetadata

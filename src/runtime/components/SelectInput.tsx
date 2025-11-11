@@ -1,7 +1,7 @@
 import {createElement as el, FocusEvent} from 'react'
 import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent} from '@mui/material'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {ChoiceType} from '../types'
 import {
     BaseInputComponentProperties,
@@ -12,7 +12,7 @@ import {
 } from './ComponentHelpers'
 import {useComponentState} from '../state/appStateHooks'
 import {Definitions} from '../../model/schema'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 
 type Properties = BaseInputComponentProperties & {values?: PropVal<string[]>, initialValue?: string, dataType?: ChoiceType}
 
@@ -45,10 +45,6 @@ export const SelectInputSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const SelectInputMetadata: ElementMetadata = {
-    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
 }
 
 export default function SelectInput({path, ...props}: Properties) {
@@ -104,4 +100,3 @@ export class SelectInputState extends InputComponentState<string, ChoiceType> {
 
 SelectInput.State = SelectInputState
 SelectInput.Schema = SelectInputSchema
-SelectInput.Metadata = SelectInputMetadata

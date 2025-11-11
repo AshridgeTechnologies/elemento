@@ -2,7 +2,7 @@ import React, {ChangeEvent, FocusEvent} from 'react'
 import TextField from '@mui/material/TextField'
 import {definedPropertiesOf} from '../../util/helpers'
 import {valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {NumberType} from '../types'
 import {isNil, pick} from 'ramda'
 import BigNumber from 'bignumber.js'
@@ -16,7 +16,7 @@ import {
     sxPropsForFormControl
 } from './ComponentHelpers'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 type Properties = BaseInputComponentProperties & {initialValue?: number, dataType?: NumberType | DecimalType}
@@ -54,10 +54,6 @@ export const NumberInputSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const NumberInputMetadata: ElementMetadata = {
-    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
 }
 
 export class NumberInputState extends InputComponentState<number | BigNumber, NumberType | DecimalType>  {
@@ -120,4 +116,3 @@ export default function NumberInput({path, ...props}: Properties) {
 
 NumberInput.State = NumberInputState
 NumberInput.Schema = NumberInputSchema
-NumberInput.Metadata = NumberInputMetadata

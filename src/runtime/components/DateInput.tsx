@@ -1,13 +1,13 @@
 import React, {FocusEvent} from 'react'
 import {PropVal, valueOfProps} from '../runtimeFunctions'
-import InputComponentState, {InputComponentMetadata} from './InputComponentState'
+import InputComponentState from './InputComponentState'
 import {DateType} from '../types'
 import {DateField, DatePicker} from '@mui/x-date-pickers'
 import {pick} from 'ramda'
 import {formControlStyles, getLabelWithRequired, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {definedPropertiesOf} from '../../util/helpers'
 import {SxProps} from '@mui/material'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 import {useComponentState} from '../state/appStateHooks'
 
@@ -38,10 +38,6 @@ export const DateInputSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-
-export const DateInputMetadata: ElementMetadata = {
-    stateProps: [...(InputComponentMetadata.stateProps ?? [])]
 }
 
 export default function DateInput({path, ...props}: Properties) {
@@ -103,4 +99,3 @@ export class DateInputState extends InputComponentState<Date, DateType> {
 
 DateInput.State = DateInputState
 DateInput.Schema = DateInputSchema
-DateInput.Metadata = DateInputMetadata

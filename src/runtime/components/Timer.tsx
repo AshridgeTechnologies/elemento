@@ -6,7 +6,7 @@ import {BaseComponentState} from '../state/BaseComponentState'
 import {pick} from 'ramda'
 import {formControlStyles, inputElementProps, propsForInputComponent, sxFieldSetProps, sxProps} from './ComponentHelpers'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 
@@ -76,9 +76,6 @@ export const TimerSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const TimerMetadata: ElementMetadata = {
-    stateProps: ['period', 'interval', 'intervalAction', 'endAction']
-}
 export default function Timer({path, ...props}: Properties) {
     const {label, show = false, styles = {}} = valueOfProps(props)
     const sx = {...sxProps(pick(formControlStyles, styles), show), fieldset: sxFieldSetProps(styles)} as SxProps<{}>
@@ -201,4 +198,3 @@ export class TimerState extends BaseComponentState<StateInputProperties, StateIn
 
 Timer.State = TimerState
 Timer.Schema = TimerSchema
-Timer.Metadata = TimerMetadata

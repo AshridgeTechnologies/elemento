@@ -5,7 +5,7 @@ import {isNil, last, range, reverse, without} from 'ramda'
 import {unique} from '../../util/helpers'
 import {isNumeric} from 'validator'
 import {useComponentState} from '../state/appStateHooks'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 const selectableChoices = ['none', 'single', 'multiple', 'multipleAuto'] as const
@@ -91,10 +91,6 @@ export const ItemSetSchema: ElementSchema = {
     "unevaluatedProperties": false,
 
     "definitions": Definitions
-}
-
-export const ItemSetMetadata: ElementMetadata = {
-    stateProps: ['items', 'selectedItems', 'selectable', 'selectAction']
 }
 
 const idsEqual = (item1: any, item2: any) => {
@@ -276,4 +272,3 @@ export class ItemSetState extends SelectableListState {}
 
 (ItemSet as any).State = ItemSetState;
 (ItemSet as any).Schema = ItemSetSchema;
-(ItemSet as any).Metadata = ItemSetMetadata;

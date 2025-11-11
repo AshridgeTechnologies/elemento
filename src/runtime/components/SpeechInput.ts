@@ -51,10 +51,6 @@ export const SpeechInputSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const SpeechInputMetadata = {
-    stateProps: ['language', 'expectedPhrases']
-}
-
 export default function SpeechInput({path, ...stateProps}: Properties) {
     useComponentState(path, SpeechInputState, stateProps)
     return createElement('div', {id: path})
@@ -174,4 +170,3 @@ export class SpeechInputState extends BaseComponentState<ExternalProperties, Sta
 
 SpeechInput.State = SpeechInputState
 SpeechInput.Schema = SpeechInputSchema
-SpeechInput.Metadata = SpeechInputMetadata

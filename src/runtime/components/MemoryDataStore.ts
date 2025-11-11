@@ -2,7 +2,7 @@ import DataStore, {CollectionName, Criteria, DataStoreObject, Id, queryMatcher, 
 import lodash from 'lodash';
 import {mergeDeepRight} from 'ramda'
 import Observable from 'zen-observable'
-import {ElementMetadata, ElementSchema} from '../../model/ModelElement'
+import {ElementSchema} from '../../model/ModelElement'
 import {Definitions} from '../../model/schema'
 
 const {clone} = lodash
@@ -42,9 +42,6 @@ export const MemoryDataStoreSchema: ElementSchema = {
     ],
     "unevaluatedProperties": false,
     "definitions": Definitions
-}
-export const MemoryDataStoreMetadata: ElementMetadata = {
-    stateProps: ['initialValue']
 }
 
 export default class MemoryDataStore implements DataStore {
@@ -129,4 +126,3 @@ export default class MemoryDataStore implements DataStore {
 }
 
 (MemoryDataStore as any).Schema = MemoryDataStoreSchema;
-(MemoryDataStore as any).Metadata = MemoryDataStoreMetadata;

@@ -41,10 +41,6 @@ export const WebFileDataStoreSchema: ElementSchema = {
     "definitions": Definitions
 }
 
-export const WebFileDataStoreMetadata = {
-    stateProps: ['url']
-}
-
 export default function WebFileDataStore({path}: Properties) {
     return null
 }
@@ -101,5 +97,3 @@ export class WebFileDataStoreState extends BaseComponentState<ExternalProperties
 
 WebFileDataStore.State = WebFileDataStoreState
 WebFileDataStore.Schema = WebFileDataStoreSchema
-WebFileDataStore.Metadata = WebFileDataStoreMetadata
-
