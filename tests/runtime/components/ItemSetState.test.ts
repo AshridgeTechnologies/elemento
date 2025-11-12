@@ -1,6 +1,8 @@
 import {beforeEach, expect, Mock, test, vi} from 'vitest'
 import {createStateFn, valueObj} from '../../testutil/testHelpers'
 import {ItemSetState} from '../../../src/runtime/components/ItemSet'
+import {StatePlaceholder} from '../../../src/runtime/state/BaseComponentState'
+import {pending} from '../../../src/shared/DataStore'
 
 const item1 = {a: 1}, item2 = {a: 2}, item3 = {a: 3}, item4 = {a: 4}
 const idItem1 = {id: 'x1', a: 1}, idItem2 = {id: 'x2', a: 2}, idItem3 = {id: 'x3', a: 3}, idItem4 = {id: 'x4', a: 4}
@@ -32,6 +34,21 @@ test('Has correct properties from value objects', () => {
     expect(state.selectAction).toBe(undefined)
     expect(state.selectedItems).toStrictEqual([item1])
     expect(state.selectedItem).toStrictEqual(item1)
+})
+
+test('has correct selected items if items is empty', () => {
+    const state = new ItemSetState({items: undefined, selectedItems: Number(numidItem1.id)})
+    expect(state.selectedItems).toStrictEqual([])
+})
+
+test('has correct selected items if items is a placeholder', () => {
+    const state = new ItemSetState({items: new StatePlaceholder('id1') as any, selectedItems: Number(numidItem1.id)})
+    expect(state.selectedItems).toStrictEqual([])
+})
+
+test('has correct selected items if items is pending', () => {
+    const state = new ItemSetState({items: pending(Promise.resolve()) as any, selectedItems: Number(numidItem1.id)})
+    expect(state.selectedItems).toStrictEqual([])
 })
 
 test('has correct selected items with numeric ids', () => {
