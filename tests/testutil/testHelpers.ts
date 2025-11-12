@@ -14,6 +14,7 @@ import {StoreProvider} from '../../src/runtime/state/StoreContext'
 import {AppStateForObject} from '../../src/runtime/state/AppStateStore'
 import {render} from '@testing-library/react'
 import {ComponentStateStore, StoredState, StoredStateWithProps} from '../../src/runtime/state/BaseComponentState'
+import SubscribableStore from '../../src/runtime/state/SubscribableStore'
 
 export function asJSON(obj: object): any { return JSON.parse(JSON.stringify(obj)) }
 
@@ -200,7 +201,8 @@ export function testAppStoreHook() {
 }
 
 export const createStateFn = <T extends StoredStateWithProps<P>, P extends object>(stateClass: new(props: P) => T) => {
-    const theStore = new ComponentStateStore()
+    // high update limit as tests create many updates rapidly
+    const theStore = new ComponentStateStore(new SubscribableStore({updateLimit: 10000, updateWindow: 100}))
     let idSeq = 1
     const createFn = (props: P) => theStore.getOrUpdate((idSeq++).toString(), stateClass, props)
     createFn.store = theStore

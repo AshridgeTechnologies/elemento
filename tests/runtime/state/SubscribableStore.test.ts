@@ -4,6 +4,7 @@ import SubscribableStore from '../../../src/runtime/state/SubscribableStore'
 let store: SubscribableStore
 const id1 = 'id1'
 const id2 = 'id2'
+const id3 = 'id3'
 const item1 = 'Item 1', item2 = {a: 10}
 const item1a = 'Item 1a', item2a = {a: 11}
 
@@ -163,4 +164,16 @@ test('new updates in a sendNotifications callback are sent separately', () => {
     expect(listener1).toHaveBeenCalledTimes(1)
     expect(listener2).toHaveBeenCalledTimes(1)
     expect(listenerAll).toHaveBeenLastCalledWith([id2])
+})
+
+test('throws error if update rate exceeds limit', () => {
+    store = new SubscribableStore({updateWindow: 10, updateLimit: 100})
+
+    store.set(id3, item1)  // single update should not be in suspect list
+    expect(() => {
+        while (true) {
+            store.set(id1, item1)
+            store.set(id2, item2)
+        }
+    }).toThrowError('Too many updates to ids: id1, id2')
 })

@@ -10,7 +10,6 @@ import {useComponentState} from '../../src/runtime/index'
 import {testContainer} from '../testutil/rtlHelpers'
 import UrlContext from '../../src/runtime/UrlContext'
 import {AppData} from '../../src/runtime/components/AppData'
-import {DEBUG_TIMEOUT, wait} from '../testutil/testHelpers'
 
 vi.mock('../../src/runtime/components/authentication')   // prevent errors
 
@@ -104,11 +103,9 @@ test('updates app on page', () => {
 })
 
 test('app can set state', async () => {
-    await wait(100)
     await enter('input1', 'cool')
-    await wait(100)
     expectEl('SecondText').toHaveTextContent('Input is cool')
-}, DEBUG_TIMEOUT)
+})
 
 test('app can keep state when app is updated', async () => {
     renderThe(appRunner(testApp('One')))

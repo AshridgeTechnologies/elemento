@@ -10,6 +10,7 @@ export default function ErrorFallback({error, resetErrorBoundary}: {error: Error
             <pre style={{color: 'blue'}}>Element:  {trace?.component ?? 'unknown'}</pre>
             <pre style={{color: 'blue'}}>Property: {startCase(trace?.property ?? 'unknown')}</pre>
             <pre style={{color: 'red'}}>Error: {error.message}</pre>
+            {error.cause ? <pre style={{color: 'red'}}>Cause: {JSON.stringify((error.cause as any) ?? 'N/A', null, 2)}</pre> : null}
         </div>
     )
 }
